@@ -24,6 +24,8 @@ extension AudiobookshelfClient {
         var size: Int64?
         
         var books: [AudiobookshelfItem]?
+        var series: [AudiobookshelfItem]?
+        var libraryItems: [AudiobookshelfItem]?
         
         var numEpisodes: Int?
         var recentEpisode: AudiobookshelfPodcastEpisode?

@@ -33,6 +33,7 @@ struct LoginView: View {
             
             Text("Welcome to Audiobooks")
                 .font(.headline)
+                .fontDesign(.serif)
             Text("Please login to get started")
                 .font(.subheadline)
             

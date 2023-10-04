@@ -55,7 +55,7 @@ extension AudiobookshelfClient {
             
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            print(error)
+            print(url, error)
             throw AudiobookshelfClientError.invalidResponse
         }
     }

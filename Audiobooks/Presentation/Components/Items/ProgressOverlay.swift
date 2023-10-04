@@ -34,6 +34,7 @@ struct ProgressOverlay: View {
                             .rotationEffect(.degrees(-90))
                             .frame(width: size / 3, height: size / 3)
                             .padding(size / 7)
+                            .opacity(0.8)
                         }
                 }
             } else {
@@ -52,9 +53,6 @@ extension ProgressOverlay {
         Task.detached {
             if let progress = await OfflineManager.shared.getProgress(item: item) {
                 let percentage = progress.currentTime / progress.duration
-                
-                print(percentage)
-                
                 if percentage > 0 && percentage < 0.95 {
                     self.percentage = percentage
                 }
@@ -73,6 +71,7 @@ struct ItemProgressImage: View {
             .overlay {
                 ProgressOverlay(item: item)
             }
+            .clipShape(RoundedRectangle(cornerRadius: 7))
     }
 }
 
