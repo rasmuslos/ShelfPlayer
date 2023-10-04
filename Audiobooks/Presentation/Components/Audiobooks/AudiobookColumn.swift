@@ -22,6 +22,7 @@ struct AudiobookColumn: View {
             if let bottomText = bottomText {
                 Text(bottomText)
                     .font(.footnote)
+                    .lineLimit(1)
                     .padding(.top, 4)
                     .foregroundStyle(.secondary)
             }

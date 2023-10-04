@@ -23,7 +23,7 @@ extension AudiobookLibraryView {
                                 AudiobooksRowContainer(title: row.label, audiobooks: row.audiobooks)
                             }
                         } else {
-                            Text("loading")
+                            LoadingView()
                         }
                     }
                 }
