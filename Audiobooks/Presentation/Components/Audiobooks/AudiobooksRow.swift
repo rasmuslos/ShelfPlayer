@@ -9,14 +9,15 @@ import SwiftUI
 
 struct AudiobooksRow: View {
     let audiobooks: [Audiobook]
+    var amount = 3
     
     var body: some View {
-        // size = (width - (padding leading + padding trailing + gap * 2 + 15)) / 3
-        let size = (UIScreen.main.bounds.width - 60) / 3
+        // size = (width - (padding leading (20) + padding trailing (20) + gap (10) * (amount - 1))) / amount
+        let size = (UIScreen.main.bounds.width - (40 + 10 * CGFloat(amount - 1))) / CGFloat(amount)
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(spacing: 0) {
+            HStack(spacing: 0) {
                 ForEach(audiobooks) { audiobook in
-                    NavigationLink(destination: Text(":)")) {
+                    NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
                         AudiobookColumn(audiobook: audiobook)
                             .frame(width: size)
                             .padding(.leading, 10)
@@ -46,11 +47,12 @@ struct AudiobooksRowTitle: View {
 struct AudiobooksRowContainer: View {
     let title: String
     let audiobooks: [Audiobook]
+    var amount = 3
     
     var body: some View {
         VStack(alignment: .leading) {
             AudiobooksRowTitle(title: title)
-            AudiobooksRow(audiobooks: audiobooks)
+            AudiobooksRow(audiobooks: audiobooks, amount: amount)
         }
     }
 }
