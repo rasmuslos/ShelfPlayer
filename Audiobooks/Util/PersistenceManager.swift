@@ -1,32 +1,30 @@
 //
-//  AudiobooksApp.swift
+//  PersistenceManager.swift
 //  Audiobooks
 //
-//  Created by Rasmus Krämer on 16.09.23.
+//  Created by Rasmus Krämer on 02.10.23.
 //
 
-import SwiftUI
+import Foundation
 import SwiftData
 
-@main
-struct AudiobooksApp: App {
-    var sharedModelContainer: ModelContainer = {
+struct PersistenceManager {
+    let modelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            OfflineProgress.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
+        
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+}
 
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .modelContainer(sharedModelContainer)
-    }
+// MARK: Singleton
+
+extension PersistenceManager {
+    static let shared = PersistenceManager()
 }
