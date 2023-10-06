@@ -32,3 +32,15 @@ extension AudiobookshelfClient {
         return response.results.map(Audiobook.convertFromAudiobookshelf)
     }
 }
+
+// MARK: Get series by id
+
+extension AudiobookshelfClient {
+    func getSeriesById(_ seriesId: String, libraryId: String) async -> Series? {
+        if let item = try? await request(ClientRequest<AudiobookshelfItem>(path: "api/libraries/\(libraryId)/series/\(seriesId)", method: "GET")) {
+            return Series.convertFromAudiobookshelf(item: item)
+        }
+        
+        return nil
+    }
+}

@@ -10,13 +10,13 @@ import SwiftUI
 struct ProgressOverlay: View {
     let item: Item
     
-    @State var percentage: Double?
+    @State var progress: Double?
     
     var body: some View {
         GeometryReader { geometry in
             let size = geometry.size.width / 3
             
-            if let percentage = percentage {
+            if let progress = progress {
                 HStack {
                     Spacer()
                     
@@ -28,7 +28,7 @@ struct ProgressOverlay: View {
                                 Circle()
                                     .stroke(Color.secondary.opacity(0.5), lineWidth: 3)
                                 Circle()
-                                    .trim(from: 0, to: CGFloat(percentage))
+                                    .trim(from: 0, to: CGFloat(progress))
                                     .stroke(Color.primary, lineWidth: 3)
                             }
                             .rotationEffect(.degrees(-90))
@@ -52,9 +52,8 @@ extension ProgressOverlay {
     func fetchProgress() {
         Task.detached {
             if let progress = await OfflineManager.shared.getProgress(item: item) {
-                let percentage = progress.currentTime / progress.duration
-                if percentage > 0 && percentage < 0.95 {
-                    self.percentage = percentage
+                if progress.progress > 0 && progress.progress < 1 {
+                    self.progress = progress.progress
                 }
             }
         }

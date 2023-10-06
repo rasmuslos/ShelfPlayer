@@ -32,3 +32,17 @@ class OfflineProgress: Identifiable {
         self.lastUpdate = lastUpdate
     }
 }
+
+// MARK: progress
+
+extension OfflineProgress {
+    func readableProgress(spaceConstrained: Bool = true) -> String {
+        let remainingTime = max(duration - currentTime, 0)
+        
+        if remainingTime <= 5 {
+            return "100%"
+        } else {
+            return remainingTime.timeLeft()
+        }
+    }
+}
