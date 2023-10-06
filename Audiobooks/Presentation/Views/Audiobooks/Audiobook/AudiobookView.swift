@@ -27,35 +27,35 @@ struct AudiobookView: View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 Header(audiobook: audiobook, authorId: $authorId, seriesId: $seriesId, navbarVisible: $navbarVisible)
-                .padding()
+                    .padding()
                 
-                divider
-                
-                HStack {
-                    VStack(alignment: .leading) {
-                        if let description = audiobook.description {
+                if let description = audiobook.description {
+                    divider
+                    
+                    HStack {
+                        VStack(alignment: .leading) {
+                            
                             Text("Description")
                                 .bold()
                                 .underline()
+                                .padding(.bottom, 2)
                             
                             Text(description)
                         }
+                        
+                        Spacer()
                     }
-                    
-                    Spacer()
+                    .padding()
                 }
-                .padding()
                 
                 if !audiobooksInSeries.isEmpty {
                     divider
-                    
-                    AudiobooksRowContainer(title: "Also in series", audiobooks: audiobooksInSeries, amount: 4)
+                    AudiobooksRowContainer(title: "Also in series", audiobooks: audiobooksInSeries, amount: 4, navigateable: true)
                 }
                 
                 if !audiobooksByAuthor.isEmpty {
                     divider
-                    
-                    AudiobooksRowContainer(title: "Also by \(audiobook.author ?? "the author")", audiobooks: audiobooksByAuthor, amount: 4)
+                    AudiobooksRowContainer(title: "Also by \(audiobook.author ?? "the author")", audiobooks: audiobooksByAuthor, amount: 4, navigateable: true)
                 }
                 
                 Spacer()
@@ -75,18 +75,23 @@ extension AudiobookView {
     func getAuthorData() {
         Task.detached {
             if let author = audiobook.author, let authorId = await AudiobookshelfClient.shared.getAuthorIdByName(author, libraryId: libraryId) {
-                    self.authorId = authorId
-                    audiobooksByAuthor = (try? await AudiobookshelfClient.shared.getAudiobooksByAuthor(authorId: authorId, libraryId: libraryId)) ?? []
+                self.authorId = authorId
+                audiobooksByAuthor = (try? await AudiobookshelfClient.shared.getAudiobooksByAuthor(authorId: authorId, libraryId: libraryId)) ?? []
             }
         }
     }
     func getSeriesData() {
         Task.detached {
-            if let series = audiobook.series, let seriesName = series.split(separator: "#").first?.dropLast() {
-                if let seriesId = await AudiobookshelfClient.shared.getSeriesIdByName(String(seriesName), libraryId: libraryId) {
-                    self.seriesId = seriesId
-                    audiobooksInSeries = (try? await AudiobookshelfClient.shared.getAudiobooksInSeries(seriesId: seriesId, libraryId: libraryId)) ?? []
-                }
+            if let seriesId = audiobook.series.id {
+                self.seriesId = seriesId
+            } else if let series = audiobook.series.name {
+                seriesId = await AudiobookshelfClient.shared.getSeriesIdByName(series, libraryId: libraryId)
+            } else if let series = audiobook.series.audiobookSeriesName, let seriesName = series.split(separator: "#").first?.dropLast() {
+                seriesId = await AudiobookshelfClient.shared.getSeriesIdByName(String(seriesName), libraryId: libraryId)
+            }
+            
+            if let seriesId = seriesId {
+                audiobooksInSeries = (try? await AudiobookshelfClient.shared.getAudiobooksInSeries(seriesId: seriesId, libraryId: libraryId)) ?? []
             }
         }
     }

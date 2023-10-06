@@ -101,7 +101,9 @@ extension AudiobookshelfClient {
             var author: String?
             var narratorName: String?
             var publisher: String?
+            
             var seriesName: String?
+            var series: AudiobookshelfItemSeries?
             
             var genres: [String]
             var publishedYear: String?
@@ -110,6 +112,36 @@ extension AudiobookshelfClient {
             var language: String?
             var explicit: Bool?
             var abridged: Bool?
+            
+            init(from decoder: Decoder) throws {
+                let container: KeyedDecodingContainer<AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys> = try decoder.container(keyedBy: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.self)
+                self.title = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.title)
+                self.titleIgnorePrefix = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.titleIgnorePrefix)
+                self.subtitle = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.subtitle)
+                self.description = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.description)
+                self.authorName = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.authorName)
+                self.author = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.author)
+                self.narratorName = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.narratorName)
+                self.publisher = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.publisher)
+                self.seriesName = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.seriesName)
+                self.genres = try container.decode([String].self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.genres)
+                self.publishedYear = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.publishedYear)
+                self.isbn = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.isbn)
+                self.language = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.language)
+                self.explicit = try container.decodeIfPresent(Bool.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.explicit)
+                self.abridged = try container.decodeIfPresent(Bool.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.abridged)
+                
+                // this is truly stupid... The field is either of type series or an empty array
+                self.series = try? container.decodeIfPresent(AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemSeries.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.series)
+            }
+        }
+        
+        // MARK: Series
+        
+        struct AudiobookshelfItemSeries: Codable {
+            let id: String?
+            let name: String?
+            let sequence: String?
         }
         
         // MARK: Audio track
