@@ -15,6 +15,8 @@ extension AudiobookView {
         @Binding var seriesId: String?
         @Binding var navbarVisible: Bool
         
+        @State var progress: OfflineProgress?
+        
         var body: some View {
             ZStack(alignment: .top) {
                 GeometryReader { reader in
@@ -22,7 +24,7 @@ extension AudiobookView {
                     
                     Color.clear
                         .onChange(of: offset) {
-                            navbarVisible = offset < -300
+                            navbarVisible = offset < -250
                         }
                 }
                 .frame(height: 0)
@@ -31,12 +33,12 @@ extension AudiobookView {
                         .padding(.horizontal, 50)
                         .shadow(radius: 30)
                     
-                    if let series = audiobook.series {
+                    if let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
                         NavigationLink {
-                            if seriesId == nil {
-                                SeriesUnavailableView()
+                            if let seriesId = seriesId {
+                                SeriesLoadView(seriesId: seriesId)
                             } else {
-                                Text(seriesId!)
+                                SeriesUnavailableView()
                             }
                         } label: {
                             Text(series)
@@ -58,7 +60,7 @@ extension AudiobookView {
                         if let author = audiobook.author {
                             NavigationLink {
                                 if let authorId = authorId {
-                                    Text(authorId)
+                                    AuthorLoadView(authorId: authorId)
                                 } else {
                                     AuthorUnavailableView()
                                 }
@@ -89,9 +91,18 @@ extension AudiobookView {
                     Button {
                         
                     } label: {
-                        Label("Listen", systemImage: "play.fill")
+                        if let progress = progress, progress.progress > 0 && progress.progress < 1 {
+                            Label("Listen • \((progress.duration - progress.currentTime).timeLeft())", systemImage: "play.fill")
+                        } else {
+                            Label("Listen", systemImage: "play.fill")
+                        }
                     }
-                    .buttonStyle(PlayNowButtonStyle(percentage: 0.5))
+                    .buttonStyle(PlayNowButtonStyle(percentage: progress?.progress ?? 0))
+                    .onAppear {
+                        if let progress = OfflineManager.shared.getProgress(audiobook: audiobook) {
+                            self.progress = progress
+                        }
+                    }
                 }
             }
         }

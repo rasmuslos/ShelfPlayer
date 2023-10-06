@@ -28,4 +28,21 @@ extension Double {
         
         return result
     }
+    
+    func timeLeft(spaceConstrained: Bool = true, includeText: Bool = true) -> String {
+        let (hours, minutes, seconds) = self.hoursMinutesSeconds()
+        
+        let h = spaceConstrained ? "h" : " hours"
+        let min = " min."
+        let sec = spaceConstrained ? "s" : " sec."
+        
+        let space = spaceConstrained ? " " : ", "
+        let text = includeText ? " left" : ""
+        
+        if hours != "00" {
+            return "\(hours)\(h)\(space)\(minutes)\(min)\(text)"
+        } else {
+            return "\(minutes)\(min)\(space)\(seconds)\(sec)\(text)"
+        }
+    }
 }

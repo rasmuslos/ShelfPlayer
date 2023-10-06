@@ -21,7 +21,10 @@ extension Audiobook {
             released: item.media?.metadata.publishedYear != nil ? try? Date(item.media!.metadata.publishedYear!, strategy: .dateTime) : nil,
             size: item.size!,
             narrator: item.media?.metadata.narratorName?.trim(),
-            series: item.media?.metadata.seriesName?.trim(),
+            series: Audiobook.ReducedSeries(
+                id: item.media?.metadata.series?.id,
+                name: item.media?.metadata.series?.name,
+                audiobookSeriesName: item.media?.metadata.seriesName?.trim()),
             duration: item.media!.duration!,
             explicit: item.media?.metadata.explicit ?? false,
             abridged: item.media?.metadata.abridged ?? false)

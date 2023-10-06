@@ -18,7 +18,7 @@ struct AudiobooksRow: View {
             HStack(spacing: 0) {
                 ForEach(audiobooks) { audiobook in
                     NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
-                        AudiobookColumn(audiobook: audiobook)
+                        AudiobookCover(audiobook: audiobook)
                             .frame(width: size)
                             .padding(.leading, 10)
                     }
@@ -48,11 +48,38 @@ struct AudiobooksRowContainer: View {
     let title: String
     let audiobooks: [Audiobook]
     var amount = 3
+    var navigateable = false
     
     var body: some View {
         VStack(alignment: .leading) {
-            AudiobooksRowTitle(title: title)
+            if navigateable {
+                NavigationLink(destination: GridView(title: title, audiobooks: audiobooks)) {
+                    HStack(alignment: .lastTextBaseline) {
+                        AudiobooksRowTitle(title: title)
+                        Image(systemName: "chevron.right.circle.fill")
+                            .imageScale(.small)
+                            .padding(.leading, -15)
+                    }
+                }
+                .buttonStyle(.plain)
+            } else {
+                AudiobooksRowTitle(title: title)
+            }
+            
             AudiobooksRow(audiobooks: audiobooks, amount: amount)
+        }
+    }
+    
+    struct GridView: View {
+        let title: String
+        let audiobooks: [Audiobook]
+        
+        var body: some View {
+            ScrollView {
+                AudiobookGrid(audiobooks: audiobooks)
+                    .padding(.horizontal)
+            }
+            .navigationTitle(title)
         }
     }
 }
@@ -70,4 +97,21 @@ struct AudiobooksRowContainer: View {
         Audiobook.fixture,
         Audiobook.fixture,
     ])
+}
+
+#Preview {
+    NavigationStack {
+        AudiobooksRowContainer(title: "Good books", audiobooks: [
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+            Audiobook.fixture,
+        ], navigateable: true)
+    }
 }

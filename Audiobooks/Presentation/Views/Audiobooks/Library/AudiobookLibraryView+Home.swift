@@ -24,16 +24,13 @@ extension AudiobookLibraryView {
                             }
                         } else {
                             LoadingView()
+                                .padding(.top, 50)
                         }
                     }
                 }
                 .navigationTitle("Listen now")
-                .onAppear {
-                    loadRows()
-                }
-                .refreshable {
-                    loadRows()
-                }
+                .task(loadRows)
+                .refreshable(action: loadRows)
             }
             .tabItem {
                 Label("Listen now", systemImage: "bookmark.fill")
@@ -45,6 +42,7 @@ extension AudiobookLibraryView {
 // MARK: Helper
 
 extension AudiobookLibraryView.HomeView {
+    @Sendable
     func loadRows() {
         Task.detached {
             (audiobookRows, authorRows) = (try? await AudiobookshelfClient.shared.getAudiobooksHome(libraryId: libraryId)) ?? (nil, nil)
