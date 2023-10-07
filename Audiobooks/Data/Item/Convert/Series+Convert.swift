@@ -20,6 +20,13 @@ extension Series {
             genres: [],
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             released: nil,
-            size: 0)
+            size: 0,
+            images: item.books?.reduce([], {
+                if let image = Image.convertFromAudiobookshelf(item: $1) {
+                    return $0 + [image]
+                }
+                
+                return $0
+            }) ?? [])
     }
 }

@@ -55,13 +55,25 @@ extension OfflineManager {
     }
     
     @MainActor
-    func getProgress(audiobook: Audiobook) -> OfflineProgress? {
-        getProgress(id: audiobook.id)
-    }
-    
-    @MainActor
     func getAllProgressEntities() throws -> [OfflineProgress] {
         let descriptor = FetchDescriptor<OfflineProgress>(sortBy: [SortDescriptor(\.lastUpdate)])
         return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor)
+    }
+}
+
+// MARK: Set
+
+extension OfflineManager {
+    @MainActor
+    func setProgress(item: Item, finished: Bool) {
+        if let progress = getProgress(item: item) {
+            if finished {
+                progress.progress = 1
+                progress.currentTime = progress.duration
+            } else {
+                progress.progress = 0
+                progress.currentTime = 0
+            }
+        }
     }
 }

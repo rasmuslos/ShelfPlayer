@@ -79,12 +79,23 @@ extension AudiobookView {
                             .buttonStyle(.plain)
                         }
                         
-                        if let narrator = audiobook.narrator {
-                            Text("Narrated by \(narrator)")
-                                .font(.caption)
-                                .lineLimit(1)
-                                .foregroundStyle(.secondary)
+                        HStack(spacing: 3) {
+                            if let narrator = audiobook.narrator {
+                                Text("Narrated by \(narrator)")
+                                    .font(.caption)
+                                    .lineLimit(1)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            if audiobook.explicit {
+                                Image(systemName: "e.square.fill")
+                            }
+                            if audiobook.abridged {
+                                Image(systemName: "a.square.fill")
+                            }
                         }
+                        .foregroundStyle(.secondary)
+                        .imageScale(.small)
                     }
                     .padding(.vertical, 5)
                     
@@ -99,7 +110,7 @@ extension AudiobookView {
                     }
                     .buttonStyle(PlayNowButtonStyle(percentage: progress?.progress ?? 0))
                     .onAppear {
-                        if let progress = OfflineManager.shared.getProgress(audiobook: audiobook) {
+                        if let progress = OfflineManager.shared.getProgress(item: audiobook) {
                             self.progress = progress
                         }
                     }

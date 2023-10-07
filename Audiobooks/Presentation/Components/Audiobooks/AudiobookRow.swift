@@ -70,7 +70,7 @@ extension AudiobookRow {
             parts.append(author)
         }
         if let released = audiobook.released {
-            parts.append(String(released.get(.year)))
+            parts.append(released)
         }
         
         return parts
@@ -78,7 +78,7 @@ extension AudiobookRow {
     
     func fetchRemainingTime() {
         Task.detached {
-            if let progress = await OfflineManager.shared.getProgress(audiobook: audiobook) {
+            if let progress = await OfflineManager.shared.getProgress(item: audiobook) {
                 bottomText = progress.readableProgress(spaceConstrained: false)
             } else {
                 bottomText = audiobook.duration.timeLeft(spaceConstrained: false)

@@ -9,11 +9,64 @@ import SwiftUI
 
 extension AudiobookLibraryView {
     struct LibraryView: View {
+        @Environment(\.libraryId) var libraryId
+        
+        @State var failed = false
+        @State var audiobooks = [Audiobook]()
+        @State var displayOrder = AudiobooksSort.getDisplayType()
+        @State var sortOrder = AudiobooksSort.getSortOrder()
+        
         var body: some View {
-            Text("Library")
-                .tabItem {
-                    Label("Library", systemImage: "book.fill")
+            NavigationStack {
+                Group {
+                    if failed {
+                        ErrorView()
+                    } else if audiobooks.isEmpty {
+                        LoadingView()
+                    } else {
+                        let sorted = AudiobooksSort.sort(audiobooks: audiobooks, order: sortOrder)
+                        
+                        if displayOrder == .grid {
+                            ScrollView {
+                                AudiobookGrid(audiobooks: sorted)
+                                    .padding(.horizontal)
+                            }
+                        } else if displayOrder == .list {
+                            List {
+                                AudiobooksList(audiobooks: sorted)
+                            }
+                            .listStyle(.plain)
+                        }
+                    }
                 }
+                .navigationTitle("Library")
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        AudiobooksSort(display: $displayOrder, sort: $sortOrder)
+                    }
+                }
+                .task(fetchAudiobooks)
+                .refreshable(action: fetchAudiobooks)
+            }
+            .tabItem {
+                Label("Library", systemImage: "book.fill")
+            }
+        }
+    }
+}
+
+// MARK: Helper
+
+extension AudiobookLibraryView.LibraryView {
+    @Sendable
+    func fetchAudiobooks() {
+        Task.detached {
+            if let audiobooks = try? await AudiobookshelfClient.shared.getAllAudiobooks(libraryId: libraryId) {
+                self.audiobooks = audiobooks
+            } else {
+                failed = true
+            }
         }
     }
 }

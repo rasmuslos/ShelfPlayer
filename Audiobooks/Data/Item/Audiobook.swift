@@ -16,7 +16,7 @@ class Audiobook: Item {
     let explicit: Bool
     let abridged: Bool
     
-    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: Date?, size: Int64, narrator: String?, series: ReducedSeries, duration: Double, explicit: Bool, abridged: Bool) {
+    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64, narrator: String?, series: ReducedSeries, duration: Double, explicit: Bool, abridged: Bool) {
         self.narrator = narrator
         self.series = series
         self.duration = duration

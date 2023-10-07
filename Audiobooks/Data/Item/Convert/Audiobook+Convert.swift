@@ -18,7 +18,7 @@ extension Audiobook {
             image: Item.Image.convertFromAudiobookshelf(item: item),
             genres: item.media?.metadata.genres ?? [],
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
-            released: item.media?.metadata.publishedYear != nil ? try? Date(item.media!.metadata.publishedYear!, strategy: .dateTime) : nil,
+            released: item.media?.metadata.publishedYear,
             size: item.size!,
             narrator: item.media?.metadata.narratorName?.trim(),
             series: Audiobook.ReducedSeries(

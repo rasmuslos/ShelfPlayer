@@ -29,39 +29,43 @@ struct AudiobookView: View {
                 Header(audiobook: audiobook, authorId: $authorId, seriesId: $seriesId, navbarVisible: $navbarVisible)
                     .padding()
                 
-                if let description = audiobook.description {
-                    divider
-                    
-                    HStack {
-                        VStack(alignment: .leading) {
-                            
-                            Text("Description")
-                                .bold()
-                                .underline()
-                                .padding(.bottom, 2)
-                            
-                            Text(description)
-                        }
+                divider
+                
+                HStack {
+                    VStack(alignment: .leading) {
                         
-                        Spacer()
+                        Text("Description")
+                            .bold()
+                            .underline()
+                            .padding(.bottom, 2)
+                        
+                        if let description = audiobook.description {
+                            Text(description)
+                        } else {
+                            Text("No description available")
+                                .font(.body.smallCaps())
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    .padding()
+                    
+                    Spacer()
+                }
+                .padding()
+                
+                if audiobooksInSeries.count > 1 {
+                    divider
+                    AudiobooksRowContainer(title: "Also in series", audiobooks: audiobooksInSeries, amount: 4, navigatable: true)
                 }
                 
-                if !audiobooksInSeries.isEmpty {
+                if audiobooksByAuthor.count > 1 {
                     divider
-                    AudiobooksRowContainer(title: "Also in series", audiobooks: audiobooksInSeries, amount: 4, navigateable: true)
-                }
-                
-                if !audiobooksByAuthor.isEmpty {
-                    divider
-                    AudiobooksRowContainer(title: "Also by \(audiobook.author ?? "the author")", audiobooks: audiobooksByAuthor, amount: 4, navigateable: true)
+                    AudiobooksRowContainer(title: "Also by \(audiobook.author ?? "the author")", audiobooks: audiobooksByAuthor, amount: 4, navigatable: true)
                 }
                 
                 Spacer()
             }
         }
-        .modifier(ToolbarModifier(audiobook: audiobook, navbarVisible: $navbarVisible))
+        .modifier(ToolbarModifier(audiobook: audiobook, navbarVisible: $navbarVisible, authorId: $authorId, seriesId: $seriesId))
         .onAppear {
             getAuthorData()
             getSeriesData()
