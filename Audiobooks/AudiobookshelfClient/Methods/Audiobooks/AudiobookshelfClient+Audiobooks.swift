@@ -25,3 +25,12 @@ extension AudiobookshelfClient {
         return (audiobookRows, [])
     }
 }
+
+// MARK: All audiobooks
+
+extension AudiobookshelfClient {
+    func getAllAudiobooks(libraryId: String) async throws -> [Audiobook] {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET"))
+        return response.results.map(Audiobook.convertFromAudiobookshelf)
+    }
+}

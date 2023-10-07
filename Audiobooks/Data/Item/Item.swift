@@ -21,11 +21,11 @@ class Item: Identifiable {
     let genres: [String]
     
     let addedAt: Date
-    let released: Date?
+    let released: String?
     
     let size: Int64
     
-    init(id: String, additionalId: String?, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: Date?, size: Int64) {
+    init(id: String, additionalId: String?, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64) {
         self.id = id
         self.additionalId = additionalId
         self.libraryId = libraryId
@@ -41,5 +41,16 @@ class Item: Identifiable {
     
     struct Image {
         let url: URL
+    }
+}
+
+// MARK: Progress
+
+extension Item {
+    func setProgress(finished: Bool) async {
+        do {
+            try await AudiobookshelfClient.shared.setFinished(itemId: id, additionalId: additionalId, finished: finished)
+            await OfflineManager.shared.setProgress(item: self, finished: finished)
+        } catch {}
     }
 }

@@ -23,7 +23,7 @@ extension AudiobookshelfClient {
 extension AudiobookshelfClient {
     struct SearchResponse: Codable {
         let book: [SearchBook]
-        let narrators: [AudiobookshelfItem]
+        // let narrators: [AudiobookshelfItem]
         let series: [SearchSeries]
         let authors: [AudiobookshelfItem]
         

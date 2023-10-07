@@ -9,8 +9,7 @@ import SwiftUI
 
 struct ErrorView: View {
     var body: some View {
-        Text("Unable to load")
-            .foregroundStyle(.red)
+        ContentUnavailableView("Content unavailable", systemImage: "xmark.circle", description: Text("Please ensure that you are connected to the internet"))
     }
 }
 

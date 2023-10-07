@@ -29,6 +29,7 @@ extension AudiobookLibraryView {
                     }
                 }
                 .navigationTitle("Listen now")
+                .modifier(LibrarySelectorModifier())
                 .task(loadRows)
                 .refreshable(action: loadRows)
             }

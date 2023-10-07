@@ -17,7 +17,7 @@ extension Audiobook {
         image: Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
         genres: ["Horror", "Science-Fiction"],
         addedAt: Date(),
-        released: Date(),
+        released: "1900",
         size: 100000,
         narrator: "Steven Fry",
         series: Audiobook.ReducedSeries(

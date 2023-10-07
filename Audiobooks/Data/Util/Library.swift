@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Library {
+struct Library: Identifiable {
     let id: String
     let name: String
     
@@ -17,6 +17,15 @@ struct Library {
     enum MediaType {
         case audiobooks
         case podcasts
+    }
+}
+
+@Observable
+class AvailableLibraries {
+    let libraries: [Library]
+    
+    init(libraries: [Library]) {
+        self.libraries = libraries
     }
 }
 
@@ -32,10 +41,16 @@ extension Library: Comparable {
 
 extension Library {
     func setAsLastActiveLibrary() {
-        UserDefaults.standard.set("lastActiveLibraryId", forKey: id)
+        UserDefaults.standard.set(id, forKey: "lastActiveLibraryId")
     }
     
     static func getLastActiveLibraryId() -> String? {
-        return UserDefaults.standard.string(forKey: "lastActiveLibraryId")
+        UserDefaults.standard.string(forKey: "lastActiveLibraryId")
     }
+}
+
+// MARK: Notifications
+
+extension Library {
+    static let libraryChangedNotification = NSNotification.Name("io.rfk.library.changed")
 }

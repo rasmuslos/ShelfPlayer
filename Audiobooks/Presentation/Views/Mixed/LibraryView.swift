@@ -16,14 +16,20 @@ struct LibraryView: View {
             if libraries.count > 0, let activeLibrary = activeLibrary {
                 Group {
                     if activeLibrary.type == .audiobooks {
-                        AudiobookLibraryView(library: activeLibrary)
+                        AudiobookLibraryView()
                     } else if activeLibrary.type == .podcasts {
-                        
+                        PodcastLibraryView()
                     } else {
                         ErrorView()
                     }
                 }
                 .environment(\.libraryId, activeLibrary.id)
+                .environment(AvailableLibraries(libraries: libraries))
+                .onReceive(NotificationCenter.default.publisher(for: Library.libraryChangedNotification), perform: { notification in
+                    if let libraryId = notification.userInfo?["libraryId"] as? String, let library = libraries.first(where: { $0.id == libraryId }) {
+                        setActiveLibrary(library)
+                    }
+                })
             } else {
                 ErrorView()
             }
@@ -50,15 +56,6 @@ extension LibraryView {
     func setActiveLibrary(_ library: Library) {
         activeLibrary = library
         library.setAsLastActiveLibrary()
-    }
-}
-
-// MARK: View Model
-
-extension LibraryView {
-    @Observable
-    class LibraryViewModel {
-        
     }
 }
 

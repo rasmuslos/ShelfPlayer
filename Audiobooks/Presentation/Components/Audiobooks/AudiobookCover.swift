@@ -35,7 +35,7 @@ struct AudiobookCover: View {
 extension AudiobookCover {
     func fetchRemainingTime() {
         Task.detached {
-            if let progress = await OfflineManager.shared.getProgress(audiobook: audiobook) {
+            if let progress = await OfflineManager.shared.getProgress(item: audiobook) {
                 bottomText = progress.readableProgress()
             } else {
                 bottomText = audiobook.duration.timeLeft()
