@@ -47,7 +47,7 @@ extension AudiobookshelfClient {
         
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
-            // print(clientRequest.path, String.init(data: data, encoding: .utf8))
+            // print(clientRequest.path, clientRequest.method, String.init(data: data, encoding: .utf8))
             
             if T.self == EmptyResponse.self {
                 return EmptyResponse() as! T

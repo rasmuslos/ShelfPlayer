@@ -1,0 +1,46 @@
+//
+//  LibrarySelectorModifier.swift
+//  Audiobooks
+//
+//  Created by Rasmus Krämer on 06.10.23.
+//
+
+import SwiftUI
+
+struct LibrarySelectorModifier: ViewModifier {
+    @Environment(AvailableLibraries.self) var availableLibraries
+    
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        ForEach(availableLibraries.libraries) { library in
+                            Button {
+                                NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                                    "libraryId": library.id,
+                                ])
+                            } label: {
+                                Label(library.name, systemImage: library.type == .audiobooks ? "book" : "waveform")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "bookmark.circle.fill")
+                    }
+                }
+            }
+    }
+}
+
+#Preview {
+    NavigationStack {
+        Text(":)")
+            .modifier(LibrarySelectorModifier())
+            .environment(AvailableLibraries(libraries: [
+                Library.audiobooksFixture,
+                Library.audiobooksFixture,
+                Library.audiobooksFixture,
+                Library.audiobooksFixture,
+            ]))
+    }
+}

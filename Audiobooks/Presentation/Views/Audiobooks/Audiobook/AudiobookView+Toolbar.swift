@@ -12,6 +12,8 @@ extension AudiobookView {
         let audiobook: Audiobook
         
         @Binding var navbarVisible: Bool
+        @Binding var authorId: String?
+        @Binding var seriesId: String?
         
         func body(content: Content) -> some View {
             content
@@ -56,10 +58,31 @@ extension AudiobookView {
                             }
                             .modifier(FullscreenToolbarModifier(navbarVisible: $navbarVisible))
                             Menu {
-                                Label("Command", systemImage: "command")
-                                Label("Command", systemImage: "command")
-                                Label("Command", systemImage: "command")
-                                Label("Command", systemImage: "command")
+                                if let authorId = authorId {
+                                    NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
+                                        Label("View author", systemImage: "person")
+                                    }
+                                }
+                                if let seriesId = seriesId {
+                                    NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
+                                        Label("View series", systemImage: "text.justify.leading")
+                                    }
+                                }
+                                
+                                Divider()
+                                
+                                let progress = OfflineManager.shared.getProgress(item: audiobook)?.progress ?? 0
+                                Button {
+                                    Task {
+                                        await audiobook.setProgress(finished: progress < 1)
+                                    }
+                                } label: {
+                                    if progress >= 1 {
+                                        Label("Mark as unfinished", systemImage: "xmark")
+                                    } else {
+                                        Label("Mark as finished", systemImage: "checkmark")
+                                    }
+                                }
                             } label: {
                                 Image(systemName: "ellipsis")
                                     .modifier(FullscreenToolbarModifier(navbarVisible: $navbarVisible))

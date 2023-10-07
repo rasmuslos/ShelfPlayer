@@ -8,19 +8,17 @@
 import SwiftUI
 
 struct AudiobookLibraryView: View {
-    let library: Library
-    
     var body: some View {
         TabView {
             HomeView()
-            LibraryView()
             SeriesView()
+            LibraryView()
             SearchView()
         }
     }
 }
 
 #Preview {
-    AudiobookLibraryView(library: Library.audiobooksFixture)
+    AudiobookLibraryView()
         .environment(\.libraryId, Library.audiobooksFixture.id)
 }

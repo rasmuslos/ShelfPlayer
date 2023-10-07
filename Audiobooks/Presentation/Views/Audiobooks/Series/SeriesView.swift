@@ -22,18 +22,20 @@ struct SeriesView: View {
             
             if displayOrder == .grid {
                 ScrollView {
+                    Header(series: series)
                     AudiobookGrid(audiobooks: sorted)
                         .padding(.horizontal)
                 }
             } else if displayOrder == .list {
                 List {
+                    Header(series: series)
                     AudiobooksList(audiobooks: sorted)
                 }
                 .listStyle(.plain)
             }
         }
         .navigationTitle(series.name)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 AudiobooksSort(display: $displayOrder, sort: $sortOrder)
@@ -52,5 +54,11 @@ extension SeriesView {
         Task.detached {
             audiobooks = (try? await AudiobookshelfClient.shared.getAudiobooksInSeries(seriesId: series.id, libraryId: libraryId)) ?? []
         }
+    }
+}
+
+#Preview {
+    NavigationStack {
+        SeriesView(series: Series.fixture)
     }
 }

@@ -44,3 +44,18 @@ extension AudiobookshelfClient {
         return nil
     }
 }
+
+// MARK: Get all series
+
+extension AudiobookshelfClient {
+    func getAllSeries(libraryId: String) async throws -> [Series] {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/series", method: "GET", query: [
+            URLQueryItem(name: "sort", value: "name"),
+            URLQueryItem(name: "desc", value: "0"),
+            URLQueryItem(name: "filter", value: "all"),
+            URLQueryItem(name: "page", value: "0"),
+            URLQueryItem(name: "limit", value: "10000"),
+        ]))
+        return response.results.map(Series.convertFromAudiobookshelf)
+    }
+}

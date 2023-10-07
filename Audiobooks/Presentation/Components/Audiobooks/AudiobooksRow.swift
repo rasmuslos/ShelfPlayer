@@ -48,11 +48,11 @@ struct AudiobooksRowContainer: View {
     let title: String
     let audiobooks: [Audiobook]
     var amount = 3
-    var navigateable = false
+    var navigatable = false
     
     var body: some View {
         VStack(alignment: .leading) {
-            if navigateable {
+            if navigatable {
                 NavigationLink(destination: GridView(title: title, audiobooks: audiobooks)) {
                     HStack(alignment: .lastTextBaseline) {
                         AudiobooksRowTitle(title: title)
@@ -112,6 +112,6 @@ struct AudiobooksRowContainer: View {
             Audiobook.fixture,
             Audiobook.fixture,
             Audiobook.fixture,
-        ], navigateable: true)
+        ], navigatable: true)
     }
 }
