@@ -31,19 +31,6 @@ struct AudiobooksRow: View {
     }
 }
 
-struct AudiobooksRowTitle: View {
-    let title: String
-    
-    var body: some View {
-        Text(title)
-            .font(.headline)
-            .fontDesign(.serif)
-            .padding(.horizontal)
-            .padding(.bottom, 0)
-            .padding(.top, 10)
-    }
-}
-
 struct AudiobooksRowContainer: View {
     let title: String
     let audiobooks: [Audiobook]
@@ -55,7 +42,7 @@ struct AudiobooksRowContainer: View {
             if navigatable {
                 NavigationLink(destination: GridView(title: title, audiobooks: audiobooks)) {
                     HStack(alignment: .lastTextBaseline) {
-                        AudiobooksRowTitle(title: title)
+                        RowTitle(title: title, fontDesign: .serif)
                         Image(systemName: "chevron.right.circle.fill")
                             .imageScale(.small)
                             .padding(.leading, -15)
@@ -63,7 +50,7 @@ struct AudiobooksRowContainer: View {
                 }
                 .buttonStyle(.plain)
             } else {
-                AudiobooksRowTitle(title: title)
+                RowTitle(title: title, fontDesign: .serif)
             }
             
             AudiobooksRow(audiobooks: audiobooks, amount: amount)

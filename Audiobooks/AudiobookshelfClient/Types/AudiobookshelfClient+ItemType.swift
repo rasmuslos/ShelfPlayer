@@ -43,18 +43,21 @@ extension AudiobookshelfClient {
         
         struct AudiobookshelfPodcastEpisode: Codable {
             var id: String?
+            var podcastId: String?
             var libraryItemId: String?
+            
             var index: Int?
             var season: String?
             var episode: String?
             var title: String?
             var description: String?
             
+            var pubDate: String?
             var publishedAt: Double?
             var addedAt: Double?
             var updatedAt: Double?
             
-            var size: Double?
+            var size: Int64?
             var duration: Double?
             
             var audioFile: PodcastAudioFile?
@@ -107,6 +110,7 @@ extension AudiobookshelfClient {
             
             var genres: [String]
             var publishedYear: String?
+            var releaseDate: String?
             
             var isbn: String?
             var language: String?
