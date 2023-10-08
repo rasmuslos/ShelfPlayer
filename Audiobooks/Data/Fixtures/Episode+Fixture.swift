@@ -19,5 +19,7 @@ extension Episode {
         genres: [],
         addedAt: Date(),
         released: "Fri, 22 Sep 2023 15:00:00 +0200",
-        size: 0)
+        size: 0,
+        podcastName: "Tagesschau",
+        duration: 0)
 }

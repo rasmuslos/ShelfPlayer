@@ -19,8 +19,15 @@ extension PodcastLibraryView {
                 ScrollView {
                     VStack {
                         if let episodeRows = episodeRows {
-                            ForEach(episodeRows) {
-                                EpisodeTableContainer(title: $0.label, episodes: $0.episodes)
+                            ForEach(episodeRows) { row in
+                                if row.id == "continue-listening" {
+                                    VStack(alignment: .leading) {
+                                        RowTitle(title: row.label)
+                                        EpisodeFeaturedRow(episodes: row.episodes)
+                                    }
+                                } else {
+                                    EpisodeTableContainer(title: row.label, episodes: row.episodes)
+                                }
                             }
                         }
                         if let podcastRows = podcastRows {

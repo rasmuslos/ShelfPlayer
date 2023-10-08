@@ -74,6 +74,10 @@
 		3AA954252AD29A0A0031C20D /* EpisodeTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA954242AD29A0A0031C20D /* EpisodeTable.swift */; };
 		3AA954272AD29A270031C20D /* Episode+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA954262AD29A270031C20D /* Episode+Fixture.swift */; };
 		3AA954292AD29B760031C20D /* EpisodeTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA954282AD29B760031C20D /* EpisodeTableRow.swift */; };
+		3AA9542B2AD2A87E0031C20D /* EpisodesFeaturedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9542A2AD2A87E0031C20D /* EpisodesFeaturedRow.swift */; };
+		3AA9542D2AD2A8FE0031C20D /* EpisodeFeatured.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9542C2AD2A8FE0031C20D /* EpisodeFeatured.swift */; };
+		3AA954302AD2AE520031C20D /* EpisodePlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9542F2AD2AE520031C20D /* EpisodePlayButton.swift */; };
+		3AA954332AD2B61F0031C20D /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AA954322AD2B61F0031C20D /* SwiftSoup */; };
 		3AB4529B2ACF4B4B005D5DBA /* SeriesLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529A2ACF4B4B005D5DBA /* SeriesLoadView.swift */; };
 		3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */; };
 		3AB4529F2ACF4D3C005D5DBA /* Series+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529E2ACF4D3C005D5DBA /* Series+Fixture.swift */; };
@@ -174,6 +178,9 @@
 		3AA954242AD29A0A0031C20D /* EpisodeTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeTable.swift; sourceTree = "<group>"; };
 		3AA954262AD29A270031C20D /* Episode+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Episode+Fixture.swift"; sourceTree = "<group>"; };
 		3AA954282AD29B760031C20D /* EpisodeTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeTableRow.swift; sourceTree = "<group>"; };
+		3AA9542A2AD2A87E0031C20D /* EpisodesFeaturedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesFeaturedRow.swift; sourceTree = "<group>"; };
+		3AA9542C2AD2A8FE0031C20D /* EpisodeFeatured.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeFeatured.swift; sourceTree = "<group>"; };
+		3AA9542F2AD2AE520031C20D /* EpisodePlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodePlayButton.swift; sourceTree = "<group>"; };
 		3AB4529A2ACF4B4B005D5DBA /* SeriesLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesLoadView.swift; sourceTree = "<group>"; };
 		3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesView.swift; sourceTree = "<group>"; };
 		3AB4529E2ACF4D3C005D5DBA /* Series+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Series+Fixture.swift"; sourceTree = "<group>"; };
@@ -210,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A1EAB932ACC80690064C80C /* NukeUI in Frameworks */,
+				3AA954332AD2B61F0031C20D /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,6 +490,18 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
+		3AA9542E2AD2A9010031C20D /* Episode */ = {
+			isa = PBXGroup;
+			children = (
+				3AA954242AD29A0A0031C20D /* EpisodeTable.swift */,
+				3AA954282AD29B760031C20D /* EpisodeTableRow.swift */,
+				3AA9542A2AD2A87E0031C20D /* EpisodesFeaturedRow.swift */,
+				3AA9542C2AD2A8FE0031C20D /* EpisodeFeatured.swift */,
+				3AA9542F2AD2AE520031C20D /* EpisodePlayButton.swift */,
+			);
+			path = Episode;
+			sourceTree = "<group>";
+		};
 		3ACB3B902AD1D0F8005EA609 /* Library */ = {
 			isa = PBXGroup;
 			children = (
@@ -536,8 +556,7 @@
 			children = (
 				3AA9541A2AD290380031C20D /* PodcastsRow.swift */,
 				3AA954202AD293670031C20D /* PodcastCover.swift */,
-				3AA954242AD29A0A0031C20D /* EpisodeTable.swift */,
-				3AA954282AD29B760031C20D /* EpisodeTableRow.swift */,
+				3AA9542E2AD2A9010031C20D /* Episode */,
 			);
 			path = Podcasts;
 			sourceTree = "<group>";
@@ -641,6 +660,7 @@
 			name = Audiobooks;
 			packageProductDependencies = (
 				3A1EAB922ACC80690064C80C /* NukeUI */,
+				3AA954322AD2B61F0031C20D /* SwiftSoup */,
 			);
 			productName = Audiobooks;
 			productReference = 3A0AE6A02AB623F400ACCD68 /* Audiobooks.app */;
@@ -672,6 +692,7 @@
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
 				3A1EAB912ACC80690064C80C /* XCRemoteSwiftPackageReference "Nuke" */,
+				3AA954312AD2B61F0031C20D /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 			);
 			productRefGroup = 3A0AE6A12AB623F400ACCD68 /* Products */;
 			projectDirPath = "";
@@ -711,8 +732,10 @@
 				3A50AABC2ACC523700BF5438 /* AudiobookLibraryView+Search.swift in Sources */,
 				3AA9541D2AD290520031C20D /* Podcast+Fixture.swift in Sources */,
 				3AA9541F2AD2925C0031C20D /* RowTitle.swift in Sources */,
+				3AA954302AD2AE520031C20D /* EpisodePlayButton.swift in Sources */,
 				3AB695342ACF39F000823049 /* Array+Repeat.swift in Sources */,
 				3A50AAA52ACC42B400BF5438 /* AudiobookLibraryView.swift in Sources */,
+				3AA9542D2AD2A8FE0031C20D /* EpisodeFeatured.swift in Sources */,
 				3A50AAAE2ACC4B1600BF5438 /* OfflineManager.swift in Sources */,
 				3A77B70D2ACDFB1D00F22C7F /* Series+Convert.swift in Sources */,
 				3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */,
@@ -728,6 +751,7 @@
 				3A50AAB62ACC521B00BF5438 /* AudiobookLibraryView+Home.swift in Sources */,
 				3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */,
 				3A77B7112ACE00FC00F22C7F /* String+Base64.swift in Sources */,
+				3AA9542B2AD2A87E0031C20D /* EpisodesFeaturedRow.swift in Sources */,
 				3A50AAB82ACC522900BF5438 /* AudiobookLibraryView+Library.swift in Sources */,
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
 				3A50AAC52ACC59BD00BF5438 /* HomeRow.swift in Sources */,
@@ -1021,6 +1045,14 @@
 				minimumVersion = 12.1.6;
 			};
 		};
+		3AA954312AD2B61F0031C20D /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1028,6 +1060,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3A1EAB912ACC80690064C80C /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeUI;
+		};
+		3AA954322AD2B61F0031C20D /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AA954312AD2B61F0031C20D /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

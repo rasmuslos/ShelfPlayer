@@ -11,11 +11,12 @@ struct EpisodeTableRow: View {
     let episode: Episode
     
     var body: some View {
-        let size = UIScreen.main.bounds.width - 40
+        let width = UIScreen.main.bounds.width - 30
+        let height: CGFloat = 90
         
         HStack {
             ItemImage(image: episode.image)
-                .frame(width: 75)
+                .frame(width: height)
             
             VStack(alignment: .leading) {
                 Group {
@@ -34,7 +35,7 @@ struct EpisodeTableRow: View {
                     .font(.headline)
                     .lineLimit(1)
                 
-                if let description = episode.description {
+                if let description = episode.descriptionText {
                     Text(description)
                         .lineLimit(1)
                         .font(.caption)
@@ -42,11 +43,13 @@ struct EpisodeTableRow: View {
                 }
                 
                 Spacer()
+                
+                EpisodePlayButton(episode: episode)
             }
             
             Spacer()
         }
         .padding(.leading, 10)
-        .frame(width: size, height: 75)
+        .frame(width: width, height: height)
     }
 }

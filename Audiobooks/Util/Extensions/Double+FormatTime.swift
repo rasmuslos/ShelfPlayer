@@ -45,4 +45,16 @@ extension Double {
             return "\(minutes)\(min)\(space)\(seconds)\(sec)\(text)"
         }
     }
+    
+    func numericTimeLeft() -> String {
+        let (hours, minutes, seconds) = hoursMinutesSeconds()
+        
+        if hours != "00" {
+            return "\(hours):\(minutes)"
+        } else if minutes != "00" {
+            return "\(minutes)min"
+        } else {
+            return "\(seconds)s"
+        }
+    }
 }

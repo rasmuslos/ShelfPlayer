@@ -20,6 +20,8 @@ extension Episode {
             genres: [],
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             released: item.recentEpisode?.pubDate,
-            size: item.recentEpisode?.size ?? 0)
+            size: item.recentEpisode?.size ?? 0,
+            podcastName: item.media!.metadata.title!,
+            duration: item.recentEpisode?.audioFile?.duration ?? 0)
     }
 }
