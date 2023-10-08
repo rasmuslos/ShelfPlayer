@@ -23,9 +23,11 @@ struct PodcastsRow: View {
                     .buttonStyle(.plain)
                 }
             }
+            .scrollTargetLayout()
             .padding(.leading, 10)
             .padding(.trailing, 20)
         }
+        .scrollTargetBehavior(.viewAligned)
     }
 }
 

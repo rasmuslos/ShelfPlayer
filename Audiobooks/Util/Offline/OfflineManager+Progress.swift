@@ -14,7 +14,15 @@ extension OfflineManager {
     @MainActor
     func importSessions(_ sessions: [AudiobookshelfClient.MediaPorgress]) async {
         sessions.forEach { session in
-            if let existing = getProgress(id: session.id, additionalId: session.episodeId) {
+            let existing: OfflineProgress?
+            
+            if let episodeId = session.episodeId {
+                existing = getProgress(episodeId: episodeId)
+            } else {
+                existing = getProgress(id: session.id)
+            }
+            
+            if let existing = existing {
                 existing.duration = session.duration
                 existing.currentTime = session.currentTime
                 existing.progress = session.progress
@@ -42,8 +50,15 @@ extension OfflineManager {
 
 extension OfflineManager {
     @MainActor
-    func getProgress(id: String, additionalId: String? = nil) -> OfflineProgress? {
-        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineProgress> { $0.itemId == id && $0.additionalId == additionalId })
+    func getProgress(id: String) -> OfflineProgress? {
+        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineProgress> { $0.itemId == id })
+        descriptor.fetchLimit = 1
+        
+        return try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
+    }
+    @MainActor
+    func getProgress(episodeId: String) -> OfflineProgress? {
+        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineProgress> { $0.additionalId == episodeId })
         descriptor.fetchLimit = 1
         
         return try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
@@ -51,7 +66,11 @@ extension OfflineManager {
     
     @MainActor
     func getProgress(item: Item) -> OfflineProgress? {
-        getProgress(id: item.id, additionalId: item.additionalId)
+        if let episode = item as? Episode {
+            return getProgress(episodeId: episode.id)
+        } else {
+            return getProgress(id: item.id)
+        }
     }
     
     @MainActor
