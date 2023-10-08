@@ -9,7 +9,7 @@ import Foundation
 
 extension Item.Image {
     static func convertFromAudiobookshelf(item: AudiobookshelfClient.AudiobookshelfItem) -> Item.Image? {
-        if item.mediaType == "book" && item.media?.coverPath != nil {
+        if (item.mediaType == "book" || item.mediaType == "podcast") && item.media?.coverPath != nil {
             return Item.Image(url: AudiobookshelfClient.shared.serverUrl
                 .appending(path: "api")
                 .appending(path: "items")

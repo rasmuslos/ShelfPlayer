@@ -16,6 +16,17 @@ struct AudiobookHomeRow: Identifiable {
 struct AuthorHomeRow: Identifiable {
     let id: String
     let label: String
-    let authors: [Int]
+    let authors: [Author]
 }
 
+struct PodcastHomeRow: Identifiable {
+    let id: String
+    let label: String
+    let podcasts: [Podcast]
+}
+
+struct EpisodeHomeRow: Identifiable {
+    let id: String
+    let label: String
+    let episodes: [Episode]
+}

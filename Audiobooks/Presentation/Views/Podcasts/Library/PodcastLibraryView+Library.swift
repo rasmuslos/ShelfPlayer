@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension PodcastLibraryView {
-    struct Library: View {
+    struct LibraryView: View {
         var body: some View {
             Text(":)")
                 .tabItem {
