@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 extension SeriesView {
     struct Header: View {

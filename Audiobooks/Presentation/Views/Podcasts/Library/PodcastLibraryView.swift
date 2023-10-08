@@ -8,6 +8,16 @@
 import SwiftUI
 
 struct PodcastLibraryView: View {
+    init() {
+        let appearance = UINavigationBarAppearance()
+        
+        appearance.configureWithTransparentBackground()
+        UINavigationBar.appearance().standardAppearance = appearance
+        
+        appearance.configureWithDefaultBackground()
+        UINavigationBar.appearance().compactAppearance = appearance
+    }
+    
     var body: some View {
         TabView {
             HomeView()
