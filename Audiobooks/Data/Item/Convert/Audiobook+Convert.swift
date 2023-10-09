@@ -25,7 +25,7 @@ extension Audiobook {
                 id: item.media?.metadata.series?.id,
                 name: item.media?.metadata.series?.name,
                 audiobookSeriesName: item.media?.metadata.seriesName?.trim()),
-            duration: item.media!.duration!,
+            duration: item.media?.duration ?? 0,
             explicit: item.media?.metadata.explicit ?? false,
             abridged: item.media?.metadata.abridged ?? false)
     }

@@ -12,7 +12,7 @@ struct AudiobookView: View {
     
     let audiobook: Audiobook
     
-    @State var navbarVisible = false
+    @State var navigationBarVisible = false
     
     @State var authorId: String?
     @State var seriesId: String?
@@ -26,31 +26,13 @@ struct AudiobookView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                Header(audiobook: audiobook, authorId: $authorId, seriesId: $seriesId, navbarVisible: $navbarVisible)
+                Header(audiobook: audiobook, authorId: $authorId, seriesId: $seriesId, navigationBarVisible: $navigationBarVisible)
                     .padding()
                 
                 divider
                 
-                HStack {
-                    VStack(alignment: .leading) {
-                        
-                        Text("Description")
-                            .bold()
-                            .underline()
-                            .padding(.bottom, 2)
-                        
-                        if let description = audiobook.description {
-                            Text(description)
-                        } else {
-                            Text("No description available")
-                                .font(.body.smallCaps())
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    
-                    Spacer()
-                }
-                .padding()
+                Description(description: audiobook.description)
+                    .padding()
                 
                 if audiobooksInSeries.count > 1 {
                     divider
@@ -65,7 +47,7 @@ struct AudiobookView: View {
                 Spacer()
             }
         }
-        .modifier(ToolbarModifier(audiobook: audiobook, navbarVisible: $navbarVisible, authorId: $authorId, seriesId: $seriesId))
+        .modifier(ToolbarModifier(audiobook: audiobook, navigationBarVisible: $navigationBarVisible, authorId: $authorId, seriesId: $seriesId))
         .onAppear {
             getAuthorData()
             getSeriesData()

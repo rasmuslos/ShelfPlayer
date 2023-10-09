@@ -11,28 +11,13 @@ import UIImageColors
 extension PodcastView {
     struct Header: View {
         let podcast: Podcast
-        @Binding var navbarVisible: Bool
         
-        @State var backgroundColor: UIColor = .secondarySystemBackground
+        @Binding var navigationBarVisible: Bool
+        @Binding var backgroundColor: UIColor
         
         var body: some View {
             ZStack {
-                GeometryReader { reader in
-                    let offset = reader.frame(in: .global).minY
-                    
-                    if offset > 0 {
-                        Rectangle()
-                            .foregroundStyle(Color(backgroundColor))
-                            .offset(y: -offset)
-                            .frame(height: offset)
-                    }
-                    
-                    Color.clear
-                        .onChange(of: offset) {
-                            navbarVisible = offset < 0
-                        }
-                }
-                .frame(height: 0)
+                GeometryRectangle(treshold: 0, backgroundColor: Color(backgroundColor), navigationBarVisible: $navigationBarVisible)
                 
                 VStack {
                     ItemImage(image: podcast.image)
@@ -77,7 +62,8 @@ extension PodcastView {
                     .font(.footnote)
                     .padding(.top, 5)
                 }
-                .padding()
+                .padding(.vertical)
+                .padding(.horizontal, 15)
             }
             .background(Color(backgroundColor))
             .foregroundStyle(backgroundColor.isLight() ? .black : .white)

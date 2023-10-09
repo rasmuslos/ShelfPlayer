@@ -10,40 +10,17 @@ import SwiftUI
 struct EpisodeView: View {
     let episode: Episode
     
+    @State var navigationBarVisible = false
+    @State var backgroundColor: UIColor = .secondarySystemBackground
+    
     var body: some View {
         ScrollView {
-            Header(episode: episode)
-            
-            if let descriptionText = episode.descriptionText {
-                Text(descriptionText)
-                    .padding()
-            }
+            Header(episode: episode, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor)
+            Description(description: episode.descriptionText)
+            .padding()
         }
-        .ignoresSafeArea(edges: .all)
-        .navigationTitle(episode.name)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden()
-        .toolbarBackground(.hidden, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("")
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                CustomBackButton(navbarVisible: .constant(false))
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    
-                } label: {
-                    Image(systemName: "arrow.down.circle.fill")
-                }
-                .modifier(FullscreenToolbarModifier(navbarVisible: .constant(false)))
-            }
-        }
+        .ignoresSafeArea(edges: .top)
+        .modifier(ToolbarModifier(episode: episode, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor))
     }
 }
 
