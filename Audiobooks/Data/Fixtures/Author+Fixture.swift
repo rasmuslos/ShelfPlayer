@@ -10,7 +10,6 @@ import Foundation
 extension Author {
     static let fixture = Author(
         id: "fixture",
-        additionalId: nil,
         libraryId: "fixture",
         name: "George Orwell",
         author: "George Orwell",

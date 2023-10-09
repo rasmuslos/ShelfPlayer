@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: Home
+
 extension AudiobookshelfClient {
     func getPodcastsHome(libraryId: String) async throws -> ([EpisodeHomeRow], [PodcastHomeRow]) {
         let response = try await request(ClientRequest<[AudiobookshelfHomeRow]>(path: "api/libraries/\(libraryId)/personalized", method: "GET"))
@@ -25,5 +27,26 @@ extension AudiobookshelfClient {
         }
         
         return (episodeRows, podcastRows)
+    }
+}
+
+// MARK: Get podcast by id
+
+extension AudiobookshelfClient {
+    func getPodcastById(_ podcastId: String) async -> Podcast? {
+        if let item = try? await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(podcastId)", method: "GET")) {
+            return Podcast.convertFromAudiobookshelf(item: item)
+        }
+        
+        return nil
+    }
+}
+
+// MARK: Get podcast episodes
+
+extension AudiobookshelfClient {
+    func getPodcastEpisodes(podcastId: String) async throws -> [Episode] {
+        let item = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(podcastId)", method: "GET"))
+        return item.media!.episodes!.map { Episode.convertFromAudiobookshelf(podcastEpisode: $0, item: item) }
     }
 }

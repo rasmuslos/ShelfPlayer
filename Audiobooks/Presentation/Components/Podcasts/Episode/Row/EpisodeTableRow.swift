@@ -20,10 +20,8 @@ struct EpisodeTableRow: View {
             
             VStack(alignment: .leading) {
                 Group {
-                    if let releaseDate = episode.releaseDate {
-                        Text(String(releaseDate.get(.day))) + Text(".")
-                        + Text(String(releaseDate.get(.month))) + Text(".")
-                        + Text(String(releaseDate.get(.year)))
+                    if let formattedReleaseDate = episode.formattedReleaseDate {
+                        Text(formattedReleaseDate)
                     } else {
                         Text("")
                     }
@@ -44,7 +42,11 @@ struct EpisodeTableRow: View {
                 
                 Spacer()
                 
-                EpisodePlayButton(episode: episode)
+                HStack {
+                    EpisodePlayButton(episode: episode)
+                    Spacer()
+                    EpisodeMenu(episode: episode)
+                }
             }
             
             Spacer()

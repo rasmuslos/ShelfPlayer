@@ -14,7 +14,7 @@ struct EpisodeFeaturedRow: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
                 ForEach(Array(episodes.enumerated()), id: \.offset) { index, episode in
-                    NavigationLink(destination: Text(episode.id)) {
+                    NavigationLink(destination: EpisodeView(episode: episode)) {
                         EpisodeFeatured(episode: episode)
                             .padding(.trailing, index == episodes.count - 1 ? 20 : 0)
                     }

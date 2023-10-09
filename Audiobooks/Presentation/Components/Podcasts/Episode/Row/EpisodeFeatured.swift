@@ -13,7 +13,7 @@ struct EpisodeFeatured: View {
     var body: some View {
         let width = (UIScreen.main.bounds.width - 50) / 1.5
         ZStack(alignment: .bottom) {
-            LinearGradient(colors: [.black.opacity(0.25), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
                 .frame(height: 325)
             
             Title(episode: episode)
@@ -42,7 +42,7 @@ extension EpisodeFeatured {
                     ItemImage(image: image)
                         .frame(height: geometry.size.width)
                         .mask {
-                            LinearGradient(colors: [.black, .black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
+                            LinearGradient(colors: [.black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
                         }
                 }
             }
@@ -59,14 +59,10 @@ extension EpisodeFeatured {
         var body: some View {
             HStack {
                 VStack(alignment: .leading) {
-                    if let releaseDate = episode.releaseDate {
-                        Group {
-                            Text(String(releaseDate.get(.day))) + Text(".")
-                            + Text(String(releaseDate.get(.month))) + Text(".")
-                            + Text(String(releaseDate.get(.year)))
-                        }
-                        .font(.subheadline.smallCaps())
-                        .foregroundStyle(.secondary)
+                    if let formattedReleaseDate = episode.formattedReleaseDate {
+                        Text(formattedReleaseDate)
+                            .font(.subheadline.smallCaps())
+                            .foregroundStyle(.secondary)
                     }
                     
                     Text(episode.name)
@@ -77,7 +73,11 @@ extension EpisodeFeatured {
                         .font(.subheadline)
                         .lineLimit(3, reservesSpace: true)
                     
-                    EpisodePlayButton(episode: episode, highlighted: true)
+                    HStack {
+                        EpisodePlayButton(episode: episode, highlighted: true)
+                        Spacer()
+                        EpisodeMenu(episode: episode)
+                    }
                 }
                 
                 Spacer()

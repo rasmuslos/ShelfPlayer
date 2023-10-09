@@ -15,7 +15,7 @@ struct PodcastsRow: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
                 ForEach(podcasts) { podcast in
-                    NavigationLink(destination: Text(podcast.id)) {
+                    NavigationLink(destination: PodcastLoadView(podcastId: podcast.id)) {
                         PodcastCover(podcast: podcast)
                             .frame(width: size)
                             .padding(.leading, 10)
