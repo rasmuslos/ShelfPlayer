@@ -15,6 +15,12 @@ extension AudiobookLibraryView {
         var body: some View {
             NavigationStack {
                 List {
+                    Button {
+                        OfflineManager.shared.deleteStoredProgress()
+                    } label: {
+                        Text("Delete")
+                    }
+                    
                     ForEach(entities.filter { query == "" || $0.id.contains(query) }) {
                         Text("\($0.id) (\($0.additionalId ?? "-")) | \($0.currentTime)")
                     }

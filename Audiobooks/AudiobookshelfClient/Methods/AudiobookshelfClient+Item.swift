@@ -8,10 +8,10 @@
 import Foundation
 
 extension AudiobookshelfClient {
-    func setFinished(itemId: String, additionalId: String?, finished: Bool) async throws {
-        let additional = additionalId != nil ? "/\(additionalId!)" : ""
+    func setFinished(itemId: String, episodeId: String?, finished: Bool) async throws {
+        let episodeId = episodeId != nil ? "/\(episodeId!)" : ""
         
-        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemId)\(additional)", method: "PATCH", body: [
+        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemId)\(episodeId)", method: "PATCH", body: [
             "isFinished": finished,
         ]))
     }

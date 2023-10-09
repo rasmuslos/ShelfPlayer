@@ -96,3 +96,15 @@ extension OfflineManager {
         }
     }
 }
+
+// MARK: delete
+
+extension OfflineManager {
+    @MainActor
+    func deleteStoredProgress() {
+        let all = try! getAllProgressEntities()
+        all.forEach {
+            PersistenceManager.shared.modelContainer.mainContext.delete($0)
+        }
+    }
+}

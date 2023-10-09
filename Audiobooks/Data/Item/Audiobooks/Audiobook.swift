@@ -23,7 +23,7 @@ class Audiobook: Item {
         self.explicit = explicit
         self.abridged = abridged
         
-        super.init(id: id, additionalId: nil, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
+        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
     }
     
     struct ReducedSeries {
