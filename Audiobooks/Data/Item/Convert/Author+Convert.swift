@@ -11,7 +11,6 @@ extension Author {
     static func convertFromAudiobookshelf(item: AudiobookshelfClient.AudiobookshelfItem) -> Author {
         Author(
             id: item.id,
-            additionalId: nil,
             libraryId: item.libraryId!,
             name: item.name!,
             author: item.name,

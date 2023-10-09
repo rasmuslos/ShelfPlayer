@@ -10,7 +10,6 @@ import Foundation
 extension Episode {
     static let fixture = Episode(
         id: "fixture",
-        additionalId: "fixture",
         libraryId: "fixture",
         name: "A podcast episode",
         author: "Tagesschau",
@@ -20,6 +19,8 @@ extension Episode {
         addedAt: Date(),
         released: "Fri, 22 Sep 2023 15:00:00 +0200",
         size: 0,
+        podcastId: "fixture",
         podcastName: "Tagesschau",
+        index: 1,
         duration: 0)
 }

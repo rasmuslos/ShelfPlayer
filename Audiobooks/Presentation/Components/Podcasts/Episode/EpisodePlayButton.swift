@@ -17,7 +17,13 @@ struct EpisodePlayButton: View {
         HStack(spacing: 6) {
             Image(systemName: "play.fill")
             if let progress = progress {
-                Text((progress.duration - progress.currentTime).numericTimeLeft())
+                if progress.progress >= 1 {
+                    Text("100%")
+                        .font(.caption.smallCaps())
+                        .bold()
+                } else {
+                    Text((progress.duration - progress.currentTime).numericTimeLeft())
+                }
             } else {
                 Text(episode.duration.numericTimeLeft())
             }

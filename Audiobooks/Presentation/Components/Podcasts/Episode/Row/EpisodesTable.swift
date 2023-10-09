@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EpisodeTable: View {
+struct EpisodesTable: View {
     let episodes: [Episode]
     var amount = 2
     
@@ -15,7 +15,7 @@ struct EpisodeTable: View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: [GridItem(.flexible())].repeated(count: amount), spacing: 0) {
                 ForEach(episodes) { episode in
-                    NavigationLink(destination: Text(episode.id)) {
+                    NavigationLink(destination: EpisodeView(episode: episode)) {
                         EpisodeTableRow(episode: episode)
                     }
                     .buttonStyle(.plain)
@@ -37,14 +37,14 @@ struct EpisodeTableContainer: View {
     var body: some View {
         VStack(alignment: .leading) {
             RowTitle(title: title)
-            EpisodeTable(episodes: episodes, amount: amount)
+            EpisodesTable(episodes: episodes, amount: amount)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        EpisodeTable(episodes: [
+        EpisodesTable(episodes: [
             Episode.fixture,
             Episode.fixture,
             Episode.fixture,
