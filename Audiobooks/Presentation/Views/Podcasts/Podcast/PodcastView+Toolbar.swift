@@ -11,17 +11,18 @@ extension PodcastView {
     struct ToolbarModifier: ViewModifier {
         let podcast: Podcast
         
-        @Binding var navbarVisible: Bool
+        @Binding var navigationBarVisible: Bool
+        @Binding var backgroundColor: UIColor
         
         func body(content: Content) -> some View {
             content
                 .navigationTitle(podcast.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(navbarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!navbarVisible)
+                .toolbarBackground(navigationBarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!navigationBarVisible)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        if navbarVisible {
+                        if navigationBarVisible {
                             VStack {
                                 Text(podcast.name)
                                     .font(.headline)
@@ -37,9 +38,9 @@ extension PodcastView {
                     }
                 }
                 .toolbar {
-                    if !navbarVisible {
+                    if !navigationBarVisible {
                         ToolbarItem(placement: .navigation) {
-                            CustomBackButton(navbarVisible: $navbarVisible)
+                            CustomBackButton(isLight: backgroundColor.isLight(), navigationBarVisible: $navigationBarVisible)
                         }
                     }
                 }

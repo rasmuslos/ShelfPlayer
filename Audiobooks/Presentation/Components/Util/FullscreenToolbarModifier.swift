@@ -11,16 +11,19 @@ struct FullscreenToolbarModifier: ViewModifier {
     @Environment(\.colorScheme) var colorScheme
     
     var accentColor: Color = .accentColor
-    @Binding var navbarVisible: Bool
+    var isLight: Bool? = nil
+    @Binding var navigationBarVisible: Bool
     
     func body(content: Content) -> some View {
+        let appearance: ColorScheme = isLight == true ? .light : isLight == false ? .dark : colorScheme
+        
         content
             .font(.system(size: 20))
             .symbolVariant(.circle.fill)
             .symbolRenderingMode(.palette)
             .foregroundStyle(
-                navbarVisible ? accentColor : colorScheme == .light ? .black : .white,
-                navbarVisible ? .black.opacity(0.1) : .black.opacity(0.25))
-            .animation(.easeInOut, value: navbarVisible)
+                navigationBarVisible ? accentColor : appearance == .light ? .black : .white,
+                navigationBarVisible ? .gray.opacity(0.2) : .black.opacity(0.25))
+            .animation(.easeInOut, value: navigationBarVisible)
     }
 }

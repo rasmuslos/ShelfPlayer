@@ -11,19 +11,19 @@ extension AudiobookView {
     struct ToolbarModifier: ViewModifier {
         let audiobook: Audiobook
         
-        @Binding var navbarVisible: Bool
+        @Binding var navigationBarVisible: Bool
         @Binding var authorId: String?
         @Binding var seriesId: String?
         
         func body(content: Content) -> some View {
             content
-                .toolbarBackground(navbarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!navbarVisible)
+                .toolbarBackground(navigationBarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!navigationBarVisible)
                 .navigationTitle(audiobook.name)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        if navbarVisible {
+                        if navigationBarVisible {
                             VStack {
                                 Text(audiobook.name)
                                     .font(.headline)
@@ -42,9 +42,9 @@ extension AudiobookView {
                     }
                 }
                 .toolbar {
-                    if !navbarVisible {
+                    if !navigationBarVisible {
                         ToolbarItem(placement: .navigation) {
-                            CustomBackButton(navbarVisible: $navbarVisible)
+                            CustomBackButton(navigationBarVisible: $navigationBarVisible)
                         }
                     }
                 }
@@ -56,7 +56,7 @@ extension AudiobookView {
                             } label: {
                                 Image(systemName: "arrow.down")
                             }
-                            .modifier(FullscreenToolbarModifier(navbarVisible: $navbarVisible))
+                            .modifier(FullscreenToolbarModifier(navigationBarVisible: $navigationBarVisible))
                             Menu {
                                 if let authorId = authorId {
                                     NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
@@ -85,7 +85,7 @@ extension AudiobookView {
                                 }
                             } label: {
                                 Image(systemName: "ellipsis")
-                                    .modifier(FullscreenToolbarModifier(navbarVisible: $navbarVisible))
+                                    .modifier(FullscreenToolbarModifier(navigationBarVisible: $navigationBarVisible))
                             }
                         }
                     }
