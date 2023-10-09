@@ -13,20 +13,11 @@ extension AudiobookView {
         
         @Binding var authorId: String?
         @Binding var seriesId: String?
-        @Binding var navbarVisible: Bool
-        
-        @State var progress: OfflineProgress?
+        @Binding var navigationBarVisible: Bool
         
         var body: some View {
             ZStack(alignment: .top) {
-                GeometryReader { reader in
-                    let offset = reader.frame(in: .global).minY
-                    
-                    Color.clear
-                        .onChange(of: offset) {
-                            navbarVisible = offset < -250
-                        }
-                }
+                GeometryRectangle(treshold: -250, backgroundColor: nil, navigationBarVisible: $navigationBarVisible)
                 .frame(height: 0)
                 VStack {
                     ItemImage(image: audiobook.image)
@@ -99,21 +90,7 @@ extension AudiobookView {
                     }
                     .padding(.vertical, 5)
                     
-                    Button {
-                        
-                    } label: {
-                        if let progress = progress, progress.progress > 0 && progress.progress < 1 {
-                            Label("Listen • \((progress.duration - progress.currentTime).timeLeft())", systemImage: "play.fill")
-                        } else {
-                            Label("Listen", systemImage: "play.fill")
-                        }
-                    }
-                    .buttonStyle(PlayNowButtonStyle(percentage: progress?.progress ?? 0))
-                    .onAppear {
-                        if let progress = OfflineManager.shared.getProgress(item: audiobook) {
-                            self.progress = progress
-                        }
-                    }
+                    PlayButton(item: audiobook)
                 }
             }
         }

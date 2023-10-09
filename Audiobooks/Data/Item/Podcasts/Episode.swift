@@ -8,7 +8,7 @@
 import Foundation
 import SwiftSoup
 
-class Episode: Item {
+class Episode: PlayableItem {
     let podcastId: String
     let podcastName: String
     

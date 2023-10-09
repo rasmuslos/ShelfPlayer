@@ -11,20 +11,12 @@ extension EpisodeView {
     struct Header: View {
         let episode: Episode
         
-        @State var backgroundColor: UIColor = .secondarySystemBackground
+        @Binding var navigationBarVisible: Bool
+        @Binding var backgroundColor: UIColor
         
         var body: some View {
             ZStack {
-                GeometryReader { reader in
-                    let offset = reader.frame(in: .global).minY
-                    
-                    if offset > 0 {
-                        Rectangle()
-                            .foregroundStyle(Color(backgroundColor).opacity(0.9))
-                            .offset(y: -offset)
-                            .frame(height: offset)
-                    }
-                }
+                GeometryRectangle(treshold: -320, backgroundColor: Color(backgroundColor).opacity(0.9), navigationBarVisible: $navigationBarVisible)
                 
                 VStack {
                     ItemImage(image: episode.image)
@@ -34,7 +26,7 @@ extension EpisodeView {
                         Group {
                             Text(formattedReleaseDate)
                             + Text(" • ")
-                            + Text(episode.duration.timeLeft(spaceConstrained: false, includeText: true))
+                            + Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
                         }
                         .font(.caption.smallCaps())
                         .foregroundStyle(.secondary)
@@ -58,18 +50,7 @@ extension EpisodeView {
                         .buttonStyle(.plain)
                     }
                     
-                    Button {
-                        
-                    } label: {
-                        Label("Play", systemImage: "play.fill")
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                            .padding(.horizontal, 100)
-                            .padding(.vertical, 12)
-                            .background(.gray.opacity(0.2))
-                            .clipShape(RoundedRectangle(cornerRadius: 7))
-                    }
-                    .buttonStyle(.plain)
+                    PlayButton(item: episode)
                     .padding()
                     .padding(.bottom, 10)
                 }

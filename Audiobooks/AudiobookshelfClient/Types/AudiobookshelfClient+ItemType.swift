@@ -11,111 +11,114 @@ import Foundation
 
 extension AudiobookshelfClient {
     struct AudiobookshelfItem: Codable {
-        var id: String
-        var libraryId: String?
+        let id: String
+        let libraryId: String?
         
-        var path: String?
-        var mediaType: String?
-        var type: String?
+        let path: String?
+        let mediaType: String?
+        let type: String?
         
-        var addedAt: Double?
-        var updatedAt: Double?
+        let addedAt: Double?
+        let updatedAt: Double?
         
-        var size: Int64?
+        let size: Int64?
         
-        var books: [AudiobookshelfItem]?
-        var series: [AudiobookshelfItem]?
-        var libraryItems: [AudiobookshelfItem]?
+        let books: [AudiobookshelfItem]?
+        let series: [AudiobookshelfItem]?
+        let libraryItems: [AudiobookshelfItem]?
         
-        var numEpisodes: Int?
-        var recentEpisode: AudiobookshelfPodcastEpisode?
+        let numEpisodes: Int?
+        let recentEpisode: AudiobookshelfPodcastEpisode?
         
-        var isLocal: Bool?
+        let isLocal: Bool?
         
-        var name: String?
-        var description: String?
-        var numBooks: Int?
-        var imagePath: String?
+        let name: String?
+        let description: String?
+        let numBooks: Int?
+        let imagePath: String?
         
-        var media: AudiobookshelfItemMedia?
+        let media: AudiobookshelfItemMedia?
+        
+        let audioTracks: [AudiobookshelfAudioTrack]?
+        let chapters: [AudiobookshelfChapter]?
         
         // MARK: Podcast episode
         
         struct AudiobookshelfPodcastEpisode: Codable {
-            var id: String?
-            var podcastId: String?
-            var libraryItemId: String?
+            let id: String?
+            let podcastId: String?
+            let libraryItemId: String?
             
-            var index: Int?
-            var season: String?
-            var episode: String?
-            var title: String?
-            var description: String?
+            let index: Int?
+            let season: String?
+            let episode: String?
+            let title: String?
+            let description: String?
             
-            var pubDate: String?
-            var publishedAt: Double?
-            var addedAt: Double?
-            var updatedAt: Double?
+            let pubDate: String?
+            let publishedAt: Double?
+            let addedAt: Double?
+            let updatedAt: Double?
             
-            var size: Int64?
-            var duration: Double?
+            let size: Int64?
+            let duration: Double?
             
-            var audioFile: PodcastAudioFile?
-            var audioTrack: AudiobookshelfAudioTrack?
+            let audioFile: PodcastAudioFile?
+            let audioTrack: AudiobookshelfAudioTrack?
             
             struct PodcastAudioFile: Codable {
-                var duration: Double?
-                var codec: String?
-                var channelLayout: String?
+                let duration: Double?
+                let codec: String?
+                let channelLayout: String?
                 
-                var metadata: PodcastMetadata?
+                let metadata: PodcastMetadata?
             }
             struct PodcastMetadata: Codable {
-                var size: Double?
+                let size: Double?
             }
         }
         
         // MARK: Media/Metadata
         
         struct AudiobookshelfItemMedia: Codable {
-            var tags: [String]?
-            var coverPath: String?
+            let tags: [String]?
+            let coverPath: String?
             
-            var numTracks: Int?
-            var numAudioFiles: Int?
-            var numChapters: Int?
-            var numMissingParts: Int?
-            var numInvalidAudioFiles: Int?
+            let numTracks: Int?
+            let numAudioFiles: Int?
+            let numChapters: Int?
+            let numMissingParts: Int?
+            let numInvalidAudioFiles: Int?
             
-            var duration: Double?
+            let duration: Double?
             
-            var tracks: [AudiobookshelfAudioTrack]?
-            var episodes: [AudiobookshelfPodcastEpisode]?
-            var metadata: AudiobookshelfItemMetadata
+            let tracks: [AudiobookshelfAudioTrack]?
+            let episodes: [AudiobookshelfPodcastEpisode]?
+            let metadata: AudiobookshelfItemMetadata
         }
         struct AudiobookshelfItemMetadata: Codable {
-            var title: String?
-            var titleIgnorePrefix: String?
+            let title: String?
+            let titleIgnorePrefix: String?
             
-            var subtitle: String?
-            var description: String?
+            let subtitle: String?
+            let description: String?
             
-            var authorName: String?
-            var author: String?
-            var narratorName: String?
-            var publisher: String?
+            let authorName: String?
+            let author: String?
+            let narratorName: String?
+            let publisher: String?
             
-            var seriesName: String?
-            var series: AudiobookshelfItemSeries?
+            let seriesName: String?
+            let series: AudiobookshelfItemSeries?
             
-            var genres: [String]
-            var publishedYear: String?
-            var releaseDate: String?
+            let genres: [String]
+            let publishedYear: String?
+            let releaseDate: String?
             
-            var isbn: String?
-            var language: String?
-            var explicit: Bool?
-            var abridged: Bool?
+            let isbn: String?
+            let language: String?
+            let explicit: Bool?
+            let abridged: Bool?
             
             init(from decoder: Decoder) throws {
                 let container: KeyedDecodingContainer<AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys> = try decoder.container(keyedBy: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.self)
@@ -130,6 +133,7 @@ extension AudiobookshelfClient {
                 self.seriesName = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.seriesName)
                 self.genres = try container.decode([String].self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.genres)
                 self.publishedYear = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.publishedYear)
+                self.releaseDate = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.releaseDate)
                 self.isbn = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.isbn)
                 self.language = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.language)
                 self.explicit = try container.decodeIfPresent(Bool.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.explicit)
@@ -155,12 +159,23 @@ extension AudiobookshelfClient {
             let startOffset: Double
             let duration: Double
             let contentUrl: String
+            let mimeType: String
+            let codec: String
             
             let metadata: AudioTrackMetadata?
             
             struct AudioTrackMetadata: Codable {
                 let ext: String?
             }
+        }
+        
+        // MARK: Chapter
+        
+        struct AudiobookshelfChapter: Codable {
+            let id: String
+            let start: Double
+            let end: Double
+            let title: String
         }
     }
 }

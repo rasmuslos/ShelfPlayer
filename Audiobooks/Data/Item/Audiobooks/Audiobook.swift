@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Audiobook: Item {
+class Audiobook: PlayableItem {
     let narrator: String?
     let series: ReducedSeries
     

@@ -10,24 +10,38 @@ import SwiftUI
 struct PodcastView: View {
     let podcast: Podcast
     
-    @State var navbarVisible = false
-    @State var failed = false
+    @State var navigationBarVisible: Bool
+    @State var failed: Bool
     
-    @State var filter: EpisodeFilter.Filter?
+    @State var filter: EpisodeFilterSortMenu.Filter
     @State var episodes: [Episode]?
+    
+    @State var backgroundColor: UIColor = .secondarySystemBackground
+    
+    init(podcast: Podcast) {
+        self.podcast = podcast
+        
+        navigationBarVisible = false
+        failed = false
+        
+        filter = EpisodeFilterSortMenu.getFilter(podcastId: podcast.id)
+        
+    }
     
     var body: some View {
         List {
-            Header(podcast: podcast, navbarVisible: $navbarVisible)
+            Header(podcast: podcast, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor)
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
             if failed {
                 ErrorView()
                     .listRowSeparator(.hidden)
-            } else if let episodes = episodes, let filter = filter {
+            } else if let episodes = episodes {
                 HStack {
-                    EpisodeFilter(podcastId: podcast.id, filter: $filter)
+                    EpisodeFilterSortMenu(podcastId: podcast.id, filter: $filter)
+                        .foregroundStyle(.primary)
+                    
                     Spacer()
                     NavigationLink(destination: AllEpisodesView(episodes: episodes, podcastId: podcast.id)) {
                         HStack {
@@ -36,12 +50,12 @@ struct PodcastView: View {
                         }
                     }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 15)
                 .frame(height: 45)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 
-                EpisodesList(episodes: Array(EpisodeFilter.sortEpisodes(EpisodeFilter.filterEpisodes(episodes, filter: filter), sortOrder: EpisodeFilter.getSortOrder(podcastId: podcast.id), ascending: EpisodeFilter.getAscending(podcastId: podcast.id)) .prefix(15)))
+                EpisodesList(episodes: Array(EpisodeFilterSortMenu.filterAndSortEpisodes(episodes, filter: filter, podcastId: podcast.id).prefix(15)))
             } else {
                 HStack {
                     Spacer()
@@ -54,7 +68,7 @@ struct PodcastView: View {
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
-        .modifier(ToolbarModifier(podcast: podcast, navbarVisible: $navbarVisible))
+        .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor))
         .task(fetchEpisodes)
         .refreshable(action: fetchEpisodes)
     }
@@ -65,7 +79,6 @@ struct PodcastView: View {
 extension PodcastView {
     @Sendable
     func fetchEpisodes() {
-        filter = EpisodeFilter.getFilter(podcastId: podcast.id)
         failed = false
         
         Task.detached {

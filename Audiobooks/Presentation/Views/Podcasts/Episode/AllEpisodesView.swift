@@ -11,84 +11,28 @@ struct AllEpisodesView: View {
     let episodes: [Episode]
     let podcastId: String
     
-    @State var filter: EpisodeFilter.Filter {
-        didSet {
-            EpisodeFilter.setFilter(filter, podcastId: podcastId)
-        }
-    }
-    @State var sortOrder: EpisodeFilter.SortOrder {
-        didSet {
-            EpisodeFilter.setSortOrder(sortOrder, podcastId: podcastId)
-        }
-    }
-    @State var ascending: Bool {
-        didSet {
-            EpisodeFilter.setAscending(ascending, podcastId: podcastId)
-        }
-    }
+    @State var filter: EpisodeFilterSortMenu.Filter
+    @State var sortOrder: EpisodeFilterSortMenu.SortOrder
+    @State var ascending: Bool
     
     init(episodes: [Episode], podcastId: String) {
         self.episodes = episodes
         self.podcastId = podcastId
         
-        filter = EpisodeFilter.getFilter(podcastId: podcastId)
-        sortOrder = EpisodeFilter.getSortOrder(podcastId: podcastId)
-        ascending = EpisodeFilter.getAscending(podcastId: podcastId)
+        filter = EpisodeFilterSortMenu.getFilter(podcastId: podcastId)
+        sortOrder = EpisodeFilterSortMenu.getSortOrder(podcastId: podcastId)
+        ascending = EpisodeFilterSortMenu.getAscending(podcastId: podcastId)
     }
     
     var body: some View {
         List {
-            EpisodesList(episodes: EpisodeFilter.sortEpisodes(EpisodeFilter.filterEpisodes(episodes, filter: filter), sortOrder: sortOrder, ascending: ascending))
+            EpisodesList(episodes: EpisodeFilterSortMenu.filterAndSortEpisodes(episodes, filter: filter, sortOrder: sortOrder, ascending: ascending))
         }
         .listStyle(.plain)
         .navigationTitle("Episodes")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    ForEach(EpisodeFilter.Filter.allCases, id: \.hashValue) { filterCase in
-                        Button {
-                            withAnimation {
-                                filter = filterCase
-                            }
-                        } label: {
-                            if filterCase == filter {
-                                Label(filterCase.rawValue, systemImage: "checkmark")
-                            } else {
-                                Text(filterCase.rawValue)
-                            }
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    ForEach(EpisodeFilter.SortOrder.allCases, id: \.hashValue) { sortCase in
-                        Button {
-                            withAnimation {
-                                sortOrder = sortCase
-                            }
-                        } label: {
-                            if sortCase == sortOrder {
-                                Label(sortCase.rawValue, systemImage: "checkmark")
-                            } else {
-                                Text(sortCase.rawValue)
-                            }
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    Button {
-                        ascending.toggle()
-                    } label: {
-                        if ascending {
-                            Label("Ascending", systemImage: "checkmark")
-                        } else {
-                            Text("Ascending")
-                        }
-                    }
-                } label: {
-                    Image(systemName: "arrow.up.arrow.down.circle.fill")
-                }
+                EpisodeFilterSortMenu(podcastId: podcastId, filter: $filter, sortOrder: $sortOrder, ascending: $ascending)
             }
         }
     }

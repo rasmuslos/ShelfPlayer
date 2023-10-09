@@ -15,6 +15,7 @@ struct EpisodesList: View {
             NavigationLink(destination: EpisodeView(episode: episode)) {
                 EpisodeListRow(episode: episode)
             }
+            .listRowInsets(.init(top: 5, leading: 15, bottom: 5, trailing: 15))
         }
     }
 }
