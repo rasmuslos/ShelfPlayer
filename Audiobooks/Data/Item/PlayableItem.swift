@@ -8,7 +8,10 @@
 import Foundation
 
 class PlayableItem: Item {
-    func getPlaybackData() async throws -> (AudioTracks, Chapters, Double) {
+    func getPlaybackData() async throws -> (AudioTracks, Chapters, Double, String) {
+        throw PlaybackError.methodNotImplemented
+    }
+    func getPlaybackReporter(playbackSessionId: String) throws -> PlaybackReporter {
         throw PlaybackError.methodNotImplemented
     }
 }
@@ -18,8 +21,8 @@ class PlayableItem: Item {
 extension PlayableItem {
     func startPlayback() {
         Task {
-            if let (tracks, chapters, startTime) = try? await getPlaybackData() {
-                AudioPlayer.shared.startPlayback(item: self, tracks: tracks, chapters: chapters, startTime: startTime)
+            if let (tracks, chapters, startTime, playbackSessionId) = try? await getPlaybackData(), let playbackReporter = try? getPlaybackReporter(playbackSessionId: playbackSessionId) {
+                AudioPlayer.shared.startPlayback(item: self, tracks: tracks, chapters: chapters, startTime: startTime, playbackReporter: playbackReporter)
             }
         }
     }

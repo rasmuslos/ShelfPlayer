@@ -54,7 +54,11 @@ class Episode: PlayableItem {
     
     // MARK: playback
     
-    override func getPlaybackData() async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double) {
+    override func getPlaybackData() async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double, String) {
         try await AudiobookshelfClient.shared.play(itemId: podcastId, episodeId: id)
+    }
+    
+    override func getPlaybackReporter(playbackSessionId: String) throws -> PlaybackReporter {
+        PlaybackReporter(itemId: podcastId, episodeId: id, playbackSessionId: playbackSessionId)
     }
 }
