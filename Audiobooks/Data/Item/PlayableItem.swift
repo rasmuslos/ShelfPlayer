@@ -8,12 +8,28 @@
 import Foundation
 
 class PlayableItem: Item {
-    func getPlaybackData() async throws -> (AudioTracks, Chapters) {
-        if let episode = self as? Episode {
-            return try await AudiobookshelfClient.shared.play(itemId: episode.podcastId, episodeId: episode.id)
-        } else {
-            return try await AudiobookshelfClient.shared.play(itemId: id, episodeId: nil)
+    func getPlaybackData() async throws -> (AudioTracks, Chapters, Double) {
+        throw PlaybackError.methodNotImplemented
+    }
+}
+
+// MARK: Playback
+
+extension PlayableItem {
+    func startPlayback() {
+        Task {
+            if let (tracks, chapters, startTime) = try? await getPlaybackData() {
+                AudioPlayer.shared.startPlayback(item: self, tracks: tracks, chapters: chapters, startTime: startTime)
+            }
         }
+    }
+}
+
+// MARK: Errors
+
+extension PlayableItem {
+    enum PlaybackError: Error {
+        case methodNotImplemented
     }
 }
 
@@ -33,7 +49,7 @@ extension PlayableItem {
     typealias AudioTracks = [AudioTrack]
     
     struct Chapter: Identifiable {
-        let id: String
+        let id: Int
         let start: Double
         let end: Double
         let title: String

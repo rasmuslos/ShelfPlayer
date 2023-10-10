@@ -11,7 +11,7 @@ class AudiobookshelfClient {
     private(set) var serverUrl: URL!
     private(set) var token: String!
     
-    init(serverUrl: URL!, token: String!) {
+    private init(serverUrl: URL!, token: String!) {
         self.serverUrl = serverUrl
         self.token = token
     }
@@ -41,7 +41,7 @@ extension AudiobookshelfClient {
 // MARK: Singleton
 
 extension AudiobookshelfClient {
-    private(set) static var shared = {
+    static let shared = {
         AudiobookshelfClient(
             serverUrl: UserDefaults.standard.url(forKey: "serverUrl"),
             token: UserDefaults.standard.string(forKey: "token"))
