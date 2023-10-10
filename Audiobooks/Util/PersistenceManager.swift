@@ -21,6 +21,9 @@ struct PersistenceManager {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    
+    private init() {
+    }
 }
 
 // MARK: Singleton

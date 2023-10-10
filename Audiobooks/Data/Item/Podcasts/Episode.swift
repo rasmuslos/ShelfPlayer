@@ -24,6 +24,8 @@ class Episode: PlayableItem {
         super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
     }
     
+    // MARK: Getter
+    
     lazy var releaseDate: Date? = {
         if let released = released {
             let dateFormatter = DateFormatter()
@@ -49,4 +51,10 @@ class Episode: PlayableItem {
         
         return nil
     }()
+    
+    // MARK: playback
+    
+    override func getPlaybackData() async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double) {
+        try await AudiobookshelfClient.shared.play(itemId: podcastId, episodeId: id)
+    }
 }

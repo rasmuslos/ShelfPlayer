@@ -9,6 +9,8 @@ import Foundation
 import SwiftData
 
 struct OfflineManager {
+    private init() {
+    }
 }
 
 // MARK: Singleton

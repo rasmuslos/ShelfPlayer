@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct PlayButton: View {
-    let item: Item
+    let item: PlayableItem
     
     var body: some View {
         let progress = OfflineManager.shared.getProgress(item: item)
         let label = item as? Audiobook != nil ? "Listen" : "Play"
         
         Button {
-            
+            item.startPlayback()
         } label: {
             if let progress = progress, progress.progress > 0 && progress.progress < 1 {
                 Label("\(label) • \((progress.duration - progress.currentTime).timeLeft())", systemImage: "play.fill")

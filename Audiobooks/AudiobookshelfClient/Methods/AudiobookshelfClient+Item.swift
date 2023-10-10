@@ -22,12 +22,24 @@ extension AudiobookshelfClient {
 // MARK: play
 
 extension AudiobookshelfClient {
-    func play(itemId: String, episodeId: String?) async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters) {
-        let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)/play/\(episodeId ?? "")", method: "GET"))
+    func play(itemId: String, episodeId: String?) async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double) {
+        let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)/play\(episodeId != nil ? "/\(episodeId!)" : "")", method: "POST", body: [
+            "deviceInfo": [
+                "clientName": "Audiobooks iOS",
+            ],
+            "supportedMimeTypes": [
+                "audio/flac",
+                "audio/mpeg",
+                "audio/mp4",
+                "audio/aac",
+                "audio/x-aiff",
+            ]
+        ]))
         
         let tracks = response.audioTracks!.map(PlayableItem.convertAudioTrackFromAudiobookshelf)
         let chapters = response.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
+        let startTime = response.startTime ?? 0
         
-        return (tracks, chapters)
+        return (tracks, chapters, startTime)
     }
 }
