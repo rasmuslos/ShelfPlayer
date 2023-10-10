@@ -39,6 +39,7 @@ extension AudiobookshelfClient {
         
         let media: AudiobookshelfItemMedia?
         
+        let startTime: Double?
         let audioTracks: [AudiobookshelfAudioTrack]?
         let chapters: [AudiobookshelfChapter]?
         
@@ -172,7 +173,7 @@ extension AudiobookshelfClient {
         // MARK: Chapter
         
         struct AudiobookshelfChapter: Codable {
-            let id: String
+            let id: Int
             let start: Double
             let end: Double
             let title: String

@@ -26,6 +26,14 @@ class Audiobook: PlayableItem {
         super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
     }
     
+    override func getPlaybackData() async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double) {
+        try await AudiobookshelfClient.shared.play(itemId: id, episodeId: nil)
+    }
+}
+
+// MARK: Helper
+
+extension Audiobook {
     struct ReducedSeries {
         let id: String?
         let name: String?
