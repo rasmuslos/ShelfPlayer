@@ -16,9 +16,21 @@ struct SessionsImportView: View {
         if !failed {
             LoadingView()
                 .task {
-                    if let sessions = try? await AudiobookshelfClient.shared.authorize() {
+                    do {
+                        let cached = try await OfflineManager.shared.getCachedProgress(type: .localCached)
+                        for progress in cached {
+                            try await AudiobookshelfClient.shared.updateMediaProgress(itemId: progress.itemId, episodeId: progress.additionalId, currentTime: progress.currentTime, duration: progress.duration)
+                            
+                            progress.progressType = .localSynced
+                        }
+                        
+                        let sessions = try await AudiobookshelfClient.shared.authorize()
                         await OfflineManager.shared.importSessions(sessions)
                         callback()
+                        
+                        try await OfflineManager.shared.deleteSyncedProgress()
+                    } catch {
+                        
                     }
                 }
         } else {
