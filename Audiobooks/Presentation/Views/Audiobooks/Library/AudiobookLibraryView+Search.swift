@@ -30,6 +30,7 @@ extension AudiobookLibraryView {
                     entities = try! OfflineManager.shared.getAllProgressEntities()
                 }
             }
+            .modifier(NowPlayingBarModifier())
             .tabItem {
                 Label("Search", systemImage: "magnifyingglass")
             }
