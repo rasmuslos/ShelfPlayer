@@ -11,15 +11,17 @@ import MediaPlayer
 import OSLog
 
 class AudioPlayer {
-    fileprivate var item: PlayableItem?
-    fileprivate var tracks: PlayableItem.AudioTracks
-    fileprivate var chapters: PlayableItem.Chapters
+    private(set) var item: PlayableItem?
+    private var tracks: PlayableItem.AudioTracks
+    private var chapters: PlayableItem.Chapters
     
-    fileprivate var activeAudioTrackIndex: Int
+    private var activeAudioTrackIndex: Int
     
-    fileprivate var audioPlayer: AVQueuePlayer
-    fileprivate var buffering: Bool = false
-    fileprivate var nowPlayingInfo: [String: Any]
+    private var audioPlayer: AVQueuePlayer
+    private(set) var buffering: Bool = false
+    private var nowPlayingInfo: [String: Any]
+    
+    private var playbackReporter: PlaybackReporter?
     
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "AudioPlayer")
     
@@ -45,7 +47,7 @@ class AudioPlayer {
 // MARK: Methods
 
 extension AudioPlayer {
-    func startPlayback(item: PlayableItem, tracks: PlayableItem.AudioTracks, chapters: PlayableItem.Chapters, startTime: Double) {
+    func startPlayback(item: PlayableItem, tracks: PlayableItem.AudioTracks, chapters: PlayableItem.Chapters, startTime: Double, playbackReporter: PlaybackReporter) {
         if tracks.isEmpty {
             return
         }
@@ -61,12 +63,16 @@ extension AudioPlayer {
         
         updateAudioSession(active: true)
         setupNowPlayingMetadata()
+        
+        self.playbackReporter = playbackReporter
     }
     
     func stopPlayback() {
         item = nil
         tracks = []
         chapters = []
+        
+        playbackReporter = nil
         
         activeAudioTrackIndex = -1
         audioPlayer.removeAllItems()
@@ -83,6 +89,8 @@ extension AudioPlayer {
         } else {
             audioPlayer.pause()
         }
+        
+        playbackReporter?.reportProgress(playing: playing, currentTime: getCurrentTime(), duration: getDuration())
     }
     
     func seek(to: Double) {
@@ -109,8 +117,10 @@ extension AudioPlayer {
                 activeAudioTrackIndex = index
                 setPlaying(resume)
             }
+        } else if to >= getDuration() {
+            stopPlayback()
         } else {
-            logger.fault("Seek to position outside range")
+            logger.fault("Seek to position outside of range")
         }
     }
     
@@ -178,8 +188,13 @@ extension AudioPlayer {
 extension AudioPlayer {
     private func setupTimeObserver() {
         audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: nil) { [unowned self] _ in
-            updateNowPlayingStatus()
+            let currentTime = getCurrentTime()
+            if currentTime.isFinite && !currentTime.isNaN && Int(currentTime) % 5 == 0 {
+                updateNowPlayingStatus()
+            }
+            
             buffering = !(audioPlayer.currentItem?.isPlaybackLikelyToKeepUp ?? false)
+            playbackReporter?.reportProgress(currentTime: getCurrentTime(), duration: getDuration())
             
             Task { @MainActor in
                 // NotificationCenter.default.post(name: NSNotification.PositionUpdated, object: nil)

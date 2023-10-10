@@ -21,7 +21,9 @@ class OfflineProgress: Identifiable {
     var startedAt: Date
     var lastUpdate: Date
     
-    init(id: String, itemId: String, additionalId: String?, duration: Double, currentTime: Double, progress: Double, startedAt: Date, lastUpdate: Date) {
+    var progressType: ProgressType
+    
+    init(id: String, itemId: String, additionalId: String?, duration: Double, currentTime: Double, progress: Double, startedAt: Date, lastUpdate: Date, progressType: ProgressType) {
         self.id = id
         self.itemId = itemId
         self.additionalId = additionalId
@@ -30,6 +32,17 @@ class OfflineProgress: Identifiable {
         self.progress = progress
         self.startedAt = startedAt
         self.lastUpdate = lastUpdate
+        self.progressType = progressType
+    }
+}
+
+// MARK: Types
+
+extension OfflineProgress {
+    enum ProgressType: Int, Codable {
+        case receivedFromServer = 0
+        case localSynced = 1
+        case localCached = 2
     }
 }
 
