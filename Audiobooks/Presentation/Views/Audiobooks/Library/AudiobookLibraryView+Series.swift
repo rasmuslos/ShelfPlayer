@@ -34,6 +34,7 @@ extension AudiobookLibraryView {
                 .task(fetchAudiobooks)
                 .refreshable(action: fetchAudiobooks)
             }
+            .modifier(NowPlayingBarModifier())
             .tabItem {
                 Label("Series", systemImage: "books.vertical.fill")
             }

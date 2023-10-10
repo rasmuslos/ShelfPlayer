@@ -11,6 +11,7 @@ extension PodcastLibraryView {
     struct SearchView: View {
         var body: some View {
             Text(":)")
+                .modifier(NowPlayingBarModifier())
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }

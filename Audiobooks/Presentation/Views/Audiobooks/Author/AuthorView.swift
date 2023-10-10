@@ -63,6 +63,7 @@ struct AuthorView: View {
                 Text("")
             }
         }
+        .modifier(NowPlayingBarSafeAreaModifier())
         .onAppear {
             if audiobooks == nil {
                 fetchAudiobooks()

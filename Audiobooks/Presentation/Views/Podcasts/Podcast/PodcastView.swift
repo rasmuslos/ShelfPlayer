@@ -69,6 +69,7 @@ struct PodcastView: View {
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
         .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor))
+        .modifier(NowPlayingBarSafeAreaModifier())
         .task(fetchEpisodes)
         .refreshable(action: fetchEpisodes)
     }
