@@ -21,6 +21,7 @@ struct EpisodeView: View {
         }
         .ignoresSafeArea(edges: .top)
         .modifier(ToolbarModifier(episode: episode, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor))
+        .modifier(NowPlayingBarSafeAreaModifier())
     }
 }
 

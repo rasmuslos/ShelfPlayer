@@ -11,6 +11,7 @@ extension PodcastLibraryView {
     struct LibraryView: View {
         var body: some View {
             Text(":)")
+                .modifier(NowPlayingBarModifier())
                 .tabItem {
                     Label("Library", systemImage: "tray.full")
                 }

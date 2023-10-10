@@ -48,6 +48,7 @@ struct AudiobookView: View {
             }
         }
         .modifier(ToolbarModifier(audiobook: audiobook, navigationBarVisible: $navigationBarVisible, authorId: $authorId, seriesId: $seriesId))
+        .modifier(NowPlayingBarSafeAreaModifier())
         .onAppear {
             getAuthorData()
             getSeriesData()

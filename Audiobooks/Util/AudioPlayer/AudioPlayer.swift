@@ -65,6 +65,7 @@ extension AudioPlayer {
         setupNowPlayingMetadata()
         
         self.playbackReporter = playbackReporter
+        NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
     }
     
     func stopPlayback() {
@@ -79,6 +80,8 @@ extension AudioPlayer {
         
         updateAudioSession(active: false)
         clearNowPlayingMetadata()
+        
+        NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
     }
     
     func setPlaying(_ playing: Bool) {
@@ -91,6 +94,7 @@ extension AudioPlayer {
         }
         
         playbackReporter?.reportProgress(playing: playing, currentTime: getCurrentTime(), duration: getDuration())
+        NotificationCenter.default.post(name: Self.playPauseNotification, object: nil)
     }
     
     func seek(to: Double) {

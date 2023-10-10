@@ -35,6 +35,7 @@ struct AllEpisodesView: View {
                 EpisodeFilterSortMenu(podcastId: podcastId, filter: $filter, sortOrder: $sortOrder, ascending: $ascending)
             }
         }
+        .modifier(NowPlayingBarSafeAreaModifier())
     }
 }
 

@@ -33,6 +33,7 @@ extension AudiobookLibraryView {
                 .task(loadRows)
                 .refreshable(action: loadRows)
             }
+            .modifier(NowPlayingBarModifier())
             .tabItem {
                 Label("Listen now", systemImage: "bookmark.fill")
             }

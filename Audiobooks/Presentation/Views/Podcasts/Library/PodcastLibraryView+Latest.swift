@@ -11,6 +11,7 @@ extension PodcastLibraryView {
     struct LatestView: View {
         var body: some View {
             Text(":)")
+                .modifier(NowPlayingBarModifier())
                 .tabItem {
                     Label("Latest", systemImage: "clock")
                 }

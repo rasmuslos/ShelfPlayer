@@ -49,6 +49,7 @@ extension AudiobookLibraryView {
                 .task(fetchAudiobooks)
                 .refreshable(action: fetchAudiobooks)
             }
+            .modifier(NowPlayingBarModifier())
             .tabItem {
                 Label("Library", systemImage: "book.fill")
             }
