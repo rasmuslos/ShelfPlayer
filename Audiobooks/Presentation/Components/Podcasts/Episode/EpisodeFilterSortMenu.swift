@@ -204,7 +204,7 @@ extension EpisodeFilterSortMenu {
         if let stored = UserDefaults.standard.string(forKey: "filter.\(podcastId)"), let parsed = Filter(rawValue: stored) {
             return parsed
         }
-        return .all
+        return .unfinished
     }
     
     static func getSortOrder(podcastId: String) -> SortOrder {

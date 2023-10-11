@@ -99,6 +99,8 @@ extension AudiobookView {
                                 }
                                 
                                 if audiobook.offline != .none {
+                                    Divider()
+                                    
                                     Button(role: .destructive) {
                                         try! OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
                                     } label: {
