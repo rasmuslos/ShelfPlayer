@@ -11,9 +11,10 @@ extension NowPlayingSheet {
     struct Controls: View {
         @Binding var playing: Bool
         
-        @State var duration: Double = AudioPlayer.shared.getDuration()
-        @State var currentTime: Double = AudioPlayer.shared.getCurrentTime()
-        @State var playedPercentage: Double = (AudioPlayer.shared.getCurrentTime() / AudioPlayer.shared.getDuration()) * 100
+        @State var buffering = AudioPlayer.shared.buffering
+        @State var duration = AudioPlayer.shared.getDuration()
+        @State var currentTime = AudioPlayer.shared.getCurrentTime()
+        @State var playedPercentage = (AudioPlayer.shared.getCurrentTime() / AudioPlayer.shared.getDuration()) * 100
         
         var body: some View {
             VStack {
@@ -24,8 +25,15 @@ extension NowPlayingSheet {
                     .padding(.vertical, 10)
                     
                     HStack {
-                        Text(currentTime.hoursMinutesSecondsString())
-                            .frame(width: 65, alignment: .leading)
+                        Group {
+                            if buffering {
+                                ProgressView()
+                                    .scaleEffect(0.5)
+                            } else {
+                                Text(currentTime.hoursMinutesSecondsString())
+                            }
+                        }
+                        .frame(width: 65, alignment: .leading)
                         Spacer()
                         
                         Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(" left")
@@ -72,6 +80,8 @@ extension NowPlayingSheet {
             }
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.currentTimeChangedNotification), perform: { _ in
                 withAnimation {
+                    buffering = AudioPlayer.shared.buffering
+                    
                     duration = AudioPlayer.shared.getDuration()
                     currentTime = AudioPlayer.shared.getCurrentTime()
                     playedPercentage = (currentTime / duration) * 100

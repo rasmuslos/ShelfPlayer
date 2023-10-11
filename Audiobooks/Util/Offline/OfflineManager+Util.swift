@@ -33,7 +33,7 @@ extension OfflineManager {
 extension OfflineManager {
     @MainActor
     func getChapters(itemId: String) -> PlayableItem.Chapters {
-        var chapters = FetchDescriptor<OfflineChapter>(predicate: #Predicate { $0.itemId == itemId })
+        let chapters = FetchDescriptor<OfflineChapter>(predicate: #Predicate { $0.itemId == itemId })
         
         if let chapters = try? PersistenceManager.shared.modelContainer.mainContext.fetch(chapters) {
             return chapters.map {

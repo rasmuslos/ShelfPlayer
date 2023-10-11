@@ -13,35 +13,46 @@ extension NowPlayingSheet {
         let chapters = AudioPlayer.shared.chapters
         
         var body: some View {
-                List {
-                    ForEach(chapters) {
-                        ChapterRow(chapter: $0)
-                    }
-                }
-                .listStyle(.plain)
-                .safeAreaInset(edge: .top) {
-                    HStack {
-                        ItemImage(image: item.image)
-                        
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                                .fontDesign(item as? Audiobook != nil ? .serif : .default)
-                                .lineLimit(1)
-                            
-                            if let author = item.author {
-                                Text(author)
-                                    .font(.subheadline)
-                                    .lineLimit(1)
-                            }
+            Group {
+                if chapters.count > 1 {
+                    List {
+                        ForEach(chapters) {
+                            ChapterRow(chapter: $0)
                         }
-                        
+                    }
+                } else {
+                    VStack {
+                        Spacer()
+                        Text("No chapters")
+                            .font(.headline.smallCaps())
                         Spacer()
                     }
-                    .padding()
-                    .background(.regularMaterial)
-                    .frame(height: 100)
                 }
+            }
+            .listStyle(.plain)
+            .safeAreaInset(edge: .top) {
+                HStack {
+                    ItemImage(image: item.image)
+                    
+                    VStack(alignment: .leading) {
+                        Text(item.name)
+                            .font(.headline)
+                            .fontDesign(item as? Audiobook != nil ? .serif : .default)
+                            .lineLimit(1)
+                        
+                        if let author = item.author {
+                            Text(author)
+                                .font(.subheadline)
+                                .lineLimit(1)
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+                .background(.regularMaterial)
+                .frame(height: 100)
+            }
         }
     }
 }

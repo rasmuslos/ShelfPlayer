@@ -61,6 +61,7 @@ struct HTMLTextView: UIViewRepresentable {
                 .characterEncoding: String.Encoding.utf8.rawValue
             ], documentAttributes: nil) {
                 textView.attributedText = attributedString
+                textView.textColor = UIColor.label
                 textView.font = UIFont.preferredFont(forTextStyle: .body)
             }
             
