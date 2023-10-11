@@ -46,6 +46,7 @@ extension AudiobookLibraryView {
                         AudiobooksSort(display: $displayOrder, sort: $sortOrder)
                     }
                 }
+                .modifier(NowPlayingBarSafeAreaModifier())
                 .task(fetchAudiobooks)
                 .refreshable(action: fetchAudiobooks)
             }

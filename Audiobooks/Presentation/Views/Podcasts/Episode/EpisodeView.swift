@@ -16,8 +16,9 @@ struct EpisodeView: View {
     var body: some View {
         ScrollView {
             Header(episode: episode, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor)
-            Description(description: episode.descriptionText)
-            .padding()
+            
+            Description(description: episode.description)
+                .padding()
         }
         .ignoresSafeArea(edges: .top)
         .modifier(ToolbarModifier(episode: episode, navigationBarVisible: $navigationBarVisible, backgroundColor: $backgroundColor))

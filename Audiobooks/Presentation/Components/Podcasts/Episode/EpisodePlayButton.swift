@@ -12,13 +12,25 @@ struct EpisodePlayButton: View {
     var highlighted: Bool = false
     
     @State var progress: OfflineProgress?
+    @State var playState = PlayState.none
     
     var body: some View {
         Button {
             episode.startPlayback()
         } label: {
             HStack(spacing: 6) {
-                Image(systemName: "play.fill")
+                if playState == .none {
+                    Image(systemName: "play.fill")
+                } else {
+                    Image(systemName: playState == .playing ? "waveform" : "pause.fill")
+                        .symbolEffect(.variableColor, isActive: playState == .playing)
+                        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
+                            withAnimation {
+                                playState = AudioPlayer.shared.isPlaying() ? .playing : .pause
+                            }
+                        })
+                }
+                
                 if let progress = progress {
                     if progress.progress >= 1 {
                         Text("100%")
@@ -36,6 +48,9 @@ struct EpisodePlayButton: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10000))
                         
                         Text((progress.duration - progress.currentTime).numericTimeLeft())
+                            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
+                                checkPlaying()
+                            })
                     }
                 } else {
                     Text(episode.duration.numericTimeLeft())
@@ -56,11 +71,33 @@ struct EpisodePlayButton: View {
 // MARK: Helper
 
 extension EpisodePlayButton {
-    func fetchProgress() {
+    private func fetchProgress() {
+        checkPlaying()
+        
         Task.detached {
             let progress = await OfflineManager.shared.getProgress(item: episode)
             withAnimation {
                 self.progress = progress
+            }
+        }
+    }
+}
+
+// MARK: Playing
+
+extension EpisodePlayButton {
+    enum PlayState {
+        case none
+        case playing
+        case pause
+    }
+    
+    private func checkPlaying() {
+        withAnimation {
+            if episode == AudioPlayer.shared.item {
+                playState = AudioPlayer.shared.isPlaying() ? .playing : .pause
+            } else {
+                playState = .none
             }
         }
     }

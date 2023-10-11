@@ -13,6 +13,8 @@ struct NowPlayingSheet: View {
     @Binding var item: PlayableItem
     @Binding var playing: Bool
     
+    @State var showChaptersSheet = false
+    
     var body: some View {
         VStack {
             Spacer()
@@ -31,10 +33,15 @@ struct NowPlayingSheet: View {
             
             Title(item: $item)
             Controls(playing: $playing)
-            BottomButtons()
+            BottomButtons(showChaptersSheet: $showChaptersSheet)
         }
         .padding(.horizontal, 30)
         .ignoresSafeArea(edges: .bottom)
+        .sheet(isPresented: $showChaptersSheet, content: {
+            ChapterSheet(item: item)
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.large, .medium])
+        })
         .gesture(
             DragGesture(minimumDistance: 150).onEnded { value in
                 if value.location.y - value.startLocation.y > 150 {
