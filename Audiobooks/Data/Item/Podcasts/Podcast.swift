@@ -11,11 +11,11 @@ class Podcast: Item {
     let explicit: Bool
     let episodeCount: Int
     
-    init(id: String, additionalId: String?, libraryId: String, name: String, author: String?, description: String?, image: Item.Image?, genres: [String], addedAt: Date, released: String?, size: Int64, explicit: Bool, episodeCount: Int) {
+    init(id: String, additionalId: String?, libraryId: String, name: String, author: String?, description: String?, image: Item.Image?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int) {
         self.explicit = explicit
         self.episodeCount = episodeCount
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
+        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released)
     }
     
     lazy var releaseDate: Date? = {

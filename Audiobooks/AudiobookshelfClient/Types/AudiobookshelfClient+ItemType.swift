@@ -104,6 +104,8 @@ extension AudiobookshelfClient {
             
             let tracks: [AudiobookshelfAudioTrack]?
             let episodes: [AudiobookshelfPodcastEpisode]?
+            
+            let chapters: [AudiobookshelfChapter]?
             let metadata: AudiobookshelfItemMetadata
         }
         struct AudiobookshelfItemMetadata: Codable {

@@ -19,7 +19,6 @@ extension Podcast {
         genres: ["News"],
         addedAt: Date(),
         released: "2023-05-21T18:00:00Z",
-        size: 0,
         explicit: false,
         episodeCount: 0)
 }

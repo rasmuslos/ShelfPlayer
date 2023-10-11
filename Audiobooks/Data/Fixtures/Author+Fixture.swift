@@ -17,6 +17,5 @@ extension Author {
         image: Item.Image(url: URL(string: "https://upload.wikimedia.org/wikipedia/commons/7/7e/George_Orwell_press_photo.jpg")!),
         genres: [],
         addedAt: Date(),
-        released: nil,
-        size: 0)
+        released: nil)
 }
