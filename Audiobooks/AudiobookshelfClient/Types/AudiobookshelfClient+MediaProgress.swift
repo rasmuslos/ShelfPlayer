@@ -8,24 +8,26 @@
 import Foundation
 
 extension AudiobookshelfClient {
-    struct MediaPorgress: Codable {
+    struct MediaProgress: Codable {
+        // commented out to improve performance
+        
         let id: String
-        let userId: String
+        // let userId: String
         let libraryItemId: String
         let episodeId: String?
         
-        let mediaItemId: String
-        let mediaItemType: String
+        // let mediaItemId: String
+        // let mediaItemType: String
         
         let duration: Double
         let progress: Double
         let currentTime: Double
         
-        let isFinished: Bool
-        let hideFromContinueListening: Bool
+        // let isFinished: Bool
+        // let hideFromContinueListening: Bool
         
         let lastUpdate: Int64
         let startedAt: Int64
-        let finishedAt: Int64?
+        // let finishedAt: Int64?
     }
 }

@@ -25,6 +25,16 @@ struct EpisodePlayButton: View {
                             .font(.caption.smallCaps())
                             .bold()
                     } else {
+                        Rectangle()
+                            .foregroundStyle(.ultraThickMaterial)
+                            .overlay(alignment: .leading) {
+                                Rectangle()
+                                    .frame(width: max(50 * progress.progress, 5))
+                                    .foregroundStyle(.black)
+                            }
+                            .frame(width: 50, height: 7)
+                            .clipShape(RoundedRectangle(cornerRadius: 10000))
+                        
                         Text((progress.duration - progress.currentTime).numericTimeLeft())
                     }
                 } else {
@@ -48,7 +58,10 @@ struct EpisodePlayButton: View {
 extension EpisodePlayButton {
     func fetchProgress() {
         Task.detached {
-            progress = await OfflineManager.shared.getProgress(item: episode)
+            let progress = await OfflineManager.shared.getProgress(item: episode)
+            withAnimation {
+                self.progress = progress
+            }
         }
     }
 }

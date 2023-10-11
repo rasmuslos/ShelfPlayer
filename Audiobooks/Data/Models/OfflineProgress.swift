@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class OfflineProgress: Identifiable {
-    let id: String
+    @Attribute(.unique) let id: String
     let itemId: String
     let additionalId: String?
     

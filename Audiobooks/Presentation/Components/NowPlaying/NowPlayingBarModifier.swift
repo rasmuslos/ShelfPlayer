@@ -66,7 +66,7 @@ struct NowPlayingBarModifier: ViewModifier {
                             nowPlayingSheetPresented.toggle()
                         }
                         .fullScreenCover(isPresented: $nowPlayingSheetPresented) {
-                            Text(item.name)
+                            NowPlayingSheet(item: Binding($item)!, playing: $playing)
                         }
                 }
             }

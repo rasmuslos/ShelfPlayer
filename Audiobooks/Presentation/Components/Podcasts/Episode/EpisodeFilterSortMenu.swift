@@ -126,7 +126,7 @@ extension EpisodeFilterSortMenu {
             case .progress, .unfinished, .finished:
                 if let progress = OfflineManager.shared.getProgress(item: $0) {
                     if filter == .unfinished {
-                        return progress.progress <= 0
+                        return progress.progress < 1
                     }
                     if progress.progress < 1 && filter == .finished {
                         return false

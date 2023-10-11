@@ -1,0 +1,56 @@
+//
+//  NowPlayingSheet+BottomButtons.swift
+//  Audiobooks
+//
+//  Created by Rasmus Krämer on 11.10.23.
+//
+
+import SwiftUI
+import AVKit
+
+extension NowPlayingSheet {
+    struct BottomButtons: View {
+        var body: some View {
+            HStack {
+                PlaybackSpeedSelector()
+                    .foregroundStyle(.secondary)
+                
+                Spacer()
+                AirPlayView()
+                    .frame(width: 45)
+                    .padding(.vertical, -100)
+                
+                Spacer()
+                Button {
+                    
+                } label: {
+                    Image(systemName: "list.dash")
+                }
+                .foregroundStyle(.secondary)
+            }
+            .bold()
+            .font(.system(size: 20))
+            .frame(height: 45)
+            .padding(.horizontal, 45)
+            .padding(.top, 35)
+            .padding(.bottom, 40)
+        }
+    }
+}
+
+// MARK: Airplay view
+
+extension NowPlayingSheet {
+    struct AirPlayView: UIViewRepresentable {
+        func makeUIView(context: Context) -> UIView {
+            let routePickerView = AVRoutePickerView()
+            routePickerView.backgroundColor = UIColor.clear
+            routePickerView.activeTintColor = UIColor(Color.accentColor)
+            routePickerView.tintColor = UIColor(Color.secondary)
+            
+            return routePickerView
+        }
+        
+        func updateUIView(_ uiView: UIView, context: Context) {}
+    }
+}
