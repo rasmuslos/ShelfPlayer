@@ -59,8 +59,8 @@ extension AudioPlayer {
         stopPlayback()
         
         self.item = item
-        self.tracks = tracks
-        self.chapters = chapters
+        self.tracks = tracks.sorted()
+        self.chapters = chapters.sorted()
         
         seek(to: startTime)
         setPlaying(true)
@@ -215,7 +215,11 @@ extension AudioPlayer {
     }
     
     private func getHistory() -> PlayableItem.AudioTracks {
-        Array(tracks.prefix(activeAudioTrackIndex))
+        if activeAudioTrackIndex >= 0 {
+            return Array(tracks.prefix(activeAudioTrackIndex))
+        } else {
+            return []
+        }
     }
     
     private func getTrack(currentTime: Double) -> PlayableItem.AudioTrack? {
@@ -401,11 +405,15 @@ extension AudioPlayer {
 
 extension AudioPlayer {
     private func getAVPlayerItem(track: PlayableItem.AudioTrack) -> AVPlayerItem {
-        return AVPlayerItem(url: AudiobookshelfClient.shared.serverUrl
-            .appending(path: track.contentUrl.removingPercentEncoding ?? "")
-            .appending(queryItems: [
-                URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token)
-            ]))
+        if item?.offline == .downloaded {
+            return AVPlayerItem(url: URL(string: track.contentUrl)!)
+        } else {
+            return AVPlayerItem(url: AudiobookshelfClient.shared.serverUrl
+                .appending(path: track.contentUrl.removingPercentEncoding ?? "")
+                .appending(queryItems: [
+                    URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token)
+                ]))
+        }
     }
 }
 

@@ -38,3 +38,18 @@ extension AudiobookshelfClient {
         return response.results.map(Audiobook.convertFromAudiobookshelf)
     }
 }
+
+// MARK: Get by id
+
+extension AudiobookshelfClient {
+    func getAudiobookDownloadData(_ audiobookId: String) async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters) {
+        let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(audiobookId)", method: "GET", query: [
+            URLQueryItem(name: "expanded", value: "1"),
+        ]))
+        
+        let tracks = response.media!.tracks!.map(PlayableItem.convertAudioTrackFromAudiobookshelf)
+        let chapters = response.media!.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
+        
+        return (tracks, chapters)
+    }
+}

@@ -18,7 +18,6 @@ extension Author {
             image: Item.Image.convertFromAudiobookshelf(item: item),
             genres: [], 
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
-            released: nil,
-            size: 0)
+            released: nil)
     }
 }

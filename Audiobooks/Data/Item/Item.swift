@@ -22,9 +22,7 @@ class Item: Identifiable {
     let addedAt: Date
     let released: String?
     
-    let size: Int64
-    
-    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64) {
+    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
         self.libraryId = libraryId
         self.name = name
@@ -34,10 +32,9 @@ class Item: Identifiable {
         self.genres = genres
         self.addedAt = addedAt
         self.released = released
-        self.size = size
     }
     
-    struct Image {
+    struct Image: Codable {
         let url: URL
     }
 }

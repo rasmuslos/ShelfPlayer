@@ -12,6 +12,12 @@ struct PersistenceManager {
     let modelContainer: ModelContainer = {
         let schema = Schema([
             OfflineProgress.self,
+            OfflineChapter.self,
+            
+            DownloadReference.self,
+            
+            OfflineAudiobook.self,
+            OfflineAudiobookTrack.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         

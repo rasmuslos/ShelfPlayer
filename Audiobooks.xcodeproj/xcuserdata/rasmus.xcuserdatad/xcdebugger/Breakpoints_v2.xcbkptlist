@@ -52,5 +52,196 @@
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "40FBD5AE-AB27-42D2-A2A6-9BBFFDA3FA6F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Audiobooks/Util/Offline/DownloadManager+Handler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
+            landmarkName = "urlSession(_:downloadTask:didFinishDownloadingTo:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D87F2071-C785-4C70-9963-724602875820"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Audiobooks/Util/Offline/OfflineManager+Audiobook.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
+            landmarkName = "deleteAudiobookTrack(track:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D87F2071-C785-4C70-9963-724602875820 - 8dba47efabb30907"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Audiobooks.OfflineManager.deleteAudiobookTrack(track: Audiobooks.OfflineAudiobookTrack) -&gt; ()"
+                  moduleName = "Audiobooks"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rasmus/Development/Audiobooks/Audiobooks/Util/Offline/OfflineManager+Audiobook.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "131"
+                  endingLineNumber = "131"
+                  offsetFromSymbolStart = "56">
+               </Location>
+               <Location
+                  uuid = "D87F2071-C785-4C70-9963-724602875820 - 8dba47efabb309e4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Audiobooks.OfflineManager.deleteAudiobookTrack(track: Audiobooks.OfflineAudiobookTrack) -&gt; ()"
+                  moduleName = "Audiobooks"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rasmus/Development/Audiobooks/Audiobooks/Util/Offline/OfflineManager+Audiobook.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "130"
+                  endingLineNumber = "130"
+                  offsetFromSymbolStart = "136">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DC16B884-3DDA-493E-9345-A45A358F40F7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Audiobooks/Data/Item/Audiobooks/Audiobook.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "checkOfflineStatus()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DC16B884-3DDA-493E-9345-A45A358F40F7 - e1d8de3e05073537"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 @Sendable () async -&gt; () in Audiobooks.Audiobook.checkOfflineStatus() -&gt; ()"
+                  moduleName = "Audiobooks"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rasmus/Development/Audiobooks/Audiobooks/Data/Item/Audiobooks/Audiobook.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "40"
+                  endingLineNumber = "40"
+                  offsetFromSymbolStart = "60">
+               </Location>
+               <Location
+                  uuid = "DC16B884-3DDA-493E-9345-A45A358F40F7 - 612173cc28149336"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) suspend resume partial function for closure #1 @Sendable () async -&gt; () in Audiobooks.Audiobook.checkOfflineStatus() -&gt; ()"
+                  moduleName = "Audiobooks"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rasmus/Development/Audiobooks/Audiobooks/Data/Item/Audiobooks/Audiobook.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "40"
+                  endingLineNumber = "40"
+                  offsetFromSymbolStart = "40">
+               </Location>
+               <Location
+                  uuid = "DC16B884-3DDA-493E-9345-A45A358F40F7 - e28a05523fe871c8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in Audiobooks.Audiobook.checkOfflineStatus() -&gt; ()"
+                  moduleName = "Audiobooks"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rasmus/Development/Audiobooks/Audiobooks/Data/Item/Audiobooks/Audiobook.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "39"
+                  endingLineNumber = "39"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AC4623DA-2DB7-4979-9DA2-A75DBE24340F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Audiobooks/Util/Offline/OfflineManager+Audiobook.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "getAudiobookOfflineStatus(audiobookId:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5DC821C9-1D72-418B-A17C-C115A23B1D36"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Audiobooks/Util/Offline/OfflineManager+Audiobook.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "getAudiobookOfflineStatus(audiobookId:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "5DC821C9-1D72-418B-A17C-C115A23B1D36 - b06ad08673da16a5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Audiobooks.OfflineManager.getAudiobookOfflineStatus(audiobookId: Swift.String) -&gt; Audiobooks.PlayableItem.OfflineStatus"
+                  moduleName = "Audiobooks"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rasmus/Development/Audiobooks/Audiobooks/Util/Offline/OfflineManager+Audiobook.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103"
+                  offsetFromSymbolStart = "312">
+               </Location>
+               <Location
+                  uuid = "5DC821C9-1D72-418B-A17C-C115A23B1D36 - d0a8decca26db591"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool, Audiobooks.OfflineAudiobookTrack) -&gt; Swift.Bool in Audiobooks.OfflineManager.getAudiobookOfflineStatus(audiobookId: Swift.String) -&gt; Audiobooks.PlayableItem.OfflineStatus"
+                  moduleName = "Audiobooks"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rasmus/Development/Audiobooks/Audiobooks/Util/Offline/OfflineManager+Audiobook.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

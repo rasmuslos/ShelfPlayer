@@ -52,11 +52,25 @@ extension AudiobookView {
                     ToolbarItem(placement: .primaryAction) {
                         HStack {
                             Button {
-                                
+                                Task {
+                                    if audiobook.offline == .none {
+                                        try! await OfflineManager.shared.downloadAudiobook(audiobook)
+                                    } else if audiobook.offline == .downloaded {
+                                        try! OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
+                                    }
+                                }
                             } label: {
-                                Image(systemName: "arrow.down")
+                                switch audiobook.offline {
+                                case .none:
+                                    Image(systemName: "arrow.down")
+                                case .working:
+                                    ProgressView()
+                                case .downloaded:
+                                    Image(systemName: "xmark")
+                                }
                             }
                             .modifier(FullscreenToolbarModifier(navigationBarVisible: $navigationBarVisible))
+                            
                             Menu {
                                 if let authorId = authorId {
                                     NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
@@ -81,6 +95,14 @@ extension AudiobookView {
                                         Label("Mark as unfinished", systemImage: "xmark")
                                     } else {
                                         Label("Mark as finished", systemImage: "checkmark")
+                                    }
+                                }
+                                
+                                if audiobook.offline != .none {
+                                    Button(role: .destructive) {
+                                        try! OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
+                                    } label: {
+                                        Label("Force delete", systemImage: "trash")
                                     }
                                 }
                             } label: {
