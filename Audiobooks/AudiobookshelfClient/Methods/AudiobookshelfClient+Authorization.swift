@@ -38,7 +38,7 @@ extension AudiobookshelfClient {
 // MARK: Authorize
 
 extension AudiobookshelfClient {
-    func authorize() async throws -> [MediaPorgress] {
+    func authorize() async throws -> [MediaProgress] {
         let response = try await request(ClientRequest<AuthorizationResponse>(path: "api/authorize", method: "POST"))
         return response.user.mediaProgress
     }
@@ -54,7 +54,7 @@ extension AudiobookshelfClient {
             let id: String
             let token: String
             
-            let mediaProgress: [MediaPorgress]
+            let mediaProgress: [MediaProgress]
         }
     }
 }

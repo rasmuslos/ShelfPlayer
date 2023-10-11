@@ -18,12 +18,21 @@ extension Double {
         )
     }
     
-    func hoursMinutesSecondsString() -> String {
+    func hoursMinutesSecondsString(includeSeconds: Bool = true, includeLabels: Bool = false) -> String {
         let (hours, minutes, seconds) = hoursMinutesSeconds()
-        var result = "\(minutes)m:\(seconds)s"
         
+        let h = includeLabels ? " hours" : ""
+        let min = includeLabels ? " minutes" : ""
+        let sec = includeLabels ? " seconds" : ""
+        let separator = includeLabels ? " " : ":"
+        
+        var result = "\(minutes)\(min)"
+        
+        if includeSeconds || (hours == "00" && minutes == "") {
+            result.append("\(separator)\(seconds)\(sec)")
+        }
         if hours != "00" {
-            result.prefix("\(hours)h:")
+            result.prefix("\(hours)\(h)\(separator)")
         }
         
         return result

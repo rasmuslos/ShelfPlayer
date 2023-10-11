@@ -14,10 +14,18 @@
 		3A0AE6BF2AB6253300ACCD68 /* LargeButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6BE2AB6253300ACCD68 /* LargeButtonStyle.swift */; };
 		3A0E0ABC2ACD6E2F009F8EF1 /* AudiobookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E0ABB2ACD6E2F009F8EF1 /* AudiobookView.swift */; };
 		3A0E0ABE2ACD72B0009F8EF1 /* PlayNowButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E0ABD2ACD72B0009F8EF1 /* PlayNowButtonStyle.swift */; };
+		3A10117D2AD6971900AAE220 /* VolumeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A10117C2AD6971900AAE220 /* VolumeSlider.swift */; };
+		3A1011822AD6975C00AAE220 /* MPVolumeView+Volume.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */; };
+		3A1011842AD697B600AAE220 /* NowPlayingSheet+BottomButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1011832AD697B600AAE220 /* NowPlayingSheet+BottomButtons.swift */; };
+		3A1011872AD69DDA00AAE220 /* PlaybackSpeedSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1011862AD69DDA00AAE220 /* PlaybackSpeedSelector.swift */; };
 		3A1507952AD348E700D7D6CF /* AllEpisodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1507942AD348E700D7D6CF /* AllEpisodesView.swift */; };
 		3A1507992AD4494300D7D6CF /* UINavigationController+Gesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */; };
 		3A17E6882AD5EC3000E59464 /* NowPlayingBarModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17E6872AD5EC3000E59464 /* NowPlayingBarModifier.swift */; };
 		3A17E68A2AD5EC6A00E59464 /* AudioPlayer+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17E6892AD5EC6A00E59464 /* AudioPlayer+Notifications.swift */; };
+		3A17E68D2AD5EF9C00E59464 /* NowPlayingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17E68C2AD5EF9C00E59464 /* NowPlayingSheet.swift */; };
+		3A17E68F2AD5F15900E59464 /* NowPlayingSheet+Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17E68E2AD5F15900E59464 /* NowPlayingSheet+Title.swift */; };
+		3A17E6912AD5F21B00E59464 /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17E6902AD5F21B00E59464 /* Slider.swift */; };
+		3A17E6932AD5F24500E59464 /* NowPlayingSheet+Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17E6922AD5F24500E59464 /* NowPlayingSheet+Controls.swift */; };
 		3A1EAB8B2ACC7C5D0064C80C /* AudiobooksRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EAB8A2ACC7C5D0064C80C /* AudiobooksRow.swift */; };
 		3A1EAB8D2ACC7C790064C80C /* Audiobook+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EAB8C2ACC7C790064C80C /* Audiobook+Fixture.swift */; };
 		3A1EAB902ACC7EF40064C80C /* AudiobookCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EAB8F2ACC7EF40064C80C /* AudiobookCover.swift */; };
@@ -143,10 +151,18 @@
 		3A0AE6BE2AB6253300ACCD68 /* LargeButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeButtonStyle.swift; sourceTree = "<group>"; };
 		3A0E0ABB2ACD6E2F009F8EF1 /* AudiobookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookView.swift; sourceTree = "<group>"; };
 		3A0E0ABD2ACD72B0009F8EF1 /* PlayNowButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayNowButtonStyle.swift; sourceTree = "<group>"; };
+		3A10117C2AD6971900AAE220 /* VolumeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeSlider.swift; sourceTree = "<group>"; };
+		3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MPVolumeView+Volume.swift"; sourceTree = "<group>"; };
+		3A1011832AD697B600AAE220 /* NowPlayingSheet+BottomButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NowPlayingSheet+BottomButtons.swift"; sourceTree = "<group>"; };
+		3A1011862AD69DDA00AAE220 /* PlaybackSpeedSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeedSelector.swift; sourceTree = "<group>"; };
 		3A1507942AD348E700D7D6CF /* AllEpisodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllEpisodesView.swift; sourceTree = "<group>"; };
 		3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Gesture.swift"; sourceTree = "<group>"; };
 		3A17E6872AD5EC3000E59464 /* NowPlayingBarModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingBarModifier.swift; sourceTree = "<group>"; };
 		3A17E6892AD5EC6A00E59464 /* AudioPlayer+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioPlayer+Notifications.swift"; sourceTree = "<group>"; };
+		3A17E68C2AD5EF9C00E59464 /* NowPlayingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingSheet.swift; sourceTree = "<group>"; };
+		3A17E68E2AD5F15900E59464 /* NowPlayingSheet+Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NowPlayingSheet+Title.swift"; sourceTree = "<group>"; };
+		3A17E6902AD5F21B00E59464 /* Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
+		3A17E6922AD5F24500E59464 /* NowPlayingSheet+Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NowPlayingSheet+Controls.swift"; sourceTree = "<group>"; };
 		3A1EAB8A2ACC7C5D0064C80C /* AudiobooksRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksRow.swift; sourceTree = "<group>"; };
 		3A1EAB8C2ACC7C790064C80C /* Audiobook+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Audiobook+Fixture.swift"; sourceTree = "<group>"; };
 		3A1EAB8F2ACC7EF40064C80C /* AudiobookCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookCover.swift; sourceTree = "<group>"; };
@@ -370,6 +386,74 @@
 			path = Audiobook;
 			sourceTree = "<group>";
 		};
+		3A1011782AD696CF00AAE220 /* Fullscreen */ = {
+			isa = PBXGroup;
+			children = (
+				3A77B7082ACDF8F200F22C7F /* CustomBackButton.swift */,
+				3A77B7062ACDF89500F22C7F /* FullscreenToolbarModifier.swift */,
+			);
+			path = Fullscreen;
+			sourceTree = "<group>";
+		};
+		3A10117A2AD696F000AAE220 /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+				3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */,
+				3ABCC7E32AD46655004AEADF /* GeometryRectangle.swift */,
+			);
+			path = Shapes;
+			sourceTree = "<group>";
+		};
+		3A10117B2AD6970100AAE220 /* Slider */ = {
+			isa = PBXGroup;
+			children = (
+				3A17E6902AD5F21B00E59464 /* Slider.swift */,
+				3A10117C2AD6971900AAE220 /* VolumeSlider.swift */,
+			);
+			path = Slider;
+			sourceTree = "<group>";
+		};
+		3A10117E2AD6972A00AAE220 /* String */ = {
+			isa = PBXGroup;
+			children = (
+				3A77B6F92ACDE08800F22C7F /* String+Trim.swift */,
+				3A1EAB9D2ACC85B50064C80C /* String+Prefix.swift */,
+				3A77B7102ACE00FC00F22C7F /* String+Base64.swift */,
+				3A1EAB9B2ACC84490064C80C /* String+Padding.swift */,
+			);
+			path = String;
+			sourceTree = "<group>";
+		};
+		3A10117F2AD6973400AAE220 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				3A8810F82AD2CE32009696D1 /* UIColor+IsLight.swift */,
+				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
+		3A1011802AD6973D00AAE220 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				3A5159532AD02B6D00CD5680 /* Date+Get.swift */,
+				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
+				3A1EAB992ACC82490064C80C /* Double+FormatTime.swift */,
+				3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		3A1011852AD69DB200AAE220 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				3A38A1572AD4715100D533F3 /* PlayButton.swift */,
+				3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */,
+				3A1011862AD69DDA00AAE220 /* PlaybackSpeedSelector.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
 		3A17E68B2AD5EF2C00E59464 /* Series */ = {
 			isa = PBXGroup;
 			children = (
@@ -405,15 +489,9 @@
 		3A1EAB972ACC822F0064C80C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				3A5159532AD02B6D00CD5680 /* Date+Get.swift */,
-				3A77B6F92ACDE08800F22C7F /* String+Trim.swift */,
-				3A1EAB9D2ACC85B50064C80C /* String+Prefix.swift */,
-				3A77B7102ACE00FC00F22C7F /* String+Base64.swift */,
-				3A1EAB9B2ACC84490064C80C /* String+Padding.swift */,
-				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
-				3A1EAB992ACC82490064C80C /* Double+FormatTime.swift */,
-				3A8810F82AD2CE32009696D1 /* UIColor+IsLight.swift */,
-				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
+				3A1011802AD6973D00AAE220 /* Other */,
+				3A10117F2AD6973400AAE220 /* UIKit */,
+				3A10117E2AD6972A00AAE220 /* String */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -533,6 +611,10 @@
 			isa = PBXGroup;
 			children = (
 				3A17E6872AD5EC3000E59464 /* NowPlayingBarModifier.swift */,
+				3A17E68C2AD5EF9C00E59464 /* NowPlayingSheet.swift */,
+				3A17E68E2AD5F15900E59464 /* NowPlayingSheet+Title.swift */,
+				3A17E6922AD5F24500E59464 /* NowPlayingSheet+Controls.swift */,
+				3A1011832AD697B600AAE220 /* NowPlayingSheet+BottomButtons.swift */,
 			);
 			path = NowPlaying;
 			sourceTree = "<group>";
@@ -562,14 +644,13 @@
 		3A77B7052ACDF88200F22C7F /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */,
-				3A77B7082ACDF8F200F22C7F /* CustomBackButton.swift */,
-				3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */,
-				3A77B7062ACDF89500F22C7F /* FullscreenToolbarModifier.swift */,
+				3A10117B2AD6970100AAE220 /* Slider */,
+				3A10117A2AD696F000AAE220 /* Shapes */,
+				3A1011852AD69DB200AAE220 /* Buttons */,
+				3A1EAB942ACC80820064C80C /* Items */,
+				3A1011782AD696CF00AAE220 /* Fullscreen */,
 				3AA9541E2AD2925C0031C20D /* RowTitle.swift */,
 				3ABCC7E12AD4659E004AEADF /* Description.swift */,
-				3ABCC7E32AD46655004AEADF /* GeometryRectangle.swift */,
-				3A38A1572AD4715100D533F3 /* PlayButton.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -735,7 +816,6 @@
 			isa = PBXGroup;
 			children = (
 				3A77B7052ACDF88200F22C7F /* Util */,
-				3A1EAB942ACC80820064C80C /* Items */,
 				3ACB3BA52AD1E7FE005EA609 /* Podcasts */,
 				3A1EAB8E2ACC7EE20064C80C /* Audiobooks */,
 				3ACD19B32ACB58D6007D01FE /* Fallback */,
@@ -910,6 +990,7 @@
 				3A50AAB62ACC521B00BF5438 /* AudiobookLibraryView+Home.swift in Sources */,
 				3A17E6882AD5EC3000E59464 /* NowPlayingBarModifier.swift in Sources */,
 				3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */,
+				3A17E6932AD5F24500E59464 /* NowPlayingSheet+Controls.swift in Sources */,
 				3A77B7112ACE00FC00F22C7F /* String+Base64.swift in Sources */,
 				3A17E68A2AD5EC6A00E59464 /* AudioPlayer+Notifications.swift in Sources */,
 				3AA9542B2AD2A87E0031C20D /* EpisodesFeaturedRow.swift in Sources */,
@@ -919,6 +1000,7 @@
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
 				3A50AAC52ACC59BD00BF5438 /* HomeRow.swift in Sources */,
 				3A1EAB8D2ACC7C790064C80C /* Audiobook+Fixture.swift in Sources */,
+				3A17E68D2AD5EF9C00E59464 /* NowPlayingSheet.swift in Sources */,
 				3ACB3B982AD1D18D005EA609 /* PodcastLibraryView+Search.swift in Sources */,
 				3AA954252AD29A0A0031C20D /* EpisodesTable.swift in Sources */,
 				3A50AAA72ACC431A00BF5438 /* AudiobookshelfClient+Libraries.swift in Sources */,
@@ -950,12 +1032,16 @@
 				3A77B6FA2ACDE08800F22C7F /* String+Trim.swift in Sources */,
 				3A50AABA2ACC523000BF5438 /* AudiobookLibraryView+Series.swift in Sources */,
 				3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */,
+				3A1011872AD69DDA00AAE220 /* PlaybackSpeedSelector.swift in Sources */,
 				3A50AABE2ACC572B00BF5438 /* AudiobookshelfClient+Audiobooks.swift in Sources */,
 				3A0AE6BF2AB6253300ACCD68 /* LargeButtonStyle.swift in Sources */,
 				3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */,
 				3A77B7022ACDF01C00F22C7F /* SeriesUnavailableView.swift in Sources */,
+				3A1011822AD6975C00AAE220 /* MPVolumeView+Volume.swift in Sources */,
 				3A50AAAA2ACC463C00BF5438 /* Library+Fixture.swift in Sources */,
+				3A1011842AD697B600AAE220 /* NowPlayingSheet+BottomButtons.swift in Sources */,
 				3ACB3BA42AD1E393005EA609 /* Podcast+Convert.swift in Sources */,
+				3A10117D2AD6971900AAE220 /* VolumeSlider.swift in Sources */,
 				3ACD19AA2ACAFC97007D01FE /* Audiobook.swift in Sources */,
 				3A1507952AD348E700D7D6CF /* AllEpisodesView.swift in Sources */,
 				3AA954212AD293670031C20D /* PodcastCover.swift in Sources */,
@@ -991,7 +1077,9 @@
 				3A27A6772AB7669600F80C92 /* AudiobookshelfClient+MediaProgress.swift in Sources */,
 				3A0E0ABE2ACD72B0009F8EF1 /* PlayNowButtonStyle.swift in Sources */,
 				3A27A66B2AB761EE00F80C92 /* AudiobookshelfClient.swift in Sources */,
+				3A17E68F2AD5F15900E59464 /* NowPlayingSheet+Title.swift in Sources */,
 				3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */,
+				3A17E6912AD5F21B00E59464 /* Slider.swift in Sources */,
 				3A5159562AD0374600CD5680 /* AudiobooksSort.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

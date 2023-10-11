@@ -18,11 +18,17 @@ struct ContentView: View {
                 state = .sessionImport
             }
         case .sessionImport:
-            SessionsImportView() {
-                state = .library
+            SessionsImportView() { success in
+                if success {
+                    state = .library
+                } else {
+                    state = .offline
+                }
             }
         case .library:
             LibraryView()
+        case .offline:
+            Text("Offline")
         }
     }
 }
@@ -34,6 +40,7 @@ extension ContentView {
         case login
         case sessionImport
         case library
+        case offline
     }
 }
 

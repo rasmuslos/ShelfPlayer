@@ -69,12 +69,8 @@ extension PlaybackReporter {
             do {
                 if let playbackSessionId = playbackSessionId {
                     try await AudiobookshelfClient.shared.reportPlaybackUpdate(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
-                    
-                    print("suc1")
                 } else {
                     try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
-                    
-                    print("suc2")
                 }
             } catch {
                 self.lastReportedTime -= timeListened
@@ -109,6 +105,10 @@ extension PlaybackReporter {
 
 extension PlaybackReporter {
     private static func reportPlaybackStop(playbackSessionId: String?, itemId: String, episodeId: String?, currentTime: Double, duration: Double, timeListened: Double) {
+        if currentTime.isNaN || duration.isNaN {
+            return
+        }
+        
         Task.detached {
             var success = true
             

@@ -7,8 +7,11 @@
 
 import Foundation
 import SwiftData
+import OSLog
 
 struct OfflineManager {
+    let logger = Logger(subsystem: "io.rfk.audiobooks", category: "OfflineProgress")
+    
     private init() {
     }
 }

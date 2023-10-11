@@ -12,24 +12,30 @@ import SwiftData
 
 extension OfflineManager {
     @MainActor
-    func importSessions(_ sessions: [AudiobookshelfClient.MediaPorgress]) async {
+    func importSessions(_ sessions: [AudiobookshelfClient.MediaProgress]) async {
         sessions.forEach { session in
             let existing: OfflineProgress?
             
             if let episodeId = session.episodeId {
                 existing = getProgress(episodeId: episodeId)
             } else {
-                existing = getProgress(id: session.id)
+                existing = getProgress(id: session.libraryItemId)
             }
             
             if let existing = existing {
-                existing.duration = session.duration
-                existing.currentTime = session.currentTime
-                existing.progress = session.progress
-                
-                existing.startedAt = Date(timeIntervalSince1970: Double(session.startedAt) / 1000)
-                existing.lastUpdate = Date(timeIntervalSince1970: Double(session.lastUpdate) / 1000)
+                if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < session.lastUpdate {
+                    logger.info("Updating progress: \(existing.id)")
+                    
+                    existing.duration = session.duration
+                    existing.currentTime = session.currentTime
+                    existing.progress = session.progress
+                    
+                    existing.startedAt = Date(timeIntervalSince1970: Double(session.startedAt) / 1000)
+                    existing.lastUpdate = Date(timeIntervalSince1970: Double(session.lastUpdate) / 1000)
+                }
             } else {
+                logger.info("Creating progress: \(session.id)")
+                
                 let progress = OfflineProgress(
                     id: session.id,
                     itemId: session.libraryItemId,

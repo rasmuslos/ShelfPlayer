@@ -23,6 +23,8 @@ class AudioPlayer {
     
     private var playbackReporter: PlaybackReporter?
     
+    private var cache: [String: Double]
+    
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "AudioPlayer")
     
     private init() {
@@ -33,7 +35,9 @@ class AudioPlayer {
         
         audioPlayer = AVQueuePlayer()
         buffering = false
+        
         nowPlayingInfo = [:]
+        cache = [:]
         
         setupObservers()
         setupTimeObserver()
@@ -65,7 +69,9 @@ extension AudioPlayer {
         setupNowPlayingMetadata()
         
         self.playbackReporter = playbackReporter
-        NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
+        Task { @MainActor in
+            NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
+        }
     }
     
     func stopPlayback() {
@@ -81,7 +87,9 @@ extension AudioPlayer {
         updateAudioSession(active: false)
         clearNowPlayingMetadata()
         
-        NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
+        Task { @MainActor in
+            NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
+        }
     }
     
     func setPlaying(_ playing: Bool) {
@@ -94,7 +102,9 @@ extension AudioPlayer {
         }
         
         playbackReporter?.reportProgress(playing: playing, currentTime: getCurrentTime(), duration: getDuration())
-        NotificationCenter.default.post(name: Self.playPauseNotification, object: nil)
+        Task { @MainActor in
+            NotificationCenter.default.post(name: Self.playPauseNotification, object: nil)
+        }
     }
     
     func seek(to: Double) {
@@ -122,6 +132,7 @@ extension AudioPlayer {
                 setPlaying(resume)
             }
         } else if to >= getDuration() {
+            playbackReporter?.reportProgress(currentTime: getDuration(), duration: getDuration())
             stopPlayback()
         } else {
             logger.fault("Seek to position outside of range")
@@ -134,6 +145,8 @@ extension AudioPlayer {
         if isPlaying() {
             audioPlayer.rate = playbackRate
         }
+        
+        NotificationCenter.default.post(name: Self.playbackRateChanged, object: nil)
     }
 }
 
@@ -149,19 +162,45 @@ extension AudioPlayer {
     }
     
     func getCurrentTime() -> Double {
+        var seconds: Double
+        
         if tracks.count == 0 {
-            return audioPlayer.currentTime().seconds
+            seconds = audioPlayer.currentTime().seconds
         } else {
-            let history = getHistory()
-            return history.reduce(0, { $0 + $1.duration }) + audioPlayer.currentTime().seconds
+            let cacheKey = "currentTimeOffset.\(item?.id ?? "unknown").\(activeAudioTrackIndex)"
+            
+            if let cached = cache[cacheKey] {
+                seconds = cached
+            } else {
+                let history = getHistory()
+                let offset = history.reduce(0, { $0 + $1.duration })
+                
+                cache[cacheKey] = offset
+                seconds = offset
+            }
+            
+            seconds += audioPlayer.currentTime().seconds
         }
+        
+        return seconds.isFinite ? seconds : 0
     }
     func getDuration() -> Double {
+        let seconds: Double
+        
         if tracks.count == 1 {
-            return audioPlayer.currentItem?.duration.seconds ?? 0
+            seconds = audioPlayer.currentItem?.duration.seconds ?? 0
         } else {
-            return tracks.reduce(0, { $0 + $1.duration })
+            let cacheKey = "duration.\(item?.id ?? "unknown").\(activeAudioTrackIndex)"
+            
+            if let cached = cache[cacheKey] {
+                seconds = cached
+            } else {
+                seconds = tracks.reduce(0, { $0 + $1.duration })
+                cache[cacheKey] = seconds
+            }
         }
+        
+        return seconds.isFinite ? seconds : 0
     }
 }
 
@@ -192,16 +231,13 @@ extension AudioPlayer {
 extension AudioPlayer {
     private func setupTimeObserver() {
         audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: nil) { [unowned self] _ in
-            let currentTime = getCurrentTime()
-            if currentTime.isFinite && !currentTime.isNaN && Int(currentTime) % 5 == 0 {
-                updateNowPlayingStatus()
-            }
+            updateNowPlayingStatus()
             
             buffering = !(audioPlayer.currentItem?.isPlaybackLikelyToKeepUp ?? false)
             playbackReporter?.reportProgress(currentTime: getCurrentTime(), duration: getDuration())
             
             Task { @MainActor in
-                // NotificationCenter.default.post(name: NSNotification.PositionUpdated, object: nil)
+                NotificationCenter.default.post(name: Self.currentTimeChangedNotification, object: nil)
             }
         }
     }
@@ -210,6 +246,7 @@ extension AudioPlayer {
         NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { [weak self] _ in
             if self?.activeAudioTrackIndex == (self?.tracks.count ?? 0) - 1 {
                 self?.stopPlayback()
+                return
             }
             
             self?.activeAudioTrackIndex += 1
@@ -231,6 +268,10 @@ extension AudioPlayer {
                 }
             default: ()
             }
+        }
+        
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.playbackReporter = nil
         }
     }
 }
