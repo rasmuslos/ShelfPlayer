@@ -68,7 +68,7 @@ extension AudiobookshelfClient {
         let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemId)\(episodeId != nil ? "/\(episodeId!)" : "")", method: "PATCH", body: [
             "duration": duration,
             "currentTime": currentTime,
-            "progress": duration / currentTime,
+            "progress": currentTime / duration,
             "isFinished": duration - currentTime <= 10,
         ]))
     }

@@ -20,7 +20,6 @@ extension Podcast {
             genres: item.media?.metadata.genres ?? [],
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             released: item.media?.metadata.releaseDate, 
-            size: item.size ?? 0,
             explicit: item.media?.metadata.explicit ?? false,
             episodeCount: item.media?.episodes?.count ?? 0)
     }
