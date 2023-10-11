@@ -13,7 +13,7 @@ import OSLog
 class AudioPlayer {
     private(set) var item: PlayableItem?
     private var tracks: PlayableItem.AudioTracks
-    private var chapters: PlayableItem.Chapters
+    private(set) var chapters: PlayableItem.Chapters
     
     private var activeAudioTrackIndex: Int
     
@@ -364,6 +364,7 @@ extension AudioPlayer {
                 
                 nowPlayingInfo[MPMediaItemPropertyTitle] = item.name
                 nowPlayingInfo[MPMediaItemPropertyArtist] = item.author
+                nowPlayingInfo[MPNowPlayingInfoPropertyChapterCount] = chapters.count
                 
                 MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
                 
@@ -382,6 +383,8 @@ extension AudioPlayer {
     
     private func updateNowPlayingStatus() {
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = getDuration()
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
+        nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = getPlaybackRate()
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = getCurrentTime()
         
         MPNowPlayingInfoCenter.default().playbackState = isPlaying() ? .playing : .paused

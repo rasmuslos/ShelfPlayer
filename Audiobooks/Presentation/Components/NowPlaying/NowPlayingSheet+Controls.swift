@@ -25,6 +25,7 @@ extension NowPlayingSheet {
                     
                     HStack {
                         Text(currentTime.hoursMinutesSecondsString())
+                            .frame(width: 65, alignment: .leading)
                         Spacer()
                         
                         Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(" left")
@@ -33,6 +34,7 @@ extension NowPlayingSheet {
                         
                         Spacer()
                         Text(duration.hoursMinutesSecondsString())
+                            .frame(width: 65, alignment: .trailing)
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)

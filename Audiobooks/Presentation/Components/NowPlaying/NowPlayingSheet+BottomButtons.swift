@@ -10,6 +10,8 @@ import AVKit
 
 extension NowPlayingSheet {
     struct BottomButtons: View {
+        @Binding var showChaptersSheet: Bool
+        
         var body: some View {
             HStack {
                 PlaybackSpeedSelector()
@@ -22,7 +24,7 @@ extension NowPlayingSheet {
                 
                 Spacer()
                 Button {
-                    
+                    showChaptersSheet.toggle()
                 } label: {
                     Image(systemName: "list.dash")
                 }

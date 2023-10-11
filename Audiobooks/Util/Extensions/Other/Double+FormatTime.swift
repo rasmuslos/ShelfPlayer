@@ -26,9 +26,12 @@ extension Double {
         let sec = includeLabels ? " seconds" : ""
         let separator = includeLabels ? " " : ":"
         
-        var result = "\(minutes)\(min)"
+        var result = ""
         
-        if includeSeconds || (hours == "00" && minutes == "") {
+        if minutes != "" {
+            result.append("\(minutes)\(min)")
+        }
+        if includeSeconds || (hours == "00" && minutes == "00") {
             result.append("\(separator)\(seconds)\(sec)")
         }
         if hours != "00" {

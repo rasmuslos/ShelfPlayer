@@ -35,8 +35,8 @@ struct EpisodeMenu: View {
             }
         } label: {
             Image(systemName: "ellipsis")
-                .foregroundStyle(.secondary)
         }
+        .foregroundStyle(.secondary)
     }
 }
 

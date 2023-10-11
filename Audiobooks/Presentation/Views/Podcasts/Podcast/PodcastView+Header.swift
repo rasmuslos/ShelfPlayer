@@ -17,7 +17,7 @@ extension PodcastView {
         
         var body: some View {
             ZStack {
-                GeometryRectangle(treshold: 0, backgroundColor: Color(backgroundColor), navigationBarVisible: $navigationBarVisible)
+                GeometryRectangle(treshold: -300, backgroundColor: Color(backgroundColor), navigationBarVisible: $navigationBarVisible)
                 
                 VStack {
                     ItemImage(image: podcast.image)
@@ -55,6 +55,7 @@ extension PodcastView {
                         if podcast.genres.count > 0 {
                             Text("•")
                             Text(podcast.genres.joined(separator: ", "))
+                                .lineLimit(1)
                         }
                         
                         Spacer()

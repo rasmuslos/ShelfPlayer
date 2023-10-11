@@ -13,7 +13,7 @@ struct EpisodesList: View {
     var body: some View {
         ForEach(episodes) { episode in
             NavigationLink(destination: EpisodeView(episode: episode)) {
-                EpisodeListRow(episode: episode)
+                EpisodeRow(episode: episode)
             }
             .listRowInsets(.init(top: 5, leading: 15, bottom: 5, trailing: 15))
         }

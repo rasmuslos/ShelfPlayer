@@ -9,7 +9,6 @@ import SwiftUI
 
 extension AudiobookLibraryView {
     struct SeriesView: View {
-        
         @Environment(\.libraryId) var libraryId
         
         @State var failed = false
@@ -27,6 +26,7 @@ extension AudiobookLibraryView {
                             SeriesGrid(series: series)
                                 .padding()
                         }
+                        .modifier(NowPlayingBarSafeAreaModifier())
                     }
                 }
                 .navigationTitle("Series")

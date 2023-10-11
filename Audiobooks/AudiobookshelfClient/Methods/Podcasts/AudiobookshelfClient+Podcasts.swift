@@ -50,3 +50,12 @@ extension AudiobookshelfClient {
         return item.media!.episodes!.map { Episode.convertFromAudiobookshelf(podcastEpisode: $0, item: item) }
     }
 }
+
+// MARK: All podcasts
+
+extension AudiobookshelfClient {
+    func getAllPodcasts(libraryId: String) async throws -> [Podcast] {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET"))
+        return response.results.map(Podcast.convertFromAudiobookshelf)
+    }
+}

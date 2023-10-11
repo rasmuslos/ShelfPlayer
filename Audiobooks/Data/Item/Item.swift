@@ -59,3 +59,11 @@ extension Item {
         }
     }
 }
+
+// MARK: Equatable
+
+extension Item: Equatable {
+    static func == (lhs: Item, rhs: Item) -> Bool {
+        lhs.id == rhs.id
+    }
+}
