@@ -31,10 +31,13 @@ extension NowPlayingSheet {
                         .font(.headline)
                         .foregroundStyle(.primary)
                     
-                    Text(item.author ?? "")
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    if let author = item.author {
+                        Text(author)
+                            .lineLimit(1)
+                            .font(.subheadline)
+                            .fontDesign(item as? Audiobook != nil ? .serif : .default)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 
                 Spacer()

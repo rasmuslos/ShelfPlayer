@@ -43,4 +43,22 @@ extension Episode {
             index: podcastEpisode.index ?? 0,
             duration: podcastEpisode.audioFile?.duration ?? 0)
     }
+    
+    static func convertFromAudiobookshelf(episode: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfPodcastEpisode) -> Episode {
+        Episode(
+            id: episode.id!,
+            libraryId: episode.libraryItemId!,
+            name: episode.title!,
+            author: episode.podcast?.author,
+            description: episode.description,
+            image: Item.Image.convertFromAudiobookshelf(podcast: episode.podcast!),
+            genres: [],
+            addedAt: Date(),
+            released: episode.pubDate,
+            size: episode.size ?? 0,
+            podcastId: episode.podcast!.id,
+            podcastName: episode.podcast!.metadata.title!,
+            index: episode.index ?? 0,
+            duration: episode.audioFile?.duration ?? 0)
+    }
 }

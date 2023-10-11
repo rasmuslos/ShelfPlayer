@@ -34,4 +34,20 @@ extension Item.Image {
         
         return nil
     }
+    
+    static func convertFromAudiobookshelf(podcast: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfPodcastEpisode.AudiobookshelfItemPodcast) -> Item.Image? {
+        if podcast.coverPath != nil {
+            return Item.Image(url: AudiobookshelfClient.shared.serverUrl
+                .appending(path: "api")
+                .appending(path: "items")
+                .appending(path: podcast.libraryItemId)
+                .appending(path: "cover")
+                .appending(queryItems: [
+                    URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token),
+                ])
+            )
+        }
+        
+        return nil
+    }
 }

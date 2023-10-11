@@ -46,3 +46,11 @@ extension AudiobookshelfClient {
         let results: [AudiobookshelfItem]
     }
 }
+
+// MARK: Episodes response
+
+extension AudiobookshelfClient {
+    struct EpisodesResponse: Codable {
+        let episodes: [AudiobookshelfItem.AudiobookshelfPodcastEpisode]
+    }
+}
