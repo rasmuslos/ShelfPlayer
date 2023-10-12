@@ -15,7 +15,7 @@ struct PlayNowButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
-            .padding(.vertical, 12)
+            .padding(.vertical, 15)
             .frame(maxWidth: .infinity)
             .foregroundColor(colorScheme == .dark ? .black : .white)
             .background {

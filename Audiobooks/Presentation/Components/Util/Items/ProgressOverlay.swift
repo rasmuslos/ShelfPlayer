@@ -76,9 +76,5 @@ struct ItemProgressImage: View {
 }
 
 #Preview {
-    ItemImage(image: Audiobook.fixture.image)
-        .overlay {
-            ProgressOverlay(item: Audiobook.fixture)
-        }
-        .frame(width: 200)
+    ItemProgressImage(item: Audiobook.fixture)
 }

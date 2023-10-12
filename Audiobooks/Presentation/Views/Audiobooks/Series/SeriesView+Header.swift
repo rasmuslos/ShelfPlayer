@@ -26,6 +26,7 @@ extension SeriesView {
                                 ItemImage(image: series.images[index])
                                     .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 175 : 140)
                                     .offset(x: index == 0 ? 0 : index == 1 ? -50 : index == 2 ? 50 : index == 3 ? -90 : 90)
+                                    .shadow(radius: 5)
                             }
                         }
                         

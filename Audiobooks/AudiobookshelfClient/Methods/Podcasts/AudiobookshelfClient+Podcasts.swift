@@ -33,9 +33,12 @@ extension AudiobookshelfClient {
 // MARK: Get podcast by id
 
 extension AudiobookshelfClient {
-    func getPodcastById(_ podcastId: String) async -> Podcast? {
+    func getPodcastById(_ podcastId: String) async -> (Podcast, [Episode])? {
         if let item = try? await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(podcastId)", method: "GET")) {
-            return Podcast.convertFromAudiobookshelf(item: item)
+            let podcast = Podcast.convertFromAudiobookshelf(item: item)
+            let episodes = item.media!.episodes!.map { Episode.convertFromAudiobookshelf(podcastEpisode: $0, item: item) }
+            
+            return (podcast, episodes)
         }
         
         return nil

@@ -36,9 +36,22 @@ extension EpisodeView {
                     ToolbarItem(placement: .topBarTrailing) {
                         HStack {
                             Button {
-                                
+                                Task {
+                                    if episode.offline == .none {
+                                        try! await OfflineManager.shared.downloadEpisode(episode)
+                                    } else if episode.offline == .downloaded {
+                                        try! OfflineManager.shared.deleteEpisode(episodeId: episode.id)
+                                    }
+                                }
                             } label: {
-                                Image(systemName: "arrow.down.circle.fill")
+                                switch episode.offline {
+                                case .none:
+                                    Image(systemName: "arrow.down")
+                                case .working:
+                                    ProgressView()
+                                case .downloaded:
+                                    Image(systemName: "xmark")
+                                }
                             }
                             .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
                             

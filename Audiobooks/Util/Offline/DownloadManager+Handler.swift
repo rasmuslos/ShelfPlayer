@@ -21,7 +21,7 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
         Task.detached { @MainActor [self] in
             if let reference = OfflineManager.shared.getReferenceByDownloadTaskId(downloadTask.taskIdentifier) {
                 if let track = OfflineManager.shared.getAudiobookTrackById(reference.reference) {
-                    let destination = getTrackUrl(trackId: track.id)
+                    let destination = getAudiobookTrackUrl(trackId: track.id)
                     
                     do {
                         try? FileManager.default.removeItem(at: destination)
@@ -37,6 +37,26 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
                         try? OfflineManager.shared.deleteAudiobook(audiobookId: track.audiobookId)
                         
                         logger.fault("Error while moving track \(track.id): \(error.localizedDescription)")
+                    }
+                    
+                    return
+                } else if let episode = OfflineManager.shared.getEpisodeById(reference.reference) {
+                    let destination = getEpisodeUrl(episodeId: episode.id)
+                    
+                    do {
+                        try? FileManager.default.removeItem(at: destination)
+                        try FileManager.default.moveItem(at: tmpLocation, to: destination)
+                        episode.downloadCompleted = true
+                        
+                        PersistenceManager.shared.modelContainer.mainContext.delete(reference)
+                        NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
+                        
+                        logger.info("Download episode finished: \(episode.id) (\(episode.name))")
+                    } catch {
+                        try? FileManager.default.removeItem(at: tmpLocation)
+                        try? OfflineManager.shared.deleteEpisode(episodeId: episode.id)
+                        
+                        logger.fault("Error while moving episode \(episode.id) (\(episode.name)): \(error.localizedDescription)")
                     }
                     
                     return
@@ -56,6 +76,11 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
                     if let track = OfflineManager.shared.getAudiobookTrackById(reference.reference) {
                         try? OfflineManager.shared.deleteAudiobook(audiobookId: track.audiobookId)
                         logger.fault("Error while downloading track \(track.id): \(error.localizedDescription)")
+                        
+                        return
+                    } else if let episode = OfflineManager.shared.getEpisodeById(reference.reference) {
+                        try? OfflineManager.shared.deleteEpisode(episodeId: episode.id)
+                        logger.fault("Error while downloading episode \(episode.id) (\(episode.name)): \(error.localizedDescription)")
                         
                         return
                     }

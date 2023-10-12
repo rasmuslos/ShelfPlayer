@@ -15,7 +15,8 @@ class AudioPlayer {
     private var tracks: PlayableItem.AudioTracks
     private(set) var chapters: PlayableItem.Chapters
     
-    private var activeAudioTrackIndex: Int
+    private var activeAudioTrackIndex: Int?
+    private var activeChapterIndex: Int?
     
     private var audioPlayer: AVQueuePlayer
     private(set) var buffering: Bool = false
@@ -24,6 +25,7 @@ class AudioPlayer {
     private var playbackReporter: PlaybackReporter?
     
     private var cache: [String: Double]
+    private var enableChapterTrack: Bool
     
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "AudioPlayer")
     
@@ -31,13 +33,14 @@ class AudioPlayer {
         self.tracks = []
         self.chapters = []
         
-        activeAudioTrackIndex = -1
+        activeAudioTrackIndex = nil
         
         audioPlayer = AVQueuePlayer()
         buffering = false
         
         nowPlayingInfo = [:]
         cache = [:]
+        enableChapterTrack = UserDefaults.standard.bool(forKey: "enableChapterTrack")
         
         setupObservers()
         setupTimeObserver()
@@ -66,9 +69,11 @@ extension AudioPlayer {
         setPlaying(true)
         
         updateAudioSession(active: true)
+        updateChapterIndex()
         setupNowPlayingMetadata()
         
         self.playbackReporter = playbackReporter
+        
         Task { @MainActor in
             NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
         }
@@ -81,7 +86,9 @@ extension AudioPlayer {
         
         playbackReporter = nil
         
-        activeAudioTrackIndex = -1
+        activeAudioTrackIndex = nil
+        activeChapterIndex = nil
+        
         audioPlayer.removeAllItems()
         
         updateAudioSession(active: false)
@@ -107,8 +114,18 @@ extension AudioPlayer {
         }
     }
     
-    func seek(to: Double) {
-        if let index = getTrackIndex(currentTime: to) {
+    func seek(to: Double, includeChapterOffset: Bool = false) {
+        if to < 0 {
+            seek(to: 0, includeChapterOffset: includeChapterOffset)
+            return
+        }
+        
+        var to = to
+        if includeChapterOffset {
+            to += AudioPlayer.shared.getChapter()?.start ?? 0
+        }
+        
+         if let index = getTrackIndex(currentTime: to) {
             if index == activeAudioTrackIndex {
                 let offset = getTrack(currentTime: to)!.offset
                 audioPlayer.seek(to: CMTime(seconds: to - offset, preferredTimescale: 1000))
@@ -131,12 +148,15 @@ extension AudioPlayer {
                 activeAudioTrackIndex = index
                 setPlaying(resume)
             }
-        } else if to >= getDuration() {
-            playbackReporter?.reportProgress(currentTime: getDuration(), duration: getDuration())
-            stopPlayback()
-        } else {
+         } else if to >= getDuration() {
+             playbackReporter?.reportProgress(currentTime: getDuration(), duration: getDuration())
+             stopPlayback()
+         } else {
             logger.fault("Seek to position outside of range")
         }
+        
+        updateChapterIndex()
+        updateNowPlayingStatus()
     }
     
     func setPlaybackRate(_ playbackRate: Float) {
@@ -167,7 +187,7 @@ extension AudioPlayer {
         if tracks.count == 0 {
             seconds = audioPlayer.currentTime().seconds
         } else {
-            let cacheKey = "currentTimeOffset.\(item?.id ?? "unknown").\(activeAudioTrackIndex)"
+            let cacheKey = "currentTimeOffset.\(item?.id ?? "unknown").\(activeAudioTrackIndex ?? -1)"
             
             if let cached = cache[cacheKey] {
                 seconds = cached
@@ -190,7 +210,7 @@ extension AudioPlayer {
         if tracks.count == 1 {
             seconds = audioPlayer.currentItem?.duration.seconds ?? 0
         } else {
-            let cacheKey = "duration.\(item?.id ?? "unknown").\(activeAudioTrackIndex)"
+            let cacheKey = "duration.\(item?.id ?? "unknown").\(activeAudioTrackIndex ?? -1)"
             
             if let cached = cache[cacheKey] {
                 seconds = cached
@@ -215,7 +235,7 @@ extension AudioPlayer {
     }
     
     private func getHistory() -> PlayableItem.AudioTracks {
-        if activeAudioTrackIndex >= 0 {
+        if let activeAudioTrackIndex = activeAudioTrackIndex {
             return Array(tracks.prefix(activeAudioTrackIndex))
         } else {
             return []
@@ -230,6 +250,46 @@ extension AudioPlayer {
     }
 }
 
+// MARK: Chapters
+
+extension AudioPlayer {
+    private func updateChapterIndex() {
+        if !enableChapterTrack || chapters.count <= 1 {
+            activeChapterIndex = nil
+            return
+        }
+        
+        let currentTime = getCurrentTime()
+        let chapter = chapters.firstIndex { $0.start <= currentTime && $0.end > currentTime }
+        
+        activeChapterIndex = chapter
+    }
+    func getChapter() -> PlayableItem.Chapter? {
+        if let activeChapterIndex = activeChapterIndex {
+            return chapters[activeChapterIndex]
+        } else {
+            return nil
+        }
+    }
+    
+    func getChapterDuration() -> Double {
+        if let chapter = getChapter() {
+            return chapter.end - chapter.start
+        } else {
+            return getDuration()
+        }
+    }
+    func getChapterCurrentTime() -> Double {
+        let currentTime = getCurrentTime()
+        
+        if let chapter = getChapter() {
+            return currentTime - chapter.start
+        } else {
+            return currentTime
+        }
+    }
+}
+
 // MARK: Observers
 
 extension AudioPlayer {
@@ -239,6 +299,11 @@ extension AudioPlayer {
             
             buffering = !(audioPlayer.currentItem?.isPlaybackLikelyToKeepUp ?? false)
             playbackReporter?.reportProgress(currentTime: getCurrentTime(), duration: getDuration())
+            
+            let currentTime = getCurrentTime()
+            if currentTime.isFinite && !currentTime.isNaN, Int(currentTime) % 5 == 0 {
+                updateChapterIndex()
+            }
             
             Task { @MainActor in
                 NotificationCenter.default.post(name: Self.currentTimeChangedNotification, object: nil)
@@ -253,7 +318,7 @@ extension AudioPlayer {
                 return
             }
             
-            self?.activeAudioTrackIndex += 1
+            self?.activeAudioTrackIndex? += 1
         }
         
         NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { [weak self] notification in
@@ -276,6 +341,9 @@ extension AudioPlayer {
         
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
             self?.playbackReporter = nil
+        }
+        NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.enableChapterTrack = UserDefaults.standard.bool(forKey: "enableChapterTrack")
         }
     }
 }
@@ -301,7 +369,7 @@ extension AudioPlayer {
         
         commandCenter.changePlaybackPositionCommand.addTarget { [unowned self] event in
             if let changePlaybackPositionCommandEvent = event as? MPChangePlaybackPositionCommandEvent {
-                seek(to: changePlaybackPositionCommandEvent.positionTime)
+                seek(to: changePlaybackPositionCommandEvent.positionTime, includeChapterOffset: true)
                 return .success
             }
             
@@ -386,10 +454,12 @@ extension AudioPlayer {
     }
     
     private func updateNowPlayingStatus() {
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = getDuration()
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
         nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = getPlaybackRate()
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = getCurrentTime()
+        
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = getChapterDuration()
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = getChapterCurrentTime()
+        nowPlayingInfo[MPNowPlayingInfoPropertyChapterNumber] = activeChapterIndex
         
         MPNowPlayingInfoCenter.default().playbackState = isPlaying() ? .playing : .paused
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
