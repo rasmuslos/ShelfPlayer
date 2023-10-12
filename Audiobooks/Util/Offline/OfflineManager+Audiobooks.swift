@@ -32,23 +32,14 @@ extension OfflineManager {
             released: audiobook.released,
             size: audiobook.size,
             narrator: audiobook.narrator,
-            seriesName: audiobook.series.audiobookSeriesName ?? audiobook.series.name,
+            seriesName: audiobook.series.audiobookSeriesName,
             duration: audiobook.duration,
             explicit: audiobook.explicit,
             abridged: audiobook.abridged)
         
         PersistenceManager.shared.modelContainer.mainContext.insert(offlineAudiobook)
         
-        for chapter in chapters {
-            let offlineChapter = OfflineChapter(
-                id: chapter.id,
-                itemId: audiobook.id,
-                start: chapter.start,
-                end: chapter.end,
-                title: chapter.title)
-            
-            PersistenceManager.shared.modelContainer.mainContext.insert(offlineChapter)
-        }
+        await storeChapters(chapters, itemId: audiobook.id)
         
         for track in tracks {
             let offlineTrack = OfflineAudiobookTrack(
@@ -106,6 +97,12 @@ extension OfflineManager {
         
         return .none
     }
+    
+    @MainActor
+    func getAllAudiobooks() -> [OfflineAudiobook] {
+        let descriptor = FetchDescriptor<OfflineAudiobook>()
+        return (try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor)) ?? []
+    }
 }
 
 // MARK: Delete
@@ -124,6 +121,8 @@ extension OfflineManager {
             }
         }
         
+        try deleteChapters(itemId: audiobookId)
+        
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobookId)
     }
     
@@ -133,7 +132,7 @@ extension OfflineManager {
             PersistenceManager.shared.modelContainer.mainContext.delete(reference)
         }
         
-        DownloadManager.shared.deleteTrack(trackId: track.id)
+        DownloadManager.shared.deleteAudiobookTrack(trackId: track.id)
         PersistenceManager.shared.modelContainer.mainContext.delete(track)
     }
 }

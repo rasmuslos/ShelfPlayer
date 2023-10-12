@@ -37,7 +37,7 @@ class Audiobook: PlayableItem {
                     duration: $0.duration,
                     codec: "",
                     mimeType: "",
-                    contentUrl: DownloadManager.shared.getTrackUrl(trackId: $0.id).absoluteString)
+                    contentUrl: DownloadManager.shared.getAudiobookTrackUrl(trackId: $0.id).absoluteString)
             }
             let chapters = await OfflineManager.shared.getChapters(itemId: id)
             let progress = await OfflineManager.shared.getProgress(item: self)
@@ -48,8 +48,6 @@ class Audiobook: PlayableItem {
             } else {
                 startTime = progress?.currentTime ?? 0
             }
-            
-            // throw PlaybackError.methodNotImplemented
             
             return (tracks, chapters, startTime, nil)
         } else {

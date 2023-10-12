@@ -23,7 +23,7 @@ struct PodcastLoadView: View {
         } else {
             LoadingView()
                 .task {
-                    if let podcast = await AudiobookshelfClient.shared.getPodcastById(podcastId) {
+                    if let (podcast, _) = await AudiobookshelfClient.shared.getPodcastById(podcastId) {
                         self.podcast = podcast
                     } else {
                         failed = true

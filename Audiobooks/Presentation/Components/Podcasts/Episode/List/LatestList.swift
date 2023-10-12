@@ -23,14 +23,16 @@ struct LatestList: View {
 }
 
 #Preview {
-    LatestList(episodes: [
-        Episode.fixture,
-        Episode.fixture,
-        Episode.fixture,
-        Episode.fixture,
-        Episode.fixture,
-        Episode.fixture,
-        Episode.fixture,
-        Episode.fixture,
-    ])
+    NavigationStack {
+        LatestList(episodes: [
+            Episode.fixture,
+            Episode.fixture,
+            Episode.fixture,
+            Episode.fixture,
+            Episode.fixture,
+            Episode.fixture,
+            Episode.fixture,
+            Episode.fixture,
+        ])
+    }
 }

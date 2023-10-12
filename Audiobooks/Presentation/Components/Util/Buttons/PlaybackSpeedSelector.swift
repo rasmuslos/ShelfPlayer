@@ -53,6 +53,7 @@ struct PlaybackSpeedSelector: View {
             
             setPlaybackSpeed(speed)
         }
+        .fontDesign(.rounded)
         .buttonStyle(.plain)
         .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playbackRateChanged), perform: { _ in
             currentSpeed = AudioPlayer.shared.getPlaybackRate()

@@ -12,15 +12,15 @@ extension NowPlayingSheet {
         @Binding var playing: Bool
         
         @State var buffering = AudioPlayer.shared.buffering
-        @State var duration = AudioPlayer.shared.getDuration()
-        @State var currentTime = AudioPlayer.shared.getCurrentTime()
-        @State var playedPercentage = (AudioPlayer.shared.getCurrentTime() / AudioPlayer.shared.getDuration()) * 100
+        @State var duration = AudioPlayer.shared.getChapterDuration()
+        @State var currentTime = AudioPlayer.shared.getChapterCurrentTime()
+        @State var playedPercentage = (AudioPlayer.shared.getChapterCurrentTime() / AudioPlayer.shared.getChapterDuration()) * 100
         
         var body: some View {
             VStack {
                 VStack {
                     Slider(percentage: $playedPercentage, dragging: .constant(false), onEnded: {
-                        AudioPlayer.shared.seek(to: duration * (playedPercentage / 100))
+                        AudioPlayer.shared.seek(to: duration * (playedPercentage / 100), includeChapterOffset: true)
                     })
                     .padding(.vertical, 10)
                     
@@ -36,9 +36,16 @@ extension NowPlayingSheet {
                         .frame(width: 65, alignment: .leading)
                         Spacer()
                         
-                        Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(" left")
-                            .foregroundStyle(.secondary)
-                            .font(.caption2)
+                        Group {
+                            if let chapter = AudioPlayer.shared.getChapter() {
+                                Text(chapter.title)
+                            } else {
+                                Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(" left")
+                            }
+                        }
+                        .font(.caption2)
+                        .lineLimit(1)
+                        .foregroundStyle(.secondary)
                         
                         Spacer()
                         Text(duration.hoursMinutesSecondsString())
@@ -81,11 +88,11 @@ extension NowPlayingSheet {
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.currentTimeChangedNotification), perform: { _ in
                 withAnimation {
                     buffering = AudioPlayer.shared.buffering
-                    
-                    duration = AudioPlayer.shared.getDuration()
-                    currentTime = AudioPlayer.shared.getCurrentTime()
-                    playedPercentage = (currentTime / duration) * 100
                 }
+                
+                duration = AudioPlayer.shared.getChapterDuration()
+                currentTime = AudioPlayer.shared.getChapterCurrentTime()
+                playedPercentage = (currentTime / duration) * 100
             })
         }
     }

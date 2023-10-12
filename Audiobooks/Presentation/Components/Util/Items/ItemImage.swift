@@ -39,6 +39,7 @@ struct ItemImage: View {
             }
             .aspectRatio(1, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 7))
+            .padding(0)
         } else {
             placeholder
         }

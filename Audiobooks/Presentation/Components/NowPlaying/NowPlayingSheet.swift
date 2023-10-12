@@ -10,7 +10,7 @@ import SwiftUI
 struct NowPlayingSheet: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @Binding var item: PlayableItem
+    let item: PlayableItem
     @Binding var playing: Bool
     
     @State var showChaptersSheet = false
@@ -28,10 +28,11 @@ struct NowPlayingSheet: View {
             ItemImage(image: item.image)
                 .scaleEffect(playing ? 1 : 0.8)
                 .animation(.spring(duration: 0.25, bounce: 0.5), value: playing)
+                .shadow(radius: 15)
             
             Spacer()
             
-            Title(item: $item)
+            Title(item: item)
             Controls(playing: $playing)
             BottomButtons(showChaptersSheet: $showChaptersSheet)
         }
@@ -53,9 +54,9 @@ struct NowPlayingSheet: View {
 }
 
 #Preview {
-    NowPlayingSheet(item: .constant(Audiobook.fixture), playing: .constant(true))
+    NowPlayingSheet(item: Audiobook.fixture, playing: .constant(true))
 }
 
 #Preview {
-    NowPlayingSheet(item: .constant(Episode.fixture), playing: .constant(false))
+    NowPlayingSheet(item: Episode.fixture, playing: .constant(false))
 }

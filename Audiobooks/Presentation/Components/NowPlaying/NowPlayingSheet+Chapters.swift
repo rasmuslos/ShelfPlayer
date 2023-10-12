@@ -12,6 +12,9 @@ extension NowPlayingSheet {
         let item: PlayableItem
         let chapters = AudioPlayer.shared.chapters
         
+        let duration = AudioPlayer.shared.getDuration()
+        @State var currentTime: Double = AudioPlayer.shared.getCurrentTime()
+        
         var body: some View {
             Group {
                 if chapters.count > 1 {
@@ -45,6 +48,12 @@ extension NowPlayingSheet {
                                 .font(.subheadline)
                                 .lineLimit(1)
                         }
+                        
+                        Group {
+                            Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(" left")
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     }
                     
                     Spacer()
@@ -53,6 +62,11 @@ extension NowPlayingSheet {
                 .background(.regularMaterial)
                 .frame(height: 100)
             }
+            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.currentTimeChangedNotification), perform: { _ in
+                withAnimation {
+                    currentTime = AudioPlayer.shared.getChapterCurrentTime()
+                }
+            })
         }
     }
 }

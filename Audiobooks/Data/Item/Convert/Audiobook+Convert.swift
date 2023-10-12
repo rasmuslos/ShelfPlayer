@@ -29,4 +29,26 @@ extension Audiobook {
             explicit: item.media?.metadata.explicit ?? false,
             abridged: item.media?.metadata.abridged ?? false)
     }
+    
+    static func convertFromOffline(audiobook: OfflineAudiobook) -> Audiobook {
+        Audiobook(
+            id: audiobook.id,
+            libraryId: audiobook.libraryId,
+            name: audiobook.name,
+            author: audiobook.author,
+            description: audiobook.overview,
+            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: audiobook.id)),
+            genres: audiobook.genres,
+            addedAt: audiobook.addedAt,
+            released: audiobook.released,
+            size: audiobook.size,
+            narrator: audiobook.narrator,
+            series: ReducedSeries(
+                id: nil,
+                name: nil,
+                audiobookSeriesName: audiobook.seriesName)
+            , duration: audiobook.duration,
+            explicit: audiobook.explicit,
+            abridged: audiobook.abridged)
+    }
 }

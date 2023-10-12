@@ -39,7 +39,7 @@ extension AudiobookshelfClient {
     }
 }
 
-// MARK: Get by id
+// MARK: Download data
 
 extension AudiobookshelfClient {
     func getAudiobookDownloadData(_ audiobookId: String) async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters) {

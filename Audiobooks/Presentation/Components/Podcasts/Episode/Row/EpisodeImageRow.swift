@@ -51,7 +51,6 @@ struct EpisodeImageRow: View {
             
             Spacer()
         }
-        .padding(.leading, 10)
         .frame(width: width, height: height)
     }
 }

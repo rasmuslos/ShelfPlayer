@@ -18,6 +18,9 @@ struct PersistenceManager {
             
             OfflineAudiobook.self,
             OfflineAudiobookTrack.self,
+            
+            OfflineEpisode.self,
+            OfflinePodcast.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         

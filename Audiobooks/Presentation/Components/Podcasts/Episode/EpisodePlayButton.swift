@@ -14,23 +14,23 @@ struct EpisodePlayButton: View {
     var highlighted: Bool = false
     
     @State var progress: OfflineProgress?
-    @State var playState = PlayState.none
+    @State var playing: Bool? = nil
     
     var body: some View {
         Button {
             episode.startPlayback()
         } label: {
             HStack(spacing: 6) {
-                if playState == .none {
-                    Image(systemName: "play.fill")
-                } else {
-                    Image(systemName: playState == .playing ? "waveform" : "pause.fill")
-                        .symbolEffect(.variableColor, isActive: playState == .playing)
+                if let playing = playing {
+                    Image(systemName: playing == true ? "waveform" : "pause.fill")
+                        .symbolEffect(.variableColor.iterative, isActive: playing == true)
                         .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
                             withAnimation {
-                                playState = AudioPlayer.shared.isPlaying() ? .playing : .pause
+                                self.playing = AudioPlayer.shared.isPlaying()
                             }
                         })
+                } else {
+                    Image(systemName: "play.fill")
                 }
                 
                 if let progress = progress {
@@ -83,23 +83,13 @@ extension EpisodePlayButton {
             }
         }
     }
-}
-
-// MARK: Playing
-
-extension EpisodePlayButton {
-    enum PlayState {
-        case none
-        case playing
-        case pause
-    }
     
     private func checkPlaying() {
         withAnimation {
             if episode == AudioPlayer.shared.item {
-                playState = AudioPlayer.shared.isPlaying() ? .playing : .pause
+                playing = AudioPlayer.shared.isPlaying()
             } else {
-                playState = .none
+                playing = nil
             }
         }
     }
