@@ -55,10 +55,38 @@ class Episode: PlayableItem {
     // MARK: playback
     
     override func getPlaybackData() async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double, String?) {
-        try await AudiobookshelfClient.shared.play(itemId: podcastId, episodeId: id)
+        if offline == .downloaded {
+            let track = AudioTrack(
+                index: 0,
+                offset: 0,
+                duration: duration,
+                codec: "",
+                mimeType: "",
+                contentUrl: DownloadManager.shared.getEpisodeUrl(episodeId: id).absoluteString)
+            
+            let chapters = await OfflineManager.shared.getChapters(itemId: id)
+            let progress = await OfflineManager.shared.getProgress(item: self)
+            let startTime: Double
+            
+            if progress?.progress ?? 0 >= 1 {
+                startTime = 0
+            } else {
+                startTime = progress?.currentTime ?? 0
+            }
+            
+            return ([track], chapters, startTime, nil)
+        } else {
+            return try await AudiobookshelfClient.shared.play(itemId: podcastId, episodeId: id)
+        }
     }
     
     override func getPlaybackReporter(playbackSessionId: String?) throws -> PlaybackReporter {
         PlaybackReporter(itemId: podcastId, episodeId: id, playbackSessionId: playbackSessionId)
+    }
+    
+    override func checkOfflineStatus() {
+        Task.detached { [self] in
+            offline = await OfflineManager.shared.getEpisodeOfflineStatus(episodeId: id)
+        }
     }
 }

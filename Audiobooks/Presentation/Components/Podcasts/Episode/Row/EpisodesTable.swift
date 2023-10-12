@@ -17,6 +17,7 @@ struct EpisodesTable: View {
                 ForEach(episodes) { episode in
                     NavigationLink(destination: EpisodeView(episode: episode)) {
                         EpisodeImageRow(episode: episode)
+                            .padding(.leading, 10)
                     }
                     .buttonStyle(.plain)
                 }

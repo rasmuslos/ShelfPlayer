@@ -32,6 +32,20 @@ extension OfflineManager {
 
 extension OfflineManager {
     @MainActor
+    func storeChapters(_ chapters: PlayableItem.Chapters, itemId: String) async {
+        for chapter in chapters {
+            let offlineChapter = OfflineChapter(
+                id: chapter.id,
+                itemId: itemId,
+                start: chapter.start,
+                end: chapter.end,
+                title: chapter.title)
+            
+            PersistenceManager.shared.modelContainer.mainContext.insert(offlineChapter)
+        }
+    }
+    
+    @MainActor
     func getChapters(itemId: String) -> PlayableItem.Chapters {
         let chapters = FetchDescriptor<OfflineChapter>(predicate: #Predicate { $0.itemId == itemId })
         
@@ -46,5 +60,18 @@ extension OfflineManager {
         }
         
         return []
+    }
+    
+    @MainActor
+    func deleteChapters(itemId: String) throws {
+        try PersistenceManager.shared.modelContainer.mainContext.delete(model: OfflineChapter.self, where: #Predicate { $0.itemId == itemId })
+    }
+}
+
+// MARK: Error
+
+extension OfflineManager {
+    enum OfflineError: Error {
+        case fetchFailed
     }
 }

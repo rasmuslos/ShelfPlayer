@@ -9,7 +9,7 @@ import SwiftUI
 
 extension NowPlayingSheet {
     struct Title: View {
-        @Binding var item: PlayableItem
+        let item: PlayableItem
         
         var body: some View {
             HStack {

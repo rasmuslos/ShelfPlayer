@@ -26,13 +26,17 @@ struct PodcastsGrid: View {
 }
 
 #Preview {
-    PodcastsGrid(podcasts: [
-        Podcast.fixture,
-        Podcast.fixture,
-        Podcast.fixture,
-        Podcast.fixture,
-        Podcast.fixture,
-        Podcast.fixture,
-        Podcast.fixture,
-    ])
+    NavigationStack {
+        ScrollView {
+            PodcastsGrid(podcasts: [
+                Podcast.fixture,
+                Podcast.fixture,
+                Podcast.fixture,
+                Podcast.fixture,
+                Podcast.fixture,
+                Podcast.fixture,
+                Podcast.fixture,
+            ])
+        }
+    }
 }

@@ -16,11 +16,19 @@ extension DownloadManager {
             ])))
     }
     
-    func deleteTrack(trackId: String) {
-        try? FileManager.default.removeItem(at: getTrackUrl(trackId: trackId))
+    func deleteAudiobookTrack(trackId: String) {
+        try? FileManager.default.removeItem(at: getAudiobookTrackUrl(trackId: trackId))
     }
     
-    func getTrackUrl(trackId: String) -> URL {
+    func getAudiobookTrackUrl(trackId: String) -> URL {
         documentsURL.appending(path: "tracks").appending(path: "\(trackId).flac")
+    }
+    
+    func deleteEpisode(episodeId: String) {
+        try? FileManager.default.removeItem(at: getEpisodeUrl(episodeId: episodeId))
+    }
+    
+    func getEpisodeUrl(episodeId: String) -> URL {
+        documentsURL.appending(path: "tracks").appending(path: "\(episodeId).E.flac")
     }
 }

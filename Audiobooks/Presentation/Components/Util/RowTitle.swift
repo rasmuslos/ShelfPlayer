@@ -24,3 +24,7 @@ struct RowTitle: View {
 #Preview {
     RowTitle(title: "Title")
 }
+
+#Preview {
+    RowTitle(title: "Title", fontDesign: .serif)
+}

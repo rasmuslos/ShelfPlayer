@@ -42,7 +42,6 @@ struct AudiobookGrid: View {
                 Audiobook.fixture,
             ])
         }
-        .padding()
     }
 }
 

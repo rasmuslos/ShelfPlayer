@@ -14,6 +14,8 @@ extension AudiobookLibraryView {
         @State var audiobookRows: [AudiobookHomeRow]?
         @State var authorRows: [AuthorHomeRow]?
         
+        @State var downloadedAudiobooks = [Audiobook]()
+        
         var body: some View {
             NavigationStack {
                 ScrollView {
@@ -25,6 +27,10 @@ extension AudiobookLibraryView {
                         } else {
                             LoadingView()
                                 .padding(.top, 50)
+                        }
+                        
+                        if !downloadedAudiobooks.isEmpty {
+                            AudiobooksRowContainer(title: "Downloaded", audiobooks: downloadedAudiobooks)
                         }
                     }
                 }
@@ -49,6 +55,9 @@ extension AudiobookLibraryView.HomeView {
     func loadRows() {
         Task.detached {
             (audiobookRows, authorRows) = (try? await AudiobookshelfClient.shared.getAudiobooksHome(libraryId: libraryId)) ?? (nil, nil)
+        }
+        Task.detached {
+            downloadedAudiobooks = await OfflineManager.shared.getAllAudiobooks().map(Audiobook.convertFromOffline)
         }
     }
 }

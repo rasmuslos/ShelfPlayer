@@ -68,6 +68,7 @@ extension AudiobookshelfClient {
             let audioTrack: AudiobookshelfAudioTrack?
             
             let podcast: AudiobookshelfItemPodcast?
+            let chapters: [AudiobookshelfChapter]?
             
             struct PodcastAudioFile: Codable {
                 let duration: Double?
