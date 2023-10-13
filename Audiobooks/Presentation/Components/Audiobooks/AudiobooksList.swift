@@ -15,6 +15,7 @@ struct AudiobooksList: View {
             NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
                 AudiobookRow(audiobook: audiobook)
             }
+            .modifier(SwipeActionsModifier(item: audiobook))
         }
     }
 }

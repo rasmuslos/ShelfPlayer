@@ -23,7 +23,7 @@ extension PodcastLibraryView {
                         LoadingView()
                     } else {
                         LatestList(episodes: episodes)
-                        .modifier(NowPlayingBarSafeAreaModifier())
+                            .modifier(NowPlayingBarSafeAreaModifier())
                     }
                 }
                 .navigationTitle("Latest Episodes")
@@ -31,10 +31,10 @@ extension PodcastLibraryView {
                 .task(fetchEpisodes)
                 .refreshable(action: fetchEpisodes)
             }
-                .modifier(NowPlayingBarModifier())
-                .tabItem {
-                    Label("Latest", systemImage: "clock")
-                }
+            .modifier(NowPlayingBarModifier())
+            .tabItem {
+                Label("Latest", systemImage: "clock")
+            }
         }
     }
 }

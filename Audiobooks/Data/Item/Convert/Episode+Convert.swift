@@ -56,7 +56,7 @@ extension Episode {
             addedAt: Date(),
             released: episode.pubDate,
             size: episode.size ?? 0,
-            podcastId: episode.podcastId!,
+            podcastId: episode.podcast!.libraryItemId,
             podcastName: episode.podcast!.metadata.title!,
             index: episode.index ?? 0,
             duration: episode.audioFile?.duration ?? 0)
