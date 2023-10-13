@@ -124,6 +124,16 @@ extension PlaybackReporter {
             
             await updateOfflineProgress(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
         }
+        
+        if UserDefaults.standard.bool(forKey: "deleteFinishedDownloads") && currentTime >= duration {
+            Task.detached {
+                if let episodeId = episodeId {
+                    try? await OfflineManager.shared.deleteEpisode(episodeId: episodeId)
+                } else {
+                    try? await OfflineManager.shared.deleteAudiobook(audiobookId: itemId)
+                }
+            }
+        }
     }
     
     @MainActor

@@ -18,19 +18,21 @@ extension OfflineManager {
             return
         }
         
+        let offlineEpisode = OfflineEpisode(
+            id: episode.id,
+            libraryId: episode.libraryId,
+            name: episode.name,
+            author: episode.author,
+            overview: episode.description,
+            addedAt: episode.addedAt,
+            released: episode.released,
+            index: episode.index,
+            duration: episode.duration)
+        
+        PersistenceManager.shared.modelContainer.mainContext.insert(offlineEpisode)
+        
+        // the request can take quite some time to complete and this way the user cannot start multiple downloads
         if let (track, chapters) = try? await AudiobookshelfClient.shared.getEpisodeDownloadData(podcastId: episode.podcastId, episodeId: episode.id), let podcast = try? await getOrCreatePodcast(podcastId: episode.podcastId) {
-            let offlineEpisode = OfflineEpisode(
-                id: episode.id,
-                libraryId: episode.libraryId,
-                name: episode.name,
-                author: episode.author,
-                overview: episode.description,
-                addedAt: episode.addedAt,
-                released: episode.released,
-                index: episode.index,
-                duration: episode.duration)
-            
-            PersistenceManager.shared.modelContainer.mainContext.insert(offlineEpisode)
             
             offlineEpisode.podcast = podcast
             await storeChapters(chapters, itemId: episode.id)
@@ -44,6 +46,8 @@ extension OfflineManager {
             task.resume()
             
             NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
+        } else {
+            try deleteEpisode(episodeId: episode.id)
         }
     }
 }
@@ -105,6 +109,12 @@ extension OfflineManager {
             return .none
         }
     }
+    
+    @MainActor
+    func getAllEpisodes() -> [OfflineEpisode] {
+        let descriptor = FetchDescriptor<OfflineEpisode>()
+        return (try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor)) ?? []
+    }
 }
 
 // MARK: Delete
@@ -120,5 +130,7 @@ extension OfflineManager {
         
         DownloadManager.shared.deleteEpisode(episodeId: episodeId)
         try deleteChapters(itemId: episodeId)
+        
+        NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episodeId)
     }
 }

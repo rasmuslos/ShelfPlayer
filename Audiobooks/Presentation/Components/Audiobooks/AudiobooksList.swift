@@ -11,8 +11,10 @@ struct AudiobooksList: View {
     let audiobooks: [Audiobook]
     
     var body: some View {
-        ForEach(audiobooks) {
-            AudiobookRow(audiobook: $0)
+        ForEach(audiobooks) { audiobook in
+            NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
+                AudiobookRow(audiobook: audiobook)
+            }
         }
     }
 }

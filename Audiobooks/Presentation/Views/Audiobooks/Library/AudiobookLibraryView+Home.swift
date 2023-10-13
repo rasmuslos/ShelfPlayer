@@ -24,13 +24,13 @@ extension AudiobookLibraryView {
                             ForEach(audiobookRows) { row in
                                 AudiobooksRowContainer(title: row.label, audiobooks: row.audiobooks)
                             }
+                            
+                            if !downloadedAudiobooks.isEmpty {
+                                AudiobooksRowContainer(title: "Downloaded", audiobooks: downloadedAudiobooks)
+                            }
                         } else {
                             LoadingView()
                                 .padding(.top, 50)
-                        }
-                        
-                        if !downloadedAudiobooks.isEmpty {
-                            AudiobooksRowContainer(title: "Downloaded", audiobooks: downloadedAudiobooks)
                         }
                     }
                 }

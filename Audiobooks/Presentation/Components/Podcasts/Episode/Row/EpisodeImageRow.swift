@@ -11,12 +11,9 @@ struct EpisodeImageRow: View {
     let episode: Episode
     
     var body: some View {
-        let width = UIScreen.main.bounds.width - 30
-        let height: CGFloat = 90
-        
         HStack {
             ItemImage(image: episode.image)
-                .frame(width: height)
+                .frame(width: 90)
             
             VStack(alignment: .leading) {
                 Group {
@@ -51,6 +48,6 @@ struct EpisodeImageRow: View {
             
             Spacer()
         }
-        .frame(width: width, height: height)
+        .frame(height: 90)
     }
 }
