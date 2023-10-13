@@ -75,3 +75,9 @@ extension OfflineManager {
         case fetchFailed
     }
 }
+
+// MARK: Notifications
+
+extension OfflineManager {
+    static let progressCreatedNotification = NSNotification.Name("io.rfk.audiobooks.progress.created")
+}
