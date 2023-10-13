@@ -33,9 +33,9 @@ extension NowPlayingSheet {
             .bold()
             .font(.system(size: 20))
             .frame(height: 45)
-            .padding(.horizontal, 45)
-            .padding(.top, 35)
-            .padding(.bottom, 40)
+            .padding(.horizontal, 35)
+            .padding(.top, 20)
+            .padding(.bottom, 45)
         }
     }
 }

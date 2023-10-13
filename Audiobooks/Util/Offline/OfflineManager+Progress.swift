@@ -156,6 +156,8 @@ extension OfflineManager {
         }
         
         PersistenceManager.shared.modelContainer.mainContext.insert(progress)
+        NotificationCenter.default.post(name: Self.progressCreatedNotification, object: nil)
+        
         return progress
     }
     

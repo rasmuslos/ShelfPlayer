@@ -24,11 +24,6 @@ struct EpisodePlayButton: View {
                 if let playing = playing {
                     Image(systemName: playing == true ? "waveform" : "pause.fill")
                         .symbolEffect(.variableColor.iterative, isActive: playing == true)
-                        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
-                            withAnimation {
-                                self.playing = AudioPlayer.shared.isPlaying()
-                            }
-                        })
                 } else {
                     Image(systemName: "play.fill")
                 }
@@ -50,9 +45,6 @@ struct EpisodePlayButton: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10000))
                         
                         Text((progress.duration - progress.currentTime).numericTimeLeft())
-                            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
-                                checkPlaying()
-                            })
                     }
                 } else {
                     Text(episode.duration.numericTimeLeft())
@@ -64,7 +56,23 @@ struct EpisodePlayButton: View {
             .background(highlighted ? .white : .secondary.opacity(0.25))
             .foregroundStyle(highlighted ? .black : .primary)
             .clipShape(RoundedRectangle(cornerRadius: 10000))
-            .onAppear(perform: fetchProgress)
+            .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification), perform: { _ in
+                fetchProgress()
+            })
+            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
+                checkPlaying()
+            })
+            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
+                checkPlaying()
+            })
+            .onAppear {
+                fetchProgress()
+                checkPlaying()
+            }
+            .onChange(of: episode) {
+                fetchProgress()
+                checkPlaying()
+            }
         }
         .buttonStyle(.plain)
     }
@@ -74,8 +82,6 @@ struct EpisodePlayButton: View {
 
 extension EpisodePlayButton {
     private func fetchProgress() {
-        checkPlaying()
-        
         Task.detached {
             let progress = await OfflineManager.shared.getProgress(item: episode)
             withAnimation {
