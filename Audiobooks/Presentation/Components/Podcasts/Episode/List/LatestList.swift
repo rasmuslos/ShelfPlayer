@@ -16,6 +16,7 @@ struct LatestList: View {
                 NavigationLink(destination: EpisodeView(episode: episode)) {
                     EpisodeImageRow(episode: episode)
                 }
+                .modifier(SwipeActionsModifier(item: episode))
             }
         }
         .listStyle(.plain)
