@@ -24,6 +24,16 @@ struct LibrarySelectorModifier: ViewModifier {
                                 Label(library.name, systemImage: library.type == .audiobooks ? "book" : "waveform")
                             }
                         }
+                        
+                        Divider()
+                        
+                        Button {
+                            NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                                "offline": true,
+                            ])
+                        } label: {
+                            Label("Go offline", systemImage: "network.slash")
+                        }
                     } label: {
                         Image(systemName: "bookmark.circle.fill")
                     }

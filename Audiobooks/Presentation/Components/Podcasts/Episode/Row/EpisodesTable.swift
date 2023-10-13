@@ -12,12 +12,15 @@ struct EpisodesTable: View {
     var amount = 2
     
     var body: some View {
+        let width = UIScreen.main.bounds.width - 30
+        
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: [GridItem(.flexible())].repeated(count: amount), spacing: 0) {
                 ForEach(episodes) { episode in
                     NavigationLink(destination: EpisodeView(episode: episode)) {
                         EpisodeImageRow(episode: episode)
                             .padding(.leading, 10)
+                            .frame(width: width)
                     }
                     .buttonStyle(.plain)
                 }

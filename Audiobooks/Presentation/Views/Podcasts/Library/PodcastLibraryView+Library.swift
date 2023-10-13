@@ -22,10 +22,10 @@ extension PodcastLibraryView {
                     } else if podcasts.isEmpty {
                         LoadingView()
                     } else {
-                            ScrollView {
-                                PodcastsGrid(podcasts: podcasts)
-                                    .padding(.horizontal)
-                            }
+                        ScrollView {
+                            PodcastsGrid(podcasts: podcasts)
+                                .padding(.horizontal)
+                        }
                     }
                 }
                 .navigationTitle("Library")

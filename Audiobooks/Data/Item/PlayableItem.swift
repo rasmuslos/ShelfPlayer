@@ -50,6 +50,11 @@ class PlayableItem: Item {
 
 extension PlayableItem {
     func startPlayback() {
+        if AudioPlayer.shared.item == self {
+            AudioPlayer.shared.setPlaying(!AudioPlayer.shared.isPlaying())
+            return
+        }
+        
         Task {
             if let (tracks, chapters, startTime, playbackSessionId) = try? await getPlaybackData(), let playbackReporter = try? getPlaybackReporter(playbackSessionId: playbackSessionId) {
                 AudioPlayer.shared.startPlayback(item: self, tracks: tracks, chapters: chapters, startTime: startTime, playbackReporter: playbackReporter)

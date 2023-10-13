@@ -15,6 +15,7 @@ extension AudiobookLibraryView {
         @State var audiobooks = [Audiobook]()
         @State var displayOrder = AudiobooksSort.getDisplayType()
         @State var sortOrder = AudiobooksSort.getSortOrder()
+        @State var ascending = AudiobooksSort.getAscending()
         
         var body: some View {
             NavigationStack {
@@ -24,7 +25,7 @@ extension AudiobookLibraryView {
                     } else if audiobooks.isEmpty {
                         LoadingView()
                     } else {
-                        let sorted = AudiobooksSort.sort(audiobooks: audiobooks, order: sortOrder)
+                        let sorted = AudiobooksSort.sort(audiobooks: audiobooks, order: sortOrder, ascending: ascending)
                         
                         if displayOrder == .grid {
                             ScrollView {
@@ -43,7 +44,7 @@ extension AudiobookLibraryView {
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        AudiobooksSort(display: $displayOrder, sort: $sortOrder)
+                        AudiobooksSort(display: $displayOrder, sort: $sortOrder, ascending: $ascending)
                     }
                 }
                 .modifier(NowPlayingBarSafeAreaModifier())

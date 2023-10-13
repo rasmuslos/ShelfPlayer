@@ -16,6 +16,9 @@ extension NowPlayingSheet {
         @State var currentTime = AudioPlayer.shared.getChapterCurrentTime()
         @State var playedPercentage = (AudioPlayer.shared.getChapterCurrentTime() / AudioPlayer.shared.getChapterDuration()) * 100
         
+        @State var skipBackwardsInterval = UserDefaults.standard.integer(forKey: "skipBackwardsInterval")
+        @State var skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
+        
         var body: some View {
             VStack {
                 VStack {
@@ -58,9 +61,9 @@ extension NowPlayingSheet {
                 HStack {
                     Group {
                         Button {
-                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() - 30)
+                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() - Double(skipBackwardsInterval))
                         } label: {
-                            Image(systemName: "gobackward.30")
+                            Image(systemName: "gobackward.\(skipBackwardsInterval)")
                         }
                         Button {
                             AudioPlayer.shared.setPlaying(!AudioPlayer.shared.isPlaying())
@@ -72,9 +75,9 @@ extension NowPlayingSheet {
                                 .contentTransition(.symbolEffect(.replace))
                         }
                         Button {
-                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + 30)
+                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
                         } label: {
-                            Image(systemName: "goforward.30")
+                            Image(systemName: "goforward.\(skipForwardsInterval)")
                         }
                     }
                     .font(.system(size: 34))
@@ -93,6 +96,12 @@ extension NowPlayingSheet {
                 duration = AudioPlayer.shared.getChapterDuration()
                 currentTime = AudioPlayer.shared.getChapterCurrentTime()
                 playedPercentage = (currentTime / duration) * 100
+            })
+            .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification), perform: { _ in
+                withAnimation {
+                    skipBackwardsInterval = UserDefaults.standard.integer(forKey: "skipBackwardsInterval")
+                    skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
+                }
             })
         }
     }

@@ -37,6 +37,19 @@ class Item: Identifiable {
     struct Image: Codable {
         let url: URL
     }
+    
+    private(set) lazy var sortName: String = {
+        var sortName = name.lowercased()
+        
+        if sortName.starts(with: "a ") {
+            let _ = sortName.dropFirst(2)
+        }
+        if sortName.starts(with: "the ") {
+            let _ = sortName.dropFirst(4)
+        }
+        
+        return sortName
+    }()
 }
 
 // MARK: Progress
@@ -62,5 +75,13 @@ extension Item {
 extension Item: Equatable {
     static func == (lhs: Item, rhs: Item) -> Bool {
         lhs.id == rhs.id
+    }
+}
+
+// MARK: Hashable
+
+extension Item: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

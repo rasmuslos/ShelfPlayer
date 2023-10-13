@@ -15,10 +15,11 @@ struct SeriesView: View {
     @State var audiobooks = [Audiobook]()
     @State var displayOrder = AudiobooksSort.getDisplayType()
     @State var sortOrder = AudiobooksSort.getSortOrder()
+    @State var ascending = AudiobooksSort.getAscending()
     
     var body: some View {
         Group {
-            let sorted = AudiobooksSort.sort(audiobooks: audiobooks, order: sortOrder)
+            let sorted = AudiobooksSort.sort(audiobooks: audiobooks, order: sortOrder, ascending: ascending)
             
             if displayOrder == .grid {
                 ScrollView {
@@ -38,7 +39,7 @@ struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobooksSort(display: $displayOrder, sort: $sortOrder)
+                AudiobooksSort(display: $displayOrder, sort: $sortOrder, ascending: $ascending)
             }
         }
         .modifier(NowPlayingBarSafeAreaModifier())
