@@ -9,7 +9,7 @@ import Foundation
 
 class Podcast: Item {
     let explicit: Bool
-    let episodeCount: Int
+    var episodeCount: Int
     
     init(id: String, additionalId: String?, libraryId: String, name: String, author: String?, description: String?, image: Item.Image?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int) {
         self.explicit = explicit

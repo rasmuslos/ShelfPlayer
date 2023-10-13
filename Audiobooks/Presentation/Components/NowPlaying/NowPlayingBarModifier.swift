@@ -12,6 +12,7 @@ struct NowPlayingBarModifier: ViewModifier {
     @State var item = AudioPlayer.shared.item
     
     @State var nowPlayingSheetPresented = false
+    @State var skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
     
     func body(content: Content) -> some View {
         content
@@ -47,9 +48,9 @@ struct NowPlayingBarModifier: ViewModifier {
                                     }
                                     
                                     Button {
-                                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + 30)
+                                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
                                     } label: {
-                                        Image(systemName: "goforward.30")
+                                        Image(systemName: "goforward.\(skipForwardsInterval)")
                                     }
                                     .padding(.horizontal, 10)
                                 }
@@ -78,6 +79,11 @@ struct NowPlayingBarModifier: ViewModifier {
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
                 withAnimation {
                     playing = AudioPlayer.shared.isPlaying()
+                }
+            })
+            .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification), perform: { _ in
+                withAnimation {
+                    skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
                 }
             })
     }

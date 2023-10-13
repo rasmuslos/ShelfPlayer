@@ -25,7 +25,10 @@ class AudioPlayer {
     private var playbackReporter: PlaybackReporter?
     
     private var cache: [String: Double]
+    
     private var enableChapterTrack: Bool
+    private var skipBackwardsInterval: Int!
+    private var skipForwardsInterval: Int!
     
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "AudioPlayer")
     
@@ -40,7 +43,9 @@ class AudioPlayer {
         
         nowPlayingInfo = [:]
         cache = [:]
+        
         enableChapterTrack = UserDefaults.standard.bool(forKey: "enableChapterTrack")
+        fetchSkipIntervals()
         
         setupObservers()
         setupTimeObserver()
@@ -314,6 +319,10 @@ extension AudioPlayer {
     private func setupObservers() {
         NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { [weak self] _ in
             if self?.activeAudioTrackIndex == (self?.tracks.count ?? 0) - 1 {
+                if let duration = self?.getDuration() {
+                    self?.playbackReporter?.reportProgress(currentTime: duration, duration: duration)
+                }
+                
                 self?.stopPlayback()
                 return
             }
@@ -344,6 +353,7 @@ extension AudioPlayer {
         }
         NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.enableChapterTrack = UserDefaults.standard.bool(forKey: "enableChapterTrack")
+            self?.fetchSkipIntervals()
         }
     }
 }
@@ -385,19 +395,19 @@ extension AudioPlayer {
             return .commandFailed
         }
         
-        commandCenter.skipForwardCommand.preferredIntervals = [30]
-        commandCenter.skipForwardCommand.addTarget { [unowned self] event in
+        commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(value: skipBackwardsInterval)]
+        commandCenter.skipBackwardCommand.addTarget { [unowned self] event in
             if let changePlaybackPositionCommandEvent = event as? MPSkipIntervalCommandEvent {
-                seek(to: getCurrentTime() + changePlaybackPositionCommandEvent.interval)
+                seek(to: getCurrentTime() - changePlaybackPositionCommandEvent.interval)
                 return .success
             }
             
             return .commandFailed
         }
-        commandCenter.skipBackwardCommand.preferredIntervals = [30]
-        commandCenter.skipBackwardCommand.addTarget { [unowned self] event in
+        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: skipForwardsInterval)]
+        commandCenter.skipForwardCommand.addTarget { [unowned self] event in
             if let changePlaybackPositionCommandEvent = event as? MPSkipIntervalCommandEvent {
-                seek(to: getCurrentTime() - changePlaybackPositionCommandEvent.interval)
+                seek(to: getCurrentTime() + changePlaybackPositionCommandEvent.interval)
                 return .success
             }
             
@@ -483,6 +493,18 @@ extension AudioPlayer {
                 .appending(queryItems: [
                     URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token)
                 ]))
+        }
+    }
+    
+    private func fetchSkipIntervals() {
+        skipBackwardsInterval = UserDefaults.standard.integer(forKey: "skipBackwardsInterval")
+        if skipBackwardsInterval == 0 {
+            UserDefaults.standard.set(30, forKey: "skipBackwardsInterval")
+        }
+        
+        skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
+        if skipForwardsInterval == 0 {
+            UserDefaults.standard.set(30, forKey: "skipForwardsInterval")
         }
     }
 }

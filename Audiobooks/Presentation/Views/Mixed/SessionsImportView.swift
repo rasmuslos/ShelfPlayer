@@ -12,10 +12,12 @@ struct SessionsImportView: View {
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "SessionImport")
     
     var callback: (_ success: Bool) -> ()
+    @State var task: Task<(), Error>?
     
     var body: some View {
         ProgressView {
             Button {
+                task?.cancel()
                 callback(false)
             } label: {
                 Label("Go offline", systemImage: "network.slash")
@@ -24,7 +26,7 @@ struct SessionsImportView: View {
             .padding()
         }
         .onAppear {
-            Task.detached {
+            task = Task.detached {
                 do {
                     let start = Date.timeIntervalSinceReferenceDate
                     let cached = try await OfflineManager.shared.getCachedProgress(type: .localCached)

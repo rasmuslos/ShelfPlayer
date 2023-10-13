@@ -18,9 +18,6 @@ extension OfflineManager {
             return
         }
         
-        let (tracks, chapters) = try await AudiobookshelfClient.shared.getAudiobookDownloadData(audiobook.id)
-        try await DownloadManager.shared.downloadImage(itemId: audiobook.id, image: audiobook.image)
-        
         let offlineAudiobook = OfflineAudiobook(
             id: audiobook.id,
             libraryId: audiobook.libraryId,
@@ -38,6 +35,9 @@ extension OfflineManager {
             abridged: audiobook.abridged)
         
         PersistenceManager.shared.modelContainer.mainContext.insert(offlineAudiobook)
+        
+        let (tracks, chapters) = try await AudiobookshelfClient.shared.getAudiobookDownloadData(audiobook.id)
+        try await DownloadManager.shared.downloadImage(itemId: audiobook.id, image: audiobook.image)
         
         await storeChapters(chapters, itemId: audiobook.id)
         

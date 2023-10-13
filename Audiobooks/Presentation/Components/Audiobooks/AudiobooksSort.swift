@@ -13,11 +13,8 @@ struct AudiobooksSort: View {
             UserDefaults.standard.set(display.rawValue, forKey: "audiobooks.display")
         }
     }
-    @Binding var sort: SortOrder {
-        didSet {
-            UserDefaults.standard.set(sort.rawValue, forKey: "audiobooks.sort")
-        }
-    }
+    @Binding var sort: SortOrder
+    @Binding var ascending: Bool
     
     var body: some View {
         Menu {
@@ -37,12 +34,25 @@ struct AudiobooksSort: View {
             ForEach(SortOrder.allCases, id: \.hashValue) { order in
                 Button {
                     sort = order
+                    UserDefaults.standard.set(sort.rawValue, forKey: "audiobooks.sort")
                 } label: {
                     if sort == order {
                         Label(order.rawValue, systemImage: "checkmark")
                     } else {
                         Text(order.rawValue)
                     }
+                }
+            }
+            
+            Divider()
+            Button {
+                ascending.toggle()
+                UserDefaults.standard.set(ascending, forKey: "audiobooks.sort.ascending")
+            } label: {
+                if ascending {
+                    Label("Ascending", systemImage: "checkmark")
+                } else {
+                    Text("Ascending")
                 }
             }
         } label: {
@@ -83,16 +93,19 @@ extension AudiobooksSort {
         }
         return .name
     }
+    static func getAscending() -> Bool {
+        UserDefaults.standard.bool(forKey: "audiobooks.sort.ascending")
+    }
 }
 
 // MARK: Sort
 
 extension AudiobooksSort {
-    static func sort(audiobooks: [Audiobook], order: SortOrder) -> [Audiobook] {
-        audiobooks.sorted {
+    static func sort(audiobooks: [Audiobook], order: SortOrder, ascending: Bool) -> [Audiobook] {
+        let sorted = audiobooks.sorted {
             switch order {
             case .name:
-                return $0.name < $1.name
+                return $0.sortName < $1.sortName
             case .author:
                 if $0.author == nil {
                     return false
@@ -117,9 +130,15 @@ extension AudiobooksSort {
                 return $0.duration < $1.duration
             }
         }
+        
+        if ascending {
+            return sorted
+        } else {
+            return sorted.reversed()
+        }
     }
 }
 
 #Preview {
-    AudiobooksSort(display: .constant(.grid), sort: .constant(.name))
+    AudiobooksSort(display: .constant(.grid), sort: .constant(.name), ascending: .constant(false))
 }

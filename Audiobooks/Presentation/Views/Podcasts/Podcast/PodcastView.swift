@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PodcastView: View {
-    let podcast: Podcast
+    var podcast: Podcast
     
     @State var navigationBarVisible: Bool
     @State var failed: Bool
@@ -85,6 +85,7 @@ extension PodcastView {
         Task.detached {
             if let episodes = try? await AudiobookshelfClient.shared.getPodcastEpisodes(podcastId: podcast.id) {
                 self.episodes = episodes
+                podcast.episodeCount = episodes.count
             } else {
                 failed = true
             }

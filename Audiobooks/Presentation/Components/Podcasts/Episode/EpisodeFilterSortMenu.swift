@@ -11,21 +11,9 @@ struct EpisodeFilterSortMenu: View {
     let podcastId: String
     let enableSort: Bool
     
-    @Binding var filter: Filter {
-        didSet {
-            Self.setFilter(filter, podcastId: podcastId)
-        }
-    }
-    @Binding var sortOrder: SortOrder {
-        didSet {
-            Self.setSortOrder(sortOrder, podcastId: podcastId)
-        }
-    }
-    @Binding var ascending: Bool {
-        didSet {
-            Self.setAscending(ascending, podcastId: podcastId)
-        }
-    }
+    @Binding var filter: Filter
+    @Binding var sortOrder: SortOrder
+    @Binding var ascending: Bool
     
     init(podcastId: String, filter: Binding<Filter>, sortOrder: Binding<SortOrder>, ascending: Binding<Bool>) {
         self.podcastId = podcastId
@@ -51,6 +39,7 @@ struct EpisodeFilterSortMenu: View {
                 Button {
                     withAnimation {
                         filter = option
+                        Self.setFilter(filter, podcastId: podcastId)
                     }
                 } label: {
                     if option == filter {
@@ -68,6 +57,7 @@ struct EpisodeFilterSortMenu: View {
                     Button {
                         withAnimation {
                             sortOrder = sortCase
+                            Self.setSortOrder(sortOrder, podcastId: podcastId)
                         }
                     } label: {
                         if sortCase == sortOrder {
@@ -82,6 +72,7 @@ struct EpisodeFilterSortMenu: View {
                 
                 Button {
                     ascending.toggle()
+                    Self.setAscending(ascending, podcastId: podcastId)
                 } label: {
                     if ascending {
                         Label("Ascending", systemImage: "checkmark")
@@ -226,7 +217,7 @@ extension EpisodeFilterSortMenu {
     }
     
     static func setAscending(_ ascending: Bool, podcastId: String) {
-        UserDefaults.standard.set(ascending, forKey: "filter.\(podcastId)")
+        UserDefaults.standard.set(ascending, forKey: "ascending.\(podcastId)")
     }
 }
 
