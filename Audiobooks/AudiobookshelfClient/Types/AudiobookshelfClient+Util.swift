@@ -22,12 +22,13 @@ extension AudiobookshelfClient {
 
 extension AudiobookshelfClient {
     struct SearchResponse: Codable {
-        let book: [SearchBook]
+        let book: [SearchLibraryItem]?
+        let podcast: [SearchLibraryItem]?
         // let narrators: [AudiobookshelfItem]
-        let series: [SearchSeries]
-        let authors: [AudiobookshelfItem]
+        let series: [SearchSeries]?
+        let authors: [AudiobookshelfItem]?
         
-        struct SearchBook: Codable {
+        struct SearchLibraryItem: Codable {
             let matchKey: String
             let matchText: String
             let libraryItem: AudiobookshelfItem

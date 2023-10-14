@@ -32,6 +32,12 @@ extension AudiobookLibraryView {
                             LoadingView()
                                 .padding(.top, 50)
                         }
+                        
+                        if UserDefaults.standard.bool(forKey: "showAuthorsRow"), let authorRows = authorRows{
+                            ForEach(authorRows) { row in
+                                AuthorTitleRow(title: row.label, authors: row.authors)
+                            }
+                        }
                     }
                 }
                 .navigationTitle("Listen now")
