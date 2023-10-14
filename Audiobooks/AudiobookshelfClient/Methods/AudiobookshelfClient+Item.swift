@@ -73,3 +73,25 @@ extension AudiobookshelfClient {
         ]))
     }
 }
+
+// MARK: Search
+
+extension AudiobookshelfClient {
+    func search(query: String, libraryId: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
+        let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
+            URLQueryItem(name: "q", value: query),
+        ]))
+        
+        let audiobooks = response.book?.map { Audiobook.convertFromAudiobookshelf(item: $0.libraryItem) }
+        let podcasts = response.podcast?.map { Podcast.convertFromAudiobookshelf(item: $0.libraryItem) }
+        let authors = response.authors?.map(Author.convertFromAudiobookshelf)
+        let series = response.series?.map { Series.convertFromAudiobookshelf(item: $0.series, books: $0.books) }
+        
+        return (
+            audiobooks ?? [],
+            podcasts ?? [],
+            authors ?? [],
+            series ?? []
+        )
+    }
+}
