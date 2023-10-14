@@ -16,7 +16,7 @@ extension AudiobookshelfClient {
             URLQueryItem(name: "limit", value: "1"),
         ]))
         
-        return response?.authors.first?.id
+        return response?.authors?.first?.id
     }
 }
 
