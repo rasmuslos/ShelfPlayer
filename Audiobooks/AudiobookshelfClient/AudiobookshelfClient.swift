@@ -11,6 +11,9 @@ class AudiobookshelfClient {
     private(set) var serverUrl: URL!
     private(set) var token: String!
     
+    private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+    private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
+    
     private init(serverUrl: URL!, token: String!) {
         self.serverUrl = serverUrl
         self.token = token
@@ -35,6 +38,11 @@ extension AudiobookshelfClient {
     func setToken(_ token: String) {
         UserDefaults.standard.set(token, forKey: "token")
         self.token = token
+    }
+    
+    func logout() {
+        UserDefaults.standard.set(nil, forKey: "token")
+        exit(0)
     }
 }
 

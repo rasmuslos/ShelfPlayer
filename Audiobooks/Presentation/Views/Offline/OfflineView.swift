@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct OfflineView: View {
+    @State var accountSheetPresented = false
+    
     @State var audiobooks = [OfflineAudiobook]()
     @State var podcasts = [OfflinePodcast: [OfflineEpisode]]()
     
@@ -58,6 +60,14 @@ struct OfflineView: View {
             } label: {
                 Label("Go online", systemImage: "network")
             }
+            Button {
+                accountSheetPresented.toggle()
+            } label: {
+                Label("Manage", systemImage: "bolt.horizontal.circle")
+            }
+        }
+        .sheet(isPresented: $accountSheetPresented) {
+            AccountSheet()
         }
         .modifier(NowPlayingBarModifier())
         .onAppear {

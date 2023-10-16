@@ -499,11 +499,13 @@ extension AudioPlayer {
     private func fetchSkipIntervals() {
         skipBackwardsInterval = UserDefaults.standard.integer(forKey: "skipBackwardsInterval")
         if skipBackwardsInterval == 0 {
+            skipBackwardsInterval = 30
             UserDefaults.standard.set(30, forKey: "skipBackwardsInterval")
         }
         
         skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
         if skipForwardsInterval == 0 {
+            skipForwardsInterval = 30
             UserDefaults.standard.set(30, forKey: "skipForwardsInterval")
         }
     }

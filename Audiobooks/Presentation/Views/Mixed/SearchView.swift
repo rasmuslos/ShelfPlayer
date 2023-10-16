@@ -64,6 +64,7 @@ struct SearchView: View {
             .navigationTitle("Search")
             .searchable(text: $query)
             .modifier(NowPlayingBarSafeAreaModifier())
+            .modifier(AccountSheetToolbarModifier())
             .onChange(of: query) {
                 task?.cancel()
                 task = Task.detached {
