@@ -44,6 +44,15 @@ extension AudiobookshelfClient {
     }
 }
 
+// MARK: Username
+
+extension AudiobookshelfClient {
+    func getUsername() async throws -> String {
+        let response = try await request(ClientRequest<AuthorizationResponse>(path: "api/authorize", method: "POST"))
+        return response.user.username
+    }
+}
+
 // MARK: Authorization response
 
 extension AudiobookshelfClient {
@@ -53,6 +62,7 @@ extension AudiobookshelfClient {
         struct User: Codable {
             let id: String
             let token: String
+            let username: String
             
             let mediaProgress: [MediaProgress]
         }

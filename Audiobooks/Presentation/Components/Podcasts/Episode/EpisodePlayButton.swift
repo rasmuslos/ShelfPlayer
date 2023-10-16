@@ -34,15 +34,17 @@ struct EpisodePlayButton: View {
                             .font(.caption.smallCaps())
                             .bold()
                     } else {
-                        Rectangle()
-                            .foregroundStyle(.gray.opacity(0.25))
-                            .overlay(alignment: .leading) {
-                                Rectangle()
-                                    .frame(width: max(50 * progress.progress, 5))
-                                    .foregroundStyle(highlighted ? .black : colorScheme == .light ? .black : .white)
-                            }
-                            .frame(width: 50, height: 7)
-                            .clipShape(RoundedRectangle(cornerRadius: 10000))
+                        if progress.progress > 0 {
+                            Rectangle()
+                                .foregroundStyle(.gray.opacity(0.25))
+                                .overlay(alignment: .leading) {
+                                    Rectangle()
+                                        .frame(width: max(50 * progress.progress, 5))
+                                        .foregroundStyle(highlighted ? .black : colorScheme == .light ? .black : .white)
+                                }
+                                .frame(width: 50, height: 7)
+                                .clipShape(RoundedRectangle(cornerRadius: 10000))
+                        }
                         
                         Text((progress.duration - progress.currentTime).numericTimeLeft())
                     }

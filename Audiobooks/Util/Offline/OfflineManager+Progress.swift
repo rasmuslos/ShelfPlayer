@@ -92,14 +92,14 @@ extension OfflineManager {
 extension OfflineManager {
     @MainActor
     func setProgress(item: Item, finished: Bool) {
-        if let progress = getProgress(item: item) {
-            if finished {
-                progress.progress = 1
-                progress.currentTime = progress.duration
-            } else {
-                progress.progress = 0
-                progress.currentTime = 0
-            }
+        let progress = getOrCreateProgress(item: item)
+        
+        if finished {
+            progress.progress = 1
+            progress.currentTime = progress.duration
+        } else {
+            progress.progress = 0
+            progress.currentTime = 0
         }
     }
 }
@@ -120,6 +120,15 @@ extension OfflineManager {
 
 extension OfflineManager {
     @MainActor
+    func getOrCreateProgress(item: Item) -> OfflineProgress {
+        if let episode = item as? Episode {
+            return getOrCreateProgress(itemId: episode.podcastId, episodeId: episode.id)
+        } else {
+            return getOrCreateProgress(itemId: item.id, episodeId: nil)
+        }
+    }
+    
+    @MainActor
     func getOrCreateProgress(itemId: String, episodeId: String?) -> OfflineProgress {
         var progress: OfflineProgress!
         
@@ -129,7 +138,7 @@ extension OfflineManager {
             } else {
                 progress = OfflineProgress(
                     id: "tmp_\(episodeId)",
-                    itemId: itemId, 
+                    itemId: itemId,
                     additionalId: episodeId,
                     duration: 0,
                     currentTime: 0,
