@@ -20,7 +20,7 @@ extension NowPlayingSheet {
                 if chapters.count > 1 {
                     List {
                         ForEach(chapters) {
-                            ChapterRow(chapter: $0)
+                            ChapterRow(chapter: $0, currentTime: $currentTime)
                         }
                     }
                 } else {
@@ -76,6 +76,7 @@ extension NowPlayingSheet {
 extension NowPlayingSheet.ChapterSheet {
     struct ChapterRow: View {
         let chapter: PlayableItem.Chapter
+        @Binding var currentTime: Double
         
         var body: some View {
             Button {
@@ -83,6 +84,7 @@ extension NowPlayingSheet.ChapterSheet {
             } label: {
                 VStack(alignment: .leading) {
                     Text(chapter.title)
+                        .bold(chapter.start <= currentTime && chapter.end > currentTime)
                     Text((chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
                         .font(.caption)
                         .foregroundStyle(.secondary)

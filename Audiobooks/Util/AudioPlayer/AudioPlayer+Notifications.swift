@@ -12,4 +12,5 @@ extension AudioPlayer {
     static let startStopNotification = NSNotification.Name("io.rfk.audiobooks.startStop")
     static let currentTimeChangedNotification = NSNotification.Name("io.rfk.audiobooks.currentTime.changed")
     static let playbackRateChanged = NSNotification.Name("io.rfk.audiobooks.rate.changed")
+    static let sleepTimerChanged = NSNotification.Name("io.rfk.audiobooks.sleeptimer.changed")
 }

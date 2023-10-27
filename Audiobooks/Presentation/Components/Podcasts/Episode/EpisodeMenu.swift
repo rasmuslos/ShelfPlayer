@@ -21,6 +21,25 @@ struct EpisodeMenu: View {
             
             Divider()
             
+            // it is truly beyond me why this crashed the app without any exceptions being thrown
+            /*
+            if episode.offline == .none {
+                Button {
+                    // Task {
+                        // try! await OfflineManager.shared.downloadEpisode(episode)
+                    // }
+                } label: {
+                    Label("Download", systemImage: "arrow.down")
+                }
+            } else {
+                Button {
+                    // try? OfflineManager.shared.deleteEpisode(episodeId: episode.id)
+                } label: {
+                    Label("Delete download", systemImage: "trash")
+                }
+            }
+             */
+            
             let progress = OfflineManager.shared.getProgress(item: episode)?.progress ?? 0
             Button {
                 Task {

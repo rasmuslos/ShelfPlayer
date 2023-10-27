@@ -42,6 +42,7 @@ struct EpisodeImageRow: View {
                 HStack {
                     EpisodePlayButton(episode: episode)
                     Spacer()
+                    DownloadIndicator(item: episode)
                     EpisodeMenu(episode: episode)
                 }
             }
