@@ -82,7 +82,9 @@
 		3A77B70D2ACDFB1D00F22C7F /* Series+Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B70C2ACDFB1D00F22C7F /* Series+Convert.swift */; };
 		3A77B70F2ACDFBF700F22C7F /* AudiobookshelfClient+Series.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B70E2ACDFBF700F22C7F /* AudiobookshelfClient+Series.swift */; };
 		3A77B7112ACE00FC00F22C7F /* String+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B7102ACE00FC00F22C7F /* String+Base64.swift */; };
+		3A79A9692AE53555006B61FC /* DownloadIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A79A9682AE53555006B61FC /* DownloadIndicator.swift */; };
 		3A7C015B2AD6BBA2002E9690 /* AudiobookshelfClient+Episodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7C015A2AD6BBA2002E9690 /* AudiobookshelfClient+Episodes.swift */; };
+		3A82864D2AEC104400384BC9 /* SleepTimerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */; };
 		3A829D8B2AD8571800639D91 /* OfflineEpisode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A829D8A2AD8571800639D91 /* OfflineEpisode.swift */; };
 		3A829D8D2AD8574A00639D91 /* OfflinePodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A829D8C2AD8574A00639D91 /* OfflinePodcast.swift */; };
 		3A829D8F2AD858B000639D91 /* OfflineManager+Episodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A829D8E2AD858B000639D91 /* OfflineManager+Episodes.swift */; };
@@ -246,7 +248,10 @@
 		3A77B70C2ACDFB1D00F22C7F /* Series+Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Series+Convert.swift"; sourceTree = "<group>"; };
 		3A77B70E2ACDFBF700F22C7F /* AudiobookshelfClient+Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookshelfClient+Series.swift"; sourceTree = "<group>"; };
 		3A77B7102ACE00FC00F22C7F /* String+Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Base64.swift"; sourceTree = "<group>"; };
+		3A79A9682AE53555006B61FC /* DownloadIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadIndicator.swift; sourceTree = "<group>"; };
 		3A7C015A2AD6BBA2002E9690 /* AudiobookshelfClient+Episodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookshelfClient+Episodes.swift"; sourceTree = "<group>"; };
+		3A82864B2AEC0DD800384BC9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTimerButton.swift; sourceTree = "<group>"; };
 		3A829D8A2AD8571800639D91 /* OfflineEpisode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineEpisode.swift; sourceTree = "<group>"; };
 		3A829D8C2AD8574A00639D91 /* OfflinePodcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflinePodcast.swift; sourceTree = "<group>"; };
 		3A829D8E2AD858B000639D91 /* OfflineManager+Episodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OfflineManager+Episodes.swift"; sourceTree = "<group>"; };
@@ -347,6 +352,7 @@
 		3A0AE6972AB623F400ACCD68 = {
 			isa = PBXGroup;
 			children = (
+				3A82864B2AEC0DD800384BC9 /* README.md */,
 				3A0AE6A22AB623F400ACCD68 /* Audiobooks */,
 				3A0AE6A12AB623F400ACCD68 /* Products */,
 			);
@@ -505,9 +511,10 @@
 			isa = PBXGroup;
 			children = (
 				3A38A1572AD4715100D533F3 /* PlayButton.swift */,
+				3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */,
+				3A9AB5372AD941DC0089231A /* SwipeActionsModifier.swift */,
 				3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */,
 				3A1011862AD69DDA00AAE220 /* PlaybackSpeedSelector.swift */,
-				3A9AB5372AD941DC0089231A /* SwipeActionsModifier.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -542,6 +549,7 @@
 			children = (
 				3A1EAB952ACC808A0064C80C /* ItemImage.swift */,
 				3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */,
+				3A79A9682AE53555006B61FC /* DownloadIndicator.swift */,
 			);
 			path = Items;
 			sourceTree = "<group>";
@@ -1070,6 +1078,7 @@
 				3A5159542AD02B6D00CD5680 /* Date+Get.swift in Sources */,
 				3A91CEFF2AD715BD00DFD22A /* OfflineChapter.swift in Sources */,
 				3AA19BAA2AD705BD00C468EA /* OfflineAudiobook.swift in Sources */,
+				3A82864D2AEC104400384BC9 /* SleepTimerButton.swift in Sources */,
 				3AB695362ACF3BAF00823049 /* AuthorLoadView.swift in Sources */,
 				3ACB3B9E2AD1DA55005EA609 /* Podcast.swift in Sources */,
 				3AA954292AD29B760031C20D /* EpisodeImageRow.swift in Sources */,
@@ -1165,6 +1174,7 @@
 				3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */,
 				3A1011872AD69DDA00AAE220 /* PlaybackSpeedSelector.swift in Sources */,
 				3A50AABE2ACC572B00BF5438 /* AudiobookshelfClient+Audiobooks.swift in Sources */,
+				3A79A9692AE53555006B61FC /* DownloadIndicator.swift in Sources */,
 				3A0AE6BF2AB6253300ACCD68 /* LargeButtonStyle.swift in Sources */,
 				3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */,
 				3A77B7022ACDF01C00F22C7F /* SeriesUnavailableView.swift in Sources */,

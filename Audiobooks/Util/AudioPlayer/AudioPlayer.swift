@@ -16,7 +16,11 @@ class AudioPlayer {
     private(set) var chapters: PlayableItem.Chapters
     
     private var activeAudioTrackIndex: Int?
-    private var activeChapterIndex: Int?
+    private var activeChapterIndex: Int? {
+        didSet {
+            updateNowPlayingChapterInfo()
+        }
+    }
     
     private var audioPlayer: AVQueuePlayer
     private(set) var buffering: Bool = false
@@ -29,6 +33,8 @@ class AudioPlayer {
     private var enableChapterTrack: Bool
     private var skipBackwardsInterval: Int!
     private var skipForwardsInterval: Int!
+    
+    private(set) var remainingSleepTimerTime: Double?
     
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "AudioPlayer")
     
@@ -173,6 +179,11 @@ extension AudioPlayer {
         
         NotificationCenter.default.post(name: Self.playbackRateChanged, object: nil)
     }
+    
+    func setSleepTimer(duration: Double?) {
+        self.remainingSleepTimerTime = duration
+        NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
+    }
 }
 
 // MARK: Getter
@@ -310,6 +321,17 @@ extension AudioPlayer {
                 updateChapterIndex()
             }
             
+            if remainingSleepTimerTime != nil && isPlaying() {
+                remainingSleepTimerTime! -= 0.5
+                
+                if remainingSleepTimerTime! <= 0 {
+                    setPlaying(false)
+                    remainingSleepTimerTime = nil
+                }
+                
+                NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
+            }
+            
             Task { @MainActor in
                 NotificationCenter.default.post(name: Self.currentTimeChangedNotification, object: nil)
             }
@@ -444,17 +466,26 @@ extension AudioPlayer {
             Task.detached { [self] in
                 nowPlayingInfo = [:]
                 
-                nowPlayingInfo[MPMediaItemPropertyTitle] = item.name
                 nowPlayingInfo[MPMediaItemPropertyArtist] = item.author
                 nowPlayingInfo[MPNowPlayingInfoPropertyChapterCount] = chapters.count
                 
-                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+                updateNowPlayingChapterInfo()
                 
                 if let imageUrl = item.image?.url, let data = try? Data(contentsOf: imageUrl), let image = UIImage(data: data) {
                     setNowPlayingArtwork(image: image)
                 }
             }
         }
+    }
+    private func updateNowPlayingChapterInfo() {
+        if enableChapterTrack, chapters.count > 1 {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = getChapter()?.title
+            nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = item?.name
+        } else {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = item?.name
+        }
+        
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
     private func setNowPlayingArtwork(image: UIImage) {
         let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })

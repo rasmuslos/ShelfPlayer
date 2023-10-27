@@ -35,10 +35,10 @@ struct SessionsImportView: View {
                         
                         progress.progressType = .localSynced
                     }
-                    logger.log("Synced progress to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
+                    logger.info("Synced progress to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
                     
                     try await OfflineManager.shared.deleteSyncedProgress()
-                    logger.log("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
+                    logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
                     
                     let sessions = try await AudiobookshelfClient.shared.authorize()
                     await OfflineManager.shared.importSessions(sessions)

@@ -46,7 +46,6 @@ struct OfflineView: View {
                         }
                         
                         if podcasts[podcast.key]?.count == 0 {
-                            print("aaaa")
                             podcasts[podcast.key] = nil
                         }
                     }

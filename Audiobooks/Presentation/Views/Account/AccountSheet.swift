@@ -38,8 +38,6 @@ struct AccountSheet: View {
             Section {
                 Button {
                     UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                    
-                    print(UIApplication.openSettingsURLString)
                 } label: {
                     Text("Settings")
                 }
