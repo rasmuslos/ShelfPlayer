@@ -18,6 +18,10 @@ extension NowPlayingSheet {
                     .foregroundStyle(.secondary)
                 
                 Spacer()
+                SleepTimerButton()
+                    .foregroundStyle(.secondary)
+                
+                Spacer()
                 AirPlayView()
                     .frame(width: 45)
                     .padding(.vertical, -100)
@@ -33,7 +37,7 @@ extension NowPlayingSheet {
             .bold()
             .font(.system(size: 20))
             .frame(height: 45)
-            .padding(.horizontal, 35)
+            .padding(.horizontal, 15)
             .padding(.top, 20)
             .padding(.bottom, 45)
         }

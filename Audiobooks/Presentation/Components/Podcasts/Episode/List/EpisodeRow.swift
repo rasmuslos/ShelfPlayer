@@ -33,8 +33,13 @@ struct EpisodeRow: View {
                     .foregroundStyle(.secondary)
             }
             
-            EpisodePlayButton(episode: episode)
-                .padding(.bottom, 10)
+            HStack(alignment: .firstTextBaseline) {
+                EpisodePlayButton(episode: episode)
+                    .padding(.bottom, 10)
+                
+                Spacer()
+                DownloadIndicator(item: episode)
+            }
         }
     }
 }
