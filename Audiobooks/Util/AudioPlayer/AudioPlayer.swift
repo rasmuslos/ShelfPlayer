@@ -79,7 +79,6 @@ extension AudioPlayer {
         seek(to: startTime)
         setPlaying(true)
         
-        updateAudioSession(active: true)
         updateChapterIndex()
         setupNowPlayingMetadata()
         
@@ -115,6 +114,7 @@ extension AudioPlayer {
         
         if playing {
             audioPlayer.play()
+            updateAudioSession(active: true)
         } else {
             audioPlayer.pause()
         }

@@ -22,6 +22,7 @@ struct PodcastLoadView: View {
             PodcastView(podcast: podcast)
         } else {
             LoadingView()
+                .navigationBarBackButtonHidden()
                 .task {
                     if let (podcast, _) = await AudiobookshelfClient.shared.getPodcastById(podcastId) {
                         self.podcast = podcast

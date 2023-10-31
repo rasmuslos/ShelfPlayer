@@ -27,7 +27,7 @@ struct NowPlayingBarModifier: ViewModifier {
                                 .blur(radius: 25)
                                 .foregroundStyle(.thinMaterial)
                         }
-                        .foregroundStyle(.regularMaterial)
+                        .foregroundStyle(.ultraThinMaterial)
                         .overlay {
                             HStack {
                                 ItemImage(image: item.image)
