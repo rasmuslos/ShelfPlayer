@@ -85,7 +85,9 @@ struct SleepTimerButton: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.sleepTimerChanged), perform: { _ in
-            remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
+            withAnimation {
+                remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
+            }
         })
     }
 }

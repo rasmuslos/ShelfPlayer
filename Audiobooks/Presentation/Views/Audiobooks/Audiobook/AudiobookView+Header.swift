@@ -46,7 +46,7 @@ extension AudiobookView {
                         Text(audiobook.name)
                             .font(.headline)
                             .fontDesign(.serif)
-                            .lineLimit(1)
+                            .multilineTextAlignment(.center)
                         
                         if let author = audiobook.author {
                             NavigationLink {

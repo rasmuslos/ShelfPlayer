@@ -10,22 +10,18 @@ import SwiftUI
 struct AudiobookCover: View {
     let audiobook: Audiobook
     
-    @State var bottomText: String?
+    @State var bottomText = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ItemProgressImage(item: audiobook)
-                .onAppear {
-                    fetchRemainingTime()
-                }
             
-            if let bottomText = bottomText {
-                Text(bottomText)
-                    .font(.footnote)
-                    .lineLimit(1)
-                    .padding(.top, 4)
-                    .foregroundStyle(.secondary)
-            }
+            Text(bottomText)
+                .font(.footnote)
+                .lineLimit(1)
+                .padding(.top, 4)
+                .foregroundStyle(.secondary)
+                .onAppear(perform: fetchRemainingTime)
         }
     }
 }
