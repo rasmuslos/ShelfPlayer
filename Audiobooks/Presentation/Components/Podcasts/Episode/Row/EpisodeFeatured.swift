@@ -76,6 +76,7 @@ extension EpisodeFeatured {
                     HStack {
                         EpisodePlayButton(episode: episode, highlighted: true)
                         Spacer()
+                        DownloadIndicator(item: episode)
                         EpisodeMenu(episode: episode)
                     }
                 }
