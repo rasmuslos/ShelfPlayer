@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AuthorUnavailableView: View {
     var body: some View {
-        ContentUnavailableView("Author unavailable", systemImage: "person", description: Text("Please ensure that you are connected to the internet"))
+        ContentUnavailableView("error.unavailable.author", systemImage: "person", description: Text("error.unavailable.text"))
     }
 }
 

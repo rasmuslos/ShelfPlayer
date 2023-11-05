@@ -21,12 +21,12 @@ struct AudiobooksSort: View {
             Button {
                 display = .list
             } label: {
-                Label("List", systemImage: "list.bullet")
+                Label("sort.list", systemImage: "list.bullet")
             }
             Button {
                 display = .grid
             } label: {
-                Label("Grid", systemImage: "square.grid.2x2")
+                Label("sort.grid", systemImage: "square.grid.2x2")
             }
             
             Divider()
@@ -34,7 +34,7 @@ struct AudiobooksSort: View {
             ForEach(SortOrder.allCases, id: \.hashValue) { order in
                 Button {
                     sort = order
-                    UserDefaults.standard.set(sort.rawValue, forKey: "audiobooks.sort")
+                    UserDefaults.standard.set(sort.rawValue.stringKey, forKey: "audiobooks.sort")
                 } label: {
                     if sort == order {
                         Label(order.rawValue, systemImage: "checkmark")
@@ -50,9 +50,9 @@ struct AudiobooksSort: View {
                 UserDefaults.standard.set(ascending, forKey: "audiobooks.sort.ascending")
             } label: {
                 if ascending {
-                    Label("Ascending", systemImage: "checkmark")
+                    Label("sort.ascending", systemImage: "checkmark")
                 } else {
-                    Text("Ascending")
+                    Text("sort.ascending")
                 }
             }
         } label: {
@@ -69,12 +69,12 @@ extension AudiobooksSort {
         case list = "list"
     }
     
-    enum SortOrder: String, CaseIterable {
-        case name = "Name"
-        case author = "Author"
-        case released = "Released"
-        case added = "Added"
-        case duration = "Duration"
+    enum SortOrder: LocalizedStringKey, CaseIterable {
+        case name = "sort.name"
+        case author = "sort.author"
+        case released = "sort.released"
+        case added = "sort.added"
+        case duration = "sort.duration"
     }
 }
 
@@ -88,7 +88,7 @@ extension AudiobooksSort {
         return .grid
     }
     static func getSortOrder() -> SortOrder {
-        if let stored = UserDefaults.standard.string(forKey: "audiobooks.sort"), let parsed = SortOrder(rawValue: stored) {
+        if let stored = UserDefaults.standard.string(forKey: "audiobooks.sort"), let parsed = SortOrder(rawValue: LocalizedStringKey(stored)) {
             return parsed
         }
         return .name

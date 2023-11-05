@@ -27,19 +27,19 @@ struct AccountSheet: View {
                     OfflineManager.shared.deleteStoredProgress()
                     AudiobookshelfClient.shared.logout()
                 } label: {
-                    Text("Logout")
+                    Text("account.logout")
                 }
             } header: {
-                Text("User")
+                Text("account.user")
             } footer: {
-                Text("Logging out will not delete any downloads")
+                Text("account.logout.disclaimer")
             }
             
             Section {
                 Button {
                     UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
                 } label: {
-                    Text("Settings")
+                    Text("account.settings")
                 }
                 
                 Button(role: .destructive) {
@@ -48,23 +48,23 @@ struct AccountSheet: View {
                         "offline": false,
                     ])
                 } label: {
-                    Text("Delete cached progress")
+                    Text("account.delete.cache")
                 }
                 Button(role: .destructive) {
                     OfflineManager.shared.deleteAllDownloads()
                 } label: {
-                    Text("Delete all downloads")
+                    Text("account.delete.downloads")
                 }
             }
             
             Group {
-                Section("Server") {
+                Section("account.server") {
                     Text(AudiobookshelfClient.shared.token)
                     Text(AudiobookshelfClient.shared.serverUrl.absoluteString)
                 }
                 
                 Section {
-                    Text("Version: \(AudiobookshelfClient.shared.clientVersion) (\(AudiobookshelfClient.shared.clientBuild))")
+                    Text("account.version \(AudiobookshelfClient.shared.clientVersion) (\(AudiobookshelfClient.shared.clientBuild))")
                 }
             }
             .font(.caption)
@@ -73,7 +73,7 @@ struct AccountSheet: View {
             Section {
                 HStack {
                     Spacer()
-                    Text("Devloped by Rasmus Krämer")
+                    Text("developedBy")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()

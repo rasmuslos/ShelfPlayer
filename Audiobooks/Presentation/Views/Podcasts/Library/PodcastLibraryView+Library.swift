@@ -28,7 +28,7 @@ extension PodcastLibraryView {
                         }
                     }
                 }
-                .navigationTitle("Library")
+                .navigationTitle("title.library")
                 .navigationBarTitleDisplayMode(.large)
                 .modifier(NowPlayingBarSafeAreaModifier())
                 .task(fetchPodcasts)
@@ -36,7 +36,7 @@ extension PodcastLibraryView {
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
-                Label("Library", systemImage: "tray.full")
+                Label("tab.library", systemImage: "tray.full")
             }
         }
     }

@@ -29,7 +29,7 @@ struct SeriesRow: View {
             VStack(alignment: .leading) {
                 Text(series.name)
                     .fontDesign(.serif)
-                Text("\(series.images.count) books")
+                Text("series.count \(series.images.count)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

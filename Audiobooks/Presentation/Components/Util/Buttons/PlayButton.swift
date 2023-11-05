@@ -19,9 +19,15 @@ struct PlayButton: View {
             item.startPlayback()
         } label: {
             if let progress = progress, progress.progress > 0 && progress.progress < 1 {
-                Label("\(label) • \((progress.duration - progress.currentTime).timeLeft())", systemImage: labelImage)
+                Label {
+                    Text(label)
+                    + Text(verbatim: " • ")
+                    + Text(String((progress.duration - progress.currentTime).timeLeft()))
+                } icon: {
+                    Image(systemName: labelImage)
+                }
             } else {
-                Label("\(label)", systemImage: labelImage)
+                Label(label, systemImage: labelImage)
             }
         }
         .buttonStyle(PlayNowButtonStyle(percentage: progress?.progress ?? 0))

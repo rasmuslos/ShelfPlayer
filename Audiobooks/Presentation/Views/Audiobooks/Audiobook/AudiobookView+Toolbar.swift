@@ -74,12 +74,12 @@ extension AudiobookView {
                             Menu {
                                 if let authorId = authorId {
                                     NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
-                                        Label("View author", systemImage: "person")
+                                        Label("author.view", systemImage: "person")
                                     }
                                 }
                                 if let seriesId = seriesId {
                                     NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
-                                        Label("View series", systemImage: "text.justify.leading")
+                                        Label("series.view", systemImage: "text.justify.leading")
                                     }
                                 }
                                 
@@ -92,9 +92,9 @@ extension AudiobookView {
                                     }
                                 } label: {
                                     if progress >= 1 {
-                                        Label("Mark as unfinished", systemImage: "xmark")
+                                        Label("progress.reset", systemImage: "xmark")
                                     } else {
-                                        Label("Mark as finished", systemImage: "checkmark")
+                                        Label("progress.complete", systemImage: "checkmark")
                                     }
                                 }
                                 
@@ -104,7 +104,7 @@ extension AudiobookView {
                                     Button(role: .destructive) {
                                         try! OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
                                     } label: {
-                                        Label("Force delete", systemImage: "trash")
+                                        Label("downloads.delete.force", systemImage: "trash")
                                     }
                                 }
                             } label: {

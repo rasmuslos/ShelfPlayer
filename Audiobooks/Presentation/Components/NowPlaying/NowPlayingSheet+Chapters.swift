@@ -26,7 +26,7 @@ extension NowPlayingSheet {
                 } else {
                     VStack {
                         Spacer()
-                        Text("No chapters")
+                        Text("chapters.empty")
                             .font(.headline.smallCaps())
                         Spacer()
                     }
@@ -50,7 +50,7 @@ extension NowPlayingSheet {
                         }
                         
                         Group {
-                            Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(" left")
+                            Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ") + Text("time.left")
                         }
                         .font(.caption)
                         .foregroundStyle(.secondary)

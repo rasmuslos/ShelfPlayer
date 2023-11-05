@@ -34,7 +34,7 @@ struct AllEpisodesView: View {
             })
         }
         .listStyle(.plain)
-        .navigationTitle("Episodes")
+        .navigationTitle("title.episodes")
         .searchable(text: $query)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
