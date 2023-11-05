@@ -46,7 +46,7 @@ struct PodcastView: View {
                     NavigationLink(destination: AllEpisodesView(episodes: episodes, podcastId: podcast.id)) {
                         HStack {
                             Spacer()
-                            Text("See all")
+                            Text("episodes.all")
                         }
                     }
                 }

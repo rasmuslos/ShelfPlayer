@@ -40,7 +40,7 @@ extension AudiobookLibraryView {
                         }
                     }
                 }
-                .navigationTitle("Library")
+                .navigationTitle("title.library")
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -53,7 +53,7 @@ extension AudiobookLibraryView {
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
-                Label("Library", systemImage: "book.fill")
+                Label("tab.library", systemImage: "book.fill")
             }
         }
     }

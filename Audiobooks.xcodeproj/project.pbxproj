@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */; };
 		3A0AE6A42AB623F400ACCD68 /* AudiobooksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* AudiobooksApp.swift */; };
 		3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A52AB623F400ACCD68 /* ContentView.swift */; };
 		3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */; };
@@ -168,9 +169,11 @@
 		3AF240F32ADA99F50065C0A4 /* AuthorAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F22ADA99F50065C0A4 /* AuthorAvatar.swift */; };
 		3AFA7F9B2ACD435000B7FF4B /* ProgressOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
+		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringKey+Key.swift"; sourceTree = "<group>"; };
 		3A0AE6A02AB623F400ACCD68 /* Audiobooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audiobooks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A0AE6A32AB623F400ACCD68 /* AudiobooksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -333,6 +336,7 @@
 		3AF240F22ADA99F50065C0A4 /* AuthorAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorAvatar.swift; sourceTree = "<group>"; };
 		3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
+		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -376,6 +380,7 @@
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
 				3A27A66D2AB7631900F80C92 /* Info.plist */,
 				3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */,
+				3AFF94872AF65CF500127AFF /* Localizable.xcstrings */,
 				3A0AE6AB2AB623F500ACCD68 /* Audiobooks.entitlements */,
 			);
 			path = Audiobooks;
@@ -483,6 +488,7 @@
 				3A1EAB9D2ACC85B50064C80C /* String+Prefix.swift */,
 				3A77B7102ACE00FC00F22C7F /* String+Base64.swift */,
 				3A1EAB9B2ACC84490064C80C /* String+Padding.swift */,
+				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
 			);
 			path = String;
 			sourceTree = "<group>";
@@ -1021,6 +1027,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
@@ -1044,6 +1051,7 @@
 			files = (
 				3A2BC1952AD8121400054727 /* Settings.bundle in Resources */,
 				3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */,
+				3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1132,6 +1140,7 @@
 				3AA0B0892AD322470009FBB4 /* EpisodeView.swift in Sources */,
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
 				3A50AAC52ACC59BD00BF5438 /* HomeRow.swift in Sources */,
+				3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */,
 				3AF240F32ADA99F50065C0A4 /* AuthorAvatar.swift in Sources */,
 				3A1EAB8D2ACC7C790064C80C /* Audiobook+Fixture.swift in Sources */,
 				3A17E68D2AD5EF9C00E59464 /* NowPlayingSheet.swift in Sources */,
@@ -1366,6 +1375,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Audiobooks/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1381,7 +1391,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.Audiobooks;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1407,6 +1417,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Audiobooks/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1422,7 +1433,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.Audiobooks;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

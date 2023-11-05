@@ -20,7 +20,7 @@ struct SessionsImportView: View {
                 task?.cancel()
                 callback(false)
             } label: {
-                Label("Go offline", systemImage: "network.slash")
+                Label("offline.enable", systemImage: "network.slash")
             }
             .buttonStyle(LargeButtonStyle())
             .padding()

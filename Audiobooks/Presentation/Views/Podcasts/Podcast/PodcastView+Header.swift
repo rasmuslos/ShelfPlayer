@@ -48,12 +48,12 @@ extension PodcastView {
                         }
                         
                         if podcast.explicit {
-                            Text("•")
+                            Text(verbatim: "•")
                             Image(systemName: "e.square.fill")
                         }
                         
                         if podcast.genres.count > 0 {
-                            Text("•")
+                            Text(verbatim: "•")
                             Text(podcast.genres.joined(separator: ", "))
                                 .lineLimit(1)
                         }

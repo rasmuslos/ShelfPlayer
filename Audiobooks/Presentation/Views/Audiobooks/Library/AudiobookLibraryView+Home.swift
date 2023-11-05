@@ -40,7 +40,7 @@ extension AudiobookLibraryView {
                         }
                     }
                 }
-                .navigationTitle("Listen now")
+                .navigationTitle("title.home")
                 .modifier(LibrarySelectorModifier())
                 .modifier(NowPlayingBarSafeAreaModifier())
                 .task(loadRows)
@@ -48,7 +48,7 @@ extension AudiobookLibraryView {
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
-                Label("Listen now", systemImage: "bookmark.fill")
+                Label("tab.home", systemImage: "bookmark.fill")
             }
         }
     }

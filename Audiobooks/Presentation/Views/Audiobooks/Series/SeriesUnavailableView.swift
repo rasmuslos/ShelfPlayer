@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SeriesUnavailableView: View {
     var body: some View {
-        ContentUnavailableView("Series unavailable", systemImage: "text.justify.leading", description: Text("Please ensure that you are connected to the internet"))
+        ContentUnavailableView("error.unavailable.series", systemImage: "text.justify.leading", description: Text("error.unavailable.text"))
     }
 }
 

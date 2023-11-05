@@ -32,7 +32,7 @@ struct LibrarySelectorModifier: ViewModifier {
                                 "offline": true,
                             ])
                         } label: {
-                            Label("Go offline", systemImage: "network.slash")
+                            Label("offline.enable", systemImage: "network.slash")
                         }
                     } label: {
                         Image(systemName: "bookmark.circle.fill")

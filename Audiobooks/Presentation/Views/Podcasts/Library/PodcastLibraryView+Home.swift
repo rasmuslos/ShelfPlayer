@@ -42,7 +42,7 @@ extension PodcastLibraryView {
                         }
                     }
                 }
-                .navigationTitle("Listen now")
+                .navigationTitle("title.home")
                 .modifier(LibrarySelectorModifier())
                 .modifier(NowPlayingBarSafeAreaModifier())
                 .task(loadRows)
@@ -50,7 +50,7 @@ extension PodcastLibraryView {
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
-                Label("Listen now", systemImage: "waveform")
+                Label("tab.home", systemImage: "waveform")
             }
         }
     }

@@ -30,7 +30,7 @@ struct EpisodePlayButton: View {
                 
                 if let progress = progress {
                     if progress.progress >= 1 {
-                        Text("100%")
+                        Text("progress.completed")
                             .font(.caption.smallCaps())
                             .bold()
                     } else {

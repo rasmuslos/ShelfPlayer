@@ -43,7 +43,7 @@ extension NowPlayingSheet {
                             if let chapter = AudioPlayer.shared.getChapter() {
                                 Text(chapter.title)
                             } else {
-                                Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(" left")
+                                Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ") + Text("time.left")
                             }
                         }
                         .font(.caption2)

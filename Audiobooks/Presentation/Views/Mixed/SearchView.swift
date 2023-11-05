@@ -22,7 +22,7 @@ struct SearchView: View {
         NavigationStack {
             List {
                 if !audiobooks.isEmpty {
-                    Section("Audiobooks") {
+                    Section("section.audiobooks") {
                         ForEach(audiobooks) { audiobook in
                             NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
                                 AudiobookRow(audiobook: audiobook)
@@ -31,7 +31,7 @@ struct SearchView: View {
                     }
                 }
                 if !podcasts.isEmpty {
-                    Section("Podcasts") {
+                    Section("section.podcasts") {
                         ForEach(podcasts) { podcast in
                             NavigationLink(destination: PodcastView(podcast: podcast)) {
                                 PodcastRow(podcast: podcast)
@@ -41,7 +41,7 @@ struct SearchView: View {
                 }
                 
                 if !series.isEmpty {
-                    Section("Series") {
+                    Section("section.series") {
                         ForEach(series) { item in
                             NavigationLink(destination: SeriesView(series: item)) {
                                 SeriesRow(series: item)
@@ -51,7 +51,7 @@ struct SearchView: View {
                 }
                 
                 if !authors.isEmpty {
-                    Section("Authors") {
+                    Section("section.authors") {
                         ForEach(authors) { author in
                             NavigationLink(destination: AuthorView(author: author)) {
                                 AuthorRow(author: author)
@@ -61,7 +61,7 @@ struct SearchView: View {
                 }
             }
             .listStyle(.plain)
-            .navigationTitle("Search")
+            .navigationTitle("title.search")
             .searchable(text: $query)
             .modifier(NowPlayingBarSafeAreaModifier())
             .modifier(AccountSheetToolbarModifier())
@@ -76,7 +76,7 @@ struct SearchView: View {
         }
         .modifier(NowPlayingBarModifier())
         .tabItem {
-            Label("Search", systemImage: "magnifyingglass")
+            Label("tab.search", systemImage: "magnifyingglass")
         }
     }
 }
