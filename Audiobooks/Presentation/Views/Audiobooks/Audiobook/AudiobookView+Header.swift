@@ -72,7 +72,7 @@ extension AudiobookView {
                         
                         HStack(spacing: 3) {
                             if let narrator = audiobook.narrator {
-                                Text("Narrated by \(narrator)")
+                                Text("audiobook.narrtor \(narrator)")
                                     .font(.caption)
                                     .lineLimit(1)
                                     .foregroundStyle(.secondary)

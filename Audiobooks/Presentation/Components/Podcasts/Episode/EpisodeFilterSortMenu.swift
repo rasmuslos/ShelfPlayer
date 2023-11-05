@@ -75,9 +75,9 @@ struct EpisodeFilterSortMenu: View {
                     Self.setAscending(ascending, podcastId: podcastId)
                 } label: {
                     if ascending {
-                        Label("Ascending", systemImage: "checkmark")
+                        Label("sort.ascending", systemImage: "checkmark")
                     } else {
-                        Text("Ascending")
+                        Text("sort.ascending")
                     }
                 }
             }
@@ -101,11 +101,11 @@ struct EpisodeFilterSortMenu: View {
 // MARK: Filter
 
 extension EpisodeFilterSortMenu {
-    enum Filter: String, CaseIterable {
-        case all = "All Episodes"
-        case progress = "In Progress"
-        case unfinished = "Unfinished"
-        case finished = "Finished"
+    enum Filter: LocalizedStringKey, CaseIterable {
+        case all = "sort.all"
+        case progress = "sort.progress"
+        case unfinished = "sort.unfinished"
+        case finished = "sort.finished"
     }
     
     @MainActor
@@ -142,11 +142,11 @@ extension EpisodeFilterSortMenu {
 // MARK: Sort
 
 extension EpisodeFilterSortMenu {
-    enum SortOrder: String, CaseIterable {
-        case name = "Name"
-        case index = "Index"
-        case released = "Released"
-        case duration = "Duration"
+    enum SortOrder: LocalizedStringKey, CaseIterable {
+        case name = "sort.name"
+        case index = "sort.index"
+        case released = "sort.released"
+        case duration = "sort.duration"
     }
     
     static func sortEpisodes(_ episodes: [Episode], sortOrder: SortOrder, ascending: Bool) -> [Episode] {
@@ -192,14 +192,14 @@ extension EpisodeFilterSortMenu {
 
 extension EpisodeFilterSortMenu {
     static func getFilter(podcastId: String) -> Filter {
-        if let stored = UserDefaults.standard.string(forKey: "filter.\(podcastId)"), let parsed = Filter(rawValue: stored) {
+        if let stored = UserDefaults.standard.string(forKey: "filter.\(podcastId)"), let parsed = Filter(rawValue: LocalizedStringKey(stored)) {
             return parsed
         }
         return .unfinished
     }
     
     static func getSortOrder(podcastId: String) -> SortOrder {
-        if let stored = UserDefaults.standard.string(forKey: "sort.\(podcastId)"), let parsed = SortOrder(rawValue: stored) {
+        if let stored = UserDefaults.standard.string(forKey: "sort.\(podcastId)"), let parsed = SortOrder(rawValue: LocalizedStringKey(stored)) {
             return parsed
         }
         return .released
@@ -209,11 +209,11 @@ extension EpisodeFilterSortMenu {
     }
     
     static func setFilter(_ filter: Filter, podcastId: String) {
-        UserDefaults.standard.set(filter.rawValue, forKey: "filter.\(podcastId)")
+        UserDefaults.standard.set(filter.rawValue.stringKey, forKey: "filter.\(podcastId)")
     }
     
     static func setSortOrder(_ sortOrder: SortOrder, podcastId: String) {
-        UserDefaults.standard.set(sortOrder.rawValue, forKey: "sort.\(podcastId)")
+        UserDefaults.standard.set(sortOrder.rawValue.stringKey, forKey: "sort.\(podcastId)")
     }
     
     static func setAscending(_ ascending: Bool, podcastId: String) {

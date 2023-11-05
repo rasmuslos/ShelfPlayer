@@ -17,7 +17,7 @@ struct SleepTimerButton: View {
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: remainingSleepTimerTime + 60)
                     } label: {
-                        Label("Increase by one minute", systemImage: "plus")
+                        Label("sleep.increase", systemImage: "plus")
                     }
                     Button {
                         let decreasedTime = remainingSleepTimerTime - 60
@@ -27,7 +27,7 @@ struct SleepTimerButton: View {
                             AudioPlayer.shared.setSleepTimer(duration: decreasedTime)
                         }
                     } label: {
-                        Label("Decrease by one minute", systemImage: "minus")
+                        Label("sleep.decrease", systemImage: "minus")
                     }
                     
                     Divider()
@@ -35,7 +35,7 @@ struct SleepTimerButton: View {
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: nil)
                     } label: {
-                        Label("Clear sleep timer", systemImage: "moon.stars")
+                        Label("sleep.clear", systemImage: "moon.stars")
                     }
                 } label: {
                     Text(remainingSleepTimerTime.numericTimeLeft())
@@ -43,41 +43,45 @@ struct SleepTimerButton: View {
                 }
             } else {
                 Menu {
+                    let hourSingular = String(localized: "sleep.hour.singular")
+                    let hourPlural = String(localized: "sleep.hour.plural")
+                    let minute = String(localized: "sleep.minute")
+                    
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: 2 * 60 * 60)
                     } label: {
-                        Text("2 hours")
+                        Text(verbatim: "2 \(hourPlural)")
                     }
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: 1.5 * 60 * 60)
                     } label: {
-                        Text("1 hour 30 minutes")
+                        Text(verbatim: "1 \(hourSingular) 30 \(minute)")
                     }
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: 1 * 60 * 60)
                     } label: {
-                        Text("1 hour")
+                        Text(verbatim: "1 \(hourSingular)")
                     }
                     
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: 45 * 60)
                     } label: {
-                        Text("45 minutes")
+                        Text(verbatim: "45 \(minute)")
                     }
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: 30 * 60)
                     } label: {
-                        Text("30 minutes")
+                        Text(verbatim: "30 \(minute)")
                     }
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: 15 * 60)
                     } label: {
-                        Text("15 minutes")
+                        Text(verbatim: "15 \(minute)")
                     }
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: 5 * 60)
                     } label: {
-                        Text("5 minutes")
+                        Text(verbatim: "5 \(minute)")
                     }
                 } label: {
                     Image(systemName: "moon.zzz")

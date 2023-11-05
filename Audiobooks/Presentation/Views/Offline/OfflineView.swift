@@ -16,9 +16,9 @@ struct OfflineView: View {
     var body: some View {
         List {
             if !audiobooks.isEmpty {
-                Section("Audiobooks") {
+                Section("downloads.audiobooks") {
                     if audiobooks.isEmpty {
-                        Text("No downloaded audiobooks")
+                        Text("downloads.empty")
                             .font(.caption.smallCaps())
                             .foregroundStyle(.secondary)
                     }
@@ -57,12 +57,12 @@ struct OfflineView: View {
                     "offline": false,
                 ])
             } label: {
-                Label("Go online", systemImage: "network")
+                Label("offline.disable", systemImage: "network")
             }
             Button {
                 accountSheetPresented.toggle()
             } label: {
-                Label("Manage", systemImage: "bolt.horizontal.circle")
+                Label("account.manage", systemImage: "bolt.horizontal.circle")
             }
         }
         .sheet(isPresented: $accountSheetPresented) {

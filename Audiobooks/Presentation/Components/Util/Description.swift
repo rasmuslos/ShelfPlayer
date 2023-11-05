@@ -15,7 +15,7 @@ struct Description: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("Description")
+                Text("description")
                     .bold()
                     .underline()
                     .padding(.bottom, 2)
@@ -25,7 +25,7 @@ struct Description: View {
                         .padding(.horizontal, -5)
                         .frame(height: height)
                 } else {
-                    Text("No description available")
+                    Text("description.unavailable")
                         .font(.body.smallCaps())
                         .foregroundStyle(.secondary)
                 }

@@ -25,7 +25,7 @@ extension EpisodeView {
                     if let formattedReleaseDate = episode.formattedReleaseDate {
                         Group {
                             Text(formattedReleaseDate)
-                            + Text(" • ")
+                            + Text(verbatim: " • ")
                             + Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
                         }
                         .font(.caption.smallCaps())

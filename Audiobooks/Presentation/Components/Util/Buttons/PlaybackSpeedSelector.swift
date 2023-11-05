@@ -12,37 +12,53 @@ struct PlaybackSpeedSelector: View {
     
     var body: some View {
         Menu {
-            Button("0.25x") {
+            Button {
                 setPlaybackSpeed(0.25)
+            } label: {
+                Text(verbatim: "0.25x")
             }
-            Button("0.5x") {
+            Button {
                 setPlaybackSpeed(0.5)
+            } label: {
+                Text(verbatim: "0.5x")
             }
-            Button("0.75x") {
+            Button {
                 setPlaybackSpeed(0.75)
+            } label: {
+                Text(verbatim: "0.75x")
             }
-            Button("1x") {
+            Button {
                 setPlaybackSpeed(1)
+            } label: {
+                Text(verbatim: "1x")
             }
-            Button("1.25x") {
+            Button {
                 setPlaybackSpeed(1.25)
+            } label: {
+                Text(verbatim: "1.25x")
             }
-            Button("1.5x") {
+            Button {
                 setPlaybackSpeed(1.5)
+            } label: {
+                Text(verbatim: "1.5x")
             }
-            Button("1.75x") {
+            Button {
                 setPlaybackSpeed(1.75)
+            } label: {
+                Text(verbatim: "1.25x")
             }
-            Button("2x") {
+            Button {
                 setPlaybackSpeed(2)
+            } label: {
+                Text(verbatim: "2x")
             }
         } label: {
             if currentSpeed == 1 {
-                Text("1x")
+                Text(verbatim: "1x")
             } else if currentSpeed == 2 {
-                Text("2x")
+                Text(verbatim: "2x")
             } else {
-                Text(String(currentSpeed)) + Text("x")
+                Text(String(currentSpeed)) + Text(verbatim: "x")
             }
         } primaryAction: {
             var speed = currentSpeed + 0.25

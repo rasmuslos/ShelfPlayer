@@ -29,14 +29,14 @@ extension AudiobookLibraryView {
                         .modifier(NowPlayingBarSafeAreaModifier())
                     }
                 }
-                .navigationTitle("Series")
+                .navigationTitle("title.series")
                 .navigationBarTitleDisplayMode(.large)
                 .task(fetchAudiobooks)
                 .refreshable(action: fetchAudiobooks)
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
-                Label("Series", systemImage: "books.vertical.fill")
+                Label("tab.series", systemImage: "books.vertical.fill")
             }
         }
     }

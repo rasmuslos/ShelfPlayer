@@ -13,10 +13,10 @@ struct EpisodeMenu: View {
     var body: some View {
         Menu {
             NavigationLink(destination: EpisodeView(episode: episode)) {
-                Label("View episode", systemImage: "waveform")
+                Label("episode.view", systemImage: "waveform")
             }
             NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {
-                Label("View podcast", systemImage: "tray.full")
+                Label("podcast.view", systemImage: "tray.full")
             }
             
             Divider()
@@ -47,9 +47,9 @@ struct EpisodeMenu: View {
                 }
             } label: {
                 if progress >= 1 {
-                    Label("Mark as unfinished", systemImage: "xmark")
+                    Label("progress.reset", systemImage: "xmark")
                 } else {
-                    Label("Mark as finished", systemImage: "checkmark")
+                    Label("progress.complete", systemImage: "checkmark")
                 }
             }
         } label: {

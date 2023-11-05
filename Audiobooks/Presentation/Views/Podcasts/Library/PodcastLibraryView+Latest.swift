@@ -26,14 +26,14 @@ extension PodcastLibraryView {
                             .modifier(NowPlayingBarSafeAreaModifier())
                     }
                 }
-                .navigationTitle("Latest Episodes")
+                .navigationTitle("title.latest")
                 .navigationBarTitleDisplayMode(.large)
                 .task(fetchEpisodes)
                 .refreshable(action: fetchEpisodes)
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
-                Label("Latest", systemImage: "clock")
+                Label("tab.latest", systemImage: "clock")
             }
         }
     }
