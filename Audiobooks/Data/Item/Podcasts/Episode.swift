@@ -27,10 +27,9 @@ class Episode: PlayableItem {
     // MARK: Getter
     
     lazy var releaseDate: Date? = {
-        if let released = released {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-            return dateFormatter.date(from: released)
+        if let released = released, let milliseconds = Double(released) {
+            print(released, milliseconds)
+            return Date(timeIntervalSince1970: milliseconds / 1000)
         }
         
         return nil

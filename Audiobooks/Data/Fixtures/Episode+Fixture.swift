@@ -17,7 +17,7 @@ extension Episode {
         image: Item.Image.init(url: URL(string: "https://yt3.ggpht.com/a/AATXAJzzBYy7X230jcXQOXOOsHRLsEjwMluIvn1IVg%3ds900-c-k-c0xffffffff-no-rj-mo")!),
         genres: [],
         addedAt: Date(),
-        released: "Fri, 22 Sep 2023 15:00:00 +0200",
+        released: "1698856560000",
         size: 0,
         podcastId: "fixture",
         podcastName: "Tagesschau",
