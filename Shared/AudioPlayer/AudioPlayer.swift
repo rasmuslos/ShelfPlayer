@@ -370,9 +370,11 @@ extension AudioPlayer {
             }
         }
         
+        #if os(iOS)
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
             self?.playbackReporter = nil
         }
+        #endif
         NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.enableChapterTrack = UserDefaults.standard.bool(forKey: "enableChapterTrack")
             self?.fetchSkipIntervals()
@@ -470,10 +472,7 @@ extension AudioPlayer {
                 nowPlayingInfo[MPNowPlayingInfoPropertyChapterCount] = chapters.count
                 
                 updateNowPlayingChapterInfo()
-                
-                if let imageUrl = item.image?.url, let data = try? Data(contentsOf: imageUrl), let image = UIImage(data: data) {
-                    setNowPlayingArtwork(image: image)
-                }
+                setupNowPlayingMetadata()
             }
         }
     }
@@ -487,12 +486,20 @@ extension AudioPlayer {
         
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
-    private func setNowPlayingArtwork(image: UIImage) {
-        let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
-        nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
-        
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    #if os(iOS)
+    private func setNowPlayingArtwork() {
+        if let imageUrl = item?.image?.url, let data = try? Data(contentsOf: imageUrl), let image = UIImage(data: data) {
+            let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+            
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        }
     }
+    #else
+    private func setNowPlayingArtwork() {
+        // TODO: code this
+    }
+    #endif
     
     private func updateNowPlayingStatus() {
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate

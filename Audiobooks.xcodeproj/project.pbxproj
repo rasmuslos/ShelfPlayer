@@ -43,6 +43,11 @@
 		3A27A6772AB7669600F80C92 /* AudiobookshelfClient+MediaProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A27A6762AB7669600F80C92 /* AudiobookshelfClient+MediaProgress.swift */; };
 		3A2B93352B00D71B00638AE9 /* ToolbarProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B93342B00D71B00638AE9 /* ToolbarProgressButton.swift */; };
 		3A2BC1952AD8121400054727 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3A2BC1942AD8121400054727 /* Settings.bundle */; };
+		3A31D7372B01767600EB7A00 /* Date+Get.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159532AD02B6D00CD5680 /* Date+Get.swift */; };
+		3A31D7382B01767600EB7A00 /* Double+FormatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EAB992ACC82490064C80C /* Double+FormatTime.swift */; };
+		3A31D7392B01767600EB7A00 /* String+Prefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EAB9D2ACC85B50064C80C /* String+Prefix.swift */; };
+		3A31D73A2B01767600EB7A00 /* String+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B7102ACE00FC00F22C7F /* String+Base64.swift */; };
+		3A31D73B2B01767600EB7A00 /* String+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EAB9B2ACC84490064C80C /* String+Padding.swift */; };
 		3A36D78B2ACF2C1D002EEC54 /* AudiobooksGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobooksGrid.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
 		3A38A15A2AD47F6200D533F3 /* PlayableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1592AD47F6200D533F3 /* PlayableItem.swift */; };
@@ -112,7 +117,6 @@
 		3A3CC5292B01666D000ACDCF /* WatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC5282B01666D000ACDCF /* WatchOSApp.swift */; };
 		3A3CC52B2B01666D000ACDCF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC52A2B01666D000ACDCF /* ContentView.swift */; };
 		3A3CC52D2B01666F000ACDCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A3CC52C2B01666F000ACDCF /* Assets.xcassets */; };
-		3A3CC5332B01666F000ACDCF /* WatchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 3A3CC5262B01666D000ACDCF /* WatchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3A48D24F2AD0600000991139 /* AudiobookshelfClient+Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D24E2AD0600000991139 /* AudiobookshelfClient+Item.swift */; };
 		3A48D2512AD0661500991139 /* LibrarySelectorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */; };
 		3A48D2542AD074DC00991139 /* PodcastLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2532AD074DC00991139 /* PodcastLibraryView.swift */; };
@@ -322,7 +326,6 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				3A3CC5332B01666F000ACDCF /* WatchOS Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,7 +334,6 @@
 
 /* Begin PBXFileReference section */
 		3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringKey+Key.swift"; sourceTree = "<group>"; };
-		3A0AE6A02AB623F400ACCD68 /* Multiplatform.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Multiplatform.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -368,16 +370,15 @@
 		3A27A6762AB7669600F80C92 /* AudiobookshelfClient+MediaProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookshelfClient+MediaProgress.swift"; sourceTree = "<group>"; };
 		3A2B93342B00D71B00638AE9 /* ToolbarProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarProgressButton.swift; sourceTree = "<group>"; };
 		3A2BC1942AD8121400054727 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		3A31D7352B01766500EB7A00 /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = tvOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-appletvos/tvOS.app"; sourceTree = "<absolute>"; };
 		3A36D78A2ACF2C1D002EEC54 /* AudiobooksGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksGrid.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		3A38A1592AD47F6200D533F3 /* PlayableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableItem.swift; sourceTree = "<group>"; };
 		3A38A15B2AD4830E00D533F3 /* PlayableItem+Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlayableItem+Convert.swift"; sourceTree = "<group>"; };
 		3A38A15E2AD4886D00D533F3 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
-		3A3CC4A72B0161CD000ACDCF /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tvOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A3CC4A92B0161CD000ACDCF /* tvOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tvOSApp.swift; sourceTree = "<group>"; };
 		3A3CC4AB2B0161CD000ACDCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		3A3CC5262B01666D000ACDCF /* WatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WatchOS Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A3CC5282B01666D000ACDCF /* WatchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchOSApp.swift; sourceTree = "<group>"; };
 		3A3CC52A2B01666D000ACDCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A3CC52C2B01666F000ACDCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -494,6 +495,8 @@
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsImportView.swift; sourceTree = "<group>"; };
 		3ACD19BB2ACB60D0007D01FE /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
+		3ACDFCA72B017813008488A2 /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = iOS.app; path = /Users/rasmus/Development/Audiobooks/build/Debug/iOS.app; sourceTree = "<absolute>"; };
+		3ACDFCA82B017939008488A2 /* WatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "WatchOS Watch App.app"; path = "/Users/rasmus/Development/Audiobooks/build/Debug-watchos/WatchOS Watch App.app"; sourceTree = "<absolute>"; };
 		3AF240E72ADA853A0065C0A4 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		3AF240E92ADA87720065C0A4 /* PodcastRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastRow.swift; sourceTree = "<group>"; };
 		3AF240EB2ADA88DE0065C0A4 /* SeriesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesRow.swift; sourceTree = "<group>"; };
@@ -540,25 +543,13 @@
 			children = (
 				3A82864B2AEC0DD800384BC9 /* README.md */,
 				3A3CC4B72B01622E000ACDCF /* Shared */,
-				3A0AE6A22AB623F400ACCD68 /* Multiplatform */,
+				3A0AE6A22AB623F400ACCD68 /* iOS */,
 				3A3CC4A82B0161CD000ACDCF /* tvOS */,
-				3A3CC5272B01666D000ACDCF /* WatchOS */,
-				3A0AE6A12AB623F400ACCD68 /* Products */,
-				3A5374542B016BAC00188ABA /* Frameworks */,
+				3A3CC5272B01666D000ACDCF /* watchOS */,
 			);
 			sourceTree = "<group>";
 		};
-		3A0AE6A12AB623F400ACCD68 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				3A0AE6A02AB623F400ACCD68 /* Multiplatform.app */,
-				3A3CC4A72B0161CD000ACDCF /* tvOS.app */,
-				3A3CC5262B01666D000ACDCF /* WatchOS Watch App.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		3A0AE6A22AB623F400ACCD68 /* Multiplatform */ = {
+		3A0AE6A22AB623F400ACCD68 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
 				3A0AE6B52AB624C700ACCD68 /* Views */,
@@ -572,7 +563,7 @@
 				3AFF94872AF65CF500127AFF /* Localizable.xcstrings */,
 				3A0AE6AB2AB623F500ACCD68 /* Audiobooks.entitlements */,
 			);
-			path = Multiplatform;
+			path = iOS;
 			sourceTree = "<group>";
 		};
 		3A0AE6B52AB624C700ACCD68 /* Views */ = {
@@ -819,13 +810,13 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
-		3A3CC5272B01666D000ACDCF /* WatchOS */ = {
+		3A3CC5272B01666D000ACDCF /* watchOS */ = {
 			isa = PBXGroup;
 			children = (
 				3A5374522B01686F00188ABA /* Core */,
 				3A3CC52C2B01666F000ACDCF /* Assets.xcassets */,
 			);
-			path = WatchOS;
+			path = watchOS;
 			sourceTree = "<group>";
 		};
 		3A48D2522AD074C500991139 /* Podcasts */ = {
@@ -901,13 +892,6 @@
 				3A3CC4A92B0161CD000ACDCF /* tvOSApp.swift */,
 			);
 			path = Core;
-			sourceTree = "<group>";
-		};
-		3A5374542B016BAC00188ABA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		3A5374592B016C2B00188ABA /* Extensions */ = {
@@ -1213,9 +1197,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3A0AE69F2AB623F400ACCD68 /* Multiplatform */ = {
+		3A0AE69F2AB623F400ACCD68 /* iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "Multiplatform" */;
+			buildConfigurationList = 3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "iOS" */;
 			buildPhases = (
 				3A0AE69C2AB623F400ACCD68 /* Sources */,
 				3A0AE69D2AB623F400ACCD68 /* Frameworks */,
@@ -1228,14 +1212,14 @@
 			dependencies = (
 				3A3CC5322B01666F000ACDCF /* PBXTargetDependency */,
 			);
-			name = Multiplatform;
+			name = iOS;
 			packageProductDependencies = (
 				3A1EAB922ACC80690064C80C /* NukeUI */,
 				3AA954322AD2B61F0031C20D /* SwiftSoup */,
 				3A8810F42AD2C35B009696D1 /* UIImageColors */,
 			);
 			productName = Audiobooks;
-			productReference = 3A0AE6A02AB623F400ACCD68 /* Multiplatform.app */;
+			productReference = 3ACDFCA72B017813008488A2 /* iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3A3CC4A62B0161CD000ACDCF /* tvOS */ = {
@@ -1255,7 +1239,7 @@
 				3A5374552B016BAC00188ABA /* SwiftSoup */,
 			);
 			productName = music.tvos;
-			productReference = 3A3CC4A72B0161CD000ACDCF /* tvOS.app */;
+			productReference = 3A31D7352B01766500EB7A00 /* tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3A3CC5252B01666D000ACDCF /* WatchOS Watch App */ = {
@@ -1275,7 +1259,7 @@
 				3A5374572B016BB300188ABA /* SwiftSoup */,
 			);
 			productName = "WatchOS Watch App";
-			productReference = 3A3CC5262B01666D000ACDCF /* WatchOS Watch App.app */;
+			productReference = 3ACDFCA82B017939008488A2 /* WatchOS Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1314,11 +1298,11 @@
 				3AA954312AD2B61F0031C20D /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				3A8810F32AD2C35B009696D1 /* XCRemoteSwiftPackageReference "UIImageColors" */,
 			);
-			productRefGroup = 3A0AE6A12AB623F400ACCD68 /* Products */;
+			productRefGroup = 3A0AE6972AB623F400ACCD68;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3A0AE69F2AB623F400ACCD68 /* Multiplatform */,
+				3A0AE69F2AB623F400ACCD68 /* iOS */,
 				3A3CC4A62B0161CD000ACDCF /* tvOS */,
 				3A3CC5252B01666D000ACDCF /* WatchOS Watch App */,
 			);
@@ -1618,6 +1602,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A31D7372B01767600EB7A00 /* Date+Get.swift in Sources */,
+				3A31D7382B01767600EB7A00 /* Double+FormatTime.swift in Sources */,
+				3A31D7392B01767600EB7A00 /* String+Prefix.swift in Sources */,
+				3A31D73A2B01767600EB7A00 /* String+Base64.swift in Sources */,
+				3A31D73B2B01767600EB7A00 /* String+Padding.swift in Sources */,
 				3A5374182B01683900188ABA /* PersistenceManager.swift in Sources */,
 				3A5374192B01683900188ABA /* Item.swift in Sources */,
 				3A53741A2B01683900188ABA /* PlayableItem.swift in Sources */,
@@ -1813,7 +1802,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Multiplatform/Audiobooks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOS/Audiobooks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = DEVELOPMENT;
 				DEVELOPMENT_TEAM = N8AA4S3S96;
@@ -1821,7 +1810,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Multiplatform/Info.plist;
+				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -1856,7 +1845,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Multiplatform/Audiobooks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOS/Audiobooks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = DEVELOPMENT;
 				DEVELOPMENT_TEAM = N8AA4S3S96;
@@ -1864,7 +1853,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Multiplatform/Info.plist;
+				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -1909,7 +1898,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.ampfin.tvos;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer.tvos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1935,7 +1924,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.ampfin.tvos;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer.tvos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -2017,7 +2006,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "Multiplatform" */ = {
+		3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A0AE6B22AB623F500ACCD68 /* Debug */,
