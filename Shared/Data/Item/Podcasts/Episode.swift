@@ -28,7 +28,6 @@ class Episode: PlayableItem {
     
     lazy var releaseDate: Date? = {
         if let released = released, let milliseconds = Double(released) {
-            print(released, milliseconds)
             return Date(timeIntervalSince1970: milliseconds / 1000)
         }
         

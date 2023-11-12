@@ -375,6 +375,9 @@
 		3A38A1592AD47F6200D533F3 /* PlayableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableItem.swift; sourceTree = "<group>"; };
 		3A38A15B2AD4830E00D533F3 /* PlayableItem+Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlayableItem+Convert.swift"; sourceTree = "<group>"; };
 		3A38A15E2AD4886D00D533F3 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		3A3A50622B0182A30016DFCA /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = iOS.app; path = /Users/rasmus/Development/Audiobooks/build/Debug/iOS.app; sourceTree = "<absolute>"; };
+		3A3A50632B0182A30016DFCA /* watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = watchOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-watchos/watchOS.app"; sourceTree = "<absolute>"; };
+		3A3A50642B0182A30016DFCA /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = tvOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-appletvos/tvOS.app"; sourceTree = "<absolute>"; };
 		3A3CC4A92B0161CD000ACDCF /* tvOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tvOSApp.swift; sourceTree = "<group>"; };
 		3A3CC4AB2B0161CD000ACDCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -494,9 +497,6 @@
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsImportView.swift; sourceTree = "<group>"; };
 		3ACD19BB2ACB60D0007D01FE /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
-		3ACDFCA92B017A06008488A2 /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = iOS.app; path = /Users/rasmus/Development/Audiobooks/build/Debug/iOS.app; sourceTree = "<absolute>"; };
-		3ACDFCAA2B017A06008488A2 /* WatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "WatchOS Watch App.app"; path = "/Users/rasmus/Development/Audiobooks/build/Debug-watchos/WatchOS Watch App.app"; sourceTree = "<absolute>"; };
-		3ACDFCAB2B017A06008488A2 /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = tvOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-appletvos/tvOS.app"; sourceTree = "<absolute>"; };
 		3AF240E72ADA853A0065C0A4 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		3AF240E92ADA87720065C0A4 /* PodcastRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastRow.swift; sourceTree = "<group>"; };
 		3AF240EB2ADA88DE0065C0A4 /* SeriesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesRow.swift; sourceTree = "<group>"; };
@@ -1219,7 +1219,7 @@
 				3A8810F42AD2C35B009696D1 /* UIImageColors */,
 			);
 			productName = Audiobooks;
-			productReference = 3ACDFCA92B017A06008488A2 /* iOS.app */;
+			productReference = 3A3A50622B0182A30016DFCA /* iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3A3CC4A62B0161CD000ACDCF /* tvOS */ = {
@@ -1239,12 +1239,12 @@
 				3A5374552B016BAC00188ABA /* SwiftSoup */,
 			);
 			productName = music.tvos;
-			productReference = 3ACDFCAB2B017A06008488A2 /* tvOS.app */;
+			productReference = 3A3A50642B0182A30016DFCA /* tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3A3CC5252B01666D000ACDCF /* WatchOS Watch App */ = {
+		3A3CC5252B01666D000ACDCF /* watchOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3A3CC5342B01666F000ACDCF /* Build configuration list for PBXNativeTarget "WatchOS Watch App" */;
+			buildConfigurationList = 3A3CC5342B01666F000ACDCF /* Build configuration list for PBXNativeTarget "watchOS" */;
 			buildPhases = (
 				3A3CC5222B01666D000ACDCF /* Sources */,
 				3A3CC5232B01666D000ACDCF /* Frameworks */,
@@ -1254,12 +1254,12 @@
 			);
 			dependencies = (
 			);
-			name = "WatchOS Watch App";
+			name = watchOS;
 			packageProductDependencies = (
 				3A5374572B016BB300188ABA /* SwiftSoup */,
 			);
 			productName = "WatchOS Watch App";
-			productReference = 3ACDFCAA2B017A06008488A2 /* WatchOS Watch App.app */;
+			productReference = 3A3A50632B0182A30016DFCA /* watchOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1304,7 +1304,7 @@
 			targets = (
 				3A0AE69F2AB623F400ACCD68 /* iOS */,
 				3A3CC4A62B0161CD000ACDCF /* tvOS */,
-				3A3CC5252B01666D000ACDCF /* WatchOS Watch App */,
+				3A3CC5252B01666D000ACDCF /* watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -1676,7 +1676,7 @@
 /* Begin PBXTargetDependency section */
 		3A3CC5322B01666F000ACDCF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3A3CC5252B01666D000ACDCF /* WatchOS Watch App */;
+			target = 3A3CC5252B01666D000ACDCF /* watchOS */;
 			targetProxy = 3A3CC5312B01666F000ACDCF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -2024,7 +2024,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3A3CC5342B01666F000ACDCF /* Build configuration list for PBXNativeTarget "WatchOS Watch App" */ = {
+		3A3CC5342B01666F000ACDCF /* Build configuration list for PBXNativeTarget "watchOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A3CC5352B01666F000ACDCF /* Debug */,
