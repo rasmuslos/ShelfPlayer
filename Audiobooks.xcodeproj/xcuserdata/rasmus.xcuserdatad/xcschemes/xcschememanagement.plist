@@ -17,12 +17,12 @@
 		<key>WatchOS Watch App.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
 		<key>iOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</dict>
 		<key>music.tvos.xcscheme_^#shared#^_</key>
 		<dict>
@@ -32,7 +32,20 @@
 		<key>tvOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>2</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>3A0AE69F2AB623F400ACCD68</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3A3CC5252B01666D000ACDCF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
