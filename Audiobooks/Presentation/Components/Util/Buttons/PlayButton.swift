@@ -9,10 +9,11 @@ import SwiftUI
 
 struct PlayButton: View {
     let item: PlayableItem
+    
     @State var labelImage: String = "play.fill"
+    @State var progress: OfflineProgress?
     
     var body: some View {
-        let progress = OfflineManager.shared.getProgress(item: item)
         let label = item as? Audiobook != nil ? "Listen" : "Play"
         
         Button {
@@ -33,12 +34,16 @@ struct PlayButton: View {
         .buttonStyle(PlayNowButtonStyle(percentage: progress?.progress ?? 0))
         .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
         .onAppear(perform: checkPlaying)
+        .onAppear(perform: fetchProgress)
         .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
             checkPlaying()
         })
         .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
             checkPlaying()
         })
+        .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification)) { _ in
+            fetchProgress()
+        }
     }
 }
 
@@ -53,6 +58,11 @@ extension PlayButton {
                 labelImage = "play.fill"
             }
         }
+    }
+    
+    @MainActor
+    private func fetchProgress() {
+        progress = OfflineManager.shared.getProgress(item: item)
     }
 }
 

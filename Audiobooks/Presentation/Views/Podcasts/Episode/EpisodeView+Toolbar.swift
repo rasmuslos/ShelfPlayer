@@ -55,19 +55,9 @@ extension EpisodeView {
                             }
                             .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
                             
-                            let progress = OfflineManager.shared.getProgress(item: episode)?.progress ?? 0
-                            Button {
-                                Task {
-                                    await episode.setProgress(finished: progress < 1)
-                                }
-                            } label: {
-                                if progress >= 1 {
-                                    Image(systemName: "minus.circle.fill")
-                                } else {
-                                    Image(systemName: "checkmark.circle.fill")
-                                }
-                            }
-                            .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
+                            ToolbarProgressButton(item: episode)
+                                .symbolVariant(.circle.fill)
+                                .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
                         }
                     }
                 }

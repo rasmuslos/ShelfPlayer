@@ -22,16 +22,17 @@ extension EpisodeView {
                     ItemImage(image: episode.image)
                         .frame(width: 150)
                     
-                    if let formattedReleaseDate = episode.formattedReleaseDate {
-                        Group {
+                    HStack(spacing: 0) {
+                        if let formattedReleaseDate = episode.formattedReleaseDate {
                             Text(formattedReleaseDate)
-                            + Text(verbatim: " • ")
-                            + Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
+                            Text(verbatim: " • ")
                         }
-                        .font(.caption.smallCaps())
-                        .foregroundStyle(.secondary)
-                        .padding(.vertical, 5)
+                        
+                        Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
                     }
+                    .font(.caption.smallCaps())
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 5)
                     
                     VStack(spacing: 7) {
                         Text(episode.name)
@@ -51,8 +52,8 @@ extension EpisodeView {
                     }
                     
                     PlayButton(item: episode)
-                    .padding()
-                    .padding(.bottom, 10)
+                        .padding()
+                        .padding(.bottom, 10)
                 }
                 .padding(.top, 100)
                 .padding(.horizontal, 30)
