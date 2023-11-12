@@ -370,7 +370,6 @@
 		3A27A6762AB7669600F80C92 /* AudiobookshelfClient+MediaProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookshelfClient+MediaProgress.swift"; sourceTree = "<group>"; };
 		3A2B93342B00D71B00638AE9 /* ToolbarProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarProgressButton.swift; sourceTree = "<group>"; };
 		3A2BC1942AD8121400054727 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		3A31D7352B01766500EB7A00 /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = tvOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-appletvos/tvOS.app"; sourceTree = "<absolute>"; };
 		3A36D78A2ACF2C1D002EEC54 /* AudiobooksGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksGrid.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		3A38A1592AD47F6200D533F3 /* PlayableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableItem.swift; sourceTree = "<group>"; };
@@ -495,8 +494,9 @@
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsImportView.swift; sourceTree = "<group>"; };
 		3ACD19BB2ACB60D0007D01FE /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
-		3ACDFCA72B017813008488A2 /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = iOS.app; path = /Users/rasmus/Development/Audiobooks/build/Debug/iOS.app; sourceTree = "<absolute>"; };
-		3ACDFCA82B017939008488A2 /* WatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "WatchOS Watch App.app"; path = "/Users/rasmus/Development/Audiobooks/build/Debug-watchos/WatchOS Watch App.app"; sourceTree = "<absolute>"; };
+		3ACDFCA92B017A06008488A2 /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = iOS.app; path = /Users/rasmus/Development/Audiobooks/build/Debug/iOS.app; sourceTree = "<absolute>"; };
+		3ACDFCAA2B017A06008488A2 /* WatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "WatchOS Watch App.app"; path = "/Users/rasmus/Development/Audiobooks/build/Debug-watchos/WatchOS Watch App.app"; sourceTree = "<absolute>"; };
+		3ACDFCAB2B017A06008488A2 /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = tvOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-appletvos/tvOS.app"; sourceTree = "<absolute>"; };
 		3AF240E72ADA853A0065C0A4 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		3AF240E92ADA87720065C0A4 /* PodcastRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastRow.swift; sourceTree = "<group>"; };
 		3AF240EB2ADA88DE0065C0A4 /* SeriesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesRow.swift; sourceTree = "<group>"; };
@@ -1219,7 +1219,7 @@
 				3A8810F42AD2C35B009696D1 /* UIImageColors */,
 			);
 			productName = Audiobooks;
-			productReference = 3ACDFCA72B017813008488A2 /* iOS.app */;
+			productReference = 3ACDFCA92B017A06008488A2 /* iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3A3CC4A62B0161CD000ACDCF /* tvOS */ = {
@@ -1239,7 +1239,7 @@
 				3A5374552B016BAC00188ABA /* SwiftSoup */,
 			);
 			productName = music.tvos;
-			productReference = 3A31D7352B01766500EB7A00 /* tvOS.app */;
+			productReference = 3ACDFCAB2B017A06008488A2 /* tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3A3CC5252B01666D000ACDCF /* WatchOS Watch App */ = {
@@ -1259,7 +1259,7 @@
 				3A5374572B016BB300188ABA /* SwiftSoup */,
 			);
 			productName = "WatchOS Watch App";
-			productReference = 3ACDFCA82B017939008488A2 /* WatchOS Watch App.app */;
+			productReference = 3ACDFCAA2B017A06008488A2 /* WatchOS Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
