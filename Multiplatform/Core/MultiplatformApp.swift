@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct AudiobooksApp: App {
+struct Multiplatform: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
