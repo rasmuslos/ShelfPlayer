@@ -465,15 +465,13 @@ extension AudioPlayer {
 extension AudioPlayer {
     private func setupNowPlayingMetadata() {
         if let item = item {
-            Task.detached { [self] in
-                nowPlayingInfo = [:]
-                
-                nowPlayingInfo[MPMediaItemPropertyArtist] = item.author
-                nowPlayingInfo[MPNowPlayingInfoPropertyChapterCount] = chapters.count
-                
-                updateNowPlayingChapterInfo()
-                setupNowPlayingMetadata()
-            }
+            nowPlayingInfo = [:]
+            
+            nowPlayingInfo[MPMediaItemPropertyArtist] = item.author
+            nowPlayingInfo[MPNowPlayingInfoPropertyChapterCount] = chapters.count
+            
+            updateNowPlayingChapterInfo()
+            setNowPlayingArtwork()
         }
     }
     private func updateNowPlayingChapterInfo() {
@@ -488,11 +486,13 @@ extension AudioPlayer {
     }
     #if os(iOS)
     private func setNowPlayingArtwork() {
-        if let imageUrl = item?.image?.url, let data = try? Data(contentsOf: imageUrl), let image = UIImage(data: data) {
-            let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
-            nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
-            
-            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        Task.detached { [self] in
+            if let imageUrl = item?.image?.url, let data = try? Data(contentsOf: imageUrl), let image = UIImage(data: data) {
+                let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
+                nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+                
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+            }
         }
     }
     #else
