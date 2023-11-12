@@ -85,18 +85,7 @@ extension AudiobookView {
                                 
                                 Divider()
                                 
-                                let progress = OfflineManager.shared.getProgress(item: audiobook)?.progress ?? 0
-                                Button {
-                                    Task {
-                                        await audiobook.setProgress(finished: progress < 1)
-                                    }
-                                } label: {
-                                    if progress >= 1 {
-                                        Label("progress.reset", systemImage: "xmark")
-                                    } else {
-                                        Label("progress.complete", systemImage: "checkmark")
-                                    }
-                                }
+                                ToolbarProgressButton(item: audiobook)
                                 
                                 if audiobook.offline != .none {
                                     Divider()
