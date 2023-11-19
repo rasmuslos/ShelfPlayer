@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem

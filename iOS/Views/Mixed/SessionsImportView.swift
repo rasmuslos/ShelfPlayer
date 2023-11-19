@@ -7,6 +7,7 @@
 
 import SwiftUI
 import OSLog
+import AudiobooksKit
 
 struct SessionsImportView: View {
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "SessionImport")
@@ -27,27 +28,8 @@ struct SessionsImportView: View {
         }
         .onAppear {
             task = Task.detached {
-                do {
-                    let start = Date.timeIntervalSinceReferenceDate
-                    let cached = try await OfflineManager.shared.getCachedProgress(type: .localCached)
-                    for progress in cached {
-                        try await AudiobookshelfClient.shared.updateMediaProgress(itemId: progress.itemId, episodeId: progress.additionalId, currentTime: progress.currentTime, duration: progress.duration)
-                        
-                        progress.progressType = .localSynced
-                    }
-                    logger.info("Synced progress to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-                    
-                    try await OfflineManager.shared.deleteSyncedProgress()
-                    logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-                    
-                    let sessions = try await AudiobookshelfClient.shared.authorize()
-                    await OfflineManager.shared.importSessions(sessions)
-                    
-                    logger.info("Imported sessions (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-                    callback(true)
-                } catch {
-                    callback(false)
-                }
+                let success = try await OfflineManager.shared.syncSessions()
+                callback(success)
             }
         }
     }

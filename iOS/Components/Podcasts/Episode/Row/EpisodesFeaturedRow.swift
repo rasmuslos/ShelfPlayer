@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct EpisodeFeaturedRow: View {
     let episodes: [Episode]

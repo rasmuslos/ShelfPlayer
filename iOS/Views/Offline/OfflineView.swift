@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct OfflineView: View {
     @State var accountSheetPresented = false
     
-    @State var audiobooks = [OfflineAudiobook]()
-    @State var podcasts = [OfflinePodcast: [OfflineEpisode]]()
+    @State var audiobooks = [Audiobook]()
+    @State var podcasts = [Podcast: [Episode]]()
     
     var body: some View {
         NavigationStack {
@@ -25,7 +26,7 @@ struct OfflineView: View {
                         }
                         
                         ForEach(audiobooks) {
-                            AudiobookRow(audiobook: Audiobook.convertFromOffline(audiobook: $0))
+                            AudiobookRow(audiobook: $0)
                         }
                         .onDelete { indexSet in
                             indexSet.forEach {
@@ -38,7 +39,7 @@ struct OfflineView: View {
                 ForEach(podcasts.sorted { $0.key.name < $1.key.name }, id: \.key.id) { podcast in
                     Section(podcast.key.name) {
                         ForEach(podcast.value) {
-                            EpisodeRow(episode: Episode.convertFromOffline(episode: $0))
+                            EpisodeRow(episode: $0)
                         }
                         .onDelete { indexSet in
                             indexSet.forEach { index in
@@ -72,15 +73,18 @@ struct OfflineView: View {
             }
             .modifier(NowPlayingBarModifier())
             .onAppear {
-                let episodes: [OfflineEpisode]
+                let episodes: [Episode]
                 (audiobooks, episodes) = (OfflineManager.shared.getAllAudiobooks(), OfflineManager.shared.getAllEpisodes())
                 
                 episodes.forEach { episode in
-                    if podcasts[episode.podcast] == nil {
-                        podcasts[episode.podcast] = []
+                    if let podcast = OfflineManager.shared.getPodcast(podcastId: episode.podcastId) {
+                        
+                        if podcasts[podcast] == nil {
+                            podcasts[podcast] = []
+                        }
+                        
+                        podcasts[podcast]?.append(episode)
                     }
-                    
-                    podcasts[episode.podcast]?.append(episode)
                 }
                 
                 podcasts.forEach {

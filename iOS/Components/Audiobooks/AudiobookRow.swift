@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct AudiobookRow: View {
     let audiobook: Audiobook
