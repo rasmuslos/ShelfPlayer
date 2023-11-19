@@ -7,6 +7,7 @@
 
 import SwiftUI
 import NukeUI
+import AudiobooksKit
 
 struct ItemImage: View {
     let image: Item.Image?

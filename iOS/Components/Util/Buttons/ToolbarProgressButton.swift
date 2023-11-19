@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct ToolbarProgressButton: View {
     let item: PlayableItem

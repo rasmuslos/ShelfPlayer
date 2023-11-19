@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct AudiobookGrid: View {
     let audiobooks: [Audiobook]

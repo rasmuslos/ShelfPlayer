@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct AudiobooksSort: View {
     @Binding var display: DisplayType {

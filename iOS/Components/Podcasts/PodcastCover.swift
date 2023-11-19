@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct PodcastCover: View {
     let podcast: Podcast

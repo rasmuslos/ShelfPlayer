@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 extension NowPlayingSheet {
     struct Title: View {

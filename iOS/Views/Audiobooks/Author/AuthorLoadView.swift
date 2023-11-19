@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct AuthorLoadView: View {
     @Environment(\.libraryId) var libraryId
