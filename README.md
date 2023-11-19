@@ -1,13 +1,13 @@
 #  ShelfPlayer
 
-A iOS 17 native Audiobook & Podcast player [audiobookshelf](https://www.audiobookshelf.org)
+Introducing AmpFin, the sophisticated iOS 17 native audiobook and podcast player meticulously engineered for seamless integration with your media libraries.
 
 ## Features
 
-- Online & Offline Playback
-- View audiobooks, podcasts, episodes, series & authors
-- Search your libraries
-- Sleep timer
+- **Versatile Playback**: Enjoy your audiobooks and podcasts whether you're online or offline, ensuring uninterrupted listening experiences.
+- **Comprehensive Library Access**: Explore audiobooks, podcasts, episodes, series, and authors effortlessly.
+- **Effortless Library Search**: Easily find specific titles or topics within your libraries, ensuring quick access to your preferred content.
+- **Customizable Sleep Timer**: Set a sleep timer for a personalized listening experience, whether winding down or preparing for sleep.
 
 ## Screenshots
 

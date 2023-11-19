@@ -208,6 +208,9 @@
 		3AA19BA12AD6C80000C468EA /* LatestList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestList.swift; sourceTree = "<group>"; };
 		3AA19BA52AD6E94B00C468EA /* PodcastsGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsGrid.swift; sourceTree = "<group>"; };
 		3AA19BA72AD6EE3F00C468EA /* NowPlayingSheet+Chapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NowPlayingSheet+Chapters.swift"; sourceTree = "<group>"; };
+		3AA36E502B0A97FD0036038D /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AA36E512B0A97FD0036038D /* watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = watchOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AA36E522B0A97FD0036038D /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tvOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AA9541A2AD290380031C20D /* PodcastsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsRow.swift; sourceTree = "<group>"; };
 		3AA9541E2AD2925C0031C20D /* RowTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTitle.swift; sourceTree = "<group>"; };
 		3AA954202AD293670031C20D /* PodcastCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCover.swift; sourceTree = "<group>"; };
@@ -244,9 +247,6 @@
 		3AF240F22ADA99F50065C0A4 /* AuthorAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorAvatar.swift; sourceTree = "<group>"; };
 		3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
-		3AFB3CA82B0635FC00A8BFBF /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = iOS.app; path = /Users/rasmus/Development/Audiobooks/build/Debug/iOS.app; sourceTree = "<absolute>"; };
-		3AFB3CA92B0635FC00A8BFBF /* watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = watchOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-watchos/watchOS.app"; sourceTree = "<absolute>"; };
-		3AFB3CAA2B0635FC00A8BFBF /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = tvOS.app; path = "/Users/rasmus/Development/Audiobooks/build/Debug-appletvos/tvOS.app"; sourceTree = "<absolute>"; };
 		3AFB3CAB2B06361D00A8BFBF /* AudiobooksKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AudiobooksKit; sourceTree = "<group>"; };
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -283,7 +283,6 @@
 			isa = PBXGroup;
 			children = (
 				3A82864B2AEC0DD800384BC9 /* README.md */,
-				3A3CC4B72B01622E000ACDCF /* Shared */,
 				3A0AE6A22AB623F400ACCD68 /* iOS */,
 				3A3CC4A82B0161CD000ACDCF /* tvOS */,
 				3A3CC5272B01666D000ACDCF /* watchOS */,
@@ -473,6 +472,9 @@
 		3A21CC542B0A1CBB002D5D55 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				3AA36E502B0A97FD0036038D /* iOS.app */,
+				3AA36E512B0A97FD0036038D /* watchOS.app */,
+				3AA36E522B0A97FD0036038D /* tvOS.app */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -484,13 +486,6 @@
 				3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */,
 			);
 			path = tvOS;
-			sourceTree = "<group>";
-		};
-		3A3CC4B72B01622E000ACDCF /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Shared;
 			sourceTree = "<group>";
 		};
 		3A3CC5272B01666D000ACDCF /* watchOS */ = {
@@ -761,7 +756,7 @@
 				3AF2A0502B0A1BF80060B1DA /* AudiobooksKit */,
 			);
 			productName = Audiobooks;
-			productReference = 3AFB3CA82B0635FC00A8BFBF /* iOS.app */;
+			productReference = 3AA36E502B0A97FD0036038D /* iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3A3CC4A62B0161CD000ACDCF /* tvOS */ = {
@@ -780,7 +775,7 @@
 			packageProductDependencies = (
 			);
 			productName = music.tvos;
-			productReference = 3AFB3CAA2B0635FC00A8BFBF /* tvOS.app */;
+			productReference = 3AA36E522B0A97FD0036038D /* tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3A3CC5252B01666D000ACDCF /* watchOS */ = {
@@ -799,7 +794,7 @@
 			packageProductDependencies = (
 			);
 			productName = "WatchOS Watch App";
-			productReference = 3AFB3CA92B0635FC00A8BFBF /* watchOS.app */;
+			productReference = 3AA36E512B0A97FD0036038D /* watchOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

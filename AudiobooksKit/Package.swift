@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "AudiobooksKit",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .watchOS(.v10),

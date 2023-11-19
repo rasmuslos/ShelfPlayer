@@ -384,22 +384,6 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inhalt nicht verfügbar"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Content unavailable"
-          }
-        }
-      }
-    },
-    "error.unavailable.title" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
             "value" : "Bitte stelle sicher, dass du mit dem Internet verbunden bist"
           }
         },
@@ -411,36 +395,18 @@
         }
       }
     },
-    "hours" : {
-      "extractionState" : "stale",
+    "error.unavailable.title" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stunden"
+            "value" : "Inhalt nicht verfügbar"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "hours"
-          }
-        }
-      }
-    },
-    "hours.letter" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "h"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "h"
+            "value" : "Content unavailable"
           }
         }
       }
@@ -653,57 +619,6 @@
         }
       }
     },
-    "minutes" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minuten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "minutes"
-          }
-        }
-      }
-    },
-    "minutes.letter" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "m"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "m"
-          }
-        }
-      }
-    },
-    "minutes.short" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "min."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "min."
-          }
-        }
-      }
-    },
     "offline.disable" : {
       "localizations" : {
         "de" : {
@@ -796,57 +711,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset progress"
-          }
-        }
-      }
-    },
-    "seconds" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sekunden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "seconds"
-          }
-        }
-      }
-    },
-    "seconds.letter" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "s"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "s"
-          }
-        }
-      }
-    },
-    "seconds.short" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sek."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sec."
           }
         }
       }
