@@ -11,7 +11,6 @@ let package = Package(
         .watchOS(.v10),
     ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "AudiobooksKit",
             targets: ["AudiobooksKit"]),
@@ -19,11 +18,10 @@ let package = Package(
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "AudiobooksKit",
-            dependencies: [.byName(name: "SwiftSoup")]
+            dependencies: [.byName(name: "SwiftSoup")],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "AudiobooksKitTests",
