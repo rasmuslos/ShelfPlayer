@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct DownloadIndicator: View {
     let item: PlayableItem

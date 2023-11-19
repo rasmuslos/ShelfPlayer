@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 struct PlaybackSpeedSelector: View {
     @State var currentSpeed = AudioPlayer.shared.getPlaybackRate()

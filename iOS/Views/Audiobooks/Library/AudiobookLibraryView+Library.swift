@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudiobooksKit
 
 extension AudiobookLibraryView {
     struct LibraryView: View {

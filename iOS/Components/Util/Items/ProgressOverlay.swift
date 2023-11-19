@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import AudiobooksKit
 
 struct ProgressOverlay: View {
     let item: Item

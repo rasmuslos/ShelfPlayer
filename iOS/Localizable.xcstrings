@@ -412,6 +412,7 @@
       }
     },
     "hours" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -428,6 +429,7 @@
       }
     },
     "hours.letter" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -652,6 +654,7 @@
       }
     },
     "minutes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -668,6 +671,7 @@
       }
     },
     "minutes.letter" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -684,6 +688,7 @@
       }
     },
     "minutes.short" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -796,6 +801,7 @@
       }
     },
     "seconds" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -812,6 +818,7 @@
       }
     },
     "seconds.letter" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -828,6 +835,7 @@
       }
     },
     "seconds.short" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
