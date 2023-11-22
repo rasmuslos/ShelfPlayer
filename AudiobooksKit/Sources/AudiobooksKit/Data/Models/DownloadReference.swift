@@ -27,7 +27,7 @@ class DownloadReference {
 
 extension DownloadReference {
     enum ReferenceType: Int, Codable {
-    case audiobook = 0
-    case episode = 1
+        case audiobook = 0
+        case episode = 1
     }
 }

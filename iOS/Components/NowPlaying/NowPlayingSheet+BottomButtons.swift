@@ -24,7 +24,6 @@ extension NowPlayingSheet {
                 Spacer()
                 AirPlayView()
                     .frame(width: 45)
-                    .padding(.vertical, -100)
                 
                 Spacer()
                 Button {

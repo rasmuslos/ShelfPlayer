@@ -24,6 +24,7 @@ struct PodcastCover: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .modifier(PodcastContextMenuModifier(podcast: podcast))
     }
 }
 

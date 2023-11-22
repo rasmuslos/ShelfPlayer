@@ -50,6 +50,7 @@ extension EpisodeView {
                             .foregroundStyle(.secondary)
                         }
                         .buttonStyle(.plain)
+                        .modifier(PodcastContextMenuModifier(id: episode.podcastId, name: episode.podcastName, author: nil, description: nil, image: episode.image))
                     }
                     
                     PlayButton(item: episode)
