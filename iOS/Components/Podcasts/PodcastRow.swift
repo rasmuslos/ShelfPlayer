@@ -28,6 +28,7 @@ struct PodcastRow: View {
                 }
             }
         }
+        .modifier(PodcastContextMenuModifier(podcast: podcast))
     }
 }
 

@@ -13,6 +13,7 @@ struct EpisodeFeatured: View {
     
     var body: some View {
         let width = (UIScreen.main.bounds.width - 50) / 1.5
+        
         ZStack(alignment: .bottom) {
             LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
                 .frame(height: 325)
@@ -24,6 +25,7 @@ struct EpisodeFeatured: View {
         .background(Background(image: episode.image))
         .clipShape(RoundedRectangle(cornerRadius: 7))
         .padding(.leading, 10)
+        .modifier(EpisodeContextMenuModifier(episode: episode))
     }
 }
 
@@ -78,7 +80,6 @@ extension EpisodeFeatured {
                         EpisodePlayButton(episode: episode, highlighted: true)
                         Spacer()
                         DownloadIndicator(item: episode)
-                        EpisodeMenu(episode: episode)
                     }
                 }
                 

@@ -94,7 +94,7 @@ extension AudiobookView {
                                     Button(role: .destructive) {
                                         try! OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
                                     } label: {
-                                        Label("downloads.delete.force", systemImage: "trash")
+                                        Label("download.remove", systemImage: "trash")
                                     }
                                 }
                             } label: {

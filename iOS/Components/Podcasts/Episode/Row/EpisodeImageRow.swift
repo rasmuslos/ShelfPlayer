@@ -44,12 +44,12 @@ struct EpisodeImageRow: View {
                     EpisodePlayButton(episode: episode)
                     Spacer()
                     DownloadIndicator(item: episode)
-                    EpisodeMenu(episode: episode)
                 }
             }
             
             Spacer()
         }
         .frame(height: 90)
+        .modifier(EpisodeContextMenuModifier(episode: episode))
     }
 }

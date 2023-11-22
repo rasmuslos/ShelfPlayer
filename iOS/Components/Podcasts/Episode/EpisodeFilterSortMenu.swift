@@ -84,7 +84,7 @@ struct EpisodeFilterSortMenu: View {
             }
         } label: {
             if enableSort {
-                Image(systemName: "arrow.up.arrow.down.circle.fill")
+                Label("filterSort", systemImage: "arrow.up.arrow.down.circle.fill")
             } else {
                 HStack {
                     Text(filter.rawValue)
@@ -94,8 +94,6 @@ struct EpisodeFilterSortMenu: View {
                 .bold()
             }
         }
-        
-        Spacer()
     }
 }
 

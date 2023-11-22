@@ -24,32 +24,6 @@ public class Episode: PlayableItem {
         super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
     }
     
-    // MARK: Getter
-    
-    public private(set) lazy var releaseDate: Date? = {
-        if let released = released, let milliseconds = Double(released) {
-            return Date(timeIntervalSince1970: milliseconds / 1000)
-        }
-        
-        return nil
-    }()
-    
-    public private(set) lazy var formattedReleaseDate: String? = {
-        if let releaseDate = releaseDate {
-            return String(releaseDate.get(.day)) + "." + String(releaseDate.get(.month)) + "." + String(releaseDate.get(.year))
-        }
-        
-        return nil
-    }()
-    
-    public private(set) lazy var descriptionText: String? = {
-        if let description = description, let document = try? SwiftSoup.parse(description) {
-            return try? document.text()
-        }
-        
-        return nil
-    }()
-    
     // MARK: playback
     
     override func getPlaybackData() async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double, String?) {
@@ -85,6 +59,38 @@ public class Episode: PlayableItem {
     override func checkOfflineStatus() {
         Task.detached { [self] in
             offline = await OfflineManager.shared.getEpisodeOfflineStatus(episodeId: id)
+        }
+    }
+}
+
+extension Episode {
+    public var releaseDate: Date? {
+        get {
+            if let released = released, let milliseconds = Double(released) {
+                return Date(timeIntervalSince1970: milliseconds / 1000)
+            }
+            
+            return nil
+        }
+    }
+    
+    public var formattedReleaseDate: String? {
+        get {
+            if let releaseDate = releaseDate {
+                return String(releaseDate.get(.day)) + "." + String(releaseDate.get(.month)) + "." + String(releaseDate.get(.year))
+            }
+            
+            return nil
+        }
+    }
+    
+    public var descriptionText: String? {
+        get {
+            if let description = description, let document = try? SwiftSoup.parse(description) {
+                return try? document.text()
+            }
+            
+            return nil
         }
     }
 }
