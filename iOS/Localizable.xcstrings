@@ -251,6 +251,38 @@
         }
       }
     },
+    "download" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herunterladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download"
+          }
+        }
+      }
+    },
+    "download.remove" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove download"
+          }
+        }
+      }
+    },
     "downloads.audiobooks" : {
       "localizations" : {
         "de" : {
@@ -263,22 +295,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Audiobooks"
-          }
-        }
-      }
-    },
-    "downloads.delete.force" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entfernen erzwingen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Force delete download"
           }
         }
       }
@@ -407,6 +423,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Content unavailable"
+          }
+        }
+      }
+    },
+    "filterSort" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtern & sortieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter & sort"
           }
         }
       }
@@ -672,7 +704,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als abgeschlossen markieren"
+            "value" : "Abgeschlossen"
           }
         },
         "en" : {

@@ -33,23 +33,31 @@ public class Item: Identifiable {
         self.addedAt = addedAt
         self.released = released
     }
-    
+}
+
+extension Item {
+    public var sortName: String {
+        get {
+            var sortName = name.lowercased()
+            
+            if sortName.starts(with: "a ") {
+                let _ = sortName.dropFirst(2)
+            }
+            if sortName.starts(with: "the ") {
+                let _ = sortName.dropFirst(4)
+            }
+            
+            return sortName
+        }
+    }
+}
+
+// MARK: Helper
+
+extension Item {
     public struct Image: Codable {
         public let url: URL
     }
-    
-    public private(set) lazy var sortName: String = {
-        var sortName = name.lowercased()
-        
-        if sortName.starts(with: "a ") {
-            let _ = sortName.dropFirst(2)
-        }
-        if sortName.starts(with: "the ") {
-            let _ = sortName.dropFirst(4)
-        }
-        
-        return sortName
-    }()
 }
 
 // MARK: Progress

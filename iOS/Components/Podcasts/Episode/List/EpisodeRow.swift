@@ -42,5 +42,6 @@ struct EpisodeRow: View {
                 DownloadIndicator(item: episode)
             }
         }
+        .modifier(EpisodeContextMenuModifier(episode: episode))
     }
 }

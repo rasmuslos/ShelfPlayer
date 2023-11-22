@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A03A7752B0E4BAA0049EA5E /* PodcastContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03A7742B0E4BAA0049EA5E /* PodcastContextMenuModifier.swift */; };
 		3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */; };
 		3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */; };
 		3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A52AB623F400ACCD68 /* ContentView.swift */; };
@@ -32,14 +33,12 @@
 		3A1EAB962ACC808A0064C80C /* ItemImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EAB952ACC808A0064C80C /* ItemImage.swift */; };
 		3A2B93352B00D71B00638AE9 /* ToolbarProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B93342B00D71B00638AE9 /* ToolbarProgressButton.swift */; };
 		3A2BC1952AD8121400054727 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3A2BC1942AD8121400054727 /* Settings.bundle */; };
+		3A337E3A2B0E13CE009C932A /* EpisodeContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A337E392B0E13CE009C932A /* EpisodeContextMenuModifier.swift */; };
 		3A36D78B2ACF2C1D002EEC54 /* AudiobooksGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobooksGrid.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
 		3A3CC4AA2B0161CD000ACDCF /* tvOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC4A92B0161CD000ACDCF /* tvOSApp.swift */; };
 		3A3CC4AC2B0161CD000ACDCF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC4AB2B0161CD000ACDCF /* ContentView.swift */; };
 		3A3CC4B02B0161CF000ACDCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */; };
-		3A3CC5292B01666D000ACDCF /* WatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC5282B01666D000ACDCF /* WatchOSApp.swift */; };
-		3A3CC52B2B01666D000ACDCF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC52A2B01666D000ACDCF /* ContentView.swift */; };
-		3A3CC52D2B01666F000ACDCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A3CC52C2B01666F000ACDCF /* Assets.xcassets */; };
 		3A48D2512AD0661500991139 /* LibrarySelectorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */; };
 		3A48D2542AD074DC00991139 /* PodcastLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2532AD074DC00991139 /* PodcastLibraryView.swift */; };
 		3A50AAA52ACC42B400BF5438 /* AudiobookLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A50AAA42ACC42B400BF5438 /* AudiobookLibraryView.swift */; };
@@ -58,7 +57,6 @@
 		3A79A9692AE53555006B61FC /* DownloadIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A79A9682AE53555006B61FC /* DownloadIndicator.swift */; };
 		3A82864D2AEC104400384BC9 /* SleepTimerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */; };
 		3A853FAF2AD03FA600FACAF6 /* AuthorView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A853FAE2AD03FA600FACAF6 /* AuthorView+Header.swift */; };
-		3A8810EA2AD2C020009696D1 /* EpisodeMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810E92AD2C020009696D1 /* EpisodeMenu.swift */; };
 		3A8810EE2AD2C071009696D1 /* PodcastLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810ED2AD2C071009696D1 /* PodcastLoadView.swift */; };
 		3A8810F02AD2C0E4009696D1 /* PodcastUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810EF2AD2C0E4009696D1 /* PodcastUnavailableView.swift */; };
 		3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F12AD2C2C3009696D1 /* PodcastView.swift */; };
@@ -115,16 +113,6 @@
 		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		3A3CC5312B01666F000ACDCF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3A0AE6982AB623F400ACCD68 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3A3CC5252B01666D000ACDCF;
-			remoteInfo = "WatchOS Watch App";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		3A3CC5372B01666F000ACDCF /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -139,6 +127,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3A03A7742B0E4BAA0049EA5E /* PodcastContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastContextMenuModifier.swift; sourceTree = "<group>"; };
 		3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringKey+Key.swift"; sourceTree = "<group>"; };
 		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -165,14 +154,12 @@
 		3A27A66D2AB7631900F80C92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A2B93342B00D71B00638AE9 /* ToolbarProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarProgressButton.swift; sourceTree = "<group>"; };
 		3A2BC1942AD8121400054727 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		3A337E392B0E13CE009C932A /* EpisodeContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeContextMenuModifier.swift; sourceTree = "<group>"; };
 		3A36D78A2ACF2C1D002EEC54 /* AudiobooksGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksGrid.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		3A3CC4A92B0161CD000ACDCF /* tvOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tvOSApp.swift; sourceTree = "<group>"; };
 		3A3CC4AB2B0161CD000ACDCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		3A3CC5282B01666D000ACDCF /* WatchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchOSApp.swift; sourceTree = "<group>"; };
-		3A3CC52A2B01666D000ACDCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		3A3CC52C2B01666F000ACDCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibrarySelectorModifier.swift; sourceTree = "<group>"; };
 		3A48D2532AD074DC00991139 /* PodcastLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLibraryView.swift; sourceTree = "<group>"; };
 		3A50AAA42ACC42B400BF5438 /* AudiobookLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookLibraryView.swift; sourceTree = "<group>"; };
@@ -192,7 +179,6 @@
 		3A82864B2AEC0DD800384BC9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTimerButton.swift; sourceTree = "<group>"; };
 		3A853FAE2AD03FA600FACAF6 /* AuthorView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthorView+Header.swift"; sourceTree = "<group>"; };
-		3A8810E92AD2C020009696D1 /* EpisodeMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeMenu.swift; sourceTree = "<group>"; };
 		3A8810ED2AD2C071009696D1 /* PodcastLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLoadView.swift; sourceTree = "<group>"; };
 		3A8810EF2AD2C0E4009696D1 /* PodcastUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastUnavailableView.swift; sourceTree = "<group>"; };
 		3A8810F12AD2C2C3009696D1 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
@@ -209,7 +195,6 @@
 		3AA19BA52AD6E94B00C468EA /* PodcastsGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsGrid.swift; sourceTree = "<group>"; };
 		3AA19BA72AD6EE3F00C468EA /* NowPlayingSheet+Chapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NowPlayingSheet+Chapters.swift"; sourceTree = "<group>"; };
 		3AA36E502B0A97FD0036038D /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3AA36E512B0A97FD0036038D /* watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = watchOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AA36E522B0A97FD0036038D /* tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tvOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AA9541A2AD290380031C20D /* PodcastsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsRow.swift; sourceTree = "<group>"; };
 		3AA9541E2AD2925C0031C20D /* RowTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTitle.swift; sourceTree = "<group>"; };
@@ -269,13 +254,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3A3CC5232B01666D000ACDCF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -285,7 +263,6 @@
 				3A82864B2AEC0DD800384BC9 /* README.md */,
 				3A0AE6A22AB623F400ACCD68 /* iOS */,
 				3A3CC4A82B0161CD000ACDCF /* tvOS */,
-				3A3CC5272B01666D000ACDCF /* watchOS */,
 				3AFB3CAB2B06361D00A8BFBF /* AudiobooksKit */,
 				3AF2A04F2B0A1BF80060B1DA /* Frameworks */,
 				3A21CC542B0A1CBB002D5D55 /* Products */,
@@ -402,16 +379,6 @@
 			path = UIKit;
 			sourceTree = "<group>";
 		};
-		3A1011802AD6973D00AAE220 /* Other */ = {
-			isa = PBXGroup;
-			children = (
-				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
-				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
-				3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */,
-			);
-			path = Other;
-			sourceTree = "<group>";
-		};
 		3A1011852AD69DB200AAE220 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
@@ -463,7 +430,9 @@
 		3A1EAB972ACC822F0064C80C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				3A1011802AD6973D00AAE220 /* Other */,
+				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
+				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
+				3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */,
 				3A10117F2AD6973400AAE220 /* UIKit */,
 			);
 			path = Extensions;
@@ -473,7 +442,6 @@
 			isa = PBXGroup;
 			children = (
 				3AA36E502B0A97FD0036038D /* iOS.app */,
-				3AA36E512B0A97FD0036038D /* watchOS.app */,
 				3AA36E522B0A97FD0036038D /* tvOS.app */,
 			);
 			path = Products;
@@ -486,15 +454,6 @@
 				3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */,
 			);
 			path = tvOS;
-			sourceTree = "<group>";
-		};
-		3A3CC5272B01666D000ACDCF /* watchOS */ = {
-			isa = PBXGroup;
-			children = (
-				3A5374522B01686F00188ABA /* Core */,
-				3A3CC52C2B01666F000ACDCF /* Assets.xcassets */,
-			);
-			path = watchOS;
 			sourceTree = "<group>";
 		};
 		3A48D2522AD074C500991139 /* Podcasts */ = {
@@ -516,15 +475,6 @@
 				3A50AAB72ACC522900BF5438 /* AudiobookLibraryView+Library.swift */,
 			);
 			path = Library;
-			sourceTree = "<group>";
-		};
-		3A5374522B01686F00188ABA /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				3A3CC52A2B01666D000ACDCF /* ContentView.swift */,
-				3A3CC5282B01666D000ACDCF /* WatchOSApp.swift */,
-			);
-			path = Core;
 			sourceTree = "<group>";
 		};
 		3A5374532B01688100188ABA /* Core */ = {
@@ -632,9 +582,9 @@
 		3AA9542E2AD2A9010031C20D /* Episode */ = {
 			isa = PBXGroup;
 			children = (
-				3AA0B0842AD316E50009FBB4 /* EpisodeFilterSortMenu.swift */,
-				3A8810E92AD2C020009696D1 /* EpisodeMenu.swift */,
 				3AA9542F2AD2AE520031C20D /* EpisodePlayButton.swift */,
+				3AA0B0842AD316E50009FBB4 /* EpisodeFilterSortMenu.swift */,
+				3A337E392B0E13CE009C932A /* EpisodeContextMenuModifier.swift */,
 				3AA0B0862AD316E80009FBB4 /* List */,
 				3AA0B0872AD316EE0009FBB4 /* Row */,
 			);
@@ -667,6 +617,7 @@
 				3AA19BA52AD6E94B00C468EA /* PodcastsGrid.swift */,
 				3AA9541A2AD290380031C20D /* PodcastsRow.swift */,
 				3AA954202AD293670031C20D /* PodcastCover.swift */,
+				3A03A7742B0E4BAA0049EA5E /* PodcastContextMenuModifier.swift */,
 				3AA9542E2AD2A9010031C20D /* Episode */,
 			);
 			path = Podcasts;
@@ -747,7 +698,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				3A3CC5322B01666F000ACDCF /* PBXTargetDependency */,
 			);
 			name = iOS;
 			packageProductDependencies = (
@@ -778,25 +728,6 @@
 			productReference = 3AA36E522B0A97FD0036038D /* tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3A3CC5252B01666D000ACDCF /* watchOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3A3CC5342B01666F000ACDCF /* Build configuration list for PBXNativeTarget "watchOS" */;
-			buildPhases = (
-				3A3CC5222B01666D000ACDCF /* Sources */,
-				3A3CC5232B01666D000ACDCF /* Frameworks */,
-				3A3CC5242B01666D000ACDCF /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = watchOS;
-			packageProductDependencies = (
-			);
-			productName = "WatchOS Watch App";
-			productReference = 3AA36E512B0A97FD0036038D /* watchOS.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -811,9 +742,6 @@
 						CreatedOnToolsVersion = 15.0;
 					};
 					3A3CC4A62B0161CD000ACDCF = {
-						CreatedOnToolsVersion = 15.0.1;
-					};
-					3A3CC5252B01666D000ACDCF = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
 				};
@@ -838,7 +766,6 @@
 			targets = (
 				3A0AE69F2AB623F400ACCD68 /* iOS */,
 				3A3CC4A62B0161CD000ACDCF /* tvOS */,
-				3A3CC5252B01666D000ACDCF /* watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -859,14 +786,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A3CC4B02B0161CF000ACDCF /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3A3CC5242B01666D000ACDCF /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3A3CC52D2B01666F000ACDCF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -942,6 +861,7 @@
 				3AA954252AD29A0A0031C20D /* EpisodesTable.swift in Sources */,
 				3AF240E82ADA853A0065C0A4 /* SearchView.swift in Sources */,
 				3ACD19B92ACB5B32007D01FE /* SessionsImportView.swift in Sources */,
+				3A03A7752B0E4BAA0049EA5E /* PodcastContextMenuModifier.swift in Sources */,
 				3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */,
 				3ACB3B962AD1D186005EA609 /* PodcastLibraryView+Library.swift in Sources */,
 				3A77B6FD2ACDE2FA00F22C7F /* AuthorUnavailableView.swift in Sources */,
@@ -960,6 +880,7 @@
 				3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */,
 				3A77B7022ACDF01C00F22C7F /* SeriesUnavailableView.swift in Sources */,
 				3A1011822AD6975C00AAE220 /* MPVolumeView+Volume.swift in Sources */,
+				3A337E3A2B0E13CE009C932A /* EpisodeContextMenuModifier.swift in Sources */,
 				3A1011842AD697B600AAE220 /* NowPlayingSheet+BottomButtons.swift in Sources */,
 				3A10117D2AD6971900AAE220 /* VolumeSlider.swift in Sources */,
 				3A1507952AD348E700D7D6CF /* AllEpisodesView.swift in Sources */,
@@ -972,7 +893,6 @@
 				3A8810FB2AD2CEE7009696D1 /* PodcastView+Toolbar.swift in Sources */,
 				3A48D2542AD074DC00991139 /* PodcastLibraryView.swift in Sources */,
 				3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */,
-				3A8810EA2AD2C020009696D1 /* EpisodeMenu.swift in Sources */,
 				3A0E0ABC2ACD6E2F009F8EF1 /* AudiobookView.swift in Sources */,
 				3AF240EC2ADA88DE0065C0A4 /* SeriesRow.swift in Sources */,
 				3ACB3B922AD1D149005EA609 /* PodcastLibraryView+Home.swift in Sources */,
@@ -1004,24 +924,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3A3CC5222B01666D000ACDCF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3A3CC52B2B01666D000ACDCF /* ContentView.swift in Sources */,
-				3A3CC5292B01666D000ACDCF /* WatchOSApp.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		3A3CC5322B01666F000ACDCF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3A3CC5252B01666D000ACDCF /* watchOS */;
-			targetProxy = 3A3CC5312B01666F000ACDCF /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3A0AE6AF2AB623F500ACCD68 /* Debug */ = {
@@ -1277,65 +1180,6 @@
 			};
 			name = Release;
 		};
-		3A3CC5352B01666F000ACDCF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = N8AA4S3S96;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = WatchOS;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = io.rfk.shelfplayer;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer.watchkitapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 10.0;
-			};
-			name = Debug;
-		};
-		3A3CC5362B01666F000ACDCF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = N8AA4S3S96;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = WatchOS;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = io.rfk.shelfplayer;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer.watchkitapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 10.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1362,15 +1206,6 @@
 			buildConfigurations = (
 				3A3CC4B52B0161CF000ACDCF /* Debug */,
 				3A3CC4B62B0161CF000ACDCF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		3A3CC5342B01666F000ACDCF /* Build configuration list for PBXNativeTarget "watchOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3A3CC5352B01666F000ACDCF /* Debug */,
-				3A3CC5362B01666F000ACDCF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

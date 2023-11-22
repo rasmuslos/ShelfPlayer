@@ -68,13 +68,13 @@ extension PlayableItem {
 extension PlayableItem {
     static let operationQueue = OperationQueue()
     
+    public static let downloadStatusUpdatedNotification = NSNotification.Name("io.rfk.audiobooks.download.finished")
+    
     public enum OfflineStatus {
         case none
         case working
         case downloaded
     }
-    
-    public static let downloadStatusUpdatedNotification = NSNotification.Name("io.rfk.audiobooks.download.finished")
 }
 
 // MARK: Errors
