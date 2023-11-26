@@ -55,7 +55,7 @@ public extension OfflineProgress {
         if remainingTime <= 5 {
             return "100%"
         } else {
-            return remainingTime.timeLeft()
+            return remainingTime.timeLeft(spaceConstrained: spaceConstrained)
         }
     }
 }
