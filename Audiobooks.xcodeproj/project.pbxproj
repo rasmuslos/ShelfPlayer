@@ -101,6 +101,7 @@
 		3ACD19B52ACB58EB007D01FE /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B42ACB58EB007D01FE /* LoadingView.swift */; };
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
 		3ACD19B92ACB5B32007D01FE /* SessionsImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */; };
+		3ADB9B202B13B9760015F884 /* AudiobookContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */; };
 		3AF240E82ADA853A0065C0A4 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E72ADA853A0065C0A4 /* SearchView.swift */; };
 		3AF240EA2ADA87720065C0A4 /* PodcastRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E92ADA87720065C0A4 /* PodcastRow.swift */; };
 		3AF240EC2ADA88DE0065C0A4 /* SeriesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240EB2ADA88DE0065C0A4 /* SeriesRow.swift */; };
@@ -224,6 +225,7 @@
 		3ACD19B42ACB58EB007D01FE /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsImportView.swift; sourceTree = "<group>"; };
+		3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookContextMenuModifier.swift; sourceTree = "<group>"; };
 		3AF240E72ADA853A0065C0A4 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		3AF240E92ADA87720065C0A4 /* PodcastRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastRow.swift; sourceTree = "<group>"; };
 		3AF240EB2ADA88DE0065C0A4 /* SeriesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesRow.swift; sourceTree = "<group>"; };
@@ -411,6 +413,7 @@
 				3A5159552AD0374600CD5680 /* AudiobooksSort.swift */,
 				3A36D78A2ACF2C1D002EEC54 /* AudiobooksGrid.swift */,
 				3A1EAB8A2ACC7C5D0064C80C /* AudiobooksRow.swift */,
+				3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */,
 				3A17E68B2AD5EF2C00E59464 /* Series */,
 				3AF240ED2ADA98DA0065C0A4 /* Author */,
 			);
@@ -896,6 +899,7 @@
 				3A0E0ABC2ACD6E2F009F8EF1 /* AudiobookView.swift in Sources */,
 				3AF240EC2ADA88DE0065C0A4 /* SeriesRow.swift in Sources */,
 				3ACB3B922AD1D149005EA609 /* PodcastLibraryView+Home.swift in Sources */,
+				3ADB9B202B13B9760015F884 /* AudiobookContextMenuModifier.swift in Sources */,
 				3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */,
 				3AA9541B2AD290380031C20D /* PodcastsRow.swift in Sources */,
 				3AA0B08B2AD32D4E0009FBB4 /* EpisodeView+Header.swift in Sources */,

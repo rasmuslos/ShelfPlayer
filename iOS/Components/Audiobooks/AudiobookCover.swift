@@ -24,6 +24,7 @@ struct AudiobookCover: View {
                 .foregroundStyle(.secondary)
                 .onAppear(perform: fetchRemainingTime)
         }
+        .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
     }
 }
 
