@@ -65,6 +65,7 @@ struct AudiobookRow: View {
                 checkPlaying()
             })
         }
+        .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
     }
 }
 
