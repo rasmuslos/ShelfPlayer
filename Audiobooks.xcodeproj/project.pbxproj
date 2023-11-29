@@ -266,7 +266,6 @@
 				3A0AE6A22AB623F400ACCD68 /* iOS */,
 				3A3CC4A82B0161CD000ACDCF /* tvOS */,
 				3AFB3CAB2B06361D00A8BFBF /* AudiobooksKit */,
-				3AF2A04F2B0A1BF80060B1DA /* Frameworks */,
 				3A21CC542B0A1CBB002D5D55 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -676,13 +675,6 @@
 				3AF240F02ADA99940065C0A4 /* AuthorsRow.swift */,
 			);
 			path = Author;
-			sourceTree = "<group>";
-		};
-		3AF2A04F2B0A1BF80060B1DA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

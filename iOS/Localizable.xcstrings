@@ -32,7 +32,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle downloads entfernen"
+            "value" : "Alle Downloads entfernen"
           }
         },
         "en" : {
@@ -64,7 +64,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beim abmelden werden keine downloads entfernt"
+            "value" : "Beim abmelden werden geladene Inhale nicht entfernt "
           }
         },
         "en" : {
@@ -144,7 +144,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "Version: %1$@ (%2$@)"
           }
         },
         "en" : {

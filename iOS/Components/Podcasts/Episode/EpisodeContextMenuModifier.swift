@@ -36,6 +36,8 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     }
                 }
                 
+                // this crashed the app for reasons?
+                /*
                 Divider()
                 
                 if episode.offline == .none {
@@ -53,6 +55,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                         Label("download.remove", systemImage: "trash")
                     }
                 }
+                 */
             } preview: {
                 VStack {
                     HStack {
