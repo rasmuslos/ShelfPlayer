@@ -38,7 +38,7 @@ public class Item: Identifiable {
 extension Item {
     public var sortName: String {
         get {
-            var sortName = name.lowercased()
+            let sortName = name.lowercased()
             
             if sortName.starts(with: "a ") {
                 let _ = sortName.dropFirst(2)
