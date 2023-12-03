@@ -683,6 +683,22 @@
         }
       }
     },
+    "playback.stop" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabe beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop playback"
+          }
+        }
+      }
+    },
     "podcast.view" : {
       "localizations" : {
         "de" : {
@@ -743,6 +759,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset progress"
+          }
+        }
+      }
+    },
+    "search.empty.description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Suchanfrage gab keine Ergebnisse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your search returned no results"
+          }
+        }
+      }
+    },
+    "search.empty.title" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Ergebnisse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No result"
           }
         }
       }
