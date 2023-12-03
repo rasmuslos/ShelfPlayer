@@ -19,57 +19,92 @@ struct NowPlayingBarModifier: ViewModifier {
         content
             .safeAreaInset(edge: .bottom) {
                 if let item = item {
-                    RoundedRectangle(cornerRadius: 15)
-                        .toolbarBackground(.hidden, for: .tabBar)
-                        .background {
-                            Rectangle()
-                                .frame(width: UIScreen.main.bounds.width + 100, height: 300)
-                                .offset(y: 130)
-                                .blur(radius: 25)
-                                .foregroundStyle(.thinMaterial)
-                        }
-                        .foregroundStyle(.ultraThinMaterial)
-                        .overlay {
-                            HStack {
-                                ItemImage(image: item.image)
-                                    .frame(width: 40, height: 40)
-                                    .padding(.leading, 5)
-                                
-                                Text(item.name)
-                                    .lineLimit(1)
-                                
-                                Spacer()
-                                
-                                Group {
-                                    Button {
-                                        AudioPlayer.shared.setPlaying(!playing)
-                                    } label: {
-                                        Image(systemName: playing ?  "pause.fill" : "play.fill")
-                                            .contentTransition(.symbolEffect(.replace))
-                                    }
-                                    
-                                    Button {
-                                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
-                                    } label: {
-                                        Image(systemName: "goforward.\(skipForwardsInterval)")
-                                    }
-                                    .padding(.horizontal, 10)
-                                }
-                                .imageScale(.large)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 15)
+                            .toolbarBackground(.hidden, for: .tabBar)
+                            .background {
+                                Rectangle()
+                                    .frame(width: UIScreen.main.bounds.width + 100, height: 300)
+                                    .offset(y: 130)
+                                    .blur(radius: 25)
+                                    .foregroundStyle(.thinMaterial)
                             }
-                            .padding(.horizontal, 6)
+                            .foregroundStyle(.ultraThinMaterial)
+                            .overlay {
+                                HStack {
+                                    ItemImage(image: item.image)
+                                        .frame(width: 40, height: 40)
+                                        .padding(.leading, 5)
+                                    
+                                    Text(item.name)
+                                        .lineLimit(1)
+                                    
+                                    Spacer()
+                                    
+                                    Group {
+                                        Button {
+                                            AudioPlayer.shared.setPlaying(!playing)
+                                        } label: {
+                                            Image(systemName: playing ?  "pause.fill" : "play.fill")
+                                                .contentTransition(.symbolEffect(.replace))
+                                        }
+                                        
+                                        Button {
+                                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
+                                        } label: {
+                                            Image(systemName: "goforward.\(skipForwardsInterval)")
+                                        }
+                                        .padding(.horizontal, 10)
+                                    }
+                                    .imageScale(.large)
+                                }
+                                .padding(.horizontal, 6)
+                            }
+                            .foregroundStyle(.primary)
+                            .padding(.horizontal, 15)
+                            .padding(.bottom, 10)
+                            .frame(height: 65)
+                            .shadow(color: .black.opacity(0.25), radius: 20)
+                            .onTapGesture {
+                                nowPlayingSheetPresented.toggle()
+                            }
+                            .fullScreenCover(isPresented: $nowPlayingSheetPresented) {
+                                NowPlayingSheet(item: item, playing: $playing)
+                            }
+                    }
+                    .contextMenu {
+                        Button {
+                            AudioPlayer.shared.stopPlayback()
+                        } label: {
+                            Label("playback.stop", systemImage: "xmark")
                         }
-                        .foregroundStyle(.primary)
-                        .padding(.horizontal, 15)
-                        .padding(.bottom, 10)
-                        .frame(height: 65)
-                        .shadow(color: .black.opacity(0.25), radius: 20)
-                        .onTapGesture {
-                            nowPlayingSheetPresented.toggle()
+                    } preview: {
+                        VStack(alignment: .leading) {
+                            ItemImage(image: item.image)
+                                .padding(.bottom, 10)
+                            
+                            Group {
+                                if let episode = item as? Episode, let releaseDate = episode.formattedReleaseDate {
+                                    Text(releaseDate)
+                                } else if let audiobook = item as? Audiobook, let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
+                                    Text(series)
+                                }
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            
+                            Text(item.name)
+                                .font(.headline)
+                            
+                            if let author = item.author {
+                                Text(author)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                        .fullScreenCover(isPresented: $nowPlayingSheetPresented) {
-                            NowPlayingSheet(item: item, playing: $playing)
-                        }
+                        .frame(width: 250)
+                        .padding()
+                    }
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
@@ -102,4 +137,9 @@ struct NowPlayingBarSafeAreaModifier: ViewModifier {
                 }
             })
     }
+}
+
+#Preview {
+    Text(":)")
+        .modifier(NowPlayingBarModifier(item: Audiobook.fixture))
 }
