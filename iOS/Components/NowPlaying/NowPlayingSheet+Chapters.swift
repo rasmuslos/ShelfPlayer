@@ -65,7 +65,7 @@ extension NowPlayingSheet {
             }
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.currentTimeChangedNotification), perform: { _ in
                 withAnimation {
-                    currentTime = AudioPlayer.shared.getChapterCurrentTime()
+                    currentTime = AudioPlayer.shared.getCurrentTime()
                 }
             })
         }
