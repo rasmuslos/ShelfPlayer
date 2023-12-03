@@ -57,7 +57,6 @@ public class Episode: PlayableItem {
     }
     
     override func checkOfflineStatus() {
-        print("called")
         Task.detached { [self] in
             offline = await OfflineManager.shared.getEpisodeOfflineStatus(episodeId: id)
         }

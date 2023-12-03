@@ -19,49 +19,61 @@ struct SearchView: View {
     @State var authors = [Author]()
     @State var series = [Series]()
     
+    @State var loading = false
+    
     var body: some View {
         NavigationStack {
-            List {
-                if !audiobooks.isEmpty {
-                    Section("section.audiobooks") {
-                        ForEach(audiobooks) { audiobook in
-                            NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
-                                AudiobookRow(audiobook: audiobook)
+            Group {
+                if audiobooks.isEmpty && podcasts.isEmpty && series.isEmpty && authors.isEmpty {
+                    if loading {
+                        LoadingView()
+                    } else {
+                        ContentUnavailableView("search.empty.title", systemImage: "magnifyingglass", description: Text("search.empty.description"))
+                    }
+                } else {
+                    List {
+                        if !audiobooks.isEmpty {
+                            Section("section.audiobooks") {
+                                ForEach(audiobooks) { audiobook in
+                                    NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
+                                        AudiobookRow(audiobook: audiobook)
+                                    }
+                                }
+                            }
+                        }
+                        if !podcasts.isEmpty {
+                            Section("section.podcasts") {
+                                ForEach(podcasts) { podcast in
+                                    NavigationLink(destination: PodcastView(podcast: podcast)) {
+                                        PodcastRow(podcast: podcast)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if !series.isEmpty {
+                            Section("section.series") {
+                                ForEach(series) { item in
+                                    NavigationLink(destination: SeriesView(series: item)) {
+                                        SeriesRow(series: item)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if !authors.isEmpty {
+                            Section("section.authors") {
+                                ForEach(authors) { author in
+                                    NavigationLink(destination: AuthorView(author: author)) {
+                                        AuthorRow(author: author)
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                if !podcasts.isEmpty {
-                    Section("section.podcasts") {
-                        ForEach(podcasts) { podcast in
-                            NavigationLink(destination: PodcastView(podcast: podcast)) {
-                                PodcastRow(podcast: podcast)
-                            }
-                        }
-                    }
-                }
-                
-                if !series.isEmpty {
-                    Section("section.series") {
-                        ForEach(series) { item in
-                            NavigationLink(destination: SeriesView(series: item)) {
-                                SeriesRow(series: item)
-                            }
-                        }
-                    }
-                }
-                
-                if !authors.isEmpty {
-                    Section("section.authors") {
-                        ForEach(authors) { author in
-                            NavigationLink(destination: AuthorView(author: author)) {
-                                AuthorRow(author: author)
-                            }
-                        }
-                    }
+                    .listStyle(.plain)
                 }
             }
-            .listStyle(.plain)
             .navigationTitle("title.search")
             .searchable(text: $query)
             .modifier(NowPlayingBarSafeAreaModifier())
@@ -69,9 +81,9 @@ struct SearchView: View {
             .onChange(of: query) {
                 task?.cancel()
                 task = Task.detached {
-                    do {
-                        (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.search(query: query, libraryId: libraryId)
-                    }
+                    loading = true
+                    (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.search(query: query, libraryId: libraryId)
+                    loading = false
                 }
             }
         }
