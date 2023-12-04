@@ -2,6 +2,20 @@
 
 Introducing AmpFin, the sophisticated iOS 17 native audiobook and podcast player meticulously engineered for seamless integration with your media libraries.
 
+## Download
+
+Available on the App Store soon™️
+
+### Building the app yourself
+
+1. Install Xcode
+2. Change the bundle indentifier
+3. Connect your iPhone to your Mac
+4. Enable developer mode
+5. Select your iPhone as the target
+6. Run the application
+
+
 ## Features
 
 - **Versatile Playback**: Enjoy your audiobooks and podcasts whether you're online or offline, ensuring uninterrupted listening experiences.
