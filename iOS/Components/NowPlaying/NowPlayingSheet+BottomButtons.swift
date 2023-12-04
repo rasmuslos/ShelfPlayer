@@ -38,7 +38,7 @@ extension NowPlayingSheet {
             .frame(height: 45)
             .padding(.horizontal, 15)
             .padding(.top, 20)
-            .padding(.bottom, 45)
+            .padding(.bottom, UIDevice.current.hasNotch ? 45 : 10)
         }
     }
 }

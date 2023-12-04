@@ -14,6 +14,8 @@ public class AudiobookshelfClient {
     public private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     
+    static let defaults = UserDefaults(suiteName: "group.io.rfk.shelfplayer")!
+    
     private init(serverUrl: URL!, token: String!) {
         self.serverUrl = serverUrl
         self.token = token
@@ -32,16 +34,16 @@ extension AudiobookshelfClient {
             throw AudiobookshelfClientError.invalidServerUrl
         }
         
-        UserDefaults.standard.set(serverUrl, forKey: "serverUrl")
+        Self.defaults.set(serverUrl, forKey: "serverUrl")
         self.serverUrl = serverUrl
     }
     public func setToken(_ token: String) {
-        UserDefaults.standard.set(token, forKey: "token")
+        Self.defaults.set(token, forKey: "token")
         self.token = token
     }
     
     public func logout() {
-        UserDefaults.standard.set(nil, forKey: "token")
+        Self.defaults.set(nil, forKey: "token")
         exit(0)
     }
 }
@@ -51,7 +53,7 @@ extension AudiobookshelfClient {
 extension AudiobookshelfClient {
     public static let shared = {
         AudiobookshelfClient(
-            serverUrl: UserDefaults.standard.url(forKey: "serverUrl"),
-            token: UserDefaults.standard.string(forKey: "token"))
+            serverUrl: defaults.url(forKey: "serverUrl"),
+            token: defaults.string(forKey: "token"))
     }()
 }

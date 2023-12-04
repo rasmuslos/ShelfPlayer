@@ -22,7 +22,7 @@ public struct PersistenceManager {
             OfflineEpisode.self,
             OfflinePodcast.self,
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: .identifier("group.io.rfk.shelfplayer"), cloudKitDatabase: .none)
         
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
