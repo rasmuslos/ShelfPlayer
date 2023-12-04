@@ -103,13 +103,13 @@
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
 		3ACD19B92ACB5B32007D01FE /* SessionsImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */; };
 		3ADB9B202B13B9760015F884 /* AudiobookContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */; };
+		3AE3E9692B1E37DA005FBFA6 /* AudiobooksKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3AE3E9682B1E37DA005FBFA6 /* AudiobooksKit */; };
 		3AF240E82ADA853A0065C0A4 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E72ADA853A0065C0A4 /* SearchView.swift */; };
 		3AF240EA2ADA87720065C0A4 /* PodcastRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E92ADA87720065C0A4 /* PodcastRow.swift */; };
 		3AF240EC2ADA88DE0065C0A4 /* SeriesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240EB2ADA88DE0065C0A4 /* SeriesRow.swift */; };
 		3AF240EF2ADA98E90065C0A4 /* AuthorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240EE2ADA98E90065C0A4 /* AuthorRow.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorsRow.swift */; };
 		3AF240F32ADA99F50065C0A4 /* AuthorAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F22ADA99F50065C0A4 /* AuthorAvatar.swift */; };
-		3AF2A0512B0A1BF80060B1DA /* AudiobooksKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3AF2A0502B0A1BF80060B1DA /* AudiobooksKit */; };
 		3AFA7F9B2ACD435000B7FF4B /* ProgressOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
 		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
@@ -245,7 +245,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AF2A0512B0A1BF80060B1DA /* AudiobooksKit in Frameworks */,
+				3AE3E9692B1E37DA005FBFA6 /* AudiobooksKit in Frameworks */,
 				3A8810F52AD2C35B009696D1 /* UIImageColors in Frameworks */,
 				3A1EAB932ACC80690064C80C /* NukeUI in Frameworks */,
 			);
@@ -269,6 +269,7 @@
 				3A3CC4A82B0161CD000ACDCF /* tvOS */,
 				3AFB3CAB2B06361D00A8BFBF /* AudiobooksKit */,
 				3A21CC542B0A1CBB002D5D55 /* Products */,
+				3AE3E9672B1E37D3005FBFA6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -670,6 +671,13 @@
 			path = Fallback;
 			sourceTree = "<group>";
 		};
+		3AE3E9672B1E37D3005FBFA6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3AF240ED2ADA98DA0065C0A4 /* Author */ = {
 			isa = PBXGroup;
 			children = (
@@ -701,7 +709,7 @@
 			packageProductDependencies = (
 				3A1EAB922ACC80690064C80C /* NukeUI */,
 				3A8810F42AD2C35B009696D1 /* UIImageColors */,
-				3AF2A0502B0A1BF80060B1DA /* AudiobooksKit */,
+				3AE3E9682B1E37DA005FBFA6 /* AudiobooksKit */,
 			);
 			productName = Audiobooks;
 			productReference = 3AA36E502B0A97FD0036038D /* iOS.app */;
@@ -1048,6 +1056,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/Audiobooks.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = DEVELOPMENT;
 				DEVELOPMENT_TEAM = N8AA4S3S96;
@@ -1072,9 +1081,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "io.rfk.shelf-player";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1091,6 +1101,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/Audiobooks.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = DEVELOPMENT;
 				DEVELOPMENT_TEAM = N8AA4S3S96;
@@ -1115,9 +1126,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "io.rfk.shelf-player";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1242,7 +1254,7 @@
 			package = 3A8810F32AD2C35B009696D1 /* XCRemoteSwiftPackageReference "UIImageColors" */;
 			productName = UIImageColors;
 		};
-		3AF2A0502B0A1BF80060B1DA /* AudiobooksKit */ = {
+		3AE3E9682B1E37DA005FBFA6 /* AudiobooksKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AudiobooksKit;
 		};
