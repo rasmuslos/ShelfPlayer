@@ -39,6 +39,7 @@
 		3A3CC4AA2B0161CD000ACDCF /* tvOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC4A92B0161CD000ACDCF /* tvOSApp.swift */; };
 		3A3CC4AC2B0161CD000ACDCF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CC4AB2B0161CD000ACDCF /* ContentView.swift */; };
 		3A3CC4B02B0161CF000ACDCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */; };
+		3A3F65922B1E1D4400645E31 /* UIDevice+Notch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3F65912B1E1D4400645E31 /* UIDevice+Notch.swift */; };
 		3A48D2512AD0661500991139 /* LibrarySelectorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */; };
 		3A48D2542AD074DC00991139 /* PodcastLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2532AD074DC00991139 /* PodcastLibraryView.swift */; };
 		3A50AAA52ACC42B400BF5438 /* AudiobookLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A50AAA42ACC42B400BF5438 /* AudiobookLibraryView.swift */; };
@@ -161,6 +162,7 @@
 		3A3CC4A92B0161CD000ACDCF /* tvOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tvOSApp.swift; sourceTree = "<group>"; };
 		3A3CC4AB2B0161CD000ACDCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A3CC4AF2B0161CF000ACDCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3A3F65912B1E1D4400645E31 /* UIDevice+Notch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Notch.swift"; sourceTree = "<group>"; };
 		3A48D2502AD0661500991139 /* LibrarySelectorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibrarySelectorModifier.swift; sourceTree = "<group>"; };
 		3A48D2532AD074DC00991139 /* PodcastLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLibraryView.swift; sourceTree = "<group>"; };
 		3A50AAA42ACC42B400BF5438 /* AudiobookLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookLibraryView.swift; sourceTree = "<group>"; };
@@ -376,6 +378,7 @@
 			children = (
 				3A8810F82AD2CE32009696D1 /* UIColor+IsLight.swift */,
 				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
+				3A3F65912B1E1D4400645E31 /* UIDevice+Notch.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -906,6 +909,7 @@
 				3A0E0ABE2ACD72B0009F8EF1 /* PlayNowButtonStyle.swift in Sources */,
 				3A17E68F2AD5F15900E59464 /* NowPlayingSheet+Title.swift in Sources */,
 				3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */,
+				3A3F65922B1E1D4400645E31 /* UIDevice+Notch.swift in Sources */,
 				3A17E6912AD5F21B00E59464 /* Slider.swift in Sources */,
 				3A5159562AD0374600CD5680 /* AudiobooksSort.swift in Sources */,
 			);
@@ -1069,7 +1073,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.rfk.shelf-player";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1112,7 +1116,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.rfk.shelf-player";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
