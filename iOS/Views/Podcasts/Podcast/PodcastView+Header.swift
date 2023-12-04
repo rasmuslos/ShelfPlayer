@@ -69,7 +69,7 @@ extension PodcastView {
             }
             .background(Color(backgroundColor))
             .foregroundStyle(backgroundColor.isLight() ? .black : .white)
-            .padding(.top, 100)
+            .padding(.top, UIDevice.current.hasNotch ? 100 : 50)
             .onAppear {
                 Task.detached {
                     withAnimation {
