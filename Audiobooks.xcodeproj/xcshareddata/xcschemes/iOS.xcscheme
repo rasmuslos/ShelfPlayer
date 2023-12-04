@@ -72,6 +72,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "ShelfPlayer"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
