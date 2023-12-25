@@ -21,7 +21,7 @@ struct EpisodeImageRow: View {
                     if let formattedReleaseDate = episode.formattedReleaseDate {
                         Text(formattedReleaseDate)
                     } else {
-                        Text("")
+                        Text(verbatim: "")
                     }
                 }
                 .font(.caption.smallCaps())

@@ -1,12 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
+    ":)" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : ":)"
           }
         }
       }
@@ -443,6 +443,22 @@
         }
       }
     },
+    "listen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abspielen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen"
+          }
+        }
+      }
+    },
     "loading" : {
       "localizations" : {
         "de" : {
@@ -683,6 +699,22 @@
         }
       }
     },
+    "play" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anhören"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        }
+      }
+    },
     "playback.stop" : {
       "localizations" : {
         "de" : {
@@ -695,6 +727,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stop playback"
+          }
+        }
+      }
+    },
+    "podcast.episodic" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodisch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodic"
+          }
+        }
+      }
+    },
+    "podcast.serial" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serial"
           }
         }
       }

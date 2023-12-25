@@ -15,7 +15,7 @@ struct PlayButton: View {
     @State var progress: OfflineProgress?
     
     var body: some View {
-        let label = item as? Audiobook != nil ? "Listen" : "Play"
+        let label = item as? Audiobook != nil ? String(localized: "listen") : String(localized: "play")
         
         Button {
             item.startPlayback()

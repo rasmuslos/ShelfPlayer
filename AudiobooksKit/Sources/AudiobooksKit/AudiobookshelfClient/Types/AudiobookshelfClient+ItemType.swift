@@ -133,6 +133,8 @@ extension AudiobookshelfClient {
             let explicit: Bool?
             let abridged: Bool?
             
+            let type: String?
+            
             init(from decoder: Decoder) throws {
                 let container: KeyedDecodingContainer<AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys> = try decoder.container(keyedBy: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.self)
                 self.title = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.title)
@@ -151,6 +153,7 @@ extension AudiobookshelfClient {
                 self.language = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.language)
                 self.explicit = try container.decodeIfPresent(Bool.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.explicit)
                 self.abridged = try container.decodeIfPresent(Bool.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.abridged)
+                self.type = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.type)
                 
                 // this is truly stupid... The field is either of type series or an empty array
                 self.series = try? container.decodeIfPresent(AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemSeries.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.series)

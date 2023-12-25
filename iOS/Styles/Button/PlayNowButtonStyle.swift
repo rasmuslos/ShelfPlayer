@@ -42,7 +42,7 @@ struct PlayNowButtonStyle: ButtonStyle {
     Button {
         
     } label: {
-        Label("Command", systemImage: "command")
+        Label(":)", systemImage: "command")
     }
     .buttonStyle(PlayNowButtonStyle(percentage: 0.5))
 }

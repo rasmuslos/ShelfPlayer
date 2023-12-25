@@ -38,7 +38,7 @@ extension AudiobookView {
                                 }
                             }
                         } else {
-                            Text("")
+                            Text(verbatim: "")
                         }
                     }
                 }

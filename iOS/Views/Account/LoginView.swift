@@ -48,9 +48,11 @@ struct LoginView: View {
             
             Spacer()
             
+            #if DEBUG
             Text("developedBy")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            #endif
         }
         .sheet(isPresented: $loginSheetPresented, content: {
             switch loginFlowState {
@@ -86,7 +88,7 @@ struct LoginView: View {
                             case .failed:
                                 Text("login.error.failed")
                             case nil:
-                                Text("")
+                                Text(verbatim: "")
                             }
                         }
                         .foregroundStyle(.red)

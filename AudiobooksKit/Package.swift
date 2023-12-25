@@ -14,7 +14,8 @@ let package = Package(
         .library(
             name: "AudiobooksKit",
             targets: ["AudiobooksKit"]),
-    ], dependencies: [
+    ],
+    dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
     ],
     targets: [
@@ -22,9 +23,6 @@ let package = Package(
             name: "AudiobooksKit",
             dependencies: [.byName(name: "SwiftSoup")],
             resources: [.process("Resources")]
-        ),
-        .testTarget(
-            name: "AudiobooksKitTests",
-            dependencies: ["AudiobooksKit"]),
+        )
     ]
 )
