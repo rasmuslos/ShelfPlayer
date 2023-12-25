@@ -24,6 +24,9 @@ struct NowPlayingSheet: View {
                         .foregroundStyle(.secondary)
                         .frame(width: 50, height: 7)
                         .clipShape(RoundedRectangle(cornerRadius: 10000))
+                        .onTapGesture {
+                            presentationMode.wrappedValue.dismiss()
+                        }
                 }
             
             ItemImage(image: item.image)

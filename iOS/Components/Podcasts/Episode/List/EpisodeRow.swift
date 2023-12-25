@@ -17,7 +17,7 @@ struct EpisodeRow: View {
                 if let formattedReleaseDate = episode.formattedReleaseDate {
                     Text(formattedReleaseDate)
                 } else {
-                    Text("")
+                    Text(verbatim: "")
                 }
             }
             .font(.subheadline.smallCaps())

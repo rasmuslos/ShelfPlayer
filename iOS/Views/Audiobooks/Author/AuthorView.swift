@@ -62,7 +62,7 @@ struct AuthorView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("")
+                Text(verbatim: "")
             }
         }
         .modifier(NowPlayingBarSafeAreaModifier())

@@ -34,7 +34,7 @@ extension PodcastView {
                                     .lineLimit(1)
                             }
                         } else {
-                            Text("")
+                            Text(verbatim: "")
                         }
                     }
                 }

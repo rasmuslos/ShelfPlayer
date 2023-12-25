@@ -29,7 +29,7 @@ extension EpisodeView {
                             CustomBackButton(isLight: isLight, navigationBarVisible: .constant(false))
                         }
                         ToolbarItem(placement: .principal) {
-                            Text("")
+                            Text(verbatim: "")
                         }
                     }
                 }

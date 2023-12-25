@@ -46,7 +46,7 @@ struct AudiobookRow: View {
                         if let bottomText = bottomText {
                             Text(bottomText)
                         } else {
-                            Text("")
+                            Text(verbatim: "")
                                 .onAppear(perform: fetchRemainingTime)
                         }
                     }

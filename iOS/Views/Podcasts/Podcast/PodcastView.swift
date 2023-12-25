@@ -43,7 +43,6 @@ struct PodcastView: View {
                     EpisodeFilterSortMenu(podcastId: podcast.id, filter: $filter)
                         .foregroundStyle(.primary)
                     
-                    Spacer()
                     NavigationLink(destination: AllEpisodesView(episodes: episodes, podcastId: podcast.id)) {
                         HStack {
                             Spacer()

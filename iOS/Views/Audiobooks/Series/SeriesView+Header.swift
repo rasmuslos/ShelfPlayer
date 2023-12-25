@@ -40,7 +40,7 @@ extension SeriesView {
                         .multilineTextAlignment(.center)
                         .toolbar {
                             ToolbarItem(placement: .principal) {
-                                Text("")
+                                Text(verbatim: "")
                             }
                         }
                 }
