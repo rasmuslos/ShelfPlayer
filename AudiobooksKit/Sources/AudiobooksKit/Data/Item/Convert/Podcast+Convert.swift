@@ -21,7 +21,9 @@ extension Podcast {
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             released: item.media?.metadata.releaseDate, 
             explicit: item.media?.metadata.explicit ?? false,
-            episodeCount: item.media?.episodes?.count ?? 0)
+            episodeCount: item.media?.episodes?.count ?? 0,
+            type: PodcastType.convertFromAudiobookshelf(type: item.media?.metadata.type)
+        )
     }
     
     static func convertFromOffline(podcast: OfflinePodcast) -> Podcast {
@@ -37,6 +39,7 @@ extension Podcast {
             addedAt: podcast.addedAt,
             released: podcast.released,
             explicit: podcast.explicit,
-            episodeCount: 0)
+            episodeCount: 0,
+            type: nil)
     }
 }

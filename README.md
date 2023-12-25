@@ -9,7 +9,7 @@ Available on the App Store soon™️
 ### Building the app yourself
 
 1. Install Xcode
-2. Change the bundle indentifier
+2. Change the bundle identifier
 3. Connect your iPhone to your Mac
 4. Enable developer mode
 5. Select your iPhone as the target

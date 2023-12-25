@@ -32,6 +32,7 @@ extension PodcastView {
                         Text(author)
                             .font(.subheadline)
                     }
+                    
                     HStack {
                         if let description = podcast.description {
                             Text(description)
@@ -53,6 +54,16 @@ extension PodcastView {
                             Image(systemName: "e.square.fill")
                         }
                         
+                        if let type = podcast.type {
+                            Text(verbatim: "•")
+                            switch type {
+                            case .episodic:
+                                Text("podcast.episodic")
+                            case .serial:
+                                Text("podcast.serial")
+                            }
+                        }
+                        
                         if podcast.genres.count > 0 {
                             Text(verbatim: "•")
                             Text(podcast.genres.joined(separator: ", "))
@@ -69,7 +80,7 @@ extension PodcastView {
             }
             .background(Color(backgroundColor))
             .foregroundStyle(backgroundColor.isLight() ? .black : .white)
-            .padding(.top, UIDevice.current.hasNotch ? 100 : 50)
+            .padding(.top, 100)
             .onAppear {
                 Task.detached {
                     withAnimation {

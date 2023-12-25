@@ -71,6 +71,7 @@ struct AccountSheet: View {
             .font(.caption)
             .foregroundStyle(.secondary)
             
+            #if DEBUG
             Section {
                 HStack {
                     Spacer()
@@ -81,6 +82,7 @@ struct AccountSheet: View {
                 }
             }
             .listRowBackground(Color.clear)
+            #endif
         }
     }
 }

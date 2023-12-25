@@ -20,5 +20,7 @@ extension Podcast {
         addedAt: Date(),
         released: "2023-05-21T18:00:00Z",
         explicit: false,
-        episodeCount: 0)
+        episodeCount: 0,
+        type: .episodic
+    )
 }

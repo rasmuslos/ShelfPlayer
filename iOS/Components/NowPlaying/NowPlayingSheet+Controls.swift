@@ -84,7 +84,7 @@ extension NowPlayingSheet {
                     .font(.system(size: 34))
                     .foregroundStyle(.primary)
                 }
-                .padding(.vertical, UIDevice.current.hasNotch ? 35 : 20)
+                .padding(.vertical, 35)
                 
                 VolumeSlider()
             }

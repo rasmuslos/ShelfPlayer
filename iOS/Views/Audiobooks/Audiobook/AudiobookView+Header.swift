@@ -20,6 +20,7 @@ extension AudiobookView {
             ZStack(alignment: .top) {
                 GeometryRectangle(treshold: -250, backgroundColor: nil, navigationBarVisible: $navigationBarVisible)
                 .frame(height: 0)
+                
                 VStack {
                     ItemImage(image: audiobook.image)
                         .padding(.horizontal, 50)

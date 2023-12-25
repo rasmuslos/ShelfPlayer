@@ -40,6 +40,7 @@ extension EpisodeView {
                             .font(.title3)
                             .bold()
                             .multilineTextAlignment(.center)
+                        
                         NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {
                             HStack {
                                 Text(episode.podcastName)
