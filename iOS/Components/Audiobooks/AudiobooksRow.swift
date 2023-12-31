@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct AudiobooksRow: View {
     let audiobooks: [Audiobook]

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct EpisodeFilterSortMenu: View {
     let podcastId: String

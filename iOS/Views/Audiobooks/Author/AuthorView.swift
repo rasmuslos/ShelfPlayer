@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct AuthorView: View {
     @Environment(\.libraryId) var libraryId
@@ -81,7 +81,7 @@ extension AuthorView {
     @Sendable
     func fetchAudiobooks() {
         Task.detached {
-            audiobooks = try? await AudiobookshelfClient.shared.getAudiobooksByAuthor(authorId: author.id, libraryId: libraryId)
+            audiobooks = try? await AudiobookshelfClient.shared.getAuthorData(authorId: author.id, libraryId: libraryId).1
         }
     }
 }

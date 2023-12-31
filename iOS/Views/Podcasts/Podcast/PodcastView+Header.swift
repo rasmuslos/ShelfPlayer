@@ -7,7 +7,7 @@
 
 import SwiftUI
 import UIImageColors
-import AudiobooksKit
+import ShelfPlayerKit
 
 extension PodcastView {
     struct Header: View {

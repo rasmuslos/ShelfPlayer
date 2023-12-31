@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct LibrarySelectorModifier: ViewModifier {
     @Environment(AvailableLibraries.self) var availableLibraries

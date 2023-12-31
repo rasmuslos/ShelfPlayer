@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct SearchView: View {
     @Environment(\.libraryId) var libraryId

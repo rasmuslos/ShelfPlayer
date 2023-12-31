@@ -7,7 +7,7 @@
 
 import SwiftUI
 import OSLog
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct SessionsImportView: View {
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "SessionImport")

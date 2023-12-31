@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct EpisodePlayButton: View {
     @Environment(\.colorScheme) var colorScheme

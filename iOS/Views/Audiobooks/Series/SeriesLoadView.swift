@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct SeriesLoadView: View {
     @Environment(\.libraryId) var libraryId
@@ -24,7 +24,7 @@ struct SeriesLoadView: View {
         } else {
             LoadingView()
                 .task {
-                    if let series = await AudiobookshelfClient.shared.getSeriesById(seriesId, libraryId: libraryId) {
+                    if let series = await AudiobookshelfClient.shared.getSeries(seriesId: seriesId, libraryId: libraryId) {
                         self.series = series
                     } else {
                         failed = true

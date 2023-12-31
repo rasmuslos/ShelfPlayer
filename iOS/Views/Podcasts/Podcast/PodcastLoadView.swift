@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct PodcastLoadView: View {
     @Environment(\.libraryId) var libraryId
@@ -25,7 +25,7 @@ struct PodcastLoadView: View {
             LoadingView()
                 .navigationBarBackButtonHidden()
                 .task {
-                    if let (podcast, _) = await AudiobookshelfClient.shared.getPodcastById(podcastId) {
+                    if let (podcast, _) = await AudiobookshelfClient.shared.getPodcast(podcastId: podcastId) {
                         self.podcast = podcast
                     } else {
                         failed = true

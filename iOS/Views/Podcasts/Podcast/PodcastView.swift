@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct PodcastView: View {
     var podcast: Podcast
@@ -83,7 +83,7 @@ extension PodcastView {
         failed = false
         
         Task.detached {
-            if let episodes = try? await AudiobookshelfClient.shared.getPodcastEpisodes(podcastId: podcast.id) {
+            if let episodes = try? await AudiobookshelfClient.shared.getEpisodes(podcastId: podcast.id) {
                 self.episodes = episodes
                 podcast.episodeCount = episodes.count
             } else {

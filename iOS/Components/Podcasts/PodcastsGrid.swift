@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct PodcastsGrid: View {
     let podcasts: [Podcast]
