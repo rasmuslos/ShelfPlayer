@@ -51,7 +51,7 @@ public class Audiobook: PlayableItem {
             
             return (tracks, chapters, startTime, nil)
         } else {
-            return try await AudiobookshelfClient.shared.play(itemId: id, episodeId: nil)
+            return try await AudiobookshelfClient.shared.getPlaybackData(itemId: id, episodeId: nil)
         }
     }
     override func getPlaybackReporter(playbackSessionId: String?) throws -> PlaybackReporter {
