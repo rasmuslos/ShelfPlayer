@@ -17,12 +17,8 @@ extension AudiobookshelfClient {
             "isFinished": finished,
         ]))
     }
-}
-
-// MARK: play
-
-extension AudiobookshelfClient {
-    func play(itemId: String, episodeId: String?) async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double, String) {
+    
+    func getPlaybackData(itemId: String, episodeId: String?) async throws -> (PlayableItem.AudioTracks, PlayableItem.Chapters, Double, String) {
         // this is actually not an AudiobookshelfItem... to bad
         let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)/play\(episodeId != nil ? "/\(episodeId!)" : "")", method: "POST", body: [
             "deviceInfo": [
@@ -74,10 +70,8 @@ extension AudiobookshelfClient {
     }
 }
 
-// MARK: Search
-
 public extension AudiobookshelfClient {
-    func search(query: String, libraryId: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
+    func getItems(query: String, libraryId: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
         let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: query),
         ]))

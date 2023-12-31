@@ -12,6 +12,8 @@ extension AuthorView {
     struct Header: View {
         let author: Author
         
+        @State var descriptionSheetVisible = false
+        
         var body: some View {
             VStack {
                 ItemImage(image: author.image)
@@ -21,6 +23,28 @@ extension AuthorView {
                 Text(author.name)
                     .fontDesign(.serif)
                     .font(.headline)
+                
+                if let description = author.description {
+                    Button {
+                        descriptionSheetVisible.toggle()
+                    } label: {
+                        Text(description)
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .lineLimit(3)
+                            .sheet(isPresented: $descriptionSheetVisible) {
+                                NavigationStack {
+                                    Text(description)
+                                        .navigationTitle(author.name)
+                                        .padding()
+                                    
+                                    Spacer()
+                                }
+                                .presentationDragIndicator(.visible)
+                            }
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
     }

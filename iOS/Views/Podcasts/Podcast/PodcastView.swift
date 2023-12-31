@@ -15,8 +15,10 @@ struct PodcastView: View {
     @State var failed: Bool
     
     @State var filter: EpisodeFilterSortMenu.Filter
-    @State var episodes: [Episode]?
+    @State var sortOrder: EpisodeFilterSortMenu.SortOrder
+    @State var ascending: Bool
     
+    @State var episodes: [Episode]?
     @State var backgroundColor: UIColor = .secondarySystemBackground
     
     init(podcast: Podcast) {
@@ -26,7 +28,8 @@ struct PodcastView: View {
         failed = false
         
         filter = EpisodeFilterSortMenu.getFilter(podcastId: podcast.id)
-        
+        sortOrder = EpisodeFilterSortMenu.getSortOrder(podcastId: podcast.id)
+        ascending = EpisodeFilterSortMenu.getAscending(podcastId: podcast.id)
     }
     
     var body: some View {
@@ -55,7 +58,7 @@ struct PodcastView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 
-                EpisodesList(episodes: Array(EpisodeFilterSortMenu.filterAndSortEpisodes(episodes, filter: filter, podcastId: podcast.id).prefix(15)))
+                EpisodesList(episodes: Array(EpisodeFilterSortMenu.filterAndSortEpisodes(episodes, filter: filter, sortOrder: sortOrder, ascending: ascending).prefix(15)))
             } else {
                 HStack {
                     Spacer()
@@ -80,6 +83,10 @@ struct PodcastView: View {
 extension PodcastView {
     @Sendable
     func fetchEpisodes() {
+        filter = EpisodeFilterSortMenu.getFilter(podcastId: podcast.id)
+        sortOrder = EpisodeFilterSortMenu.getSortOrder(podcastId: podcast.id)
+        ascending = EpisodeFilterSortMenu.getAscending(podcastId: podcast.id)
+        
         failed = false
         
         Task.detached {

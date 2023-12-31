@@ -43,6 +43,11 @@ struct AllEpisodesView: View {
             }
         }
         .modifier(NowPlayingBarSafeAreaModifier())
+        .task {
+            filter = EpisodeFilterSortMenu.getFilter(podcastId: podcastId)
+            sortOrder = EpisodeFilterSortMenu.getSortOrder(podcastId: podcastId)
+            ascending = EpisodeFilterSortMenu.getAscending(podcastId: podcastId)
+        }
     }
 }
 
