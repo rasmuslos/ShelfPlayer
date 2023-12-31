@@ -48,7 +48,7 @@ public class Episode: PlayableItem {
             
             return ([track], chapters, startTime, nil)
         } else {
-            return try await AudiobookshelfClient.shared.play(itemId: podcastId, episodeId: id)
+            return try await AudiobookshelfClient.shared.getPlaybackData(itemId: podcastId, episodeId: id)
         }
     }
     

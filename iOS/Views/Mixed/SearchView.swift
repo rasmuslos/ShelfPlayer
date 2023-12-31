@@ -82,7 +82,7 @@ struct SearchView: View {
                 task?.cancel()
                 task = Task.detached {
                     loading = true
-                    (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.search(query: query, libraryId: libraryId)
+                    (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.getItems(query: query, libraryId: libraryId)
                     loading = false
                 }
             }

@@ -177,14 +177,6 @@ extension EpisodeFilterSortMenu {
     static func filterAndSortEpisodes(_ episodes: [Episode], filter: Filter, sortOrder: SortOrder, ascending: Bool) -> [Episode] {
         sortEpisodes(filterEpisodes(episodes, filter: filter), sortOrder: sortOrder, ascending: ascending)
     }
-    
-    @MainActor
-    static func filterAndSortEpisodes(_ episodes: [Episode], filter: Filter, podcastId: String) -> [Episode] {
-        let sortOrder = getSortOrder(podcastId: podcastId)
-        let ascending = getAscending(podcastId: podcastId)
-        
-        return sortEpisodes(filterEpisodes(episodes, filter: filter), sortOrder: sortOrder, ascending: ascending)
-    }
 }
 
 // MARK: Default
