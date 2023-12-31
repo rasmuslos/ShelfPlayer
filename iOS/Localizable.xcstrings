@@ -171,6 +171,22 @@
         }
       }
     },
+    "audiobook.view" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Hörbuch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View audiobook"
+          }
+        }
+      }
+    },
     "author.view" : {
       "localizations" : {
         "de" : {

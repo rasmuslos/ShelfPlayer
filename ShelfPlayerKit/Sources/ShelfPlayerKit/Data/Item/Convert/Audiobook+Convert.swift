@@ -20,12 +20,11 @@ extension Audiobook {
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             released: item.media?.metadata.publishedYear,
             size: item.size!,
-            narrator: item.media?.metadata.narratorName?.trim(),
+            duration: item.media?.duration ?? 0, narrator: item.media?.metadata.narratorName?.trim(),
             series: Audiobook.ReducedSeries(
                 id: item.media?.metadata.series?.id,
                 name: item.media?.metadata.series?.name,
                 audiobookSeriesName: item.media?.metadata.seriesName?.trim()),
-            duration: item.media?.duration ?? 0,
             explicit: item.media?.metadata.explicit ?? false,
             abridged: item.media?.metadata.abridged ?? false)
     }
@@ -42,12 +41,11 @@ extension Audiobook {
             addedAt: audiobook.addedAt,
             released: audiobook.released,
             size: audiobook.size,
-            narrator: audiobook.narrator,
+            duration: audiobook.duration, narrator: audiobook.narrator,
             series: ReducedSeries(
                 id: nil,
                 name: nil,
-                audiobookSeriesName: audiobook.seriesName)
-            , duration: audiobook.duration,
+                audiobookSeriesName: audiobook.seriesName),
             explicit: audiobook.explicit,
             abridged: audiobook.abridged)
     }

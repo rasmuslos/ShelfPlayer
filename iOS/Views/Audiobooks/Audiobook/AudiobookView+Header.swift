@@ -19,7 +19,7 @@ extension AudiobookView {
         var body: some View {
             ZStack(alignment: .top) {
                 GeometryRectangle(treshold: -250, backgroundColor: nil, navigationBarVisible: $navigationBarVisible)
-                .frame(height: 0)
+                    .frame(height: 0)
                 
                 VStack {
                     ItemImage(image: audiobook.image)
@@ -86,6 +86,16 @@ extension AudiobookView {
                             if audiobook.abridged {
                                 Image(systemName: "a.square.fill")
                             }
+                            
+                            Group {
+                                if audiobook.narrator != nil || audiobook.explicit || audiobook.abridged {
+                                    Text(verbatim: " • ")
+                                }
+                                
+                                Text(audiobook.duration.numericDuration())
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                         }
                         .foregroundStyle(.secondary)
                         .imageScale(.small)
