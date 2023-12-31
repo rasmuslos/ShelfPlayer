@@ -14,6 +14,8 @@ struct AudiobookRow: View {
     @State var bottomText: String?
     @State var labelImage: String = "play"
     
+    @State var progress: OfflineProgress?
+    
     var body: some View {
         HStack {
             ItemProgressImage(item: audiobook)
@@ -43,11 +45,13 @@ struct AudiobookRow: View {
                             .symbolVariant(.circle.fill)
                             .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
                         
-                        if let bottomText = bottomText {
-                            Text(bottomText)
+                        if let progress = progress {
+                            Text(progress.readableProgress(spaceConstrained: false))
                         } else {
-                            Text(verbatim: "")
-                                .onAppear(perform: fetchRemainingTime)
+                            Text(verbatim: audiobook.duration.timeLeft(spaceConstrained: false))
+                                .onAppear {
+                                    fetchProgress()
+                                }
                         }
                     }
                     .font(.subheadline)
@@ -64,6 +68,9 @@ struct AudiobookRow: View {
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
                 checkPlaying()
             })
+            .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification)) { _ in
+                fetchProgress()
+            }
         }
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
     }
@@ -85,14 +92,9 @@ extension AudiobookRow {
         return parts
     }
     
-    func fetchRemainingTime() {
-        Task.detached {
-            if let progress = await OfflineManager.shared.getProgress(item: audiobook) {
-                bottomText = progress.readableProgress(spaceConstrained: false)
-            } else {
-                bottomText = audiobook.duration.timeLeft(spaceConstrained: false)
-            }
-        }
+    @MainActor
+    func fetchProgress() {
+        progress = OfflineManager.shared.getProgress(item: audiobook)
     }
     
     private func checkPlaying() {

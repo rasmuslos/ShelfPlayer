@@ -20,10 +20,9 @@ extension Episode {
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             released: item.recentEpisode?.publishedAt != nil ? String(item.recentEpisode!.publishedAt!) : nil,
             size: item.recentEpisode?.size ?? 0,
-            podcastId: item.id,
+            duration: item.recentEpisode?.audioFile?.duration ?? 0, podcastId: item.id,
             podcastName: item.media!.metadata.title!,
-            index: item.recentEpisode?.index ?? 0,
-            duration: item.recentEpisode?.audioFile?.duration ?? 0)
+            index: item.recentEpisode?.index ?? 0)
     }
     
     static func convertFromAudiobookshelf(podcastEpisode: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfPodcastEpisode, item: AudiobookshelfClient.AudiobookshelfItem) -> Episode {
@@ -38,10 +37,9 @@ extension Episode {
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             released: podcastEpisode.publishedAt != nil ? String(podcastEpisode.publishedAt!) : nil,
             size: podcastEpisode.size ?? 0,
-            podcastId: item.id,
+            duration: podcastEpisode.audioFile?.duration ?? 0, podcastId: item.id,
             podcastName: item.media!.metadata.title!,
-            index: podcastEpisode.index ?? 0,
-            duration: podcastEpisode.audioFile?.duration ?? 0)
+            index: podcastEpisode.index ?? 0)
     }
     
     static func convertFromAudiobookshelf(episode: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfPodcastEpisode) -> Episode {
@@ -56,10 +54,9 @@ extension Episode {
             addedAt: Date(),
             released: episode.publishedAt != nil ? String(episode.publishedAt!) : nil,
             size: episode.size ?? 0,
-            podcastId: episode.podcast!.libraryItemId,
+            duration: episode.audioFile?.duration ?? 0, podcastId: episode.podcast!.libraryItemId,
             podcastName: episode.podcast!.metadata.title!,
-            index: episode.index ?? 0,
-            duration: episode.audioFile?.duration ?? 0)
+            index: episode.index ?? 0)
     }
 }
 
@@ -76,9 +73,8 @@ extension Episode {
             addedAt: episode.addedAt,
             released: episode.released,
             size: 0,
-            podcastId: episode.podcast.id,
+            duration: episode.duration, podcastId: episode.podcast.id,
             podcastName: episode.podcast.name,
-            index: episode.index,
-            duration: episode.duration)
+            index: episode.index)
     }
 }

@@ -11,19 +11,16 @@ public class Audiobook: PlayableItem {
     public let narrator: String?
     public let series: ReducedSeries
     
-    public let duration: Double
-    
     public let explicit: Bool
     public let abridged: Bool
     
-    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64, narrator: String?, series: ReducedSeries, duration: Double, explicit: Bool, abridged: Bool) {
+    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: Double, narrator: String?, series: ReducedSeries, explicit: Bool, abridged: Bool) {
         self.narrator = narrator
         self.series = series
-        self.duration = duration
         self.explicit = explicit
         self.abridged = abridged
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
+        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
     }
     
     // MARK: playback

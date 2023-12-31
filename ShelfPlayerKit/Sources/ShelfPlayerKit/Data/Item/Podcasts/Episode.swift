@@ -13,15 +13,13 @@ public class Episode: PlayableItem {
     public let podcastName: String
     
     public let index: Int
-    public let duration: Double
     
-    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Item.Image?, genres: [String], addedAt: Date, released: String?, size: Int64, podcastId: String, podcastName: String, index: Int, duration: Double) {
+    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Item.Image?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: Double, podcastId: String, podcastName: String, index: Int) {
         self.podcastId = podcastId
         self.podcastName = podcastName
         self.index = index
-        self.duration = duration
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size)
+        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
     }
     
     // MARK: playback

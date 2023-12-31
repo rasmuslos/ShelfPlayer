@@ -19,8 +19,7 @@ extension Episode {
         addedAt: Date(),
         released: "1698856560000",
         size: 0,
-        podcastId: "fixture",
+        duration: 0, podcastId: "fixture",
         podcastName: "Tagesschau",
-        index: 1,
-        duration: 0)
+        index: 1)
 }

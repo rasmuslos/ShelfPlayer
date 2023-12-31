@@ -8,14 +8,18 @@
 import Foundation
 
 public extension Double {
-    func hoursMinutesSeconds() -> (String, String, String) {
+    func hoursMinutesSeconds(padding: Bool = false) -> (String, String, String) {
         let seconds = Int64(self)
         
-        return (
-            "\(seconds / 3600)".leftPadding(toLength: 2, withPad: "0"),
-            "\((seconds % 3600) / 60)".leftPadding(toLength: 2, withPad: "0"),
-            "\((seconds % 3600) % 60)".leftPadding(toLength: 2, withPad: "0")
-        )
+        if padding {
+            return (
+                "\(seconds / 3600)".leftPadding(toLength: 2, withPad: "0"),
+                "\((seconds % 3600) / 60)".leftPadding(toLength: 2, withPad: "0"),
+                "\((seconds % 3600) % 60)".leftPadding(toLength: 2, withPad: "0")
+            )
+        } else {
+            return ("\(seconds / 3600)", "\((seconds % 3600) / 60)", "\((seconds % 3600) % 60)")
+        }
     }
     
     func hoursMinutesSecondsString(includeSeconds: Bool = true, includeLabels: Bool = false) -> String {
@@ -63,6 +67,18 @@ public extension Double {
         
         if hours != "00" {
             return "\(hours):\(minutes)"
+        } else if minutes != "00" {
+            return "\(minutes)\(String(localized: "minutes.letter", bundle: Bundle.module))"
+        } else {
+            return "\(seconds)\(String(localized: "seconds.letter", bundle: Bundle.module))"
+        }
+    }
+    
+    func numericDuration() -> String {
+        let (hours, minutes, seconds) = hoursMinutesSeconds(padding: false)
+        
+        if hours != "00" {
+            return "\(hours)\(String(localized: "hours.letter", bundle: Bundle.module))"
         } else if minutes != "00" {
             return "\(minutes)\(String(localized: "minutes.letter", bundle: Bundle.module))"
         } else {

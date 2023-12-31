@@ -58,7 +58,7 @@ struct PodcastView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 
-                EpisodesList(episodes: Array(EpisodeFilterSortMenu.filterAndSortEpisodes(episodes, filter: filter, sortOrder: sortOrder, ascending: ascending).prefix(15)))
+                EpisodesList(episodes: episodes)
             } else {
                 HStack {
                     Spacer()
@@ -91,7 +91,7 @@ extension PodcastView {
         
         Task.detached {
             if let episodes = try? await AudiobookshelfClient.shared.getEpisodes(podcastId: podcast.id) {
-                self.episodes = episodes
+                self.episodes = Array(await EpisodeFilterSortMenu.filterAndSortEpisodes(episodes, filter: filter, sortOrder: sortOrder, ascending: ascending).prefix(15))
                 podcast.episodeCount = episodes.count
             } else {
                 failed = true
