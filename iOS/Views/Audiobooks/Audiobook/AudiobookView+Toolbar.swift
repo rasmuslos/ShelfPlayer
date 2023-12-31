@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 extension AudiobookView {
     struct ToolbarModifier: ViewModifier {
@@ -55,9 +55,9 @@ extension AudiobookView {
                             Button {
                                 Task {
                                     if audiobook.offline == .none {
-                                        try! await OfflineManager.shared.downloadAudiobook(audiobook)
+                                        try! await OfflineManager.shared.download(audiobook: audiobook)
                                     } else if audiobook.offline == .downloaded {
-                                        try! OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
+                                        try! OfflineManager.shared.delete(audiobookId: audiobook.id)
                                     }
                                 }
                             } label: {
@@ -92,7 +92,7 @@ extension AudiobookView {
                                     Divider()
                                     
                                     Button(role: .destructive) {
-                                        try! OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
+                                        try! OfflineManager.shared.delete(audiobookId: audiobook.id)
                                     } label: {
                                         Label("download.remove", systemImage: "trash")
                                     }

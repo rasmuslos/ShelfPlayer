@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct ContentView: View {
     @State var state: Step = AudiobookshelfClient.shared.isAuthorized ? .sessionImport : .login

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct SleepTimerButton: View {
     @State var remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct NowPlayingSheet: View {
     @Environment(\.presentationMode) var presentationMode

@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 extension NowPlayingSheet {
     struct Controls: View {
         @Binding var playing: Bool
+        @State var dragging = false
         
         @State var buffering = AudioPlayer.shared.buffering
         @State var duration = AudioPlayer.shared.getChapterDuration()
@@ -23,7 +24,7 @@ extension NowPlayingSheet {
         var body: some View {
             VStack {
                 VStack {
-                    Slider(percentage: $playedPercentage, dragging: .constant(false), onEnded: {
+                    Slider(percentage: $playedPercentage, dragging: $dragging, onEnded: {
                         AudioPlayer.shared.seek(to: duration * (playedPercentage / 100), includeChapterOffset: true)
                     })
                     .padding(.vertical, 10)
@@ -41,10 +42,12 @@ extension NowPlayingSheet {
                         Spacer()
                         
                         Group {
-                            if let chapter = AudioPlayer.shared.getChapter() {
+                            if dragging {
+                                Text(formatRemainingTime(duration - duration * (playedPercentage / 100)))
+                            } else if let chapter = AudioPlayer.shared.getChapter() {
                                 Text(chapter.title)
                             } else {
-                                Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ") + Text("time.left")
+                                Text(formatRemainingTime(duration - currentTime))
                             }
                         }
                         .font(.caption2)
@@ -93,9 +96,11 @@ extension NowPlayingSheet {
                     buffering = AudioPlayer.shared.buffering
                 }
                 
-                duration = AudioPlayer.shared.getChapterDuration()
-                currentTime = AudioPlayer.shared.getChapterCurrentTime()
-                playedPercentage = (currentTime / duration) * 100
+                if !dragging {
+                    duration = AudioPlayer.shared.getChapterDuration()
+                    currentTime = AudioPlayer.shared.getChapterCurrentTime()
+                    playedPercentage = (currentTime / duration) * 100
+                }
             })
             .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification), perform: { _ in
                 withAnimation {
@@ -104,5 +109,11 @@ extension NowPlayingSheet {
                 }
             })
         }
+    }
+}
+
+extension NowPlayingSheet.Controls {
+    func formatRemainingTime(_ time: Double) -> String {
+        time.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true) + " " + String(localized: "time.left")
     }
 }

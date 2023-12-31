@@ -6,29 +6,37 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct AudiobookContextMenuModifier: ViewModifier {
     let audiobook: Audiobook
     
+    @State var authorId: String?
+    
     func body(content: Content) -> some View {
         content
             .contextMenu {
-                ToolbarProgressButton(item: audiobook)
+                if let seriesId = audiobook.series.id {
+                    NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
+                        Label("series.view", systemImage: "text.justify.leading")
+                    }
+                }
                 
                 Divider()
+                
+                ToolbarProgressButton(item: audiobook)
                 
                 if audiobook.offline == .none {
                     Button {
                         Task {
-                            try! await OfflineManager.shared.downloadAudiobook(audiobook)
+                            try! await OfflineManager.shared.download(audiobook: audiobook)
                         }
                     } label: {
                         Label("download", systemImage: "arrow.down")
                     }
                 } else {
                     Button {
-                        try? OfflineManager.shared.deleteAudiobook(audiobookId: audiobook.id)
+                        try? OfflineManager.shared.delete(audiobookId: audiobook.id)
                     } label: {
                         Label("download.remove", systemImage: "trash")
                     }
@@ -39,6 +47,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                     
                     Text(audiobook.name)
                         .font(.headline)
+                        .fontDesign(.serif)
                         .padding(.top, 10)
                     
                     if let author = audiobook.author {
@@ -55,6 +64,9 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 }
                 .frame(width: 250)
                 .padding()
+                .onAppear {
+                    // authorId = try? AudiobookshelfClient.shared.getAuthorIdByName(audiobook.author, libraryId: audiobook.libraryId)
+                }
             }
     }
 }

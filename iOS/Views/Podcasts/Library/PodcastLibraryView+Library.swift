@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 extension PodcastLibraryView {
     struct LibraryView: View {
@@ -47,7 +47,7 @@ extension PodcastLibraryView.LibraryView {
     @Sendable
     func fetchPodcasts() {
         Task.detached {
-            if let podcasts = try? await AudiobookshelfClient.shared.getAllPodcasts(libraryId: libraryId) {
+            if let podcasts = try? await AudiobookshelfClient.shared.getPodcasts(libraryId: libraryId) {
                 self.podcasts = podcasts
             } else {
                 failed = true

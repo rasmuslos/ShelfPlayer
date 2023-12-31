@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct PodcastContextMenuModifier: ViewModifier {
     let id: String
@@ -78,7 +78,7 @@ struct PodcastContextMenuModifier: ViewModifier {
             .onAppear {
                 if author == nil && description == nil {
                     Task.detached {
-                        if let (podcast, _) = await AudiobookshelfClient.shared.getPodcastById(id) {
+                        if let (podcast, _) = await AudiobookshelfClient.shared.getPodcast(podcastId: id) {
                             withAnimation {
                                 author = podcast.author
                                 description = podcast.description
