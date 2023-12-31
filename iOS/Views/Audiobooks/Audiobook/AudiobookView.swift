@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct AudiobookView: View {
     @Environment(\.libraryId) var libraryId
@@ -62,9 +62,9 @@ struct AudiobookView: View {
 extension AudiobookView {
     func getAuthorData() {
         Task.detached {
-            if let author = audiobook.author, let authorId = await AudiobookshelfClient.shared.getAuthorIdByName(author, libraryId: libraryId) {
+            if let author = audiobook.author, let authorId = await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: libraryId) {
                 self.authorId = authorId
-                audiobooksByAuthor = (try? await AudiobookshelfClient.shared.getAudiobooksByAuthor(authorId: authorId, libraryId: libraryId)) ?? []
+                audiobooksByAuthor = (try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId).1) ?? []
             }
         }
     }
@@ -73,13 +73,13 @@ extension AudiobookView {
             if let seriesId = audiobook.series.id {
                 self.seriesId = seriesId
             } else if let series = audiobook.series.name {
-                seriesId = await AudiobookshelfClient.shared.getSeriesIdByName(series, libraryId: libraryId)
+                seriesId = await AudiobookshelfClient.shared.getSeriesId(name: series, libraryId: libraryId)
             } else if let series = audiobook.series.audiobookSeriesName, let seriesName = series.split(separator: "#").first?.dropLast() {
-                seriesId = await AudiobookshelfClient.shared.getSeriesIdByName(String(seriesName), libraryId: libraryId)
+                seriesId = await AudiobookshelfClient.shared.getSeriesId(name: String(seriesName), libraryId: libraryId)
             }
             
             if let seriesId = seriesId {
-                audiobooksInSeries = (try? await AudiobookshelfClient.shared.getAudiobooksInSeries(seriesId: seriesId, libraryId: libraryId)) ?? []
+                audiobooksInSeries = (try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: seriesId, libraryId: libraryId)) ?? []
             }
         }
     }

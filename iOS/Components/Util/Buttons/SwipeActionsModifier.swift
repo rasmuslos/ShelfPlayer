@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem
@@ -34,9 +34,9 @@ struct SwipeActionsModifier: ViewModifier {
                     Button {
                         Task {
                             if let episode = item as? Episode {
-                                try? await OfflineManager.shared.downloadEpisode(episode)
+                                try? await OfflineManager.shared.download(episode: episode)
                             } else if let audiobook = item as? Audiobook {
-                                try? await OfflineManager.shared.downloadAudiobook(audiobook)
+                                try? await OfflineManager.shared.download(audiobook: audiobook)
                             }
                         }
                     } label: {
@@ -46,9 +46,9 @@ struct SwipeActionsModifier: ViewModifier {
                 } else if item.offline == .downloaded {
                     Button {
                         if let episode = item as? Episode {
-                            try? OfflineManager.shared.deleteEpisode(episodeId: episode.id)
+                            try? OfflineManager.shared.delete(episodeId: episode.id)
                         } else {
-                            try? OfflineManager.shared.deleteAudiobook(audiobookId: item.id)
+                            try? OfflineManager.shared.delete(audiobookId: item.id)
                         }
                     } label: {
                         Image(systemName: "trash")

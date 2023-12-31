@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AudiobooksKit
+import ShelfPlayerKit
 
 struct OfflineView: View {
     @State var accountSheetPresented = false
@@ -30,7 +30,7 @@ struct OfflineView: View {
                         }
                         .onDelete { indexSet in
                             indexSet.forEach {
-                                try? OfflineManager.shared.deleteAudiobook(audiobookId: audiobooks[$0].id)
+                                try? OfflineManager.shared.delete(audiobookId: audiobooks[$0].id)
                             }
                         }
                     }
@@ -44,7 +44,7 @@ struct OfflineView: View {
                         .onDelete { indexSet in
                             indexSet.forEach { index in
                                 podcasts[podcast.key]?.remove(at: index)
-                                try? OfflineManager.shared.deleteEpisode(episodeId: podcast.value[index].id)
+                                try? OfflineManager.shared.delete(episodeId: podcast.value[index].id)
                             }
                             
                             if podcasts[podcast.key]?.count == 0 {
@@ -74,7 +74,7 @@ struct OfflineView: View {
             .modifier(NowPlayingBarModifier())
             .onAppear {
                 let episodes: [Episode]
-                (audiobooks, episodes) = (OfflineManager.shared.getAllAudiobooks(), OfflineManager.shared.getAllEpisodes())
+                (audiobooks, episodes) = (OfflineManager.shared.getAudiobooks(), OfflineManager.shared.getEpisodes())
                 
                 episodes.forEach { episode in
                     if let podcast = OfflineManager.shared.getPodcast(podcastId: episode.podcastId) {
