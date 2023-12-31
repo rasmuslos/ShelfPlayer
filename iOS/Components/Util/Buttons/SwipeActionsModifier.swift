@@ -14,13 +14,14 @@ struct SwipeActionsModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                let progress = OfflineManager.shared.getProgress(item: item)?.progress ?? 0
+                let progress = OfflineManager.shared.getProgress(item: item)
+                
                 Button {
                     Task {
-                        await item.setProgress(finished: progress < 1)
+                        await item.setProgress(finished: (progress?.progress ?? 0) < 1)
                     }
                 } label: {
-                    if progress >= 1 {
+                    if (progress?.progress ?? 0) >= 1 {
                         Image(systemName: "minus")
                             .tint(.red)
                     } else {

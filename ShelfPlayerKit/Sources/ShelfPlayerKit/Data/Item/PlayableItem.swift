@@ -10,12 +10,15 @@ import Foundation
 @Observable
 public class PlayableItem: Item {
     public let size: Int64
-    public var offline: OfflineStatus
+    public let duration: Double
     
+    public var offline: OfflineStatus
     private var token: NSObjectProtocol?
     
-    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64) {
+    init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: Double) {
         self.size = size
+        self.duration = duration
+        
         offline = .none
         
         super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, image: image, genres: genres, addedAt: addedAt, released: released)

@@ -582,10 +582,10 @@
 		3ACD19AB2ACB5794007D01FE /* Audiobooks */ = {
 			isa = PBXGroup;
 			children = (
-				3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */,
 				3A77B7002ACDF00100F22C7F /* Series */,
-				3A50AAB42ACC51F200BF5438 /* Library */,
 				3A77B6FB2ACDE2DA00F22C7F /* Author */,
+				3A50AAB42ACC51F200BF5438 /* Library */,
+				3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */,
 			);
 			path = Audiobooks;
 			sourceTree = "<group>";

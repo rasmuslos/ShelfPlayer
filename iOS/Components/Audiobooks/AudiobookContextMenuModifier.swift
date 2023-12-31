@@ -16,9 +16,21 @@ struct AudiobookContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
+                NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
+                    Label("audiobook.view", systemImage: "book")
+                }
+                
+                if let authorId = authorId {
+                    NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
+                        Label("author.view", systemImage: "person")
+                        Text(audiobook.author!)
+                    }
+                }
+                
                 if let seriesId = audiobook.series.id {
                     NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
                         Label("series.view", systemImage: "text.justify.leading")
+                        Text(audiobook.series.name ?? audiobook.series.audiobookSeriesName!)
                     }
                 }
                 
@@ -65,7 +77,11 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 .frame(width: 250)
                 .padding()
                 .onAppear {
-                    // authorId = try? AudiobookshelfClient.shared.getAuthorIdByName(audiobook.author, libraryId: audiobook.libraryId)
+                    Task.detached {
+                        if let author = audiobook.author {
+                            authorId = await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId)
+                        }
+                    }
                 }
             }
     }
