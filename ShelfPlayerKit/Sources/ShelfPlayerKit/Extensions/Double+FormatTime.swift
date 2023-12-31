@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Double {
-    func hoursMinutesSeconds(padding: Bool = false) -> (String, String, String) {
+    func hoursMinutesSeconds(padding: Bool = true) -> (String, String, String) {
         let seconds = Int64(self)
         
         if padding {
