@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3A0AE69F2AB623F400ACCD68"
-               BuildableName = "iOS.app"
+               BuildableName = "ShelfPlayer.app"
                BlueprintName = "iOS"
                ReferencedContainer = "container:ShelfPlayer.xcodeproj">
             </BuildableReference>
@@ -44,7 +44,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3A0AE69F2AB623F400ACCD68"
-            BuildableName = "iOS.app"
+            BuildableName = "ShelfPlayer.app"
             BlueprintName = "iOS"
             ReferencedContainer = "container:ShelfPlayer.xcodeproj">
          </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3A0AE69F2AB623F400ACCD68"
-            BuildableName = "iOS.app"
+            BuildableName = "ShelfPlayer.app"
             BlueprintName = "iOS"
             ReferencedContainer = "container:ShelfPlayer.xcodeproj">
          </BuildableReference>

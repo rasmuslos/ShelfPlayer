@@ -177,7 +177,7 @@
 		3AA19BA12AD6C80000C468EA /* LatestList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestList.swift; sourceTree = "<group>"; };
 		3AA19BA52AD6E94B00C468EA /* PodcastsGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsGrid.swift; sourceTree = "<group>"; };
 		3AA19BA72AD6EE3F00C468EA /* NowPlayingSheet+Chapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NowPlayingSheet+Chapters.swift"; sourceTree = "<group>"; };
-		3AA36E502B0A97FD0036038D /* iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AA36E502B0A97FD0036038D /* ShelfPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShelfPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AA9541A2AD290380031C20D /* PodcastsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsRow.swift; sourceTree = "<group>"; };
 		3AA9541E2AD2925C0031C20D /* RowTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTitle.swift; sourceTree = "<group>"; };
 		3AA954202AD293670031C20D /* PodcastCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCover.swift; sourceTree = "<group>"; };
@@ -416,7 +416,7 @@
 		3A21CC542B0A1CBB002D5D55 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3AA36E502B0A97FD0036038D /* iOS.app */,
+				3AA36E502B0A97FD0036038D /* ShelfPlayer.app */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -661,7 +661,7 @@
 				3AB6CABB2B41764E008FF8CE /* ShelfPlayerKit */,
 			);
 			productName = Audiobooks;
-			productReference = 3AA36E502B0A97FD0036038D /* iOS.app */;
+			productReference = 3AA36E502B0A97FD0036038D /* ShelfPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -998,7 +998,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ShelfPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1044,7 +1044,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ShelfPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
