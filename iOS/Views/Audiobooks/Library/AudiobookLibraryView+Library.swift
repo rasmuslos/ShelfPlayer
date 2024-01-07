@@ -45,6 +45,12 @@ extension AudiobookLibraryView {
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink(destination: AuthorsView()) {
+                            Image(systemName: "person.fill")
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
                         AudiobooksSort(display: $displayOrder, sort: $sortOrder, ascending: $ascending)
                     }
                 }

@@ -69,4 +69,8 @@ extension AudiobookshelfClient {
             let displayOrder: Int
         }
     }
+    
+    struct AuthorsResponse: Codable {
+        let authors: [AudiobookshelfItem]
+    }
 }
