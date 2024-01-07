@@ -10,6 +10,11 @@ import Foundation
 // MARK: Search
 
 public extension AudiobookshelfClient {
+    func getAuthors(libraryId: String) async throws -> [Author] {
+        let response = try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryId)/authors", method: "GET"))
+        return response.authors.map(Author.convertFromAudiobookshelf)
+    }
+    
     func getAuthorId(name: String, libraryId: String) async -> String? {
         let response = try? await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: name),

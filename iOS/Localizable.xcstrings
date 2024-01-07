@@ -8,6 +8,12 @@
             "state" : "translated",
             "value" : ":)"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ":)"
+          }
         }
       }
     },
@@ -215,6 +221,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View author"
+          }
+        }
+      }
+    },
+    "authors.title" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authors"
           }
         }
       }
