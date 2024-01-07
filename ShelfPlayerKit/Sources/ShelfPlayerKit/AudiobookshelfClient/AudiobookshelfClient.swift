@@ -53,7 +53,7 @@ extension AudiobookshelfClient {
         let fallback = "group.io.rfk.shelfplayer"
         let queryLoad: [String: AnyObject] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: "bundleSeedID" as AnyObject,
+            kSecAttrAccount as String: "bundleSeedLookup" as AnyObject,
             kSecAttrService as String: "ShelfPlayer" as AnyObject,
             kSecReturnAttributes as String: kCFBooleanTrue,
         ]

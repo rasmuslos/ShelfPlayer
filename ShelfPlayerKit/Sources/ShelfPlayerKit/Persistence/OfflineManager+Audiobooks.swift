@@ -57,7 +57,6 @@ extension OfflineManager {
             let task = DownloadManager.shared.downloadTrack(track: track)
             
             reference.downloadTask = task.taskIdentifier
-            task.resume()
         }
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobook.id)
@@ -106,6 +105,26 @@ extension OfflineManager {
         }
         
         return []
+    }
+    
+    @MainActor
+    public func getAudiobookDownloadData() throws -> [Audiobook: (Int, Int)] {
+        let tracks = try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor<OfflineAudiobookTrack>())
+        var result = [Audiobook: (Int, Int)]()
+        var audiobookIds = Set<String>()
+        
+        for track in tracks {
+            audiobookIds.insert(track.audiobookId)
+        }
+        
+        for audiobookId in audiobookIds {
+            let audiobook = Audiobook.convertFromOffline(audiobook: getAudiobook(audiobookId: audiobookId)!)
+            let tracks = tracks.filter { $0.audiobookId == audiobookId }
+            
+            result[audiobook] = (tracks.reduce(tracks.count, { $1.downloadCompleted ? $0 : $0 - 1 }), tracks.count)
+        }
+        
+        return result
     }
 }
 

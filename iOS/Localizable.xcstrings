@@ -43,6 +43,22 @@
         }
       }
     },
+    "account.downloads" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloads"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloads"
+          }
+        }
+      }
+    },
     "account.logout" : {
       "localizations" : {
         "de" : {
@@ -252,7 +268,6 @@
       }
     },
     "developedBy" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

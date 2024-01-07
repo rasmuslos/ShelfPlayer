@@ -11,6 +11,9 @@ import ShelfPlayerKit
 struct AccountSheet: View {
     @State var username: String?
     
+    @State var downloadingAudiobooks: [Audiobook: (Int, Int)]?
+    @State var downloadingPodcasts: [Podcast: (Int, Int)]?
+    
     var body: some View {
         List {
             Section {
@@ -34,6 +37,88 @@ struct AccountSheet: View {
                 Text("account.user")
             } footer: {
                 Text("account.logout.disclaimer")
+            }
+            
+            Section("account.downloads") {
+                if let downloadingAudiobooks = downloadingAudiobooks, !downloadingAudiobooks.isEmpty {
+                    ForEach(Array(downloadingAudiobooks.keys).sorted { $0.name < $1.name }) { audiobook in
+                        HStack {
+                            ItemImage(image: audiobook.image)
+                                .frame(width: 55)
+                            
+                            VStack(alignment: .leading) {
+                                Text(audiobook.name)
+                                    .fontDesign(.serif)
+                                if let author = audiobook.author {
+                                    Text(author)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            if let downloadStatus = downloadingAudiobooks[audiobook] {
+                                if downloadStatus.0 == 0 && downloadStatus.1 == 1 {
+                                    ProgressView()
+                                } else {
+                                    Text(verbatim: "\(downloadStatus.0)/\(downloadStatus.1)")
+                                        .fontDesign(.rounded)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                try! OfflineManager.shared.delete(audiobookId: audiobook.id)
+                            } label: {
+                                Image(systemName: "trash.fill")
+                            }
+                        }
+                    }
+                }
+                
+                if let downloadingPodcasts = downloadingPodcasts, !downloadingPodcasts.isEmpty {
+                    ForEach(Array(downloadingPodcasts.keys).sorted { $0.name < $1.name }) { podcast in
+                        HStack {
+                            ItemImage(image: podcast.image)
+                                .frame(width: 55)
+                            
+                            VStack(alignment: .leading) {
+                                Text(podcast.name)
+                                
+                                if let author = podcast.author {
+                                    Text(author)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            if let downloadStatus = downloadingPodcasts[podcast] {
+                                Text(verbatim: "\(downloadStatus.0)/\(downloadStatus.1)")
+                                    .fontDesign(.rounded)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                try! OfflineManager.shared.delete(podcastId: podcast.id)
+                            } label: {
+                                Image(systemName: "trash.fill")
+                            }
+                        }
+                    }
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
+                downloadingAudiobooks = try? OfflineManager.shared.getAudiobookDownloadData()
+                downloadingPodcasts = try? OfflineManager.shared.getPodcastDownloadData()
+            }
+            .task {
+                downloadingAudiobooks = try? OfflineManager.shared.getAudiobookDownloadData()
+                downloadingPodcasts = try? OfflineManager.shared.getPodcastDownloadData()
             }
             
             Section {
@@ -108,16 +193,15 @@ struct AccountSheetToolbarModifier: ViewModifier {
 }
 
 #Preview {
-    NavigationStack {
-        Text(":)")
-            .modifier(AccountSheetToolbarModifier())
-    }
-}
-
-
-#Preview {
     Text(":)")
         .sheet(isPresented: .constant(true)) {
             AccountSheet()
         }
+}
+
+#Preview {
+    NavigationStack {
+        Text(":)")
+            .modifier(AccountSheetToolbarModifier())
+    }
 }
