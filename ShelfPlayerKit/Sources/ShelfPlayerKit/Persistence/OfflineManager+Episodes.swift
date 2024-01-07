@@ -124,12 +124,33 @@ public extension OfflineManager {
         return []
     }
     
-    @MainActor func getPodcast(podcastId: String) -> Podcast? {
+    @MainActor
+    func getPodcast(podcastId: String) -> Podcast? {
         if let podcast = getOfflinePodcast(podcastId: podcastId) {
             return Podcast.convertFromOffline(podcast: podcast)
         }
         
         return nil
+    }
+    
+    @MainActor
+    func getPodcastDownloadData() throws -> [Podcast: (Int, Int)] {
+        let episodes = try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor<OfflineEpisode>())
+        var result = [Podcast: (Int, Int)]()
+        var podcastIds = Set<String>()
+        
+        for episode in episodes {
+            podcastIds.insert(episode.podcast.id)
+        }
+        
+        for podcastId in podcastIds {
+            let podcast = getPodcast(podcastId: podcastId)!
+            let episodes = episodes.filter { $0.podcast.id == podcastId }
+            
+            result[podcast] = (episodes.reduce(episodes.count, { $1.downloadCompleted == true ? $0 : $0 - 1 }), episodes.count)
+        }
+        
+        return result
     }
 }
 
@@ -148,5 +169,23 @@ extension OfflineManager {
         try deleteChapters(itemId: episodeId)
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episodeId)
+    }
+    
+    @MainActor
+    public func delete(podcastId: String) throws {
+        let episodes = try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor<OfflineEpisode>()).filter { $0.podcast.id == podcastId }
+        
+        for episode in episodes {
+            PersistenceManager.shared.modelContainer.mainContext.delete(episode)
+            
+            DownloadManager.shared.deleteEpisode(episodeId: episode.id)
+            try deleteChapters(itemId: episode.id)
+            
+            NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
+        }
+        
+        if let podcast = getOfflinePodcast(podcastId: podcastId) {
+            PersistenceManager.shared.modelContainer.mainContext.delete(podcast)
+        }
     }
 }
