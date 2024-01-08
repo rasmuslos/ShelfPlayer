@@ -64,7 +64,7 @@ struct OfflineView: View {
                 Button {
                     accountSheetPresented.toggle()
                 } label: {
-                    Label("account.manage", systemImage: "bolt.horizontal.circle")
+                    Label("account.manage", systemImage: "server.rack")
                 }
             }
             .navigationTitle("title.offline")
