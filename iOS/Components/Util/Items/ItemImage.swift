@@ -31,16 +31,19 @@ struct ItemImage: View {
     
     var body: some View {
         if let image = image {
-            LazyImage(url: image.url) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipped()
-                } else {
-                    placeholder
+            Color.clear
+                .overlay {
+                    LazyImage(url: image.url) { phase in
+                        if let image = phase.image {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .clipped()
+                        } else {
+                            placeholder
+                        }
+                    }
                 }
-            }
             .aspectRatio(1, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 7))
             .padding(0)
