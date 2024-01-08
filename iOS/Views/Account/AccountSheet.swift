@@ -185,7 +185,7 @@ struct AccountSheetToolbarModifier: ViewModifier {
                     Button {
                         accountSheetPresented.toggle()
                     } label: {
-                        Image(systemName: "bolt.horizontal.circle.fill")
+                        Image(systemName: "server.rack")
                     }
                 }
             }

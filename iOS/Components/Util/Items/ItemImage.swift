@@ -14,18 +14,20 @@ struct ItemImage: View {
     
     @State var progress: Double?
     
-    let placeholder: some View = VStack {
-        Spacer()
-        HStack {
+    var placeholder: some View {
+        VStack {
             Spacer()
-            Image(systemName: "book")
+            HStack {
+                Spacer()
+                Image(systemName: "book")
+                Spacer()
+            }
             Spacer()
         }
-        Spacer()
-    }
         .background(.tertiary)
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 7))
+    }
     
     var body: some View {
         if let image = image {
@@ -33,6 +35,7 @@ struct ItemImage: View {
                 if let image = phase.image {
                     image
                         .resizable()
+                        .aspectRatio(contentMode: .fill)
                         .clipped()
                 } else {
                     placeholder
