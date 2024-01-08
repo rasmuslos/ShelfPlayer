@@ -102,13 +102,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwalten"
+            "value" : "Account verwalten"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Manage"
+            "value" : "Manage account"
           }
         }
       }
