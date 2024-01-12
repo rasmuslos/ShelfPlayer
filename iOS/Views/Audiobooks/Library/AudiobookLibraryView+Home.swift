@@ -23,7 +23,9 @@ extension AudiobookLibraryView {
                     VStack {
                         if let audiobookRows = audiobookRows {
                             ForEach(audiobookRows) { row in
-                                AudiobooksRowContainer(title: row.label, audiobooks: row.audiobooks)
+                                if row.id != "discover" || !UserDefaults.standard.bool(forKey: "disableDiscoverRow") {
+                                    AudiobooksRowContainer(title: row.label, audiobooks: row.audiobooks)
+                                }
                             }
                             
                             if !downloadedAudiobooks.isEmpty {
