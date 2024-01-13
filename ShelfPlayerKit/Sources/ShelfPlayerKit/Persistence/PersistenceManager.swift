@@ -23,6 +23,7 @@ public struct PersistenceManager {
             OfflinePodcast.self,
         ])
         #if DISABLE_APP_GROUP
+        #warning("SwiftData database will not be stored in group container")
         let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true)
         #else
         let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: .identifier("group.io.rfk.shelfplayer"))
