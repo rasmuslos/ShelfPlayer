@@ -8,6 +8,13 @@ Available on the App Store soon™️
 
 ### Building the app yourself
 
+**Install using your favorite Side loading tool**
+
+Download and install the latest release \
+*Please strip app extensions (widgets, siri support, ...), they will not work as intented see https://github.com/rasmuslos/ShelfPlayer/issues/4*
+
+**Build the app yourself**
+
 1. Install Xcode
 2. Change the bundle identifier
 3. Connect your iPhone to your Mac
