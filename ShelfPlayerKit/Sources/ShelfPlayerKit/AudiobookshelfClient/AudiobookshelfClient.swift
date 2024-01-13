@@ -15,6 +15,7 @@ public class AudiobookshelfClient {
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     
     #if DISABLE_APP_GROUP
+    #warning("UserDefaults will not be stored in group container")
     static let defaults = UserDefaults.standard
     #else
     static let defaults = UserDefaults(suiteName: "group.io.rfk.shelfplayer")!
