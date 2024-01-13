@@ -14,7 +14,11 @@ public class AudiobookshelfClient {
     public private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     
-    static let defaults = UserDefaults(suiteName: AudiobookshelfClient.groupIdentifier)!
+    #if DISABLE_APP_GROUP
+    static let defaults = UserDefaults.standard
+    #else
+    static let defaults = UserDefaults(suiteName: "group.io.rfk.shelfplayer")!
+    #endif
     
     private init(serverUrl: URL!, token: String!) {
         self.serverUrl = serverUrl
@@ -45,38 +49,6 @@ extension AudiobookshelfClient {
     public func logout() {
         Self.defaults.set(nil, forKey: "token")
         exit(0)
-    }
-}
-
-extension AudiobookshelfClient {
-    static var groupIdentifier: String {
-        let fallback = "group.io.rfk.shelfplayer"
-        let queryLoad: [String: AnyObject] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: "bundleSeedLookup" as AnyObject,
-            kSecAttrService as String: "ShelfPlayer" as AnyObject,
-            kSecReturnAttributes as String: kCFBooleanTrue,
-        ]
-        
-        var result: AnyObject?
-        var status = withUnsafeMutablePointer(to: &result) {
-            SecItemCopyMatching(queryLoad as CFDictionary, UnsafeMutablePointer($0))
-        }
-        
-        if status == errSecItemNotFound {
-            status = withUnsafeMutablePointer(to: &result) {
-                SecItemAdd(queryLoad as CFDictionary, UnsafeMutablePointer($0))
-            }
-        }
-        
-        if status == noErr,
-           let resultDict = result as? [String: Any], let accessGroup = resultDict[kSecAttrAccessGroup as String] as? String,
-           let seedID = accessGroup.components(separatedBy: ".").first,
-           seedID != "N8AA4S3S96" {
-            return "\(fallback).\(seedID)"
-        }
-        
-        return fallback
     }
 }
 
