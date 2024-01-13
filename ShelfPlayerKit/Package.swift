@@ -17,6 +17,6 @@ let package = Package(
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
     ],
     targets: [
-        .target(name: "ShelfPlayerKit", dependencies: [.byName(name: "SwiftSoup")], resources: [.process("Resources")])
+        .target(name: "ShelfPlayerKit", dependencies: [.byName(name: "SwiftSoup")], resources: [.process("Resources")], swiftSettings: [.define("_DISABLE_APP_GROUP")])
     ]
 )
