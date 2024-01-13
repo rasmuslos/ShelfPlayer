@@ -22,7 +22,11 @@ public struct PersistenceManager {
             OfflineEpisode.self,
             OfflinePodcast.self,
         ])
-        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: .identifier(AudiobookshelfClient.groupIdentifier), cloudKitDatabase: .none)
+        #if DISABLE_APP_GROUP
+        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true)
+        #else
+        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: .identifier("group.io.rfk.shelfplayer"))
+        #endif
         
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
