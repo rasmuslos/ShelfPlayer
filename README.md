@@ -34,7 +34,7 @@ Download and install the latest release \
 
 - Fix upcoming bugs
 - tvOS application
-- watchOS app
+- Siri intents
 
 ## Screenshots
 
