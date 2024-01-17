@@ -74,8 +74,17 @@ struct OfflineView: View {
                 AccountSheet()
             }
             .modifier(NowPlayingBarModifier())
-            .onAppear {
-            }
+            .onAppear(perform: loadItems)
+            .refreshable(action: loadItems)
+        }
+    }
+}
+
+extension OfflineView {
+    @Sendable
+    func loadItems() {
+        Task {
+            (audiobooks, podcasts) = try await (OfflineManager.shared.getAudiobooks(), OfflineManager.shared.getPodcasts())
         }
     }
 }

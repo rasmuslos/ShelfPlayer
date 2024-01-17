@@ -10,25 +10,6 @@ import SwiftData
 import SPBaseKit
 import SPOfflineKit
 
-extension OfflineManager {
-    @MainActor
-    func getOfflineAudiobook(audiobookId: String) throws -> OfflineAudiobook {
-        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineAudiobook> { $0.id == audiobookId })
-        descriptor.fetchLimit = 1
-        
-        if let audiobook = try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first {
-            return audiobook
-        }
-        
-        throw OfflineError.missing
-    }
-    
-    @MainActor
-    func getOfflineAudiobooks() throws -> [OfflineAudiobook] {
-        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor())
-    }
-}
-
 public extension OfflineManager {
     @MainActor
     func getAudiobooks() throws -> [Audiobook] {
@@ -62,27 +43,10 @@ public extension OfflineManager {
             abridged: audiobook.abridged)
         
         PersistenceManager.shared.modelContainer.mainContext.insert(offlineAudiobook)
-        
         try await DownloadManager.shared.downloadImage(itemId: audiobook.id, image: audiobook.image)
-        await storeChapters(chapters, itemId: audiobook.id)
         
-        for track in tracks {
-            let offlineTrack = OfflineTrack(
-                id: "\(audiobook.id)_\(track.index)",
-                parentId: audiobook.id,
-                index: track.index,
-                fileExtension: track.fileExtension,
-                offset: track.offset,
-                duration: track.duration,
-                type: .audiobook)
-            
-            PersistenceManager.shared.modelContainer.mainContext.insert(offlineTrack)
-            
-            let task = DownloadManager.shared.download(track: track)
-            offlineTrack.downloadReference = task.taskIdentifier
-            
-            task.resume()
-        }
+        await storeChapters(chapters, itemId: audiobook.id)
+        download(itemId: audiobook.id, tracks: tracks, type: .audiobook)
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobook.id)
     }
@@ -102,5 +66,24 @@ public extension OfflineManager {
         }
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobookId)
+    }
+}
+
+extension OfflineManager {
+    @MainActor
+    func getOfflineAudiobook(audiobookId: String) throws -> OfflineAudiobook {
+        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineAudiobook> { $0.id == audiobookId })
+        descriptor.fetchLimit = 1
+        
+        if let audiobook = try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first {
+            return audiobook
+        }
+        
+        throw OfflineError.missing
+    }
+    
+    @MainActor
+    func getOfflineAudiobooks() throws -> [OfflineAudiobook] {
+        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor())
     }
 }
