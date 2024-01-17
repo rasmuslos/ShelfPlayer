@@ -51,7 +51,7 @@ struct SleepTimerButton: View {
                         Button {
                             AudioPlayer.shared.setSleepTimer(duration: 2 * 60 * 60)
                         } label: {
-                            Text(verbatim: "\(duration) minutes")
+                            Text("\(duration) sleep.minutes")
                         }
                     }
                 } label: {

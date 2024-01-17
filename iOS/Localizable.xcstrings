@@ -17,6 +17,46 @@
         }
       }
     },
+    "%lld sleep.minutes" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Minute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Minuten"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "account.delete.cache" : {
       "localizations" : {
         "de" : {
@@ -50,7 +90,6 @@
       }
     },
     "account.downloads" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -174,6 +213,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version: %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "accounts.downloads.empty" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Downloads"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No downloads"
           }
         }
       }
@@ -1067,40 +1122,6 @@
         }
       }
     },
-    "sleep.hour.plural" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stunden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "hours"
-          }
-        }
-      }
-    },
-    "sleep.hour.singular" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stunde"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "hour"
-          }
-        }
-      }
-    },
     "sleep.increase" : {
       "localizations" : {
         "de" : {
@@ -1113,23 +1134,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Increase by one minute"
-          }
-        }
-      }
-    },
-    "sleep.minute" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minuten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "minutes"
           }
         }
       }

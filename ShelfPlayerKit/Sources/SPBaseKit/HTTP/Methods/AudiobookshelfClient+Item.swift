@@ -57,8 +57,6 @@ public extension AudiobookshelfClient {
         ]))
         
         if let episodeId = episodeId, let episode = response.media?.episodes?.first(where: { $0.id == episodeId }) {
-            print(response)
-            
             let item = Episode.convertFromAudiobookshelf(podcastEpisode: episode, item: response)
             let track = PlayableItem.convertAudioTrackFromAudiobookshelf(track: episode.audioTrack!)
             let chapters = episode.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
