@@ -8,7 +8,7 @@ let package = Package(
     defaultLocalization: "en",
     platforms: [.iOS(.v17), .watchOS(.v10)],
     products: [
-        .library(name: "SPBaseKit", targets: ["SPBaseKit", "SPOfflineKit", "SPExtensionKit"]),
+        .library(name: "SPBaseKit", targets: ["SPBaseKit", "SPOfflineKit"]),
         .library(name: "SPOfflineExtendedKit", targets: ["SPOfflineExtendedKit"]),
         .library(name: "SPPlaybackKit", targets: ["SPPlaybackKit"]),
     ],
@@ -21,7 +21,6 @@ let package = Package(
             dependencies: [.byName(name: "SwiftSoup")],
             resources: [.process("Resources")],
             swiftSettings: [.define("_DISABLE_APP_GROUP")]),
-        .target(name: "SPExtensionKit", dependencies: [.byName(name: "SPBaseKit"), .byName(name: "SPOfflineKit")]),
         .target(name: "SPPlaybackKit", dependencies: [.byName(name: "SPBaseKit"), .byName(name: "SPOfflineKit"), .byName(name: "SPOfflineExtendedKit", condition: .when(platforms: [.iOS]))]),
         
             .target(name: "SPOfflineKit", dependencies: [.byName(name: "SPBaseKit")], swiftSettings: [.define("_DISABLE_APP_GROUP")]),
