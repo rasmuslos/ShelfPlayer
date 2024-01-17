@@ -38,6 +38,7 @@ struct AuthorView: View {
                             Spacer()
                         }
                         .listRowSeparator(.hidden)
+                        .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                         
                         AudiobooksList(audiobooks: sorted)
                     }

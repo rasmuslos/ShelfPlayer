@@ -22,8 +22,10 @@ extension OfflineManager {
     
     @MainActor
     func requireProgressEntity(itemId: String, episodeId: String?) -> OfflineProgress {
-        if let episodeId = episodeId, let progress = getProgressEntity(episodeId: episodeId) {
-            return progress
+        if let episodeId = episodeId {
+            if let progress = getProgressEntity(episodeId: episodeId) {
+                return progress
+            }
         } else if let progress = getProgressEntity(itemId: itemId) {
             return progress
         }
@@ -106,6 +108,8 @@ public extension OfflineManager {
             progress.progress = 0
             progress.currentTime = 0
         }
+        
+        progress.progressType = .localSynced
     }
     
     @MainActor
