@@ -6,17 +6,22 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineExtendedKit
 
 struct DownloadIndicator: View {
-    let item: PlayableItem
+    let offlineTracker: ItemOfflineTracker
+    
+    init(item: PlayableItem) {
+        offlineTracker = item.offlineTracker
+    }
     
     var body: some View {
-        if item.offline == .downloaded {
+        if offlineTracker.status == .downloaded {
             Image(systemName: "arrow.down.circle.fill")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-        } else if item.offline == .working {
+        } else if offlineTracker.status == .working {
             ProgressView()
                 .scaleEffect(0.75)
         }

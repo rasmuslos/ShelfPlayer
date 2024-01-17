@@ -7,7 +7,7 @@
 
 import SwiftUI
 import NukeUI
-import ShelfPlayerKit
+import SPBaseKit
 
 struct ItemImage: View {
     let image: Item.Image?

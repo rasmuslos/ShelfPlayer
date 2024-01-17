@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
 
 struct AudiobookCover: View {
     let audiobook: Audiobook
@@ -33,7 +34,7 @@ struct AudiobookCover: View {
 extension AudiobookCover {
     func fetchRemainingTime() {
         Task.detached {
-            if let progress = await OfflineManager.shared.getProgress(item: audiobook) {
+            if let progress = await OfflineManager.shared.getProgressEntity(item: audiobook) {
                 bottomText = progress.readableProgress()
             } else {
                 bottomText = audiobook.duration.timeLeft()

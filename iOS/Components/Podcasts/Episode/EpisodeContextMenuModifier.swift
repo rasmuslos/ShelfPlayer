@@ -6,10 +6,18 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPOfflineExtendedKit
 
 struct EpisodeContextMenuModifier: ViewModifier {
     let episode: Episode
+    let offlineTracker: ItemOfflineTracker
+    
+    init(episode: Episode) {
+        self.episode = episode
+        offlineTracker = episode.offlineTracker
+    }
     
     func body(content: Content) -> some View {
         content
@@ -23,7 +31,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                let progress = OfflineManager.shared.getProgress(item: episode)?.progress ?? 0
+                let progress = OfflineManager.shared.getProgressEntity(item: episode)?.progress ?? 0
                 Button {
                     Task {
                         await episode.setProgress(finished: progress < 1)
@@ -36,26 +44,23 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     }
                 }
                 
-                // this crashed the app for reasons?
-                /*
                 Divider()
                 
-                if episode.offline == .none {
+                if offlineTracker.status == .none {
                     Button {
                         Task {
-                            try! await OfflineManager.shared.downloadEpisode(episode)
+                            try! await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
                         }
                     } label: {
                         Label("download", systemImage: "arrow.down")
                     }
                 } else {
                     Button {
-                        try? OfflineManager.shared.deleteEpisode(episodeId: episode.id)
+                        OfflineManager.shared.delete(episodeId: episode.id)
                     } label: {
                         Label("download.remove", systemImage: "trash")
                     }
                 }
-                 */
             } preview: {
                 VStack {
                     HStack {

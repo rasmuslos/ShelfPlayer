@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
 
 struct SearchView: View {
     @Environment(\.libraryId) var libraryId

@@ -7,7 +7,8 @@
 
 import SwiftUI
 import SwiftData
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
 
 struct ProgressOverlay: View {
     let item: Item
@@ -53,7 +54,7 @@ struct ProgressOverlay: View {
 extension ProgressOverlay {
     func fetchProgress() {
         Task.detached {
-            if let progress = await OfflineManager.shared.getProgress(item: item) {
+            if let progress = await OfflineManager.shared.getProgressEntity(item: item) {
                 if progress.progress > 0 && progress.progress < 1 {
                     self.progress = progress.progress
                 }

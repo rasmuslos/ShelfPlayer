@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
 
 struct EpisodeFilterSortMenu: View {
     let podcastId: String
@@ -114,7 +115,7 @@ extension EpisodeFilterSortMenu {
             case .all:
                 return true
             case .progress, .unfinished, .finished:
-                if let progress = OfflineManager.shared.getProgress(item: $0) {
+                if let progress = OfflineManager.shared.getProgressEntity(item: $0) {
                     if filter == .unfinished {
                         return progress.progress < 1
                     }
