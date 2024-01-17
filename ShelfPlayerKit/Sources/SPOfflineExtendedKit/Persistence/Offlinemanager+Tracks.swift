@@ -11,8 +11,10 @@ import SPBaseKit
 import SPOfflineKit
 
 public extension OfflineManager {
+    typealias DownloadStatus = ([Audiobook: (Int, Int)], [Podcast: (Int, Int)])
+    
     @MainActor
-    func getDownloadStatus() async throws -> ([Audiobook: (Int, Int)], [Podcast: (Int, Int)]) {
+    func getDownloadStatus() async throws -> DownloadStatus {
         let tracks = try getOfflineTracks()
         var episodeIds = Set<String>()
         var audiobookIds = Set<String>()
@@ -111,6 +113,27 @@ extension OfflineManager {
     @MainActor
     func isDownloadFinished(track: OfflineTrack) -> Bool {
         track.downloadReference == nil
+    }
+    
+    @MainActor
+    func download(itemId: String, tracks: PlayableItem.AudioTracks, type: OfflineTrack.ParentType) {
+        for track in tracks {
+            let offlineTrack = OfflineTrack(
+                id: "\(itemId)_\(track.index)",
+                parentId: itemId,
+                index: track.index,
+                fileExtension: track.fileExtension,
+                offset: track.offset,
+                duration: track.duration,
+                type: type)
+            
+            PersistenceManager.shared.modelContainer.mainContext.insert(offlineTrack)
+            
+            let task = DownloadManager.shared.download(track: track)
+            offlineTrack.downloadReference = task.taskIdentifier
+            
+            task.resume()
+        }
     }
     
     @MainActor

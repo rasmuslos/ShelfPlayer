@@ -12,6 +12,25 @@ import SPOfflineKit
 
 public extension OfflineManager {
     @MainActor
+    func getPodcasts() throws -> [Podcast: [Episode]] {
+        let episodes = try getOfflineEpisodes()
+        var podcastIds = Set<String>()
+        
+        for episode in episodes {
+            podcastIds.insert(episode.podcast.id)
+        }
+        
+        let podcasts = try podcastIds.map(getOfflinePodcast)
+        var result = [Podcast: [Episode]]()
+        
+        for podcast in podcasts {
+            result[Podcast.convertFromOffline(podcast: podcast)] = episodes.filter { $0.podcast.id == podcast.id }.map(Episode.convertFromOffline)
+        }
+        
+        return result
+    }
+    
+    @MainActor
     func download(episodeId: String, podcastId: String) async throws {
         if (try? getOfflineEpisode(episodeId: episodeId)) != nil {
             logger.error("Episode is already downloaded")
@@ -21,7 +40,7 @@ public extension OfflineManager {
         let (item, tracks, chapters) = try await AudiobookshelfClient.shared.getDownloadData(itemId: podcastId, episodeId: episodeId)
         let podcast = try await requirePodcast(podcastId: podcastId)
         
-        guard let episode = item as? Episode, let track = tracks.first else { throw OfflineError.fetchFailed }
+        guard let episode = item as? Episode else { throw OfflineError.fetchFailed }
         
         let offlineEpisode = OfflineEpisode(
             id: episode.id,
@@ -36,23 +55,9 @@ public extension OfflineManager {
             duration: episode.duration)
         
         PersistenceManager.shared.modelContainer.mainContext.insert(offlineEpisode)
+        
         await storeChapters(chapters, itemId: episode.id)
-        
-        let offlineTrack = OfflineTrack(
-            id: episode.id,
-            parentId: episode.id,
-            index: 0,
-            fileExtension: track.fileExtension,
-            offset: track.offset,
-            duration: track.duration,
-            type: .audiobook)
-        
-        PersistenceManager.shared.modelContainer.mainContext.insert(offlineTrack)
-        
-        let task = DownloadManager.shared.download(track: track)
-        offlineTrack.downloadReference = task.taskIdentifier
-        
-        task.resume()
+        download(itemId: episode.id, tracks: tracks, type: .episode)
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
     }
@@ -75,6 +80,14 @@ public extension OfflineManager {
         
         deleteChapters(itemId: episodeId)
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episodeId)
+    }
+    
+    @MainActor
+    func delete(podcastId: String) throws {
+        let episodes = try getOfflineEpisodes().filter { $0.podcast.id == podcastId }
+        for episode in episodes {
+            delete(episodeId: episode.id)
+        }
     }
 }
 
