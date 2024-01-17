@@ -24,7 +24,7 @@ let package = Package(
         .target(name: "SPExtensionKit", dependencies: [.byName(name: "SPBaseKit"), .byName(name: "SPOfflineKit")]),
         .target(name: "SPPlaybackKit", dependencies: [.byName(name: "SPBaseKit"), .byName(name: "SPOfflineKit"), .byName(name: "SPOfflineExtendedKit", condition: .when(platforms: [.iOS]))]),
         
-        .target(name: "SPOfflineKit", dependencies: [.byName(name: "SPBaseKit")]),
+            .target(name: "SPOfflineKit", dependencies: [.byName(name: "SPBaseKit")], swiftSettings: [.define("_DISABLE_APP_GROUP")]),
         .target(name: "SPOfflineExtendedKit", dependencies: [.byName(name: "SPBaseKit"), .byName(name: "SPOfflineKit")]),
     ]
 )
