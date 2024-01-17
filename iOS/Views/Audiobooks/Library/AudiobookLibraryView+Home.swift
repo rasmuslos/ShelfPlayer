@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
 
 extension AudiobookLibraryView {
     struct HomeView: View {
@@ -66,7 +67,7 @@ extension AudiobookLibraryView.HomeView {
             (audiobookRows, authorRows) = (try? await AudiobookshelfClient.shared.getAudiobooksHome(libraryId: libraryId)) ?? (nil, nil)
         }
         Task.detached {
-            downloadedAudiobooks = await OfflineManager.shared.getAudiobooks()
+            downloadedAudiobooks = try await OfflineManager.shared.getAudiobooks()
         }
     }
 }

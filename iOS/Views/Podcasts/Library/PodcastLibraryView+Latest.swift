@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
 
 extension PodcastLibraryView {
     struct LatestView: View {
@@ -46,7 +46,7 @@ extension PodcastLibraryView.LatestView {
     @Sendable
     func fetchEpisodes() {
         Task.detached {
-            if let episodes = try? await AudiobookshelfClient.shared.getLatestEpisodes(libraryId: libraryId) {
+            if let episodes = try? await AudiobookshelfClient.shared.getEpisodes(limit: 20, libraryId: libraryId) {
                 self.episodes = episodes
             } else {
                 failed = true

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
 
 struct AuthorView: View {
     @Environment(\.libraryId) var libraryId

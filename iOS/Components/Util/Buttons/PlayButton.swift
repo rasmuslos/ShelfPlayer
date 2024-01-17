@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPPlaybackKit
 
 struct PlayButton: View {
     let item: PlayableItem
@@ -63,7 +65,7 @@ extension PlayButton {
     
     @MainActor
     private func fetchProgress() {
-        progress = OfflineManager.shared.getProgress(item: item)
+        progress = OfflineManager.shared.getProgressEntity(item: item)
     }
 }
 

@@ -6,10 +6,18 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPOfflineExtendedKit
 
 struct AudiobookContextMenuModifier: ViewModifier {
     let audiobook: Audiobook
+    let offlineTracker: ItemOfflineTracker
+    
+    init(audiobook: Audiobook) {
+        self.audiobook = audiobook
+        offlineTracker = audiobook.offlineTracker
+    }
     
     @State var authorId: String?
     
@@ -38,17 +46,17 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 
                 ToolbarProgressButton(item: audiobook)
                 
-                if audiobook.offline == .none {
+                if offlineTracker.status == .none {
                     Button {
                         Task {
-                            try! await OfflineManager.shared.download(audiobook: audiobook)
+                            try? await OfflineManager.shared.download(audiobookId: audiobook.id)
                         }
                     } label: {
                         Label("download", systemImage: "arrow.down")
                     }
                 } else {
                     Button {
-                        try? OfflineManager.shared.delete(audiobookId: audiobook.id)
+                        OfflineManager.shared.delete(audiobookId: audiobook.id)
                     } label: {
                         Label("download.remove", systemImage: "trash")
                     }
@@ -79,7 +87,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 .onAppear {
                     Task.detached {
                         if let author = audiobook.author {
-                            authorId = await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId)
+                            authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId)
                         }
                     }
                 }

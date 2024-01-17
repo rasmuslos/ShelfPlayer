@@ -6,11 +6,24 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPOfflineExtendedKit
 
 extension AudiobookView {
     struct ToolbarModifier: ViewModifier {
         let audiobook: Audiobook
+        let offlineTracker: ItemOfflineTracker
+        
+        init(audiobook: Audiobook, navigationBarVisible: Binding<Bool>, authorId: Binding<String?>, seriesId: Binding<String?>) {
+            self.audiobook = audiobook
+            
+            offlineTracker = audiobook.offlineTracker
+            
+            _navigationBarVisible = navigationBarVisible
+            _authorId = authorId
+            _seriesId = seriesId
+        }
         
         @Binding var navigationBarVisible: Bool
         @Binding var authorId: String?
@@ -51,56 +64,56 @@ extension AudiobookView {
                 }
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
-                        HStack {
-                            Button {
-                                Task {
-                                    if audiobook.offline == .none {
-                                        try! await OfflineManager.shared.download(audiobook: audiobook)
-                                    } else if audiobook.offline == .downloaded {
-                                        try! OfflineManager.shared.delete(audiobookId: audiobook.id)
-                                    }
-                                }
-                            } label: {
-                                switch audiobook.offline {
-                                case .none:
-                                    Image(systemName: "arrow.down")
-                                case .working:
-                                    ProgressView()
-                                case .downloaded:
-                                    Image(systemName: "xmark")
+                        Button {
+                            Task {
+                                if offlineTracker.status == .none {
+                                    try! await OfflineManager.shared.download(audiobookId: audiobook.id)
+                                } else if offlineTracker.status == .downloaded {
+                                    OfflineManager.shared.delete(audiobookId: audiobook.id)
                                 }
                             }
-                            .modifier(FullscreenToolbarModifier(navigationBarVisible: $navigationBarVisible))
+                        } label: {
+                            switch offlineTracker.status {
+                            case .none:
+                                Image(systemName: "arrow.down")
+                            case .working:
+                                ProgressView()
+                            case .downloaded:
+                                Image(systemName: "xmark")
+                            }
+                        }
+                        .modifier(FullscreenToolbarModifier(navigationBarVisible: $navigationBarVisible))
+                    }
+                    
+                    ToolbarItem(placement: .primaryAction) {
+                        Menu {
+                            if let authorId = authorId {
+                                NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
+                                    Label("author.view", systemImage: "person")
+                                }
+                            }
+                            if let seriesId = seriesId {
+                                NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
+                                    Label("series.view", systemImage: "text.justify.leading")
+                                }
+                            }
                             
-                            Menu {
-                                if let authorId = authorId {
-                                    NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
-                                        Label("author.view", systemImage: "person")
-                                    }
-                                }
-                                if let seriesId = seriesId {
-                                    NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
-                                        Label("series.view", systemImage: "text.justify.leading")
-                                    }
-                                }
-                                
+                            Divider()
+                            
+                            ToolbarProgressButton(item: audiobook)
+                            
+                            if offlineTracker.status != .none {
                                 Divider()
                                 
-                                ToolbarProgressButton(item: audiobook)
-                                
-                                if audiobook.offline != .none {
-                                    Divider()
-                                    
-                                    Button(role: .destructive) {
-                                        try! OfflineManager.shared.delete(audiobookId: audiobook.id)
-                                    } label: {
-                                        Label("download.remove", systemImage: "trash")
-                                    }
+                                Button(role: .destructive) {
+                                    OfflineManager.shared.delete(audiobookId: audiobook.id)
+                                } label: {
+                                    Label("download.remove", systemImage: "trash")
                                 }
-                            } label: {
-                                Image(systemName: "ellipsis")
-                                    .modifier(FullscreenToolbarModifier(navigationBarVisible: $navigationBarVisible))
                             }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .modifier(FullscreenToolbarModifier(navigationBarVisible: $navigationBarVisible))
                         }
                     }
                 }

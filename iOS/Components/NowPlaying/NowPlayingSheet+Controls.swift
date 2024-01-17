@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPPlaybackKit
 
 extension NowPlayingSheet {
     struct Controls: View {

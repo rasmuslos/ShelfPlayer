@@ -6,13 +6,12 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPOfflineExtendedKit
 
 struct AccountSheet: View {
     @State var username: String?
-    
-    @State var downloadingAudiobooks: [Audiobook: (Int, Int)]?
-    @State var downloadingPodcasts: [Podcast: (Int, Int)]?
     
     var body: some View {
         List {
@@ -28,7 +27,7 @@ struct AccountSheet: View {
                         }
                 }
                 Button(role: .destructive) {
-                    OfflineManager.shared.deleteStoredProgress()
+                    OfflineManager.shared.deleteProgressEntities()
                     AudiobookshelfClient.shared.logout()
                 } label: {
                     Text("account.logout")
@@ -39,88 +38,6 @@ struct AccountSheet: View {
                 Text("account.logout.disclaimer")
             }
             
-            Section("account.downloads") {
-                if let downloadingAudiobooks = downloadingAudiobooks, !downloadingAudiobooks.isEmpty {
-                    ForEach(Array(downloadingAudiobooks.keys).sorted { $0.name < $1.name }) { audiobook in
-                        HStack {
-                            ItemImage(image: audiobook.image)
-                                .frame(width: 55)
-                            
-                            VStack(alignment: .leading) {
-                                Text(audiobook.name)
-                                    .fontDesign(.serif)
-                                if let author = audiobook.author {
-                                    Text(author)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            if let downloadStatus = downloadingAudiobooks[audiobook] {
-                                if downloadStatus.0 == 0 && downloadStatus.1 == 1 {
-                                    ProgressView()
-                                } else {
-                                    Text(verbatim: "\(downloadStatus.0)/\(downloadStatus.1)")
-                                        .fontDesign(.rounded)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                try! OfflineManager.shared.delete(audiobookId: audiobook.id)
-                            } label: {
-                                Image(systemName: "trash.fill")
-                            }
-                        }
-                    }
-                }
-                
-                if let downloadingPodcasts = downloadingPodcasts, !downloadingPodcasts.isEmpty {
-                    ForEach(Array(downloadingPodcasts.keys).sorted { $0.name < $1.name }) { podcast in
-                        HStack {
-                            ItemImage(image: podcast.image)
-                                .frame(width: 55)
-                            
-                            VStack(alignment: .leading) {
-                                Text(podcast.name)
-                                
-                                if let author = podcast.author {
-                                    Text(author)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            if let downloadStatus = downloadingPodcasts[podcast] {
-                                Text(verbatim: "\(downloadStatus.0)/\(downloadStatus.1)")
-                                    .fontDesign(.rounded)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                try! OfflineManager.shared.delete(podcastId: podcast.id)
-                            } label: {
-                                Image(systemName: "trash.fill")
-                            }
-                        }
-                    }
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
-                downloadingAudiobooks = try? OfflineManager.shared.getAudiobookDownloadData()
-                downloadingPodcasts = try? OfflineManager.shared.getPodcastDownloadData()
-            }
-            .task {
-                downloadingAudiobooks = try? OfflineManager.shared.getAudiobookDownloadData()
-                downloadingPodcasts = try? OfflineManager.shared.getPodcastDownloadData()
-            }
-            
             Section {
                 Button {
                     UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
@@ -129,7 +46,7 @@ struct AccountSheet: View {
                 }
                 
                 Button(role: .destructive) {
-                    OfflineManager.shared.deleteStoredProgress()
+                    OfflineManager.shared.deleteProgressEntities()
                     NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
                         "offline": false,
                     ])
@@ -137,7 +54,7 @@ struct AccountSheet: View {
                     Text("account.delete.cache")
                 }
                 Button(role: .destructive) {
-                    OfflineManager.shared.deleteAllDownloads()
+                    OfflineManager.shared.deleteDownloads()
                 } label: {
                     Text("account.delete.downloads")
                 }

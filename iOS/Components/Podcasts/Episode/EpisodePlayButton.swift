@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPPlaybackKit
 
 struct EpisodePlayButton: View {
     @Environment(\.colorScheme) var colorScheme
@@ -86,7 +88,7 @@ struct EpisodePlayButton: View {
 extension EpisodePlayButton {
     private func fetchProgress() {
         Task.detached {
-            let progress = await OfflineManager.shared.getProgress(item: episode)
+            let progress = await OfflineManager.shared.getProgressEntity(item: episode)
             withAnimation {
                 self.progress = progress
             }

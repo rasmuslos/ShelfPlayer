@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPPlaybackKit
 
 struct AudiobookRow: View {
     let audiobook: Audiobook
@@ -94,7 +96,7 @@ extension AudiobookRow {
     
     @MainActor
     func fetchProgress() {
-        progress = OfflineManager.shared.getProgress(item: audiobook)
+        progress = OfflineManager.shared.getProgressEntity(item: audiobook)
     }
     
     private func checkPlaying() {

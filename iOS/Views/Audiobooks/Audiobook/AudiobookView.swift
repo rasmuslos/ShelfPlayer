@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
 
 struct AudiobookView: View {
     @Environment(\.libraryId) var libraryId
@@ -63,7 +63,7 @@ struct AudiobookView: View {
 extension AudiobookView {
     func getAuthorData() {
         Task.detached {
-            if let author = audiobook.author, let authorId = await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: libraryId) {
+            if let author = audiobook.author, let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: libraryId) {
                 self.authorId = authorId
                 audiobooksByAuthor = (try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId).1) ?? []
             }
