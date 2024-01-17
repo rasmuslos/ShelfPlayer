@@ -7,7 +7,8 @@
 
 import SwiftUI
 import OSLog
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
 
 struct SessionsImportView: View {
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "SessionImport")
@@ -28,7 +29,7 @@ struct SessionsImportView: View {
         }
         .onAppear {
             task = Task.detached {
-                let success = try await OfflineManager.shared.syncSessions()
+                let success = await OfflineManager.shared.syncProgressEntities()
                 callback(success)
             }
         }

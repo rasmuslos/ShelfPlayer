@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
 
 struct AuthorsRow: View {
     let authors: [Author]

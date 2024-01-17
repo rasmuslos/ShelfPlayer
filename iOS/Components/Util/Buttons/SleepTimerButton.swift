@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPPlaybackKit
 
 struct SleepTimerButton: View {
     @State var remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
@@ -44,45 +45,14 @@ struct SleepTimerButton: View {
                 }
             } else {
                 Menu {
-                    let hourSingular = String(localized: "sleep.hour.singular")
-                    let hourPlural = String(localized: "sleep.hour.plural")
-                    let minute = String(localized: "sleep.minute")
+                    let durations = [120, 90, 60, 45, 30, 15, 5]
                     
-                    Button {
-                        AudioPlayer.shared.setSleepTimer(duration: 2 * 60 * 60)
-                    } label: {
-                        Text(verbatim: "2 \(hourPlural)")
-                    }
-                    Button {
-                        AudioPlayer.shared.setSleepTimer(duration: 1.5 * 60 * 60)
-                    } label: {
-                        Text(verbatim: "1 \(hourSingular) 30 \(minute)")
-                    }
-                    Button {
-                        AudioPlayer.shared.setSleepTimer(duration: 1 * 60 * 60)
-                    } label: {
-                        Text(verbatim: "1 \(hourSingular)")
-                    }
-                    
-                    Button {
-                        AudioPlayer.shared.setSleepTimer(duration: 45 * 60)
-                    } label: {
-                        Text(verbatim: "45 \(minute)")
-                    }
-                    Button {
-                        AudioPlayer.shared.setSleepTimer(duration: 30 * 60)
-                    } label: {
-                        Text(verbatim: "30 \(minute)")
-                    }
-                    Button {
-                        AudioPlayer.shared.setSleepTimer(duration: 15 * 60)
-                    } label: {
-                        Text(verbatim: "15 \(minute)")
-                    }
-                    Button {
-                        AudioPlayer.shared.setSleepTimer(duration: 5 * 60)
-                    } label: {
-                        Text(verbatim: "5 \(minute)")
+                    ForEach(durations, id: \.self) { duration in
+                        Button {
+                            AudioPlayer.shared.setSleepTimer(duration: 2 * 60 * 60)
+                        } label: {
+                            Text(verbatim: "\(duration) minutes")
+                        }
                     }
                 } label: {
                     Image(systemName: "moon.zzz")

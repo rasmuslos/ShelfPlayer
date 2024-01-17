@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
 
 struct ToolbarProgressButton: View {
     let item: PlayableItem
@@ -37,7 +38,7 @@ struct ToolbarProgressButton: View {
 extension ToolbarProgressButton {
     @MainActor
     private func fetchProgress() {
-        progress = OfflineManager.shared.getProgress(item: item)
+        progress = OfflineManager.shared.getProgressEntity(item: item)
     }
 }
 

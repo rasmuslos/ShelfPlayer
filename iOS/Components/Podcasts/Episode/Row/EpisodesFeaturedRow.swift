@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
 
 struct EpisodeFeaturedRow: View {
     let episodes: [Episode]

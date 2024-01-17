@@ -18,7 +18,6 @@ struct FullscreenToolbarModifier: ViewModifier {
         let appearance: ColorScheme = isLight == true ? .light : isLight == false ? .dark : colorScheme
         
         content
-            .font(.system(size: 20))
             .symbolVariant(.circle.fill)
             .symbolRenderingMode(.palette)
             .foregroundStyle(

@@ -6,11 +6,23 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPOfflineKit
+import SPOfflineExtendedKit
 
 extension EpisodeView {
     struct ToolbarModifier: ViewModifier {
         let episode: Episode
+        let offlineTracker: ItemOfflineTracker
+        
+        init(episode: Episode, navigationBarVisible: Binding<Bool>, backgroundColor: Binding<UIColor>) {
+            self.episode = episode
+            
+            _navigationBarVisible = navigationBarVisible
+            _backgroundColor = backgroundColor
+            
+            offlineTracker = episode.offlineTracker
+        }
         
         @Binding var navigationBarVisible: Bool
         @Binding var backgroundColor: UIColor
@@ -35,31 +47,31 @@ extension EpisodeView {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        HStack {
-                            Button {
-                                Task {
-                                    if episode.offline == .none {
-                                        try! await OfflineManager.shared.download(episode: episode)
-                                    } else if episode.offline == .downloaded {
-                                        try! OfflineManager.shared.delete(episodeId: episode.id)
-                                    }
-                                }
-                            } label: {
-                                switch episode.offline {
-                                case .none:
-                                    Image(systemName: "arrow.down")
-                                case .working:
-                                    ProgressView()
-                                case .downloaded:
-                                    Image(systemName: "xmark")
+                        Button {
+                            Task {
+                                if offlineTracker.status == .none {
+                                    try await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
+                                } else if offlineTracker.status == .downloaded {
+                                    OfflineManager.shared.delete(episodeId: episode.id)
                                 }
                             }
-                            .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
-                            
-                            ToolbarProgressButton(item: episode)
-                                .symbolVariant(.circle.fill)
-                                .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
+                        } label: {
+                            switch offlineTracker.status {
+                            case .none:
+                                Image(systemName: "arrow.down")
+                            case .working:
+                                ProgressView()
+                            case .downloaded:
+                                Image(systemName: "xmark")
+                            }
                         }
+                        .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        ToolbarProgressButton(item: episode)
+                            .symbolVariant(.circle.fill)
+                            .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: $navigationBarVisible))
                     }
                 }
         }

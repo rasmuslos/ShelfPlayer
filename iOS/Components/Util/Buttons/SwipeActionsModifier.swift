@@ -6,15 +6,24 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
+import SPExtensionKit
+import SPOfflineKit
+import SPOfflineExtendedKit
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem
+    let offlineTracker: ItemOfflineTracker
+    
+    init(item: PlayableItem) {
+        self.item = item
+        offlineTracker = item.offlineTracker
+    }
     
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                let progress = OfflineManager.shared.getProgress(item: item)
+                let progress = OfflineManager.shared.getProgressEntity(item: item)
                 
                 Button {
                     Task {
@@ -31,25 +40,25 @@ struct SwipeActionsModifier: ViewModifier {
                 }
             }
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                if item.offline == .none {
+                if offlineTracker.status == .none {
                     Button {
                         Task {
                             if let episode = item as? Episode {
-                                try? await OfflineManager.shared.download(episode: episode)
+                                try? await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
                             } else if let audiobook = item as? Audiobook {
-                                try? await OfflineManager.shared.download(audiobook: audiobook)
+                                try? await OfflineManager.shared.download(audiobookId: audiobook.id)
                             }
                         }
                     } label: {
                         Image(systemName: "arrow.down")
                     }
                     .tint(.green)
-                } else if item.offline == .downloaded {
+                } else if offlineTracker.status == .downloaded {
                     Button {
                         if let episode = item as? Episode {
-                            try? OfflineManager.shared.delete(episodeId: episode.id)
+                            OfflineManager.shared.delete(episodeId: episode.id)
                         } else {
-                            try? OfflineManager.shared.delete(audiobookId: item.id)
+                            OfflineManager.shared.delete(audiobookId: item.id)
                         }
                     } label: {
                         Image(systemName: "trash")

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import SPBaseKit
 
 extension PodcastView {
     struct ToolbarModifier: ViewModifier {

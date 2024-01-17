@@ -50,6 +50,7 @@
       }
     },
     "account.downloads" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -290,7 +291,7 @@
       }
     },
     "developedBy" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1067,6 +1068,7 @@
       }
     },
     "sleep.hour.plural" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1083,6 +1085,7 @@
       }
     },
     "sleep.hour.singular" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1115,6 +1118,7 @@
       }
     },
     "sleep.minute" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
