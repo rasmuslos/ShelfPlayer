@@ -570,6 +570,22 @@
         }
       }
     },
+    "item.media.metadata.seriesName" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series"
+          }
+        }
+      }
+    },
     "listen" : {
       "localizations" : {
         "de" : {
