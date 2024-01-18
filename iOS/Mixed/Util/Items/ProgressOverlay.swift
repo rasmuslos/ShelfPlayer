@@ -9,8 +9,9 @@ import SwiftUI
 import SwiftData
 import SPBaseKit
 import SPOfflineKit
+import SPOfflineExtendedKit
 
-struct ProgressOverlay: View {
+struct StatusOverlay: View {
     let item: Item
     
     @State var progress: Double?
@@ -49,9 +50,7 @@ struct ProgressOverlay: View {
     }
 }
 
-// MARK: Helper
-
-extension ProgressOverlay {
+extension StatusOverlay {
     func fetchProgress() {
         Task.detached {
             if let progress = await OfflineManager.shared.getProgressEntity(item: item) {
@@ -65,18 +64,41 @@ extension ProgressOverlay {
 
 // MARK: Progress image
 
-struct ItemProgressImage: View {
+struct ItemStatusImage: View {
     let item: Item
+    let offlineTracker: ItemOfflineTracker?
+    
+    init(item: Item) {
+        self.item = item
+        
+        if let playableItem = item as? PlayableItem {
+            offlineTracker = playableItem.offlineTracker
+        } else {
+            offlineTracker = nil
+        }
+    }
     
     var body: some View {
         ItemImage(image: item.image)
             .overlay {
-                ProgressOverlay(item: item)
+                StatusOverlay(item: item)
+            }
+            .overlay(alignment: .topLeading) {
+                if let offlineTracker = offlineTracker {
+                    if offlineTracker.status == .working {
+                        ProgressView()
+                    } else if offlineTracker.status == .downloaded {
+                        Image(systemName: "arrow.down.circle.fill")
+                            .padding(3)
+                            .font(.caption)
+                            .foregroundStyle(.ultraThickMaterial)
+                    }
+                }
             }
             .clipShape(RoundedRectangle(cornerRadius: 7))
     }
 }
 
 #Preview {
-    ItemProgressImage(item: Audiobook.fixture)
+    ItemStatusImage(item: Audiobook.fixture)
 }
