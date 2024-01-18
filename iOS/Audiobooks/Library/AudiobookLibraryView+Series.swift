@@ -18,10 +18,12 @@ extension AudiobookLibraryView {
         var body: some View {
             NavigationStack {
                 Group {
-                    if failed {
-                        ErrorView()
-                    } else if series.isEmpty {
-                        LoadingView()
+                    if series.isEmpty {
+                        if failed {
+                            ErrorView()
+                        } else {
+                            LoadingView()
+                        }
                     } else {
                         ScrollView {
                             SeriesGrid(series: series)

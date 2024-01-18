@@ -14,6 +14,7 @@ struct AudiobookView: View {
     let audiobook: Audiobook
     
     @State var navigationBarVisible = false
+    @State var chapters: PlayableItem.Chapters?
     
     @State var authorId: String?
     @State var seriesId: String?
@@ -36,6 +37,12 @@ struct AudiobookView: View {
                 Description(description: audiobook.description)
                     .padding()
                 
+                if let chapters = chapters, chapters.count > 1 {
+                    divider
+                    ChaptersView(chapters: chapters)
+                        .padding()
+                }
+                
                 if audiobooksInSeries.count > 1 {
                     divider
                     AudiobooksRowContainer(title: "Also in series", audiobooks: audiobooksInSeries, amount: 4, navigatable: true)
@@ -51,17 +58,26 @@ struct AudiobookView: View {
         }
         .modifier(ToolbarModifier(audiobook: audiobook, navigationBarVisible: $navigationBarVisible, authorId: $authorId, seriesId: $seriesId))
         .modifier(NowPlayingBarSafeAreaModifier())
-        .onAppear {
-            getAuthorData()
-            getSeriesData()
-        }
+        .onAppear(perform: fetchData)
     }
 }
 
 // MARK: Helper
 
 extension AudiobookView {
-    func getAuthorData() {
+    func fetchData() {
+        fetchAuthorData()
+        fetchSeriesData()
+        fetchAudiobookData()
+    }
+    
+    func fetchAudiobookData() {
+        Task.detached {
+            (_, _, chapters) = try await AudiobookshelfClient.shared.getItem(itemId: audiobook.id, episodeId: nil)
+        }
+    }
+    
+    func fetchAuthorData() {
         Task.detached {
             if let author = audiobook.author, let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: libraryId) {
                 self.authorId = authorId
@@ -69,7 +85,8 @@ extension AudiobookView {
             }
         }
     }
-    func getSeriesData() {
+    
+    func fetchSeriesData() {
         Task.detached {
             if let seriesId = audiobook.series.id {
                 self.seriesId = seriesId

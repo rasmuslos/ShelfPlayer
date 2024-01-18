@@ -21,10 +21,12 @@ extension AudiobookLibraryView {
         var body: some View {
             NavigationStack {
                 Group {
-                    if failed {
-                        ErrorView()
-                    } else if audiobooks.isEmpty {
-                        LoadingView()
+                    if audiobooks.isEmpty {
+                        if failed {
+                            ErrorView()
+                        } else {
+                            LoadingView()
+                        }
                     } else {
                         let sorted = AudiobooksSort.sort(audiobooks: audiobooks, order: sortOrder, ascending: ascending)
                         
