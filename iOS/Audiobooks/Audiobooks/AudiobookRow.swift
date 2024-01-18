@@ -20,7 +20,7 @@ struct AudiobookRow: View {
     
     var body: some View {
         HStack {
-            ItemProgressImage(item: audiobook)
+            ItemStatusImage(item: audiobook)
                 .frame(width: 85)
             
             VStack(alignment: .leading) {

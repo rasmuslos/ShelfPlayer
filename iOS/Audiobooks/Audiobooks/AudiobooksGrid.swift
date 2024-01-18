@@ -17,7 +17,7 @@ struct AudiobookGrid: View {
                 NavigationLink {
                     AudiobookView(audiobook: audiobook)
                 } label: {
-                    AudiobookCover(audiobook: audiobook)
+                    ItemStatusImage(item: audiobook)
                         .padding(.trailing, index % 2 == 0 ? 5 : 0)
                         .padding(.leading, index % 2 == 1 ? 5 : 0)
                 }
