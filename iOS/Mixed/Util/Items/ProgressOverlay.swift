@@ -13,21 +13,37 @@ import SPOfflineExtendedKit
 
 struct StatusOverlay: View {
     let item: Item
+    let offlineTracker: ItemOfflineTracker?
+    
+    init(item: Item) {
+        self.item = item
+        
+        if let playableItem = item as? PlayableItem {
+            offlineTracker = playableItem.offlineTracker
+        } else {
+            offlineTracker = nil
+        }
+    }
     
     @State var progress: Double?
+    
+    // TODO: change color
     
     var body: some View {
         GeometryReader { geometry in
             let size = geometry.size.width / 3
             
-            if let progress = progress {
-                HStack {
-                    Spacer()
-                    
+            HStack(alignment: .top) {
+                Color.clear
+                    .onAppear(perform: fetchProgress)
+                
+                Spacer()
+                
+                if let progress = progress {
                     Triangle()
                         .frame(width: size, height: size)
-                        .foregroundStyle(Color.accentColor)
-                        .overlay(alignment: .topTrailing) {
+                        .foregroundStyle(offlineTracker?.status == .downloaded ? Color.purple : Color.accentColor)
+                        .reverseMask(alignment: .topTrailing) {
                             ZStack {
                                 Circle()
                                     .stroke(Color.secondary.opacity(0.5), lineWidth: 3)
@@ -38,12 +54,14 @@ struct StatusOverlay: View {
                             .rotationEffect(.degrees(-90))
                             .frame(width: size / 3, height: size / 3)
                             .padding(size / 7)
-                            .opacity(0.8)
                         }
-                }
-            } else {
-                Color.clear.onAppear {
-                    fetchProgress()
+                } else {
+                    if offlineTracker?.status == .downloaded {
+                        Image(systemName: "arrow.down.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.ultraThickMaterial)
+                            .padding(4)
+                    }
                 }
             }
         }
@@ -58,6 +76,8 @@ extension StatusOverlay {
                     self.progress = progress.progress
                 }
             }
+            
+            progress = 0.5
         }
     }
 }
@@ -66,34 +86,11 @@ extension StatusOverlay {
 
 struct ItemStatusImage: View {
     let item: Item
-    let offlineTracker: ItemOfflineTracker?
-    
-    init(item: Item) {
-        self.item = item
-        
-        if let playableItem = item as? PlayableItem {
-            offlineTracker = playableItem.offlineTracker
-        } else {
-            offlineTracker = nil
-        }
-    }
     
     var body: some View {
         ItemImage(image: item.image)
             .overlay {
                 StatusOverlay(item: item)
-            }
-            .overlay(alignment: .topLeading) {
-                if let offlineTracker = offlineTracker {
-                    if offlineTracker.status == .working {
-                        ProgressView()
-                    } else if offlineTracker.status == .downloaded {
-                        Image(systemName: "arrow.down.circle.fill")
-                            .padding(3)
-                            .font(.caption)
-                            .foregroundStyle(.ultraThickMaterial)
-                    }
-                }
             }
             .clipShape(RoundedRectangle(cornerRadius: 7))
     }
