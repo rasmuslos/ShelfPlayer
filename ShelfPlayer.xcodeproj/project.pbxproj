@@ -113,7 +113,7 @@
 		3AF240EF2ADA98E90065C0A4 /* AuthorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240EE2ADA98E90065C0A4 /* AuthorRow.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorsRow.swift */; };
 		3AF240F32ADA99F50065C0A4 /* AuthorAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F22ADA99F50065C0A4 /* AuthorAvatar.swift */; };
-		3AFA7F9B2ACD435000B7FF4B /* ProgressOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */; };
+		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
 		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
@@ -225,7 +225,7 @@
 		3AF240EE2ADA98E90065C0A4 /* AuthorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorRow.swift; sourceTree = "<group>"; };
 		3AF240F02ADA99940065C0A4 /* AuthorsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorsRow.swift; sourceTree = "<group>"; };
 		3AF240F22ADA99F50065C0A4 /* AuthorAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorAvatar.swift; sourceTree = "<group>"; };
-		3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressOverlay.swift; sourceTree = "<group>"; };
+		3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -365,7 +365,7 @@
 			children = (
 				3A1EAB952ACC808A0064C80C /* ItemImage.swift */,
 				3A9874262B599BA600B2704F /* ChaptersView.swift */,
-				3AFA7F9A2ACD435000B7FF4B /* ProgressOverlay.swift */,
+				3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */,
 				3A79A9682AE53555006B61FC /* DownloadIndicator.swift */,
 			);
 			path = Items;
@@ -770,7 +770,7 @@
 				3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */,
 				3A1EAB8B2ACC7C5D0064C80C /* AudiobooksRow.swift in Sources */,
 				3ABCC7E42AD46655004AEADF /* GeometryRectangle.swift in Sources */,
-				3AFA7F9B2ACD435000B7FF4B /* ProgressOverlay.swift in Sources */,
+				3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */,
 				3AA19BA82AD6EE3F00C468EA /* NowPlayingSheet+Chapters.swift in Sources */,
 				3A8810EE2AD2C071009696D1 /* PodcastLoadView.swift in Sources */,
 				3A8810F92AD2CE32009696D1 /* UIColor+IsLight.swift in Sources */,

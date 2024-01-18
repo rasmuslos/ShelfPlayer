@@ -27,8 +27,6 @@ struct StatusOverlay: View {
     
     @State var progress: Double?
     
-    // TODO: change color
-    
     var body: some View {
         GeometryReader { geometry in
             let size = geometry.size.width / 3
@@ -76,8 +74,6 @@ extension StatusOverlay {
                     self.progress = progress.progress
                 }
             }
-            
-            progress = 0.5
         }
     }
 }
