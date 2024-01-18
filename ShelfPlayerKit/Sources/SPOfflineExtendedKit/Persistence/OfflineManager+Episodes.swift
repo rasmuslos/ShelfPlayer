@@ -37,7 +37,7 @@ public extension OfflineManager {
             return
         }
         
-        let (item, tracks, chapters) = try await AudiobookshelfClient.shared.getDownloadData(itemId: podcastId, episodeId: episodeId)
+        let (item, tracks, chapters) = try await AudiobookshelfClient.shared.getItem(itemId: podcastId, episodeId: episodeId)
         let podcast = try await requirePodcast(podcastId: podcastId)
         
         guard let episode = item as? Episode else { throw OfflineError.fetchFailed }

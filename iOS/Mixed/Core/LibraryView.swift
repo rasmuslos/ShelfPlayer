@@ -63,7 +63,7 @@ extension LibraryView {
 // MARK: Environment
 
 struct LibraryIdDefault: EnvironmentKey {
-    static var defaultValue: String = ""
+    static var defaultValue: String = "cf50d37f-2bcb-45c9-abbd-455db93e4fc5"
 }
 extension EnvironmentValues {
     var libraryId: String {

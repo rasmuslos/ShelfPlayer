@@ -18,10 +18,12 @@ extension PodcastLibraryView {
         var body: some View {
             NavigationStack {
                 Group {
-                    if failed {
-                        ErrorView()
-                    } else if podcasts.isEmpty {
-                        LoadingView()
+                    if podcasts.isEmpty {
+                        if failed {
+                            ErrorView()
+                        } else {
+                            LoadingView()
+                        }
                     } else {
                         ScrollView {
                             PodcastsGrid(podcasts: podcasts)
@@ -47,9 +49,9 @@ extension PodcastLibraryView.LibraryView {
     @Sendable
     func fetchPodcasts() {
         Task.detached {
-            if let podcasts = try? await AudiobookshelfClient.shared.getPodcasts(libraryId: libraryId) {
-                self.podcasts = podcasts
-            } else {
+            do {
+                podcasts = try await AudiobookshelfClient.shared.getPodcasts(libraryId: libraryId)
+            } catch {
                 failed = true
             }
         }

@@ -17,6 +17,22 @@
         }
       }
     },
+    "%lld chapters" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Kapitel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Chapters"
+          }
+        }
+      }
+    },
     "%lld sleep.minutes" : {
       "localizations" : {
         "de" : {
@@ -1458,22 +1474,6 @@
         }
       }
     },
-    "title.home" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt hören"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listen now"
-          }
-        }
-      }
-    },
     "title.latest" : {
       "localizations" : {
         "de" : {
@@ -1502,6 +1502,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Library"
+          }
+        }
+      }
+    },
+    "title.listenNow" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt hören"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen Now"
           }
         }
       }
