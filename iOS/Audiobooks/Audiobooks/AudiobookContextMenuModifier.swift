@@ -63,7 +63,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 }
             } preview: {
                 VStack(alignment: .leading) {
-                    ItemProgressImage(item: audiobook)
+                    ItemStatusImage(item: audiobook)
                     
                     Text(audiobook.name)
                         .font(.headline)

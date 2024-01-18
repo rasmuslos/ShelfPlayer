@@ -65,7 +65,7 @@ extension EpisodeFeatured {
                     if let formattedReleaseDate = episode.formattedReleaseDate {
                         Text(formattedReleaseDate)
                             .font(.subheadline.smallCaps())
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.regularMaterial)
                     }
                     
                     Text(episode.name)

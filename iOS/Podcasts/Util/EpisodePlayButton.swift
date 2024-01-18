@@ -11,8 +11,6 @@ import SPOfflineKit
 import SPPlaybackKit
 
 struct EpisodePlayButton: View {
-    @Environment(\.colorScheme) var colorScheme
-    
     let episode: Episode
     var highlighted: Bool = false
     
@@ -23,6 +21,49 @@ struct EpisodePlayButton: View {
         Button {
             episode.startPlayback()
         } label: {
+            ButtonText(episode: episode, highlighted: highlighted, playing: $playing, progress: $progress)
+                .opacity(highlighted ? 0 : 1)
+                .padding(.vertical, 6)
+                .padding(.horizontal, 12)
+                .background(highlighted ? .white : .secondary.opacity(0.25))
+                .foregroundStyle(highlighted ? .black : .primary)
+                .clipShape(RoundedRectangle(cornerRadius: 10000))
+                .reverseMask {
+                    ButtonText(episode: episode, highlighted: highlighted, playing: $playing, progress: $progress)
+                }
+                .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification), perform: { _ in
+                    fetchProgress()
+                })
+                .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
+                    checkPlaying()
+                })
+                .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
+                    checkPlaying()
+                })
+                .onAppear {
+                    fetchProgress()
+                    checkPlaying()
+                }
+                .onChange(of: episode) {
+                    fetchProgress()
+                    checkPlaying()
+                }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+extension EpisodePlayButton {
+    struct ButtonText: View {
+        @Environment(\.colorScheme) var colorScheme
+        
+        let episode: Episode
+        let highlighted: Bool
+        
+        @Binding var playing: Bool?
+        @Binding var progress: OfflineProgress?
+        
+        var body: some View {
             HStack(spacing: 6) {
                 if let playing = playing {
                     Image(systemName: playing == true ? "waveform" : "pause.fill")
@@ -56,34 +97,9 @@ struct EpisodePlayButton: View {
                 }
             }
             .font(.caption)
-            .padding(.vertical, 6)
-            .padding(.horizontal, 12)
-            .background(highlighted ? .white : .secondary.opacity(0.25))
-            .foregroundStyle(highlighted ? .black : .primary)
-            .clipShape(RoundedRectangle(cornerRadius: 10000))
-            .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification), perform: { _ in
-                fetchProgress()
-            })
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
-                checkPlaying()
-            })
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
-                checkPlaying()
-            })
-            .onAppear {
-                fetchProgress()
-                checkPlaying()
-            }
-            .onChange(of: episode) {
-                fetchProgress()
-                checkPlaying()
-            }
         }
-        .buttonStyle(.plain)
     }
 }
-
-// MARK: Helper
 
 extension EpisodePlayButton {
     private func fetchProgress() {
