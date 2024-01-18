@@ -8,7 +8,7 @@
 import SwiftUI
 import SPBaseKit
 
-struct EpisodeImageRow: View {
+struct EpisodeIndependentRow: View {
     let episode: Episode
     
     var body: some View {

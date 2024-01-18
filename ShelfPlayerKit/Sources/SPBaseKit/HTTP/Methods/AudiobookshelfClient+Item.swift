@@ -10,6 +10,26 @@ import Foundation
 // MARK: finished
 
 public extension AudiobookshelfClient {
+    func getItem(itemId: String, episodeId: String?) async throws -> (PlayableItem, PlayableItem.AudioTracks, PlayableItem.Chapters) {
+        let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)", method: "GET", query: [
+            URLQueryItem(name: "expanded", value: "1"),
+        ]))
+        
+        if let episodeId = episodeId, let episode = response.media?.episodes?.first(where: { $0.id == episodeId }) {
+            let item = Episode.convertFromAudiobookshelf(podcastEpisode: episode, item: response)
+            let track = PlayableItem.convertAudioTrackFromAudiobookshelf(track: episode.audioTrack!)
+            let chapters = episode.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
+            
+            return (item, [track], chapters)
+        }
+        
+        let item = Audiobook.convertFromAudiobookshelf(item: response)
+        let tracks = response.media!.tracks!.map(PlayableItem.convertAudioTrackFromAudiobookshelf)
+        let chapters = response.media!.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
+        
+        return (item, tracks, chapters)
+    }
+    
     func getItems(query: String, libraryId: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
         let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: query),
@@ -49,26 +69,6 @@ public extension AudiobookshelfClient {
         let playbackSessionId = response.id
         
         return (tracks, chapters, startTime, playbackSessionId)
-    }
-    
-    func getDownloadData(itemId: String, episodeId: String?) async throws -> (PlayableItem, PlayableItem.AudioTracks, PlayableItem.Chapters) {
-        let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)", method: "GET", query: [
-            URLQueryItem(name: "expanded", value: "1"),
-        ]))
-        
-        if let episodeId = episodeId, let episode = response.media?.episodes?.first(where: { $0.id == episodeId }) {
-            let item = Episode.convertFromAudiobookshelf(podcastEpisode: episode, item: response)
-            let track = PlayableItem.convertAudioTrackFromAudiobookshelf(track: episode.audioTrack!)
-            let chapters = episode.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
-            
-            return (item, [track], chapters)
-        }
-        
-        let item = Audiobook.convertFromAudiobookshelf(item: response)
-        let tracks = response.media!.tracks!.map(PlayableItem.convertAudioTrackFromAudiobookshelf)
-        let chapters = response.media!.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
-        
-        return (item, tracks, chapters)
     }
     
     func setFinished(itemId: String, episodeId: String?, finished: Bool) async throws {

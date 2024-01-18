@@ -10,7 +10,6 @@ import SPBaseKit
 
 struct AudiobookLibraryView: View {
     init() {
-        // this is stupid
         let appearance = UINavigationBarAppearance()
         
         appearance.titleTextAttributes = [.font: UIFont(descriptor: UIFont.systemFont(ofSize: 17, weight: .bold).fontDescriptor.withDesign(.serif)!, size: 0)]
@@ -25,7 +24,7 @@ struct AudiobookLibraryView: View {
     
     var body: some View {
         TabView {
-            HomeView()
+            ListenNowView()
             SeriesView()
             LibraryView()
             SearchView()

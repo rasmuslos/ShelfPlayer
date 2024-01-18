@@ -8,14 +8,14 @@
 import SwiftUI
 import SPBaseKit
 
-struct LatestList: View {
+struct EpisodesLatestList: View {
     let episodes: [Episode]
     
     var body: some View {
         List {
             ForEach(episodes) { episode in
                 NavigationLink(destination: EpisodeView(episode: episode)) {
-                    EpisodeImageRow(episode: episode)
+                    EpisodeIndependentRow(episode: episode)
                 }
                 .modifier(SwipeActionsModifier(item: episode))
             }
@@ -26,7 +26,7 @@ struct LatestList: View {
 
 #Preview {
     NavigationStack {
-        LatestList(episodes: [
+        EpisodesLatestList(episodes: [
             Episode.fixture,
             Episode.fixture,
             Episode.fixture,

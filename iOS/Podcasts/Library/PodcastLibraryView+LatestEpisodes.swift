@@ -9,7 +9,7 @@ import SwiftUI
 import SPBaseKit
 
 extension PodcastLibraryView {
-    struct LatestView: View {
+    struct LatestEpisodesView: View {
         @Environment(\.libraryId) var libraryId
         
         @State var failed = false
@@ -23,14 +23,13 @@ extension PodcastLibraryView {
                     } else if episodes.isEmpty {
                         LoadingView()
                     } else {
-                        LatestList(episodes: episodes)
+                        EpisodesLatestList(episodes: episodes)
                             .modifier(NowPlayingBarSafeAreaModifier())
                     }
                 }
                 .navigationTitle("title.latest")
-                .navigationBarTitleDisplayMode(.large)
-                .task(fetchEpisodes)
-                .refreshable(action: fetchEpisodes)
+                .task(fetchItems)
+                .refreshable(action: fetchItems)
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
@@ -40,15 +39,13 @@ extension PodcastLibraryView {
     }
 }
 
-// MARK: Helper
-
-extension PodcastLibraryView.LatestView {
+extension PodcastLibraryView.LatestEpisodesView {
     @Sendable
-    func fetchEpisodes() {
+    func fetchItems() {
         Task.detached {
-            if let episodes = try? await AudiobookshelfClient.shared.getEpisodes(limit: 20, libraryId: libraryId) {
-                self.episodes = episodes
-            } else {
+            do {
+                episodes = try await AudiobookshelfClient.shared.getEpisodes(limit: 20, libraryId: libraryId)
+            } catch {
                 failed = true
             }
         }
