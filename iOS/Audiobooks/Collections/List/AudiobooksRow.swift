@@ -19,7 +19,7 @@ struct AudiobooksRow: View {
             HStack(spacing: 0) {
                 ForEach(audiobooks) { audiobook in
                     NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
-                        ItemStatusImage(item: audiobook)
+                        AudiobookCover(audiobook: audiobook)
                             .frame(width: size)
                             .padding(.leading, 10)
                     }
