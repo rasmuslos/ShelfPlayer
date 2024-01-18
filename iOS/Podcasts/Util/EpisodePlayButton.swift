@@ -29,7 +29,9 @@ struct EpisodePlayButton: View {
                 .foregroundStyle(highlighted ? .black : .primary)
                 .clipShape(RoundedRectangle(cornerRadius: 10000))
                 .reverseMask {
-                    ButtonText(episode: episode, highlighted: highlighted, playing: $playing, progress: $progress)
+                    if highlighted {
+                        ButtonText(episode: episode, highlighted: highlighted, playing: $playing, progress: $progress)
+                    }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification), perform: { _ in
                     fetchProgress()
@@ -123,5 +125,17 @@ extension EpisodePlayButton {
 }
 
 #Preview {
-    EpisodePlayButton(episode: Episode.fixture)
+    Rectangle()
+        .foregroundStyle(.black)
+        .overlay {
+            EpisodePlayButton(episode: Episode.fixture)
+        }
+}
+
+#Preview {
+    Rectangle()
+        .foregroundStyle(.black)
+        .overlay {
+            EpisodePlayButton(episode: Episode.fixture, highlighted: true)
+        }
 }
