@@ -46,6 +46,7 @@ struct AudiobooksSort: View {
             }
             
             Divider()
+            
             Button {
                 ascending.toggle()
                 UserDefaults.standard.set(ascending, forKey: "audiobooks.sort.ascending")
@@ -72,6 +73,7 @@ extension AudiobooksSort {
     
     enum SortOrder: LocalizedStringKey, CaseIterable {
         case name = "sort.name"
+        case series = "item.media.metadata.seriesName"
         case author = "sort.author"
         case released = "sort.released"
         case added = "sort.added"
@@ -107,6 +109,8 @@ extension AudiobooksSort {
             switch order {
             case .name:
                 return $0.sortName < $1.sortName
+            case .series:
+                return $0.series.audiobookSeriesName ?? $0.series.name ?? "" < $1.series.audiobookSeriesName ?? $1.series.name ?? ""
             case .author:
                 if $0.author == nil {
                     return false
