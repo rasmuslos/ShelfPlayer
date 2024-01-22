@@ -72,7 +72,7 @@ public extension AudiobookshelfClient {
     }
     
     func setFinished(itemId: String, episodeId: String?, finished: Bool) async throws {
-        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemId)/\(episodeId == nil ? "" : "/\(episodeId!)")", method: "PATCH", body: [
+        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemId)\(episodeId == nil ? "" : "/\(episodeId!)")", method: "PATCH", body: [
             "isFinished": finished,
         ]))
     }
@@ -93,7 +93,7 @@ public extension AudiobookshelfClient {
     }
     
     func updateMediaProgress(itemId: String, episodeId: String?, currentTime: Double, duration: Double) async throws {
-        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemId)/\(episodeId == nil ? "" : "/\(episodeId!)")", method: "PATCH", body: [
+        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemId)\(episodeId == nil ? "" : "/\(episodeId!)")", method: "PATCH", body: [
             "duration": duration,
             "currentTime": currentTime,
             "progress": currentTime / duration,

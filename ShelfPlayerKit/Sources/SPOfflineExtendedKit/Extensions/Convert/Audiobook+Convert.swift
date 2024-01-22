@@ -17,7 +17,7 @@ extension Audiobook {
             name: audiobook.name,
             author: audiobook.author,
             description: audiobook.overview,
-            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: audiobook.id)),
+            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: audiobook.id), type: .local),
             genres: audiobook.genres,
             addedAt: audiobook.addedAt,
             released: audiobook.released,

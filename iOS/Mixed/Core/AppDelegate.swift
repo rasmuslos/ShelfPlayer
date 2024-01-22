@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Intents
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     private var backgroundCompletionHandler: (() -> Void)? = nil
@@ -21,6 +22,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             }
             
             backgroundCompletionHandler()
+        }
+    }
+    
+    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
+        switch intent {
+        case is INPlayMediaIntent:
+            return PlayMediaIntentHandler()
+        default:
+            return nil
         }
     }
 }

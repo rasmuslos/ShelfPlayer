@@ -18,7 +18,7 @@ extension Podcast {
             name: podcast.name,
             author: podcast.author,
             description: podcast.overview,
-            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: podcast.id)),
+            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: podcast.id), type: .local),
             genres: podcast.genres,
             addedAt: podcast.addedAt,
             released: podcast.released,

@@ -67,9 +67,17 @@ extension Item: Hashable {
 public extension Item {
     struct Image: Codable {
         public let url: URL
+        public let type: ImageType
         
-        public init(url: URL) {
+        public init(url: URL, type: ImageType) {
             self.url = url
+            self.type = type
+        }
+        
+        public enum ImageType: Codable {
+            case local
+            case audiobookshelf
+            case remote
         }
     }
 }
