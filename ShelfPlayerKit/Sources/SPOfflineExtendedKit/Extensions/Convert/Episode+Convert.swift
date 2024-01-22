@@ -17,7 +17,7 @@ extension Episode {
             name: episode.name,
             author: episode.author,
             description: episode.overview,
-            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: episode.podcast.id)),
+            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: episode.podcast.id), type: .local),
             genres: [],
             addedAt: episode.addedAt,
             released: episode.released,

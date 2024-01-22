@@ -44,6 +44,10 @@
 		3A5159502AD029A200CD5680 /* AudiobooksList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A51594F2AD029A200CD5680 /* AudiobooksList.swift */; };
 		3A5159522AD02A3800CD5680 /* AudiobookRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159512AD02A3800CD5680 /* AudiobookRow.swift */; };
 		3A5159562AD0374600CD5680 /* AudiobooksFilterSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159552AD0374600CD5680 /* AudiobooksFilterSort.swift */; };
+		3A5A4DA92B5EF66400E72E8B /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DA82B5EF66400E72E8B /* Intents.intentdefinition */; };
+		3A5A4DAB2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */; };
+		3A5A4DAD2B5EF81B00E72E8B /* VocabularyDonator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */; };
+		3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */; };
 		3A73FF652B53F07D00933AE7 /* SPBaseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A73FF642B53F07D00933AE7 /* SPBaseKit */; };
 		3A73FF672B53F07D00933AE7 /* SPOfflineExtendedKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A73FF662B53F07D00933AE7 /* SPOfflineExtendedKit */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
@@ -157,6 +161,11 @@
 		3A51594F2AD029A200CD5680 /* AudiobooksList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksList.swift; sourceTree = "<group>"; };
 		3A5159512AD02A3800CD5680 /* AudiobookRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookRow.swift; sourceTree = "<group>"; };
 		3A5159552AD0374600CD5680 /* AudiobooksFilterSort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksFilterSort.swift; sourceTree = "<group>"; };
+		3A5A4DA82B5EF66400E72E8B /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
+		3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
+		3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyDonator.swift; sourceTree = "<group>"; };
+		3A5A4DB12B5EFB1800E72E8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		3A5A4DB32B5EFB1A00E72E8B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = de; path = de.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorUnavailableView.swift; sourceTree = "<group>"; };
 		3A77B7012ACDF01C00F22C7F /* SeriesUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesUnavailableView.swift; sourceTree = "<group>"; };
@@ -268,6 +277,7 @@
 				3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */,
 				3AFF94872AF65CF500127AFF /* Localizable.xcstrings */,
 				3A0AE6AB2AB623F500ACCD68 /* Audiobooks.entitlements */,
+				3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -277,6 +287,7 @@
 			children = (
 				3A0AE6B92AB624E700ACCD68 /* LoginView.swift */,
 				3AB141DC2ADDC7FF007F68CB /* AccountSheet.swift */,
+				3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */,
 			);
 			path = Account;
 			sourceTree = "<group>";
@@ -402,6 +413,16 @@
 			path = Library;
 			sourceTree = "<group>";
 		};
+		3A5A4DA72B5EF65500E72E8B /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */,
+				3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */,
+				3A5A4DA82B5EF66400E72E8B /* Intents.intentdefinition */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		3A7118EB2AD5ACA4005F7E08 /* NowPlaying */ = {
 			isa = PBXGroup;
 			children = (
@@ -446,6 +467,8 @@
 				3A1011852AD69DB200AAE220 /* Buttons */,
 				3A1EAB942ACC80820064C80C /* Items */,
 				3A1011782AD696CF00AAE220 /* Fullscreen */,
+				3ABC2E852AD88B3900734B41 /* OfflineView.swift */,
+				3AF240E72ADA853A0065C0A4 /* SearchView.swift */,
 				3AA9541E2AD2925C0031C20D /* RowTitle.swift */,
 				3ABCC7E12AD4659E004AEADF /* Description.swift */,
 			);
@@ -478,11 +501,9 @@
 		3A98741E2B59955400B2704F /* Mixed */ = {
 			isa = PBXGroup;
 			children = (
-				3ABC2E852AD88B3900734B41 /* OfflineView.swift */,
-				3AF240E72ADA853A0065C0A4 /* SearchView.swift */,
-				3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */,
 				3A0AE6BB2AB624EB00ACCD68 /* Core */,
 				3A77B7052ACDF88200F22C7F /* Util */,
+				3A5A4DA72B5EF65500E72E8B /* Intents */,
 				3ACD19B32ACB58D6007D01FE /* Fallback */,
 				3A7118EB2AD5ACA4005F7E08 /* NowPlaying */,
 				3A1EAB972ACC822F0064C80C /* Extensions */,
@@ -714,6 +735,7 @@
 			files = (
 				3A2BC1952AD8121400054727 /* Settings.bundle in Resources */,
 				3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */,
+				3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */,
 				3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -782,6 +804,7 @@
 				3AA9542B2AD2A87E0031C20D /* EpisodesFeaturedRow.swift in Sources */,
 				3A50AAB82ACC522900BF5438 /* AudiobookLibraryView+Library.swift in Sources */,
 				3AA0B0812AD3133B0009FBB4 /* EpisodesList.swift in Sources */,
+				3A5A4DA92B5EF66400E72E8B /* Intents.intentdefinition in Sources */,
 				3AA0B0892AD322470009FBB4 /* EpisodeView.swift in Sources */,
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
 				3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */,
@@ -834,6 +857,8 @@
 				3AA9541B2AD290380031C20D /* PodcastsRow.swift in Sources */,
 				3AA0B08B2AD32D4E0009FBB4 /* EpisodeView+Header.swift in Sources */,
 				3AB141DD2ADDC800007F68CB /* AccountSheet.swift in Sources */,
+				3A5A4DAD2B5EF81B00E72E8B /* VocabularyDonator.swift in Sources */,
+				3A5A4DAB2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift in Sources */,
 				3ABCC7E02AD4647D004AEADF /* EpisodeView+Toolbar.swift in Sources */,
 				3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */,
 				3AB4529B2ACF4B4B005D5DBA /* SeriesLoadView.swift in Sources */,
@@ -851,6 +876,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3A5A4DB12B5EFB1800E72E8B /* en */,
+				3A5A4DB32B5EFB1A00E72E8B /* de */,
+			);
+			name = AppIntentVocabulary.plist;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		3A0AE6AF2AB623F500ACCD68 /* Debug */ = {
@@ -994,6 +1031,7 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Siri integartion";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1039,6 +1077,7 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Siri integartion";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

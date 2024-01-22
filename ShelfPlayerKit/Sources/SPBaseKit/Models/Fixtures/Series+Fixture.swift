@@ -19,12 +19,12 @@ extension Series {
         addedAt: Date(),
         released: nil,
         images: [
-            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
-            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
-            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
-            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
-            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
-            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
-            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!),
+            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!, type: .remote),
+            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!, type: .remote),
+            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!, type: .remote),
+            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!, type: .remote),
+            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!, type: .remote),
+            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!, type: .remote),
+            Item.Image(url: URL(string: "https://m.media-amazon.com/images/I/51r+po1oBdL._SL500_.jpg")!, type: .remote),
         ])
 }
