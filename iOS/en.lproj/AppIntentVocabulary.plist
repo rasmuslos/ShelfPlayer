@@ -3,13 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>IntentPhrases</key>
-	<dict>
-		<key>IntentName</key>
-		<string>INPlayMediaIntent</string>
-		<key>IntentExamples</key>
-		<array>
-			<string>Play some audiobook</string>
-		</array>
-	</dict>
+	<array>
+		<dict>
+			<key>IntentName</key>
+			<string>INPlayMediaIntent</string>
+			<key>IntentExamples</key>
+			<array>
+				<string>Play the audiobook 1984</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
