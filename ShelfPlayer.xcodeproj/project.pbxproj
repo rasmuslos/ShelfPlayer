@@ -43,7 +43,7 @@
 		3A50AABA2ACC523000BF5438 /* AudiobookLibraryView+Series.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A50AAB92ACC523000BF5438 /* AudiobookLibraryView+Series.swift */; };
 		3A5159502AD029A200CD5680 /* AudiobooksList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A51594F2AD029A200CD5680 /* AudiobooksList.swift */; };
 		3A5159522AD02A3800CD5680 /* AudiobookRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159512AD02A3800CD5680 /* AudiobookRow.swift */; };
-		3A5159562AD0374600CD5680 /* AudiobooksSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159552AD0374600CD5680 /* AudiobooksSort.swift */; };
+		3A5159562AD0374600CD5680 /* AudiobooksFilterSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159552AD0374600CD5680 /* AudiobooksFilterSort.swift */; };
 		3A73FF652B53F07D00933AE7 /* SPBaseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A73FF642B53F07D00933AE7 /* SPBaseKit */; };
 		3A73FF672B53F07D00933AE7 /* SPOfflineExtendedKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A73FF662B53F07D00933AE7 /* SPOfflineExtendedKit */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
@@ -156,7 +156,7 @@
 		3A50AAB92ACC523000BF5438 /* AudiobookLibraryView+Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookLibraryView+Series.swift"; sourceTree = "<group>"; };
 		3A51594F2AD029A200CD5680 /* AudiobooksList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksList.swift; sourceTree = "<group>"; };
 		3A5159512AD02A3800CD5680 /* AudiobookRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookRow.swift; sourceTree = "<group>"; };
-		3A5159552AD0374600CD5680 /* AudiobooksSort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksSort.swift; sourceTree = "<group>"; };
+		3A5159552AD0374600CD5680 /* AudiobooksFilterSort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksFilterSort.swift; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorUnavailableView.swift; sourceTree = "<group>"; };
 		3A77B7012ACDF01C00F22C7F /* SeriesUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesUnavailableView.swift; sourceTree = "<group>"; };
@@ -608,7 +608,7 @@
 		3A98742D2B59ACCA00B2704F /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				3A5159552AD0374600CD5680 /* AudiobooksSort.swift */,
+				3A5159552AD0374600CD5680 /* AudiobooksFilterSort.swift */,
 				3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */,
 			);
 			path = Util;
@@ -845,7 +845,7 @@
 				3A17E68F2AD5F15900E59464 /* NowPlayingSheet+Title.swift in Sources */,
 				3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */,
 				3A17E6912AD5F21B00E59464 /* Slider.swift in Sources */,
-				3A5159562AD0374600CD5680 /* AudiobooksSort.swift in Sources */,
+				3A5159562AD0374600CD5680 /* AudiobooksFilterSort.swift in Sources */,
 				3A98742F2B59ACE800B2704F /* AudiobookCover.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
