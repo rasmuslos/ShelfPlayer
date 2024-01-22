@@ -29,6 +29,9 @@ struct ContentView: View {
                 }
             case .library:
                 LibraryView()
+                    .onAppear {
+                        VocabularyDonator.donateVocabulary()
+                    }
             case .offline:
                 OfflineView()
             }

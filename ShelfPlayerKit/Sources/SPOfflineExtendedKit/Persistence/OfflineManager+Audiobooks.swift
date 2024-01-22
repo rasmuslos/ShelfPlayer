@@ -17,6 +17,17 @@ public extension OfflineManager {
     }
     
     @MainActor
+    func getAudiobooks(query: String) throws -> [Audiobook] {
+        let descriptor = FetchDescriptor<OfflineAudiobook>(predicate: #Predicate { $0.name.localizedStandardContains(query) })
+        return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).map(Audiobook.convertFromOffline)
+    }
+    
+    @MainActor
+    func getAudiobook(audiobookId: String) throws -> Audiobook {
+        try Audiobook.convertFromOffline(audiobook: getOfflineAudiobook(audiobookId: audiobookId))
+    }
+    
+    @MainActor
     func download(audiobookId: String) async throws {
         if (try? getOfflineAudiobook(audiobookId: audiobookId)) != nil {
             logger.error("Audiobook is already downloaded")
