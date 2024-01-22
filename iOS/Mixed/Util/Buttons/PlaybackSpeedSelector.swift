@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPPlaybackKit
+import SPBase
+import SPPlayback
 
 struct PlaybackSpeedSelector: View {
     @State var currentSpeed = AudioPlayer.shared.getPlaybackRate()

@@ -7,7 +7,7 @@
 
 import Foundation
 import Intents
-import SPBaseKit
+import SPBase
 
 struct VocabularyDonator {
     static func donateVocabulary() {

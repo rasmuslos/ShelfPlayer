@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftData
-import SPOfflineKit
+import SPOffline
 
 extension OfflineManager {
     @MainActor

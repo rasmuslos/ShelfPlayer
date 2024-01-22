@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBaseKit
+import SPBase
 
 struct AuthorLoadView: View {
     @Environment(\.libraryId) var libraryId

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBaseKit
+import SPBase
 
 struct AudiobookView: View {
     @Environment(\.libraryId) var libraryId

@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 extension Audiobook {
     static func convertFromOffline(audiobook: OfflineAudiobook) -> Audiobook {

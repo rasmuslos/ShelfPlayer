@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import SPBaseKit
+import SPBase
 
-#if canImport(SPOfflineExtendedKit)
-import SPOfflineKit
-import SPOfflineExtendedKit
+#if canImport(SPOfflineExtended)
+import SPOffline
+import SPOfflineExtended
 #endif
 
 extension PlayableItem {
@@ -21,7 +21,7 @@ extension PlayableItem {
             var startTime: Double = 0
             let playbackReporter: PlaybackReporter
             
-            #if canImport(SPOfflineExtendedKit)
+            #if canImport(SPOfflineExtended)
             if OfflineManager.shared.getOfflineStatus(parentId: id) == .downloaded {
                 tracks = try OfflineManager.shared.getTracks(parentId: id)
                 chapters = OfflineManager.shared.getChapters(itemId: id)

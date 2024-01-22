@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 extension DownloadManager {
     func download(track: PlayableItem.AudioTrack) -> URLSessionDownloadTask {

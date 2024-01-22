@@ -7,9 +7,9 @@
 
 import SwiftUI
 import SwiftData
-import SPBaseKit
-import SPOfflineKit
-import SPOfflineExtendedKit
+import SPBase
+import SPOffline
+import SPOfflineExtended
 
 struct StatusOverlay: View {
     let item: Item

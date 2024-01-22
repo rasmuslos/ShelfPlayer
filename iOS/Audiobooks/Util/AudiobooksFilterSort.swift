@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 struct AudiobooksFilterSort: View {
     @Binding var display: DisplayType {

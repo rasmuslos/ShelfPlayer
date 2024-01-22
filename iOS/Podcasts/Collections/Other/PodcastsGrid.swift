@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBaseKit
+import SPBase
 
 struct PodcastsGrid: View {
     let podcasts: [Podcast]

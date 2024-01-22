@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPOfflineKit
-import SPOfflineExtendedKit
+import SPBase
+import SPOffline
+import SPOfflineExtended
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem

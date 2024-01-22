@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPOfflineKit
-import SPPlaybackKit
+import SPBase
+import SPOffline
+import SPPlayback
 
 struct EpisodePlayButton: View {
     let episode: Episode

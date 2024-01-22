@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import SPBaseKit
+import SPBase
 import OSLog
-import SPOfflineKit
+import SPOffline
 
 extension PlayableItem {
     public var offlineTracker: ItemOfflineTracker {
