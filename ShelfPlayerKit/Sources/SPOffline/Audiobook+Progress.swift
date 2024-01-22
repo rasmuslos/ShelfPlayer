@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SPBaseKit
+import SPBase
 
 extension PlayableItem {
     public func setProgress(finished: Bool) async {

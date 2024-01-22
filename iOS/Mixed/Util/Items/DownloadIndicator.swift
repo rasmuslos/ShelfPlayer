@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPOfflineExtendedKit
+import SPBase
+import SPOfflineExtended
 
 struct DownloadIndicator: View {
     let offlineTracker: ItemOfflineTracker

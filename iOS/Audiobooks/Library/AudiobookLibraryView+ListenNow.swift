@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 extension AudiobookLibraryView {
     struct ListenNowView: View {

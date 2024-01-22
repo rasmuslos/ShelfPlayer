@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
-#if canImport(SPOfflineExtendedKit)
-import SPOfflineExtendedKit
+#if canImport(SPOfflineExtended)
+import SPOfflineExtended
 #endif
 
 class PlaybackReporter {
@@ -131,7 +131,7 @@ extension PlaybackReporter {
             await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
         }
         
-        #if canImport(SPOfflineExtendedKit)
+        #if canImport(SPOfflineExtended)
         if UserDefaults.standard.bool(forKey: "deleteFinishedDownloads") && currentTime >= duration {
             Task.detached {
                 if let episodeId = episodeId {

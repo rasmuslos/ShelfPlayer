@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBaseKit
+import SPBase
 
 struct NowPlayingSheet: View {
     @Environment(\.presentationMode) var presentationMode

@@ -8,22 +8,22 @@ let package = Package(
     defaultLocalization: "en",
     platforms: [.iOS(.v17), .watchOS(.v10)],
     products: [
-        .library(name: "SPBaseKit", targets: ["SPBaseKit", "SPOfflineKit"]),
-        .library(name: "SPOfflineExtendedKit", targets: ["SPOfflineExtendedKit"]),
-        .library(name: "SPPlaybackKit", targets: ["SPPlaybackKit"]),
+        .library(name: "SPBase", targets: ["SPBase", "SPOffline"]),
+        .library(name: "SPOfflineExtended", targets: ["SPOfflineExtended"]),
+        .library(name: "SPPlayback", targets: ["SPPlayback"]),
     ],
     dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
     ],
     targets: [
         .target(
-            name: "SPBaseKit",
+            name: "SPBase",
             dependencies: [.byName(name: "SwiftSoup")],
             resources: [.process("Resources")],
             swiftSettings: [.define("_DISABLE_APP_GROUP")]),
-        .target(name: "SPPlaybackKit", dependencies: [.byName(name: "SPBaseKit"), .byName(name: "SPOfflineKit"), .byName(name: "SPOfflineExtendedKit", condition: .when(platforms: [.iOS]))]),
+        .target(name: "SPPlayback", dependencies: [.byName(name: "SPBase"), .byName(name: "SPOffline"), .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS]))]),
         
-            .target(name: "SPOfflineKit", dependencies: [.byName(name: "SPBaseKit")], swiftSettings: [.define("_DISABLE_APP_GROUP")]),
-        .target(name: "SPOfflineExtendedKit", dependencies: [.byName(name: "SPBaseKit"), .byName(name: "SPOfflineKit")]),
+            .target(name: "SPOffline", dependencies: [.byName(name: "SPBase")], swiftSettings: [.define("_DISABLE_APP_GROUP")]),
+        .target(name: "SPOfflineExtended", dependencies: [.byName(name: "SPBase"), .byName(name: "SPOffline")]),
     ]
 )

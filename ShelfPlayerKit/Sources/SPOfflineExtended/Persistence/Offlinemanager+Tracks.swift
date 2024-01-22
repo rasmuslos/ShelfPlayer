@@ -7,8 +7,8 @@
 
 import Foundation
 import SwiftData
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 public extension OfflineManager {
     typealias DownloadStatus = ([Audiobook: (Int, Int)], [Podcast: (Int, Int)])

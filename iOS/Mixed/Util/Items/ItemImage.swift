@@ -7,7 +7,7 @@
 
 import SwiftUI
 import NukeUI
-import SPBaseKit
+import SPBase
 
 struct ItemImage: View {
     let image: Item.Image?

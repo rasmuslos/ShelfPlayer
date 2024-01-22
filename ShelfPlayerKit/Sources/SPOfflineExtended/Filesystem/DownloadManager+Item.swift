@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SPBaseKit
+import SPBase
 
 // MARK: Image
 

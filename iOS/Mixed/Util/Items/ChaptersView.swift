@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import SPBaseKit
+import SPBase
 
 struct ChaptersView: View {
     @Environment(\.defaultMinListRowHeight) var minimumHeight
