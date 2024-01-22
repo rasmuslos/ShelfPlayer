@@ -44,7 +44,7 @@ struct StatusOverlay: View {
                         .reverseMask(alignment: .topTrailing) {
                             ZStack {
                                 Circle()
-                                    .stroke(Color.secondary.opacity(0.5), lineWidth: 3)
+                                    .stroke(Color.secondary.opacity(0.75), lineWidth: 3)
                                 Circle()
                                     .trim(from: 0, to: CGFloat(progress))
                                     .stroke(Color.primary, lineWidth: 3)
