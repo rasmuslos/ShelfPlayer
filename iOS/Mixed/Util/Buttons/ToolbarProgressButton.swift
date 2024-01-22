@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 struct ToolbarProgressButton: View {
     let item: PlayableItem

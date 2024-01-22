@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBaseKit
+import SPBase
 
 struct LibraryView: View {
     @State var libraries: [Library]?

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import UIImageColors
-import SPBaseKit
+import SPBase
 
 extension PodcastView {
     struct Header: View {

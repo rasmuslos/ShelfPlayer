@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftData
-import SPBaseKit
+import SPBase
 
 extension OfflineManager {
     @MainActor

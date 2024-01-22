@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBaseKit
+import SPBase
 
 struct AllEpisodesView: View {
     let episodes: [Episode]

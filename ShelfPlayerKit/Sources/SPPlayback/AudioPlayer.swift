@@ -9,11 +9,11 @@ import Foundation
 import MediaPlayer
 import AVKit
 import OSLog
-import SPBaseKit
+import SPBase
 
-#if canImport(SPOfflineExtendedKit)
-import SPOfflineKit
-import SPOfflineExtendedKit
+#if canImport(SPOfflineExtended)
+import SPOffline
+import SPOfflineExtended
 #endif
 
 public class AudioPlayer {
@@ -535,7 +535,7 @@ extension AudioPlayer {
 
 extension AudioPlayer {
     private func getAVPlayerItem(item: PlayableItem, track: PlayableItem.AudioTrack) async -> AVPlayerItem {
-        #if canImport(SPOfflineExtendedKit)
+        #if canImport(SPOfflineExtended)
         if let trackURL = try? await OfflineManager.shared.getTrack(itemId: item.id, track: track) {
             return AVPlayerItem(url: trackURL)
         }

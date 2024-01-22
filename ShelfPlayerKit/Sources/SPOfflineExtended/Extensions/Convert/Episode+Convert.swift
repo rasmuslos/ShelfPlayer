@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 extension Episode {
     static func convertFromOffline(episode: OfflineEpisode) -> Episode {

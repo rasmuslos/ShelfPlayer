@@ -7,8 +7,8 @@
 
 import SwiftUI
 import OSLog
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 struct SessionsImportView: View {
     let logger = Logger(subsystem: "io.rfk.audiobooks", category: "SessionImport")

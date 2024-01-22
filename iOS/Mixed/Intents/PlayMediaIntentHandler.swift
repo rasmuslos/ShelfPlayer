@@ -7,10 +7,10 @@
 
 import Foundation
 import Intents
-import SPBaseKit
-import SPOfflineKit
-import SPOfflineExtendedKit
-import SPPlaybackKit
+import SPBase
+import SPOffline
+import SPOfflineExtended
+import SPPlayback
 
 class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     func handle(intent: INPlayMediaIntent) async -> INPlayMediaIntentResponse {

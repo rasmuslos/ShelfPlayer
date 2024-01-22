@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPPlaybackKit
+import SPBase
+import SPPlayback
 
 struct NowPlayingBarModifier: ViewModifier {
     @State var playing = AudioPlayer.shared.isPlaying()

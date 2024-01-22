@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SPBaseKit
-import SPOfflineKit
+import SPBase
+import SPOffline
 
 extension PlayableItem {
     static func convertTrackFromOffline(_ track: OfflineTrack) -> AudioTrack {

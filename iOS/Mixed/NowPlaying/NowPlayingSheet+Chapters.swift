@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import SPBaseKit
-import SPPlaybackKit
+import SPBase
+import SPPlayback
 
 extension NowPlayingSheet {
     struct ChapterSheet: View {
