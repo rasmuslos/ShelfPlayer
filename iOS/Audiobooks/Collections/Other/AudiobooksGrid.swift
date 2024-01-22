@@ -12,7 +12,7 @@ struct AudiobookGrid: View {
     let audiobooks: [Audiobook]
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
             ForEach(Array(audiobooks.enumerated()), id: \.offset) { index, audiobook in
                 NavigationLink {
                     AudiobookView(audiobook: audiobook)
