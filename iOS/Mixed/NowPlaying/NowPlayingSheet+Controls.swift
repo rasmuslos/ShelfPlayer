@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MediaPlayer
 import SPBase
 import SPPlayback
 
@@ -91,6 +92,8 @@ extension NowPlayingSheet {
                 .padding(.vertical, 35)
                 
                 VolumeSlider()
+                VolumeView()
+                    .frame(width: 0, height: 0)
             }
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.currentTimeChangedNotification), perform: { _ in
                 withAnimation {
@@ -111,6 +114,17 @@ extension NowPlayingSheet {
             })
         }
     }
+}
+
+struct VolumeView: UIViewRepresentable {
+    func makeUIView(context: Context) -> MPVolumeView {
+        let volumeView = MPVolumeView(frame: CGRect.zero)
+        volumeView.alpha = 0.001
+        
+        return volumeView
+    }
+    
+    func updateUIView(_ uiView: MPVolumeView, context: Context) {}
 }
 
 extension NowPlayingSheet.Controls {
