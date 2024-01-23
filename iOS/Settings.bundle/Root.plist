@@ -10,7 +10,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Show chapter track</string>
+			<string>Show current time in chapter</string>
 			<key>Key</key>
 			<string>enableChapterTrack</string>
 			<key>DefaultValue</key>
@@ -20,7 +20,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Delete downloads when finished</string>
+			<string>Delete finished downloads</string>
 			<key>Key</key>
 			<string>deleteFinishedDownloads</string>
 			<key>DefaultValue</key>
@@ -30,13 +30,13 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Listen now</string>
+			<string>Listen now settings</string>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Show authors home row</string>
+			<string>Enable row &quot;authors&quot;</string>
 			<key>Key</key>
 			<string>showAuthorsRow</string>
 			<key>DefaultValue</key>
@@ -46,7 +46,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Disable &quot;Discover&quot; row</string>
+			<string>Disable row &quot;discover&quot;</string>
 			<key>Key</key>
 			<string>disableDiscoverRow</string>
 			<key>DefaultValue</key>
@@ -56,13 +56,13 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Intervals</string>
+			<string>Skip durations</string>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Skip forwards interval</string>
+			<string>Skip forwards amount</string>
 			<key>Key</key>
 			<string>skipForwardsInterval</string>
 			<key>DefaultValue</key>
@@ -86,7 +86,7 @@
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Skip backwards interval</string>
+			<string>Skip backwards amount</string>
 			<key>Key</key>
 			<string>skipBackwardsInterval</string>
 			<key>DefaultValue</key>
