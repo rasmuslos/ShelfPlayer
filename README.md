@@ -6,7 +6,8 @@ ShelfPlayer is a beautifully designed Audiobookshelf client that feels right at 
 
 Available on the App Store soon™️ \
 \
-Update: The app has been stuck in app review for nearly a month now. This is the second time i submitted it, the first time was on December the fifth.
+Update: The app has been stuck in app review for nearly a month now. This is the second time i submitted it, the first time was on December the fifth. \
+Also we are on version 2.1.2 now (as of Jan. 23) and build 91. The amount of commits nearly doubled since the app has been send to apple for review
 
 <img src="/Screenshots/Review.png?raw=true" alt="Library" />
 
