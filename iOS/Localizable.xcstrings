@@ -1218,6 +1218,22 @@
         }
       }
     },
+    "sleep.chapter" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende des Kapitels"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End of chapter"
+          }
+        }
+      }
+    },
     "sleep.clear" : {
       "localizations" : {
         "de" : {

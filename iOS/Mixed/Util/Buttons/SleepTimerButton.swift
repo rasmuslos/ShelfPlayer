@@ -54,6 +54,17 @@ struct SleepTimerButton: View {
                             Text("\(duration) sleep.minutes")
                         }
                     }
+                    
+                    if AudioPlayer.shared.getChapter() != nil {
+                        Divider()
+                        
+                        Button {
+                            let chapterRemainingTime = AudioPlayer.shared.getChapterDuration() - AudioPlayer.shared.getChapterCurrentTime()
+                            AudioPlayer.shared.setSleepTimer(duration: chapterRemainingTime)
+                        } label: {
+                            Text("sleep.chapter")
+                        }
+                    }
                 } label: {
                     Image(systemName: "moon.zzz")
                 }
@@ -64,6 +75,7 @@ struct SleepTimerButton: View {
                 remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
             }
         })
+        .frame(width: 55)
     }
 }
 
