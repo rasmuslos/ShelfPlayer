@@ -236,6 +236,9 @@
 		3AF240EE2ADA98E90065C0A4 /* AuthorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorRow.swift; sourceTree = "<group>"; };
 		3AF240F02ADA99940065C0A4 /* AuthorsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorsRow.swift; sourceTree = "<group>"; };
 		3AF240F22ADA99F50065C0A4 /* AuthorAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorAvatar.swift; sourceTree = "<group>"; };
+		3AF6A52A2B60401300770A1E /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		3AF6A52B2B60401A00770A1E /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		3AF6A52C2B60402300770A1E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -261,6 +264,7 @@
 			isa = PBXGroup;
 			children = (
 				3A82864B2AEC0DD800384BC9 /* README.md */,
+				3AF6A5292B603FA000770A1E /* Configuration */,
 				3A0AE6A22AB623F400ACCD68 /* iOS */,
 				3A97FEB52B4175EC00A6A5C7 /* ShelfPlayerKit */,
 				3A21CC542B0A1CBB002D5D55 /* Products */,
@@ -664,6 +668,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3AF6A5292B603FA000770A1E /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				3AF6A52A2B60401300770A1E /* Base.xcconfig */,
+				3AF6A52B2B60401A00770A1E /* Debug.xcconfig */,
+				3AF6A52C2B60402300770A1E /* Release.xcconfig */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -904,6 +918,7 @@
 /* Begin XCBuildConfiguration section */
 		3A0AE6AF2AB623F500ACCD68 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF6A52B2B60401A00770A1E /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -958,17 +973,16 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.1.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		3A0AE6B02AB623F500ACCD68 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF6A52C2B60402300770A1E /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1017,7 +1031,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.1.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1058,7 +1071,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer";
 				PRODUCT_NAME = ShelfPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
@@ -1104,7 +1117,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.shelfplayer;
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer";
 				PRODUCT_NAME = ShelfPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
