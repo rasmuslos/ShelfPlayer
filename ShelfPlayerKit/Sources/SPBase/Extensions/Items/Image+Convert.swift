@@ -17,6 +17,7 @@ extension Item.Image {
                     .appending(path: item.id)
                     .appending(path: "cover")
                     .appending(queryItems: [
+                        URLQueryItem(name: "width", value: "1000"),
                         URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token),
                     ]),
                 type: .audiobookshelf
@@ -30,6 +31,7 @@ extension Item.Image {
                     .appending(path: item.id)
                     .appending(path: "image")
                     .appending(queryItems: [
+                        URLQueryItem(name: "width", value: "1000"),
                         URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token),
                     ]),
                 type: .audiobookshelf
@@ -48,6 +50,7 @@ extension Item.Image {
                     .appending(path: podcast.libraryItemId)
                     .appending(path: "cover")
                     .appending(queryItems: [
+                        URLQueryItem(name: "width", value: "1000"),
                         URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token),
                     ]),
                 type: .audiobookshelf
