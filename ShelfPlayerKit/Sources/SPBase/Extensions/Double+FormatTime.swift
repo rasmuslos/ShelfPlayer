@@ -75,7 +75,7 @@ public extension Double {
     }
     
     func numericDuration() -> String {
-        let (hours, minutes, seconds) = hoursMinutesSeconds(padding: false)
+        let (hours, minutes, seconds) = hoursMinutesSeconds()
         
         if hours != "00" {
             return "\(hours)\(String(localized: "hours.letter", bundle: Bundle.module))"
