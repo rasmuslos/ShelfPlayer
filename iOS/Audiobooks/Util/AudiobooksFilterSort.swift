@@ -156,7 +156,7 @@ extension AudiobooksFilterSort {
         let filterSorted = audiobooks.sorted {
             switch order {
             case .name:
-                return $0.sortName < $1.sortName
+                return $0.sortName.localizedStandardCompare($1.sortName) == .orderedDescending
             case .series:
                 return $0.series.audiobookSeriesName ?? $0.series.name ?? "" < $1.series.audiobookSeriesName ?? $1.series.name ?? ""
             case .author:
@@ -167,7 +167,7 @@ extension AudiobooksFilterSort {
                     return true
                 }
                 
-                return $0.author! < $1.author!
+                return $0.author!.localizedStandardCompare($1.author!) == .orderedDescending
             case .released:
                 if $0.released == nil {
                     return false

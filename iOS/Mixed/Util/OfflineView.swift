@@ -38,7 +38,7 @@ struct OfflineView: View {
                     }
                 }
                 
-                ForEach(podcasts.sorted { $0.key.name < $1.key.name }, id: \.key.id) { podcast in
+                ForEach(podcasts.sorted { $0.key.name.localizedStandardCompare($1.key.name) == .orderedDescending }, id: \.key.id) { podcast in
                     Section(podcast.key.name) {
                         ForEach(podcast.value) {
                             EpisodeRow(episode: $0)
