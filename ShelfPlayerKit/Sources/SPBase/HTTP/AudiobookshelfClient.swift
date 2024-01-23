@@ -15,15 +15,13 @@ public class AudiobookshelfClient {
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     
     public private(set) var clientId: String
-    
-    #if DISABLE_APP_GROUP
-    #warning("UserDefaults will not be stored in group container")
-    static let defaults = UserDefaults.standard
-    #else
-    static let defaults = UserDefaults(suiteName: "group.io.rfk.shelfplayer")!
-    #endif
+    static let defaults = ENABLE_ALL_FEATURES ? UserDefaults(suiteName: "group.io.rfk.shelfplayer")! : UserDefaults.standard
     
     init(serverUrl: URL!, token: String!) {
+        if !ENABLE_ALL_FEATURES {
+            print("[WARNING] User data will not be stored in an app group")
+        }
+        
         self.serverUrl = serverUrl
         self.token = token
         

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import SPBase
 
 public struct PersistenceManager {
     public let modelContainer: ModelContainer = {
@@ -21,12 +22,7 @@ public struct PersistenceManager {
             OfflineEpisode.self,
         ], version: .init(1, 0, 0))
         
-        #if DISABLE_APP_GROUP
-        #warning("SwiftData database will not be stored in group container")
-        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true)
-        #else
-        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: .identifier("group.io.rfk.shelfplayer"))
-        #endif
+        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: ENABLE_ALL_FEATURES ? .identifier("group.io.rfk.shelfplayer") : .none)
         
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
