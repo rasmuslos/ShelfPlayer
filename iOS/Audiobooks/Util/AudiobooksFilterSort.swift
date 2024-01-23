@@ -12,13 +12,17 @@ import SPOffline
 struct AudiobooksFilterSort: View {
     @Binding var display: DisplayType {
         didSet {
-            UserDefaults.standard.set(display.rawValue, forKey: "audiobooks.display")
+            if !disableDefaults {
+                UserDefaults.standard.set(display.rawValue, forKey: "audiobooks.display")
+            }
         }
     }
     @Binding var filter: Filter
     
     @Binding var sort: SortOrder
     @Binding var ascending: Bool
+    
+    var disableDefaults = false
     
     var body: some View {
         Menu {
@@ -39,7 +43,10 @@ struct AudiobooksFilterSort: View {
                 ForEach(Filter.allCases, id: \.hashValue) { filter in
                     Button {
                         self.filter = filter
-                        UserDefaults.standard.set(sort.rawValue.stringKey, forKey: "audiobooks.filter")
+                        
+                        if !disableDefaults {
+                            UserDefaults.standard.set(sort.rawValue.stringKey, forKey: "audiobooks.filter")
+                        }
                     } label: {
                         if self.filter == filter {
                             Label(filter.rawValue, systemImage: "checkmark")
@@ -54,7 +61,10 @@ struct AudiobooksFilterSort: View {
                 ForEach(SortOrder.allCases, id: \.hashValue) { order in
                     Button {
                         sort = order
-                        UserDefaults.standard.set(sort.rawValue.stringKey, forKey: "audiobooks.sort")
+                        
+                        if !disableDefaults {
+                            UserDefaults.standard.set(sort.rawValue.stringKey, forKey: "audiobooks.sort")
+                        }
                     } label: {
                         if sort == order {
                             Label(order.rawValue, systemImage: "checkmark")
@@ -68,7 +78,10 @@ struct AudiobooksFilterSort: View {
                 
                 Button {
                     ascending.toggle()
-                    UserDefaults.standard.set(ascending, forKey: "audiobooks.sort.ascending")
+                    
+                    if !disableDefaults {
+                        UserDefaults.standard.set(ascending, forKey: "audiobooks.sort.ascending")
+                    }
                 } label: {
                     if ascending {
                         Label("sort.ascending", systemImage: "checkmark")

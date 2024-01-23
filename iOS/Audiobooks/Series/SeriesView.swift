@@ -16,8 +16,8 @@ struct SeriesView: View {
     @State var audiobooks = [Audiobook]()
     @State var displayOrder = AudiobooksFilterSort.getDisplayType()
     @State var filter = AudiobooksFilterSort.getFilter()
-    @State var sortOrder = AudiobooksFilterSort.getSortOrder()
-    @State var ascending = AudiobooksFilterSort.getAscending()
+    @State var sortOrder = AudiobooksFilterSort.SortOrder.series
+    @State var ascending = true
     
     var body: some View {
         Group {
@@ -41,7 +41,7 @@ struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobooksFilterSort(display: $displayOrder, filter: $filter, sort: $sortOrder, ascending: $ascending)
+                AudiobooksFilterSort(display: $displayOrder, filter: $filter, sort: $sortOrder, ascending: $ascending, disableDefaults: true)
             }
         }
         .modifier(NowPlayingBarSafeAreaModifier())
