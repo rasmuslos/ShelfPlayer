@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import SPBase
+import Intents
 
 struct ContentView: View {
     @State var state: Step = AudiobookshelfClient.shared.isAuthorized ? .sessionImport : .login
@@ -31,6 +32,7 @@ struct ContentView: View {
                 LibraryView()
                     .onAppear {
                         VocabularyDonator.donateVocabulary()
+                        INPreferences.requestSiriAuthorization { _ in }
                     }
             case .offline:
                 OfflineView()
