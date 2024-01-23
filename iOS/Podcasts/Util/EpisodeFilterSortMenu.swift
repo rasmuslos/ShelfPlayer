@@ -153,7 +153,7 @@ extension EpisodeFilterSortMenu {
         let episodes = episodes.sorted {
             switch sortOrder {
             case .name:
-                $0.name < $1.name
+                $0.name.localizedStandardCompare($1.name) == .orderedDescending
             case .index:
                 $0.index < $1.index
             case .released:
