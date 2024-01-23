@@ -63,7 +63,7 @@ struct AccountSheet: View {
             
             Section("account.downloads") {
                 if let downloadStatus = downloadStatus, !(downloadStatus.0.isEmpty && downloadStatus.1.isEmpty) {
-                    ForEach(Array(downloadStatus.0.keys).sorted { $0.name < $1.name }) { audiobook in
+                    ForEach(Array(downloadStatus.0.keys).sorted { $0.name.localizedStandardCompare($1.name) == .orderedDescending }) { audiobook in
                         HStack {
                             ItemImage(image: audiobook.image)
                                 .frame(width: 55)
@@ -100,7 +100,7 @@ struct AccountSheet: View {
                         }
                     }
                     
-                    ForEach(Array(downloadStatus.1.keys).sorted { $0.name < $1.name }) { podcast in
+                    ForEach(Array(downloadStatus.1.keys).sorted { $0.name.localizedStandardCompare($1.name) == .orderedDescending }) { podcast in
                         HStack {
                             ItemImage(image: podcast.image)
                                 .frame(width: 55)
