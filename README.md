@@ -4,7 +4,11 @@ ShelfPlayer is a beautifully designed Audiobookshelf client that feels right at 
 
 ## Download
 
-Available on the App Store soon™️
+Available on the App Store soon™️ \
+\
+Update: The app has been stuck in app review for nearly a month now. This is the second time i submitted it, the first time was on December the fifth.
+
+<img src="/Screenshots/Review.png?raw=true" alt="Library" />
 
 ### Building the app yourself
 
