@@ -1,0 +1,16 @@
+//
+//  Debug.xcconfig
+//  ShelfPlayer
+//
+//  Created by Rasmus Krämer on 23.01.24.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include "Base.xcconfig"
+
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG ENABLE_ALL_FEATURES
+
+DEVELOPMENT_TEAM = ABC123456
+BUNDLE_ID_PREFIX = change.me
