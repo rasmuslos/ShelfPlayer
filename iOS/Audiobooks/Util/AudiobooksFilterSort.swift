@@ -127,7 +127,7 @@ extension AudiobooksFilterSort {
         if let stored = UserDefaults.standard.string(forKey: "audiobooks.display"), let parsed = DisplayType(rawValue: stored) {
             return parsed
         }
-        return .grid
+        return .list
     }
     static func getFilter() -> Filter {
         if let stored = UserDefaults.standard.string(forKey: "audiobooks.filter"), let parsed = Filter(rawValue: LocalizedStringKey(stored)) {
