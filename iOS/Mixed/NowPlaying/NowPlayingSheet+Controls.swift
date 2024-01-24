@@ -26,7 +26,7 @@ extension NowPlayingSheet {
         var body: some View {
             VStack {
                 VStack {
-                    Slider(percentage: $playedPercentage, dragging: $dragging, onEnded: {
+                    Slider(percentage: currentTime.isFinite && !currentTime.isNaN ? $playedPercentage : .constant(0), dragging: $dragging, onEnded: {
                         AudioPlayer.shared.seek(to: duration * (playedPercentage / 100), includeChapterOffset: true)
                     })
                     .padding(.vertical, 10)
