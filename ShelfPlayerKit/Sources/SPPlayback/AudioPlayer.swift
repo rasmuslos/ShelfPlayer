@@ -41,8 +41,9 @@ public class AudioPlayer {
     private var skipForwardsInterval: Int!
     
     public private(set) var remainingSleepTimerTime: Double?
+    private var lastPause: Date?
     
-    let logger = Logger(subsystem: "io.rfk.audiobooks", category: "AudioPlayer")
+    let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "AudioPlayer")
     
     private init() {
         self.tracks = []
@@ -82,15 +83,14 @@ extension AudioPlayer {
         self.tracks = tracks.sorted()
         self.chapters = chapters.sorted()
         
-        setPlaying(true)
-        seek(to: startTime)
-        
-        updateChapterIndex()
-        setupNowPlayingMetadata()
-        
-        self.playbackReporter = playbackReporter
-        
         Task { @MainActor in
+            await seek(to: startTime)
+            setPlaying(true)
+            
+            updateChapterIndex()
+            setupNowPlayingMetadata()
+            
+            self.playbackReporter = playbackReporter
             NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
         }
     }
@@ -119,10 +119,21 @@ extension AudioPlayer {
         updateNowPlayingStatus()
         
         if playing {
-            audioPlayer.play()
-            updateAudioSession(active: true)
+            Task {
+                if let lastPause = lastPause, lastPause.timeIntervalSince(Date()) >= 10 * 60 {
+                    await seek(to: getCurrentTime() - 30)
+                }
+                
+                lastPause = nil
+                audioPlayer.play()
+                updateAudioSession(active: true)
+            }
         } else {
             audioPlayer.pause()
+            
+            if UserDefaults.standard.bool(forKey: "smartRewind") {
+                lastPause = Date()
+            }
         }
         
         playbackReporter?.reportProgress(playing: playing, currentTime: getCurrentTime(), duration: getDuration())
@@ -131,9 +142,9 @@ extension AudioPlayer {
         }
     }
     
-    public func seek(to: Double, includeChapterOffset: Bool = false) {
+    public func seek(to: Double, includeChapterOffset: Bool = false) async {
         if to < 0 {
-            seek(to: 0, includeChapterOffset: includeChapterOffset)
+            await seek(to: 0, includeChapterOffset: includeChapterOffset)
             return
         }
         
@@ -145,7 +156,7 @@ extension AudioPlayer {
          if let index = getTrackIndex(currentTime: to) {
             if index == activeAudioTrackIndex {
                 let offset = getTrack(currentTime: to)!.offset
-                audioPlayer.seek(to: CMTime(seconds: to - offset, preferredTimescale: 1000))
+                await audioPlayer.seek(to: CMTime(seconds: to - offset, preferredTimescale: 1000))
             } else {
                 guard let item = item else { return }
                 
@@ -157,19 +168,15 @@ extension AudioPlayer {
                 audioPlayer.pause()
                 audioPlayer.removeAllItems()
                 
-                let to = to
-                
-                Task {
-                    audioPlayer.insert(await getAVPlayerItem(item: item, track: track), after: nil)
-                    for queueTrack in queue {
-                        audioPlayer.insert(await getAVPlayerItem(item: item, track: queueTrack), after: nil)
-                    }
-                    
-                    await audioPlayer.seek(to: CMTime(seconds: to - track.offset, preferredTimescale: 1000))
-                    
-                    activeAudioTrackIndex = index
-                    setPlaying(resume)
+                audioPlayer.insert(await getAVPlayerItem(item: item, track: track), after: nil)
+                for queueTrack in queue {
+                    audioPlayer.insert(await getAVPlayerItem(item: item, track: queueTrack), after: nil)
                 }
+                
+                await audioPlayer.seek(to: CMTime(seconds: to - track.offset, preferredTimescale: 1000))
+                
+                activeAudioTrackIndex = index
+                setPlaying(resume)
             }
          } else if to >= getDuration() {
              playbackReporter?.reportProgress(currentTime: getDuration(), duration: getDuration())
@@ -180,6 +187,11 @@ extension AudioPlayer {
         
         updateChapterIndex()
         updateNowPlayingStatus()
+    }
+    public func seek(to: Double, includeChapterOffset: Bool = false) {
+        Task {
+            await seek(to: to, includeChapterOffset: includeChapterOffset)
+        }
     }
     
     public func setPlaybackRate(_ playbackRate: Float) {
