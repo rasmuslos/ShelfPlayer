@@ -39,7 +39,7 @@ struct AudiobookView: View {
                 
                 if let chapters = chapters, chapters.count > 1 {
                     divider
-                    ChaptersView(chapters: chapters)
+                    ChaptersList(chapters: chapters)
                         .padding()
                 }
                 
