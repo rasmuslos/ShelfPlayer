@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import SPBase
 
-struct ChaptersView: View {
+struct ChaptersList: View {
     @Environment(\.defaultMinListRowHeight) var minimumHeight
     
     var chapters: PlayableItem.Chapters
@@ -27,6 +27,7 @@ struct ChaptersView: View {
                             Text((chapter.end - chapter.start).numericDuration())
                                 .foregroundStyle(.secondary)
                         }
+                        .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
                     }
                 }
                 .listStyle(.plain)
@@ -41,13 +42,12 @@ struct ChaptersView: View {
 }
 
 #Preview {
-    ChaptersView(chapters: [
+    ChaptersList(chapters: [
         .init(id: 1, start: 0000, end: 1000, title: "Chapter 1"),
         .init(id: 2, start: 1001, end: 2000, title: "Chapter 2"),
         .init(id: 3, start: 2001, end: 3000, title: "Chapter 3"),
         .init(id: 4, start: 3001, end: 4000, title: "Chapter 4"),
         .init(id: 5, start: 4001, end: 5000, title: "Chapter 5"),
     ])
-    .border(.red)
     .padding()
 }
