@@ -56,7 +56,7 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Skip durations</string>
+			<string>Playback</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -105,6 +105,16 @@
 				<string>45</string>
 				<string>60</string>
 			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Smart rewind</string>
+			<key>Key</key>
+			<string>smartRewind</string>
+			<key>DefaultValue</key>
+			<false/>
 		</dict>
 	</array>
 </dict>

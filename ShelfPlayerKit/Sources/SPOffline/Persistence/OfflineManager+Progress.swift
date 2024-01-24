@@ -109,6 +109,7 @@ public extension OfflineManager {
             progress.currentTime = 0
         }
         
+        progress.lastUpdate = Date()
         progress.progressType = .localSynced
     }
     

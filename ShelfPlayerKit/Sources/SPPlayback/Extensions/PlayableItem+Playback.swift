@@ -34,10 +34,13 @@ extension PlayableItem {
                 
                 if let entity = OfflineManager.shared.getProgressEntity(item: self), entity.progress < 1 {
                     startTime = entity.currentTime
+                    
+                    if entity.lastUpdate.timeIntervalSince(Date()) >= 10 * 60 {
+                        startTime -= 30
+                    }
                 }
                 
                 AudioPlayer.shared.startPlayback(item: self, tracks: tracks, chapters: chapters, startTime: startTime, playbackReporter: playbackReporter)
-                
                 return
             }
             #endif
