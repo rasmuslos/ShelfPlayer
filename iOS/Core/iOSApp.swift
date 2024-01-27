@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import SPBase
+import Nuke
 
 @main
 struct iOSApp: App {
@@ -17,6 +18,8 @@ struct iOSApp: App {
         #if !ENABLE_ALL_FEATURES
         ENABLE_ALL_FEATURES = false
         #endif
+        
+        ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
     }
     
     var body: some Scene {
