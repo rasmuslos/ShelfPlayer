@@ -41,6 +41,8 @@ public class AudioPlayer {
     private var skipForwardsInterval: Int!
     
     public private(set) var remainingSleepTimerTime: Double?
+    public private(set) var pauseAtEndOfChapter = false
+    
     private var lastPause: Date?
     
     let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "AudioPlayer")
@@ -205,7 +207,16 @@ extension AudioPlayer {
     }
     
     public func setSleepTimer(duration: Double?) {
-        self.remainingSleepTimerTime = duration
+        pauseAtEndOfChapter = false
+        remainingSleepTimerTime = duration
+        
+        NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
+    }
+    
+    public func setSleepTimer(endOfChapter: Bool) {
+        pauseAtEndOfChapter = endOfChapter
+        remainingSleepTimerTime = nil
+        
         NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
     }
 }
@@ -302,6 +313,11 @@ extension AudioPlayer {
         let currentTime = getCurrentTime()
         let chapter = chapters.firstIndex { $0.start <= currentTime && $0.end > currentTime }
         
+        if pauseAtEndOfChapter && chapter != activeChapterIndex {
+            setPlaying(false)
+            setSleepTimer(duration: nil)
+        }
+        
         activeChapterIndex = chapter
     }
     public func getChapter() -> PlayableItem.Chapter? {
@@ -350,7 +366,7 @@ extension AudioPlayer {
                 
                 if remainingSleepTimerTime! <= 0 {
                     setPlaying(false)
-                    remainingSleepTimerTime = nil
+                    setSleepTimer(duration: nil)
                 }
                 
                 NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
