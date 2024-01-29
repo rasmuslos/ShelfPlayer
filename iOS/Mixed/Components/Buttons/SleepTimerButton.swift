@@ -44,6 +44,7 @@ struct SleepTimerButton: View {
                     Text(remainingSleepTimerTime.numericTimeLeft())
                         .fontDesign(.rounded)
                 }
+                .menuActionDismissBehavior(.disabled)
             } else if pauseAtEndOfChapter {
                 Button {
                     AudioPlayer.shared.setSleepTimer(duration: nil)
@@ -82,7 +83,7 @@ struct SleepTimerButton: View {
                 remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
             }
         })
-        .frame(width: 55)
+        .frame(width: 60)
     }
 }
 
