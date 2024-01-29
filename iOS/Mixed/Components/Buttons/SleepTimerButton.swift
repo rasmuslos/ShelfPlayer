@@ -10,6 +10,7 @@ import SPBase
 import SPPlayback
 
 struct SleepTimerButton: View {
+    @State var pauseAtEndOfChapter = AudioPlayer.shared.pauseAtEndOfChapter
     @State var remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
     
     var body: some View {
@@ -43,13 +44,19 @@ struct SleepTimerButton: View {
                     Text(remainingSleepTimerTime.numericTimeLeft())
                         .fontDesign(.rounded)
                 }
+            } else if pauseAtEndOfChapter {
+                Button {
+                    AudioPlayer.shared.setSleepTimer(duration: nil)
+                } label: {
+                    Image(systemName: "book.pages.fill")
+                }
             } else {
                 Menu {
                     let durations = [120, 90, 60, 45, 30, 15, 5]
                     
                     ForEach(durations, id: \.self) { duration in
                         Button {
-                            AudioPlayer.shared.setSleepTimer(duration: 2 * 60 * 60)
+                            AudioPlayer.shared.setSleepTimer(duration: Double(duration) * 60)
                         } label: {
                             Text("\(duration) sleep.minutes")
                         }
@@ -59,8 +66,7 @@ struct SleepTimerButton: View {
                         Divider()
                         
                         Button {
-                            let chapterRemainingTime = AudioPlayer.shared.getChapterDuration() - AudioPlayer.shared.getChapterCurrentTime()
-                            AudioPlayer.shared.setSleepTimer(duration: chapterRemainingTime)
+                            AudioPlayer.shared.setSleepTimer(endOfChapter: true)
                         } label: {
                             Text("sleep.chapter")
                         }
@@ -72,6 +78,7 @@ struct SleepTimerButton: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.sleepTimerChanged), perform: { _ in
             withAnimation {
+                pauseAtEndOfChapter = AudioPlayer.shared.pauseAtEndOfChapter
                 remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
             }
         })
