@@ -63,8 +63,7 @@ extension PlayMediaIntentHandler {
         }
         
         try? await AudiobookshelfClient.shared.getLibraries().filter { $0.type == .audiobooks }.parallelMap {
-            print(name)
-            return try await AudiobookshelfClient.shared.getItems(query: name, libraryId: $0.id)
+            try await AudiobookshelfClient.shared.getItems(query: name, libraryId: $0.id)
         }.forEach { audiobooks.append(contentsOf: $0.0) }
         
         return audiobooks

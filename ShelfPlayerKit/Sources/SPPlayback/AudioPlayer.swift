@@ -207,6 +207,8 @@ extension AudioPlayer {
     }
     
     public func setSleepTimer(duration: Double?) {
+        audioPlayer.volume = 1
+        
         pauseAtEndOfChapter = false
         remainingSleepTimerTime = duration
         
@@ -363,13 +365,21 @@ extension AudioPlayer {
             
             if remainingSleepTimerTime != nil && isPlaying() {
                 remainingSleepTimerTime! -= 0.5
-                
+                                
                 if remainingSleepTimerTime! <= 0 {
                     setPlaying(false)
                     setSleepTimer(duration: nil)
+                } else if remainingSleepTimerTime! <= 10 {
+                    audioPlayer.volume = Float(remainingSleepTimerTime! / 10)
                 }
                 
                 NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
+            } else if pauseAtEndOfChapter && isPlaying() {
+                let delta = getChapterDuration() - getChapterCurrentTime()
+                
+                if delta <= 10 {
+                    audioPlayer.volume = Float(delta / 10)
+                }
             }
             
             Task { @MainActor in
