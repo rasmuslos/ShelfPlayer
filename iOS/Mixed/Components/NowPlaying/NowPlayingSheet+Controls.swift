@@ -116,15 +116,17 @@ extension NowPlayingSheet {
     }
 }
 
-struct VolumeView: UIViewRepresentable {
-    func makeUIView(context: Context) -> MPVolumeView {
-        let volumeView = MPVolumeView(frame: CGRect.zero)
-        volumeView.alpha = 0.001
+extension NowPlayingSheet.Controls {
+    struct VolumeView: UIViewRepresentable {
+        func makeUIView(context: Context) -> MPVolumeView {
+            let volumeView = MPVolumeView(frame: CGRect.zero)
+            volumeView.alpha = 0.001
+            
+            return volumeView
+        }
         
-        return volumeView
+        func updateUIView(_ uiView: MPVolumeView, context: Context) {}
     }
-    
-    func updateUIView(_ uiView: MPVolumeView, context: Context) {}
 }
 
 extension NowPlayingSheet.Controls {
