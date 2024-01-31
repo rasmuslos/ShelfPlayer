@@ -37,7 +37,6 @@ struct NowPlayingSheet: View {
             Spacer()
             
             Title(item: item)
-                .padding(.bottom, 10)
             Controls(playing: $playing)
             BottomButtons(showChaptersSheet: $showChaptersSheet)
         }

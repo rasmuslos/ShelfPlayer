@@ -20,16 +20,15 @@ struct NowPlayingBarModifier: ViewModifier {
         content
             .safeAreaInset(edge: .bottom) {
                 if let item = item {
-                    ZStack {
+                    ZStack(alignment: .bottom) {
+                        Rectangle()
+                            .frame(width: UIScreen.main.bounds.width + 100, height: 300)
+                            .offset(y: 225)
+                            .blur(radius: 25)
+                            .foregroundStyle(.thinMaterial)
+                        
                         RoundedRectangle(cornerRadius: 15)
                             .toolbarBackground(.hidden, for: .tabBar)
-                            .background {
-                                Rectangle()
-                                    .frame(width: UIScreen.main.bounds.width + 100, height: 300)
-                                    .offset(y: 130)
-                                    .blur(radius: 25)
-                                    .foregroundStyle(.thinMaterial)
-                            }
                             .foregroundStyle(.ultraThinMaterial)
                             .overlay {
                                 HStack {
@@ -54,6 +53,7 @@ struct NowPlayingBarModifier: ViewModifier {
                                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
                                         } label: {
                                             Image(systemName: "goforward.\(skipForwardsInterval)")
+                                                .bold()
                                         }
                                         .padding(.horizontal, 10)
                                     }
@@ -62,49 +62,48 @@ struct NowPlayingBarModifier: ViewModifier {
                                 .padding(.horizontal, 6)
                             }
                             .foregroundStyle(.primary)
-                            .padding(.horizontal, 15)
-                            .padding(.bottom, 10)
-                            .frame(height: 65)
+                            .frame(width: UIScreen.main.bounds.width - 30, height: 60)
                             .shadow(color: .black.opacity(0.25), radius: 20)
+                            .contextMenu {
+                                Button {
+                                    AudioPlayer.shared.stopPlayback()
+                                } label: {
+                                    Label("playback.stop", systemImage: "xmark")
+                                }
+                            } preview: {
+                                VStack(alignment: .leading) {
+                                    ItemImage(image: item.image)
+                                        .padding(.bottom, 10)
+                                    
+                                    Group {
+                                        if let episode = item as? Episode, let releaseDate = episode.formattedReleaseDate {
+                                            Text(releaseDate)
+                                        } else if let audiobook = item as? Audiobook, let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
+                                            Text(series)
+                                        }
+                                    }
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    
+                                    Text(item.name)
+                                        .font(.headline)
+                                    
+                                    if let author = item.author {
+                                        Text(author)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                .frame(width: 250)
+                                .padding()
+                            }
+                            .padding(.bottom, 10)
                             .onTapGesture {
                                 nowPlayingSheetPresented.toggle()
                             }
                             .fullScreenCover(isPresented: $nowPlayingSheetPresented) {
                                 NowPlayingSheet(item: item, playing: $playing)
                             }
-                    }
-                    .contextMenu {
-                        Button {
-                            AudioPlayer.shared.stopPlayback()
-                        } label: {
-                            Label("playback.stop", systemImage: "xmark")
-                        }
-                    } preview: {
-                        VStack(alignment: .leading) {
-                            ItemImage(image: item.image)
-                                .padding(.bottom, 10)
-                            
-                            Group {
-                                if let episode = item as? Episode, let releaseDate = episode.formattedReleaseDate {
-                                    Text(releaseDate)
-                                } else if let audiobook = item as? Audiobook, let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
-                                    Text(series)
-                                }
-                            }
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            
-                            Text(item.name)
-                                .font(.headline)
-                            
-                            if let author = item.author {
-                                Text(author)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .frame(width: 250)
-                        .padding()
                     }
                 }
             }
@@ -141,6 +140,13 @@ struct NowPlayingBarSafeAreaModifier: ViewModifier {
 }
 
 #Preview {
-    Text(":)")
-        .modifier(NowPlayingBarModifier(item: Audiobook.fixture))
+    TabView {
+        Rectangle()
+            .ignoresSafeArea()
+            .foregroundStyle(.red)
+            .modifier(NowPlayingBarModifier(item: Audiobook.fixture))
+            .tabItem {
+                Label(":)", systemImage: "command")
+            }
+    }
 }
