@@ -93,7 +93,7 @@ extension NowPlayingSheet {
                     .font(.system(size: 34))
                     .foregroundStyle(.primary)
                 }
-                .padding(.vertical, 45)
+                .padding(.vertical, 50)
                 
                 VolumeSlider()
                     .frame(height: 10)
