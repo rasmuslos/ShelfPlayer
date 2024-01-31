@@ -83,7 +83,6 @@ struct SleepTimerButton: View {
                 remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
             }
         })
-        .frame(width: 60)
     }
 }
 

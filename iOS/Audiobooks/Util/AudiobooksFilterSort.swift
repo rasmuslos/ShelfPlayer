@@ -28,12 +28,16 @@ struct AudiobooksFilterSort: View {
         Menu {
             Section("section.display") {
                 Button {
-                    display = .list
+                    withAnimation {
+                        display = .list
+                    }
                 } label: {
                     Label("sort.list", systemImage: "list.bullet")
                 }
                 Button {
-                    display = .grid
+                    withAnimation {
+                        display = .grid
+                    }
                 } label: {
                     Label("sort.grid", systemImage: "square.grid.2x2")
                 }
@@ -42,7 +46,9 @@ struct AudiobooksFilterSort: View {
             Section("section.filter") {
                 ForEach(Filter.allCases, id: \.hashValue) { filter in
                     Button {
-                        self.filter = filter
+                        withAnimation {
+                            self.filter = filter
+                        }
                         
                         if !disableDefaults {
                             UserDefaults.standard.set(sort.rawValue.stringKey, forKey: "audiobooks.filter")
@@ -60,7 +66,9 @@ struct AudiobooksFilterSort: View {
             Section("section.order") {
                 ForEach(SortOrder.allCases, id: \.hashValue) { order in
                     Button {
-                        sort = order
+                        withAnimation {
+                            sort = order
+                        }
                         
                         if !disableDefaults {
                             UserDefaults.standard.set(sort.rawValue.stringKey, forKey: "audiobooks.sort")
@@ -77,7 +85,9 @@ struct AudiobooksFilterSort: View {
                 Divider()
                 
                 Button {
-                    ascending.toggle()
+                    withAnimation {
+                        ascending.toggle()
+                    }
                     
                     if !disableDefaults {
                         UserDefaults.standard.set(ascending, forKey: "audiobooks.sort.ascending")
