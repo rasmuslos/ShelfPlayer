@@ -13,6 +13,8 @@ struct SleepTimerButton: View {
     @State var pauseAtEndOfChapter = AudioPlayer.shared.pauseAtEndOfChapter
     @State var remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
     
+    @State var pauseAtEndOfChapterAvailable = AudioPlayer.shared.getChapter() != nil
+    
     var body: some View {
         Group {
             if let remainingSleepTimerTime = remainingSleepTimerTime {
@@ -63,7 +65,7 @@ struct SleepTimerButton: View {
                         }
                     }
                     
-                    if AudioPlayer.shared.getChapter() != nil {
+                    if pauseAtEndOfChapterAvailable {
                         Divider()
                         
                         Button {
@@ -77,12 +79,17 @@ struct SleepTimerButton: View {
                 }
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.sleepTimerChanged), perform: { _ in
+        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.sleepTimerChanged)) { _ in
             withAnimation {
                 pauseAtEndOfChapter = AudioPlayer.shared.pauseAtEndOfChapter
                 remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
             }
-        })
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification)) { _ in
+            withAnimation {
+                pauseAtEndOfChapterAvailable = AudioPlayer.shared.getChapter() != nil
+            }
+        }
     }
 }
 
