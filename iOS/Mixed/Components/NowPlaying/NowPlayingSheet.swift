@@ -31,12 +31,13 @@ struct NowPlayingSheet: View {
             
             ItemImage(image: item.image)
                 .scaleEffect(playing ? 1 : 0.8)
-                .animation(.spring(duration: 0.25, bounce: 0.5), value: playing)
+                .animation(.spring(duration: 0.3, bounce: 0.6), value: playing)
                 .shadow(radius: 15)
             
             Spacer()
             
             Title(item: item)
+                .padding(.bottom, 10)
             Controls(playing: $playing)
             BottomButtons(showChaptersSheet: $showChaptersSheet)
         }

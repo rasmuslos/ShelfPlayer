@@ -73,7 +73,10 @@ struct EpisodeFilterSortMenu: View {
                 Divider()
                 
                 Button {
-                    ascending.toggle()
+                    withAnimation {
+                        ascending.toggle()
+                    }
+                    
                     Self.setAscending(ascending, podcastId: podcastId)
                 } label: {
                     if ascending {

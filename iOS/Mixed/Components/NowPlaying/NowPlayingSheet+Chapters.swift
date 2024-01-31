@@ -20,9 +20,15 @@ extension NowPlayingSheet {
         var body: some View {
             Group {
                 if chapters.count > 1 {
-                    List {
-                        ForEach(chapters) {
-                            ChapterRow(chapter: $0, currentTime: $currentTime)
+                    ScrollViewReader { proxy in
+                        List {
+                            ForEach(chapters) {
+                                ChapterRow(chapter: $0, active: $0.start <= currentTime && $0.end > currentTime)
+                                    .id($0.id)
+                            }
+                        }
+                        .onAppear {
+                            proxy.scrollTo(AudioPlayer.shared.getChapter()?.id, anchor: .center)
                         }
                     }
                 } else {
@@ -78,15 +84,36 @@ extension NowPlayingSheet {
 extension NowPlayingSheet.ChapterSheet {
     struct ChapterRow: View {
         let chapter: PlayableItem.Chapter
-        @Binding var currentTime: Double
+        let active: Bool
         
         var body: some View {
             Button {
                 AudioPlayer.shared.seek(to: chapter.start)
             } label: {
                 VStack(alignment: .leading) {
-                    Text(chapter.title)
-                        .bold(chapter.start <= currentTime && chapter.end > currentTime)
+                    HStack {
+                        Text(chapter.title)
+                            .bold(active)
+                        
+                        Spacer()
+                        
+                        if active {
+                            Image(systemName: "waveform")
+                                .symbolEffect(.variableColor.iterative.dimInactiveLayers)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .transition(.opacity)
+                        }
+                    }
+                    .overlay(alignment: .leadingFirstTextBaseline) {
+                        if active {
+                            Circle()
+                                .foregroundStyle(.gray.opacity(0.3))
+                                .frame(width: 7, height: 7)
+                                .offset(x: -13)
+                                .transition(.opacity)
+                        }
+                    }
                     Text((chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -94,4 +121,11 @@ extension NowPlayingSheet.ChapterSheet {
             }
         }
     }
+}
+
+#Preview {
+    Text(verbatim: ":)")
+        .sheet(isPresented: .constant(true)) {
+            NowPlayingSheet.ChapterSheet(item: Audiobook.fixture)
+        }
 }
