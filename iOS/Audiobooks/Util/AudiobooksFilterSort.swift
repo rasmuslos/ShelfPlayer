@@ -168,7 +168,14 @@ extension AudiobooksFilterSort {
             case .name:
                 return $0.sortName.localizedStandardCompare($1.sortName) == .orderedDescending
             case .series:
-                return $0.series.audiobookSeriesName ?? $0.series.name ?? "" < $1.series.audiobookSeriesName ?? $1.series.name ?? ""
+                if $0.series.audiobookSeriesName == nil {
+                    return false
+                }
+                if $0.series.audiobookSeriesName == nil {
+                    return false
+                }
+                
+                return $0.series.audiobookSeriesName!.localizedStandardCompare($1.series.audiobookSeriesName!) == .orderedDescending
             case .author:
                 if $0.author == nil {
                     return false
