@@ -66,6 +66,7 @@ extension NowPlayingSheet {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 }
+                .padding(.bottom, -10)
                 
                 HStack {
                     Group {
@@ -92,7 +93,7 @@ extension NowPlayingSheet {
                     .font(.system(size: 34))
                     .foregroundStyle(.primary)
                 }
-                .padding(.vertical, 35)
+                .padding(.vertical, 45)
                 
                 VolumeSlider()
                     .frame(height: 10)
