@@ -29,6 +29,7 @@ extension NowPlayingSheet {
                     Slider(percentage: currentTime.isFinite && !currentTime.isNaN ? $playedPercentage : .constant(0), dragging: $dragging, onEnded: {
                         AudioPlayer.shared.seek(to: duration * (playedPercentage / 100), includeChapterOffset: true)
                     })
+                    .frame(height: 10)
                     .padding(.vertical, 10)
                     
                     HStack {
@@ -48,6 +49,7 @@ extension NowPlayingSheet {
                                 Text(formatRemainingTime(duration - duration * (playedPercentage / 100)))
                             } else if let chapter = AudioPlayer.shared.getChapter() {
                                 Text(chapter.title)
+                                    .animation(.easeInOut, value: chapter.title)
                             } else {
                                 Text(formatRemainingTime(duration - currentTime))
                             }
@@ -55,6 +57,7 @@ extension NowPlayingSheet {
                         .font(.caption2)
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
+                        .transition(.opacity)
                         
                         Spacer()
                         Text(duration.hoursMinutesSecondsString())
@@ -92,6 +95,7 @@ extension NowPlayingSheet {
                 .padding(.vertical, 35)
                 
                 VolumeSlider()
+                    .frame(height: 10)
                 VolumeView()
                     .frame(width: 0, height: 0)
             }

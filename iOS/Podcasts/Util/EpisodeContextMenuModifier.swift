@@ -44,8 +44,6 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     }
                 }
                 
-                Divider()
-                
                 if offlineTracker.status == .none {
                     Button {
                         Task {

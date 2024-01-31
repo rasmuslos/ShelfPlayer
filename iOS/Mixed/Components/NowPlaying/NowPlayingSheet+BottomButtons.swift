@@ -15,28 +15,34 @@ extension NowPlayingSheet {
         var body: some View {
             HStack {
                 PlaybackSpeedSelector()
+                    .frame(width: 60)
                     .foregroundStyle(.secondary)
                 
                 Spacer()
+                
                 SleepTimerButton()
+                    .frame(width: 60)
                     .foregroundStyle(.secondary)
                 
                 Spacer()
+                
                 AirPlayView()
-                    .frame(width: 45)
+                    .frame(width: 60)
                 
                 Spacer()
+                
                 Button {
                     showChaptersSheet.toggle()
                 } label: {
                     Image(systemName: "list.dash")
                 }
+                .frame(width: 60)
                 .foregroundStyle(.secondary)
             }
             .bold()
             .font(.system(size: 20))
             .frame(height: 45)
-            .padding(.horizontal, 15)
+            .padding(.horizontal, 10)
             .padding(.top, 20)
             .padding(.bottom, 45)
         }
