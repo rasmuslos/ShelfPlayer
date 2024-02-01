@@ -10,13 +10,15 @@ import SPBase
 
 struct AudiobooksList: View {
     let audiobooks: [Audiobook]
+    var hideLeadingSeparator = false
     
     var body: some View {
-        ForEach(audiobooks) { audiobook in
+        ForEach(Array(audiobooks.enumerated()), id: \.offset) { offset, audiobook in
             NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
                 AudiobookRow(audiobook: audiobook)
             }
             .modifier(SwipeActionsModifier(item: audiobook))
+            .listRowSeparator(hideLeadingSeparator && offset == 0 ? .hidden : .visible, edges: .top)
         }
     }
 }

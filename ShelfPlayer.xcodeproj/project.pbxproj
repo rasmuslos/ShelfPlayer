@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -108,6 +108,7 @@
 		3ACD19B52ACB58EB007D01FE /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B42ACB58EB007D01FE /* LoadingView.swift */; };
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
 		3ACD19B92ACB5B32007D01FE /* SessionsImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */; };
+		3AD41D792B6B8F82003316CE /* AudiobookGenreFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD41D782B6B8F82003316CE /* AudiobookGenreFilter.swift */; };
 		3ADB9B202B13B9760015F884 /* AudiobookContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */; };
 		3AE31DCE2B4B3C310092DF36 /* AuthorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE31DCD2B4B3C310092DF36 /* AuthorsView.swift */; };
 		3AE31DD02B4B3E420092DF36 /* AuthorListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE31DCF2B4B3E420092DF36 /* AuthorListRow.swift */; };
@@ -227,6 +228,7 @@
 		3ACD19B42ACB58EB007D01FE /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsImportView.swift; sourceTree = "<group>"; };
+		3AD41D782B6B8F82003316CE /* AudiobookGenreFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookGenreFilter.swift; sourceTree = "<group>"; };
 		3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookContextMenuModifier.swift; sourceTree = "<group>"; };
 		3AE31DCD2B4B3C310092DF36 /* AuthorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorsView.swift; sourceTree = "<group>"; };
 		3AE31DCF2B4B3E420092DF36 /* AuthorListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorListRow.swift; sourceTree = "<group>"; };
@@ -276,7 +278,6 @@
 			isa = PBXGroup;
 			children = (
 				3A1F53362B6131D0004EF56A /* Util */,
-				3A0AE6BB2AB624EB00ACCD68 /* Core */,
 				3A9874202B59955F00B2704F /* Podcasts */,
 				3A98741F2B59955A00B2704F /* Audiobooks */,
 				3A98741E2B59955400B2704F /* Mixed */,
@@ -527,6 +528,7 @@
 		3A98741E2B59955400B2704F /* Mixed */ = {
 			isa = PBXGroup;
 			children = (
+				3A0AE6BB2AB624EB00ACCD68 /* Core */,
 				3A1F53372B6132CB004EF56A /* Views */,
 				3A1011782AD696CF00AAE220 /* Toolbar */,
 				3ACD19B32ACB58D6007D01FE /* Fallback */,
@@ -652,6 +654,7 @@
 			isa = PBXGroup;
 			children = (
 				3A5159552AD0374600CD5680 /* AudiobooksFilterSort.swift */,
+				3AD41D782B6B8F82003316CE /* AudiobookGenreFilter.swift */,
 				3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */,
 			);
 			path = Util;
@@ -738,7 +741,7 @@
 				};
 			};
 			buildConfigurationList = 3A0AE69B2AB623F400ACCD68 /* Build configuration list for PBXProject "ShelfPlayer" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -822,6 +825,7 @@
 				3A9AB5382AD941DC0089231A /* SwipeActionsModifier.swift in Sources */,
 				3A5159522AD02A3800CD5680 /* AudiobookRow.swift in Sources */,
 				3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */,
+				3AD41D792B6B8F82003316CE /* AudiobookGenreFilter.swift in Sources */,
 				3A1EAB8B2ACC7C5D0064C80C /* AudiobooksRow.swift in Sources */,
 				3ABCC7E42AD46655004AEADF /* GeometryRectangle.swift in Sources */,
 				3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */,

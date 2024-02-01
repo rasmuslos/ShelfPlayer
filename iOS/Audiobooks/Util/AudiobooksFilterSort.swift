@@ -171,8 +171,8 @@ extension AudiobooksFilterSort {
                 if $0.series.audiobookSeriesName == nil {
                     return false
                 }
-                if $0.series.audiobookSeriesName == nil {
-                    return false
+                if $1.series.audiobookSeriesName == nil {
+                    return true
                 }
                 
                 return $0.series.audiobookSeriesName!.localizedStandardCompare($1.series.audiobookSeriesName!) == .orderedDescending
