@@ -14,10 +14,13 @@ extension AudiobookLibraryView {
         
         @State var failed = false
         @State var audiobooks = [Audiobook]()
+        
         @State var displayOrder = AudiobooksFilterSort.getDisplayType()
         @State var filter = AudiobooksFilterSort.getFilter()
         @State var sortOrder = AudiobooksFilterSort.getSortOrder()
         @State var ascending = AudiobooksFilterSort.getAscending()
+        
+        @State var genres = [String]()
         
         var body: some View {
             NavigationStack {
@@ -29,19 +32,41 @@ extension AudiobookLibraryView {
                             LoadingView()
                         }
                     } else {
-                        let sorted = AudiobooksFilterSort.filterSort(audiobooks: audiobooks, filter: filter, order: sortOrder, ascending: ascending)
-                        
-                        if displayOrder == .grid {
-                            ScrollView {
-                                AudiobookGrid(audiobooks: sorted)
-                                    .padding(.horizontal)
+                        let sorted = AudiobooksFilterSort.filterSort(audiobooks: audiobooks, filter: filter, order: sortOrder, ascending: ascending).filter { audiobook in
+                            if genres.count == 0 {
+                                return true
                             }
-                        } else if displayOrder == .list {
-                            List {
-                                AudiobooksList(audiobooks: sorted)
+                            if audiobook.genres.count == 0 {
+                                return false
                             }
-                            .listStyle(.plain)
+                            
+                            let matches = audiobook.genres.reduce(0, { result, genre in genres.contains(where: { $0 == genre }) ? result + 1 : result })
+                            return matches == genres.count
                         }
+                        
+                        Group {
+                            if displayOrder == .grid {
+                                ScrollView {
+                                    AudiobookGrid(audiobooks: sorted)
+                                        .padding(.horizontal)
+                                }
+                            } else if displayOrder == .list {
+                                List {
+                                    AudiobooksList(audiobooks: sorted, hideLeadingSeparator: true)
+                                }
+                                .listStyle(.plain)
+                            }
+                        }
+                        .modifier(AudiobookGenreFilter(genres: {
+                            var genres = Set<String>()
+                            for audiobook in audiobooks {
+                                for genre in audiobook.genres {
+                                    genres.insert(genre)
+                                }
+                            }
+                            
+                            return Array(genres)
+                        }(), selected: $genres))
                     }
                 }
                 .navigationTitle("title.library")

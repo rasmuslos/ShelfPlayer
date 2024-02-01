@@ -13,16 +13,17 @@ import SPOffline
 import SPOfflineExtended
 #endif
 
-class PlaybackReporter {
-    let itemId: String
-    let episodeId: String?
-    let playbackSessionId: String?
+/// An object that reports playback progress to the ABS server or alternatively stores is for future syncing
+internal class PlaybackReporter {
+    private let itemId: String
+    private let episodeId: String?
+    private let playbackSessionId: String?
     
-    var duration: Double
-    var currentTime: Double
-    var lastReportedTime: Double
+    private var duration: Double
+    private var currentTime: Double
+    private var lastReportedTime: Double
     
-    init(itemId: String, episodeId: String?, playbackSessionId: String?) {
+    internal init(itemId: String, episodeId: String?, playbackSessionId: String?) {
         self.itemId = itemId
         self.episodeId = episodeId
         self.playbackSessionId = playbackSessionId
@@ -37,9 +38,7 @@ class PlaybackReporter {
     }
 }
 
-// MARK: Public
-
-extension PlaybackReporter {
+internal extension PlaybackReporter {
     func reportProgress(currentTime: Double, duration: Double) {
         updateTime(currentTime: currentTime, duration: duration)
         
@@ -61,8 +60,8 @@ extension PlaybackReporter {
 
 // MARK: Report
 
-extension PlaybackReporter {
-    private func reportProgress() {
+private extension PlaybackReporter {
+    func reportProgress() {
         if currentTime.isNaN || duration.isNaN {
             return
         }

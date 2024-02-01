@@ -84,6 +84,8 @@ extension NowPlayingSheet {
                                 .padding(.horizontal, 50)
                                 .contentTransition(.symbolEffect(.replace))
                         }
+                        .sensoryFeedback(.selection, trigger: AudioPlayer.shared.isPlaying())
+                        
                         Button {
                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
                         } label: {
