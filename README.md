@@ -11,21 +11,25 @@ Also we are on version 2.1.2 now (as of Jan. 23) and build 91. The amount of com
 
 <img src="/Screenshots/Review.png?raw=true" alt="Library" />
 
-### Building the app yourself
+### Sideload
 
-**Install using your favorite Side loading tool**
+**Pre built binaries**
 
-Download and install the latest release \
-*Please strip app extensions (widgets, siri support, ...), they will not work as intented see https://github.com/rasmuslos/ShelfPlayer/issues/4*
+Grab the (latest Release)[https://github.com/rasmuslos/ShelfPlayer/releases/tag/v2.1.4] and install it using your favorite tool like SideStore.
+
+Please not that the pre build binaries lack Siri and Widget support because these features either require a paid developer account or cannot be reliably implemented in a way that works with tools like SideStore. For further information see https://github.com/rasmuslos/ShelfPlayer/issues/20 & https://github.com/rasmuslos/ShelfPlayer/issues/4
+
+This means that stripping app extensions is highly recommended, as they will not work as intended.
 
 **Build the app yourself**
 
 1. Install Xcode
-2. Change the bundle identifier
-3. Connect your iPhone to your Mac
-4. Enable developer mode
-5. Select your iPhone as the target
-6. Run the application
+2. Edit the configuration file in the `Configuration` directory
+3. If you do not have a paid developer account remove the `ENABLE_ALL_FEATURES` compilation options, otherwise the app will crash
+4. Connect your iPhone to your Mac
+5. Enable developer mode
+6. Select your iPhone as the run destination
+7. Run the application
 
 ## Features
 
@@ -38,8 +42,7 @@ Download and install the latest release \
 ## Roadmap
 
 - Fix upcoming bugs
-- tvOS application
-- Siri intents
+- Siri intents (episodes, audiobooks are already implemented)
 
 ## Screenshots
 
@@ -50,7 +53,7 @@ Download and install the latest release \
 Please note that collections are not supported right now.
 ShelfPlayer is not endorsed nor associated with Audiobookshelf
 
-# Licensing & Contributing
+## Licensing & Contributing
 
 ShelfPlayer is licensed under the Mozilla Public License Version 2. Additionally the "Common Clause" applies. This means that you can modify ShelfPlayer, as well as contribute to it, but you are not allowed to distribute the application in binary form. Compiling for your own personal use is not covered by the commons clause and therefore fine. Additionally, prebuilt binaries are available on GitHub for side loading using popular tools like SideStore, etc.
 
