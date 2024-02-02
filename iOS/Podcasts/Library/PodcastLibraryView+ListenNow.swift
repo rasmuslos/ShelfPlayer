@@ -32,18 +32,22 @@ extension PodcastLibraryView {
                         ScrollView {
                             VStack {
                                 ForEach(episodeRows) { row in
-                                    if row.id == "continue-listening" {
-                                        VStack(alignment: .leading) {
-                                            RowTitle(title: row.label)
-                                            EpisodeFeaturedRow(episodes: row.episodes)
+                                    VStack(alignment: .leading) {
+                                        RowTitle(title: row.label)
+                                        
+                                        if row.id == "continue-listening" {
+                                            EpisodeFeaturedGrid(episodes: row.episodes)
+                                        } else {
+                                            EpisodeGrid(episodes: row.episodes)
                                         }
-                                    } else {
-                                        EpisodeTableContainer(title: row.label, episodes: row.episodes)
                                     }
                                 }
                                 
-                                ForEach(podcastRows) {
-                                    PodcastsRowContainer(title: $0.label, podcasts: $0.podcasts)
+                                ForEach(podcastRows) { row in
+                                    VStack(alignment: .leading) {
+                                        RowTitle(title: row.label)
+                                        PodcastHGrid(podcasts: row.podcasts)
+                                    }
                                 }
                             }
                         }

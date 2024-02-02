@@ -9,5 +9,5 @@ import Foundation
 import SPBase
 
 extension PlayableItem {
-    public static let downloadStatusUpdatedNotification = Notification.Name("io.rfk..shelfplayer.download.updated")
+    public static let downloadStatusUpdatedNotification = NSNotification.Name("io.rfk..shelfplayer.download.updated")
 }
