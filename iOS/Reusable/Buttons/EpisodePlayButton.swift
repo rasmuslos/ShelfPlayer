@@ -55,7 +55,7 @@ extension EpisodePlayButton {
                     Image(systemName: "play.fill")
                 }
                 
-                if viewModel.entity.progress == 0 {
+                if viewModel.entity.progress > 0 {
                     if viewModel.entity.progress >= 1 {
                         Text("progress.completed")
                             .font(.caption.smallCaps())

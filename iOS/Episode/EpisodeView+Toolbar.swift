@@ -41,32 +41,15 @@ extension EpisodeView {
                             Text(verbatim: "")
                         }
                     }
-                }
-                .toolbar {
+                    
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            Task {
-                                if offlineTracker.status == .none {
-                                    try await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
-                                } else if offlineTracker.status == .downloaded {
-                                    OfflineManager.shared.delete(episodeId: episode.id)
-                                }
-                            }
-                        } label: {
-                            switch offlineTracker.status {
-                            case .none:
-                                Image(systemName: "arrow.down")
-                            case .working:
-                                ProgressView()
-                            case .downloaded:
-                                Image(systemName: "xmark")
-                            }
-                        }
-                        .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
+                        DownloadButton(item: episode)
+                            .labelStyle(.iconOnly)
+                            .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        ToolbarProgressButton(item: episode)
+                        ProgressButton(item: episode)
                             .symbolVariant(.circle.fill)
                             .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
                     }

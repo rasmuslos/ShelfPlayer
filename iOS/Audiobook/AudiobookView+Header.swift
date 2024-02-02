@@ -14,7 +14,7 @@ extension AudiobookView {
         
         var body: some View {
             ZStack(alignment: .top) {
-                FullscreenBackground(threshold: -300, backgroundColor: nil, navigationBarVisible: .init(get: { viewModel.navigationBarVisible }, set: { viewModel.navigationBarVisible = $0 }))
+                FullscreenBackground(threshold: -300, backgroundColor: .clear, navigationBarVisible: .init(get: { viewModel.navigationBarVisible }, set: { viewModel.navigationBarVisible = $0 }))
                     .frame(height: 0)
                 
                 VStack {

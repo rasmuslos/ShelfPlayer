@@ -63,7 +63,7 @@ struct PodcastView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 
-                EpisodeList(episodes: visibleEpisodes)
+                EpisodeSingleList(episodes: visibleEpisodes)
             }
         }
         .listStyle(.plain)

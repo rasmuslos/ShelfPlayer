@@ -12,29 +12,29 @@ struct EpisodeList: View {
     let episodes: [Episode]
     
     var body: some View {
-        List {
             ForEach(episodes) { episode in
                 NavigationLink(destination: EpisodeView(episode: episode)) {
                     EpisodeRow(episode: episode)
                 }
                 .modifier(SwipeActionsModifier(item: episode))
             }
-        }
-        .listStyle(.plain)
     }
 }
 
 #Preview {
     NavigationStack {
-        EpisodeList(episodes: [
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-        ])
+        List {
+            EpisodeList(episodes: [
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+            ])
+        }
+        .listStyle(.plain)
     }
 }

@@ -23,8 +23,11 @@ extension PodcastLibraryView {
                     } else if episodes.isEmpty {
                         LoadingView()
                     } else {
-                        EpisodeList(episodes: episodes)
-                            .modifier(NowPlayingBarSafeAreaModifier())
+                        List {
+                            EpisodeList(episodes: episodes)
+                                .modifier(NowPlayingBarSafeAreaModifier())
+                        }
+                        .listStyle(.plain)
                     }
                 }
                 .navigationTitle("title.latest")

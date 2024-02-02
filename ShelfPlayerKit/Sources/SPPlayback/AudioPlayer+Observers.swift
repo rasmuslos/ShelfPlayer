@@ -71,6 +71,7 @@ internal extension AudioPlayer {
                 case .ended:
                     guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
                     let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                    
                     if options.contains(.shouldResume) {
                         self?.setPlaying(true)
                     }

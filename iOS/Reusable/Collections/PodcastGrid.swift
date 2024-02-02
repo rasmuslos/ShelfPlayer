@@ -55,11 +55,14 @@ struct PodcastGridItem: View {
     let podcast: Podcast
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             ItemImage(image: podcast.image)
             
             Text(podcast.name)
                 .lineLimit(1)
+                .padding(.top, 7)
+                .padding(.bottom, 3)
+            
             if let author = podcast.author {
                 Text(author)
                     .font(.caption)

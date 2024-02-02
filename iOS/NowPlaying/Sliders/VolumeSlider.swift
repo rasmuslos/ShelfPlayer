@@ -18,7 +18,9 @@ struct VolumeSlider: View {
                 .onTapGesture {
                     volume = 0.0
                 }
+            
             Slider(percentage: $volume, dragging: $isDragging)
+            
             Image(systemName: "speaker.wave.3.fill")
                 .onTapGesture {
                     volume = 100.0
