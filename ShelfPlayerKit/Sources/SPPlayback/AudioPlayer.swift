@@ -6,47 +6,72 @@
 //
 
 import Foundation
-import MediaPlayer
+import Defaults
+import SPBase
 import AVKit
 import OSLog
-import SPBase
 
-#if canImport(SPOfflineExtended)
-import SPOffline
-import SPOfflineExtended
-#endif
-
+@Observable
 public class AudioPlayer {
-    public private(set) var item: PlayableItem?
-    private var tracks: PlayableItem.AudioTracks
-    public private(set) var chapters: PlayableItem.Chapters
+    // MARK: Public
+    public internal(set) var item: PlayableItem?
+    public internal(set) var chapters: PlayableItem.Chapters
     
-    private var activeAudioTrackIndex: Int?
-    private var activeChapterIndex: Int? {
-        didSet {
-            updateNowPlayingChapterInfo()
+    public internal(set) var pauseAtEndOfChapter = false
+    public internal(set) var remainingSleepTimerTime: Double?
+    
+    // MARK: Observable variables updated by the time observer
+    public internal(set) var duration: Double = .infinity
+    public internal(set) var currentTime: Double = .infinity
+    
+    public internal(set) var chapter: PlayableItem.Chapter?
+    public internal(set) var buffering = true
+    
+    public var _playing = false
+    public var playing: Bool {
+        get {
+            _playing
+        }
+        set {
+            setPlaying(newValue)
         }
     }
     
-    private var audioPlayer: AVQueuePlayer
-    public private(set) var buffering: Bool = false
-    private var nowPlayingInfo: [String: Any]
+    public var _playbackRate: Float = 1.0
+    public var playbackRate: Float {
+        get {
+            _playbackRate
+        }
+        set {
+            setPlaybackRate(newValue)
+        }
+    }
     
-    private var playbackReporter: PlaybackReporter?
+    // MARK: Internal
     
-    private var cache: [String: Double]
+    internal var audioPlayer: AVQueuePlayer
+    internal var nowPlayingInfo: [String: Any]
     
-    private var enableChapterTrack: Bool
-    private var skipBackwardsInterval: Int!
-    private var skipForwardsInterval: Int!
+    internal var cache: [String: Double]
+    internal var tracks: PlayableItem.AudioTracks
     
-    public private(set) var remainingSleepTimerTime: Double?
-    public private(set) var pauseAtEndOfChapter = false
+    internal var lastPause: Date?
+    internal var playbackReporter: PlaybackReporter?
     
-    private var lastPause: Date?
+    internal var activeAudioTrackIndex: Int?
+    internal var activeChapterIndex: Int? {
+        didSet {
+            updateNowPlayingTitle()
+        }
+    }
     
-    let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "AudioPlayer")
+    internal var enableChapterTrack = Defaults[.enableChapterTrack]
+    internal var skipBackwardsInterval = Defaults[.skipBackwardsInterval]
+    internal var skipForwardsInterval = Defaults[.skipForwardsInterval]
     
+    internal let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "AudioPlayer")
+    
+    // MARK: Initilaizer
     private init() {
         self.tracks = []
         self.chapters = []
@@ -54,13 +79,9 @@ public class AudioPlayer {
         activeAudioTrackIndex = nil
         
         audioPlayer = AVQueuePlayer()
-        buffering = false
         
         nowPlayingInfo = [:]
         cache = [:]
-        
-        enableChapterTrack = UserDefaults.standard.bool(forKey: "enableChapterTrack")
-        fetchSkipIntervals()
         
         setupObservers()
         setupTimeObserver()
@@ -68,536 +89,6 @@ public class AudioPlayer {
         
         setupAudioSession()
         updateAudioSession(active: false)
-    }
-}
-
-// MARK: Methods
-
-extension AudioPlayer {
-    func startPlayback(item: PlayableItem, tracks: PlayableItem.AudioTracks, chapters: PlayableItem.Chapters, startTime: Double, playbackReporter: PlaybackReporter) {
-        if tracks.isEmpty {
-            return
-        }
-        
-        stopPlayback()
-        
-        self.item = item
-        self.tracks = tracks.sorted()
-        self.chapters = chapters.sorted()
-        
-        Task { @MainActor in
-            await seek(to: startTime)
-            setPlaying(true)
-            
-            updateChapterIndex()
-            setupNowPlayingMetadata()
-            
-            self.playbackReporter = playbackReporter
-            NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
-        }
-    }
-    
-    public func stopPlayback() {
-        item = nil
-        tracks = []
-        chapters = []
-        
-        playbackReporter = nil
-        
-        activeAudioTrackIndex = nil
-        activeChapterIndex = nil
-        
-        audioPlayer.removeAllItems()
-        
-        updateAudioSession(active: false)
-        clearNowPlayingMetadata()
-        
-        Task { @MainActor in
-            NotificationCenter.default.post(name: Self.startStopNotification, object: nil)
-        }
-    }
-    
-    public func setPlaying(_ playing: Bool) {
-        updateNowPlayingStatus()
-        
-        if playing {
-            Task {
-                if let lastPause = lastPause, lastPause.timeIntervalSince(Date()) >= 10 * 60 {
-                    await seek(to: getCurrentTime() - 30)
-                }
-                
-                lastPause = nil
-                audioPlayer.play()
-                updateAudioSession(active: true)
-            }
-        } else {
-            audioPlayer.pause()
-            
-            if UserDefaults.standard.bool(forKey: "smartRewind") {
-                lastPause = Date()
-            }
-        }
-        
-        playbackReporter?.reportProgress(playing: playing, currentTime: getCurrentTime(), duration: getDuration())
-        Task { @MainActor in
-            NotificationCenter.default.post(name: Self.playPauseNotification, object: nil)
-        }
-    }
-    
-    public func seek(to: Double, includeChapterOffset: Bool = false) async {
-        if to < 0 {
-            await seek(to: 0, includeChapterOffset: includeChapterOffset)
-            return
-        }
-        
-        var to = to
-        if includeChapterOffset {
-            to += AudioPlayer.shared.getChapter()?.start ?? 0
-        }
-        
-         if let index = getTrackIndex(currentTime: to) {
-            if index == activeAudioTrackIndex {
-                let offset = getTrack(currentTime: to)!.offset
-                await audioPlayer.seek(to: CMTime(seconds: to - offset, preferredTimescale: 1000))
-            } else {
-                guard let item = item else { return }
-                
-                let resume = isPlaying()
-                
-                let track = getTrack(currentTime: to)!
-                let queue = getQueue(currentTime: to)
-                
-                audioPlayer.pause()
-                audioPlayer.removeAllItems()
-                
-                audioPlayer.insert(await getAVPlayerItem(item: item, track: track), after: nil)
-                for queueTrack in queue {
-                    audioPlayer.insert(await getAVPlayerItem(item: item, track: queueTrack), after: nil)
-                }
-                
-                await audioPlayer.seek(to: CMTime(seconds: to - track.offset, preferredTimescale: 1000))
-                
-                activeAudioTrackIndex = index
-                setPlaying(resume)
-            }
-         } else if to >= getDuration() {
-             playbackReporter?.reportProgress(currentTime: getDuration(), duration: getDuration())
-             stopPlayback()
-         } else {
-            logger.fault("Seek to position outside of range")
-        }
-        
-        updateChapterIndex()
-        updateNowPlayingStatus()
-    }
-    public func seek(to: Double, includeChapterOffset: Bool = false) {
-        Task {
-            await seek(to: to, includeChapterOffset: includeChapterOffset)
-        }
-    }
-    
-    public func setPlaybackRate(_ playbackRate: Float) {
-        audioPlayer.defaultRate = playbackRate
-        
-        if isPlaying() {
-            audioPlayer.rate = playbackRate
-        }
-        
-        NotificationCenter.default.post(name: Self.playbackRateChanged, object: nil)
-    }
-    
-    public func setSleepTimer(duration: Double?) {
-        audioPlayer.volume = 1
-        
-        pauseAtEndOfChapter = false
-        remainingSleepTimerTime = duration
-        
-        NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
-    }
-    
-    public func setSleepTimer(endOfChapter: Bool) {
-        pauseAtEndOfChapter = endOfChapter
-        remainingSleepTimerTime = nil
-        
-        NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
-    }
-}
-
-// MARK: Getter
-
-extension AudioPlayer {
-    public func isPlaying() -> Bool {
-        audioPlayer.rate > 0
-    }
-    
-    public func getPlaybackRate() -> Float {
-        audioPlayer.defaultRate
-    }
-    
-    public func getCurrentTime() -> Double {
-        var seconds: Double
-        
-        if tracks.count == 0 {
-            seconds = audioPlayer.currentTime().seconds
-        } else {
-            let cacheKey = "currentTimeOffset.\(item?.id ?? "unknown").\(activeAudioTrackIndex ?? -1)"
-            
-            if let cached = cache[cacheKey] {
-                seconds = cached
-            } else {
-                let history = getHistory()
-                let offset = history.reduce(0, { $0 + $1.duration })
-                
-                cache[cacheKey] = offset
-                seconds = offset
-            }
-            
-            seconds += audioPlayer.currentTime().seconds
-        }
-        
-        return seconds.isFinite ? seconds : 0
-    }
-    public func getDuration() -> Double {
-        let seconds: Double
-        
-        if tracks.count == 1 {
-            seconds = audioPlayer.currentItem?.duration.seconds ?? 0
-        } else {
-            let cacheKey = "duration.\(item?.id ?? "unknown").\(activeAudioTrackIndex ?? -1)"
-            
-            if let cached = cache[cacheKey] {
-                seconds = cached
-            } else {
-                seconds = tracks.reduce(0, { $0 + $1.duration })
-                cache[cacheKey] = seconds
-            }
-        }
-        
-        return seconds.isFinite ? seconds : 0
-    }
-}
-
-// MARK: Queue
-
-extension AudioPlayer {
-    private func getQueue(currentTime: Double) -> PlayableItem.AudioTracks {
-        tracks.filter { $0.offset > currentTime }
-    }
-    private func getHistory(currentTime: Double) -> PlayableItem.AudioTracks {
-        tracks.filter { $0.offset + $0.duration < currentTime }
-    }
-    
-    private func getHistory() -> PlayableItem.AudioTracks {
-        if let activeAudioTrackIndex = activeAudioTrackIndex {
-            return Array(tracks.prefix(activeAudioTrackIndex))
-        } else {
-            return []
-        }
-    }
-    
-    private func getTrack(currentTime: Double) -> PlayableItem.AudioTrack? {
-        tracks.first { $0.offset <= currentTime && $0.offset + $0.duration > currentTime }
-    }
-    private func getTrackIndex(currentTime: Double) -> Int? {
-        tracks.firstIndex { $0.offset <= currentTime && $0.offset + $0.duration > currentTime }
-    }
-}
-
-// MARK: Chapters
-
-extension AudioPlayer {
-    private func updateChapterIndex() {
-        if !enableChapterTrack || chapters.count <= 1 {
-            activeChapterIndex = nil
-            return
-        }
-        
-        let currentTime = getCurrentTime()
-        let chapter = chapters.firstIndex { $0.start <= currentTime && $0.end > currentTime }
-        
-        if pauseAtEndOfChapter && chapter != activeChapterIndex {
-            setPlaying(false)
-            setSleepTimer(duration: nil)
-        }
-        
-        activeChapterIndex = chapter
-    }
-    public func getChapter() -> PlayableItem.Chapter? {
-        if let activeChapterIndex = activeChapterIndex {
-            return chapters[activeChapterIndex]
-        } else {
-            return nil
-        }
-    }
-    
-    public func getChapterDuration() -> Double {
-        if let chapter = getChapter() {
-            return chapter.end - chapter.start
-        } else {
-            return getDuration()
-        }
-    }
-    public func getChapterCurrentTime() -> Double {
-        let currentTime = getCurrentTime()
-        
-        if let chapter = getChapter() {
-            return currentTime - chapter.start
-        } else {
-            return currentTime
-        }
-    }
-}
-
-// MARK: Observers
-
-extension AudioPlayer {
-    private func setupTimeObserver() {
-        audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: nil) { [unowned self] _ in
-            updateNowPlayingStatus()
-            
-            buffering = !(audioPlayer.currentItem?.isPlaybackLikelyToKeepUp ?? false)
-            playbackReporter?.reportProgress(currentTime: getCurrentTime(), duration: getDuration())
-            
-            let currentTime = getCurrentTime()
-            if currentTime.isFinite && !currentTime.isNaN, Int(currentTime) % 5 == 0 {
-                updateChapterIndex()
-            }
-            
-            if remainingSleepTimerTime != nil && isPlaying() {
-                remainingSleepTimerTime! -= 0.5
-                                
-                if remainingSleepTimerTime! <= 0 {
-                    setPlaying(false)
-                    setSleepTimer(duration: nil)
-                } else if remainingSleepTimerTime! <= 10 {
-                    audioPlayer.volume = Float(remainingSleepTimerTime! / 10)
-                }
-                
-                NotificationCenter.default.post(name: Self.sleepTimerChanged, object: nil)
-            } else if pauseAtEndOfChapter && isPlaying() {
-                let delta = getChapterDuration() - getChapterCurrentTime()
-                
-                if delta <= 10 {
-                    audioPlayer.volume = Float(delta / 10)
-                }
-            }
-            
-            Task { @MainActor in
-                NotificationCenter.default.post(name: Self.currentTimeChangedNotification, object: nil)
-            }
-        }
-    }
-    
-    private func setupObservers() {
-        NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { [weak self] _ in
-            if self?.activeAudioTrackIndex == (self?.tracks.count ?? 0) - 1 {
-                if let duration = self?.getDuration() {
-                    self?.playbackReporter?.reportProgress(currentTime: duration, duration: duration)
-                }
-                
-                self?.stopPlayback()
-                return
-            }
-            
-            self?.activeAudioTrackIndex? += 1
-        }
-        
-        NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { [weak self] notification in
-            guard let userInfo = notification.userInfo, let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt, let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
-                return
-            }
-            
-            switch type {
-            case .began:
-                self?.setPlaying(false)
-            case .ended:
-                guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-                let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
-                if options.contains(.shouldResume) {
-                    self?.setPlaying(true)
-                }
-            default: ()
-            }
-        }
-        
-        #if os(iOS)
-        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.playbackReporter = nil
-        }
-        #endif
-        NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: nil) { [weak self] _ in
-            self?.enableChapterTrack = UserDefaults.standard.bool(forKey: "enableChapterTrack")
-            self?.fetchSkipIntervals()
-        }
-    }
-}
-
-// MARK: Remote controls
-
-extension AudioPlayer {
-    private func setupRemoteControls() {
-        let commandCenter = MPRemoteCommandCenter.shared()
-        
-        commandCenter.playCommand.addTarget { [unowned self] event in
-            setPlaying(true)
-            return .success
-        }
-        commandCenter.pauseCommand.addTarget { [unowned self] event in
-            setPlaying(false)
-            return .success
-        }
-        commandCenter.togglePlayPauseCommand.addTarget { [unowned self] event in
-            setPlaying(!isPlaying())
-            return .success
-        }
-        
-        commandCenter.changePlaybackPositionCommand.addTarget { [unowned self] event in
-            if let changePlaybackPositionCommandEvent = event as? MPChangePlaybackPositionCommandEvent {
-                seek(to: changePlaybackPositionCommandEvent.positionTime, includeChapterOffset: true)
-                return .success
-            }
-            
-            return .commandFailed
-        }
-        commandCenter.changePlaybackRateCommand.supportedPlaybackRates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
-        commandCenter.changePlaybackRateCommand.addTarget { [unowned self] event in
-            if let changePlaybackPositionCommandEvent = event as? MPChangePlaybackRateCommandEvent {
-                setPlaybackRate(changePlaybackPositionCommandEvent.playbackRate)
-                return .success
-            }
-            
-            return .commandFailed
-        }
-        
-        commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(value: skipBackwardsInterval)]
-        commandCenter.skipBackwardCommand.addTarget { [unowned self] event in
-            if let changePlaybackPositionCommandEvent = event as? MPSkipIntervalCommandEvent {
-                seek(to: getCurrentTime() - changePlaybackPositionCommandEvent.interval)
-                return .success
-            }
-            
-            return .commandFailed
-        }
-        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: skipForwardsInterval)]
-        commandCenter.skipForwardCommand.addTarget { [unowned self] event in
-            if let changePlaybackPositionCommandEvent = event as? MPSkipIntervalCommandEvent {
-                seek(to: getCurrentTime() + changePlaybackPositionCommandEvent.interval)
-                return .success
-            }
-            
-            return .commandFailed
-        }
-    }
-}
-
-// MARK: Audio session
-
-extension AudioPlayer {
-    private func setupAudioSession() {
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-        } catch {
-            logger.fault("Failed to setup audio session")
-        }
-    }
-    
-    private func updateAudioSession(active: Bool) {
-        do {
-            try AVAudioSession.sharedInstance().setActive(active)
-        } catch {
-            logger.fault("Failed to update audio session")
-        }
-    }
-}
-
-// MARK: Now playing metadata
-
-extension AudioPlayer {
-    private func setupNowPlayingMetadata() {
-        if let item = item {
-            nowPlayingInfo = [:]
-            
-            nowPlayingInfo[MPMediaItemPropertyArtist] = item.author
-            nowPlayingInfo[MPNowPlayingInfoPropertyChapterCount] = chapters.count
-            
-            updateNowPlayingChapterInfo()
-            setNowPlayingArtwork()
-        }
-    }
-    private func updateNowPlayingChapterInfo() {
-        if enableChapterTrack, chapters.count > 1 {
-            nowPlayingInfo[MPMediaItemPropertyTitle] = getChapter()?.title
-            nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = item?.name
-        } else {
-            nowPlayingInfo[MPMediaItemPropertyTitle] = item?.name
-        }
-        
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-    }
-    #if os(iOS)
-    private func setNowPlayingArtwork() {
-        Task.detached { [self] in
-            if let imageUrl = item?.image?.url, let data = try? Data(contentsOf: imageUrl), let image = UIImage(data: data) {
-                let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
-                nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
-                
-                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-            }
-        }
-    }
-    #else
-    private func setNowPlayingArtwork() {
-        // TODO: code this
-    }
-    #endif
-    
-    private func updateNowPlayingStatus() {
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
-        nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = getPlaybackRate()
-        
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = getChapterDuration()
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = getChapterCurrentTime()
-        nowPlayingInfo[MPNowPlayingInfoPropertyChapterNumber] = activeChapterIndex
-        
-        MPNowPlayingInfoCenter.default().playbackState = isPlaying() ? .playing : .paused
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-    }
-    
-    private func clearNowPlayingMetadata() {
-        nowPlayingInfo = [:]
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-    }
-}
-
-// MARK: Helper
-
-extension AudioPlayer {
-    private func getAVPlayerItem(item: PlayableItem, track: PlayableItem.AudioTrack) async -> AVPlayerItem {
-        #if canImport(SPOfflineExtended)
-        if let trackURL = try? await OfflineManager.shared.getTrack(itemId: item.id, track: track) {
-            return AVPlayerItem(url: trackURL)
-        }
-        #endif
-        
-        return AVPlayerItem(url: AudiobookshelfClient.shared.serverUrl
-            .appending(path: track.contentUrl.removingPercentEncoding ?? "")
-            .appending(queryItems: [
-                URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token)
-            ]))
-    }
-    
-    private func fetchSkipIntervals() {
-        skipBackwardsInterval = UserDefaults.standard.integer(forKey: "skipBackwardsInterval")
-        if skipBackwardsInterval == 0 {
-            skipBackwardsInterval = 30
-            UserDefaults.standard.set(30, forKey: "skipBackwardsInterval")
-        }
-        
-        skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
-        if skipForwardsInterval == 0 {
-            skipForwardsInterval = 30
-            UserDefaults.standard.set(30, forKey: "skipForwardsInterval")
-        }
     }
 }
 

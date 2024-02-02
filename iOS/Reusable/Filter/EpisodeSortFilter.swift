@@ -99,14 +99,16 @@ extension EpisodeSortFilter {
                 case .all:
                     return true
                 case .progress, .unfinished, .finished:
-                    if let progress = OfflineManager.shared.getProgressEntity(item: $0) {
+                    let entity = OfflineManager.shared.requireProgressEntity(item: $0)
+                    
+                    if entity.progress > 0 {
                         if filter == .unfinished {
-                            return progress.progress < 1
+                            return entity.progress < 1
                         }
-                        if progress.progress < 1 && filter == .finished {
+                        if entity.progress < 1 && filter == .finished {
                             return false
                         }
-                        if progress.progress >= 1 && filter == .progress {
+                        if entity.progress >= 1 && filter == .progress {
                             return false
                         }
                         

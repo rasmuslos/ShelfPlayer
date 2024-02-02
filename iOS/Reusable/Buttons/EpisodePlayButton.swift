@@ -13,6 +13,7 @@ import SPPlayback
 struct EpisodePlayButton: View {
     let viewModel: EpisodePlayButtonViewModel
     
+    @MainActor
     init(episode: Episode, highlighted: Bool = false) {
         viewModel = .init(episode: episode, highlighted: highlighted)
     }
@@ -33,13 +34,6 @@ struct EpisodePlayButton: View {
                         ButtonText()
                     }
                 }
-                .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification)) { _ in Task { await viewModel.fetchProgress() }}
-                .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification)) { _ in viewModel.checkPlaying() }
-                .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification)) { _ in viewModel.checkPlaying() }
-                .task {
-                    await viewModel.fetchProgress()
-                    viewModel.checkPlaying()
-                }
         }
         .buttonStyle(.plain)
         .id(viewModel.episode.id)
@@ -54,32 +48,32 @@ extension EpisodePlayButton {
         
         var body: some View {
             HStack(spacing: 6) {
-                if let playing = viewModel.playing {
-                    Image(systemName: playing == true ? "waveform" : "pause.fill")
-                        .symbolEffect(.variableColor.iterative, isActive: playing == true)
+                if AudioPlayer.shared.item == viewModel.episode {
+                    Image(systemName: AudioPlayer.shared.playing ? "waveform" : "pause.fill")
+                        .symbolEffect(.variableColor.iterative, isActive: AudioPlayer.shared.playing)
                 } else {
                     Image(systemName: "play.fill")
                 }
                 
-                if let progress = viewModel.progress {
-                    if progress.progress >= 1 {
+                if viewModel.entity.progress == 0 {
+                    if viewModel.entity.progress >= 1 {
                         Text("progress.completed")
                             .font(.caption.smallCaps())
                             .bold()
                     } else {
-                        if progress.progress > 0 {
+                        if viewModel.entity.progress > 0 {
                             Rectangle()
                                 .foregroundStyle(.gray.opacity(0.25))
                                 .overlay(alignment: .leading) {
                                     Rectangle()
-                                        .frame(width: max(50 * progress.progress, 5))
+                                        .frame(width: max(50 * viewModel.entity.progress, 5))
                                         .foregroundStyle(viewModel.highlighted ? .black : colorScheme == .light ? .black : .white)
                                 }
                                 .frame(width: 50, height: 7)
                                 .clipShape(RoundedRectangle(cornerRadius: 10000))
                         }
                         
-                        Text((progress.duration - progress.currentTime).numericTimeLeft())
+                        Text((viewModel.entity.duration - viewModel.entity.currentTime).numericTimeLeft())
                     }
                 } else {
                     Text(viewModel.episode.duration.numericTimeLeft())
@@ -95,28 +89,14 @@ class EpisodePlayButtonViewModel {
     let episode: Episode
     let highlighted: Bool
     
-    var playing: Bool?
-    var progress: OfflineProgress?
+    var entity: OfflineProgress
     
+    @MainActor
     init(episode: Episode, highlighted: Bool) {
         self.episode = episode
         self.highlighted = highlighted
-    }
-    
-    func fetchProgress() async {
-        let progress = await OfflineManager.shared.getProgressEntity(item: episode)
-        withAnimation {
-            self.progress = progress
-        }
-    }
-    func checkPlaying() {
-        withAnimation {
-            if episode == AudioPlayer.shared.item {
-                playing = AudioPlayer.shared.isPlaying()
-            } else {
-                playing = nil
-            }
-        }
+        
+        entity = OfflineManager.shared.requireProgressEntity(item: episode)
     }
 }
 

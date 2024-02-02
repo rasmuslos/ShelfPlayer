@@ -31,18 +31,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                let progress = OfflineManager.shared.getProgressEntity(item: episode)?.progress ?? 0
-                Button {
-                    Task {
-                        await episode.setProgress(finished: progress < 1)
-                    }
-                } label: {
-                    if progress >= 1 {
-                        Label("progress.reset", systemImage: "xmark")
-                    } else {
-                        Label("progress.complete", systemImage: "checkmark")
-                    }
-                }
+               ToolbarProgressButton(item: episode)
                 
                 if offlineTracker.status == .none {
                     Button {

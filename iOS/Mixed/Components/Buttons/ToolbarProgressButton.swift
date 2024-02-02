@@ -11,34 +11,26 @@ import SPOffline
 
 struct ToolbarProgressButton: View {
     let item: PlayableItem
+    let entity: OfflineProgress
     
-    @State var progress: OfflineProgress?
+    @MainActor
+    init(item: PlayableItem) {
+        self.item = item
+        entity = OfflineManager.shared.requireProgressEntity(item: item)
+    }
     
     var body: some View {
         Button {
             Task {
-                await item.setProgress(finished: (progress?.progress ?? 0) < 1)
+                await item.setProgress(finished: entity.progress < 1)
             }
         } label: {
-            if let progress = progress, progress.progress >= 1 {
+            if entity.progress >= 1 {
                 Label("progress.reset", systemImage: "minus")
             } else {
                 Label("progress.complete", systemImage: "checkmark")
             }
         }
-        .onAppear(perform: fetchProgress)
-        .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification)) { _ in
-            fetchProgress()
-        }
-    }
-}
-
-// MARK: Helper
-
-extension ToolbarProgressButton {
-    @MainActor
-    private func fetchProgress() {
-        progress = OfflineManager.shared.getProgressEntity(item: item)
     }
 }
 

@@ -12,9 +12,21 @@ import SPPlayback
 
 struct PlayButton: View {
     let item: PlayableItem
+    let entity: OfflineProgress
     
-    @State var labelImage: String = "play.fill"
-    @State var progress: OfflineProgress?
+    @MainActor
+    init(item: PlayableItem) {
+        self.item = item
+        entity = OfflineManager.shared.requireProgressEntity(item: item)
+    }
+    
+    private var labelImage: String {
+        if item == AudioPlayer.shared.item {
+            return AudioPlayer.shared.playing ? "waveform" : "pause.fill"
+        } else {
+            return "play.fill"
+        }
+    }
     
     var body: some View {
         let label = item as? Audiobook != nil ? String(localized: "listen") : String(localized: "play")
@@ -22,50 +34,21 @@ struct PlayButton: View {
         Button {
             item.startPlayback()
         } label: {
-            if let progress = progress, progress.progress > 0 && progress.progress < 1 {
+            if entity.progress > 0 && entity.progress < 1 {
                 Label {
                     Text(label)
                     + Text(verbatim: " • ")
-                    + Text(String((progress.duration - progress.currentTime).timeLeft()))
+                    + Text(String((entity.duration - entity.currentTime).timeLeft()))
                 } icon: {
                     Image(systemName: labelImage)
+                        .contentTransition(.symbolEffect(.replace))
                 }
             } else {
                 Label(label, systemImage: labelImage)
             }
         }
-        .buttonStyle(PlayNowButtonStyle(percentage: progress?.progress ?? 0))
+        .buttonStyle(PlayNowButtonStyle(percentage: entity.progress))
         .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
-        .onAppear(perform: checkPlaying)
-        .onAppear(perform: fetchProgress)
-        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
-            checkPlaying()
-        })
-        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
-            checkPlaying()
-        })
-        .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification)) { _ in
-            fetchProgress()
-        }
-    }
-}
-
-// MARK: Helper
-
-extension PlayButton {
-    private func checkPlaying() {
-        withAnimation {
-            if item == AudioPlayer.shared.item {
-                labelImage = AudioPlayer.shared.isPlaying() ? "waveform" : "pause.fill"
-            } else {
-                labelImage = "play.fill"
-            }
-        }
-    }
-    
-    @MainActor
-    private func fetchProgress() {
-        progress = OfflineManager.shared.getProgressEntity(item: item)
     }
 }
 

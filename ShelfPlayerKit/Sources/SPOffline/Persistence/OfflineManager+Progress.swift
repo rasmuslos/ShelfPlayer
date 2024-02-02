@@ -22,12 +22,17 @@ extension OfflineManager {
     
     @MainActor
     func requireProgressEntity(itemId: String, episodeId: String?) -> OfflineProgress {
+        var descriptor: FetchDescriptor<OfflineProgress>
+        
         if let episodeId = episodeId {
-            if let progress = getProgressEntity(episodeId: episodeId) {
-                return progress
-            }
-        } else if let progress = getProgressEntity(itemId: itemId) {
-            return progress
+            descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
+        } else {
+            descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == itemId })
+        }
+        
+        descriptor.fetchLimit = 1
+        if let entity = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first {
+            return entity
         }
         
         let progress = OfflineProgress(
@@ -42,11 +47,11 @@ extension OfflineManager {
             progressType: .localSynced)
         
         PersistenceManager.shared.modelContainer.mainContext.insert(progress)
-        NotificationCenter.default.post(name: Self.progressCreatedNotification, object: nil)
-        
         return progress
     }
-    
+}
+
+public extension OfflineManager {
     @MainActor
     func requireProgressEntity(item: Item) -> OfflineProgress {
         if let episode = item as? Episode {
@@ -54,33 +59,6 @@ extension OfflineManager {
         }
         
         return requireProgressEntity(itemId: item.id, episodeId: nil)
-    }
-    
-}
-
-public extension OfflineManager {
-    @MainActor
-    func getProgressEntity(itemId: String) -> OfflineProgress? {
-        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineProgress> { $0.itemId == itemId })
-        descriptor.fetchLimit = 1
-        
-        return try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
-    }
-    @MainActor
-    func getProgressEntity(episodeId: String) -> OfflineProgress? {
-        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineProgress> { $0.episodeId == episodeId })
-        descriptor.fetchLimit = 1
-        
-        return try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
-    }
-    
-    @MainActor
-    func getProgressEntity(item: Item) -> OfflineProgress? {
-        if let episode = item as? Episode {
-            return getProgressEntity(episodeId: episode.id)
-        } else {
-            return getProgressEntity(itemId: item.id)
-        }
     }
     
     @MainActor
@@ -142,12 +120,16 @@ public extension OfflineManager {
             try await Task<Void, Error> { @MainActor in
                 for session in sessions {
                     let existing: OfflineProgress?
+                    var descriptor: FetchDescriptor<OfflineProgress>
                     
                     if let episodeId = session.episodeId {
-                        existing = getProgressEntity(episodeId: episodeId)
+                        descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
                     } else {
-                        existing = getProgressEntity(itemId: session.libraryItemId)
+                        descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == session.libraryItemId })
                     }
+                    
+                    descriptor.fetchLimit = 1
+                    existing = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
                     
                     if let existing = existing {
                         if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < session.lastUpdate {

@@ -41,7 +41,8 @@ struct OfflineView: View {
                 ForEach(podcasts.sorted { $0.key.name.localizedStandardCompare($1.key.name) == .orderedDescending }, id: \.key.id) { podcast in
                     Section(podcast.key.name) {
                         ForEach(podcast.value) {
-                            EpisodeRow(episode: $0)
+                            EpisodeSingleList.EpisodeRow(episode: $0, lineLimit: 1)
+                                .listRowInsets(.init(top: 5, leading: 20, bottom: 5, trailing: 20))
                         }
                         .onDelete { indexSet in
                             indexSet.forEach { index in

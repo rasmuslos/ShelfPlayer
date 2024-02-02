@@ -12,24 +12,27 @@ import SPOfflineExtended
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem
+    let entity: OfflineProgress
     let offlineTracker: ItemOfflineTracker
     
+    @MainActor
     init(item: PlayableItem) {
         self.item = item
+        
+        entity = OfflineManager.shared.requireProgressEntity(item: item)
         offlineTracker = item.offlineTracker
     }
     
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                let progress = OfflineManager.shared.getProgressEntity(item: item)
                 
                 Button {
                     Task {
-                        await item.setProgress(finished: (progress?.progress ?? 0) < 1)
+                        await item.setProgress(finished: entity.progress < 1)
                     }
                 } label: {
-                    if (progress?.progress ?? 0) >= 1 {
+                    if entity.progress >= 1 {
                         Image(systemName: "minus")
                             .tint(.red)
                     } else {
