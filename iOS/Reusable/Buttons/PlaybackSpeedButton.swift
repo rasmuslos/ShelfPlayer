@@ -9,8 +9,9 @@ import SwiftUI
 import SPBase
 import SPPlayback
 
-struct PlaybackSpeedSelector: View {
+struct PlaybackSpeedButton: View {
     let playbackRates: [Float] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+    
     var body: some View {
         Menu {
             ForEach(playbackRates, id: \.hashValue) { rate in

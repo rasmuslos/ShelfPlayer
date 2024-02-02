@@ -23,7 +23,7 @@ struct Slider: View {
                     .frame(width: geometry.size.width * CGFloat(self.percentage / 100))
             }
             .cornerRadius(7)
-            .gesture(DragGesture(minimumDistance: 0)
+            .highPriorityGesture(DragGesture(minimumDistance: 0)
                 .onChanged { value in
                     withAnimation(.spring) {
                         percentage = min(max(0, Double(value.location.x / geometry.size.width * 100)), 100)
@@ -34,11 +34,15 @@ struct Slider: View {
                     withAnimation(.spring) {
                         dragging = false
                     }
+                    
                     onEnded?()
                 }
             )
         }
         .frame(height: dragging ? 10 : 7)
+        .accessibilityRepresentation {
+            SwiftUI.Slider(value: .init(get: { percentage * 100 }, set: { percentage = $0 / 100 }), in: 0...100)
+        }
     }
 }
 

@@ -14,7 +14,7 @@ extension NowPlayingSheet {
         
         var body: some View {
             HStack {
-                PlaybackSpeedSelector()
+                PlaybackSpeedButton()
                     .frame(width: 60)
                     .foregroundStyle(.secondary)
                 

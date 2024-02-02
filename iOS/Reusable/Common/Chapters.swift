@@ -14,11 +14,9 @@ struct ChaptersList: View {
     
     var chapters: PlayableItem.Chapters
     
-    @State var expanded = false
-    
     var body: some View {
         if chapters.count > 1 {
-            DisclosureGroup(isExpanded: $expanded) {
+            DisclosureGroup {
                 List {
                     ForEach(chapters) { chapter in
                         HStack {

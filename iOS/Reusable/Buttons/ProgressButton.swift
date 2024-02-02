@@ -9,13 +9,17 @@ import SwiftUI
 import SPBase
 import SPOffline
 
-struct ToolbarProgressButton: View {
+struct ProgressButton: View {
     let item: PlayableItem
+    let tint: Bool
+    
     let entity: OfflineProgress
     
     @MainActor
-    init(item: PlayableItem) {
+    init(item: PlayableItem, tint: Bool = false) {
         self.item = item
+        self.tint = tint
+        
         entity = OfflineManager.shared.requireProgressEntity(item: item)
     }
     
@@ -27,13 +31,15 @@ struct ToolbarProgressButton: View {
         } label: {
             if entity.progress >= 1 {
                 Label("progress.reset", systemImage: "minus")
+                    .tint(tint ? .red : .primary)
             } else {
                 Label("progress.complete", systemImage: "checkmark")
+                    .tint(tint ? .accentColor : .primary)
             }
         }
     }
 }
 
 #Preview {
-    ToolbarProgressButton(item: Episode.fixture)
+    ProgressButton(item: Episode.fixture)
 }

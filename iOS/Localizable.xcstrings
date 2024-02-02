@@ -442,6 +442,9 @@
         }
       }
     },
+    "downloading" : {
+
+    },
     "downloads.audiobooks" : {
       "localizations" : {
         "de" : {
@@ -730,6 +733,22 @@
         }
       }
     },
+    "login.disclaimer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer stellt keinerlei Inhalte bereit. Um Auf Hörbücher oder Podcasts zuzugreifen melde dich bei deinen eigenen Audiobookshelf-Server an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer does not provide any audiobooks or podcasts. You have to login to your own Audiobookshelf instance to access your personal library"
+          }
+        }
+      }
+    },
     "login.error.failed" : {
       "localizations" : {
         "de" : {
@@ -826,12 +845,12 @@
         }
       }
     },
-    "login.promt" : {
+    "login.prompt" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mit ABS anmelden"
+            "value" : "Mit ABS amelden"
           }
         },
         "en" : {

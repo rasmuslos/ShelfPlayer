@@ -159,7 +159,7 @@ struct AccountSheet: View {
             .font(.caption)
             .foregroundStyle(.secondary)
             
-            #if DEBUG
+            #if !ENABLE_ALL_FEATURES
             Section {
                 HStack {
                     Spacer()

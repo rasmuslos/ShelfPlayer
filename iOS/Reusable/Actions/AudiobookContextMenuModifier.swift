@@ -50,23 +50,8 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ToolbarProgressButton(item: audiobook)
-                
-                if offlineTracker.status == .none {
-                    Button {
-                        Task {
-                            try? await OfflineManager.shared.download(audiobookId: audiobook.id)
-                        }
-                    } label: {
-                        Label("download", systemImage: "arrow.down")
-                    }
-                } else {
-                    Button {
-                        OfflineManager.shared.delete(audiobookId: audiobook.id)
-                    } label: {
-                        Label("download.remove", systemImage: "trash")
-                    }
-                }
+                ProgressButton(item: audiobook)
+                DownloadButton(item: audiobook)
             } preview: {
                 VStack(alignment: .leading) {
                     ItemStatusImage(item: audiobook)

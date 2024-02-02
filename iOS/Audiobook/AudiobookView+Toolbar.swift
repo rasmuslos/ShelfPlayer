@@ -50,27 +50,9 @@ extension AudiobookView {
                 }
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            Task {
-                                if viewModel.offlineTracker.status == .none {
-                                    try! await OfflineManager.shared.download(audiobookId: viewModel.audiobook.id)
-                                } else if viewModel.offlineTracker.status == .downloaded {
-                                    OfflineManager.shared.delete(audiobookId: viewModel.audiobook.id)
-                                }
-                            }
-                        } label: {
-                            switch viewModel.offlineTracker.status {
-                            case .none:
-                                Image(systemName: "arrow.down")
-                            case .working:
-                                ProgressView()
-                            case .downloaded:
-                                Image(systemName: "xmark")
-                            }
-                        }
-                        .contentTransition(.opacity)
-                        .contentTransition(.symbolEffect)
-                        .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))
+                        DownloadButton(item: viewModel.audiobook)
+                            .labelStyle(.iconOnly)
+                            .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))
                     }
                     
                     ToolbarItem(placement: .primaryAction) {
@@ -96,17 +78,8 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            ToolbarProgressButton(item: viewModel.audiobook)
-                            
-                            if viewModel.offlineTracker.status != .none {
-                                Divider()
-                                
-                                Button(role: .destructive) {
-                                    OfflineManager.shared.delete(audiobookId: viewModel.audiobook.id)
-                                } label: {
-                                    Label("download.remove", systemImage: "trash")
-                                }
-                            }
+                            ProgressButton(item: viewModel.audiobook)
+                            DownloadButton(item: viewModel.audiobook)
                         } label: {
                             Image(systemName: "ellipsis")
                                 .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))

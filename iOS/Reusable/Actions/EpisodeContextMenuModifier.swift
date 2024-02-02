@@ -31,23 +31,9 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-               ToolbarProgressButton(item: episode)
+                ProgressButton(item: episode)
                 
-                if offlineTracker.status == .none {
-                    Button {
-                        Task {
-                            try! await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
-                        }
-                    } label: {
-                        Label("download", systemImage: "arrow.down")
-                    }
-                } else {
-                    Button {
-                        OfflineManager.shared.delete(episodeId: episode.id)
-                    } label: {
-                        Label("download.remove", systemImage: "trash")
-                    }
-                }
+                
             } preview: {
                 VStack {
                     HStack {
