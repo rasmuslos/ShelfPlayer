@@ -11,24 +11,18 @@ import SPPlayback
 
 extension NowPlayingSheet {
     struct ChapterSheet: View {
-        let item: PlayableItem
-        let chapters = AudioPlayer.shared.chapters
-        
-        let duration = AudioPlayer.shared.getDuration()
-        @State var currentTime: Double = AudioPlayer.shared.getCurrentTime()
-        
         var body: some View {
             Group {
-                if chapters.count > 1 {
+                if AudioPlayer.shared.chapters.count > 1 {
                     ScrollViewReader { proxy in
                         List {
-                            ForEach(chapters) {
-                                ChapterRow(chapter: $0, active: $0.start <= currentTime && $0.end > currentTime)
+                            ForEach(AudioPlayer.shared.chapters) {
+                                ChapterRow(chapter: $0)
                                     .id($0.id)
                             }
                         }
                         .onAppear {
-                            proxy.scrollTo(AudioPlayer.shared.getChapter()?.id, anchor: .center)
+                            proxy.scrollTo(AudioPlayer.shared.chapter?.id, anchor: .center)
                         }
                     }
                 } else {
@@ -43,22 +37,22 @@ extension NowPlayingSheet {
             .listStyle(.plain)
             .safeAreaInset(edge: .top) {
                 HStack {
-                    ItemImage(image: item.image)
+                    ItemImage(image: AudioPlayer.shared.item!.image)
                     
                     VStack(alignment: .leading) {
-                        Text(item.name)
+                        Text(AudioPlayer.shared.item!.name)
                             .font(.headline)
-                            .fontDesign(item as? Audiobook != nil ? .serif : .default)
+                            .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
                             .lineLimit(1)
                         
-                        if let author = item.author {
+                        if let author = AudioPlayer.shared.item?.author {
                             Text(author)
                                 .font(.subheadline)
                                 .lineLimit(1)
                         }
                         
                         Group {
-                            Text((duration - currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ") + Text("time.left")
+                            Text((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ") + Text("time.left")
                         }
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -70,11 +64,6 @@ extension NowPlayingSheet {
                 .background(.regularMaterial)
                 .frame(height: 100)
             }
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.currentTimeChangedNotification), perform: { _ in
-                withAnimation {
-                    currentTime = AudioPlayer.shared.getCurrentTime()
-                }
-            })
         }
     }
 }
@@ -84,7 +73,10 @@ extension NowPlayingSheet {
 extension NowPlayingSheet.ChapterSheet {
     struct ChapterRow: View {
         let chapter: PlayableItem.Chapter
-        let active: Bool
+        
+        var active: Bool {
+            chapter.start <= AudioPlayer.shared.getItemCurrentTime() && chapter.end > AudioPlayer.shared.getItemCurrentTime()
+        }
         
         var body: some View {
             Button {
@@ -121,11 +113,4 @@ extension NowPlayingSheet.ChapterSheet {
             }
         }
     }
-}
-
-#Preview {
-    Text(verbatim: ":)")
-        .sheet(isPresented: .constant(true)) {
-            NowPlayingSheet.ChapterSheet(item: Audiobook.fixture)
-        }
 }

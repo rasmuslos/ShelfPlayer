@@ -10,14 +10,9 @@ import SPBase
 import SPPlayback
 
 struct SleepTimerButton: View {
-    @State var pauseAtEndOfChapter = AudioPlayer.shared.pauseAtEndOfChapter
-    @State var remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
-    
-    @State var pauseAtEndOfChapterAvailable = AudioPlayer.shared.getChapter() != nil
-    
     var body: some View {
         Group {
-            if let remainingSleepTimerTime = remainingSleepTimerTime {
+            if let remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime {
                 Menu {
                     Button {
                         AudioPlayer.shared.setSleepTimer(duration: remainingSleepTimerTime + 60)
@@ -47,7 +42,7 @@ struct SleepTimerButton: View {
                         .fontDesign(.rounded)
                 }
                 .menuActionDismissBehavior(.disabled)
-            } else if pauseAtEndOfChapter {
+            } else if AudioPlayer.shared.pauseAtEndOfChapter {
                 Button {
                     AudioPlayer.shared.setSleepTimer(duration: nil)
                 } label: {
@@ -65,7 +60,7 @@ struct SleepTimerButton: View {
                         }
                     }
                     
-                    if pauseAtEndOfChapterAvailable {
+                    if AudioPlayer.shared.chapter != nil {
                         Divider()
                         
                         Button {
@@ -77,17 +72,6 @@ struct SleepTimerButton: View {
                 } label: {
                     Image(systemName: "moon.zzz")
                 }
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.sleepTimerChanged)) { _ in
-            withAnimation {
-                pauseAtEndOfChapter = AudioPlayer.shared.pauseAtEndOfChapter
-                remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification)) { _ in
-            withAnimation {
-                pauseAtEndOfChapterAvailable = AudioPlayer.shared.getChapter() != nil
             }
         }
     }

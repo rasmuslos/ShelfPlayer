@@ -6,39 +6,40 @@
 //
 
 import SwiftUI
+import Defaults
 import MediaPlayer
 import SPBase
 import SPPlayback
 
 extension NowPlayingSheet {
     struct Controls: View {
-        @Binding var playing: Bool
+        @Default(.skipForwardsInterval) var skipForwardsInterval
+        @Default(.skipBackwardsInterval) var skipBackwardsInterval
+        
         @State var dragging = false
         
-        @State var buffering = AudioPlayer.shared.buffering
-        @State var duration = AudioPlayer.shared.getChapterDuration()
-        @State var currentTime = AudioPlayer.shared.getChapterCurrentTime()
-        @State var playedPercentage = (AudioPlayer.shared.getChapterCurrentTime() / AudioPlayer.shared.getChapterDuration()) * 100
-        
-        @State var skipBackwardsInterval = UserDefaults.standard.integer(forKey: "skipBackwardsInterval")
-        @State var skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
+        private var playedPercentage: Double {
+            (AudioPlayer.shared.currentTime / AudioPlayer.shared.duration) * 100
+        }
         
         var body: some View {
             VStack {
                 VStack {
-                    Slider(percentage: currentTime.isFinite && !currentTime.isNaN ? $playedPercentage : .constant(0), dragging: $dragging, onEnded: {
-                        AudioPlayer.shared.seek(to: duration * (playedPercentage / 100), includeChapterOffset: true)
+                    Slider(percentage: AudioPlayer.shared.currentTime.isFinite && !AudioPlayer.shared.currentTime.isNaN ? .init(get: { playedPercentage }, set: { _ in }) : .constant(0),
+                           dragging: $dragging,
+                           onEnded: {
+                        AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (playedPercentage / 100), includeChapterOffset: true)
                     })
                     .frame(height: 10)
                     .padding(.vertical, 10)
                     
                     HStack {
                         Group {
-                            if buffering {
+                            if AudioPlayer.shared.buffering {
                                 ProgressView()
                                     .scaleEffect(0.5)
                             } else {
-                                Text(currentTime.hoursMinutesSecondsString())
+                                Text(AudioPlayer.shared.currentTime.hoursMinutesSecondsString())
                             }
                         }
                         .frame(width: 65, alignment: .leading)
@@ -46,12 +47,12 @@ extension NowPlayingSheet {
                         
                         Group {
                             if dragging {
-                                Text(formatRemainingTime(duration - duration * (playedPercentage / 100)))
-                            } else if let chapter = AudioPlayer.shared.getChapter() {
+                                Text(formatRemainingTime(AudioPlayer.shared.duration - AudioPlayer.shared.duration * (playedPercentage / 100)))
+                            } else if let chapter = AudioPlayer.shared.chapter {
                                 Text(chapter.title)
                                     .animation(.easeInOut, value: chapter.title)
                             } else {
-                                Text(formatRemainingTime(duration - currentTime))
+                                Text(formatRemainingTime(AudioPlayer.shared.duration - AudioPlayer.shared.currentTime))
                             }
                         }
                         .font(.caption2)
@@ -60,7 +61,7 @@ extension NowPlayingSheet {
                         .transition(.opacity)
                         
                         Spacer()
-                        Text(duration.hoursMinutesSecondsString())
+                        Text(AudioPlayer.shared.duration.hoursMinutesSecondsString())
                             .frame(width: 65, alignment: .trailing)
                     }
                     .font(.caption)
@@ -71,23 +72,23 @@ extension NowPlayingSheet {
                 HStack {
                     Group {
                         Button {
-                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() - Double(skipBackwardsInterval))
+                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
                         } label: {
                             Image(systemName: "gobackward.\(skipBackwardsInterval)")
                         }
                         Button {
-                            AudioPlayer.shared.setPlaying(!AudioPlayer.shared.isPlaying())
+                            AudioPlayer.shared.playing = !AudioPlayer.shared.playing
                         } label: {
-                            Image(systemName: playing ? "pause.fill" : "play.fill")
+                            Image(systemName: AudioPlayer.shared.playing ? "pause.fill" : "play.fill")
                                 .frame(height: 50)
                                 .font(.system(size: 47))
                                 .padding(.horizontal, 50)
                                 .contentTransition(.symbolEffect(.replace))
                         }
-                        .sensoryFeedback(.selection, trigger: AudioPlayer.shared.isPlaying())
+                        .sensoryFeedback(.selection, trigger: AudioPlayer.shared.playing)
                         
                         Button {
-                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
+                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
                         } label: {
                             Image(systemName: "goforward.\(skipForwardsInterval)")
                         }
@@ -102,23 +103,6 @@ extension NowPlayingSheet {
                 VolumeView()
                     .frame(width: 0, height: 0)
             }
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.currentTimeChangedNotification), perform: { _ in
-                withAnimation {
-                    buffering = AudioPlayer.shared.buffering
-                }
-                
-                if !dragging {
-                    duration = AudioPlayer.shared.getChapterDuration()
-                    currentTime = AudioPlayer.shared.getChapterCurrentTime()
-                    playedPercentage = (currentTime / duration) * 100
-                }
-            })
-            .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification), perform: { _ in
-                withAnimation {
-                    skipBackwardsInterval = UserDefaults.standard.integer(forKey: "skipBackwardsInterval")
-                    skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
-                }
-            })
         }
     }
 }

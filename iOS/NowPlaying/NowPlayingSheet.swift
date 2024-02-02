@@ -7,12 +7,10 @@
 
 import SwiftUI
 import SPBase
+import SPPlayback
 
 struct NowPlayingSheet: View {
     @Environment(\.presentationMode) var presentationMode
-    
-    let item: PlayableItem
-    @Binding var playing: Bool
     
     @State var showChaptersSheet = false
     
@@ -29,21 +27,21 @@ struct NowPlayingSheet: View {
                         }
                 }
             
-            ItemImage(image: item.image)
-                .scaleEffect(playing ? 1 : 0.8)
-                .animation(.spring(duration: 0.3, bounce: 0.6), value: playing)
+            ItemImage(image: AudioPlayer.shared.item!.image)
+                .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
+                .animation(.spring(duration: 0.3, bounce: 0.6), value: AudioPlayer.shared.playing)
                 .shadow(radius: 15)
             
             Spacer()
             
-            Title(item: item)
-            Controls(playing: $playing)
+            Title()
+            Controls()
             BottomButtons(showChaptersSheet: $showChaptersSheet)
         }
         .padding(.horizontal, 30)
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showChaptersSheet, content: {
-            ChapterSheet(item: item)
+            ChapterSheet()
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.large, .medium])
         })
@@ -55,12 +53,4 @@ struct NowPlayingSheet: View {
             }
         )
     }
-}
-
-#Preview {
-    NowPlayingSheet(item: Audiobook.fixture, playing: .constant(true))
-}
-
-#Preview {
-    NowPlayingSheet(item: Episode.fixture, playing: .constant(false))
 }

@@ -13,6 +13,5 @@ public struct OfflineManager {
 }
 
 public extension OfflineManager {
-    static let progressCreatedNotification = NSNotification.Name("io.rfk.audiobooks.progress.created")
     static let shared = OfflineManager()
 }

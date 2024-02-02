@@ -14,6 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
+        .package(url: "https://github.com/sindresorhus/Defaults", from: .init(8, 0, 0))
     ],
     targets: [
         .target(
@@ -21,9 +22,15 @@ let package = Package(
             dependencies: [.byName(name: "SwiftSoup")],
             resources: [.process("Resources")],
             swiftSettings: [.define("_DISABLE_APP_GROUP")]),
-        .target(name: "SPPlayback", dependencies: [.byName(name: "SPBase"), .byName(name: "SPOffline"), .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS]))]),
+        .target(name: "SPPlayback", dependencies: [
+            .byName(name: "Defaults"),
+            
+            .byName(name: "SPBase"),
+            .byName(name: "SPOffline"),
+            .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS]))
+        ]),
         
-            .target(name: "SPOffline", dependencies: [.byName(name: "SPBase")], swiftSettings: [.define("_DISABLE_APP_GROUP")]),
+        .target(name: "SPOffline", dependencies: [.byName(name: "SPBase")], swiftSettings: [.define("_DISABLE_APP_GROUP")]),
         .target(name: "SPOfflineExtended", dependencies: [.byName(name: "SPBase"), .byName(name: "SPOffline")]),
     ]
 )

@@ -23,7 +23,6 @@ struct FullscreenBackButton: View {
                 Image(systemName: "chevron.left")
                     .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: isLight, accentColor: accentColor))
             }
-            .transition(.move(edge: .leading))
         }
     }
 }

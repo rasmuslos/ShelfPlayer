@@ -43,6 +43,7 @@
 		3A5159502AD029A200CD5680 /* AudiobooksList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A51594F2AD029A200CD5680 /* AudiobooksList.swift */; };
 		3A5159522AD02A3800CD5680 /* AudiobookRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159512AD02A3800CD5680 /* AudiobookRow.swift */; };
 		3A5159562AD0374600CD5680 /* AudiobookSortFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159552AD0374600CD5680 /* AudiobookSortFilter.swift */; };
+		3A5210082B6D30C900F59101 /* EpisodeSingleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5210072B6D30C900F59101 /* EpisodeSingleList.swift */; };
 		3A5A4DAB2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */; };
 		3A5A4DAD2B5EF81B00E72E8B /* VocabularyDonator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */; };
 		3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */; };
@@ -156,6 +157,7 @@
 		3A51594F2AD029A200CD5680 /* AudiobooksList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobooksList.swift; sourceTree = "<group>"; };
 		3A5159512AD02A3800CD5680 /* AudiobookRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookRow.swift; sourceTree = "<group>"; };
 		3A5159552AD0374600CD5680 /* AudiobookSortFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookSortFilter.swift; sourceTree = "<group>"; };
+		3A5210072B6D30C900F59101 /* EpisodeSingleList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeSingleList.swift; sourceTree = "<group>"; };
 		3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
 		3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyDonator.swift; sourceTree = "<group>"; };
 		3A5A4DB12B5EFB1800E72E8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
@@ -276,10 +278,10 @@
 				3A77B6FB2ACDE2DA00F22C7F /* Author */,
 				3A8810FC2AD2D2B3009696D1 /* Podcast */,
 				3A8810EC2AD2C061009696D1 /* Episode */,
+				3A7118EB2AD5ACA4005F7E08 /* NowPlaying */,
 				3A9207032B6CF86B00A5CAB0 /* --DONE-- */,
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3AADC0352B6D0D3D00C4088D /* Navigation */,
-				3A7118EB2AD5ACA4005F7E08 /* NowPlaying */,
 				3A9874202B59955F00B2704F /* Podcasts */,
 				3A98741F2B59955A00B2704F /* Audiobooks */,
 				3A98741E2B59955400B2704F /* Mixed */,
@@ -588,8 +590,9 @@
 				3AA9541A2AD290380031C20D /* PodcastList.swift */,
 				3AA19BA52AD6E94B00C468EA /* PodcastGrid.swift */,
 				3AADC0362B6D0E6700C4088D /* EpisodeRow.swift */,
-				3AA19BA12AD6C80000C468EA /* EpisodeList.swift */,
 				3AA954242AD29A0A0031C20D /* EpisodeGrid.swift */,
+				3AA19BA12AD6C80000C468EA /* EpisodeList.swift */,
+				3A5210072B6D30C900F59101 /* EpisodeSingleList.swift */,
 				3AA9542A2AD2A87E0031C20D /* EpisodeFeaturedGrid.swift */,
 			);
 			path = Collections;
@@ -802,6 +805,7 @@
 				3AE31DCE2B4B3C310092DF36 /* AuthorsView.swift in Sources */,
 				3ACB3B8F2AD17025005EA609 /* SeriesCover.swift in Sources */,
 				3A48D2512AD0661500991139 /* LibrarySelectorModifier.swift in Sources */,
+				3A5210082B6D30C900F59101 /* EpisodeSingleList.swift in Sources */,
 				3AF240EF2ADA98E90065C0A4 /* AuthorRow.swift in Sources */,
 				3A77B7072ACDF89500F22C7F /* FullscreenToolbarModifier.swift in Sources */,
 				3ABC2E862AD88B3900734B41 /* OfflineView.swift in Sources */,

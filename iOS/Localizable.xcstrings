@@ -250,10 +250,6 @@
       }
     },
     "audiobook.narrator %@" : {
-
-    },
-    "audiobook.narrtor %@" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -270,10 +266,36 @@
       }
     },
     "audiobook.similar.author %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auch geschrieben von %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Also written by %@"
+          }
+        }
+      }
     },
     "audiobook.similar.series" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auch in der Serie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Also in series"
+          }
+        }
+      }
     },
     "audiobook.view" : {
       "localizations" : {
@@ -469,7 +491,20 @@
       }
     },
     "episodes" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Episoden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodes"
+          }
+        }
+      }
     },
     "episodes.all" : {
       "localizations" : {
@@ -600,7 +635,20 @@
       }
     },
     "filter.genres" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Genre Filter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genre filter"
+          }
+        }
+      }
     },
     "filter.unfinished" : {
       "localizations" : {

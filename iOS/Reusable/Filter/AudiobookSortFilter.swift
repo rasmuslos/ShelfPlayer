@@ -100,11 +100,11 @@ extension AudiobookSortFilter {
                 return true
             }
             
-            let entity = OfflineManager.shared.getProgressEntity(item: audiobook)
+            let entity = OfflineManager.shared.requireProgressEntity(item: audiobook)
             
-            if filter == .finished && entity?.progress ?? 0 >= 1 {
+            if filter == .finished && entity.progress >= 1 {
                 return true
-            } else if filter == .unfinished && entity?.progress ?? 0 < 1 {
+            } else if filter == .unfinished && entity.progress < 1 {
                 return true
             }
             

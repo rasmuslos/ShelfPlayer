@@ -50,7 +50,6 @@ struct PodcastView: View {
             } else {
                 HStack {
                     Text("episodes")
-                        .foregroundStyle(.secondary)
                     
                     NavigationLink(destination: PodcastFullListView(episodes: episodes)) {
                         HStack {

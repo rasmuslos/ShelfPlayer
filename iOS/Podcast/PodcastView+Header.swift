@@ -18,7 +18,7 @@ extension PodcastView {
         
         var body: some View {
             ZStack {
-                FullscreenBackground(threshold: -300, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
+                FullscreenBackground(threshold: -250, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
                 
                 VStack {
                     ItemImage(image: podcast.image)

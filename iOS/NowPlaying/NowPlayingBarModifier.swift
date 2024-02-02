@@ -6,20 +6,19 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 import SPPlayback
 
 struct NowPlayingBarModifier: ViewModifier {
-    @State private var playing = AudioPlayer.shared.isPlaying()
-    @State private var item = AudioPlayer.shared.item
+    @Default(.skipForwardsInterval) var skipForwardsInterval
     
     @State private var nowPlayingSheetPresented = false
-    @State private var skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
     
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .bottom) {
-                if let item = item {
+                if let item = AudioPlayer.shared.item {
                     ZStack(alignment: .bottom) {
                         Rectangle()
                             .frame(width: UIScreen.main.bounds.width + 100, height: 300)
@@ -43,14 +42,14 @@ struct NowPlayingBarModifier: ViewModifier {
                                     
                                     Group {
                                         Button {
-                                            AudioPlayer.shared.setPlaying(!playing)
+                                            AudioPlayer.shared.playing = !AudioPlayer.shared.playing
                                         } label: {
-                                            Image(systemName: playing ?  "pause.fill" : "play.fill")
+                                            Image(systemName: AudioPlayer.shared.playing ?  "pause.fill" : "play.fill")
                                                 .contentTransition(.symbolEffect(.replace))
                                         }
                                         
                                         Button {
-                                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getCurrentTime() + Double(skipForwardsInterval))
+                                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
                                         } label: {
                                             Image(systemName: "goforward.\(skipForwardsInterval)")
                                                 .bold()
@@ -102,40 +101,18 @@ struct NowPlayingBarModifier: ViewModifier {
                                 nowPlayingSheetPresented.toggle()
                             }
                             .fullScreenCover(isPresented: $nowPlayingSheetPresented) {
-                                NowPlayingSheet(item: item, playing: $playing)
+                                NowPlayingSheet()
                             }
                     }
                 }
             }
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
-                withAnimation {
-                    item = AudioPlayer.shared.item
-                }
-            })
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
-                withAnimation {
-                    playing = AudioPlayer.shared.isPlaying()
-                }
-            })
-            .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification), perform: { _ in
-                withAnimation {
-                    skipForwardsInterval = UserDefaults.standard.integer(forKey: "skipForwardsInterval")
-                }
-            })
     }
 }
 
 struct NowPlayingBarSafeAreaModifier: ViewModifier {
-    @State var isVisible = AudioPlayer.shared.item != nil
-    
     func body(content: Content) -> some View {
         content
-            .safeAreaPadding(.bottom, isVisible ? 75 : 0)
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
-                withAnimation {
-                    isVisible = AudioPlayer.shared.item != nil
-                }
-            })
+            .safeAreaPadding(.bottom, AudioPlayer.shared.item != nil ? 75 : 0)
     }
 }
 
