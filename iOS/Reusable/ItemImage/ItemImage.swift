@@ -12,8 +12,6 @@ import SPBase
 struct ItemImage: View {
     let image: Item.Image?
     
-    @State var progress: Double?
-    
     var placeholder: some View {
         VStack {
             Spacer()

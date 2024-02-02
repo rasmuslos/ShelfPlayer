@@ -19,6 +19,7 @@ struct SleepTimerButton: View {
                     } label: {
                         Label("sleep.increase", systemImage: "plus")
                     }
+                    
                     Button {
                         let decreasedTime = remainingSleepTimerTime - 60
                         if decreasedTime <= 0 {

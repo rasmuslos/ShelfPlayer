@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import SPBase
 
 extension PlayableItem {

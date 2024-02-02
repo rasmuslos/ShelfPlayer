@@ -112,6 +112,6 @@ public extension Item {
         
         public let isLight: Bool
         
-        public static let placeholder = ImageColors(primary: .primary, secondary: .secondary, detail: .accentColor, background: .gray.opacity(0.5), isLight: true)
+        public static let placeholder = ImageColors(primary: .primary, secondary: .secondary, detail: .accentColor, background: .gray.opacity(0.25), isLight: true)
     }
 }
