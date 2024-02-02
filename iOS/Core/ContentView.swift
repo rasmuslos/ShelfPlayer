@@ -16,28 +16,28 @@ struct ContentView: View {
     var body: some View {
         Group {
             switch state {
-            case .login:
-                LoginView() {
-                    state = .sessionImport
-                }
-            case .sessionImport:
-                SessionsImportView() { success in
-                    if success {
-                        state = .library
-                    } else {
-                        state = .offline
+                case .login:
+                    LoginView() {
+                        state = .sessionImport
                     }
-                }
-            case .library:
-                LibraryView()
-                    .onAppear {
-                        VocabularyDonator.donateVocabulary()
-                        #if ENABLE_ALL_FEATURES
-                        INPreferences.requestSiriAuthorization { _ in }
-                        #endif
+                case .sessionImport:
+                    SessionsImportView() { success in
+                        if success {
+                            state = .library
+                        } else {
+                            state = .offline
+                        }
                     }
-            case .offline:
-                OfflineView()
+                case .library:
+                    EntryView()
+                        .onAppear {
+                            VocabularyDonator.donateVocabulary()
+                            #if ENABLE_ALL_FEATURES
+                            INPreferences.requestSiriAuthorization { _ in }
+                            #endif
+                        }
+                case .offline:
+                    OfflineView()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: Library.libraryChangedNotification), perform: { notification in
