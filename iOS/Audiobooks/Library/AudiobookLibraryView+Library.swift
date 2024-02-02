@@ -6,21 +6,51 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 
 extension AudiobookLibraryView {
     struct LibraryView: View {
         @Environment(\.libraryId) var libraryId
         
-        @State var failed = false
-        @State var audiobooks = [Audiobook]()
+        @Default(.audiobooksDisplay) var audiobookDisplay
+        @Default(.audiobooksFilter) var audiobooksFilter
         
-        @State var displayOrder = AudiobooksFilterSort.getDisplayType()
-        @State var filter = AudiobooksFilterSort.getFilter()
-        @State var sortOrder = AudiobooksFilterSort.getSortOrder()
-        @State var ascending = AudiobooksFilterSort.getAscending()
+        @Default(.audiobooksSortOrder) var audiobooksSortOrder
+        @Default(.audiobooksAscending) var audiobooksAscending
         
-        @State var genres = [String]()
+        @State private var failed = false
+        @State private var audiobooks = [Audiobook]()
+        
+        @State private var filteredGenres = [String]()
+        
+        private var genres: [String] {
+            var genres = Set<String>()
+            
+            for audiobook in audiobooks {
+                for genre in audiobook.genres {
+                    genres.insert(genre)
+                }
+            }
+            
+            return Array(genres)
+        }
+        private var visibleAudiobooks: [Audiobook] {
+            let visible = AudiobookSortFilter.filterSort(audiobooks: audiobooks, filter: audiobooksFilter, order: audiobooksSortOrder, ascending: audiobooksAscending)
+            
+            if filteredGenres.count == 0 {
+                return visible
+            }
+            
+            return visible.filter {
+                if $0.genres.count == 0 {
+                    return false
+                }
+                
+                let matches = $0.genres.reduce(0, { result, genre in genres.contains(where: { $0 == genre }) ? result + 1 : result })
+                return matches == genres.count
+            }
+        }
         
         var body: some View {
             NavigationStack {
@@ -32,41 +62,21 @@ extension AudiobookLibraryView {
                             LoadingView()
                         }
                     } else {
-                        let sorted = AudiobooksFilterSort.filterSort(audiobooks: audiobooks, filter: filter, order: sortOrder, ascending: ascending).filter { audiobook in
-                            if genres.count == 0 {
-                                return true
-                            }
-                            if audiobook.genres.count == 0 {
-                                return false
-                            }
-                            
-                            let matches = audiobook.genres.reduce(0, { result, genre in genres.contains(where: { $0 == genre }) ? result + 1 : result })
-                            return matches == genres.count
-                        }
-                        
                         Group {
-                            if displayOrder == .grid {
-                                ScrollView {
-                                    AudiobookGrid(audiobooks: sorted)
-                                        .padding(.horizontal)
-                                }
-                            } else if displayOrder == .list {
-                                List {
-                                    AudiobooksList(audiobooks: sorted, hideLeadingSeparator: true)
-                                }
-                                .listStyle(.plain)
+                            switch audiobookDisplay {
+                                case .grid:
+                                    ScrollView {
+                                        AudiobookGrid(audiobooks: visibleAudiobooks)
+                                            .padding(.horizontal)
+                                    }
+                                case .list:
+                                    List {
+                                        AudiobooksList(audiobooks: visibleAudiobooks)
+                                    }
+                                    .listStyle(.plain)
                             }
                         }
-                        .modifier(AudiobookGenreFilter(genres: {
-                            var genres = Set<String>()
-                            for audiobook in audiobooks {
-                                for genre in audiobook.genres {
-                                    genres.insert(genre)
-                                }
-                            }
-                            
-                            return Array(genres)
-                        }(), selected: $genres))
+                        .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
                     }
                 }
                 .navigationTitle("title.library")
@@ -79,12 +89,12 @@ extension AudiobookLibraryView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        AudiobooksFilterSort(display: $displayOrder, filter: $filter, sort: $sortOrder, ascending: $ascending)
+                        AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
                     }
                 }
                 .modifier(NowPlayingBarSafeAreaModifier())
-                .task(fetchAudiobooks)
-                .refreshable(action: fetchAudiobooks)
+                .task { await fetchAudiobooks() }
+                .refreshable { await fetchAudiobooks() }
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
@@ -97,14 +107,13 @@ extension AudiobookLibraryView {
 // MARK: Helper
 
 extension AudiobookLibraryView.LibraryView {
-    @Sendable
-    func fetchAudiobooks() {
-        Task.detached {
-            if let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(libraryId: libraryId) {
-                self.audiobooks = audiobooks
-            } else {
-                failed = true
-            }
+    func fetchAudiobooks() async {
+        failed = false
+        
+        if let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(libraryId: libraryId) {
+            self.audiobooks = audiobooks
+        } else {
+            failed = true
         }
     }
 }

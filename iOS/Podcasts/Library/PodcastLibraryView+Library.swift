@@ -26,7 +26,7 @@ extension PodcastLibraryView {
                         }
                     } else {
                         ScrollView {
-                            PodcastsGrid(podcasts: podcasts)
+                            PodcastVGrid(podcasts: podcasts)
                                 .padding(.horizontal)
                         }
                     }

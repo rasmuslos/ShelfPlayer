@@ -25,17 +25,20 @@ struct Slider: View {
             .cornerRadius(7)
             .gesture(DragGesture(minimumDistance: 0)
                 .onChanged { value in
-                    percentage = min(max(0, Double(value.location.x / geometry.size.width * 100)), 100)
-                    dragging = true
+                    withAnimation(.spring) {
+                        percentage = min(max(0, Double(value.location.x / geometry.size.width * 100)), 100)
+                        dragging = true
+                    }
                 }
                 .onEnded { _ in
-                    dragging = false
+                    withAnimation(.spring) {
+                        dragging = false
+                    }
                     onEnded?()
                 }
             )
         }
         .frame(height: dragging ? 10 : 7)
-        .animation(.easeInOut, value: dragging)
     }
 }
 

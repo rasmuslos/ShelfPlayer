@@ -26,7 +26,6 @@ struct VolumeSlider: View {
         }
         .dynamicTypeSize(isDragging ? .xLarge : .medium)
         .frame(height: 30)
-        .animation(.easeInOut, value: isDragging)
         .onChange(of: volume) {
             if isDragging {
                 MPVolumeView.setVolume(Float(volume / 100))

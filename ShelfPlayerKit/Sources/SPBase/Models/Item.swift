@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import UIImageColors
+import SwiftUI
 
 public class Item: Identifiable {
     public let id: String
@@ -79,5 +81,37 @@ public extension Item {
             case audiobookshelf
             case remote
         }
+    }
+}
+
+public extension Item {
+    func getImageColors() -> ImageColors {
+        if let image = self.image, let data = try? Data(contentsOf: image.url) {
+            let image = UIImage(data: data)
+            
+            if let colors = image?.getColors(quality: .low) {
+                let background = Color(colors.background)
+                
+                return .init(
+                    primary: Color(colors.primary),
+                    secondary: Color(colors.secondary),
+                    detail: Color(colors.detail),
+                    background: background,
+                    isLight: background.isLight())
+            }
+        }
+        
+        return .placeholder
+    }
+    
+    struct ImageColors: Equatable {
+        public let primary: Color
+        public let secondary: Color
+        public let detail: Color
+        public let background: Color
+        
+        public let isLight: Bool
+        
+        public static let placeholder = ImageColors(primary: .primary, secondary: .secondary, detail: .accentColor, background: .gray.opacity(0.5), isLight: true)
     }
 }
