@@ -12,11 +12,21 @@ import SPPlayback
 
 struct AudiobookRow: View {
     let audiobook: Audiobook
+    let entity: OfflineProgress
     
-    @State var bottomText: String?
-    @State var labelImage: String = "play"
+    @MainActor
+    init(audiobook: Audiobook) {
+        self.audiobook = audiobook
+        entity = OfflineManager.shared.requireProgressEntity(item: audiobook)
+    }
     
-    @State var progress: OfflineProgress?
+    var labelImage: String {
+        if audiobook == AudioPlayer.shared.item {
+            return AudioPlayer.shared.playing ? "waveform" : "pause"
+        } else {
+            return "play"
+        }
+    }
     
     var body: some View {
         HStack {
@@ -47,13 +57,10 @@ struct AudiobookRow: View {
                             .symbolVariant(.circle.fill)
                             .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
                         
-                        if let progress = progress {
-                            Text(progress.readableProgress(spaceConstrained: false))
+                        if entity.progress > 0 {
+                            Text(entity.readableProgress(spaceConstrained: false))
                         } else {
                             Text(verbatim: audiobook.duration.timeLeft(spaceConstrained: false))
-                                .onAppear {
-                                    fetchProgress()
-                                }
                         }
                     }
                     .font(.subheadline)
@@ -63,16 +70,6 @@ struct AudiobookRow: View {
                 .buttonStyle(.plain)
             }
             .padding(.leading, 5)
-            .onAppear(perform: checkPlaying)
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.startStopNotification), perform: { _ in
-                checkPlaying()
-            })
-            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playPauseNotification), perform: { _ in
-                checkPlaying()
-            })
-            .onReceive(NotificationCenter.default.publisher(for: OfflineManager.progressCreatedNotification)) { _ in
-                fetchProgress()
-            }
         }
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
     }
@@ -92,20 +89,5 @@ extension AudiobookRow {
         }
         
         return parts
-    }
-    
-    @MainActor
-    func fetchProgress() {
-        progress = OfflineManager.shared.getProgressEntity(item: audiobook)
-    }
-    
-    private func checkPlaying() {
-        withAnimation {
-            if audiobook == AudioPlayer.shared.item {
-                labelImage = AudioPlayer.shared.isPlaying() ? "waveform" : "pause"
-            } else {
-                labelImage = "play"
-            }
-        }
     }
 }

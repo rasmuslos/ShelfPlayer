@@ -32,7 +32,7 @@ struct PodcastFullListView: View {
     
     var body: some View {
         List {
-            PodcastView.EpisodeList(episodes: visibleEpisodes)
+            EpisodeSingleList(episodes: visibleEpisodes)
         }
         .listStyle(.plain)
         .navigationTitle("title.episodes")
@@ -42,62 +42,6 @@ struct PodcastFullListView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 EpisodeSortFilter(filter: $episodesFilter, sortOrder: $episodesSort, ascending: $episodesAscending)
             }
-        }
-    }
-}
-
-extension PodcastView {
-    struct EpisodeList: View {
-        let episodes: [Episode]
-        
-        var body: some View {
-            ForEach(episodes) { episode in
-                NavigationLink(destination: EpisodeView(episode: episode)) {
-                    EpisodeRow(episode: episode)
-                }
-                .listRowInsets(.init(top: 5, leading: 15, bottom: 5, trailing: 15))
-                .modifier(SwipeActionsModifier(item: episode))
-            }
-        }
-    }
-}
-
-extension PodcastFullListView {
-    struct EpisodeRow: View {
-        let episode: Episode
-        
-        var body: some View {
-            VStack(alignment: .leading) {
-                Group {
-                    if let formattedReleaseDate = episode.formattedReleaseDate {
-                        Text(formattedReleaseDate)
-                    } else {
-                        Text(verbatim: "")
-                    }
-                }
-                .font(.subheadline.smallCaps())
-                .foregroundStyle(.secondary)
-                
-                Text(episode.name)
-                    .font(.headline)
-                    .lineLimit(1)
-                
-                if let description = episode.descriptionText {
-                    Text(description)
-                        .lineLimit(2)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                }
-                
-                HStack(alignment: .firstTextBaseline) {
-                    EpisodePlayButton(episode: episode)
-                        .padding(.bottom, 10)
-                    
-                    Spacer()
-                    DownloadIndicator(item: episode)
-                }
-            }
-            .modifier(EpisodeContextMenuModifier(episode: episode))
         }
     }
 }

@@ -13,16 +13,15 @@ import SPOfflineExtended
 
 struct StatusOverlay: View {
     let item: Item
+    let entity: OfflineProgress
     let offlineTracker: ItemOfflineTracker?
     
-    init(item: Item) {
+    @MainActor
+    init(item: PlayableItem) {
         self.item = item
         
-        if let playableItem = item as? PlayableItem {
-            offlineTracker = playableItem.offlineTracker
-        } else {
-            offlineTracker = nil
-        }
+        entity = OfflineManager.shared.requireProgressEntity(item: item)
+        offlineTracker = item.offlineTracker
     }
     
     @State var progress: Double?
@@ -32,12 +31,8 @@ struct StatusOverlay: View {
             let size = geometry.size.width / 3
             
             HStack(alignment: .top) {
-                Color.clear
-                    .onAppear(perform: fetchProgress)
-                
                 Spacer()
-                
-                if let progress = progress {
+                if entity.progress > 0 {
                     Triangle()
                         .frame(width: size, height: size)
                         .foregroundStyle(offlineTracker?.status == .downloaded ? Color.purple : Color.accentColor)
@@ -46,7 +41,7 @@ struct StatusOverlay: View {
                                 Circle()
                                     .stroke(Color.secondary.opacity(0.75), lineWidth: 3)
                                 Circle()
-                                    .trim(from: 0, to: CGFloat(progress))
+                                    .trim(from: 0, to: CGFloat(entity.progress))
                                     .stroke(Color.primary, lineWidth: 3)
                             }
                             .rotationEffect(.degrees(-90))
@@ -66,22 +61,10 @@ struct StatusOverlay: View {
     }
 }
 
-extension StatusOverlay {
-    func fetchProgress() {
-        Task.detached {
-            if let progress = await OfflineManager.shared.getProgressEntity(item: item) {
-                if progress.progress > 0 && progress.progress < 1 {
-                    self.progress = progress.progress
-                }
-            }
-        }
-    }
-}
-
 // MARK: Progress image
 
 struct ItemStatusImage: View {
-    let item: Item
+    let item: PlayableItem
     
     var body: some View {
         ItemImage(image: item.image)

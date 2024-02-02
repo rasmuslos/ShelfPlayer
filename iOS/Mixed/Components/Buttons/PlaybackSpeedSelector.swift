@@ -10,79 +10,34 @@ import SPBase
 import SPPlayback
 
 struct PlaybackSpeedSelector: View {
-    @State var currentSpeed = AudioPlayer.shared.getPlaybackRate()
-    
+    let playbackRates: [Float] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
     var body: some View {
         Menu {
-            Button {
-                setPlaybackSpeed(0.25)
-            } label: {
-                Text(verbatim: "0.25x")
-            }
-            Button {
-                setPlaybackSpeed(0.5)
-            } label: {
-                Text(verbatim: "0.5x")
-            }
-            Button {
-                setPlaybackSpeed(0.75)
-            } label: {
-                Text(verbatim: "0.75x")
-            }
-            Button {
-                setPlaybackSpeed(1)
-            } label: {
-                Text(verbatim: "1x")
-            }
-            Button {
-                setPlaybackSpeed(1.25)
-            } label: {
-                Text(verbatim: "1.25x")
-            }
-            Button {
-                setPlaybackSpeed(1.5)
-            } label: {
-                Text(verbatim: "1.5x")
-            }
-            Button {
-                setPlaybackSpeed(1.75)
-            } label: {
-                Text(verbatim: "1.25x")
-            }
-            Button {
-                setPlaybackSpeed(2)
-            } label: {
-                Text(verbatim: "2x")
+            ForEach(playbackRates, id: \.hashValue) { rate in
+                Button {
+                    AudioPlayer.shared.playbackRate = rate
+                } label: {
+                    Text(verbatim: "\(rate)x")
+                }
             }
         } label: {
-            if currentSpeed == 1 {
+            if AudioPlayer.shared.playbackRate == 1 {
                 Text(verbatim: "1x")
-            } else if currentSpeed == 2 {
+            } else if AudioPlayer.shared.playbackRate == 2 {
                 Text(verbatim: "2x")
             } else {
-                Text(String(currentSpeed)) + Text(verbatim: "x")
+                Text(String(AudioPlayer.shared.playbackRate)) + Text(verbatim: "x")
             }
         } primaryAction: {
-            var speed = currentSpeed + 0.25
+            var rate = AudioPlayer.shared.playbackRate + 0.25
             
-            if speed > 2 {
-                speed = 0.25
+            if rate > 2 {
+                rate = 0.25
             }
             
-            setPlaybackSpeed(speed)
+            AudioPlayer.shared.playbackRate = rate
         }
         .fontDesign(.rounded)
         .buttonStyle(.plain)
-        .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.playbackRateChanged), perform: { _ in
-            currentSpeed = AudioPlayer.shared.getPlaybackRate()
-        })
-    }
-}
-
-// MARK: Helper
-
-extension PlaybackSpeedSelector {
-    func setPlaybackSpeed(_ speed: Float) {
-        AudioPlayer.shared.setPlaybackRate(speed)
     }
 }

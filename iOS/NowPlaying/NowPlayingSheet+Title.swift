@@ -7,33 +7,30 @@
 
 import SwiftUI
 import SPBase
+import SPPlayback
 
 extension NowPlayingSheet {
     struct Title: View {
-        let item: PlayableItem
-        
         var body: some View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Group {
-                        if let episode = item as? Episode, let formattedReleaseDate = episode.formattedReleaseDate {
+                        if let episode = AudioPlayer.shared.item as? Episode, let formattedReleaseDate = episode.formattedReleaseDate {
                             Text(formattedReleaseDate)
-                        } else if let audiobook = item as? Audiobook {
-                            if let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
-                                Text(series)
-                            }
+                        } else if let audiobook = AudioPlayer.shared.item as? Audiobook, let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
+                            Text(series)
                         }
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     
-                    Text(item.name)
+                    Text(AudioPlayer.shared.item!.name)
                         .lineLimit(1)
                         .font(.headline)
-                        .fontDesign(item as? Audiobook != nil ? .serif : .default)
+                        .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
                         .foregroundStyle(.primary)
                     
-                    if let author = item.author {
+                    if let author = AudioPlayer.shared.item!.author {
                         Text(author)
                             .lineLimit(1)
                             .font(.subheadline)
