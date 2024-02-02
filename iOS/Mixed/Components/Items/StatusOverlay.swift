@@ -37,14 +37,21 @@ struct StatusOverlay: View {
                         .frame(width: size, height: size)
                         .foregroundStyle(offlineTracker?.status == .downloaded ? Color.purple : Color.accentColor)
                         .reverseMask(alignment: .topTrailing) {
-                            ZStack {
-                                Circle()
-                                    .stroke(Color.secondary.opacity(0.75), lineWidth: 3)
-                                Circle()
-                                    .trim(from: 0, to: CGFloat(entity.progress))
-                                    .stroke(Color.primary, lineWidth: 3)
+                            Group {
+                                if entity.progress >= 1 {
+                                    Image(systemName: "checkmark")
+                                } else {
+                                    ZStack {
+                                        Circle()
+                                            .trim(from: CGFloat(entity.progress), to: 360 - CGFloat(entity.progress))
+                                            .stroke(Color.black.opacity(0.4), lineWidth: 3)
+                                        Circle()
+                                            .trim(from: 0, to: CGFloat(entity.progress))
+                                            .stroke(Color.black.opacity(0.85), lineWidth: 3)
+                                    }
+                                    .rotationEffect(.degrees(-90))
+                                }
                             }
-                            .rotationEffect(.degrees(-90))
                             .frame(width: size / 3, height: size / 3)
                             .padding(size / 7)
                         }
