@@ -45,6 +45,7 @@ struct AudiobookHGrid: View {
                         ItemStatusImage(item: audiobook)
                             .frame(width: size)
                             .padding(.leading, 10)
+                            .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
                     }
                     .buttonStyle(.plain)
                 }

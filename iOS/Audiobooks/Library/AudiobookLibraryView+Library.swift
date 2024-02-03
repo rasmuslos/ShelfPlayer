@@ -76,20 +76,21 @@ extension AudiobookLibraryView {
                                     .listStyle(.plain)
                             }
                         }
-                        .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
                     }
                 }
                 .navigationTitle("title.library")
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
+                        AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
+                    }
+                }
+                .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
                         NavigationLink(destination: AuthorsView()) {
                             Image(systemName: "person.fill")
                         }
-                    }
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
                     }
                 }
                 .modifier(NowPlayingBarSafeAreaModifier())

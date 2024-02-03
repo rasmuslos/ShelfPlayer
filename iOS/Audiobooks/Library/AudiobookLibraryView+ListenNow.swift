@@ -79,18 +79,15 @@ extension AudiobookLibraryView {
 }
 
 extension AudiobookLibraryView.ListenNowView {
-    @Sendable
-    func loadRows() {
-        Task.detached {
-            do {
-                (audiobookRows, authorRows) = try await AudiobookshelfClient.shared.getAudiobooksHome(libraryId: libraryId)
-            } catch {
-                failed = true
-            }
+    func loadRows() async {
+        do {
+            (audiobookRows, authorRows) = try await AudiobookshelfClient.shared.getAudiobooksHome(libraryId: libraryId)
+        } catch {
+            failed = true
         }
         
-        Task.detached { @MainActor in
-            downloadedAudiobooks = try OfflineManager.shared.getAudiobooks()
+        if let downloadedAudiobooks = try? OfflineManager.shared.getAudiobooks() {
+            self.downloadedAudiobooks = downloadedAudiobooks
         }
     }
 }
