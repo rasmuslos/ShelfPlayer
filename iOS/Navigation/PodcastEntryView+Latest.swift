@@ -8,8 +8,8 @@
 import SwiftUI
 import SPBase
 
-extension PodcastLibraryView {
-    struct LatestEpisodesView: View {
+extension PodcastEntryView {
+    struct LatestView: View {
         @Environment(\.libraryId) var libraryId
         
         @State var failed = false
@@ -31,8 +31,8 @@ extension PodcastLibraryView {
                     }
                 }
                 .navigationTitle("title.latest")
-                .task(fetchItems)
-                .refreshable(action: fetchItems)
+                .task{ await fetchItems() }
+                .refreshable{ await fetchItems() }
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
@@ -42,15 +42,14 @@ extension PodcastLibraryView {
     }
 }
 
-extension PodcastLibraryView.LatestEpisodesView {
-    @Sendable
-    func fetchItems() {
-        Task.detached {
-            do {
-                episodes = try await AudiobookshelfClient.shared.getEpisodes(limit: 20, libraryId: libraryId)
-            } catch {
-                failed = true
-            }
+extension PodcastEntryView.LatestView {
+    func fetchItems() async {
+        failed = false
+        
+        do {
+            episodes = try await AudiobookshelfClient.shared.getEpisodes(limit: 20, libraryId: libraryId)
+        } catch {
+            failed = true
         }
     }
 }

@@ -13,12 +13,14 @@ import SPOfflineExtended
 struct DownloadButton: View {
     let item: PlayableItem
     let tint: Bool
+    let downloadingLabel: Bool
     
     let offlineTracker: ItemOfflineTracker
     
-    init(item: PlayableItem, tint: Bool = false) {
+    init(item: PlayableItem, tint: Bool = false, downloadingLabel: Bool = true) {
         self.item = item
         self.tint = tint
+        self.downloadingLabel = downloadingLabel
         
         offlineTracker = item.offlineTracker
     }
@@ -38,7 +40,7 @@ struct DownloadButton: View {
                     Label("download", systemImage: "arrow.down")
                 }
                 .tint(tint ? .green : .primary)
-            case .working:
+            case .downloaded:
                 Button {
                     if let episode = item as? Episode {
                         OfflineManager.shared.delete(episodeId: episode.id)
@@ -46,13 +48,16 @@ struct DownloadButton: View {
                         OfflineManager.shared.delete(audiobookId: item.id)
                     }
                 } label: {
-                    Label("download.remove", systemImage: "trash")
+                    Label("download.remove", systemImage: "xmark")
                         .tint(tint ? .red : .primary)
                 }
-            case .downloaded:
+            case .working:
                 HStack {
                     ProgressView()
-                    Text("downloading")
+                    
+                    if downloadingLabel {
+                        Text("downloading")
+                    }
                 }
         }
     }
@@ -60,4 +65,12 @@ struct DownloadButton: View {
 
 #Preview {
     DownloadButton(item: Audiobook.fixture)
+}
+
+#Preview {
+    DownloadButton(item: Audiobook.fixture, tint: true)
+}
+
+#Preview {
+    DownloadButton(item: Audiobook.fixture, downloadingLabel: true)
 }

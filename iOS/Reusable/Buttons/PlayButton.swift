@@ -41,14 +41,15 @@ struct PlayButton: View {
                     + Text(String((entity.duration - entity.currentTime).timeLeft()))
                 } icon: {
                     Image(systemName: labelImage)
-                        .contentTransition(.symbolEffect(.replace))
+                        .frame(width: 25)
+                        .contentTransition(.symbolEffect(.replace.downUp.byLayer))
+                        .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
                 }
             } else {
                 Label(label, systemImage: labelImage)
             }
         }
         .buttonStyle(PlayNowButtonStyle(percentage: entity.progress))
-        .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
     }
 }
 

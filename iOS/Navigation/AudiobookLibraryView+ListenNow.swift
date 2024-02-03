@@ -10,7 +10,7 @@ import Defaults
 import SPBase
 import SPOffline
 
-extension AudiobookLibraryView {
+extension AudiobookEntryView {
     struct ListenNowView: View {
         @Environment(\.libraryId) var libraryId: String
         
@@ -32,7 +32,7 @@ extension AudiobookLibraryView {
                             ErrorView()
                         } else {
                             LoadingView()
-                                .task(loadRows)
+                                .task{ await fetchItems() }
                         }
                     } else {
                         ScrollView {
@@ -68,7 +68,7 @@ extension AudiobookLibraryView {
                 .navigationTitle("title.listenNow")
                 .modifier(LibrarySelectorModifier())
                 .modifier(NowPlayingBarSafeAreaModifier())
-                .refreshable(action: loadRows)
+                .refreshable { await fetchItems() }
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
@@ -78,16 +78,18 @@ extension AudiobookLibraryView {
     }
 }
 
-extension AudiobookLibraryView.ListenNowView {
-    func loadRows() async {
+extension AudiobookEntryView.ListenNowView {
+    func fetchItems() async {
+        failed = false
+        
+        if let downloadedAudiobooks = try? OfflineManager.shared.getAudiobooks() {
+            self.downloadedAudiobooks = downloadedAudiobooks
+        }
+        
         do {
             (audiobookRows, authorRows) = try await AudiobookshelfClient.shared.getAudiobooksHome(libraryId: libraryId)
         } catch {
             failed = true
-        }
-        
-        if let downloadedAudiobooks = try? OfflineManager.shared.getAudiobooks() {
-            self.downloadedAudiobooks = downloadedAudiobooks
         }
     }
 }
