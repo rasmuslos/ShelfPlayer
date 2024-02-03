@@ -40,6 +40,7 @@ struct StatusOverlay: View {
                             Group {
                                 if entity.progress >= 1 {
                                     Image(systemName: "checkmark")
+                                        .font(.caption)
                                 } else {
                                     ZStack {
                                         Circle()

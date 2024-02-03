@@ -61,7 +61,7 @@ extension AudiobookList {
                 ItemStatusImage(item: audiobook)
                     .frame(width: 85)
                 
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 0) {
                     if eyebrow.count > 0 {
                         Text(eyebrow.joined(separator: " • "))
                             .font(.caption)
@@ -73,13 +73,15 @@ extension AudiobookList {
                         .font(.headline)
                         .fontDesign(.serif)
                         .lineLimit(1)
+                        .padding(.top, 4)
+                        .padding(.bottom, 6)
                     
                     Button {
                         audiobook.startPlayback()
                     } label: {
                         HStack {
                             Image(systemName: labelImage)
-                                .font(.title3)
+                                .font(.subheadline)
                                 .imageScale(.large)
                                 .symbolVariant(.circle.fill)
                                 .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
@@ -90,9 +92,8 @@ extension AudiobookList {
                                 Text(verbatim: audiobook.duration.timeLeft(spaceConstrained: false))
                             }
                         }
-                        .font(.subheadline)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                        .padding(.top, 1)
                     }
                     .buttonStyle(.plain)
                 }
@@ -119,5 +120,10 @@ extension AudiobookList {
 }
 
 #Preview {
-    AudiobookList(audiobooks: .init(repeating: [.fixture], count: 7))
+    NavigationStack {
+        List {
+            AudiobookList(audiobooks: .init(repeating: [.fixture], count: 7))
+        }
+        .listStyle(.plain)
+    }
 }

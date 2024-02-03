@@ -65,7 +65,6 @@ struct NowPlayingBarModifier: ViewModifier {
                                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
                                         } label: {
                                             Image(systemName: "goforward.\(skipForwardsInterval)")
-                                                .bold()
                                                 .symbolEffect(.bounce, value: animateForwards)
                                         }
                                         .padding(.horizontal, 10)

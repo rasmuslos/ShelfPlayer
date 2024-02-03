@@ -45,6 +45,7 @@ struct AudiobookView: View {
                         RowTitle(title: String(localized: "audiobook.similar.series"))
                         AudiobookHGrid(audiobooks: viewModel.audiobooksInSeries, amount: 4)
                     }
+                    .padding(.bottom, 20)
                 }
                 
                 if viewModel.audiobooksByAuthor.count > 1, let author = viewModel.audiobook.author {
