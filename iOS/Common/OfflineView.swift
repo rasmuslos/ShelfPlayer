@@ -28,7 +28,7 @@ struct OfflineView: View {
                         }
                         
                         ForEach(audiobooks) {
-                            AudiobookRow(audiobook: $0)
+                            AudiobookList.AudiobookRow(audiobook: $0)
                         }
                         .onDelete { indexSet in
                             indexSet.forEach {

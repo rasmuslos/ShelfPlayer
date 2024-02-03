@@ -32,13 +32,13 @@ struct SeriesView: View {
                 case .grid:
                     ScrollView {
                         Header(series: series)
-                        AudiobookGrid(audiobooks: visibleAudiobooks)
+                        AudiobookVGrid(audiobooks: visibleAudiobooks)
                             .padding(.horizontal)
                     }
                 case .list:
                     List {
                         Header(series: series)
-                        AudiobooksList(audiobooks: visibleAudiobooks)
+                        AudiobookList(audiobooks: visibleAudiobooks)
                     }
                     .listStyle(.plain)
             }

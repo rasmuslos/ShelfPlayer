@@ -25,11 +25,7 @@ struct AuthorsView: View {
                 }
             } else {
                 List {
-                    ForEach(authors) { author in
-                        NavigationLink(destination: AuthorView(author: author)) {
-                            AuthorListRow(author: author)
-                        }
-                    }
+                    AuthorList(authors: authors)
                 }
                 .navigationTitle("authors.title")
             }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 import SPBase
 import AVKit
 
@@ -49,7 +50,7 @@ extension AudioPlayer {
         } else {
             audioPlayer.pause()
             
-            if UserDefaults.standard.bool(forKey: "smartRewind") {
+            if Defaults[.smartRewind] {
                 lastPause = Date()
             }
         }
