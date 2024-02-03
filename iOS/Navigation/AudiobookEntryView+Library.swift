@@ -9,7 +9,7 @@ import SwiftUI
 import Defaults
 import SPBase
 
-extension AudiobookLibraryView {
+extension AudiobookEntryView {
     struct LibraryView: View {
         @Environment(\.libraryId) var libraryId
         
@@ -60,6 +60,7 @@ extension AudiobookLibraryView {
                             ErrorView()
                         } else {
                             LoadingView()
+                                .task { await fetchItems() }
                         }
                     } else {
                         Group {
@@ -76,26 +77,25 @@ extension AudiobookLibraryView {
                                     .listStyle(.plain)
                             }
                         }
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
+                            }
+                        }
+                        .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                NavigationLink(destination: AuthorsView()) {
+                                    Image(systemName: "person.fill")
+                                }
+                            }
+                        }
                     }
                 }
                 .navigationTitle("title.library")
                 .navigationBarTitleDisplayMode(.large)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
-                    }
-                }
-                .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink(destination: AuthorsView()) {
-                            Image(systemName: "person.fill")
-                        }
-                    }
-                }
                 .modifier(NowPlayingBarSafeAreaModifier())
-                .task { await fetchAudiobooks() }
-                .refreshable { await fetchAudiobooks() }
+                .refreshable { await fetchItems() }
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
@@ -107,8 +107,8 @@ extension AudiobookLibraryView {
 
 // MARK: Helper
 
-extension AudiobookLibraryView.LibraryView {
-    func fetchAudiobooks() async {
+extension AudiobookEntryView.LibraryView {
+    func fetchItems() async {
         failed = false
         
         if let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(libraryId: libraryId) {

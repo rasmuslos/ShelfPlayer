@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 
-struct AudiobookLibraryView: View {
+struct AudiobookEntryView: View {
+    @Default(.lastActiveAudiobookLibraryTab) var lastActiveAudiobookLibraryTab
+    
     init() {
         let appearance = UINavigationBarAppearance()
         
@@ -23,17 +26,29 @@ struct AudiobookLibraryView: View {
     }
     
     var body: some View {
-        TabView {
+        TabView(selection: $lastActiveAudiobookLibraryTab) {
             ListenNowView()
+                .tag(Tab.listenNow)
             SeriesView()
+                .tag(Tab.series)
             LibraryView()
+                .tag(Tab.library)
             SearchView()
+                .tag(Tab.search)
         }
     }
 }
 
-#Preview {
-    AudiobookLibraryView()
-        .environment(\.libraryId, Library.audiobooksFixture.id)
-        .environment(AvailableLibraries(libraries: []))
+extension AudiobookEntryView {
+    enum Tab: Defaults.Serializable, Codable {
+        case listenNow
+        case series
+        case library
+        case search
+    }
 }
+
+extension Defaults.Keys {
+    static let lastActiveAudiobookLibraryTab = Key<AudiobookEntryView.Tab>("lastActiveAudiobookLibraryTab", default: .listenNow)
+}
+

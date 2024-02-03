@@ -75,7 +75,7 @@ extension NowPlayingSheet.ChapterSheet {
         let chapter: PlayableItem.Chapter
         
         var active: Bool {
-            chapter.start <= AudioPlayer.shared.getItemCurrentTime() && chapter.end > AudioPlayer.shared.getItemCurrentTime()
+            AudioPlayer.shared.chapter == chapter
         }
         
         var body: some View {
