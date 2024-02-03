@@ -13,7 +13,7 @@ struct FullscreenToolbarModifier: ViewModifier {
     let navigationBarVisible: Bool
     
     var isLight: Bool? = nil
-    var accentColor: Color = .accentColor
+    var accentColor: Color = .accent
     
     func body(content: Content) -> some View {
         let appearance: ColorScheme = isLight == true ? .light : isLight == false ? .dark : colorScheme

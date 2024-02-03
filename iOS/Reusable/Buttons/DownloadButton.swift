@@ -26,39 +26,56 @@ struct DownloadButton: View {
     }
     
     var body: some View {
-        switch offlineTracker.status {
-            case .none:
-                Button {
-                    Task {
+        Group {
+            switch offlineTracker.status {
+                case .none:
+                    Button {
+                        Task {
+                            if let episode = item as? Episode {
+                                try? await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
+                            } else if let audiobook = item as? Audiobook {
+                                try? await OfflineManager.shared.download(audiobookId: audiobook.id)
+                            }
+                        }
+                    } label: {
+                        Label("download", systemImage: "arrow.down")
+                    }
+                case .downloaded:
+                    Button {
                         if let episode = item as? Episode {
-                            try? await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
-                        } else if let audiobook = item as? Audiobook {
-                            try? await OfflineManager.shared.download(audiobookId: audiobook.id)
+                            OfflineManager.shared.delete(episodeId: episode.id)
+                        } else {
+                            OfflineManager.shared.delete(audiobookId: item.id)
+                        }
+                    } label: {
+                        Label("download.remove", systemImage: "xmark")
+                    }
+                case .working:
+                    HStack {
+                        ProgressView()
+                        
+                        if downloadingLabel {
+                            Text("downloading")
                         }
                     }
-                } label: {
-                    Label("download", systemImage: "arrow.down")
-                }
-                .tint(tint ? .green : .primary)
-            case .downloaded:
-                Button {
-                    if let episode = item as? Episode {
-                        OfflineManager.shared.delete(episodeId: episode.id)
-                    } else {
-                        OfflineManager.shared.delete(audiobookId: item.id)
-                    }
-                } label: {
-                    Label("download.remove", systemImage: "xmark")
-                        .tint(tint ? .red : .primary)
-                }
-            case .working:
-                HStack {
-                    ProgressView()
-                    
-                    if downloadingLabel {
-                        Text("downloading")
-                    }
-                }
+            }
+        }
+        .modifier(TintModifier(tint: tint, offlineStatus: offlineTracker.status))
+    }
+}
+
+extension DownloadButton {
+    struct TintModifier: ViewModifier {
+        let tint: Bool
+        let offlineStatus: ItemOfflineTracker.OfflineStatus
+        
+        func body(content: Content) -> some View {
+            if tint {
+                content
+                    .tint(offlineStatus == .downloaded ? .red : .green)
+            } else {
+                content
+            }
         }
     }
 }

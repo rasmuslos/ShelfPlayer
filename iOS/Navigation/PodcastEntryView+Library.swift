@@ -21,9 +21,9 @@ extension PodcastEntryView {
                     if podcasts.isEmpty {
                         if failed {
                             ErrorView()
-                                .task { await fetchItems() }
                         } else {
                             LoadingView()
+                                .task { await fetchItems() }
                         }
                     } else {
                         ScrollView {
