@@ -64,5 +64,10 @@ extension EpisodeSingleList {
 }
 
 #Preview {
-    EpisodeSingleList(episodes: .init(repeating: [.fixture], count: 7))
+    NavigationStack {
+        List {
+            EpisodeSingleList(episodes: .init(repeating: [.fixture], count: 7))
+        }
+        .listStyle(.plain)
+    }
 }

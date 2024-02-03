@@ -66,12 +66,12 @@ extension AudiobookLibraryView {
                             switch audiobookDisplay {
                                 case .grid:
                                     ScrollView {
-                                        AudiobookGrid(audiobooks: visibleAudiobooks)
+                                        AudiobookVGrid(audiobooks: visibleAudiobooks)
                                             .padding(.horizontal)
                                     }
                                 case .list:
                                     List {
-                                        AudiobooksList(audiobooks: visibleAudiobooks)
+                                        AudiobookList(audiobooks: visibleAudiobooks)
                                     }
                                     .listStyle(.plain)
                             }

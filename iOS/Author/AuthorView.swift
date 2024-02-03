@@ -40,7 +40,7 @@ struct AuthorView: View {
                     case .grid:
                         ScrollView {
                             Header(author: author)
-                            AudiobookGrid(audiobooks: visibleAudiobooks)
+                            AudiobookVGrid(audiobooks: visibleAudiobooks)
                                 .padding()
                         }
                     case .list:
@@ -55,7 +55,7 @@ struct AuthorView: View {
                             .listRowSeparator(.hidden)
                             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                             
-                            AudiobooksList(audiobooks: visibleAudiobooks)
+                            AudiobookList(audiobooks: visibleAudiobooks)
                         }
                         .listStyle(.plain)
                 }

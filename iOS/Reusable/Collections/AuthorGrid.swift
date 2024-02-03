@@ -8,16 +8,17 @@
 import SwiftUI
 import SPBase
 
-struct AuthorsRow: View {
+struct AuthorGrid: View {
     let authors: [Author]
     
     var body: some View {
         let size = (UIScreen.main.bounds.width - (90)) / 4
+        
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
                 ForEach(authors) { author in
                     NavigationLink(destination: AuthorView(author: author)) {
-                        AuthorAvatar(author: author)
+                        AuthorGridItem(author: author)
                             .frame(width: size)
                             .padding(.leading, 10)
                     }
@@ -32,21 +33,26 @@ struct AuthorsRow: View {
     }
 }
 
-struct AuthorTitleRow: View {
-    let title: String
-    let authors: [Author]
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            RowTitle(title: title, fontDesign: .serif)
-            AuthorsRow(authors: authors)
+extension AuthorGrid {
+    struct AuthorGridItem: View {
+        let author: Author
+        
+        var body: some View {
+            VStack {
+                ItemImage(image: author.image)
+                    .clipShape(RoundedRectangle(cornerRadius: 10000))
+                
+                Text(author.name)
+                    .font(.caption)
+                    .lineLimit(1)
+            }
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        AuthorsRow(authors: [
+        AuthorGrid(authors: [
             Author.fixture,
             Author.fixture,
             Author.fixture,

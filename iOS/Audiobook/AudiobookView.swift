@@ -40,12 +40,20 @@ struct AudiobookView: View {
                 
                 if viewModel.audiobooksInSeries.count > 1 {
                     divider
-                    AudiobooksRowContainer(title: String(localized: "audiobook.similar.series"), audiobooks: viewModel.audiobooksInSeries, amount: 4, navigatable: true)
+                    
+                    VStack(alignment: .leading) {
+                        RowTitle(title: String(localized: "audiobook.similar.series"))
+                        AudiobookHGrid(audiobooks: viewModel.audiobooksInSeries, amount: 4)
+                    }
                 }
                 
                 if viewModel.audiobooksByAuthor.count > 1, let author = viewModel.audiobook.author {
                     divider
-                    AudiobooksRowContainer(title: String(localized: "audiobook.similar.author \(author)"), audiobooks: viewModel.audiobooksByAuthor, amount: 4, navigatable: true)
+                    
+                    VStack(alignment: .leading) {
+                        RowTitle(title: String(localized: "audiobook.similar.author \(author)"))
+                        AudiobookHGrid(audiobooks: viewModel.audiobooksByAuthor, amount: 4)
+                    }
                 }
                 
                 Spacer()

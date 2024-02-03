@@ -34,11 +34,7 @@ struct SearchView: View {
                     List {
                         if !audiobooks.isEmpty {
                             Section("section.audiobooks") {
-                                ForEach(audiobooks) { audiobook in
-                                    NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
-                                        AudiobookRow(audiobook: audiobook)
-                                    }
-                                }
+                                AudiobookList(audiobooks: audiobooks)
                             }
                         }
                         if !podcasts.isEmpty {
@@ -49,21 +45,13 @@ struct SearchView: View {
                         
                         if !series.isEmpty {
                             Section("section.series") {
-                                ForEach(series) { item in
-                                    NavigationLink(destination: SeriesView(series: item)) {
-                                        SeriesRow(series: item)
-                                    }
-                                }
+                                SeriesList(series: series)
                             }
                         }
                         
                         if !authors.isEmpty {
                             Section("section.authors") {
-                                ForEach(authors) { author in
-                                    NavigationLink(destination: AuthorView(author: author)) {
-                                        AuthorRow(author: author)
-                                    }
-                                }
+                                
                             }
                         }
                     }

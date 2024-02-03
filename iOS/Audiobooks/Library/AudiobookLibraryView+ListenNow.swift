@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 import SPOffline
 
 extension AudiobookLibraryView {
     struct ListenNowView: View {
         @Environment(\.libraryId) var libraryId: String
+        
+        @Default(.showAuthorsRow) var showAuthorsRow
+        @Default(.disableDiscoverRow) var disableDiscoverRow
         
         @State var audiobookRows = [AudiobookHomeRow]()
         @State var authorRows = [AuthorHomeRow]()
@@ -34,18 +38,27 @@ extension AudiobookLibraryView {
                         ScrollView {
                             VStack {
                                 ForEach(audiobookRows) { row in
-                                    if row.id != "discover" || !UserDefaults.standard.bool(forKey: "disableDiscoverRow") {
-                                        AudiobooksRowContainer(title: row.label, audiobooks: row.audiobooks)
+                                    if row.id != "discover" || !disableDiscoverRow {
+                                        VStack(alignment: .leading) {
+                                            RowTitle(title: row.label)
+                                            AudiobookHGrid(audiobooks: row.audiobooks)
+                                        }
                                     }
                                 }
                                 
                                 if !downloadedAudiobooks.isEmpty {
-                                    AudiobooksRowContainer(title: "Downloaded", audiobooks: downloadedAudiobooks)
+                                    VStack(alignment: .leading) {
+                                        RowTitle(title: String(localized: "downloads"))
+                                        AudiobookHGrid(audiobooks: downloadedAudiobooks)
+                                    }
                                 }
                                 
-                                if UserDefaults.standard.bool(forKey: "showAuthorsRow") {
+                                if showAuthorsRow {
                                     ForEach(authorRows) { row in
-                                        AuthorTitleRow(title: row.label, authors: row.authors)
+                                        VStack(alignment: .leading) {
+                                            RowTitle(title: row.label)
+                                            AuthorGrid(authors: row.authors)
+                                        }
                                     }
                                 }
                             }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 import SPBase
 import SPOffline
 
@@ -131,7 +132,7 @@ extension PlaybackReporter {
         }
         
         #if canImport(SPOfflineExtended)
-        if UserDefaults.standard.bool(forKey: "deleteFinishedDownloads") && currentTime >= duration {
+        if Defaults[.deleteFinishedDownloads] && currentTime >= duration {
             Task.detached {
                 if let episodeId = episodeId {
                     await OfflineManager.shared.delete(episodeId: episodeId)
