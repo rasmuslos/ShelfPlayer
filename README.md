@@ -21,6 +21,10 @@ Also we are on version 2.1.2 now (as of Jan. 23) and build 91. The amount of com
 
 ## Roadmap
 
+### Short term
+https://www.icloud.com/notes/0cdF-SSfHt3dSDX3zxtMsnuLg#Todo
+
+### Long term
 - Fix upcoming bugs
 - Siri intents (episodes, audiobooks are already implemented)
 
