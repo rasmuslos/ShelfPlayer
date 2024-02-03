@@ -13,6 +13,9 @@ import SPPlayback
 struct NowPlayingBarModifier: ViewModifier {
     @Default(.skipForwardsInterval) var skipForwardsInterval
     
+    @State private var bounce = false
+    @State private var animateForwards = false
+    
     @State private var nowPlayingSheetPresented = false
     
     func body(content: Content) -> some View {
@@ -34,6 +37,15 @@ struct NowPlayingBarModifier: ViewModifier {
                                     ItemImage(image: item.image)
                                         .frame(width: 40, height: 40)
                                         .padding(.leading, 5)
+                                        .scaleEffect(bounce ? AudioPlayer.shared.playing ? 1.1 : 0.9 : 1)
+                                        .animation(.spring(duration: 0.2, bounce: 0.7), value: bounce)
+                                        .onChange(of: AudioPlayer.shared.playing) {
+                                            withAnimation {
+                                                bounce = true
+                                            } completion: {
+                                                bounce = false
+                                            }
+                                        }
                                     
                                     Text(item.name)
                                         .lineLimit(1)
@@ -49,10 +61,12 @@ struct NowPlayingBarModifier: ViewModifier {
                                         }
                                         
                                         Button {
+                                            animateForwards.toggle()
                                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
                                         } label: {
                                             Image(systemName: "goforward.\(skipForwardsInterval)")
                                                 .bold()
+                                                .symbolEffect(.bounce, value: animateForwards)
                                         }
                                         .padding(.horizontal, 10)
                                     }

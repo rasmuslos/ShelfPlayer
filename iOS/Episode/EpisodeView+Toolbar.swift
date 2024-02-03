@@ -43,7 +43,7 @@ extension EpisodeView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        DownloadButton(item: episode)
+                        DownloadButton(item: episode, downloadingLabel: false)
                             .labelStyle(.iconOnly)
                             .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
                     }

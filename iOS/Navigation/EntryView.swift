@@ -18,9 +18,9 @@ struct EntryView: View {
             Group {
                 switch activeLibrary.type {
                     case .audiobooks:
-                        AudiobookLibraryView()
+                        AudiobookEntryView()
                     case .podcasts:
-                        PodcastLibraryView()
+                        PodcastEntryView()
                     default:
                         ErrorView()
                 }

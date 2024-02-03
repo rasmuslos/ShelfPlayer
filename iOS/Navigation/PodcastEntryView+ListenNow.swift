@@ -8,7 +8,7 @@
 import SwiftUI
 import SPBase
 
-extension PodcastLibraryView {
+extension PodcastEntryView {
     struct ListenNowView: View {
         @Environment(\.libraryId) var libraryId: String
         
@@ -26,7 +26,7 @@ extension PodcastLibraryView {
                         } else {
                             LoadingView()
                                 .padding(.top, 50)
-                                .task(fetchItems)
+                                .task{ await fetchItems() }
                         }
                     } else {
                         ScrollView {
@@ -56,7 +56,7 @@ extension PodcastLibraryView {
                 .navigationTitle("title.listenNow")
                 .modifier(LibrarySelectorModifier())
                 .modifier(NowPlayingBarSafeAreaModifier())
-                .refreshable(action: fetchItems)
+                .refreshable { await fetchItems() }
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
@@ -66,15 +66,14 @@ extension PodcastLibraryView {
     }
 }
 
-extension PodcastLibraryView.ListenNowView {
-    @Sendable
-    func fetchItems() {
-        Task.detached {
-            do {
-                (episodeRows, podcastRows) = try await AudiobookshelfClient.shared.getPodcastsHome(libraryId: libraryId)
-            } catch {
-                failed = true
-            }
+extension PodcastEntryView.ListenNowView {
+    func fetchItems() async {
+        failed = false
+        
+        do {
+            (episodeRows, podcastRows) = try await AudiobookshelfClient.shared.getPodcastsHome(libraryId: libraryId)
+        } catch {
+            failed = true
         }
     }
 }

@@ -20,7 +20,7 @@ struct Slider: View {
                     .foregroundStyle(.tertiary)
                 Rectangle()
                     .foregroundStyle(dragging ? Color.primary : Color.primary.opacity(0.8))
-                    .frame(width: geometry.size.width * CGFloat(self.percentage / 100))
+                    .frame(width: geometry.size.width * CGFloat(min(1, self.percentage / 100)))
             }
             .cornerRadius(7)
             .highPriorityGesture(DragGesture(minimumDistance: 0)

@@ -16,7 +16,10 @@ extension NowPlayingSheet {
         @Default(.skipForwardsInterval) var skipForwardsInterval
         @Default(.skipBackwardsInterval) var skipBackwardsInterval
         
-        @State var dragging = false
+        @State private var dragging = false
+        
+        @State private var animateBackwards = false
+        @State private var animateForwards = false
         
         private var playedPercentage: Double {
             (AudioPlayer.shared.currentTime / AudioPlayer.shared.duration) * 100
@@ -25,9 +28,7 @@ extension NowPlayingSheet {
         var body: some View {
             VStack {
                 VStack {
-                    Slider(percentage: AudioPlayer.shared.currentTime.isFinite && !AudioPlayer.shared.currentTime.isNaN ? .init(get: { playedPercentage }, set: { _ in }) : .constant(0),
-                           dragging: $dragging,
-                           onEnded: {
+                    Slider(percentage: .init(get: { playedPercentage }, set: { _ in }), dragging: $dragging, onEnded: {
                         AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (playedPercentage / 100), includeChapterOffset: true)
                     })
                     .frame(height: 10)
@@ -70,12 +71,20 @@ extension NowPlayingSheet {
                 .padding(.bottom, -10)
                 
                 HStack {
+                    Spacer()
+                    
                     Group {
                         Button {
+                            animateBackwards.toggle()
                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
                         } label: {
                             Image(systemName: "gobackward.\(skipBackwardsInterval)")
+                                .symbolEffect(.bounce, value: animateBackwards)
+                                .frame(width: 60)
                         }
+                        
+                        Spacer()
+                        
                         Button {
                             AudioPlayer.shared.playing = !AudioPlayer.shared.playing
                         } label: {
@@ -83,18 +92,26 @@ extension NowPlayingSheet {
                                 .frame(height: 50)
                                 .font(.system(size: 47))
                                 .padding(.horizontal, 50)
-                                .contentTransition(.symbolEffect(.replace))
+                                .contentTransition(.symbolEffect(.replace.downUp))
                         }
                         .sensoryFeedback(.selection, trigger: AudioPlayer.shared.playing)
+                        .frame(width: 60)
+                        
+                        Spacer()
                         
                         Button {
+                            animateForwards.toggle()
                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
                         } label: {
                             Image(systemName: "goforward.\(skipForwardsInterval)")
+                                .symbolEffect(.bounce, value: animateForwards)
                         }
+                        .frame(width: 60)
                     }
                     .font(.system(size: 34))
                     .foregroundStyle(.primary)
+                    
+                    Spacer()
                 }
                 .padding(.vertical, 50)
                 

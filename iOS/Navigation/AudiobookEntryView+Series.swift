@@ -8,7 +8,7 @@
 import SwiftUI
 import SPBase
 
-extension AudiobookLibraryView {
+extension AudiobookEntryView {
     struct SeriesView: View {
         @Environment(\.libraryId) var libraryId
         
@@ -23,6 +23,7 @@ extension AudiobookLibraryView {
                             ErrorView()
                         } else {
                             LoadingView()
+                                .task { await fetchItems() }
                         }
                     } else {
                         ScrollView {
@@ -34,8 +35,7 @@ extension AudiobookLibraryView {
                 }
                 .navigationTitle("title.series")
                 .navigationBarTitleDisplayMode(.large)
-                .task(fetchAudiobooks)
-                .refreshable(action: fetchAudiobooks)
+                .refreshable { await fetchItems() }
             }
             .modifier(NowPlayingBarModifier())
             .tabItem {
@@ -47,15 +47,14 @@ extension AudiobookLibraryView {
 
 // MARK: Helper
 
-extension AudiobookLibraryView.SeriesView {
-    @Sendable
-    func fetchAudiobooks() {
-        Task.detached {
-            if let series = try? await AudiobookshelfClient.shared.getSeries(libraryId: libraryId) {
-                self.series = series
-            } else {
-                failed = true
-            }
+extension AudiobookEntryView.SeriesView {
+    func fetchItems() async {
+        failed = false
+        
+        if let series = try? await AudiobookshelfClient.shared.getSeries(libraryId: libraryId) {
+            self.series = series
+        } else {
+            failed = true
         }
     }
 }
