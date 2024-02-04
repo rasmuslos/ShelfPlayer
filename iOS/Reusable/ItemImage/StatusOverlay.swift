@@ -35,7 +35,7 @@ struct StatusOverlay: View {
                 if entity.progress > 0 {
                     Triangle()
                         .frame(width: size, height: size)
-                        .foregroundStyle(offlineTracker?.status == .downloaded ? Color.purple : Color.accentColor)
+                        .foregroundStyle(offlineTracker?.status == .downloaded ? Color.alternativeAccent : Color.accentColor)
                         .reverseMask(alignment: .topTrailing) {
                             Group {
                                 if entity.progress >= 1 {
