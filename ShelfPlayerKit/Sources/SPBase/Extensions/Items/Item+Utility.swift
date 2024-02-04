@@ -21,7 +21,7 @@ extension Item: Hashable {
 
 extension Item: Comparable {
     public static func < (lhs: Item, rhs: Item) -> Bool {
-        lhs.name < rhs.name
+        lhs.sortName < rhs.sortName
     }
 }
 
