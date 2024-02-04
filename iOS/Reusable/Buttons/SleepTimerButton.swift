@@ -71,7 +71,7 @@ struct SleepTimerButton: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "moon.zzz")
+                    Label("sleepTimer", systemImage: "moon.zzz")
                 }
             }
         }

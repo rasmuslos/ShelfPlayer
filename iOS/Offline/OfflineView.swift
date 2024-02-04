@@ -55,6 +55,7 @@ struct OfflineView: View {
             .navigationTitle("title.offline")
             .task { try? await loadItems() }
             .refreshable { try? await loadItems() }
+            .modifier(NowPlayingBarSafeAreaModifier())
             .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in Task { try? await loadItems() }}
         }
         .modifier(NowPlayingBarModifier())
