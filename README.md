@@ -22,11 +22,14 @@ Also we are on version 2.1.2 now (as of Jan. 23) and build 91. The amount of com
 ## Roadmap
 
 ### Short term
-https://www.icloud.com/notes/0cdF-SSfHt3dSDX3zxtMsnuLg#Todo
+
+- Fix upcoming bugs
+- https://www.icloud.com/notes/0cdF-SSfHt3dSDX3zxtMsnuLg#Todo
 
 ### Long term
-- Fix upcoming bugs
-- Siri intents (episodes, audiobooks are already implemented)
+
+- tvOS application
+- Siri intents (episodes)
 
 ## Screenshots
 
@@ -38,7 +41,7 @@ https://www.icloud.com/notes/0cdF-SSfHt3dSDX3zxtMsnuLg#Todo
 
 **Pre built binaries**
 
-Grab the (latest Release)[https://github.com/rasmuslos/ShelfPlayer/releases/tag/v2.1.4] and install it using your favorite tool like SideStore.
+Grab the [latest Release](https://github.com/rasmuslos/ShelfPlayer/releases/tag/v2.1.4) and install it using your favorite tool like SideStore.
 
 Please not that the pre build binaries lack Siri and Widget support because these features either require a paid developer account or cannot be reliably implemented in a way that works with tools like SideStore. For further information see https://github.com/rasmuslos/ShelfPlayer/issues/20 & https://github.com/rasmuslos/ShelfPlayer/issues/4
 
