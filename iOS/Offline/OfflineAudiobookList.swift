@@ -13,7 +13,7 @@ struct OfflineAudiobookList: View {
     let audiobooks: [Audiobook]
     
     var body: some View {
-        ForEach(audiobooks) { audiobook in
+        ForEach(audiobooks.sorted()) { audiobook in
             Button {
                 audiobook.startPlayback()
             } label: {

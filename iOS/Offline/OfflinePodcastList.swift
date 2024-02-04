@@ -14,7 +14,7 @@ struct OfflinePodcastList: View {
     let podcasts: [Podcast: [Episode]]
     
     var body: some View {
-        ForEach(Array(podcasts.keys)) { podcast in
+        ForEach(Array(podcasts.keys).sorted()) { podcast in
             let episodes = podcasts[podcast]!
             
             NavigationLink(destination: OfflinePodcastView(podcast: podcast, episodes: episodes)) {
