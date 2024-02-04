@@ -61,7 +61,8 @@ struct EpisodeSortFilter: View {
                 }
             }
         } label: {
-            Label("filterSort", systemImage: "arrow.up.arrow.down.circle.fill")
+            Label("filterSort", systemImage: "arrow.up.arrow.down.circle")
+                .symbolVariant(filter == .all ? .none : .fill)
         }
     }
 }
