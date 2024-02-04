@@ -53,12 +53,12 @@ struct OfflineView: View {
                 }
             }
             .navigationTitle("title.offline")
-            .modifier(NowPlayingBarModifier())
-            .sheet(isPresented: $accountSheetPresented) { AccountSheet() }
             .task { try? await loadItems() }
             .refreshable { try? await loadItems() }
             .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in Task { try? await loadItems() }}
         }
+        .modifier(NowPlayingBarModifier())
+        .sheet(isPresented: $accountSheetPresented) { AccountSheet() }
     }
 }
 
