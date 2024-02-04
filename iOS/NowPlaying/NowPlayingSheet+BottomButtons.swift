@@ -22,6 +22,7 @@ extension NowPlayingSheet {
                 
                 SleepTimerButton()
                     .frame(width: 60)
+                    .labelStyle(.iconOnly)
                     .foregroundStyle(.secondary)
                 
                 Spacer()
@@ -31,10 +32,12 @@ extension NowPlayingSheet {
                 
                 Spacer()
                 
-                Button {
-                    showChaptersSheet.toggle()
+                Menu {
+                    ChapterSelectMenu()
                 } label: {
                     Image(systemName: "list.dash")
+                } primaryAction: {
+                    showChaptersSheet.toggle()
                 }
                 .frame(width: 60)
                 .foregroundStyle(.secondary)

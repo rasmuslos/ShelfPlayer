@@ -345,6 +345,38 @@
         }
       }
     },
+    "backwards" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backwards"
+          }
+        }
+      }
+    },
+    "chapters" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapitel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapters"
+          }
+        }
+      }
+    },
     "chapters.empty" : {
       "localizations" : {
         "de" : {
@@ -726,6 +758,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filter & sort"
+          }
+        }
+      }
+    },
+    "forwards" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorwärts"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forwards"
           }
         }
       }
@@ -1406,6 +1454,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Increase by one minute"
+          }
+        }
+      }
+    },
+    "sleepTimer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlaftimer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep timer"
           }
         }
       }

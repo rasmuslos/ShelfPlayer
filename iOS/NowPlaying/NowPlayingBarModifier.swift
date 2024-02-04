@@ -11,6 +11,7 @@ import SPBase
 import SPPlayback
 
 struct NowPlayingBarModifier: ViewModifier {
+    @Default(.skipBackwardsInterval) var skipBackwardsInterval
     @Default(.skipForwardsInterval) var skipForwardsInterval
     
     @State private var bounce = false
@@ -77,6 +78,34 @@ struct NowPlayingBarModifier: ViewModifier {
                             .frame(width: UIScreen.main.bounds.width - 30, height: 60)
                             .shadow(color: .black.opacity(0.25), radius: 20)
                             .contextMenu {
+                                Button {
+                                    AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
+                                } label: {
+                                    Label("backwards", systemImage: "gobackward.\(skipForwardsInterval)")
+                                }
+                                
+                                Button {
+                                    animateForwards.toggle()
+                                    AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
+                                } label: {
+                                    Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
+                                }
+                                
+                                Divider()
+                                
+                                Menu {
+                                    ChapterSelectMenu()
+                                } label: {
+                                    Label("chapters", systemImage: "list.dash")
+                                }
+                                
+                                Divider()
+                                
+                                SleepTimerButton()
+                                PlaybackSpeedButton()
+                                
+                                Divider()
+                                
                                 Button {
                                     AudioPlayer.shared.stopPlayback()
                                 } label: {

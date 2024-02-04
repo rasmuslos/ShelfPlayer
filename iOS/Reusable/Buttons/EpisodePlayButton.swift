@@ -46,14 +46,20 @@ extension EpisodePlayButton {
         @Environment(\.colorScheme) var colorScheme
         @Environment(EpisodePlayButtonViewModel.self) var viewModel
         
+        private var labelImage: String {
+            if AudioPlayer.shared.item == viewModel.episode {
+                return AudioPlayer.shared.playing ? "waveform" : "pause.fill"
+            } else {
+                return "play.fill"
+            }
+        }
+        
         var body: some View {
             HStack(spacing: 6) {
-                if AudioPlayer.shared.item == viewModel.episode {
-                    Image(systemName: AudioPlayer.shared.playing ? "waveform" : "pause.fill")
-                        .symbolEffect(.variableColor.iterative, isActive: AudioPlayer.shared.playing)
-                } else {
-                    Image(systemName: "play.fill")
-                }
+                Image(systemName: labelImage)
+                    .contentTransition(.symbolEffect(.replace.downUp.byLayer))
+                    .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform" && AudioPlayer.shared.playing)
+                    .frame(width: 20, height: 15)
                 
                 if viewModel.entity.progress > 0 {
                     if viewModel.entity.progress >= 1 {
