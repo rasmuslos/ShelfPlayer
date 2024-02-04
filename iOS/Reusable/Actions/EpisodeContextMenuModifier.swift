@@ -32,8 +32,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 Divider()
                 
                 ProgressButton(item: episode)
-                
-                
+                DownloadButton(item: episode)
             } preview: {
                 VStack {
                     HStack {

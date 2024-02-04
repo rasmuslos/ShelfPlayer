@@ -14,7 +14,7 @@ struct EpisodeSingleList: View {
     var body: some View {
         ForEach(episodes) { episode in
             NavigationLink(destination: EpisodeView(episode: episode)) {
-                EpisodeRow(episode: episode, lineLimit: 2)
+                EpisodeRow(episode: episode)
             }
             .listRowInsets(.init(top: 5, leading: 15, bottom: 5, trailing: 15))
             .modifier(SwipeActionsModifier(item: episode))
@@ -25,7 +25,6 @@ struct EpisodeSingleList: View {
 extension EpisodeSingleList {
     struct EpisodeRow: View {
         let episode: Episode
-        let lineLimit: Int
         
         var body: some View {
             VStack(alignment: .leading) {
@@ -45,7 +44,7 @@ extension EpisodeSingleList {
                 
                 if let description = episode.descriptionText {
                     Text(description)
-                        .lineLimit(lineLimit)
+                        .lineLimit(2)
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
