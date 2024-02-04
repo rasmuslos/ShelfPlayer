@@ -24,12 +24,16 @@ struct ProgressIndicator: View {
                 Circle()
                     .fill(Color.accentColor.quaternary)
                     .stroke(Color.accentColor.secondary, lineWidth: 1)
-                Circle()
-                    .trim(from: 0, to: CGFloat(entity.progress))
-                    .fill(.alternativeAccent)
-                    .padding(2)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.spring, value: entity.progress)
+                
+                GeometryReader { proxy in
+                    Circle()
+                        .inset(by: proxy.size.width / 4)
+                        .trim(from: 0, to: CGFloat(entity.progress))
+                        .stroke(.alternativeAccent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
+                        .rotationEffect(.degrees(-90))
+                        .animation(.spring, value: entity.progress)
+                }
+                .padding(2)
             }
         }
     }
