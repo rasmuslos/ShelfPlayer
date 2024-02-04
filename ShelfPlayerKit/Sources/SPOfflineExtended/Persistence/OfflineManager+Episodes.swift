@@ -24,7 +24,11 @@ public extension OfflineManager {
         var result = [Podcast: [Episode]]()
         
         for podcast in podcasts {
-            result[Podcast.convertFromOffline(podcast: podcast)] = episodes.filter { $0.podcast.id == podcast.id }.map(Episode.convertFromOffline)
+            let podcast = Podcast.convertFromOffline(podcast: podcast)
+            let episodes = episodes.filter { $0.podcast.id == podcast.id }.map(Episode.convertFromOffline)
+            
+            result[podcast] = episodes
+            podcast.episodeCount = episodes.count
         }
         
         return result

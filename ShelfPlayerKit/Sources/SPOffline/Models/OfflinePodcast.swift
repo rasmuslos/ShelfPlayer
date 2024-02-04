@@ -24,7 +24,7 @@ public class OfflinePodcast {
     public let released: String?
 
     public let explicit: Bool
-    public let episodeCount: Int
+    public var episodeCount: Int
     
     public init(id: String, libraryId: String, name: String, author: String?, overview: String?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int) {
         self.id = id
