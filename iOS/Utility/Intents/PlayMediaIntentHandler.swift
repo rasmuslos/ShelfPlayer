@@ -66,7 +66,15 @@ extension PlayMediaIntentHandler {
             try await AudiobookshelfClient.shared.getItems(query: name, libraryId: $0.id)
         }.forEach { audiobooks.append(contentsOf: $0.0) }
         
-        return audiobooks
+        var seenIds = Set<String>()
+        return audiobooks.filter {
+            if seenIds.contains($0.id) {
+                return false
+            }
+            
+            seenIds.insert($0.id)
+            return true
+        }
     }
     
     func mapMediaItems(_ items: [Item]) -> [INMediaItem] {

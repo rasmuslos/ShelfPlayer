@@ -33,6 +33,7 @@ struct OfflinePodcastView: View {
                 EpisodeSortFilter(filter: $episodeFilter, sortOrder: $episodesSort, ascending: $episodesAscending)
             }
         }
+        .modifier(NowPlayingBarSafeAreaModifier())
     }
 }
 

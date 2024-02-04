@@ -25,9 +25,9 @@ extension PodcastEntryView {
                     } else {
                         List {
                             EpisodeList(episodes: episodes)
-                                .modifier(NowPlayingBarSafeAreaModifier())
                         }
                         .listStyle(.plain)
+                        .modifier(NowPlayingBarSafeAreaModifier())
                     }
                 }
                 .navigationTitle("title.latest")
