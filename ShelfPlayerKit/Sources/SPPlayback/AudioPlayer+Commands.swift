@@ -11,7 +11,7 @@ import MediaPlayer
 internal extension AudioPlayer {
     func setupAudioSession() {
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
         } catch {
             logger.fault("Failed to setup audio session")
         }
