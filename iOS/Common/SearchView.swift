@@ -51,7 +51,7 @@ struct SearchView: View {
                         
                         if !authors.isEmpty {
                             Section("section.authors") {
-                                
+                                AuthorList(authors: authors)
                             }
                         }
                     }
@@ -66,7 +66,16 @@ struct SearchView: View {
                 task?.cancel()
                 task = Task.detached {
                     loading = true
-                    (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.getItems(query: query, libraryId: libraryId)
+                    
+                    if query == "" {
+                        audiobooks = []
+                        podcasts = []
+                        authors = []
+                        series = []
+                    } else {
+                        (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.getItems(query: query, libraryId: libraryId)
+                    }
+                    
                     loading = false
                 }
             }
