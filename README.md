@@ -47,12 +47,20 @@ This means that stripping app extensions is highly recommended, as they will not
 **Build the app yourself**
 
 1. Install Xcode
-2. Edit the configuration file in the `Configuration` directory
-3. If you do not have a paid developer account remove the `ENABLE_ALL_FEATURES` compilation option, otherwise the app will crash
+2. Edit the configuration file called 'Base.xcconfig' in the `Configuration` directory
+3. If you do not have a paid developer account remove the `ENABLE_ALL_FEATURES` compilation option, delete Siri option, and remove the group otherwise the app will crash
 4. Connect your iPhone to your Mac
 5. Enable developer mode
 6. Select your iPhone as the run destination
 7. Run the application
+
+**Create an ipa**
+you can also create an .ipa from Xcode, make sure to follow steps 1 and 2 from Build the App section
+1. Go to Product -> Archive.
+2. Once the App archives a new window opens right click on the archive and show in finder, open the archive with show package contents.
+3. Go to Products-> Applications -> copy ShelfPlayer.app into a folder called Payload.
+4. Compress Payload folder into a .zip
+5. rename the .zip to ShelfPlayer.ipa, this will allow you to sideload the app as an ipa
 
 ## Licensing & Contributing
 
