@@ -89,12 +89,12 @@ extension AudiobookEntryView {
                                 AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
                             }
                         }
-                        .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
                     }
                 }
                 .navigationTitle("title.library")
                 .navigationBarTitleDisplayMode(.large)
                 .modifier(NowPlayingBarSafeAreaModifier())
+                .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
                 .refreshable { await fetchItems() }
             }
             .modifier(NowPlayingBarModifier())
