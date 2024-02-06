@@ -113,7 +113,7 @@ extension NowPlayingSheet {
                     
                     Spacer()
                 }
-                .padding(.vertical, 55)
+                .padding(.vertical, 57)
                 
                 VolumeSlider()
                     .frame(height: 10)
