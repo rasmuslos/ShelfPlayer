@@ -6,8 +6,18 @@
 //
 
 import Foundation
+import Defaults
 
 public extension AudioPlayer {
+    func sleepTimerDidExpire() {
+        playing = false
+        setSleepTimer(duration: nil)
+        
+        if Defaults[.smartRewind] && getItemCurrentTime() < getItemDuration() {
+            seek(to: getItemCurrentTime() - 10)
+        }
+    }
+    
     func setSleepTimer(duration: Double?) {
         audioPlayer.volume = 1
         

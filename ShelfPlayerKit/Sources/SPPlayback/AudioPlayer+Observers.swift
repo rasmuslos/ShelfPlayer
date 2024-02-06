@@ -31,8 +31,7 @@ internal extension AudioPlayer {
                 remainingSleepTimerTime! -= 0.5
                 
                 if remainingSleepTimerTime! <= 0 {
-                    setPlaying(false)
-                    setSleepTimer(duration: nil)
+                    sleepTimerDidExpire()
                 } else if remainingSleepTimerTime! <= 10 {
                     audioPlayer.volume = Float(remainingSleepTimerTime! / 10)
                 }

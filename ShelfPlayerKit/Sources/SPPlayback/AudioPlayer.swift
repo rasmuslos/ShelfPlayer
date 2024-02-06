@@ -25,7 +25,11 @@ public class AudioPlayer {
     public internal(set) var currentTime: Double = .infinity
     
     public internal(set) var chapter: PlayableItem.Chapter?
-    public internal(set) var buffering = true
+    public internal(set) var buffering = true {
+        didSet {
+            updateChapterIndex()
+        }
+    }
     
     public var _playing = false
     public var playing: Bool {
