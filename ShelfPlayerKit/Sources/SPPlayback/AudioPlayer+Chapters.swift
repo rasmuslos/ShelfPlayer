@@ -19,8 +19,7 @@ internal extension AudioPlayer {
         let chapter = chapters.firstIndex { $0.start <= currentTime && $0.end > currentTime }
         
         if pauseAtEndOfChapter && chapter != activeChapterIndex {
-            setPlaying(false)
-            setSleepTimer(duration: nil)
+            sleepTimerDidExpire()
         }
         
         activeChapterIndex = chapter

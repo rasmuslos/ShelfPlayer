@@ -27,7 +27,6 @@ extension AudioPlayer {
             await seek(to: startTime)
             setPlaying(true)
             
-            updateChapterIndex()
             setupNowPlayingMetadata()
         }
     }
@@ -129,7 +128,6 @@ public extension AudioPlayer {
             logger.fault("Seek to position outside of range")
         }
         
-        updateChapterIndex()
         updateNowPlayingStatus()
     }
     func seek(to: Double, includeChapterOffset: Bool = false) {
