@@ -50,12 +50,14 @@ This means that stripping app extensions is highly recommended, as they will not
 **Build the app yourself**
 
 1. Install Xcode
-2. Edit the configuration file in the `Configuration` directory
-3. If you do not have a paid developer account remove the `ENABLE_ALL_FEATURES` compilation option, otherwise the app will crash
-4. Connect your iPhone to your Mac
-5. Enable developer mode
+2. In the `Configuration` directory copy the `Debug.xcconfig.template` file and rename it to `Debug.xcconfig`
+3. Change the `DEVELOPMENT_TEAM` to your apple developer team id and `BUNDLE_ID_PREFIX` to a prefix of your liking
+4. If you do not have a paid developer account remove the `ENABLE_ALL_FEATURES` compilation condition. Otherwise the app will crash. If you do not intent on developing the app also remove the `DEBUG flag`
+5. Connect your iPhone to your Mac & enable developer mode
 6. Select your iPhone as the run destination
 7. Run the application
+
+Please not that the `DEBUG` configuration is used by default for all builds except archiving and profiling. You have to edit `Release.xcconfig` to update their parameters.
 
 ## Licensing & Contributing
 
