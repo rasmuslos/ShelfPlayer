@@ -57,6 +57,8 @@
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Playback</string>
+			<key>FooterText</key>
+			<string>This will rewind by 10 seconds if you have not listened to the item in the past 10 minutes or the sleep timer has ended</string>
 		</dict>
 		<dict>
 			<key>Type</key>
