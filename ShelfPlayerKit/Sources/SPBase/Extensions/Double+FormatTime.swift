@@ -9,6 +9,7 @@ import Foundation
 
 public extension Double {
     func hoursMinutesSeconds(padding: Bool = true) -> (String, String, String) {
+        if isInfinite || isNaN { return ("00", "00", "00") }
         let seconds = Int64(self)
         
         if padding {

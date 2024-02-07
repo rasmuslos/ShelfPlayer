@@ -27,7 +27,7 @@ struct NowPlayingSheet: View {
                         }
                 }
             
-            ItemImage(image: AudioPlayer.shared.item!.image)
+            ItemImage(image: AudioPlayer.shared.item?.image)
                 .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                 .animation(.spring(duration: 0.3, bounce: 0.6), value: AudioPlayer.shared.playing)
                 .shadow(radius: 15)
