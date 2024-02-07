@@ -6,13 +6,21 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 
 struct AuthorsView: View {
     @Environment(\.libraryId) var libraryId
+    @Default(.authorsAscending) private var authorsAscending
     
-    @State var authors = [Author]()
-    @State var failed = false
+    @State private var authors = [Author]()
+    @State private var failed = false
+    
+    private var authorsSorted: [Author] {
+        authors.sorted {
+            $0.name.localizedStandardCompare($1.name) == (authorsAscending ? .orderedAscending : .orderedDescending)
+        }
+    }
     
     var body: some View {
         Group {
@@ -25,9 +33,21 @@ struct AuthorsView: View {
                 }
             } else {
                 List {
-                    AuthorList(authors: authors)
+                    AuthorList(authors: authorsSorted)
                 }
                 .navigationTitle("authors.title")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            withAnimation {
+                                authorsAscending.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "arrow.down.circle")
+                                .symbolVariant(authorsAscending ? .fill : .none)
+                        }
+                    }
+                }
             }
         }
         .refreshable { await loadAuthors() }

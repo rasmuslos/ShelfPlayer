@@ -9,6 +9,7 @@ import Foundation
 import Defaults
 
 extension Defaults.Keys {
+    static let authorsAscending = Key<Bool>("authorsAscending", default: true)
     static let showAuthorsRow = Key<Bool>("showAuthorsRow", default: false)
     static let disableDiscoverRow = Key<Bool>("disableDiscoverRow", default: false)
 }

@@ -127,7 +127,7 @@ extension EpisodeSortFilter {
         episodes.sort {
             switch sortOrder {
                 case .name:
-                    return $0.name.localizedStandardCompare($1.name) == .orderedDescending
+                    return $0.name.localizedStandardCompare($1.name) == .orderedAscending
                 case .index:
                     return $0.index < $1.index
                 case .released:
