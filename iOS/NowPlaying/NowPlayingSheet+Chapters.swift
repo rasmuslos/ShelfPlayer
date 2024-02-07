@@ -37,10 +37,10 @@ extension NowPlayingSheet {
             .listStyle(.plain)
             .safeAreaInset(edge: .top) {
                 HStack {
-                    ItemImage(image: AudioPlayer.shared.item!.image)
+                    ItemImage(image: AudioPlayer.shared.item?.image)
                     
                     VStack(alignment: .leading) {
-                        Text(AudioPlayer.shared.item!.name)
+                        Text(AudioPlayer.shared.item?.name ?? "-/-")
                             .font(.headline)
                             .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
                             .lineLimit(1)
