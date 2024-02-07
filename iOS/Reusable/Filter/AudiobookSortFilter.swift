@@ -115,17 +115,17 @@ extension AudiobookSortFilter {
         audiobooks.sort {
             switch order {
                 case .name:
-                    return $0.sortName.localizedStandardCompare($1.sortName) == .orderedDescending
+                    return $0.sortName.localizedStandardCompare($1.sortName) == .orderedAscending
                 case .series:
                     guard let lhsSeries = $0.series.audiobookSeriesName else { return false }
                     guard let rhsSeries = $1.series.audiobookSeriesName else { return true }
                     
-                    return lhsSeries.localizedStandardCompare(rhsSeries) == .orderedDescending
+                    return lhsSeries.localizedStandardCompare(rhsSeries) == .orderedAscending
                 case .author:
                     guard let lhsAuthor = $0.author else { return false }
                     guard let rhsAuthor = $1.author else { return true }
                     
-                    return lhsAuthor.localizedStandardCompare(rhsAuthor) == .orderedDescending
+                    return lhsAuthor.localizedStandardCompare(rhsAuthor) == .orderedAscending
                 case .released:
                     guard let lhsReleased = $0.released else { return false }
                     guard let rhsReleased = $1.author else { return true }
