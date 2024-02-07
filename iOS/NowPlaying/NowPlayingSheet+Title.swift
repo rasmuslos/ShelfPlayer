@@ -24,13 +24,13 @@ extension NowPlayingSheet {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     
-                    Text(AudioPlayer.shared.item!.name)
+                    Text(AudioPlayer.shared.item?.name ?? "-/-")
                         .lineLimit(1)
                         .font(.headline)
                         .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
                         .foregroundStyle(.primary)
                     
-                    if let author = AudioPlayer.shared.item!.author {
+                    if let author = AudioPlayer.shared.item?.author {
                         Text(author)
                             .lineLimit(1)
                             .font(.subheadline)
