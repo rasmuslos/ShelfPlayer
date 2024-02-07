@@ -1,23 +1,19 @@
 #  ShelfPlayer
 
-ShelfPlayer is a beautifully designed Audiobookshelf client that feels right at home on iOS 17.
+ShelfPlayer is a beautifully designed audio player for Audiobookshelf that feels right at home on iOS 17.
 
 ## Download
 
 Available on the App Store soon™️ \
-\
-Update: The app has been stuck in app review for nearly a month now. This is the second time i submitted it, the first time was on December the fifth. \
-Also we are on version 2.1.2 now (as of Jan. 23) and build 91. The amount of commits nearly doubled since the app has been send to apple for review
-
-<img src="/Screenshots/Review.png?raw=true" alt="Review" />
 
 ## Features
 
-- Explore your Audiobooks, Podcasts, Authors & Series
+- Beautiful design
+- Explore your Audiobooks, Podcasts, Episodes, Authors & Series
 - Download audiobooks & episodes and listen to them on the go
-- Explore your authors, series, audiobooks, podcasts and episodes
-- Fall asleep comfortably using the sleep timer
-- Customize the playback speed
+- Sleep timer (custom time or until end of chapter)
+- Siri integration
+- Custom playback speed
 
 ## Roadmap
 
