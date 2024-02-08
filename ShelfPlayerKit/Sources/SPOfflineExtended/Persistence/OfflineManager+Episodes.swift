@@ -35,6 +35,11 @@ public extension OfflineManager {
     }
     
     @MainActor
+    func getEpisodes(podcastId: String) throws -> [Episode] {
+        try getOfflineEpisodes(podcastId: podcastId).map(Episode.convertFromOffline)
+    }
+    
+    @MainActor
     func download(episodeId: String, podcastId: String) async throws {
         if (try? getOfflineEpisode(episodeId: episodeId)) != nil {
             logger.error("Episode is already downloaded")
@@ -113,6 +118,11 @@ extension OfflineManager {
     @MainActor
     func getOfflineEpisodes() throws -> [OfflineEpisode] {
         try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor())
+    }
+    
+    @MainActor
+    func getOfflineEpisodes(podcastId: String) throws -> [OfflineEpisode] {
+        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor()).filter { $0.podcast.id == podcastId }
     }
     
     @MainActor
