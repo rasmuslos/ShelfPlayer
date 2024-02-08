@@ -8,6 +8,8 @@
 import SwiftUI
 import Defaults
 import SPBase
+import SPOffline
+import SPOfflineExtended
 
 struct OfflinePodcastView: View {
     @State private var episodeFilter = EpisodeSortFilter.Filter.all
@@ -16,7 +18,7 @@ struct OfflinePodcastView: View {
     @Default(.episodesAscending) private var episodesAscending
     
     let podcast: Podcast
-    let episodes: [Episode]
+    @State var episodes: [Episode]
     
     var body: some View {
         List {
@@ -34,6 +36,11 @@ struct OfflinePodcastView: View {
             }
         }
         .modifier(NowPlayingBarSafeAreaModifier())
+        .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
+            do {
+                episodes = try OfflineManager.shared.getEpisodes(podcastId: podcast.id)
+            } catch {}
+        }
     }
 }
 
