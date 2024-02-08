@@ -8,6 +8,7 @@
 import SwiftUI
 import SPBase
 import SPOffline
+import SPPlayback
 
 struct OfflineAudiobookList: View {
     let audiobooks: [Audiobook]
@@ -38,8 +39,17 @@ extension OfflineAudiobookList {
         
         var body: some View {
             HStack {
-                ItemImage(image: audiobook.image)
-                    .frame(height: 50)
+                Group {
+                    if AudioPlayer.shared.item == audiobook {
+                        Image(systemName: "waveform")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .symbolEffect(.variableColor.iterative.dimInactiveLayers, isActive: AudioPlayer.shared.playing)
+                    } else {
+                        ItemImage(image: audiobook.image)
+                    }
+                }
+                .frame(width: 50, height: 50)
                 
                 VStack(alignment: .leading) {
                     Text(audiobook.name)
