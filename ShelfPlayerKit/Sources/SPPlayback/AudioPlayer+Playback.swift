@@ -38,7 +38,7 @@ extension AudioPlayer {
         
         if playing {
             Task {
-                if let lastPause = lastPause, lastPause.timeIntervalSince(Date()) >= 10 * 60 {
+                if let lastPause = lastPause, lastPause.timeIntervalSince(Date()) <= -10 * 60 {
                     await seek(to: getItemCurrentTime() - 30)
                 }
                 
