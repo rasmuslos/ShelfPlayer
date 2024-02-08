@@ -17,6 +17,7 @@ extension NowPlayingSheet {
         @Default(.skipBackwardsInterval) var skipBackwardsInterval
         
         @State private var dragging = false
+        @State private var draggedPercentage = 0.0
         
         @State private var animateBackwards = false
         @State private var animateForwards = false
@@ -28,8 +29,8 @@ extension NowPlayingSheet {
         var body: some View {
             VStack {
                 VStack {
-                    Slider(percentage: .init(get: { playedPercentage }, set: { _ in }), dragging: $dragging, onEnded: {
-                        AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (playedPercentage / 100), includeChapterOffset: true)
+                    Slider(percentage: .init(get: { dragging ? draggedPercentage : playedPercentage }, set: { draggedPercentage = $0 }), dragging: $dragging, onEnded: {
+                        AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (draggedPercentage / 100), includeChapterOffset: true)
                     })
                     .frame(height: 10)
                     .padding(.vertical, 10)
