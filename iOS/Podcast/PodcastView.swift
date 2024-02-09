@@ -10,12 +10,21 @@ import Defaults
 import SPBase
 
 struct PodcastView: View {
-    @Default(.episodesFilter) private var episodesFilter
+    @Default private var episodesFilter: EpisodeSortFilter.Filter
     
-    @Default(.episodesSort) private var episodesSort
-    @Default(.episodesAscending) private var episodesAscending
+    @Default private var episodesSort: EpisodeSortFilter.SortOrder
+    @Default private var episodesAscending: Bool
     
     var podcast: Podcast
+    
+    init(podcast: Podcast) {
+        self.podcast = podcast
+        
+        _episodesFilter = .init(.episodesFilter(podcastId: podcast.id))
+        
+        _episodesSort = .init(.episodesSort(podcastId: podcast.id))
+        _episodesAscending = .init(.episodesAscending(podcastId: podcast.id))
+    }
     
     @State private var failed = false
     @State private var navigationBarVisible = false
@@ -50,8 +59,9 @@ struct PodcastView: View {
             } else {
                 HStack {
                     Text("episodes")
+                        .bold()
                     
-                    NavigationLink(destination: PodcastFullListView(episodes: episodes)) {
+                    NavigationLink(destination: PodcastFullListView(episodes: episodes, podcastId: podcast.id)) {
                         HStack {
                             Spacer()
                             Text("episodes.all")
@@ -68,7 +78,6 @@ struct PodcastView: View {
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
-        .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
         .modifier(NowPlayingBarSafeAreaModifier())
         .task { await fetchEpisodes() }
         .refreshable { await fetchEpisodes() }
@@ -77,6 +86,7 @@ struct PodcastView: View {
                 imageColors = podcast.getImageColors()
             }
         }
+        .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
     }
 }
 

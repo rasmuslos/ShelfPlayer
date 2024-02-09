@@ -14,11 +14,19 @@ import SPOfflineExtended
 struct OfflinePodcastView: View {
     @State private var episodeFilter = EpisodeSortFilter.Filter.all
     
-    @Default(.episodesSort) private var episodesSort
-    @Default(.episodesAscending) private var episodesAscending
+    @Default private var episodesSort: EpisodeSortFilter.SortOrder
+    @Default private var episodesAscending: Bool
     
     let podcast: Podcast
     @State var episodes: [Episode]
+    
+    init(podcast: Podcast, episodes: [Episode]) {
+        self.podcast = podcast
+        _episodes = .init(initialValue: episodes)
+        
+        _episodesSort = .init(.episodesSort(podcastId: podcast.id))
+        _episodesAscending = .init(.episodesAscending(podcastId: podcast.id))
+    }
     
     var body: some View {
         List {

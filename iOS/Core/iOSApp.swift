@@ -20,6 +20,7 @@ struct iOSApp: App {
         #endif
         
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
+        BackgroundTaskHandler.setup()
     }
     
     var body: some Scene {

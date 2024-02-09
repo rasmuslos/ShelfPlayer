@@ -11,8 +11,10 @@ import SPOffline
 import SPOfflineExtended
 
 struct AccountSheet: View {
-    @State var username: String?
-    @State var downloadStatus: OfflineManager.DownloadStatus?
+    @State private var username: String?
+    @State private var downloadStatus: OfflineManager.DownloadStatus?
+    
+    @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
     var body: some View {
         List {
@@ -46,6 +48,34 @@ struct AccountSheet: View {
                     Text("account.settings")
                 }
                 
+                switch notificationPermission {
+                    case .notDetermined:
+                        Button {
+                            Task {
+                                try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+                                notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                            }
+                        } label: {
+                            Text("account.notifications.request")
+                        }
+                        .task {
+                            notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                        }
+                    case .denied:
+                        Text("account.notifications.denied")
+                            .foregroundStyle(.red)
+                    case .authorized:
+                        Text("account.notifications.granted")
+                            .foregroundStyle(.secondary)
+                    default:
+                        Text("account.notifications.unknown")
+                            .foregroundStyle(.red)
+                }
+            } footer: {
+                Text("account.notifications.footer")
+            }
+            
+            Section {
                 Button(role: .destructive) {
                     OfflineManager.shared.deleteProgressEntities()
                     NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [

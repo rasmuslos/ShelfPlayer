@@ -20,6 +20,8 @@ public struct PersistenceManager {
             
             OfflinePodcast.self,
             OfflineEpisode.self,
+            
+            PodcastFetchConfiguration.self,
         ], version: .init(1, 0, 0))
         
         let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: ENABLE_ALL_FEATURES ? .identifier("group.io.rfk.shelfplayer") : .none)

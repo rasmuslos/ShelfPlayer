@@ -11,7 +11,7 @@ import SPBase
 import SPOffline
 
 struct SessionsImportView: View {
-    let logger = Logger(subsystem: "io.rfk.audiobooks", category: "SessionImport")
+    let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "SessionImport")
     
     var callback: (_ success: Bool) -> ()
     @State var task: Task<(), Error>?
