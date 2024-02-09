@@ -61,7 +61,7 @@ ShelfPlayer is licensed under the Mozilla Public License Version 2. Additionally
 
 Contributions are welcome, just fork the repository, and open a pull request with your changes. If you want to contribute translations you have to edit `Localizable.xcstrings` in the `iOS` directory, as well as `Localizable.xcstrings` located at `ShelfPlayerKit/Sources/SPBase/Resources` using Xcode. If you want to add a new language add it in the project settings
 
-## Miscencainious
+## Miscellaneous
 
 Please note that collections are not supported right now.
 ShelfPlayer is not endorsed nor associated with Audiobookshelf
