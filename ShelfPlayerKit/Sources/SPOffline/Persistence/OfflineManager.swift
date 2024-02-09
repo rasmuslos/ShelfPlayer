@@ -9,7 +9,7 @@ import Foundation
 import OSLog
 
 public struct OfflineManager {
-    public let logger = Logger(subsystem: "io.rfk.audiobooks", category: "OfflineProgress")
+    public let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "OfflineProgress")
 }
 
 public extension OfflineManager {

@@ -112,6 +112,8 @@
 		3ADB9B202B13B9760015F884 /* AudiobookContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */; };
 		3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD29612B6D88EF0060248E /* DownloadButton.swift */; };
 		3AE31DCE2B4B3C310092DF36 /* AuthorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE31DCD2B4B3C310092DF36 /* AuthorsView.swift */; };
+		3AE73DB52B76137300058F70 /* BackgroundTaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */; };
+		3AE73DB72B7624FB00058F70 /* PodcastSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE73DB62B7624FB00058F70 /* PodcastSettingsSheet.swift */; };
 		3AF240E82ADA853A0065C0A4 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E72ADA853A0065C0A4 /* SearchView.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */; };
 		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
@@ -227,6 +229,8 @@
 		3ADB9B1F2B13B9760015F884 /* AudiobookContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookContextMenuModifier.swift; sourceTree = "<group>"; };
 		3ADD29612B6D88EF0060248E /* DownloadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadButton.swift; sourceTree = "<group>"; };
 		3AE31DCD2B4B3C310092DF36 /* AuthorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorsView.swift; sourceTree = "<group>"; };
+		3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskHandler.swift; sourceTree = "<group>"; };
+		3AE73DB62B7624FB00058F70 /* PodcastSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastSettingsSheet.swift; sourceTree = "<group>"; };
 		3AF240E72ADA853A0065C0A4 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorGrid.swift; sourceTree = "<group>"; };
 		3AF6A52A2B60401300770A1E /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
@@ -350,6 +354,7 @@
 		3A1F53362B6131D0004EF56A /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */,
 				3A5A4DA72B5EF65500E72E8B /* Intents */,
 				3A1EAB972ACC822F0064C80C /* Extensions */,
 			);
@@ -458,6 +463,7 @@
 				3A8810F62AD2CDE9009696D1 /* PodcastView+Header.swift */,
 				3A8810FA2AD2CEE7009696D1 /* PodcastView+Toolbar.swift */,
 				3A1507942AD348E700D7D6CF /* PodcastView+EpisodeList.swift */,
+				3AE73DB62B7624FB00058F70 /* PodcastSettingsSheet.swift */,
 				3A8810ED2AD2C071009696D1 /* PodcastLoadView.swift */,
 				3A8810EF2AD2C0E4009696D1 /* PodcastUnavailableView.swift */,
 			);
@@ -736,12 +742,14 @@
 				3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */,
 				3A17E6932AD5F24500E59464 /* NowPlayingSheet+Controls.swift in Sources */,
 				3AA089372B6E43FA00773414 /* Defaults+Keys.swift in Sources */,
+				3AE73DB52B76137300058F70 /* BackgroundTaskHandler.swift in Sources */,
 				3AA9542B2AD2A87E0031C20D /* EpisodeFeaturedGrid.swift in Sources */,
 				3A50AAB82ACC522900BF5438 /* AudiobookEntryView+Library.swift in Sources */,
 				3A5A4DBA2B5F0BCD00E72E8B /* Intents.intentdefinition in Sources */,
 				3AA0B0892AD322470009FBB4 /* EpisodeView.swift in Sources */,
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
 				3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */,
+				3AE73DB72B7624FB00058F70 /* PodcastSettingsSheet.swift in Sources */,
 				3AA089332B6E315900773414 /* AuthorList.swift in Sources */,
 				3A9824702B6EAF520098C06A /* OfflinePodcastList.swift in Sources */,
 				3A17E68D2AD5EF9C00E59464 /* NowPlayingSheet.swift in Sources */,

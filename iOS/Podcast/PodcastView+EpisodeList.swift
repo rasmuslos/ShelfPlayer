@@ -10,12 +10,21 @@ import Defaults
 import SPBase
 
 struct PodcastFullListView: View {
-    @Default(.episodesFilter) private var episodesFilter
+    @Default private var episodesFilter: EpisodeSortFilter.Filter
     
-    @Default(.episodesSort) private var episodesSort
-    @Default(.episodesAscending) private var episodesAscending
+    @Default private var episodesSort: EpisodeSortFilter.SortOrder
+    @Default private var episodesAscending: Bool
     
     let episodes: [Episode]
+    
+    init(episodes: [Episode], podcastId: String) {
+        self.episodes = episodes
+                
+        _episodesFilter = .init(.episodesFilter(podcastId: podcastId))
+        
+        _episodesSort = .init(.episodesSort(podcastId: podcastId))
+        _episodesAscending = .init(.episodesAscending(podcastId: podcastId))
+    }
     
     @State private var query = ""
     
@@ -48,6 +57,6 @@ struct PodcastFullListView: View {
 
 #Preview {
     NavigationStack {
-        PodcastFullListView(episodes: .init(repeating: [.fixture], count: 7))
+        PodcastFullListView(episodes: .init(repeating: [.fixture], count: 7), podcastId: "fixture")
     }
 }

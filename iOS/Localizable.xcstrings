@@ -169,6 +169,86 @@
         }
       }
     },
+    "account.notifications.denied" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benachrichtigung-Berechtigung verweigert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification permission denied"
+          }
+        }
+      }
+    },
+    "account.notifications.footer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erteile die Berechtigung um eine Benachrichtigung bei neuen Episoden zu erhalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grant notification permissions to receive updates about new episodes"
+          }
+        }
+      }
+    },
+    "account.notifications.granted" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benachrichtigung-Berechtigung erlaubt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification permission granted"
+          }
+        }
+      }
+    },
+    "account.notifications.request" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benachrichtigung-Berechtigung erhalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request Notification permissions"
+          }
+        }
+      }
+    },
+    "account.notifications.unknown" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benachrichtigung-Berechtigung unbekannt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification authorization unknown"
+          }
+        }
+      }
+    },
     "account.server" : {
       "localizations" : {
         "de" : {
@@ -554,6 +634,22 @@
         }
       }
     },
+    "episode.new.title %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuer Download: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New download: %@"
+          }
+        }
+      }
+    },
     "episode.view" : {
       "localizations" : {
         "de" : {
@@ -598,6 +694,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All Episodes"
+          }
+        }
+      }
+    },
+    "episodes.new.body %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Episoden wurden heruntergeladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld new episodes have been downloaded"
+          }
+        }
+      }
+    },
+    "episodes.new.title %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld neue Downloads"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld new downloads"
           }
         }
       }
@@ -1126,6 +1254,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serial"
+          }
+        }
+      }
+    },
+    "podcast.settings.autoDownload" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisch herunterladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto download episodes"
+          }
+        }
+      }
+    },
+    "podcast.settings.downloadFooter %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer wird %lld Episoden dieses Podcasts herunterladen. Bitte beachte, dass nicht die neusten Episoden heruntergeladen werden, sondern die ersten Episoden welchen den gesetzten Filter & der Reihenfolge entsprechen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer will download %lld episodes of this podcast. Please not that not the latest episodes are downloaded, rather the first episodes matching the filter & sort settings of this podcast "
+          }
+        }
+      }
+    },
+    "podcast.settings.maxEpisodes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximal heruntergelade Episoden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max episodes to download"
+          }
+        }
+      }
+    },
+    "podcast.settings.notificationFooter" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer sendet Push-Benachrichtigungen wenn neue Episoden verfügbar sind"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer will send a push notification, informing you that a new episode is available"
+          }
+        }
+      }
+    },
+    "podcast.settings.notifications" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benachrichtigungen aktivieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable notifications"
           }
         }
       }
