@@ -52,6 +52,13 @@ struct PodcastSettingsSheet: View {
         }
         .presentationDragIndicator(.visible)
         .presentationDetents([.medium, .large])
+        .onChange(of: configuration) {
+            if configuration.autoDownload {
+                Task {
+                    try? await BackgroundTaskHandler.runAutoDownload(configuration: configuration)
+                }
+            }
+        }
     }
 }
 

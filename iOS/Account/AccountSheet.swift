@@ -48,6 +48,14 @@ struct AccountSheet: View {
                     Text("account.settings")
                 }
                 
+                Button {
+                    Task {
+                        try? await BackgroundTaskHandler.runAutoDownload()
+                    }
+                } label: {
+                    Text("account.newEpisodes.check")
+                }
+                
                 switch notificationPermission {
                     case .notDetermined:
                         Button {
@@ -77,17 +85,18 @@ struct AccountSheet: View {
             
             Section {
                 Button(role: .destructive) {
+                    OfflineManager.shared.deleteDownloads()
+                } label: {
+                    Text("account.delete.downloads")
+                }
+                
+                Button(role: .destructive) {
                     OfflineManager.shared.deleteProgressEntities()
                     NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
                         "offline": false,
                     ])
                 } label: {
                     Text("account.delete.cache")
-                }
-                Button(role: .destructive) {
-                    OfflineManager.shared.deleteDownloads()
-                } label: {
-                    Text("account.delete.downloads")
                 }
             }
             
