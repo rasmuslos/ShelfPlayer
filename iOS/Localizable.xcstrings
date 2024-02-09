@@ -169,6 +169,22 @@
         }
       }
     },
+    "account.newEpisodes.check" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach neuen Downloads suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for new downloads"
+          }
+        }
+      }
+    },
     "account.notifications.denied" : {
       "localizations" : {
         "de" : {

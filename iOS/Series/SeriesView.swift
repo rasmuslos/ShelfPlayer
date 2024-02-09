@@ -16,7 +16,7 @@ struct SeriesView: View {
     @Default(.audiobooksFilter) var audiobooksFilter
     
     @State var audiobooksSortOrder = AudiobookSortFilter.SortOrder.series
-    @State var audiobooksAscending = false
+    @State var audiobooksAscending = true
     
     let series: Series
     
