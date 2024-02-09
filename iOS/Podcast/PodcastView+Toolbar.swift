@@ -14,6 +14,8 @@ extension PodcastView {
         let navigationBarVisible: Bool
         let imageColors: Item.ImageColors
         
+        @State private var settingsSheetPresented = false
+        
         func body(content: Content) -> some View {
             content
                 .navigationTitle(podcast.name)
@@ -36,6 +38,15 @@ extension PodcastView {
                             Text(verbatim: "")
                         }
                     }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            settingsSheetPresented.toggle()
+                        } label: {
+                            Image(systemName: "ellipsis.circle.fill")
+                        }
+                        .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
+                    }
                 }
                 .toolbar {
                     if !navigationBarVisible {
@@ -43,6 +54,9 @@ extension PodcastView {
                             FullscreenBackButton(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight)
                         }
                     }
+                }
+                .sheet(isPresented: $settingsSheetPresented) {
+                    PodcastSettingsSheet(podcast: podcast)
                 }
         }
     }
