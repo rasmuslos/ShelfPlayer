@@ -32,6 +32,7 @@ struct ContentView: View {
                     EntryView()
                         .onAppear {
                             VocabularyDonator.donateVocabulary()
+                            
                             #if ENABLE_ALL_FEATURES
                             INPreferences.requestSiriAuthorization { _ in }
                             #endif
