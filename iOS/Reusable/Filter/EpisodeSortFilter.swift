@@ -85,14 +85,14 @@ extension EpisodeSortFilter {
 
 extension Defaults.Keys {
     static func episodesFilter(podcastId: String) -> Defaults.Key<EpisodeSortFilter.Filter> {
-        .init("episodesFilter-\(podcastId)", default: .all)
+        .init("episodesFilter-\(podcastId)", default: .unfinished)
     }
     
     static func episodesSort(podcastId: String) -> Defaults.Key<EpisodeSortFilter.SortOrder> {
         .init("episodesSort-\(podcastId)", default: .released)
     }
     static func episodesAscending(podcastId: String) -> Defaults.Key<Bool> {
-        .init("episodesFilterAscending-\(podcastId)", default: true)
+        .init("episodesFilterAscending-\(podcastId)", default: false)
     }
 }
 
