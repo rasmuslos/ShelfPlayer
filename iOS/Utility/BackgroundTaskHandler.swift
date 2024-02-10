@@ -107,7 +107,7 @@ extension BackgroundTaskHandler {
         
         if sendNotification {
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
-            try! await UNUserNotificationCenter.current().add(request)
+            try await UNUserNotificationCenter.current().add(request)
         }
     }
 }
