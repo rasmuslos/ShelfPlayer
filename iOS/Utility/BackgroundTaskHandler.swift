@@ -23,12 +23,13 @@ extension BackgroundTaskHandler {
         let backgroundTask = Task.detached {
             do {
                 try await Self.runAutoDownload()
+                
                 task.setTaskCompleted(success: true)
+                submitTask()
             } catch {
                 task.setTaskCompleted(success: false)
+                submitTask(failed: true)
             }
-            
-            submitTask()
         }
         
         task.expirationHandler = {
@@ -39,17 +40,14 @@ extension BackgroundTaskHandler {
  
 extension BackgroundTaskHandler {
     static func runAutoDownload() async throws {
-        guard let configurations = try? await OfflineManager.shared.getConfigurations(active: true) else {
-            logger.fault("Failed to fetch configurations")
-            return
-        }
+        let configurations = try await OfflineManager.shared.getConfigurations(active: true)
         
-        await withTaskGroup(of: Void.self) { group in
+        try await withThrowingTaskGroup(of: Void.self) { group in
             for configuration in configurations {
-                group.addTask {
-                    try? await runAutoDownload(configuration: configuration)
-                }
+                group.addTask { try await runAutoDownload(configuration: configuration) }
             }
+            
+            try await group.waitForAll()
         }
     }
     static func runAutoDownload(configuration: PodcastFetchConfiguration) async throws {
@@ -68,7 +66,7 @@ extension BackgroundTaskHandler {
         
         for candidate in candidates {
             if !(await OfflineManager.shared.isDownloadFinished(episodeId: candidate.id)) {
-                try? await OfflineManager.shared.download(episodeId: candidate.id, podcastId: candidate.podcastId)
+                try await OfflineManager.shared.download(episodeId: candidate.id, podcastId: candidate.podcastId)
                 submitted.append(candidate)
             }
         }
@@ -94,7 +92,7 @@ extension BackgroundTaskHandler {
             
             content.threadIdentifier = episode.podcastId
         } else if !submitted.isEmpty {
-            content.body = String(localized: "episodes.new.title \(submitted.count)")
+            content.title = String(localized: "episodes.new.title \(submitted.count)")
             content.subtitle = episodes.first!.podcastName
             content.body = String(localized: "episodes.new.body \(submitted.count)")
             
@@ -107,7 +105,7 @@ extension BackgroundTaskHandler {
         
         if sendNotification {
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
-            try await UNUserNotificationCenter.current().add(request)
+            try? await UNUserNotificationCenter.current().add(request)
         }
     }
 }
@@ -118,20 +116,35 @@ extension BackgroundTaskHandler {
         submitTask()
     }
     
-    static func submitTask() {
+    static func submitTask(failed: Bool = false) {
         let request = BGAppRefreshTaskRequest(identifier: "io.rfk.shelfplayer.autoDownloadEpisodes")
         let calendar = Calendar.current
-        let midnight = calendar.startOfDay(for: calendar.date(bySetting: .day, value: 1, of: Date())!)
         
-        request.earliestBeginDate = midnight
+        let beginDate: Date
+        let failCount = Defaults[.backgroundTaskFailCount]
+        
+        // Run at midnight if the task completed successfully, otherwise retry in one hour
+        if failed && failCount <= 3 {
+            beginDate = calendar.date(byAdding: .hour, value: 1, to: Date())!
+            Defaults[.backgroundTaskFailCount] += 1
+        } else {
+            beginDate = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: Date())!)
+            Defaults[.backgroundTaskFailCount] = 0
+        }
+        
+        request.earliestBeginDate = beginDate
         BGTaskScheduler.shared.cancelAllTaskRequests()
         
         do {
             try BGTaskScheduler.shared.submit(request)
-            logger.info("Submitted background task, scheduled to run at \(midnight)")
+            logger.info("Submitted background task, scheduled to run at \(beginDate)")
         } catch {
             logger.fault("Failed to submit background task request")
             print(error)
         }
     }
+}
+
+extension Defaults.Keys {
+    static let backgroundTaskFailCount = Key<Int>("backgroundTaskFailCount", default: 0)
 }
