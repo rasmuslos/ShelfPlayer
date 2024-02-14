@@ -14,6 +14,7 @@ Available on the App Store soon™️ \
 - Sleep timer (custom time or until end of chapter)
 - Siri integration
 - Custom playback speed
+- Automatic downloads & notifications
 
 ## Roadmap
 
