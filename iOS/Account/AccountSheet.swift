@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 import SPOffline
 import SPOfflineExtended
 
 struct AccountSheet: View {
+    @Default(.customSleepTimer) private var customSleepTimer
+    
     @State private var username: String?
     @State private var downloadStatus: OfflineManager.DownloadStatus?
     
@@ -23,10 +26,8 @@ struct AccountSheet: View {
                     Text(username)
                 } else {
                     ProgressView()
-                        .onAppear {
-                            Task.detached {
-                                username = try? await AudiobookshelfClient.shared.getUsername()
-                            }
+                        .task {
+                            username = try? await AudiobookshelfClient.shared.getUsername()
                         }
                 }
                 Button(role: .destructive) {
@@ -180,9 +181,28 @@ struct AccountSheet: View {
                 downloadStatus = try? await OfflineManager.shared.getDownloadStatus()
             }
             .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
-                Task.detached {
+                Task.detached { @MainActor in
                     downloadStatus = try? await OfflineManager.shared.getDownloadStatus()
                 }
+            }
+            
+            Section {
+                let hours = customSleepTimer / 60
+                let minutes = customSleepTimer % 60
+                
+                Stepper("\(hours) account.sleepTimer.hours", value: .init(get: { hours }, set: {
+                    customSleepTimer -= hours * 60
+                    customSleepTimer += $0 * 60
+                }), in: 0...12)
+                
+                Stepper("\(minutes) account.sleepTimer.minutes", value: .init(get: { minutes }, set: {
+                    customSleepTimer -= minutes
+                    customSleepTimer += $0
+                }), in: 0...60)
+            } header: {
+                Text("account.sleepTimer")
+            } footer: {
+                Text("account.sleepTimer.text")
             }
             
             Group {
