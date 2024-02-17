@@ -6,7 +6,7 @@
       "location" : "https://github.com/sindresorhus/Defaults",
       "state" : {
         "branch" : "main",
-        "revision" : "0f73f9401a416336931f2d598662cc524a13b21f"
+        "revision" : "bde740c9b4580eda69df3497c31f89501de127dc"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Nuke.git",
       "state" : {
-        "revision" : "15fde63470d782c897816a74bdd516a907e33147",
-        "version" : "12.3.0"
+        "revision" : "8ecbfc886da39bccb01c34abef5f2ff4073ad633",
+        "version" : "12.4.0"
       }
     },
     {

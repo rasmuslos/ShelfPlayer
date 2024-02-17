@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 import SPPlayback
 
 struct SleepTimerButton: View {
+    @Default(.customSleepTimer) private var customSleepTimer
+    
     var body: some View {
         Group {
             if let remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime {
@@ -58,6 +61,18 @@ struct SleepTimerButton: View {
                             AudioPlayer.shared.setSleepTimer(duration: Double(duration) * 60)
                         } label: {
                             Text("\(duration) sleep.minutes")
+                        }
+                    }
+                    
+                    if customSleepTimer > 0 {
+                        Divider()
+                        
+                        let value = Double(customSleepTimer) * 60
+                        
+                        Button {
+                            AudioPlayer.shared.setSleepTimer(duration: value)
+                        } label: {
+                            Text(Date.now.addingTimeInterval(-value), style: .offset)
                         }
                     }
                     

@@ -4,7 +4,7 @@ ShelfPlayer is a beautifully designed audio player for Audiobookshelf that feels
 
 ## Download
 
-Available on the App Store soon™️ \
+Available on the App Store soon™️
 
 ## Features
 
