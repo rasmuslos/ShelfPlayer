@@ -39,7 +39,7 @@ public extension AudiobookshelfClient {
         self.token != nil
     }
     
-    func setServerUrl(_ serverUrl: String) throws {
+    func setServerUrl(_ serverUrl: String) throws {        
         guard let serverUrl = URL(string: serverUrl) else {
             throw AudiobookshelfClientError.invalidServerUrl
         }
