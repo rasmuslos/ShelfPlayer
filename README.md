@@ -21,7 +21,7 @@ Available on the App Store soon™️
 ### Short term
 
 - Fix upcoming bugs
-- https://www.icloud.com/notes/0cdF-SSfHt3dSDX3zxtMsnuLg#Todo
+- https://nextcloud.rfk.io/s/iaaAKsad8SxQLfa
 
 ### Long term
 
