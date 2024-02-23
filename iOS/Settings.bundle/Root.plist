@@ -118,6 +118,62 @@
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Playback-speed &amp; Sleep timer</string>
+			<key>FooterText</key>
+			<string>You can set a custom sleep timer duration in the account menu.</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Playback speed adjustment</string>
+			<key>Key</key>
+			<string>playbackSpeedAdjustment</string>
+			<key>DefaultValue</key>
+			<string>0.25</string>
+			<key>Titles</key>
+			<array>
+				<string>10%</string>
+				<string>25%</string>
+				<string>30%</string>
+				<string>50%</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>0.1</string>
+				<string>0.25</string>
+				<string>0.3</string>
+				<string>0.5</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Sleep timer adjustment</string>
+			<key>Key</key>
+			<string>sleepTimerAdjustment</string>
+			<key>DefaultValue</key>
+			<string>60</string>
+			<key>Titles</key>
+			<array>
+				<string>30 seconds</string>
+				<string>60 seconds</string>
+				<string>90 seconds</string>
+				<string>2 minutes</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>30</string>
+				<string>60</string>
+				<string>90</string>
+				<string>120</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

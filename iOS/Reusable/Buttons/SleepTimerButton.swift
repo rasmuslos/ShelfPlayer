@@ -12,19 +12,20 @@ import SPPlayback
 
 struct SleepTimerButton: View {
     @Default(.customSleepTimer) private var customSleepTimer
+    @Default(.sleepTimerAdjustment) var sleepTimerAdjustment
     
     var body: some View {
         Group {
             if let remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime {
                 Menu {
                     Button {
-                        AudioPlayer.shared.setSleepTimer(duration: remainingSleepTimerTime + 60)
+                        AudioPlayer.shared.setSleepTimer(duration: remainingSleepTimerTime + sleepTimerAdjustment)
                     } label: {
                         Label("sleep.increase", systemImage: "plus")
                     }
                     
                     Button {
-                        let decreasedTime = remainingSleepTimerTime - 60
+                        let decreasedTime = remainingSleepTimerTime - sleepTimerAdjustment
                         if decreasedTime <= 0 {
                             AudioPlayer.shared.setSleepTimer(duration: nil)
                         } else {
