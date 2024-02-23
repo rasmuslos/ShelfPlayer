@@ -57,6 +57,7 @@
 		3A792B972B6F9F53002A48E6 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3A792B962B6F9F53002A48E6 /* InfoPlist.xcstrings */; };
 		3A79A9692AE53555006B61FC /* DownloadIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A79A9682AE53555006B61FC /* DownloadIndicator.swift */; };
 		3A82864D2AEC104400384BC9 /* SleepTimerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */; };
+		3A83B8732B8893E000A05957 /* CarPlayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */; };
 		3A853FAF2AD03FA600FACAF6 /* AuthorView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A853FAE2AD03FA600FACAF6 /* AuthorView+Header.swift */; };
 		3A8810EE2AD2C071009696D1 /* PodcastLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810ED2AD2C071009696D1 /* PodcastLoadView.swift */; };
 		3A8810F02AD2C0E4009696D1 /* PodcastUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810EF2AD2C0E4009696D1 /* PodcastUnavailableView.swift */; };
@@ -174,6 +175,7 @@
 		3A79A9682AE53555006B61FC /* DownloadIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadIndicator.swift; sourceTree = "<group>"; };
 		3A82864B2AEC0DD800384BC9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTimerButton.swift; sourceTree = "<group>"; };
+		3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDelegate.swift; sourceTree = "<group>"; };
 		3A853FAE2AD03FA600FACAF6 /* AuthorView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthorView+Header.swift"; sourceTree = "<group>"; };
 		3A8810ED2AD2C071009696D1 /* PodcastLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLoadView.swift; sourceTree = "<group>"; };
 		3A8810EF2AD2C0E4009696D1 /* PodcastUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastUnavailableView.swift; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A7118EB2AD5ACA4005F7E08 /* NowPlaying */,
 				3AADC0352B6D0D3D00C4088D /* Navigation */,
+				3A83B8712B88933500A05957 /* CarPlay */,
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
 				3A27A66D2AB7631900F80C92 /* Info.plist */,
 				3A792B962B6F9F53002A48E6 /* InfoPlist.xcstrings */,
@@ -444,6 +447,14 @@
 				3A77B7012ACDF01C00F22C7F /* SeriesUnavailableView.swift */,
 			);
 			path = Series;
+			sourceTree = "<group>";
+		};
+		3A83B8712B88933500A05957 /* CarPlay */ = {
+			isa = PBXGroup;
+			children = (
+				3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */,
+			);
+			path = CarPlay;
 			sourceTree = "<group>";
 		};
 		3A8810EC2AD2C061009696D1 /* Episode */ = {
@@ -768,6 +779,7 @@
 				3ACD19B52ACB58EB007D01FE /* LoadingView.swift in Sources */,
 				3ACD19AE2ACB57CD007D01FE /* EntryView.swift in Sources */,
 				3A50AABA2ACC523000BF5438 /* AudiobookEntryView+Series.swift in Sources */,
+				3A83B8732B8893E000A05957 /* CarPlayDelegate.swift in Sources */,
 				3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */,
 				3A1011872AD69DDA00AAE220 /* PlaybackSpeedButton.swift in Sources */,
 				3A79A9692AE53555006B61FC /* DownloadIndicator.swift in Sources */,
@@ -990,8 +1002,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
@@ -1026,8 +1036,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
