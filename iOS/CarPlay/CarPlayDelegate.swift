@@ -13,7 +13,9 @@ import SPOffline
 import SPOfflineExtended
 
 class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
-    var interfaceController: CPInterfaceController?
+    // we need to keep a strong reference to this object
+    internal var nowPlayingObserver: NowPlayingObserver?
+    internal var interfaceController: CPInterfaceController?
     
     func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
@@ -27,20 +29,18 @@ class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 return
             }
             
-            updateNowPlayingTemplate()
+            nowPlayingObserver = updateNowPlayingTemplate()
             
             // Try to fetch libraries
             
-            if false, let libraries = try? await AudiobookshelfClient.shared.getLibraries() {
-                
-            } else {
-                try await interfaceController.setRootTemplate(try buildOfflineListTemplate(), animated: true)
-            }
+            // if false, let libraries = try? await AudiobookshelfClient.shared.getLibraries() {
+            try await interfaceController.setRootTemplate(try buildOfflineListTemplate(), animated: true)
         }
     }
     
     func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
         self.interfaceController = nil
+        nowPlayingObserver = nil
     }
 }
 
@@ -125,50 +125,5 @@ extension CarPlayDelegate {
         })
         
         return sections
-    }
-}
-
-extension CarPlayDelegate {
-    private static func startPlayback(item: CPSelectableListItem, completion: () -> Void) {
-        (item.userInfo! as! PlayableItem).startPlayback()
-        NotificationCenter.default.post(name: Self.updateContentNotifications, object: nil)
-        
-        completion()
-    }
-    
-    private static func updateSections(_ sections: [CPListSection]) -> [CPListSection] {
-        sections.map {
-            CPListSection(items: $0.items.map {
-                let item = $0 as! CPListItem
-                let playableItem = $0.userInfo as! PlayableItem
-                
-                if AudioPlayer.shared.item == playableItem {
-                    item.isPlaying = true
-                    item.playbackProgress = OfflineManager.shared.requireProgressEntity(item: playableItem).progress
-                } else {
-                    item.isPlaying = false
-                }
-                
-                return item
-            }, header: $0.header!, headerSubtitle: $0.headerSubtitle, headerImage: $0.headerImage, headerButton: $0.headerButton, sectionIndexTitle: $0.sectionIndexTitle)
-        }
-    }
-    
-    private static let updateContentNotifications = NSNotification.Name("io.rfk.shelfplayer.carplay.update")
-}
-
-extension CarPlayDelegate {
-    private func updateNowPlayingTemplate() {
-        CPNowPlayingTemplate.shared.updateNowPlayingButtons([
-            CPNowPlayingPlaybackRateButton() { _ in
-                var rate = AudioPlayer.shared.playbackRate + Defaults[.playbackSpeedAdjustment]
-                
-                if rate > 2 {
-                    rate = 0.25
-                }
-                
-                AudioPlayer.shared.playbackRate = rate
-            }
-        ])
     }
 }
