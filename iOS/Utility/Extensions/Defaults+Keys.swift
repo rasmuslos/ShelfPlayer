@@ -9,6 +9,9 @@ import Foundation
 import Defaults
 
 extension Defaults.Keys {
+    static let sleepTimerAdjustment = Key<Double>("sleepTimerAdjustment", default: 60)
+    static let playbackSpeedAdjustment = Key<Float>("playbackSpeedAdjustment", default: 0.25)
+    
     static let customSleepTimer = Key<Int>("customSleepTimer", default: 0)
     
     static let authorsAscending = Key<Bool>("authorsAscending", default: true)

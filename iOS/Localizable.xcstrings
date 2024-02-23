@@ -1719,13 +1719,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um eine Minute verringern"
+            "value" : "Verkürzen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Decrease by one minute"
+            "value" : "Decrease"
           }
         }
       }
@@ -1735,13 +1735,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um eine Minute erhöhen"
+            "value" : "Verlängern"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Increase by one minute"
+            "value" : "Increase"
           }
         }
       }
