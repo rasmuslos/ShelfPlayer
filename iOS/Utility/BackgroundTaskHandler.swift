@@ -58,6 +58,18 @@ extension BackgroundTaskHandler {
         let sortOrder = Defaults[.episodesSort(podcastId: podcastId)]
         let ascending = Defaults[.episodesAscending(podcastId: podcastId)]
         
+        // Remove existing episodes
+        
+        let preDownloaded = try await OfflineManager.shared.getEpisodes(podcastId: podcastId)
+        let valid = await EpisodeSortFilter.filterSort(episodes: preDownloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        let invalid = preDownloaded.filter { episode in !valid.contains { $0.id == episode.id } }
+        
+        for episode in invalid {
+            await OfflineManager.shared.delete(episodeId: episode.id)
+        }
+        
+        // Download new episodes
+        
         let episodes = try await AudiobookshelfClient.shared.getEpisodes(podcastId: configuration.id)
         let sorted = await EpisodeSortFilter.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
@@ -71,12 +83,16 @@ extension BackgroundTaskHandler {
             }
         }
         
+        // Remove additional episodes
+        
         let downloaded = try await OfflineManager.shared.getEpisodes(podcastId: podcastId)
         var reversed = await EpisodeSortFilter.filterSort(episodes: downloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         while reversed.count > configuration.maxEpisodes {
             await OfflineManager.shared.delete(episodeId: reversed.removeLast().id)
         }
+        
+        // Send notifications
         
         if !configuration.notifications {
             return
