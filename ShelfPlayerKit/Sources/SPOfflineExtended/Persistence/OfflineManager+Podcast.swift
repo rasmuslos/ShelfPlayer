@@ -37,6 +37,17 @@ public extension OfflineManager {
     }
     
     @MainActor
+    func getPodcasts(query: String) throws -> [Podcast] {
+        let descriptor = FetchDescriptor<OfflinePodcast>(predicate: #Predicate { $0.name.localizedStandardContains(query) })
+        return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).map(Podcast.convertFromOffline)
+    }
+    
+    @MainActor
+    func getPodcast(podcastId: String) throws -> Podcast {
+        try Podcast.convertFromOffline(podcast: getOfflinePodcast(podcastId: podcastId))
+    }
+    
+    @MainActor
     func getEpisodes(podcastId: String) throws -> [Episode] {
         try getOfflineEpisodes(podcastId: podcastId).map(Episode.convertFromOffline)
     }
