@@ -153,6 +153,22 @@
         }
       }
     },
+    "account.github" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        }
+      }
+    },
     "account.logout" : {
       "localizations" : {
         "de" : {
@@ -357,6 +373,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Set a custom sleep timer duration that will show up in the selection menu"
+          }
+        }
+      }
+    },
+    "account.support" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilfe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
           }
         }
       }

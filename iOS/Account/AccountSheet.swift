@@ -218,6 +218,20 @@ struct AccountSheet: View {
             .font(.caption)
             .foregroundStyle(.secondary)
             
+            Section {
+                Button {
+                    UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/AmpFin")!)
+                } label: {
+                    Text("account.github")
+                }
+                
+                Button {
+                    UIApplication.shared.open(URL(string: "https://rfk.io/support.htm")!)
+                } label: {
+                    Text("account.support")
+                }
+            }
+            
             #if !ENABLE_ALL_FEATURES
             Section {
                 HStack {
