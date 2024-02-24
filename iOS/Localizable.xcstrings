@@ -1211,6 +1211,7 @@
       }
     },
     "login.disclaimer" : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {

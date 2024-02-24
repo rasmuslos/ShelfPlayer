@@ -12,6 +12,17 @@ import SPOffline
 
 public extension OfflineManager {
     @MainActor
+    func getEpisodes(query: String) throws -> [Episode] {
+        let descriptor = FetchDescriptor<OfflineEpisode>(predicate: #Predicate { $0.name.localizedStandardContains(query) })
+        return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).map(Episode.convertFromOffline)
+    }
+    
+    @MainActor
+    func getEpisode(episodeId: String) throws -> Episode {
+        try Episode.convertFromOffline(episode: getOfflineEpisode(episodeId: episodeId))
+    }
+    
+    @MainActor
     func download(episodeId: String, podcastId: String) async throws {
         if (try? getOfflineEpisode(episodeId: episodeId)) != nil {
             logger.error("Episode is already downloaded")
