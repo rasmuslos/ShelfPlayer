@@ -15,6 +15,7 @@ Available on the App Store soon™️
 - Siri integration
 - Custom playback speed
 - Automatic downloads & notifications
+- CarPlay integration (only downloads for now)
 
 ## Roadmap
 
@@ -38,11 +39,11 @@ Available on the App Store soon™️
 
 **Pre built binaries**
 
-Grab the [latest Release](https://github.com/rasmuslos/ShelfPlayer/releases/tag/v2.1.4) and install it using your favorite tool like SideStore.
+Grab the [latest Release](https://github.com/rasmuslos/ShelfPlayer/releases/latest) and install it using your favorite tool like SideStore.
 
 Please not that the pre build binaries lack Siri and Widget support because these features either require a paid developer account or cannot be reliably implemented in a way that works with tools like SideStore. For further information see https://github.com/rasmuslos/ShelfPlayer/issues/20 & https://github.com/rasmuslos/ShelfPlayer/issues/4
 
-This means that stripping app extensions is highly recommended, as they will not work as intended.
+Stripping app extensions is highly recommended, they will not work as intended.
 
 **Build the app yourself**
 
@@ -65,4 +66,4 @@ Contributions are welcome, just fork the repository, and open a pull request wit
 ## Miscellaneous
 
 Please note that collections are not supported right now.
-ShelfPlayer is not endorsed nor associated with Audiobookshelf
+ShelfPlayer is not endorsed by nor associated with Audiobookshelf
