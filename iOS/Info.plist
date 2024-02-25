@@ -6,6 +6,19 @@
 	<array>
 		<string>io.rfk.shelfplayer.autoDownloadEpisodes</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>CFBundleURLName</key>
+			<string>io.rfk.shelfplayer</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>shelfplayer</string>
+			</array>
+		</dict>
+	</array>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>INPlayMediaIntent</string>
@@ -17,11 +30,9 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>UIBackgroundModes</key>
+	<key>NSUserActivityTypes</key>
 	<array>
-		<string>audio</string>
-		<string>fetch</string>
-		<string>processing</string>
+		<string>INPlayMediaIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -34,13 +45,19 @@
 				<dict>
 					<key>UISceneClassName</key>
 					<string>CPTemplateApplicationScene</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).CarPlayDelegate</string>
 					<key>UISceneConfigurationName</key>
 					<string>ShelfPlayer</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).CarPlayDelegate</string>
 				</dict>
 			</array>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 </dict>
 </plist>

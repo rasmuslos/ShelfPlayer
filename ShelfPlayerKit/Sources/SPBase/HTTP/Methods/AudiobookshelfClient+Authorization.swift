@@ -7,15 +7,18 @@
 
 import Foundation
 
-// MARK: Ping
-
 public extension AudiobookshelfClient {
-    func ping() async throws {
-        let response = try await request(ClientRequest<PingResponse>(path: "ping", method: "GET"))
+    func status() async throws -> StatusResponse {
+        return try await request(ClientRequest<StatusResponse>(path: "status", method: "GET"))
+    }
+    func openIDExchange(code: String, state: String, verifier: String) async throws -> String {
+        let response = try await request(ClientRequest<AuthorizationResponse>(path: "auth/openid/callback", method: "GET", query: [
+            .init(name: "code", value: code),
+            .init(name: "state", value: state),
+            .init(name: "code_verifier", value: verifier),
+        ]))
         
-        if !response.success {
-            throw AudiobookshelfClientError.invalidResponse
-        }
+        return response.user.token
     }
     
     func login(username: String, password: String) async throws -> String {
@@ -23,6 +26,7 @@ public extension AudiobookshelfClient {
             "username": username,
             "password": password,
         ]))
+        
         return response.user.token
     }
     
