@@ -41,8 +41,10 @@ extension AudiobookshelfClient {
         let episodes: [AudiobookshelfItem.AudiobookshelfPodcastEpisode]
     }
     
-    struct PingResponse: Codable {
-        let success: Bool
+    public struct StatusResponse: Codable {
+        public let isInit: Bool
+        public let authMethods: [String]
+        public let serverVersion: String
     }
     
     struct AuthorizationResponse: Codable {
