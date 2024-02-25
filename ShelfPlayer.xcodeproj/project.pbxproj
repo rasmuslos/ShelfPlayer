@@ -117,6 +117,8 @@
 		3AE31DCE2B4B3C310092DF36 /* AuthorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE31DCD2B4B3C310092DF36 /* AuthorsView.swift */; };
 		3AE73DB52B76137300058F70 /* BackgroundTaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */; };
 		3AE73DB72B7624FB00058F70 /* PodcastSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE73DB62B7624FB00058F70 /* PodcastSettingsSheet.swift */; };
+		3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */; };
+		3AEFA9562B8BB51A00220CA3 /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 3AEFA9552B8BB51A00220CA3 /* BetterSafariView */; };
 		3AF240E82ADA853A0065C0A4 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E72ADA853A0065C0A4 /* SearchView.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */; };
 		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
@@ -237,6 +239,7 @@
 		3AE31DCD2B4B3C310092DF36 /* AuthorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorsView.swift; sourceTree = "<group>"; };
 		3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskHandler.swift; sourceTree = "<group>"; };
 		3AE73DB62B7624FB00058F70 /* PodcastSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastSettingsSheet.swift; sourceTree = "<group>"; };
+		3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Random.swift"; sourceTree = "<group>"; };
 		3AF240E72ADA853A0065C0A4 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorGrid.swift; sourceTree = "<group>"; };
 		3AF6A52A2B60401300770A1E /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
@@ -257,6 +260,7 @@
 				3A8810F52AD2C35B009696D1 /* UIImageColors in Frameworks */,
 				3A5A4DB52B5F0A2700E72E8B /* SPBase in Frameworks */,
 				3A5A4DB92B5F0A2700E72E8B /* SPPlayback in Frameworks */,
+				3AEFA9562B8BB51A00220CA3 /* BetterSafariView in Frameworks */,
 				3A1EAB932ACC80690064C80C /* NukeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,6 +354,7 @@
 			children = (
 				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
 				3AA089362B6E43FA00773414 /* Defaults+Keys.swift */,
+				3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */,
 				3A9874282B59A7B500B2704F /* View+ReverseMask.swift */,
 				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
 				3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */,
@@ -643,6 +648,7 @@
 				3A5A4DB62B5F0A2700E72E8B /* SPOfflineExtended */,
 				3A5A4DB82B5F0A2700E72E8B /* SPPlayback */,
 				3A9206FE2B6CD86400A5CAB0 /* Defaults */,
+				3AEFA9552B8BB51A00220CA3 /* BetterSafariView */,
 			);
 			productName = Audiobooks;
 			productReference = 3AA36E502B0A97FD0036038D /* ShelfPlayer.app */;
@@ -677,6 +683,7 @@
 				3A1EAB912ACC80690064C80C /* XCRemoteSwiftPackageReference "Nuke" */,
 				3A8810F32AD2C35B009696D1 /* XCRemoteSwiftPackageReference "UIImageColors" */,
 				3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */,
+				3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */,
 			);
 			productRefGroup = 3A21CC542B0A1CBB002D5D55 /* Products */;
 			projectDirPath = "";
@@ -779,6 +786,7 @@
 				3ACB3B962AD1D186005EA609 /* PodcastEntryView+Library.swift in Sources */,
 				3A77B6FD2ACDE2FA00F22C7F /* AuthorUnavailableView.swift in Sources */,
 				3A0AE6BA2AB624E700ACCD68 /* LoginView.swift in Sources */,
+				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
 				3A9874292B59A7B500B2704F /* View+ReverseMask.swift in Sources */,
 				3A1EAB962ACC808A0064C80C /* ItemImage.swift in Sources */,
 				3A853FAF2AD03FA600FACAF6 /* AuthorView+Header.swift in Sources */,
@@ -1010,10 +1018,13 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -1044,10 +1055,13 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -1115,6 +1129,14 @@
 				kind = branch;
 			};
 		};
+		3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stleamist/BetterSafariView.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1144,6 +1166,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
+		};
+		3AEFA9552B8BB51A00220CA3 /* BetterSafariView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */;
+			productName = BetterSafariView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

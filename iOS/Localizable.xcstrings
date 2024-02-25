@@ -1291,6 +1291,22 @@
         }
       }
     },
+    "login.local" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit einem lokalen Benutzer anmelden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login with your local account"
+          }
+        }
+      }
+    },
     "login.next" : {
       "localizations" : {
         "de" : {
@@ -1303,6 +1319,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next"
+          }
+        }
+      }
+    },
+    "login.openid" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit OpenID Connect anmelden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use OpenID Connect to login"
+          }
+        }
+      }
+    },
+    "login.openid.urlScheme" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte stelle sicher, dass ShelfPlayers URL-Scheme (shelfplayer://callabck) in Audiobookshelf zugelassen ist"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please make sure the ShelfPlayer url scheme (shelfplayer://callback) is allowed in the Audiobookshelf server settings"
           }
         }
       }
@@ -1355,6 +1403,22 @@
         }
       }
     },
+    "login.setup" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte richte erst deinen Audiobookshelf-Server ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please setup your Audiobookshelf server first"
+          }
+        }
+      }
+    },
     "login.text" : {
       "localizations" : {
         "de" : {
@@ -1399,6 +1463,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Username"
+          }
+        }
+      }
+    },
+    "login.version %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server-Version: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server-Version: %@"
           }
         }
       }
