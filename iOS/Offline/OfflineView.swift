@@ -64,7 +64,6 @@ struct OfflineView: View {
 }
 
 extension OfflineView {
-    @Sendable
     func loadItems() async throws {
         (audiobooks, podcasts) = try await (OfflineManager.shared.getAudiobooks(), OfflineManager.shared.getPodcasts())
     }
