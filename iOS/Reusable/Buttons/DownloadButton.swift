@@ -51,12 +51,14 @@ struct DownloadButton: View {
                         Label("download.remove", systemImage: "xmark")
                     }
                 case .working:
-                    HStack {
-                        ProgressView()
-                        
-                        if downloadingLabel {
+                    if downloadingLabel {
+                        HStack {
+                            ProgressView()
+                            
                             Text("downloading")
                         }
+                    } else {
+                        ProgressView()
                     }
             }
         }
@@ -89,5 +91,5 @@ extension DownloadButton {
 }
 
 #Preview {
-    DownloadButton(item: Audiobook.fixture, downloadingLabel: true)
+    DownloadButton(item: Audiobook.fixture, downloadingLabel: false)
 }
