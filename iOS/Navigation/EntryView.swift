@@ -19,8 +19,10 @@ struct EntryView: View {
                 switch activeLibrary.type {
                     case .audiobooks:
                         AudiobookEntryView()
+                            .id(activeLibrary.id)
                     case .podcasts:
                         PodcastEntryView()
+                            .id(activeLibrary.id)
                     default:
                         ErrorView()
                 }
