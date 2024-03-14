@@ -81,9 +81,15 @@ struct PodcastView: View {
         .modifier(NowPlayingBarSafeAreaModifier())
         .task { await fetchEpisodes() }
         .refreshable { await fetchEpisodes() }
-        .task(priority: .background) {
-            withAnimation(.spring) {
-                imageColors = podcast.getImageColors()
+        .onAppear {
+            Task.detached {
+                let colors = await podcast.getImageColors()
+                
+                Task { @MainActor in
+                    withAnimation(.spring) {
+                        self.imageColors = colors
+                    }
+                }
             }
         }
         .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
@@ -98,6 +104,7 @@ extension PodcastView {
         
         if let episodes = try? await AudiobookshelfClient.shared.getEpisodes(podcastId: podcast.id) {
             self.episodes = episodes
+            print(episodes.count)
             podcast.episodeCount = episodes.count
         } else {
             failed = true
