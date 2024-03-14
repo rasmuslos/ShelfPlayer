@@ -23,9 +23,15 @@ struct EpisodeView: View {
         .ignoresSafeArea(edges: .top)
         .modifier(NowPlayingBarSafeAreaModifier())
         .modifier(ToolbarModifier(episode: episode, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
-        .task(priority: .background) {
-            withAnimation(.spring) {
-                imageColors = episode.getImageColors()
+        .onAppear {
+            Task.detached {
+                let colors = episode.getImageColors()
+                
+                Task { @MainActor in
+                    withAnimation(.spring) {
+                        self.imageColors = colors
+                    }
+                }
             }
         }
     }
