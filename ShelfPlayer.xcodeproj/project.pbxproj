@@ -148,6 +148,7 @@
 		3A17E6902AD5F21B00E59464 /* Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		3A17E6922AD5F24500E59464 /* NowPlayingSheet+Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NowPlayingSheet+Controls.swift"; sourceTree = "<group>"; };
 		3A1EAB952ACC808A0064C80C /* ItemImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemImage.swift; sourceTree = "<group>"; };
+		3A2657EE2BA3402C000C62E3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3A27A66D2AB7631900F80C92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A2B93342B00D71B00638AE9 /* ProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressButton.swift; sourceTree = "<group>"; };
 		3A2BC1942AD8121400054727 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -304,6 +305,7 @@
 				3A792B962B6F9F53002A48E6 /* InfoPlist.xcstrings */,
 				3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */,
 				3AFF94872AF65CF500127AFF /* Localizable.xcstrings */,
+				3A2657EE2BA3402C000C62E3 /* PrivacyInfo.xcprivacy */,
 				3A0AE6AB2AB623F500ACCD68 /* Audiobooks.entitlements */,
 				3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */,
 			);
