@@ -52,8 +52,6 @@ extension EpisodeList {
                             .foregroundStyle(.secondary)
                     }
                     
-                    Spacer()
-                    
                     HStack {
                         EpisodePlayButton(episode: episode)
                         Spacer()
@@ -63,7 +61,7 @@ extension EpisodeList {
                 
                 Spacer()
             }
-            .frame(height: 90)
+            // .frame(height: 90)
             .modifier(EpisodeContextMenuModifier(episode: episode))
         }
     }
