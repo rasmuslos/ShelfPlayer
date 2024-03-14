@@ -59,5 +59,15 @@
 		<string>fetch</string>
 		<string>processing</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsUsageDescription</key>
+		<dict>
+			<key>NSATSExceptionThirdPartyServiceConnectionUsage</key>
+			<dict/>
+		</dict>
+	</dict>
 </dict>
 </plist>
