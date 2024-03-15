@@ -94,8 +94,7 @@ struct AudiobookSortFilter: View {
 extension AudiobookSortFilter {
     @MainActor
     static func filterSort(audiobooks: [Audiobook], filter: Filter, order: SortOrder, ascending: Bool) -> [Audiobook] {
-        // Filter
-        var audiobooks = audiobooks.filter { audiobook in
+        let audiobooks = audiobooks.filter { audiobook in
             if filter == .all {
                 return true
             }
@@ -111,8 +110,11 @@ extension AudiobookSortFilter {
             return false
         }
         
-        // Sort
-        audiobooks.sort {
+        return sort(audiobooks: audiobooks, order: order, ascending: ascending)
+    }
+    
+    static func sort(audiobooks: [Audiobook], order: SortOrder, ascending: Bool) -> [Audiobook] {
+        let audiobooks = audiobooks.sorted {
             switch order {
                 case .name:
                     return $0.sortName.localizedStandardCompare($1.sortName) == .orderedAscending
