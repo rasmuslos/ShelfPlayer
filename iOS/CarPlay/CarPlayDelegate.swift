@@ -8,17 +8,16 @@
 import CarPlay
 import SPBase
 
-class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+public class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     // we need to keep a strong reference to this object
     internal var nowPlayingObserver: NowPlayingObserver?
     internal var interfaceController: CPInterfaceController?
     
-    func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
+    public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
         Task {
             // Check if the user is logged in
-            
             if !AudiobookshelfClient.shared.isAuthorized {
                 try await interfaceController.presentTemplate(CPAlertTemplate(titleVariants: [String(localized: "carPlay.unauthorized.short"), String(localized: "carPlay.unauthorized")], actions: []), animated: true)
                 
@@ -29,12 +28,17 @@ class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             
             // Try to fetch libraries
             
-            // if false, let libraries = try? await AudiobookshelfClient.shared.getLibraries() {
+            #if DEBUG
+            if let libraries = try? await AudiobookshelfClient.shared.getLibraries() {
+                
+            }
+            #else
             try await interfaceController.setRootTemplate(try buildOfflineListTemplate(), animated: true)
+            #endif
         }
     }
     
-    func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
+    public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
         self.interfaceController = nil
         nowPlayingObserver = nil
     }

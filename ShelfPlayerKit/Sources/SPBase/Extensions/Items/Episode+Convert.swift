@@ -30,7 +30,7 @@ extension Episode {
             id: podcastEpisode.id!,
             libraryId: item.libraryId!,
             name: podcastEpisode.title!,
-            author: item.media?.metadata.author!,
+            author: item.media?.metadata.author,
             description: podcastEpisode.description,
             image: Item.Image.convertFromAudiobookshelf(item: item),
             genres: [],
