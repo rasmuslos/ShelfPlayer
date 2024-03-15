@@ -205,19 +205,6 @@ struct AccountSheet: View {
                 Text("account.sleepTimer.text")
             }
             
-            Group {
-                Section("account.server") {
-                    Text(AudiobookshelfClient.shared.token)
-                    Text(AudiobookshelfClient.shared.serverUrl.absoluteString)
-                }
-                
-                Section {
-                    Text("account.version \(AudiobookshelfClient.shared.clientVersion) (\(AudiobookshelfClient.shared.clientBuild))")
-                }
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            
             Section {
                 Button {
                     UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/AmpFin")!)
@@ -231,6 +218,19 @@ struct AccountSheet: View {
                     Text("account.support")
                 }
             }
+            
+            Group {
+                Section("account.server") {
+                    Text(AudiobookshelfClient.shared.token)
+                    Text(AudiobookshelfClient.shared.serverUrl.absoluteString)
+                }
+                
+                Section {
+                    Text("account.version \(AudiobookshelfClient.shared.clientVersion) (\(AudiobookshelfClient.shared.clientBuild))")
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
             
             #if !ENABLE_ALL_FEATURES
             Section {
