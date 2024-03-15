@@ -37,6 +37,16 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                             sortOrder: Defaults[.episodesSort(podcastId: podcast.id)],
                             ascending: Defaults[.episodesAscending(podcastId: podcast.id)])
                         
+                        // Prefer in progress episodes
+                        for episode in sorted {
+                            let entity = await OfflineManager.shared.requireProgressEntity(item: episode)
+                            
+                            if entity.progress > 0 {
+                                episode.startPlayback()
+                                break
+                            }
+                        }
+                        
                         if let episode = sorted.first {
                             episode.startPlayback()
                             break
@@ -79,6 +89,8 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
         var result = [Item]()
         
         result += await resolveAudiobooks(name: search.mediaName ?? "")
+        result += await resolvePodcasts(name: search.mediaName ?? "")
+        result += await resolveEpisodes(name: search.mediaName ?? "")
         
         if !result.isEmpty {
             return INPlayMediaMediaItemResolutionResult.successes(with: mapMediaItems(result))
