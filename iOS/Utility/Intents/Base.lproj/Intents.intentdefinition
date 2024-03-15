@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>JCgwMx</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>23C71</string>
+	<string>23E214</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>15C500b</string>
+	<string>15E204a</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>15.2</string>
+	<string>15.3</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -25,8 +25,10 @@
 			<string>IN</string>
 			<key>INIntentCustomizable</key>
 			<true/>
+			<key>INIntentDefaultImageName</key>
+			<string>Logo</string>
 			<key>INIntentDescription</key>
-			<string>PLAY_DESCRIPTION</string>
+			<string>Play audiobooks or episodes</string>
 			<key>INIntentDescriptionID</key>
 			<string>LdrEPN</string>
 			<key>INIntentDomain</key>
@@ -41,18 +43,20 @@
 			<string>PlayMedia</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key></key>
+				<key>mediaItems</key>
 				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Play media</string>
+					<string>Start playing ${mediaItems}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>tFQKOl</string>
+					<string>sDnrPD</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Play</string>
+					<string>Play ${mediaItems}</string>
 					<key>INIntentParameterCombinationTitleID</key>
-					<string>gkNFIV</string>
+					<string>OzcEXi</string>
 				</dict>
 			</dict>
 			<key>INIntentParameters</key>
@@ -252,7 +256,7 @@
 				</dict>
 			</array>
 			<key>INIntentTitle</key>
-			<string>PLAY_TITLE</string>
+			<string>Play media</string>
 			<key>INIntentTitleID</key>
 			<string>G3J6fP</string>
 			<key>INIntentType</key>

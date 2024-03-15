@@ -169,8 +169,6 @@
 		3A5A4DB12B5EFB1800E72E8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3A5A4DB32B5EFB1A00E72E8B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = de; path = de.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3A5A4DBB2B5F0BCD00E72E8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
-		3A5A4DBE2B5F0BD000E72E8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
-		3A5A4DC02B5F0BD000E72E8B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorUnavailableView.swift; sourceTree = "<group>"; };
 		3A77B7012ACDF01C00F22C7F /* SeriesUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesUnavailableView.swift; sourceTree = "<group>"; };
@@ -865,8 +863,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				3A5A4DBB2B5F0BCD00E72E8B /* Base */,
-				3A5A4DBE2B5F0BD000E72E8B /* en */,
-				3A5A4DC02B5F0BD000E72E8B /* de */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";

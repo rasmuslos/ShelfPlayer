@@ -96,7 +96,7 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
             return INPlayMediaMediaItemResolutionResult.successes(with: mapMediaItems(result))
         }
         
-        return [.unsupported()]
+        return []
     }
 }
 
