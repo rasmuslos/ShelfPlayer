@@ -34,37 +34,33 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 ProgressButton(item: episode)
                 DownloadButton(item: episode)
             } preview: {
-                VStack {
-                    HStack {
-                        ItemImage(image: episode.image)
-                            .frame(height: 75)
+                VStack(alignment: .leading) {
+                    ItemImage(image: episode.image)
+                        .frame(height: 50)
+                    
+                    Group {
+                        let durationText = Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
                         
-                        VStack(alignment: .leading) {
-                            Group {
-                                let durationText = Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
-                                
-                                if let formattedReleaseDate = episode.formattedReleaseDate {
-                                    Text(formattedReleaseDate)
-                                    + Text(verbatim: " • ")
-                                    + durationText
-                                } else {
-                                    durationText
-                                }
-                            }
-                            .font(.caption.smallCaps())
-                            .foregroundStyle(.secondary)
-                            
-                            Text(episode.name)
-                                .font(.headline)
-                            
-                            Text(episode.podcastName)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
+                        if let formattedReleaseDate = episode.formattedReleaseDate {
+                            Text(formattedReleaseDate)
+                            + Text(verbatim: " • ")
+                            + durationText
+                        } else {
+                            durationText
                         }
-                        
-                        Spacer()
                     }
+                    .font(.caption.smallCaps())
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 5)
+                    
+                    Text(episode.name)
+                        .font(.headline)
+                    
+                    Text(episode.podcastName)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .padding(.bottom, 5)
                     
                     HStack {
                         Text(episode.descriptionText ?? "description.unavailable")
@@ -72,7 +68,6 @@ struct EpisodeContextMenuModifier: ViewModifier {
                         
                         Spacer()
                     }
-                    .padding(.top, 10)
                 }
                 .padding(20)
                 .frame(width: 400)
