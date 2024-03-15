@@ -23,7 +23,13 @@ struct SeriesView: View {
     @State private var audiobooks = [Audiobook]()
     
     private var visibleAudiobooks: [Audiobook] {
-        AudiobookSortFilter.filterSort(audiobooks: audiobooks, filter: audiobooksFilter, order: audiobooksSortOrder, ascending: audiobooksAscending)
+        let filtered = AudiobookSortFilter.filterSort(audiobooks: audiobooks, filter: audiobooksFilter, order: audiobooksSortOrder, ascending: audiobooksAscending)
+        
+        if filtered.isEmpty {
+            return AudiobookSortFilter.sort(audiobooks: audiobooks, order: audiobooksSortOrder, ascending: audiobooksAscending)
+        }
+        
+        return filtered
     }
     
     var body: some View {
