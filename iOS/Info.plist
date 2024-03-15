@@ -30,6 +30,16 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsUsageDescription</key>
+		<dict>
+			<key>NSATSExceptionThirdPartyServiceConnectionUsage</key>
+			<dict/>
+		</dict>
+	</dict>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>INPlayMediaIntent</string>
@@ -59,15 +69,5 @@
 		<string>fetch</string>
 		<string>processing</string>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSAllowsArbitraryLoadsUsageDescription</key>
-		<dict>
-			<key>NSATSExceptionThirdPartyServiceConnectionUsage</key>
-			<dict/>
-		</dict>
-	</dict>
 </dict>
 </plist>
