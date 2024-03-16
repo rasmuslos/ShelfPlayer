@@ -29,11 +29,6 @@ public extension Episode {
         return Date(timeIntervalSince1970: milliseconds / 1000)
     }
     
-    var formattedReleaseDate: String? {
-        guard let releaseDate = releaseDate else { return nil }
-        return String(releaseDate.get(.day)) + "." + String(releaseDate.get(.month)) + "." + String(releaseDate.get(.year))
-    }
-    
     var descriptionText: String? {
         guard let description = description, let document = try? SwiftSoup.parse(description) else { return nil }
         return try? document.text()

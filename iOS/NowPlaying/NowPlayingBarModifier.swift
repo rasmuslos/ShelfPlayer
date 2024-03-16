@@ -53,8 +53,8 @@ struct NowPlayingBarModifier: ViewModifier {
                                             .lineLimit(1)
                                         
                                         Group {
-                                            if let episode = item as? Episode, let author = episode.author {
-                                                Text(author)
+                                            if let episode = item as? Episode, let releaseDate = episode.releaseDate {
+                                                Text(releaseDate, style: .date)
                                             } else {
                                                 Text((AudioPlayer.shared.duration - AudioPlayer.shared.currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
                                                 + Text(verbatim: " ")
@@ -132,8 +132,8 @@ struct NowPlayingBarModifier: ViewModifier {
                                         .padding(.bottom, 10)
                                     
                                     Group {
-                                        if let episode = item as? Episode, let releaseDate = episode.formattedReleaseDate {
-                                            Text(releaseDate)
+                                        if let episode = item as? Episode, let releaseDate = episode.releaseDate {
+                                            Text(releaseDate, style: .date)
                                         } else if let audiobook = item as? Audiobook, let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
                                             Text(series)
                                         }
