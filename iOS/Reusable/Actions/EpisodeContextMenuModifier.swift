@@ -41,8 +41,8 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     Group {
                         let durationText = Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
                         
-                        if let formattedReleaseDate = episode.formattedReleaseDate {
-                            Text(formattedReleaseDate)
+                        if let releaseDate = episode.releaseDate {
+                            Text(releaseDate, style: .date)
                             + Text(verbatim: " • ")
                             + durationText
                         } else {

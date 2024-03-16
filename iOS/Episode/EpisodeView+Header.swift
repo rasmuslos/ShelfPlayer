@@ -24,8 +24,8 @@ extension EpisodeView {
                         .frame(width: 150)
                     
                     HStack(spacing: 0) {
-                        if let formattedReleaseDate = episode.formattedReleaseDate {
-                            Text(formattedReleaseDate)
+                        if let releaseDate = episode.releaseDate {
+                            Text(releaseDate, style: .date)
                             Text(verbatim: " • ")
                         }
                         
