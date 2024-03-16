@@ -32,8 +32,8 @@ extension EpisodeList {
                 
                 VStack(alignment: .leading) {
                     Group {
-                        if let formattedReleaseDate = episode.formattedReleaseDate {
-                            Text(formattedReleaseDate)
+                        if let releaseDate = episode.releaseDate {
+                            Text(releaseDate, style: .date)
                         } else {
                             Text(verbatim: "")
                         }

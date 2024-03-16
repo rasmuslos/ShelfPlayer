@@ -60,8 +60,8 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
         var body: some View {
             HStack {
                 VStack(alignment: .leading) {
-                    if let formattedReleaseDate = episode.formattedReleaseDate {
-                        Text(formattedReleaseDate)
+                    if let releaseDate = episode.releaseDate {
+                        Text(releaseDate, style: .date)
                             .font(.subheadline.smallCaps())
                             .foregroundStyle(.regularMaterial)
                     }
