@@ -72,10 +72,10 @@ extension EpisodePlayButton {
                                 .foregroundStyle(.gray.opacity(0.25))
                                 .overlay(alignment: .leading) {
                                     Rectangle()
-                                        .frame(width: max(50 * viewModel.entity.progress, 5))
+                                        .frame(width: max(40 * viewModel.entity.progress, 5))
                                         .foregroundStyle(viewModel.highlighted ? .black : colorScheme == .light ? .black : .white)
                                 }
-                                .frame(width: 50, height: 7)
+                                .frame(width: 40, height: 5)
                                 .clipShape(RoundedRectangle(cornerRadius: 10000))
                         }
                         
