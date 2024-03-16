@@ -48,8 +48,23 @@ struct NowPlayingBarModifier: ViewModifier {
                                             }
                                         }
                                     
-                                    Text(item.name)
+                                    VStack(alignment: .leading) {
+                                        Text(item.name)
+                                            .lineLimit(1)
+                                        
+                                        Group {
+                                            if let episode = item as? Episode, let author = episode.author {
+                                                Text(author)
+                                            } else {
+                                                Text((AudioPlayer.shared.duration - AudioPlayer.shared.currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
+                                                + Text(verbatim: " ")
+                                                + Text("time.left")
+                                            }
+                                        }
                                         .lineLimit(1)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                    }
                                     
                                     Spacer()
                                     
