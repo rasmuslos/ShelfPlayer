@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Defaults
+import Nuke
 import SPBase
 import SPOffline
 import SPOfflineExtended
@@ -92,7 +93,9 @@ struct AccountSheet: View {
                 }
                 
                 Button(role: .destructive) {
+                    ImagePipeline.shared.cache.removeAll()
                     OfflineManager.shared.deleteProgressEntities()
+                    
                     NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
                         "offline": false,
                     ])
