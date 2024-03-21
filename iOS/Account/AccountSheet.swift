@@ -210,7 +210,7 @@ struct AccountSheet: View {
             
             Section {
                 Button {
-                    UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/AmpFin")!)
+                    UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/ShelfPlayer")!)
                 } label: {
                     Text("account.github")
                 }
