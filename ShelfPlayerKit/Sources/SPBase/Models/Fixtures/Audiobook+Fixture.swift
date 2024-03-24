@@ -22,10 +22,10 @@ extension Audiobook {
         released: "1900",
         size: 100000,
         duration: 60 * 60 * 12, narrator: "Steven Fry",
-        series: Audiobook.ReducedSeries(
+        series: [Audiobook.ReducedSeries(
             id: nil,
             name: "George Orwell Collection",
-            audiobookSeriesName: "George Orwell Collection #1"),
+            sequence: 1)],
         explicit: false,
         abridged: false)
 }

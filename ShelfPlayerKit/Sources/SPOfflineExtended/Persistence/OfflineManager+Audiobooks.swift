@@ -48,7 +48,7 @@ public extension OfflineManager {
             released: audiobook.released,
             size: audiobook.size,
             narrator: audiobook.narrator,
-            seriesName: audiobook.series.audiobookSeriesName,
+            seriesName: audiobook.seriesName,
             duration: audiobook.duration,
             explicit: audiobook.explicit,
             abridged: audiobook.abridged)

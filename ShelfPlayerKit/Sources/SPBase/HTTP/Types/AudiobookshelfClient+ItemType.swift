@@ -122,7 +122,7 @@ extension AudiobookshelfClient {
             let publisher: String?
             
             let seriesName: String?
-            let series: AudiobookshelfItemSeries?
+            let series: [AudiobookshelfItemSeries]?
             
             let genres: [String]
             let publishedYear: String?
@@ -156,7 +156,13 @@ extension AudiobookshelfClient {
                 self.type = try container.decodeIfPresent(String.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.type)
                 
                 // this is truly stupid... The field is either of type series or an empty array
-                self.series = try? container.decodeIfPresent(AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemSeries.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.series)
+                if let seriesArray = try? container.decodeIfPresent([AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemSeries].self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.series) {
+                    self.series = seriesArray
+                } else if let seriesDict = try? container.decodeIfPresent(AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemSeries.self, forKey: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfItemMetadata.CodingKeys.series) {
+                    self.series = [seriesDict]
+                } else {
+                    self.series = []
+                }
             }
         }
         

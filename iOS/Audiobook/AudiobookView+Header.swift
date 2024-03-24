@@ -22,7 +22,7 @@ extension AudiobookView {
                         .padding(.horizontal, 50)
                         .shadow(radius: 30)
                     
-                    if let series = viewModel.audiobook.series.audiobookSeriesName ?? viewModel.audiobook.series.name {
+                    if let series = viewModel.audiobook.seriesName {
                         NavigationLink {
                             if let seriesId = viewModel.seriesId {
                                 SeriesLoadView(seriesId: seriesId)

@@ -56,14 +56,11 @@ extension AudiobookViewModel {
     }
     
     private func fetchSeriesData() async {
-        if let seriesId = audiobook.series.id {
+        if let seriesId = audiobook.series.first?.id {
             self.seriesId = seriesId
-        } else if let series = audiobook.series.name {
+        } else if let series = audiobook.series.first?.name {
             seriesName = series
             seriesId = await AudiobookshelfClient.shared.getSeriesId(name: series, libraryId: libraryId)
-        } else if let series = audiobook.series.audiobookSeriesName, let seriesName = series.split(separator: "#").first?.dropLast() {
-            self.seriesName = String(seriesName)
-            seriesId = await AudiobookshelfClient.shared.getSeriesId(name: self.seriesName!, libraryId: libraryId)
         }
         
         if let seriesId = seriesId {

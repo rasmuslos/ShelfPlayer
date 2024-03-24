@@ -104,7 +104,6 @@ extension PodcastView {
         
         if let episodes = try? await AudiobookshelfClient.shared.getEpisodes(podcastId: podcast.id) {
             self.episodes = episodes
-            print(episodes.count)
             podcast.episodeCount = episodes.count
         } else {
             failed = true
