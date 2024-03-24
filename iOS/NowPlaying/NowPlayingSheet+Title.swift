@@ -17,8 +17,8 @@ extension NowPlayingSheet {
                     Group {
                         if let episode = AudioPlayer.shared.item as? Episode, let releaseDate = episode.releaseDate {
                             Text(releaseDate, style: .date)
-                        } else if let audiobook = AudioPlayer.shared.item as? Audiobook, let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
-                            Text(series)
+                        } else if let audiobook = AudioPlayer.shared.item as? Audiobook, let seriesName = audiobook.seriesName {
+                            Text(seriesName)
                         }
                     }
                     .font(.caption)

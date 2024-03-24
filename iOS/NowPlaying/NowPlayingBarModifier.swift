@@ -134,8 +134,8 @@ struct NowPlayingBarModifier: ViewModifier {
                                     Group {
                                         if let episode = item as? Episode, let releaseDate = episode.releaseDate {
                                             Text(releaseDate, style: .date)
-                                        } else if let audiobook = item as? Audiobook, let series = audiobook.series.audiobookSeriesName ?? audiobook.series.name {
-                                            Text(series)
+                                        } else if let audiobook = item as? Audiobook, let seriesName = audiobook.seriesName {
+                                            Text(seriesName)
                                         }
                                     }
                                     .font(.caption)

@@ -9,12 +9,12 @@ import Foundation
 
 public class Audiobook: PlayableItem {
     public let narrator: String?
-    public let series: ReducedSeries
+    public let series: [ReducedSeries]
     
     public let explicit: Bool
     public let abridged: Bool
     
-    public init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: Double, narrator: String?, series: ReducedSeries, explicit: Bool, abridged: Bool) {
+    public init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Image?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: Double, narrator: String?, series: [ReducedSeries], explicit: Bool, abridged: Bool) {
         self.narrator = narrator
         self.series = series
         self.explicit = explicit
@@ -24,18 +24,33 @@ public class Audiobook: PlayableItem {
     }
 }
 
-// MARK: Helper
+public extension Audiobook {
+    var seriesName: String? {
+        if series.isEmpty {
+            return nil
+        }
+        
+        return series.compactMap {
+            if let sequence = $0.sequence {
+                return "\($0.name) #\(sequence)"
+            }
+            
+            return $0.name
+        }.joined(separator: ", ")
+    }
+}
 
 extension Audiobook {
     public struct ReducedSeries: Codable {
         public let id: String?
-        public let name: String?
-        public let audiobookSeriesName: String?
         
-        public init(id: String?, name: String?, audiobookSeriesName: String?) {
+        public let name: String
+        public let sequence: Int?
+        
+        public init(id: String?, name: String, sequence: Int?) {
             self.id = id
             self.name = name
-            self.audiobookSeriesName = audiobookSeriesName
+            self.sequence = sequence
         }
     }
 }
