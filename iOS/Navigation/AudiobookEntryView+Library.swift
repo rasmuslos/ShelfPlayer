@@ -48,7 +48,6 @@ extension AudiobookEntryView {
                 }
                 
                 let matches = $0.genres.reduce(0, { result, genre in filteredGenres.contains(where: { $0 == genre }) ? result + 1 : result })
-                print(matches, filteredGenres)
                 return matches == filteredGenres.count
             }
         }

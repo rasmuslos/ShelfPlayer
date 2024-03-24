@@ -38,11 +38,11 @@ struct AudiobookContextMenuModifier: ViewModifier {
                     }
                 }
                 
-                if let seriesId = audiobook.series.id {
+                if let seriesId = audiobook.series.first?.id {
                     NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
                         Label("series.view", systemImage: "text.justify.leading")
                         
-                        if let series = audiobook.series.name ?? audiobook.series.audiobookSeriesName {
+                        if let series = audiobook.series.first?.name {
                             Text(series)
                         }
                     }

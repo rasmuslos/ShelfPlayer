@@ -21,10 +21,23 @@ extension Audiobook {
             released: item.media?.metadata.publishedYear,
             size: item.size!,
             duration: item.media?.duration ?? 0, narrator: item.media?.metadata.narratorName?.trim(),
-            series: Audiobook.ReducedSeries(
-                id: item.media?.metadata.series?.id,
-                name: item.media?.metadata.series?.name,
-                audiobookSeriesName: item.media?.metadata.seriesName?.trim()),
+            series: {
+                if let series = item.media?.metadata.series, !series.isEmpty {
+                    return series.map {
+                        let name = $0.name ?? "-?-"
+                        
+                        if let seq = $0.sequence, let sequence = Int(seq) {
+                            return Audiobook.ReducedSeries(id: $0.id, name: name, sequence: sequence)
+                        } else {
+                            return Audiobook.ReducedSeries(id: $0.id, name: name, sequence: nil)
+                        }
+                    }
+                } else if let seriesName = item.media?.metadata.seriesName {
+                    return ReducedSeries.convert(seriesName: seriesName)
+                }
+                
+                return []
+            }(),
             explicit: item.media?.metadata.explicit ?? false,
             abridged: item.media?.metadata.abridged ?? false)
     }
