@@ -79,5 +79,14 @@ internal extension AudioPlayer {
             
             return .commandFailed
         }
+        
+        commandCenter.previousTrackCommand.addTarget { [unowned self] event in
+            seek(to: getItemCurrentTime() - Double(skipBackwardsInterval))
+            return .success
+        }
+        commandCenter.nextTrackCommand.addTarget { [unowned self] event in
+            seek(to: getItemCurrentTime() + Double(skipForwardsInterval))
+            return .success
+        }
     }
 }
