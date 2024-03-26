@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 import MediaPlayer
 
 internal extension AudioPlayer {
@@ -44,6 +45,10 @@ internal extension AudioPlayer {
         }
         
         commandCenter.changePlaybackPositionCommand.addTarget { [unowned self] event in
+            if Defaults[.lockSeekBar] {
+                return .noActionableNowPlayingItem
+            }
+            
             if let changePlaybackPositionCommandEvent = event as? MPChangePlaybackPositionCommandEvent {
                 seek(to: changePlaybackPositionCommandEvent.positionTime, includeChapterOffset: true)
                 return .success
