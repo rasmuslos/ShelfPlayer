@@ -14,7 +14,7 @@
 			<key>Key</key>
 			<string>enableChapterTrack</string>
 			<key>DefaultValue</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -107,6 +107,16 @@
 				<string>45</string>
 				<string>60</string>
 			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Lock seek bar</string>
+			<key>Key</key>
+			<string>lockSeekBar</string>
+			<key>DefaultValue</key>
+			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>

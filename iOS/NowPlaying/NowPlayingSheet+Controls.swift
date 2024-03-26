@@ -29,9 +29,14 @@ extension NowPlayingSheet {
         var body: some View {
             VStack {
                 VStack {
-                    Slider(percentage: .init(get: { dragging ? draggedPercentage : playedPercentage }, set: { draggedPercentage = $0 }), dragging: $dragging, onEnded: {
+                    Slider(percentage: .init(get: { dragging ? draggedPercentage : playedPercentage }, set: {
+                        if Defaults[.lockSeekBar] {
+                            return
+                        }
+                        
+                        draggedPercentage = $0
                         AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (draggedPercentage / 100), includeChapterOffset: true)
-                    })
+                    }), dragging: $dragging)
                     .frame(height: 10)
                     .padding(.vertical, 10)
                     
