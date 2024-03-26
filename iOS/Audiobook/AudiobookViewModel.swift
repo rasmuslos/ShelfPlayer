@@ -22,9 +22,6 @@ class AudiobookViewModel {
     
     var authorId: String?
     
-    var seriesId: String?
-    var seriesName: String?
-    
     var audiobooksByAuthor = [Audiobook]()
     var audiobooksInSeries = [Audiobook]()
     
@@ -56,11 +53,12 @@ extension AudiobookViewModel {
     }
     
     private func fetchSeriesData() async {
-        if let seriesId = audiobook.series.first?.id {
-            self.seriesId = seriesId
-        } else if let series = audiobook.series.first?.name {
-            seriesName = series
-            seriesId = await AudiobookshelfClient.shared.getSeriesId(name: series, libraryId: libraryId)
+        var seriesId: String?
+        
+        if let id = audiobook.series.first?.id {
+            seriesId = id
+        } else if let name = audiobook.series.first?.name {
+            seriesId = await AudiobookshelfClient.shared.getSeriesId(name: name, libraryId: libraryId)
         }
         
         if let seriesId = seriesId {
