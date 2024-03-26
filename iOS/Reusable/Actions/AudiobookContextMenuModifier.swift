@@ -38,13 +38,9 @@ struct AudiobookContextMenuModifier: ViewModifier {
                     }
                 }
                 
-                if let seriesId = audiobook.series.first?.id {
-                    NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
-                        Label("series.view", systemImage: "text.justify.leading")
-                        
-                        if let series = audiobook.series.first?.name {
-                            Text(series)
-                        }
+                ForEach(audiobook.series, id: \.name) { series in
+                    NavigationLink(destination: SeriesLoadView(series: series)){
+                        Text(series.name)
                     }
                 }
                 

@@ -66,13 +66,10 @@ extension AudiobookView {
                                     }
                                 }
                             }
-                            if let seriesId = viewModel.seriesId {
-                                NavigationLink(destination: SeriesLoadView(seriesId: seriesId)) {
-                                    Label("series.view", systemImage: "text.justify.leading")
-                                    
-                                    if let seriesName = viewModel.seriesName {
-                                        Text(seriesName)
-                                    }
+                            
+                            ForEach(viewModel.audiobook.series, id: \.name) { series in
+                                NavigationLink(destination: SeriesLoadView(series: series)){
+                                    Text(series.name)
                                 }
                             }
                             

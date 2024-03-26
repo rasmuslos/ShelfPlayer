@@ -1924,6 +1924,7 @@
       }
     },
     "series.view" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

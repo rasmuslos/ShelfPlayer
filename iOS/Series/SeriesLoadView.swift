@@ -9,38 +9,40 @@ import SwiftUI
 import SPBase
 
 struct SeriesLoadView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.libraryId) private var libraryId
     
-    let seriesId: String
+    let series: Audiobook.ReducedSeries
     
-    @State var failed = false
-    @State var series: Series?
+    @State private var failed = false
+    @State private var resolved: Series?
     
     var body: some View {
         Group {
             if failed {
                 SeriesUnavailableView()
-            } else if let series = series {
-                SeriesView(series: series)
+            } else if let resolved = resolved {
+                SeriesView(series: resolved)
             } else {
                 LoadingView()
-                    .task { await fetchAudiobooks() }
+                    .task { await fetchSeries() }
             }
         }
-        .refreshable { await fetchAudiobooks() }
+        .refreshable { await fetchSeries() }
     }
 }
 
 extension SeriesLoadView {
-    func fetchAudiobooks() async {
-        if let series = await AudiobookshelfClient.shared.getSeries(seriesId: seriesId, libraryId: libraryId) {
-            self.series = series
+    func fetchSeries() async {
+        var id = series.id
+        
+        if id == nil {
+            id = await AudiobookshelfClient.shared.getSeriesId(name: series.name, libraryId: libraryId)
+        }
+        
+        if let id = id, let series = await AudiobookshelfClient.shared.getSeries(seriesId: id, libraryId: libraryId) {
+            self.resolved = series
         } else {
             failed = true
         }
     }
-}
-
-#Preview {
-    SeriesLoadView(seriesId: "fixture")
 }
