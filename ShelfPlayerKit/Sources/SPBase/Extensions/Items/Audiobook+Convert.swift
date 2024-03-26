@@ -28,7 +28,7 @@ extension Audiobook {
                     resolved += series.map {
                         let name = $0.name!
                         
-                        if let seq = $0.sequence, let sequence = Int(seq) {
+                        if let seq = $0.sequence, let sequence = Float(seq) {
                             return Audiobook.ReducedSeries(id: $0.id, name: name, sequence: sequence)
                         } else {
                             return Audiobook.ReducedSeries(id: $0.id, name: name, sequence: nil)

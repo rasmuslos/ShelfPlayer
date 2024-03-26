@@ -45,9 +45,9 @@ extension Audiobook {
         public let id: String?
         
         public let name: String
-        public let sequence: Int?
+        public let sequence: Float?
         
-        public init(id: String?, name: String, sequence: Int?) {
+        public init(id: String?, name: String, sequence: Float?) {
             self.id = id
             self.name = name
             self.sequence = sequence
