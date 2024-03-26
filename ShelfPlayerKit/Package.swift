@@ -19,7 +19,10 @@ let package = Package(
     targets: [
         .target(
             name: "SPBase",
-            dependencies: [.byName(name: "SwiftSoup")],
+            dependencies: [
+                .byName(name: "Defaults"),
+                .byName(name: "SwiftSoup"),
+            ],
             resources: [.process("Resources")]),
         .target(name: "SPPlayback", dependencies: [
             .byName(name: "Defaults"),

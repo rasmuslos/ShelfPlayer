@@ -39,7 +39,8 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 }
                 
                 ForEach(audiobook.series, id: \.name) { series in
-                    NavigationLink(destination: SeriesLoadView(series: series)){
+                    NavigationLink(destination: SeriesLoadView(series: series)) {
+                        Text("series.view")
                         Text(series.name)
                     }
                 }
