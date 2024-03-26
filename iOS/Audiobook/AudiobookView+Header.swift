@@ -12,6 +12,15 @@ extension AudiobookView {
     struct Header: View {
         @Environment(AudiobookViewModel.self) var viewModel
         
+        private func seriesNameComponent(_ name: String) -> some View {
+            Text(name)
+                .font(.caption)
+                .bold()
+                .underline()
+                .lineLimit(1)
+                .padding(5)
+        }
+        
         var body: some View {
             ZStack(alignment: .top) {
                 FullscreenBackground(threshold: -300, backgroundColor: .clear, navigationBarVisible: .init(get: { viewModel.navigationBarVisible }, set: { viewModel.navigationBarVisible = $0 }))
@@ -22,22 +31,25 @@ extension AudiobookView {
                         .padding(.horizontal, 50)
                         .shadow(radius: 30)
                     
-                    if let series = viewModel.audiobook.seriesName {
-                        NavigationLink {
-                            if let seriesId = viewModel.seriesId {
-                                SeriesLoadView(seriesId: seriesId)
-                            } else {
-                                SeriesUnavailableView()
+                    if !viewModel.audiobook.series.isEmpty, let seriesName = viewModel.audiobook.seriesName {
+                        if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
+                            NavigationLink(destination: SeriesLoadView(series: series)){
+                                seriesNameComponent(seriesName)
                             }
-                        } label: {
-                            Text(series)
-                                .font(.caption)
-                                .bold()
-                                .underline()
-                                .lineLimit(1)
-                                .padding(5)
+                            .buttonStyle(.plain)
+                        } else {
+                            Menu {
+                                ForEach(viewModel.audiobook.series, id: \.name) { series in
+                                    let _ = print(series)
+                                    NavigationLink(destination: SeriesLoadView(series: series)) {
+                                        seriesNameComponent(series.name)
+                                    }
+                                }
+                            } label: {
+                                seriesNameComponent(seriesName)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                     
                     VStack(spacing: 0) {
