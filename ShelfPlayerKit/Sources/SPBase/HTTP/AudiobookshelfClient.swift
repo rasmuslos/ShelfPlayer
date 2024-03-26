@@ -17,6 +17,8 @@ public class AudiobookshelfClient {
     public private(set) var clientId: String
     static let defaults = ENABLE_ALL_FEATURES ? UserDefaults(suiteName: "group.io.rfk.shelfplayer")! : UserDefaults.standard
     
+    fileprivate var _customHTTPHeaders: [CustomHTTPHeader]?
+    
     init(serverUrl: URL!, token: String!) {
         if !ENABLE_ALL_FEATURES {
             print("[WARNING] User data will not be stored in an app group")
@@ -56,6 +58,44 @@ public extension AudiobookshelfClient {
     func logout() {
         Self.defaults.set(nil, forKey: "token")
         exit(0)
+    }
+}
+
+public extension AudiobookshelfClient {
+    var customHTTPHeaders: [CustomHTTPHeader] {
+        get {
+            if let customHTTPHeaders = _customHTTPHeaders {
+                return customHTTPHeaders
+            }
+            
+            let decoder = JSONDecoder()
+            if
+                let object = Self.defaults.object(forKey: "customHTTPHeaders") as? Data,
+                let headers = try? decoder.decode([CustomHTTPHeader].self, from: object) {
+                _customHTTPHeaders = headers
+                return headers
+            }
+            
+            return []
+        }
+        set {
+            _customHTTPHeaders = newValue
+            
+            let encoder = JSONEncoder()
+            if let object = try? encoder.encode(newValue) {
+                Self.defaults.set(object, forKey: "customHTTPHeaders")
+            }
+        }
+    }
+    
+    struct CustomHTTPHeader: Codable {
+        public var key: String
+        public var value: String
+        
+        public init(key: String, value: String) {
+            self.key = key
+            self.value = value
+        }
     }
 }
 

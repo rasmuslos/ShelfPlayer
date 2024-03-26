@@ -61,10 +61,11 @@ struct LoginView: View {
             Text("login.disclaimer")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
                 .padding()
             #endif
         }
-        .sheet(isPresented: $loginSheetPresented, content: {
+        .sheet(isPresented: $loginSheetPresented) {
             switch loginFlowState {
                 case .server, .credentialsLocal:
                     Form {
@@ -85,6 +86,14 @@ struct LoginView: View {
                                 flowStep()
                             } label: {
                                 Text("login.next")
+                            }
+                            
+                            if loginFlowState == .server {
+                                Button {
+                                    loginFlowState = .customHTTPHeaders
+                                } label: {
+                                    Text("login.customHTTPHeaders")
+                                }
                             }
                         } header: {
                             if let serverVersion = serverVersion {
@@ -109,6 +118,10 @@ struct LoginView: View {
                         }
                     }
                     .onSubmit(flowStep)
+                case .customHTTPHeaders:
+                    CustomHeaderEditView() {
+                        loginFlowState = .server
+                    }
                 case .credentialsOpenID:
                     if let openIDLoginURL = openIDLoginURL {
                         ProgressView()
@@ -118,7 +131,7 @@ struct LoginView: View {
                             }
                     } else {
                         ProgressView()
-                            .task { try? await fetchOpenIDLoginUrl() }
+                            .task { await fetchOpenIDLoginURL() }
                     }
                 case .credentialsSelect:
                     Form {
@@ -157,7 +170,7 @@ struct LoginView: View {
                             .padding()
                     }
             }
-        })
+        }
     }
 }
 
@@ -228,6 +241,7 @@ extension LoginView {
         case credentialsLoading
         
         case setup
+        case customHTTPHeaders
     }
     enum LoginError {
         case server
@@ -237,52 +251,12 @@ extension LoginView {
 }
 
 extension LoginView {
-    private func sha256(data : Data) -> Data {
-        var hash = [UInt8](repeating: 0,  count: Int(CC_SHA256_DIGEST_LENGTH))
-        data.withUnsafeBytes {
-            _ = CC_SHA256($0.baseAddress, CC_LONG(data.count), &hash)
-        }
-        return Data(hash)
-    }
-    
-    private func fetchOpenIDLoginUrl() async throws {
-        var challenge = sha256(data: Data(verifier.compactMap { $0.asciiValue })).base64EncodedString()
-        
-        // Base64 --> URL-Base64
-        challenge = challenge.replacingOccurrences(of: "+", with: "-")
-        challenge = challenge.replacingOccurrences(of: "/", with: "_")
-        challenge = challenge.replacingOccurrences(of: "=", with: "")
-        
-        let url = URL(string: AudiobookshelfClient.shared.serverUrl.appending(path: "auth").appending(path: "openid").appending(queryItems: [
-            URLQueryItem(name: "client_id", value: "ShelfPlayer"),
-            URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
-            URLQueryItem(name: "code_challenge_method", value: "S256"),
-            URLQueryItem(name: "response_type", value: "code"),
-        ]).absoluteString.appending("&code_challenge=\(challenge)"))!
-        
-        for cookie in HTTPCookieStorage.shared.cookies(for: url) ?? [] {
-            HTTPCookieStorage.shared.deleteCookie(cookie)
-        }
-        
-        let session = URLSession(configuration: .default, delegate: URLSessionDelegate(), delegateQueue: nil)
-        var request = URLRequest(url: url)
-        
-        request.httpShouldHandleCookies = true
-        request.httpMethod = "GET"
-        
-        let (_, response) = try await session.data(for: request)
-        if let location = (response as? HTTPURLResponse)?.allHeaderFields["Location"] as? String {
-            openIDLoginURL = URL(string: location)
-            return
-        }
-        
-        loginError = .failed
-        loginFlowState = .server
-    }
-    
-    class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
-        func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
-            nil
+    private func fetchOpenIDLoginURL() async {
+        do {
+            openIDLoginURL = try await AudiobookshelfClient.shared.openIDLoginURL(verifier: verifier)
+        } catch {
+            loginError = .failed
+            loginFlowState = .server
         }
     }
     

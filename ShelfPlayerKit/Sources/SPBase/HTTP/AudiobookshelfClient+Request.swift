@@ -32,6 +32,10 @@ extension AudiobookshelfClient {
             request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
+        for pair in customHTTPHeaders {
+            request.addValue(pair.value, forHTTPHeaderField: pair.key)
+        }
+        
         if let body = clientRequest.body {
             do {
                 request.httpBody = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)

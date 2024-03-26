@@ -16,7 +16,7 @@ public extension Audiobook.ReducedSeries {
                 let parts = $0.split(separator: " #")
                 let name = parts[0...parts.count - 2].joined(separator: " #")
                 
-                if let sequence = Int(parts[parts.count - 1]) {
+                if let sequence = Float(parts[parts.count - 1]) {
                     return Audiobook.ReducedSeries(id: nil, name: name, sequence: sequence)
                 } else {
                     return Audiobook.ReducedSeries(id: nil, name: name.appending(" #").appending(parts[parts.count - 1]), sequence: nil)
