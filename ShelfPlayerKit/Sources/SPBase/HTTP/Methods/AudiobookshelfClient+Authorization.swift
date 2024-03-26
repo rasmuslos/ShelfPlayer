@@ -67,6 +67,10 @@ public extension AudiobookshelfClient {
         request.httpShouldHandleCookies = true
         request.httpMethod = "GET"
         
+        for pair in customHTTPHeaders {
+            request.addValue(pair.value, forHTTPHeaderField: pair.key)
+        }
+        
         let (_, response) = try await session.data(for: request)
         if let location = (response as? HTTPURLResponse)?.allHeaderFields["Location"] as? String, let url = URL(string: location) {
             return url

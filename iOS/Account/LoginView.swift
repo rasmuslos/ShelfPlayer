@@ -87,14 +87,6 @@ struct LoginView: View {
                             } label: {
                                 Text("login.next")
                             }
-                            
-                            if loginFlowState == .server {
-                                Button {
-                                    loginFlowState = .customHTTPHeaders
-                                } label: {
-                                    Text("login.customHTTPHeaders")
-                                }
-                            }
                         } header: {
                             if let serverVersion = serverVersion {
                                 Text("login.version \(serverVersion)")
@@ -115,6 +107,17 @@ struct LoginView: View {
                                 }
                             }
                             .foregroundStyle(.red)
+                        }
+                        
+                        if loginFlowState == .server {
+                            Section {
+                                Button {
+                                    loginFlowState = .customHTTPHeaders
+                                } label: {
+                                    Text("login.customHTTPHeaders")
+                                }
+                                .foregroundStyle(.secondary)
+                            }
                         }
                     }
                     .onSubmit(flowStep)

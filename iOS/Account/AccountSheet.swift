@@ -213,6 +213,7 @@ struct AccountSheet: View {
                     NavigationLink(destination: CustomHeaderEditView()) {
                         Label("login.customHTTPHeaders", systemImage: "network.badge.shield.half.filled")
                     }
+                    .foregroundStyle(.secondary)
                 }
                 
                 Section {
