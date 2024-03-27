@@ -38,9 +38,9 @@ extension Audiobook {
                 if let seriesName = item.media?.metadata.seriesName {
                     let series = ReducedSeries.convert(seriesName: seriesName)
                     
-                    for (index, series) in series.enumerated() {
+                    for series in series {
                         if !resolved.contains(where: { $0.name == series.name }) {
-                            resolved.insert(series, at: index)
+                            resolved.append(series)
                         }
                     }
                 }
