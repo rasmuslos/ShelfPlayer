@@ -18,8 +18,19 @@ struct CustomHeaderEditView: View {
         List {
             ForEach(Array(current.enumerated()), id: \.offset) { (index, pair) in
                 Section {
-                    TextField("login.customHTTPHeaders.key", text: .init(get: { pair.key }, set: { current[index].key = $0 }))
-                    TextField("login.customHTTPHeaders.value", text: .init(get: { pair.value }, set: { current[index].value = $0 }))
+                    Group {
+                        TextField("login.customHTTPHeaders.key", text: .init(get: { pair.key }, set: { current[index].key = $0 }))
+                        TextField("login.customHTTPHeaders.value", text: .init(get: { pair.value }, set: { current[index].value = $0 }))
+                    }
+                    .fontDesign(.monospaced)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    
+                    Button(role: .destructive) {
+                        current.remove(at: index)
+                    } label: {
+                        Text("login.customHTTPHeaders.remove")
+                    }
                 }
             }
             
@@ -49,7 +60,5 @@ struct CustomHeaderEditView: View {
 }
 
 #Preview {
-    CustomHeaderEditView() {
-        print("callack")
-    }
+    CustomHeaderEditView()
 }
