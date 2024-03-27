@@ -34,7 +34,7 @@ public extension Audiobook {
         formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 2
         
-        return series.compactMap {
+        return series.map {
             if let sequence = $0.sequence, let formatted = formatter.string(from: NSNumber(value: sequence)) {
                 return "\($0.name) #\(formatted)"
             }
