@@ -119,21 +119,10 @@ extension AudiobookSortFilter {
                 case .name:
                     return $0.sortName.localizedStandardCompare($1.sortName) == .orderedAscending
                 case .series:
-                    for (index, lhs) in $0.series.enumerated() {
-                        if index > $1.series.count - 1 {
-                            return true
-                        }
-                        
-                        let rhs = $1.series[index]
-                        
-                        if lhs.name == rhs.name {
-                            continue
-                        }
-                        
-                        return lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
-                    }
+                    guard let lhsSeriesName = $0.seriesName else { return false }
+                    guard let rhsSeriesName = $1.seriesName else { return true }
                     
-                    return false
+                    return lhsSeriesName.localizedStandardCompare(rhsSeriesName) == .orderedAscending
                 case .author:
                     guard let lhsAuthor = $0.author else { return false }
                     guard let rhsAuthor = $1.author else { return true }
