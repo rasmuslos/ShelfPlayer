@@ -119,10 +119,24 @@ extension AudiobookSortFilter {
                 case .name:
                     return $0.sortName.localizedStandardCompare($1.sortName) == .orderedAscending
                 case .series:
-                    guard let lhsSeriesName = $0.seriesName else { return false }
-                    guard let rhsSeriesName = $1.seriesName else { return true }
+                    for (index, lhs) in $0.series.enumerated() {
+                        if index > $1.series.count - 1 {
+                            return true
+                        }
+                        
+                        let rhs = $1.series[index]
+                        
+                        if lhs.name == rhs.name {
+                            guard let lhsSequence = lhs.sequence else { return false }
+                            guard let rhsSequence = rhs.sequence else { return true }
+                            
+                            return lhsSequence < rhsSequence
+                        }
+                        
+                        return lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
+                    }
                     
-                    return lhsSeriesName.localizedStandardCompare(rhsSeriesName) == .orderedAscending
+                    return false
                 case .author:
                     guard let lhsAuthor = $0.author else { return false }
                     guard let rhsAuthor = $1.author else { return true }
@@ -130,7 +144,7 @@ extension AudiobookSortFilter {
                     return lhsAuthor.localizedStandardCompare(rhsAuthor) == .orderedAscending
                 case .released:
                     guard let lhsReleased = $0.released else { return false }
-                    guard let rhsReleased = $1.author else { return true }
+                    guard let rhsReleased = $1.released else { return true }
                     
                     return lhsReleased < rhsReleased
                 case .added:
