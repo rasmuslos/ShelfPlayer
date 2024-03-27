@@ -1274,6 +1274,22 @@
         }
       }
     },
+    "login.customHTTPHeaders.remove" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        }
+      }
+    },
     "login.customHTTPHeaders.save" : {
       "localizations" : {
         "de" : {
