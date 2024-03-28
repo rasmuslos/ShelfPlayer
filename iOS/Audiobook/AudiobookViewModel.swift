@@ -58,7 +58,7 @@ extension AudiobookViewModel {
         if let id = audiobook.series.first?.id {
             seriesId = id
         } else if let name = audiobook.series.first?.name {
-            seriesId = await AudiobookshelfClient.shared.getSeriesId(name: name, libraryId: libraryId)
+            seriesId = try? await AudiobookshelfClient.shared.getSeriesId(name: name, libraryId: libraryId)
         }
         
         if let seriesId = seriesId {

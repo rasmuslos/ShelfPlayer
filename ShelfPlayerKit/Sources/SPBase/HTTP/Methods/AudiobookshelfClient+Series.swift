@@ -10,13 +10,24 @@ import Foundation
 // MARK: Search
 
 public extension AudiobookshelfClient {
-    func getSeriesId(name: String, libraryId: String) async -> String? {
+    func getSeriesId(name: String, libraryId: String) async throws -> String {
         let response = try? await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "1"),
         ]))
         
-        return response?.series?.first?.series.id
+        let series = response?.series?.compactMap { $0.series }.sorted {
+            guard let lhs = $0.name else { return false }
+            guard let rhs = $1.name else { return true }
+            
+            return lhs.levenshteinDistanceScore(to: name) < rhs.levenshteinDistanceScore(to: name)
+        }.first
+        
+        if let series = series {
+            return series.id
+        }
+        
+        throw AudiobookshelfClientError.invalidResponse
     }
     
     func getSeries(seriesId: String, libraryId: String) async -> Series? {

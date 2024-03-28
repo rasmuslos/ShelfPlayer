@@ -29,9 +29,11 @@ public class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             // Try to fetch libraries
             
             #if DEBUG
+            /*
             if let libraries = try? await AudiobookshelfClient.shared.getLibraries() {
                 
             }
+             */
             #else
             try await interfaceController.setRootTemplate(try buildOfflineListTemplate(), animated: true)
             #endif

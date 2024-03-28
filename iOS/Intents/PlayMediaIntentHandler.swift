@@ -84,15 +84,19 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     
     func resolveMediaItems(for intent: INPlayMediaIntent) async -> [INPlayMediaMediaItemResolutionResult] {
         if !AudiobookshelfClient.shared.isAuthorized { return [.unsupported(forReason: .loginRequired)] }
-        guard let search = intent.mediaSearch else { return [.unsupported(forReason: .serviceUnavailable)] }
+        guard let search = intent.mediaSearch, let mediaName = search.mediaName else { return [.unsupported(forReason: .serviceUnavailable)] }
         
         var result = [Item]()
         
-        result += await resolveAudiobooks(name: search.mediaName ?? "")
-        result += await resolvePodcasts(name: search.mediaName ?? "")
-        result += await resolveEpisodes(name: search.mediaName ?? "")
+        result += await resolveAudiobooks(name: mediaName)
+        result += await resolvePodcasts(name: mediaName)
+        result += await resolveEpisodes(name: mediaName)
         
         if !result.isEmpty {
+            result.sort {
+                $0.name.levenshteinDistanceScore(to: mediaName) < $1.name.levenshteinDistanceScore(to: mediaName)
+            }
+            
             return INPlayMediaMediaItemResolutionResult.successes(with: mapMediaItems(result))
         }
         
