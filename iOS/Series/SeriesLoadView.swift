@@ -36,7 +36,7 @@ extension SeriesLoadView {
         var id = series.id
         
         if id == nil {
-            id = await AudiobookshelfClient.shared.getSeriesId(name: series.name, libraryId: libraryId)
+            id = try? await AudiobookshelfClient.shared.getSeriesId(name: series.name, libraryId: libraryId)
         }
         
         if let id = id, let series = await AudiobookshelfClient.shared.getSeries(seriesId: id, libraryId: libraryId) {

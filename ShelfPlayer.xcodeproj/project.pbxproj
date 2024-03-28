@@ -288,7 +288,8 @@
 			isa = PBXGroup;
 			children = (
 				3A0AE6BB2AB624EB00ACCD68 /* Core */,
-				3A1F53362B6131D0004EF56A /* Utility */,
+				3A5A4DA72B5EF65500E72E8B /* Intents */,
+				3A1EAB972ACC822F0064C80C /* Extensions */,
 				3A5210042B6D2A9F00F59101 /* Common */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
 				3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */,
@@ -330,6 +331,7 @@
 				3A0AE6A32AB623F400ACCD68 /* iOSApp.swift */,
 				3A0AE6A52AB623F400ACCD68 /* ContentView.swift */,
 				3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */,
+				3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -367,16 +369,6 @@
 				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		3A1F53362B6131D0004EF56A /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */,
-				3A5A4DA72B5EF65500E72E8B /* Intents */,
-				3A1EAB972ACC822F0064C80C /* Extensions */,
-			);
-			path = Utility;
 			sourceTree = "<group>";
 		};
 		3A21CC542B0A1CBB002D5D55 /* Products */ = {
