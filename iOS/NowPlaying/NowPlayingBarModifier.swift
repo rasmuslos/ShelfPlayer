@@ -69,12 +69,19 @@ struct NowPlayingBarModifier: ViewModifier {
                                     Spacer()
                                     
                                     Group {
-                                        Button {
-                                            AudioPlayer.shared.playing = !AudioPlayer.shared.playing
-                                        } label: {
-                                            Image(systemName: AudioPlayer.shared.playing ?  "pause.fill" : "play.fill")
-                                                .contentTransition(.symbolEffect(.replace))
+                                        Group {
+                                            if AudioPlayer.shared.buffering {
+                                                ProgressView()
+                                            } else {
+                                                Button {
+                                                    AudioPlayer.shared.playing = !AudioPlayer.shared.playing
+                                                } label: {
+                                                    Image(systemName: AudioPlayer.shared.playing ?  "pause.fill" : "play.fill")
+                                                        .contentTransition(.symbolEffect(.replace))
+                                                }
+                                            }
                                         }
+                                        .transition(.blurReplace)
                                         
                                         Button {
                                             animateForwards.toggle()
