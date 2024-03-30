@@ -13,7 +13,7 @@ public extension AudiobookshelfClient {
     func getSeriesId(name: String, libraryId: String) async throws -> String {
         let response = try? await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: name),
-            URLQueryItem(name: "limit", value: "1"),
+            URLQueryItem(name: "limit", value: "10"),
         ]))
         
         let series = response?.series?.compactMap { $0.series }.sorted {

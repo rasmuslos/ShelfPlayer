@@ -40,7 +40,6 @@ extension AudiobookView {
                         } else {
                             Menu {
                                 ForEach(viewModel.audiobook.series, id: \.name) { series in
-                                    let _ = print(series)
                                     NavigationLink(destination: SeriesLoadView(series: series)) {
                                         seriesNameComponent(series.name)
                                     }
