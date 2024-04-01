@@ -7,13 +7,17 @@
 
 import Foundation
 
-// MARK: finished
+extension AudiobookshelfClient {
+    func getItem(itemId: String, episodeId: String?) async throws -> AudiobookshelfItem {
+        try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)", method: "GET", query: [
+            URLQueryItem(name: "expanded", value: "1"),
+        ]))
+    }
+}
 
 public extension AudiobookshelfClient {
     func getItem(itemId: String, episodeId: String?) async throws -> (PlayableItem, PlayableItem.AudioTracks, PlayableItem.Chapters) {
-        let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)", method: "GET", query: [
-            URLQueryItem(name: "expanded", value: "1"),
-        ]))
+        let response: AudiobookshelfItem = try await getItem(itemId: itemId, episodeId: episodeId)
         
         if let episodeId = episodeId, let episode = response.media?.episodes?.first(where: { $0.id == episodeId }) {
             let item = Episode.convertFromAudiobookshelf(podcastEpisode: episode, item: response)
@@ -99,5 +103,34 @@ public extension AudiobookshelfClient {
             "progress": currentTime / duration,
             "isFinished": duration - currentTime <= 10,
         ]))
+    }
+    
+    func createSession(itemId: String, episodeId: String?, id: String, timeListened: Double, startTime: Double, currentTime: Double, started: Date, updated: Date) async throws {
+        let (item, status, userId): (AudiobookshelfItem, StatusResponse, String) = try await (getItem(itemId: itemId, episodeId: episodeId), status(), userId())
+        
+        let session = LocalSession(
+            id: id,
+            userId: userId,
+            libraryId: item.libraryId,
+            libraryItemId: itemId,
+            episodeId: episodeId,
+            mediaType: item.mediaType,
+            mediaMetadata: item.media?.metadata,
+            chapters: item.chapters,
+            displayTitle: item.media?.metadata.title,
+            displayAuthor: item.media?.metadata.authorName,
+            coverPath: item.media?.coverPath,
+            duration: item.media?.duration,
+            playMethod: 3,
+            mediaPlayer: "ShelfPlayer",
+            deviceInfo: .current,
+            serverVersion: status.serverVersion,
+            timeListening: timeListened,
+            startTime: startTime,
+            currentTime: currentTime,
+            startedAt: started.timeIntervalSince1970 * 1000,
+            updatedAt: updated.timeIntervalSince1970 * 1000)
+        
+        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/session/local", method: "POST", body: session))
     }
 }

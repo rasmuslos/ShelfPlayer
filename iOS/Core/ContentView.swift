@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 import SPBase
 import Intents
+import SPOffline
 
 struct ContentView: View {
     @State var state: Step = AudiobookshelfClient.shared.isAuthorized ? .sessionImport : .login
@@ -32,6 +33,10 @@ struct ContentView: View {
                     EntryView()
                         .onAppear {
                             VocabularyDonator.donateVocabulary()
+                            
+                            Task.detached { @MainActor in
+                                try? await OfflineManager.shared.attemptPlaybackDurationSync()
+                            }
                             
                             #if ENABLE_ALL_FEATURES
                             INPreferences.requestSiriAuthorization { _ in }

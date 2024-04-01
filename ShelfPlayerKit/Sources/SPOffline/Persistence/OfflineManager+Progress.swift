@@ -11,18 +11,18 @@ import SPBase
 
 extension OfflineManager {
     @MainActor
-    func getProgressEntities() throws -> [OfflineProgress] {
-        let descriptor = FetchDescriptor<OfflineProgress>(sortBy: [SortDescriptor(\.lastUpdate)])
+    func getProgressEntities() throws -> [ItemProgress] {
+        let descriptor = FetchDescriptor<ItemProgress>(sortBy: [SortDescriptor(\.lastUpdate)])
         return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor)
     }
     @MainActor
-    func getProgressEntities(type: OfflineProgress.ProgressType) async throws -> [OfflineProgress] {
+    func getProgressEntities(type: ItemProgress.ProgressType) async throws -> [ItemProgress] {
         try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor()).filter { $0.progressType == type }
     }
     
     @MainActor
-    func requireProgressEntity(itemId: String, episodeId: String?) -> OfflineProgress {
-        var descriptor: FetchDescriptor<OfflineProgress>
+    func requireProgressEntity(itemId: String, episodeId: String?) -> ItemProgress {
+        var descriptor: FetchDescriptor<ItemProgress>
         
         if let episodeId = episodeId {
             descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
@@ -35,7 +35,7 @@ extension OfflineManager {
             return entity
         }
         
-        let progress = OfflineProgress(
+        let progress = ItemProgress(
             id: "tmp_\(episodeId ?? itemId)",
             itemId: itemId,
             episodeId: episodeId,
@@ -53,7 +53,7 @@ extension OfflineManager {
 
 public extension OfflineManager {
     @MainActor
-    func requireProgressEntity(item: Item) -> OfflineProgress {
+    func requireProgressEntity(item: Item) -> ItemProgress {
         if let episode = item as? Episode {
             return requireProgressEntity(itemId: episode.podcastId, episodeId: episode.id)
         }
@@ -69,7 +69,7 @@ public extension OfflineManager {
     }
     
     @MainActor
-    func deleteProgressEntities(type: OfflineProgress.ProgressType) async throws {
+    func deleteProgressEntities(type: ItemProgress.ProgressType) async throws {
         for entity in try await getProgressEntities(type: type) {
             PersistenceManager.shared.modelContainer.mainContext.delete(entity)
         }
@@ -106,21 +106,24 @@ public extension OfflineManager {
         do {
             let start = Date.timeIntervalSinceReferenceDate
             let cached = try await OfflineManager.shared.getProgressEntities(type: .localCached)
+            
             for progress in cached {
                 try await AudiobookshelfClient.shared.updateMediaProgress(itemId: progress.itemId, episodeId: progress.episodeId, currentTime: progress.currentTime, duration: progress.duration)
                 
                 progress.progressType = .localSynced
             }
+            
             logger.info("Synced progress to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
             try await OfflineManager.shared.deleteProgressEntities(type: .localSynced)
+            
             logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
             let sessions = try await AudiobookshelfClient.shared.authorize()
             try await Task<Void, Error> { @MainActor in
                 for session in sessions {
-                    let existing: OfflineProgress?
-                    var descriptor: FetchDescriptor<OfflineProgress>
+                    let existing: ItemProgress?
+                    var descriptor: FetchDescriptor<ItemProgress>
                     
                     if let episodeId = session.episodeId {
                         descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
@@ -145,7 +148,7 @@ public extension OfflineManager {
                     } else {
                         logger.info("Creating progress: \(session.id)")
                         
-                        let progress = OfflineProgress(
+                        let progress = ItemProgress(
                             id: session.id,
                             itemId: session.libraryItemId,
                             episodeId: session.episodeId,

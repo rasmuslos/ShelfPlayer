@@ -10,7 +10,7 @@ import SwiftData
 import SPBase
 
 @Model
-public class OfflineProgress: Identifiable {
+public class ItemProgress: Identifiable {
     @Attribute(.unique)
     public let id: String
     public let itemId: String
@@ -38,7 +38,7 @@ public class OfflineProgress: Identifiable {
     }
 }
 
-public extension OfflineProgress {
+public extension ItemProgress {
     enum ProgressType: Int, Codable, Equatable {
         case receivedFromServer = 0
         case localSynced = 1
@@ -46,7 +46,7 @@ public extension OfflineProgress {
     }
 }
 
-public extension OfflineProgress {
+public extension ItemProgress {
     func readableProgress(spaceConstrained: Bool = true) -> String {
         let remainingTime = max(duration - currentTime, 0)
         

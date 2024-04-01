@@ -9,7 +9,7 @@ import SwiftUI
 import SPOffline
 
 struct ProgressIndicator: View {
-    let entity: OfflineProgress
+    let entity: ItemProgress
     
     var body: some View {
         ZStack {
