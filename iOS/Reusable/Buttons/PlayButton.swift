@@ -12,7 +12,7 @@ import SPPlayback
 
 struct PlayButton: View {
     let item: PlayableItem
-    let entity: OfflineProgress
+    let entity: ItemProgress
     
     @MainActor
     init(item: PlayableItem) {

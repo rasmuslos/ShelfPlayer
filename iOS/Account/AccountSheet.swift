@@ -29,7 +29,7 @@ struct AccountSheet: View {
                     } else {
                         ProgressView()
                             .task {
-                                username = try? await AudiobookshelfClient.shared.getUsername()
+                                username = try? await AudiobookshelfClient.shared.username()
                             }
                     }
                     Button(role: .destructive) {

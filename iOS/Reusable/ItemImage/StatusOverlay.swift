@@ -13,7 +13,7 @@ import SPOfflineExtended
 
 struct StatusOverlay: View {
     let item: Item
-    let entity: OfflineProgress
+    let entity: ItemProgress
     let offlineTracker: ItemOfflineTracker?
     
     @MainActor

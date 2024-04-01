@@ -38,7 +38,13 @@ extension AudiobookshelfClient {
         
         if let body = clientRequest.body {
             do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
+                if let encodable = body as? Encodable {
+                    let encoder = JSONEncoder()
+                    request.httpBody = try encoder.encode(encodable)
+                } else {
+                    request.httpBody = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
+                }
+                
                 // print(clientRequest.path, clientRequest.method, String(data: request.httpBody!, encoding: .ascii))
                 
                 if request.value(forHTTPHeaderField: "Content-Type") == nil {

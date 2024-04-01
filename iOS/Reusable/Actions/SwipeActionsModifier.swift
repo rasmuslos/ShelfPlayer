@@ -12,7 +12,7 @@ import SPOfflineExtended
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem
-    let entity: OfflineProgress
+    let entity: ItemProgress
     let offlineTracker: ItemOfflineTracker
     
     @MainActor

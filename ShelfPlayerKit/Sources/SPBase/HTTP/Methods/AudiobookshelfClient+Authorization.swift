@@ -22,9 +22,13 @@ public extension AudiobookshelfClient {
         return response.user.token
     }
     
-    func getUsername() async throws -> String {
-        let response = try await request(ClientRequest<AuthorizationResponse>(path: "api/authorize", method: "POST"))
-        return response.user.username
+    func username() async throws -> String {
+        let response = try await request(ClientRequest<MeResponse>(path: "api/me", method: "GET"))
+        return response.username
+    }
+    func userId() async throws -> String {
+        let response = try await request(ClientRequest<MeResponse>(path: "api/me", method: "GET"))
+        return response.id
     }
     
     func authorize() async throws -> [MediaProgress] {
