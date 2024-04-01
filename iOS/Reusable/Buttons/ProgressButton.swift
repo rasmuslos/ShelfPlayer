@@ -13,7 +13,7 @@ struct ProgressButton: View {
     let item: PlayableItem
     let tint: Bool
     
-    let entity: OfflineProgress
+    let entity: ItemProgress
     
     @MainActor
     init(item: PlayableItem, tint: Bool = false) {

@@ -95,7 +95,7 @@ class EpisodePlayButtonViewModel {
     let episode: Episode
     let highlighted: Bool
     
-    var entity: OfflineProgress
+    var entity: ItemProgress
     
     @MainActor
     init(episode: Episode, highlighted: Bool) {

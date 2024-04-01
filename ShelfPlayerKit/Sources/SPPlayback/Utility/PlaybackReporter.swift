@@ -18,12 +18,15 @@ import SPOfflineExtended
 internal class PlaybackReporter {
     private let itemId: String
     private let episodeId: String?
+    
     private let playbackSessionId: String?
+    private let playbackDurationTracker: PlaybackDuration?
     
     private var duration: Double
     private var currentTime: Double
     private var lastReportedTime: Double
     
+    @MainActor
     internal init(itemId: String, episodeId: String?, playbackSessionId: String?) {
         self.itemId = itemId
         self.episodeId = episodeId
@@ -32,10 +35,16 @@ internal class PlaybackReporter {
         duration = .nan
         currentTime = .nan
         lastReportedTime = Date.timeIntervalSinceReferenceDate
+        
+        if playbackSessionId == nil {
+            playbackDurationTracker = OfflineManager.shared.getPlaybackDurationTracker(itemId: itemId, episodeId: episodeId)
+        } else {
+            playbackDurationTracker = nil
+        }
     }
     
     deinit {
-        Self.reportPlaybackStop(playbackSessionId: playbackSessionId, itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, timeListened: getTimeListened())
+        Self.reportPlaybackStop(playbackSessionId: playbackSessionId, playbackDurationTracker: playbackDurationTracker, itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, timeListened: getTimeListened())
     }
 }
 
@@ -68,7 +77,7 @@ private extension PlaybackReporter {
         }
         
         let timeListened = getTimeListened()
-     
+        
         Task.detached { [self] in
             var success = true
             
@@ -77,6 +86,13 @@ private extension PlaybackReporter {
                     try await AudiobookshelfClient.shared.reportPlaybackUpdate(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
                 } else {
                     try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
+                }
+                
+                Task.detached { @MainActor [self] in
+                    if let playbackDurationTracker = playbackDurationTracker {
+                        playbackDurationTracker.duration += timeListened
+                        playbackDurationTracker.lastUpdate = Date()
+                    }
                 }
             } catch {
                 self.lastReportedTime -= timeListened
@@ -103,6 +119,10 @@ private extension PlaybackReporter {
         }
         if currentTime.isFinite && currentTime != 0 {
             self.currentTime = currentTime
+            
+            if playbackDurationTracker?.startTime.isNaN == true {
+                playbackDurationTracker?.startTime = currentTime
+            }
         }
     }
 }
@@ -110,39 +130,53 @@ private extension PlaybackReporter {
 // MARK: Close
 
 extension PlaybackReporter {
-    private static func reportPlaybackStop(playbackSessionId: String?, itemId: String, episodeId: String?, currentTime: Double, duration: Double, timeListened: Double) {
-        if currentTime.isNaN || duration.isNaN {
-            return
-        }
-        
-        Task.detached {
-            var success = true
-            
-            do {
-                if let playbackSessionId = playbackSessionId {
-                    try await AudiobookshelfClient.shared.reportPlaybackClose(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
-                } else {
-                    try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
-                }
-            } catch {
-                success = false
+    private static func reportPlaybackStop(
+        playbackSessionId: String?,
+        playbackDurationTracker: PlaybackDuration?,
+        itemId: String,
+        episodeId: String?,
+        currentTime: Double,
+        duration: Double,
+        timeListened: Double) {
+            if currentTime.isNaN || duration.isNaN {
+                return
             }
             
-            await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
-        }
-        
-        #if canImport(SPOfflineExtended)
-        if Defaults[.deleteFinishedDownloads] && currentTime >= duration {
             Task.detached {
-                if let episodeId = episodeId {
-                    await OfflineManager.shared.delete(episodeId: episodeId)
-                } else {
-                    await OfflineManager.shared.delete(audiobookId: itemId)
+                var success = true
+                
+                do {
+                    if let playbackSessionId = playbackSessionId {
+                        try await AudiobookshelfClient.shared.reportPlaybackClose(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
+                    } else {
+                        try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
+                    }
+                } catch {
+                    success = false
+                }
+                
+                await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
+            }
+            
+            if let playbackDurationTracker = playbackDurationTracker {
+                Task.detached { @MainActor in
+                    playbackDurationTracker.eligibleForSync = true
+                    try? await OfflineManager.shared.attemptPlaybackDurationSync(tracker: playbackDurationTracker)
                 }
             }
+            
+            #if canImport(SPOfflineExtended)
+            if Defaults[.deleteFinishedDownloads] && currentTime >= duration {
+                Task.detached {
+                    if let episodeId = episodeId {
+                        await OfflineManager.shared.delete(episodeId: episodeId)
+                    } else {
+                        await OfflineManager.shared.delete(audiobookId: itemId)
+                    }
+                }
+            }
+            #endif
         }
-        #endif
-    }
     
     private static func reportWithoutPlaybackSession(itemId: String, episodeId: String?, currentTime: Double, duration: Double) async throws {
         try await AudiobookshelfClient.shared.updateMediaProgress(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)

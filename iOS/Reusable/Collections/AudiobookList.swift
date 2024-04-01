@@ -27,7 +27,7 @@ struct AudiobookList: View {
 extension AudiobookList {
     struct AudiobookRow: View {
         let audiobook: Audiobook
-        let entity: OfflineProgress
+        let entity: ItemProgress
         
         @MainActor
         init(audiobook: Audiobook) {
