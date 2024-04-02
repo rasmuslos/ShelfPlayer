@@ -44,7 +44,9 @@ public extension OfflineManager {
     
     @MainActor
     func attemptPlaybackDurationSync() async throws {
-        let descriptor = FetchDescriptor<PlaybackDuration>(predicate: #Predicate { $0.eligibleForSync == true })
+        // can be ignored at startup
+        // let descriptor = FetchDescriptor<PlaybackDuration>(predicate: #Predicate { $0.eligibleForSync == true })
+        let descriptor = FetchDescriptor<PlaybackDuration>()
         let entities = try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor)
         
         for entity in entities {
