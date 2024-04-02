@@ -32,6 +32,8 @@ extension OfflineManager {
         
         try? PersistenceManager.shared.modelContainer.mainContext.delete(model: OfflineChapter.self)
         try? PersistenceManager.shared.modelContainer.mainContext.delete(model: OfflinePodcast.self)
+        try? PersistenceManager.shared.modelContainer.mainContext.delete(model: PlaybackDuration.self)
+        
         try? DownloadManager.shared.cleanupDirectory()
     }
 }

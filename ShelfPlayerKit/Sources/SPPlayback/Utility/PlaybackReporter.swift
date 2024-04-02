@@ -102,8 +102,12 @@ private extension PlaybackReporter {
             await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
         }
     }
-    
-    private func getTimeListened() -> Double {
+}
+
+// MARK: Helper
+
+fileprivate extension PlaybackReporter {
+    func getTimeListened() -> Double {
         let timeListened = Date.timeIntervalSinceReferenceDate - lastReportedTime
         lastReportedTime = Date.timeIntervalSinceReferenceDate
         
@@ -113,10 +117,12 @@ private extension PlaybackReporter {
         
         return timeListened
     }
-    private func updateTime(currentTime: Double, duration: Double) {
+    
+    func updateTime(currentTime: Double, duration: Double) {
         if duration.isFinite && duration != 0 {
             self.duration = duration
         }
+        
         if currentTime.isFinite && currentTime != 0 {
             self.currentTime = currentTime
             
@@ -160,7 +166,10 @@ extension PlaybackReporter {
             
             if let playbackDurationTracker = playbackDurationTracker {
                 Task.detached { @MainActor in
+                    playbackDurationTracker.duration += timeListened
+                    playbackDurationTracker.lastUpdate = Date()
                     playbackDurationTracker.eligibleForSync = true
+                    
                     try? await OfflineManager.shared.attemptPlaybackDurationSync(tracker: playbackDurationTracker)
                 }
             }
