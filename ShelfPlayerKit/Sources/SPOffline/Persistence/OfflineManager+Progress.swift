@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import Defaults
 import SPBase
 
 extension OfflineManager {
@@ -121,7 +122,13 @@ public extension OfflineManager {
             
             let sessions = try await AudiobookshelfClient.shared.authorize()
             try await Task<Void, Error> { @MainActor in
+                var hideFromContinueListening = [Defaults.Keys.HideFromContinueListeningEntity]()
+                
                 for session in sessions {
+                    if session.hideFromContinueListening {
+                        hideFromContinueListening.append(.init(itemId: session.libraryItemId, episodeId: session.episodeId))
+                    }
+                    
                     let existing: ItemProgress?
                     var descriptor: FetchDescriptor<ItemProgress>
                     
@@ -162,6 +169,8 @@ public extension OfflineManager {
                         PersistenceManager.shared.modelContainer.mainContext.insert(progress)
                     }
                 }
+                
+                Defaults[.hideFromContinueListening] = hideFromContinueListening
             }.result.get()
             
             logger.info("Imported sessions (took \(Date.timeIntervalSinceReferenceDate - start)s)")

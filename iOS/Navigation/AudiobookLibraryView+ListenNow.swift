@@ -12,17 +12,18 @@ import SPOffline
 
 extension AudiobookEntryView {
     struct ListenNowView: View {
-        @Environment(\.libraryId) var libraryId: String
+        @Environment(\.libraryId) private var libraryId: String
+        @Default(.hideFromContinueListening) private var hideFromContinueListening
         
-        @Default(.showAuthorsRow) var showAuthorsRow
-        @Default(.disableDiscoverRow) var disableDiscoverRow
+        @Default(.showAuthorsRow) private var showAuthorsRow
+        @Default(.disableDiscoverRow) private var disableDiscoverRow
         
-        @State var audiobookRows = [AudiobookHomeRow]()
-        @State var authorRows = [AuthorHomeRow]()
+        @State private var audiobookRows = [AudiobookHomeRow]()
+        @State private var authorRows = [AuthorHomeRow]()
         
-        @State var downloadedAudiobooks = [Audiobook]()
+        @State private var downloadedAudiobooks = [Audiobook]()
         
-        @State var failed = false
+        @State private var failed = false
         
         var body: some View {
             NavigationStack {
@@ -41,7 +42,13 @@ extension AudiobookEntryView {
                                     if row.id != "discover" || !disableDiscoverRow {
                                         VStack(alignment: .leading) {
                                             RowTitle(title: row.label)
-                                            AudiobookHGrid(audiobooks: row.audiobooks)
+                                            AudiobookHGrid(audiobooks: row.audiobooks.filter { audiobook in
+                                                if row.id != "continue-listening" {
+                                                    return true
+                                                }
+                                                
+                                                return !hideFromContinueListening.contains { $0.itemId == audiobook.id }
+                                            })
                                         }
                                     }
                                 }

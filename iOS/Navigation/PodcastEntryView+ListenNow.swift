@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 
 extension PodcastEntryView {
     struct ListenNowView: View {
-        @Environment(\.libraryId) var libraryId: String
+        @Environment(\.libraryId) private var libraryId: String
+        @Default(.hideFromContinueListening) private var hideFromContinueListening
         
         @State var episodeRows = [EpisodeHomeRow]()
         @State var podcastRows = [PodcastHomeRow]()
@@ -36,7 +38,9 @@ extension PodcastEntryView {
                                         RowTitle(title: row.label)
                                         
                                         if row.id == "continue-listening" {
-                                            EpisodeFeaturedGrid(episodes: row.episodes)
+                                            EpisodeFeaturedGrid(episodes: row.episodes.filter { episode in
+                                                !hideFromContinueListening.contains { $0.itemId == episode.podcastId && $0.episodeId == episode.id }
+                                            })
                                         } else {
                                             EpisodeGrid(episodes: row.episodes)
                                         }
