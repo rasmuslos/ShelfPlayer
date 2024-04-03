@@ -24,15 +24,22 @@ let package = Package(
                 .byName(name: "SwiftSoup"),
             ],
             resources: [.process("Resources")]),
+        
         .target(name: "SPPlayback", dependencies: [
             .byName(name: "Defaults"),
             
             .byName(name: "SPBase"),
             .byName(name: "SPOffline"),
-            .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS]))
+            .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS])),
         ]),
         
-        .target(name: "SPOffline", dependencies: [.byName(name: "SPBase")]),
-        .target(name: "SPOfflineExtended", dependencies: [.byName(name: "SPBase"), .byName(name: "SPOffline")]),
+        .target(name: "SPOffline", dependencies: [
+            .byName(name: "SPBase"),
+            .byName(name: "Defaults"),
+        ]),
+        .target(name: "SPOfflineExtended", dependencies: [
+            .byName(name: "SPBase"),
+            .byName(name: "SPOffline"),
+        ]),
     ]
 )
