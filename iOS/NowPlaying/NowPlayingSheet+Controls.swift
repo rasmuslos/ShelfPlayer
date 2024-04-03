@@ -80,14 +80,21 @@ extension NowPlayingSheet {
                     Spacer()
                     
                     Group {
-                        Button {
-                            animateBackwards.toggle()
-                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
-                        } label: {
-                            Image(systemName: "gobackward.\(skipBackwardsInterval)")
-                                .symbolEffect(.bounce, value: animateBackwards)
-                                .frame(width: 60)
-                        }
+                        Image(systemName: "gobackward.\(skipBackwardsInterval)")
+                            .symbolEffect(.bounce, value: animateBackwards)
+                            .sensoryFeedback(.decrease, trigger: animateBackwards)
+                            .frame(width: 60)
+                            .gesture(TapGesture()
+                                .onEnded { _ in
+                                    animateBackwards.toggle()
+                                    AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
+                                })
+                            .gesture(LongPressGesture()
+                                .onEnded { _ in
+                                    if AudioPlayer.shared.chapter != nil {
+                                        AudioPlayer.shared.seek(to: 0, includeChapterOffset: true)
+                                    }
+                                })
                         
                         Spacer()
                         
@@ -105,14 +112,21 @@ extension NowPlayingSheet {
                         
                         Spacer()
                         
-                        Button {
-                            animateForwards.toggle()
-                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
-                        } label: {
-                            Image(systemName: "goforward.\(skipForwardsInterval)")
-                                .symbolEffect(.bounce, value: animateForwards)
-                        }
-                        .frame(width: 60)
+                        Image(systemName: "goforward.\(skipForwardsInterval)")
+                            .symbolEffect(.bounce, value: animateForwards)
+                            .sensoryFeedback(.increase, trigger: animateForwards)
+                            .frame(width: 60)
+                            .gesture(TapGesture()
+                                .onEnded { _ in
+                                    animateForwards.toggle()
+                                    AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
+                                })
+                            .gesture(LongPressGesture()
+                                .onEnded { _ in
+                                    if AudioPlayer.shared.chapter != nil {
+                                        AudioPlayer.shared.seek(to: AudioPlayer.shared.duration, includeChapterOffset: true)
+                                    }
+                                })
                     }
                     .font(.system(size: 34))
                     .foregroundStyle(.primary)
