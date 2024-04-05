@@ -50,6 +50,11 @@ extension OfflineManager {
         PersistenceManager.shared.modelContainer.mainContext.insert(progress)
         return progress
     }
+    
+    @MainActor
+    func deleteProgressEntity(id: String) throws {
+        try PersistenceManager.shared.modelContainer.mainContext.delete(model: ItemProgress.self, where: #Predicate { $0.id == id })
+    }
 }
 
 public extension OfflineManager {
@@ -110,7 +115,6 @@ public extension OfflineManager {
             
             for progress in cached {
                 try await AudiobookshelfClient.shared.updateMediaProgress(itemId: progress.itemId, episodeId: progress.episodeId, currentTime: progress.currentTime, duration: progress.duration)
-                
                 progress.progressType = .localSynced
             }
             
@@ -120,50 +124,50 @@ public extension OfflineManager {
             
             logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
-            let sessions = try await AudiobookshelfClient.shared.authorize()
+            let mediaProgress = try await AudiobookshelfClient.shared.authorize()
             try await Task<Void, Error> { @MainActor in
                 var hideFromContinueListening = [Defaults.Keys.HideFromContinueListeningEntity]()
                 
-                for session in sessions {
-                    if session.hideFromContinueListening {
-                        hideFromContinueListening.append(.init(itemId: session.libraryItemId, episodeId: session.episodeId))
+                for mediaProgress in mediaProgress {
+                    if mediaProgress.hideFromContinueListening {
+                        hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
                     }
                     
                     let existing: ItemProgress?
                     var descriptor: FetchDescriptor<ItemProgress>
                     
-                    if let episodeId = session.episodeId {
+                    if let episodeId = mediaProgress.episodeId {
                         descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
                     } else {
-                        descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == session.libraryItemId })
+                        descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == mediaProgress.libraryItemId })
                     }
                     
                     descriptor.fetchLimit = 1
                     existing = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
                     
                     if let existing = existing {
-                        if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < session.lastUpdate {
+                        if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
                             logger.info("Updating progress: \(existing.id)")
                             
-                            existing.duration = session.duration
-                            existing.currentTime = session.currentTime
-                            existing.progress = session.progress
+                            existing.duration = mediaProgress.duration
+                            existing.currentTime = mediaProgress.currentTime
+                            existing.progress = mediaProgress.progress
                             
-                            existing.startedAt = Date(timeIntervalSince1970: Double(session.startedAt) / 1000)
-                            existing.lastUpdate = Date(timeIntervalSince1970: Double(session.lastUpdate) / 1000)
+                            existing.startedAt = Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000)
+                            existing.lastUpdate = Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000)
                         }
                     } else {
-                        logger.info("Creating progress: \(session.id)")
+                        logger.info("Creating progress: \(mediaProgress.id)")
                         
                         let progress = ItemProgress(
-                            id: session.id,
-                            itemId: session.libraryItemId,
-                            episodeId: session.episodeId,
-                            duration: session.duration,
-                            currentTime: session.currentTime,
-                            progress: session.progress,
-                            startedAt: Date(timeIntervalSince1970: Double(session.startedAt) / 1000),
-                            lastUpdate: Date(timeIntervalSince1970: Double(session.lastUpdate) / 1000),
+                            id: mediaProgress.id,
+                            itemId: mediaProgress.libraryItemId,
+                            episodeId: mediaProgress.episodeId,
+                            duration: mediaProgress.duration,
+                            currentTime: mediaProgress.currentTime,
+                            progress: mediaProgress.progress,
+                            startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
+                            lastUpdate: Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000),
                             progressType: .receivedFromServer)
                         
                         PersistenceManager.shared.modelContainer.mainContext.insert(progress)
@@ -174,6 +178,42 @@ public extension OfflineManager {
             }.result.get()
             
             logger.info("Imported sessions (took \(Date.timeIntervalSinceReferenceDate - start)s)")
+            
+            if Defaults[.removeDuplicateSessions] {
+                typealias Identifier = (String, String?)
+                
+                var seen = [Identifier]()
+                var duplicates = [Identifier]()
+                
+                for mediaProgress in mediaProgress {
+                    let identifier = (mediaProgress.libraryItemId, mediaProgress.episodeId)
+                    
+                    if seen.contains(where: { $0.0 == mediaProgress.libraryItemId && $0.1 == mediaProgress.episodeId }) {
+                        duplicates.append(identifier)
+                    } else {
+                        seen.append(identifier)
+                    }
+                }
+                
+                for duplicate in duplicates {
+                    var mediaProgress = mediaProgress.filter { $0.libraryItemId == duplicate.0 && $0.episodeId == duplicate.1 }.sorted {
+                        $0.lastUpdate > $1.lastUpdate
+                    }
+                    let _ = mediaProgress.removeFirst()
+                    
+                    while !mediaProgress.isEmpty {
+                        let mediaProgress = mediaProgress.removeFirst()
+                        
+                        do {
+                            try await AudiobookshelfClient.shared.deleteSession(sessionId: mediaProgress.id)
+                            try await deleteProgressEntity(id: mediaProgress.id)
+                        } catch {
+                            logger.fault("Failed to delete duplicate progress entity \(mediaProgress.id)")
+                        }
+                    }
+                }
+            }
+            
             return true
         } catch {
             print(error)
