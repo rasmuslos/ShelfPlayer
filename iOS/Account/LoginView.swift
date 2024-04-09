@@ -53,17 +53,11 @@ struct LoginView: View {
             
             Spacer()
             
-            #if !ENABLE_ALL_FEATURES
+#if !ENABLE_ALL_FEATURES
             Text("developedBy")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            #else
-            Text("login.disclaimer")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding()
-            #endif
+#endif
         }
         .sheet(isPresented: $loginSheetPresented) {
             switch loginFlowState {
@@ -114,7 +108,7 @@ struct LoginView: View {
                                 Button {
                                     loginFlowState = .customHTTPHeaders
                                 } label: {
-                                    Text("login.customHTTPHeaders")
+                                    Label("login.customHTTPHeaders", systemImage: "lock.shield.fill")
                                 }
                                 .foregroundStyle(.secondary)
                             }

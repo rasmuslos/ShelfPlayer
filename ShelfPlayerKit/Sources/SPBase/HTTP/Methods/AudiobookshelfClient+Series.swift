@@ -20,10 +20,10 @@ public extension AudiobookshelfClient {
             guard let lhs = $0.name else { return false }
             guard let rhs = $1.name else { return true }
             
-            return lhs.levenshteinDistanceScore(to: name) < rhs.levenshteinDistanceScore(to: name)
-        }.first
+            return lhs.levenshteinDistanceScore(to: name) > rhs.levenshteinDistanceScore(to: name)
+        }
         
-        if let series = series {
+        if let series = series?.first {
             return series.id
         }
         
