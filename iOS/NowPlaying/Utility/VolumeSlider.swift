@@ -29,6 +29,7 @@ struct VolumeSlider: View {
                 Image(systemName: "speaker.wave.3.fill")
             }
         }
+        .foregroundStyle(.primary)
         .dynamicTypeSize(dragging ? .xLarge : .medium)
         .frame(height: 0)
         .animation(.easeInOut, value: dragging)

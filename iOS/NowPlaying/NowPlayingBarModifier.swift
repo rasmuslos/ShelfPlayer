@@ -108,7 +108,7 @@ struct NowPlayingBarModifier: ViewModifier {
                             .foregroundStyle(.primary)
                             .background {
                                 Rectangle()
-                                    .foregroundStyle(.ultraThinMaterial)
+                                    .foregroundStyle(.regularMaterial)
                             }
                             .transition(.move(edge: .bottom))
                             .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
