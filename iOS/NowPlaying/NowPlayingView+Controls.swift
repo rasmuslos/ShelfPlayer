@@ -11,12 +11,15 @@ import MediaPlayer
 import SPBase
 import SPPlayback
 
-extension NowPlayingSheet {
+extension NowPlayingViewModifier {
     struct Controls: View {
-        @Default(.skipForwardsInterval) var skipForwardsInterval
-        @Default(.skipBackwardsInterval) var skipBackwardsInterval
+        @Default(.skipForwardsInterval) private var skipForwardsInterval
+        @Default(.skipBackwardsInterval) private var skipBackwardsInterval
         
-        @State private var dragging = false
+        @Binding var controlsDragging: Bool
+        
+        @State private var seekDragging = false
+        @State private var volumeDragging = false
         @State private var draggedPercentage = 0.0
         
         @State private var animateBackwards = false
@@ -29,14 +32,19 @@ extension NowPlayingSheet {
         var body: some View {
             VStack {
                 VStack {
-                    Slider(percentage: .init(get: { dragging ? draggedPercentage : playedPercentage }, set: {
-                        if Defaults[.lockSeekBar] {
-                            return
-                        }
-                        
-                        draggedPercentage = $0
-                        AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (draggedPercentage / 100), includeChapterOffset: true)
-                    }), dragging: $dragging)
+                    Slider(
+                        percentage: .init(get: { seekDragging ? draggedPercentage : playedPercentage }, set: {
+                            if Defaults[.lockSeekBar] {
+                                return
+                            }
+                            
+                            draggedPercentage = $0
+                            AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (draggedPercentage / 100), includeChapterOffset: true)
+                        }),
+                        dragging: .init(get: { seekDragging }, set: {
+                            seekDragging = $0
+                            controlsDragging = $0
+                        }))
                     .frame(height: 10)
                     .padding(.vertical, 10)
                     
@@ -53,7 +61,7 @@ extension NowPlayingSheet {
                         Spacer()
                         
                         Group {
-                            if dragging {
+                            if seekDragging {
                                 Text(formatRemainingTime(AudioPlayer.shared.duration - AudioPlayer.shared.duration * (playedPercentage / 100)))
                             } else if let chapter = AudioPlayer.shared.chapter {
                                 Text(chapter.title)
@@ -135,7 +143,10 @@ extension NowPlayingSheet {
                 }
                 .padding(.vertical, 57)
                 
-                VolumeSlider()
+                VolumeSlider(dragging: .init(get: { volumeDragging }, set: {
+                    volumeDragging = $0
+                    controlsDragging = $0
+                }))
                     .frame(height: 10)
                 VolumeView()
                     .frame(width: 0, height: 0)
@@ -144,7 +155,13 @@ extension NowPlayingSheet {
     }
 }
 
-extension NowPlayingSheet.Controls {
+extension NowPlayingViewModifier.Controls {
+    func formatRemainingTime(_ time: Double) -> String {
+        time.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true) + " " + String(localized: "time.left")
+    }
+}
+
+extension NowPlayingViewModifier.Controls {
     struct VolumeView: UIViewRepresentable {
         func makeUIView(context: Context) -> MPVolumeView {
             let volumeView = MPVolumeView(frame: CGRect.zero)
@@ -154,11 +171,5 @@ extension NowPlayingSheet.Controls {
         }
         
         func updateUIView(_ uiView: MPVolumeView, context: Context) {}
-    }
-}
-
-extension NowPlayingSheet.Controls {
-    func formatRemainingTime(_ time: Double) -> String {
-        time.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true) + " " + String(localized: "time.left")
     }
 }
