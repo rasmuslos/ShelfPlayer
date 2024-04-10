@@ -9,7 +9,7 @@ import SwiftUI
 import SPBase
 import SPPlayback
 
-extension NowPlayingSheet {
+extension NowPlayingViewModifier {
     struct ChapterSheet: View {
         var body: some View {
             Group {
@@ -70,11 +70,11 @@ extension NowPlayingSheet {
 
 // MARK: Chapter
 
-extension NowPlayingSheet.ChapterSheet {
+extension NowPlayingViewModifier.ChapterSheet {
     struct ChapterRow: View {
         let chapter: PlayableItem.Chapter
         
-        var active: Bool {
+        private var active: Bool {
             AudioPlayer.shared.chapter == chapter
         }
         
