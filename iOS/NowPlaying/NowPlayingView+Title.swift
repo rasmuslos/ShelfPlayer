@@ -9,28 +9,33 @@ import SwiftUI
 import SPBase
 import SPPlayback
 
-extension NowPlayingSheet {
+extension NowPlayingViewModifier {
     struct Title: View {
+        let item: PlayableItem
+        let namespace: Namespace.ID
+        
         var body: some View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Group {
-                        if let episode = AudioPlayer.shared.item as? Episode, let releaseDate = episode.releaseDate {
+                        if let episode = item as? Episode, let releaseDate = episode.releaseDate {
                             Text(releaseDate, style: .date)
-                        } else if let audiobook = AudioPlayer.shared.item as? Audiobook, let seriesName = audiobook.seriesName {
+                                .matchedGeometryEffect(id: "releaseDate", in: namespace, properties: .frame, anchor: .top)
+                        } else if let audiobook = item as? Audiobook, let seriesName = audiobook.seriesName {
                             Text(seriesName)
                         }
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     
-                    Text(AudioPlayer.shared.item?.name ?? "-/-")
+                    Text(item.name)
                         .lineLimit(1)
                         .font(.headline)
-                        .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
+                        .fontDesign(item as? Audiobook != nil ? .serif : .default)
                         .foregroundStyle(.primary)
+                        .matchedGeometryEffect(id: "title", in: namespace, properties: .frame, anchor: .top)
                     
-                    if let author = AudioPlayer.shared.item?.author {
+                    if let author = item.author {
                         Text(author)
                             .lineLimit(1)
                             .font(.subheadline)

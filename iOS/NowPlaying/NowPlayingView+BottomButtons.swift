@@ -8,9 +8,9 @@
 import SwiftUI
 import AVKit
 
-extension NowPlayingSheet {
-    struct BottomButtons: View {
-        @Binding var showChaptersSheet: Bool
+extension NowPlayingViewModifier {
+    struct Buttons: View {
+        @State private var showChaptersSheet = false
         
         var body: some View {
             HStack {
@@ -48,13 +48,18 @@ extension NowPlayingSheet {
             .padding(.horizontal, 10)
             .padding(.top, 20)
             .padding(.bottom, 45)
+            .sheet(isPresented: $showChaptersSheet, content: {
+                ChapterSheet()
+                    .presentationDragIndicator(.visible)
+                    .presentationDetents([.large, .medium])
+            })
         }
     }
 }
 
 // MARK: Airplay view
 
-extension NowPlayingSheet {
+extension NowPlayingViewModifier.Buttons {
     struct AirPlayView: UIViewRepresentable {
         func makeUIView(context: Context) -> UIView {
             let routePickerView = AVRoutePickerView()
