@@ -178,42 +178,6 @@ public extension OfflineManager {
             }.result.get()
             
             logger.info("Imported sessions (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-            
-            if Defaults[.removeDuplicateSessions] {
-                typealias Identifier = (String, String?)
-                
-                var seen = [Identifier]()
-                var duplicates = [Identifier]()
-                
-                for mediaProgress in mediaProgress {
-                    let identifier = (mediaProgress.libraryItemId, mediaProgress.episodeId)
-                    
-                    if seen.contains(where: { $0.0 == mediaProgress.libraryItemId && $0.1 == mediaProgress.episodeId }) {
-                        duplicates.append(identifier)
-                    } else {
-                        seen.append(identifier)
-                    }
-                }
-                
-                for duplicate in duplicates {
-                    var mediaProgress = mediaProgress.filter { $0.libraryItemId == duplicate.0 && $0.episodeId == duplicate.1 }.sorted {
-                        $0.lastUpdate > $1.lastUpdate
-                    }
-                    let _ = mediaProgress.removeFirst()
-                    
-                    while !mediaProgress.isEmpty {
-                        let mediaProgress = mediaProgress.removeFirst()
-                        
-                        do {
-                            try await AudiobookshelfClient.shared.deleteSession(sessionId: mediaProgress.id)
-                            try await deleteProgressEntity(id: mediaProgress.id)
-                        } catch {
-                            logger.fault("Failed to delete duplicate progress entity \(mediaProgress.id)")
-                        }
-                    }
-                }
-            }
-            
             return true
         } catch {
             print(error)
