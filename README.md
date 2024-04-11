@@ -19,15 +19,28 @@ ShelfPlayer is a beautifully designed audio player for Audiobookshelf that feels
 
 ## Roadmap
 
-### Short term
+Things to implement before i would consider ShelfPlayer feature complete:
 
-- Fix upcoming bugs
-- https://nextcloud.rfk.io/s/iaaAKsad8SxQLfa
+- Shortcuts
+- Bookmarks
+- Lazy loading
 
-### Long term
+### iOS
 
-- tvOS application
-- Siri intents (episodes)
+- CarPlay (online) integration
+- Tweak now playing animation (port from AmpFin)
+- Widgets (No idea what purpose they could serve but there may be some)
+
+### Planned platforms
+
+- iPadOS
+- macOS
+
+### Things that are not possible due to a lack of APIs provided by Apple:
+
+- Journal integration
+- Now playing widget suggestions
+- HomePod (possible but require a centralized server)
 
 ## Screenshots
 
