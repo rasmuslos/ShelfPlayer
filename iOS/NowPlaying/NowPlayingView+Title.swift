@@ -7,12 +7,18 @@
 
 import SwiftUI
 import SPBase
+import SPOffline
 import SPPlayback
 
 extension NowPlayingViewModifier {
     struct Title: View {
         let item: PlayableItem
         let namespace: Namespace.ID
+        
+        @State private var bookmarkNote = ""
+        @State private var createBookmarkFailed = false
+        @State private var bookmarkCapturedTime: Double? = nil
+        @State private var createBookmarkAlertPresented = false
         
         var body: some View {
             HStack {
@@ -44,6 +50,36 @@ extension NowPlayingViewModifier {
                 }
                 
                 Spacer()
+                
+                if item as? Audiobook != nil {
+                    Button {
+                        createBookmarkFailed = false
+                        bookmarkCapturedTime = AudioPlayer.shared.currentTime
+                        createBookmarkAlertPresented = true
+                    } label: {
+                        Image(systemName: "bookmark")
+                    }
+                    .font(.system(size: 20))
+                    .foregroundStyle(createBookmarkFailed ? .red : .primary)
+                    .alert("bookmark.create.alert", isPresented: $createBookmarkAlertPresented) {
+                        TextField("bookmark.create.title", text: $bookmarkNote)
+                        Button {
+                            createBookmark()
+                        } label: {
+                            Text("bookmark.create.action")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension NowPlayingViewModifier.Title {
+    func createBookmark() {
+        Task {
+            if let bookmarkCapturedTime = bookmarkCapturedTime {
+                try await OfflineManager.shared.createBookmark(itemId: item.id, position: bookmarkCapturedTime, note: bookmarkNote)
             }
         }
     }

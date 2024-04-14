@@ -161,7 +161,7 @@ struct BackgroundRemoveTransitionModifier: ViewModifier {
                 Rectangle()
                     .frame(maxHeight: active ? 0 : .infinity)
                     .padding(.horizontal, active ? 12 : 0)
-                    .animation(Animation.smooth, value: active)
+                    .animation(Animation.smooth(duration: 0.4, extraBounce: 0.1), value: active)
             }
             .offset(y: active ? -92 : 0)
     }

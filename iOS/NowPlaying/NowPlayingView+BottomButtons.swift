@@ -10,7 +10,7 @@ import AVKit
 
 extension NowPlayingViewModifier {
     struct Buttons: View {
-        @State private var showChaptersSheet = false
+        @State private var notableMomentSheetPresented = false
         
         var body: some View {
             HStack {
@@ -37,7 +37,7 @@ extension NowPlayingViewModifier {
                 } label: {
                     Image(systemName: "list.dash")
                 } primaryAction: {
-                    showChaptersSheet.toggle()
+                    notableMomentSheetPresented.toggle()
                 }
                 .frame(width: 60)
                 .foregroundStyle(.secondary)
@@ -48,8 +48,8 @@ extension NowPlayingViewModifier {
             .padding(.horizontal, 10)
             .padding(.top, 20)
             .padding(.bottom, 45)
-            .sheet(isPresented: $showChaptersSheet, content: {
-                ChapterSheet()
+            .sheet(isPresented: $notableMomentSheetPresented, content: {
+                NotableMomentsSheet()
                     .presentationDragIndicator(.visible)
                     .presentationDetents([.large, .medium])
             })
