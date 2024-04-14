@@ -14,6 +14,8 @@ struct NowPlayingViewModifier: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.presentationMode) private var presentationMode
     
+    var offset: CGFloat? = nil
+    
     @State private var viewState = NowPlayingViewState.init()
     
     @State private var showChaptersSheet = false
@@ -44,8 +46,8 @@ struct NowPlayingViewModifier: ViewModifier {
                         .foregroundStyle(colorScheme == .dark ? .black : .white)
                         .zIndex(1)
                         .transition(.asymmetric(
-                            insertion: .modifier(active: BackgroundInsertTransitionModifier(active: true), identity: BackgroundInsertTransitionModifier(active: false)),
-                            removal: .modifier(active: BackgroundRemoveTransitionModifier(active: true), identity: BackgroundRemoveTransitionModifier(active: false)))
+                            insertion: .modifier(active: BackgroundInsertTransitionModifier(active: true, offset: offset), identity: BackgroundInsertTransitionModifier(active: false, offset: offset)),
+                            removal: .modifier(active: BackgroundRemoveTransitionModifier(active: true, offset: offset), identity: BackgroundRemoveTransitionModifier(active: false, offset: offset)))
                         )
                         .onAppear {
                             dragOffset = 0
@@ -137,6 +139,7 @@ struct BackgroundInsertTransitionModifier: ViewModifier {
     @Environment(NowPlayingViewState.self) private var viewState
     
     let active: Bool
+    var offset: CGFloat?
     
     func body(content: Content) -> some View {
         content
@@ -145,7 +148,7 @@ struct BackgroundInsertTransitionModifier: ViewModifier {
                     .frame(maxHeight: active ? 0 : .infinity)
                     .padding(.horizontal, active ? 12 : 0)
             }
-            .offset(y: active ? -146 : 0)
+            .offset(y: active ? (offset ?? 92) * -1 - 56 : 0)
     }
 }
 
@@ -154,6 +157,7 @@ struct BackgroundRemoveTransitionModifier: ViewModifier {
     @Environment(NowPlayingViewState.self) private var viewState
     
     let active: Bool
+    var offset: CGFloat?
     
     func body(content: Content) -> some View {
         content
@@ -161,21 +165,25 @@ struct BackgroundRemoveTransitionModifier: ViewModifier {
                 Rectangle()
                     .frame(maxHeight: active ? 0 : .infinity)
                     .padding(.horizontal, active ? 12 : 0)
-                    .animation(Animation.smooth(duration: 0.4, extraBounce: 0.1), value: active)
+                    .animation(Animation.smooth(duration: 0.5, extraBounce: 0.1), value: active)
             }
-            .offset(y: active ? -92 : 0)
+            .offset(y: active ? (offset ?? 92) * -1 : 0)
     }
 }
 
 @Observable
 class NowPlayingViewState {
-    var namespace: Namespace.ID!
+    var namespace: Namespace.ID?
     
     private(set) var presented = false
     private(set) var containerPresented = false
     
     private(set) var active = false
     private(set) var lastActive = Date()
+    
+    var safeNamespace: Namespace.ID {
+        namespace ?? Namespace().wrappedValue
+    }
     
     func setNowPlayingViewPresented(_ presented: Bool, completion: (() -> Void)? = nil) {
         if active && lastActive.timeIntervalSince(Date()) > -1 {
