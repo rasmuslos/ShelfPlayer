@@ -20,7 +20,7 @@ extension NowPlayingViewModifier {
             if bookmarksActive {
                 return bookmarks.isEmpty
             } else {
-                return AudioPlayer.shared.chapters.count > 1
+                return AudioPlayer.shared.chapters.count <= 1
             }
         }
         
@@ -37,6 +37,13 @@ extension NowPlayingViewModifier {
                     List {
                         ForEach(bookmarks) {
                             BookmarkRow(bookmark: $0)
+                        }
+                        .onDelete { indexSet in
+                            for index in indexSet {
+                                Task {
+                                    try await OfflineManager.shared.deleteBookmark(bookmarks[index])
+                                }
+                            }
                         }
                     }
                 } else {
@@ -131,6 +138,10 @@ private extension NowPlayingViewModifier.NotableMomentsSheet {
                 dismiss()
             } label: {
                 VStack(alignment: .leading) {
+                    Text((chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
                     HStack {
                         Text(chapter.title)
                             .bold(active)
@@ -154,9 +165,6 @@ private extension NowPlayingViewModifier.NotableMomentsSheet {
                                 .transition(.opacity)
                         }
                     }
-                    Text((chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -183,13 +191,11 @@ private extension NowPlayingViewModifier.NotableMomentsSheet {
                             .foregroundStyle(.secondary)
                         
                         Text(bookmark.note)
-                            .font(.headline)
                     }
                     
                     Spacer()
                 }
             }
-            .padding(.vertical, 5)
         }
     }
 }

@@ -35,6 +35,14 @@ public extension OfflineManager {
     }
     
     @MainActor
+    func deleteBookmark(_ bookmark: Bookmark) async throws {
+        try await AudiobookshelfClient.shared.deleteBookmark(itemId: bookmark.itemId, position: bookmark.position)
+        PersistenceManager.shared.modelContainer.mainContext.delete(bookmark)
+        
+        NotificationCenter.default.post(name: Self.bookmarksUpdatedNotification, object: bookmark.itemId)
+    }
+    
+    @MainActor
     func getBookmarks(itemId: String) throws -> [Bookmark] {
         try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor<Bookmark>(predicate: #Predicate {
             $0.itemId == itemId
