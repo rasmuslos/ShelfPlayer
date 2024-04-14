@@ -63,10 +63,16 @@ extension NowPlayingViewModifier {
                     .foregroundStyle(createBookmarkFailed ? .red : .primary)
                     .alert("bookmark.create.alert", isPresented: $createBookmarkAlertPresented) {
                         TextField("bookmark.create.title", text: $bookmarkNote)
+                        
                         Button {
                             createBookmark()
                         } label: {
                             Text("bookmark.create.action")
+                        }
+                        Button(role: .cancel) {
+                            createBookmarkAlertPresented = false
+                        } label: {
+                            Text("bookmark.create.cancel")
                         }
                     }
                 }

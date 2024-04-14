@@ -23,6 +23,10 @@ public extension AudiobookshelfClient {
         ]))
     }
     
+    func deleteBookmark(itemId: String, position: Double) async throws {
+        let _ = try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark/\(position)", method: "DELETE"))
+    }
+    
     func getItem(itemId: String, episodeId: String?) async throws -> (PlayableItem, PlayableItem.AudioTracks, PlayableItem.Chapters) {
         let response: AudiobookshelfItem = try await getItem(itemId: itemId, episodeId: episodeId)
         
