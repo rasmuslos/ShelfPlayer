@@ -17,6 +17,7 @@ public struct PersistenceManager {
             ItemProgress.self,
             
             OfflineAudiobook.self,
+            Bookmark.self,
             
             OfflinePodcast.self,
             OfflineEpisode.self,

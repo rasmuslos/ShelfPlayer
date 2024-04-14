@@ -55,6 +55,73 @@ extension OfflineManager {
     func deleteProgressEntity(id: String) throws {
         try PersistenceManager.shared.modelContainer.mainContext.delete(model: ItemProgress.self, where: #Predicate { $0.id == id })
     }
+    
+    func syncCachedProgressEntities() async throws {
+        let cached = try await OfflineManager.shared.getProgressEntities(type: .localCached)
+        
+        for progress in cached {
+            try await AudiobookshelfClient.shared.updateMediaProgress(itemId: progress.itemId, episodeId: progress.episodeId, currentTime: progress.currentTime, duration: progress.duration)
+            progress.progressType = .localSynced
+        }
+    }
+    
+    func deleteSyncedProgressEntities() async throws {
+        try await OfflineManager.shared.deleteProgressEntities(type: .localSynced)
+    }
+    
+    func updateLocalProgressEntities(mediaProgress: [AudiobookshelfClient.MediaProgress]) async throws {
+        try await Task<Void, Error> { @MainActor in
+            var hideFromContinueListening = [Defaults.Keys.HideFromContinueListeningEntity]()
+            
+            for mediaProgress in mediaProgress {
+                if mediaProgress.hideFromContinueListening {
+                    hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
+                }
+                
+                let existing: ItemProgress?
+                var descriptor: FetchDescriptor<ItemProgress>
+                
+                if let episodeId = mediaProgress.episodeId {
+                    descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
+                } else {
+                    descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == mediaProgress.libraryItemId })
+                }
+                
+                descriptor.fetchLimit = 1
+                existing = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
+                
+                if let existing = existing {
+                    if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
+                        logger.info("Updating progress: \(existing.id)")
+                        
+                        existing.duration = mediaProgress.duration
+                        existing.currentTime = mediaProgress.currentTime
+                        existing.progress = mediaProgress.progress
+                        
+                        existing.startedAt = Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000)
+                        existing.lastUpdate = Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000)
+                    }
+                } else {
+                    logger.info("Creating progress: \(mediaProgress.id)")
+                    
+                    let progress = ItemProgress(
+                        id: mediaProgress.id,
+                        itemId: mediaProgress.libraryItemId,
+                        episodeId: mediaProgress.episodeId,
+                        duration: mediaProgress.duration,
+                        currentTime: mediaProgress.currentTime,
+                        progress: mediaProgress.progress,
+                        startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
+                        lastUpdate: Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000),
+                        progressType: .receivedFromServer)
+                    
+                    PersistenceManager.shared.modelContainer.mainContext.insert(progress)
+                }
+            }
+            
+            Defaults[.hideFromContinueListening] = hideFromContinueListening
+        }.result.get()
+    }
 }
 
 public extension OfflineManager {
@@ -106,82 +173,5 @@ public extension OfflineManager {
         progress.progress = currentTime / duration
         progress.lastUpdate = Date()
         progress.progressType = success ? .localSynced : .localCached
-    }
-    
-    func syncProgressEntities() async -> Bool {
-        do {
-            let start = Date.timeIntervalSinceReferenceDate
-            let cached = try await OfflineManager.shared.getProgressEntities(type: .localCached)
-            
-            for progress in cached {
-                try await AudiobookshelfClient.shared.updateMediaProgress(itemId: progress.itemId, episodeId: progress.episodeId, currentTime: progress.currentTime, duration: progress.duration)
-                progress.progressType = .localSynced
-            }
-            
-            logger.info("Synced progress to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-            
-            try await OfflineManager.shared.deleteProgressEntities(type: .localSynced)
-            
-            logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-            
-            let mediaProgress = try await AudiobookshelfClient.shared.authorize()
-            try await Task<Void, Error> { @MainActor in
-                var hideFromContinueListening = [Defaults.Keys.HideFromContinueListeningEntity]()
-                
-                for mediaProgress in mediaProgress {
-                    if mediaProgress.hideFromContinueListening {
-                        hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
-                    }
-                    
-                    let existing: ItemProgress?
-                    var descriptor: FetchDescriptor<ItemProgress>
-                    
-                    if let episodeId = mediaProgress.episodeId {
-                        descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
-                    } else {
-                        descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == mediaProgress.libraryItemId })
-                    }
-                    
-                    descriptor.fetchLimit = 1
-                    existing = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
-                    
-                    if let existing = existing {
-                        if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
-                            logger.info("Updating progress: \(existing.id)")
-                            
-                            existing.duration = mediaProgress.duration
-                            existing.currentTime = mediaProgress.currentTime
-                            existing.progress = mediaProgress.progress
-                            
-                            existing.startedAt = Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000)
-                            existing.lastUpdate = Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000)
-                        }
-                    } else {
-                        logger.info("Creating progress: \(mediaProgress.id)")
-                        
-                        let progress = ItemProgress(
-                            id: mediaProgress.id,
-                            itemId: mediaProgress.libraryItemId,
-                            episodeId: mediaProgress.episodeId,
-                            duration: mediaProgress.duration,
-                            currentTime: mediaProgress.currentTime,
-                            progress: mediaProgress.progress,
-                            startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
-                            lastUpdate: Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000),
-                            progressType: .receivedFromServer)
-                        
-                        PersistenceManager.shared.modelContainer.mainContext.insert(progress)
-                    }
-                }
-                
-                Defaults[.hideFromContinueListening] = hideFromContinueListening
-            }.result.get()
-            
-            logger.info("Imported sessions (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-            return true
-        } catch {
-            print(error)
-            return false
-        }
     }
 }

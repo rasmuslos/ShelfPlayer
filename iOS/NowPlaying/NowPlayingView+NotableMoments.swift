@@ -6,14 +6,40 @@
 //
 
 import SwiftUI
+import SwiftData
 import SPBase
+import SPOffline
 import SPPlayback
 
 extension NowPlayingViewModifier {
-    struct ChapterSheet: View {
+    struct NotableMomentsSheet: View {
+        @State private var bookmarks = [Bookmark]()
+        @State private var bookmarksActive = false
+        
+        private var empty: Bool {
+            if bookmarksActive {
+                return bookmarks.isEmpty
+            } else {
+                return AudioPlayer.shared.chapters.count > 1
+            }
+        }
+        
         var body: some View {
             Group {
-                if AudioPlayer.shared.chapters.count > 1 {
+                if empty {
+                    VStack {
+                        Spacer()
+                        Text(bookmarksActive ? "bookmarks.empty" : "chapters.empty")
+                            .font(.headline.smallCaps())
+                        Spacer()
+                    }
+                } else if bookmarksActive {
+                    List {
+                        ForEach(bookmarks) {
+                            BookmarkRow(bookmark: $0)
+                        }
+                    }
+                } else {
                     ScrollViewReader { proxy in
                         List {
                             ForEach(AudioPlayer.shared.chapters) {
@@ -24,13 +50,6 @@ extension NowPlayingViewModifier {
                         .onAppear {
                             proxy.scrollTo(AudioPlayer.shared.chapter?.id, anchor: .center)
                         }
-                    }
-                } else {
-                    VStack {
-                        Spacer()
-                        Text("chapters.empty")
-                            .font(.headline.smallCaps())
-                        Spacer()
                     }
                 }
             }
@@ -59,19 +78,47 @@ extension NowPlayingViewModifier {
                     }
                     
                     Spacer()
+                    
+                    if AudioPlayer.shared.item as? Audiobook != nil {
+                        Button {
+                            bookmarksActive.toggle()
+                        } label: {
+                            Image(systemName: "bookmark.square")
+                                .symbolVariant(bookmarksActive ? .fill : .none)
+                        }
+                        .font(.system(size: 26))
+                        .foregroundStyle(.primary)
+                    }
                 }
                 .padding()
                 .background(.regularMaterial)
                 .frame(height: 100)
             }
+            .onReceive(NotificationCenter.default.publisher(for: OfflineManager.bookmarksUpdatedNotification)) { _ in
+                fetchBookmarks()
+            }
+            .onAppear {
+                fetchBookmarks()
+            }
+        }
+    }
+}
+
+private extension NowPlayingViewModifier.NotableMomentsSheet {
+    @MainActor
+    func fetchBookmarks() {
+        if let itemId = AudioPlayer.shared.item?.id, let bookmarks = try? OfflineManager.shared.getBookmarks(itemId: itemId) {
+            self.bookmarks = bookmarks
         }
     }
 }
 
 // MARK: Chapter
 
-extension NowPlayingViewModifier.ChapterSheet {
+private extension NowPlayingViewModifier.NotableMomentsSheet {
     struct ChapterRow: View {
+        @Environment(\.dismiss) private var dismiss
+        
         let chapter: PlayableItem.Chapter
         
         private var active: Bool {
@@ -81,6 +128,7 @@ extension NowPlayingViewModifier.ChapterSheet {
         var body: some View {
             Button {
                 AudioPlayer.shared.seek(to: chapter.start)
+                dismiss()
             } label: {
                 VStack(alignment: .leading) {
                     HStack {
@@ -111,6 +159,37 @@ extension NowPlayingViewModifier.ChapterSheet {
                         .foregroundStyle(.secondary)
                 }
             }
+        }
+    }
+}
+
+// MARK: Bookmark
+
+private extension NowPlayingViewModifier.NotableMomentsSheet {
+    struct BookmarkRow: View {
+        @Environment(\.dismiss) private var dismiss
+        
+        let bookmark: Bookmark
+        
+        var body: some View {
+            Button {
+                AudioPlayer.shared.seek(to: bookmark.position)
+                dismiss()
+            } label: {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(bookmark.position.hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        
+                        Text(bookmark.note)
+                            .font(.headline)
+                    }
+                    
+                    Spacer()
+                }
+            }
+            .padding(.vertical, 5)
         }
     }
 }
