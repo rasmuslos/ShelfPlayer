@@ -14,6 +14,8 @@ struct NowPlayingBarModifier: ViewModifier {
     @Default(.skipForwardsInterval) private var skipForwardsInterval
     @Environment(NowPlayingViewState.self) private var nowPlayingViewState
     
+    var offset: CGFloat? = nil
+    
     @State private var bounce = false
     @State private var animateForwards = false
     
@@ -46,7 +48,7 @@ struct NowPlayingBarModifier: ViewModifier {
                                     .frame(width: 40, height: 40)
                                     .scaleEffect(bounce ? AudioPlayer.shared.playing ? 1.1 : 0.9 : 1)
                                     .animation(.spring(duration: 0.2, bounce: 0.7), value: bounce)
-                                    .matchedGeometryEffect(id: "image", in: nowPlayingViewState.namespace, properties: .frame, anchor: .top)
+                                    .matchedGeometryEffect(id: "image", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
                                     .onChange(of: AudioPlayer.shared.playing) {
                                         withAnimation {
                                             bounce = true
@@ -58,12 +60,12 @@ struct NowPlayingBarModifier: ViewModifier {
                                 VStack(alignment: .leading) {
                                     Text(item.name)
                                         .lineLimit(1)
-                                        .matchedGeometryEffect(id: "title", in: nowPlayingViewState.namespace, properties: .frame, anchor: .top)
+                                        .matchedGeometryEffect(id: "title", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
                                     
                                     Group {
                                         if let episode = item as? Episode, let releaseDate = episode.releaseDate {
                                             Text(releaseDate, style: .date)
-                                                .matchedGeometryEffect(id: "releaseDate", in: nowPlayingViewState.namespace, properties: .frame, anchor: .top)
+                                                .matchedGeometryEffect(id: "releaseDate", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
                                         } else {
                                             Text((AudioPlayer.shared.duration - AudioPlayer.shared.currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
                                             + Text(verbatim: " ")
@@ -122,6 +124,7 @@ struct NowPlayingBarModifier: ViewModifier {
                             }
                         }
                     }
+                    .padding(.bottom, offset ?? 0)
                 }
             }
     }
