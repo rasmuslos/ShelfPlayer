@@ -19,6 +19,10 @@ internal extension AudioPlayer {
     }
     
     func updateAudioSession(active: Bool) {
+        if active {
+            setupAudioSession()
+        }
+        
         do {
             try AVAudioSession.sharedInstance().setActive(active)
         } catch {
