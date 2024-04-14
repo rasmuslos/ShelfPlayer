@@ -91,7 +91,6 @@ public class AudioPlayer {
         setupTimeObserver()
         setupRemoteControls()
         
-        setupAudioSession()
         updateAudioSession(active: false)
     }
 }
