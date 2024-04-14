@@ -59,8 +59,16 @@ extension AudiobookshelfClient {
             let token: String
             let username: String
             
+            let bookmarks: [Bookmark]
             let mediaProgress: [MediaProgress]
         }
+    }
+    
+    public struct Bookmark: Codable {
+        public let libraryItemId: String
+        public let title: String
+        public let time: Double
+        public let createdAt: Double
     }
     
     struct LibrariesResponse: Codable {

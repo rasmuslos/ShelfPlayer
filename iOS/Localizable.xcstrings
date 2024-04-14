@@ -553,6 +553,18 @@
         }
       }
     },
+    "bookmark.create.action" : {
+
+    },
+    "bookmark.create.alert" : {
+
+    },
+    "bookmark.create.title" : {
+
+    },
+    "bookmarks.empty" : {
+
+    },
     "carPlay.chapters" : {
       "localizations" : {
         "de" : {

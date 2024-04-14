@@ -16,6 +16,13 @@ extension AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
+    func createBookmark(itemId: String, position: Double, note: String) async throws -> Bookmark {
+        return try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark", method: "POST", body: [
+            "title": note,
+            "time": position,
+        ]))
+    }
+    
     func getItem(itemId: String, episodeId: String?) async throws -> (PlayableItem, PlayableItem.AudioTracks, PlayableItem.Chapters) {
         let response: AudiobookshelfItem = try await getItem(itemId: itemId, episodeId: episodeId)
         
