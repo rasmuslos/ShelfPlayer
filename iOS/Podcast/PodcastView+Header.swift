@@ -26,6 +26,7 @@ extension PodcastView {
                     
                     Text(podcast.name)
                         .font(.headline)
+                        .multilineTextAlignment(.center)
                         .padding(.top)
                     
                     if let author = podcast.author {

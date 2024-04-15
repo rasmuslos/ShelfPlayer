@@ -17,7 +17,8 @@ public extension OfflineManager {
     func authorizeAndSync() async -> Bool {
         do {
             // Do not make any changes to the database unless all of the following methods succeed
-            await Task { @MainActor in
+            try await Task { @MainActor in
+                try PersistenceManager.shared.modelContainer.mainContext.save()
                 PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = false
             }.value
             
