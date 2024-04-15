@@ -73,49 +73,51 @@ extension OfflineManager {
         try await Task<Void, Error> { @MainActor in
             var hideFromContinueListening = [Defaults.Keys.HideFromContinueListeningEntity]()
             
-            for mediaProgress in mediaProgress {
-                if mediaProgress.hideFromContinueListening {
-                    hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
-                }
-                
-                let existing: ItemProgress?
-                var descriptor: FetchDescriptor<ItemProgress>
-                
-                if let episodeId = mediaProgress.episodeId {
-                    descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
-                } else {
-                    descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == mediaProgress.libraryItemId })
-                }
-                
-                descriptor.fetchLimit = 1
-                existing = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
-                
-                if let existing = existing {
-                    if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
-                        logger.info("Updating progress: \(existing.id)")
-                        
-                        existing.duration = mediaProgress.duration
-                        existing.currentTime = mediaProgress.currentTime
-                        existing.progress = mediaProgress.progress
-                        
-                        existing.startedAt = Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000)
-                        existing.lastUpdate = Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000)
+            try PersistenceManager.shared.modelContainer.mainContext.transaction {
+                for mediaProgress in mediaProgress {
+                    if mediaProgress.hideFromContinueListening {
+                        hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
                     }
-                } else {
-                    logger.info("Creating progress: \(mediaProgress.id)")
                     
-                    let progress = ItemProgress(
-                        id: mediaProgress.id,
-                        itemId: mediaProgress.libraryItemId,
-                        episodeId: mediaProgress.episodeId,
-                        duration: mediaProgress.duration,
-                        currentTime: mediaProgress.currentTime,
-                        progress: mediaProgress.progress,
-                        startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
-                        lastUpdate: Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000),
-                        progressType: .receivedFromServer)
+                    let existing: ItemProgress?
+                    var descriptor: FetchDescriptor<ItemProgress>
                     
-                    PersistenceManager.shared.modelContainer.mainContext.insert(progress)
+                    if let episodeId = mediaProgress.episodeId {
+                        descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
+                    } else {
+                        descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == mediaProgress.libraryItemId })
+                    }
+                    
+                    descriptor.fetchLimit = 1
+                    existing = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
+                    
+                    if let existing = existing {
+                        if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
+                            logger.info("Updating progress: \(existing.id)")
+                            
+                            existing.duration = mediaProgress.duration
+                            existing.currentTime = mediaProgress.currentTime
+                            existing.progress = mediaProgress.progress
+                            
+                            existing.startedAt = Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000)
+                            existing.lastUpdate = Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000)
+                        }
+                    } else {
+                        logger.info("Creating progress: \(mediaProgress.id)")
+                        
+                        let progress = ItemProgress(
+                            id: mediaProgress.id,
+                            itemId: mediaProgress.libraryItemId,
+                            episodeId: mediaProgress.episodeId,
+                            duration: mediaProgress.duration,
+                            currentTime: mediaProgress.currentTime,
+                            progress: mediaProgress.progress,
+                            startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
+                            lastUpdate: Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000),
+                            progressType: .receivedFromServer)
+                        
+                        PersistenceManager.shared.modelContainer.mainContext.insert(progress)
+                    }
                 }
             }
             
