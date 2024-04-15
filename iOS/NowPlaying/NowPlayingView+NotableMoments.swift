@@ -95,6 +95,7 @@ extension NowPlayingViewModifier {
                         }
                         .font(.system(size: 26))
                         .foregroundStyle(.primary)
+                        .popoverTip(CommonTip(titleKey: "tip.bookmark.view", messageKey: "tip.bookmark.view.message"))
                     }
                 }
                 .padding()

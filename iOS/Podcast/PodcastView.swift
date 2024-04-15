@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 import Defaults
 import SPBase
 
@@ -72,6 +73,10 @@ struct PodcastView: View {
                 .frame(height: 45)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
+                
+                TipView(CommonTip(titleKey: "tip.episodePreview", messageKey: "tip.episodePreview.message"))
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(.init(top: 0, leading: 10, bottom: 10, trailing: 10))
                 
                 EpisodeSingleList(episodes: visibleEpisodes)
             }

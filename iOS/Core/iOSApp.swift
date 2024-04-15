@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import SwiftData
 import SPBase
 import Nuke
+import TipKit
 
 @main
 struct iOSApp: App {
@@ -21,6 +21,12 @@ struct iOSApp: App {
         
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
         BackgroundTaskHandler.setup()
+        
+        Tips.showAllTipsForTesting()
+        
+        try? Tips.configure([
+            .displayFrequency(.daily)
+        ])
     }
     
     var body: some Scene {

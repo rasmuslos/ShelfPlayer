@@ -139,6 +139,7 @@ extension NowPlayingViewModifier {
                                         AudioPlayer.shared.seek(to: AudioPlayer.shared.duration, includeChapterOffset: true)
                                     }
                                 })
+                            .popoverTip(CommonTip(titleKey: "tip.player.longPress", messageKey: "tip.player.longPress.message"))
                         
                         Spacer()
                     }
