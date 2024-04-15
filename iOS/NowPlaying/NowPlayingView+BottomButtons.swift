@@ -28,7 +28,7 @@ extension NowPlayingViewModifier {
                 Spacer()
                 
                 AirPlayView()
-                    .frame(width: 60)
+                    .frame(width: 45)
                 
                 Spacer()
                 
@@ -46,8 +46,6 @@ extension NowPlayingViewModifier {
             .font(.system(size: 20))
             .frame(height: 45)
             .padding(.horizontal, 10)
-            .padding(.top, 20)
-            .padding(.bottom, 45)
             .sheet(isPresented: $notableMomentSheetPresented, content: {
                 NotableMomentsSheet()
                     .presentationDragIndicator(.visible)
