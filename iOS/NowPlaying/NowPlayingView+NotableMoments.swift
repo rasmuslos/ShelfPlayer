@@ -41,7 +41,7 @@ extension NowPlayingViewModifier {
                         .onDelete { indexSet in
                             for index in indexSet {
                                 Task {
-                                    try await OfflineManager.shared.deleteBookmark(bookmarks[index])
+                                    await OfflineManager.shared.deleteBookmark(bookmarks[index])
                                 }
                             }
                         }

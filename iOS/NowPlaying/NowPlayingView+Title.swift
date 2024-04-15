@@ -86,7 +86,7 @@ extension NowPlayingViewModifier.Title {
     func createBookmark() {
         Task {
             if let bookmarkCapturedTime = bookmarkCapturedTime {
-                try await OfflineManager.shared.createBookmark(itemId: item.id, position: bookmarkCapturedTime, note: bookmarkNote)
+                await OfflineManager.shared.createBookmark(itemId: item.id, position: bookmarkCapturedTime, note: bookmarkNote)
             }
         }
     }
