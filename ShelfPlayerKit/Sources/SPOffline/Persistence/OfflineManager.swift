@@ -16,6 +16,11 @@ public struct OfflineManager {
 public extension OfflineManager {
     func authorizeAndSync() async -> Bool {
         do {
+            // Do not make any changes to the database unless all of the following methods succeed
+            await Task { @MainActor in
+                PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = false
+            }.value
+            
             let start = Date.timeIntervalSinceReferenceDate
             
             try await syncCachedProgressEntities()
@@ -39,9 +44,22 @@ public extension OfflineManager {
             try await syncLocalBookmarks(bookmarks: bookmarks)
             logger.info("Created bookmarks (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
+            // Commit changes
+            try await Task { @MainActor in
+                try PersistenceManager.shared.modelContainer.mainContext.save()
+                PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = true
+            }.value
+            
             return true
         } catch {
+            logger.fault("Error while syncing progress & bookmarks. Rolling back changes...")
             print(error)
+            
+            await Task { @MainActor in
+                PersistenceManager.shared.modelContainer.mainContext.rollback()
+                PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = true
+            }.value
+            
             return false
         }
     }
