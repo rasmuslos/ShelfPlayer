@@ -70,8 +70,10 @@ struct NowPlayingViewModifier: ViewModifier {
                             Title(item: item, namespace: namespace)
                             
                             Group {
-                                Controls(controlsDragging: $controlsDragging)
+                                Controls(namespace: namespace, controlsDragging: $controlsDragging)
                                 Buttons()
+                                    .padding(.top, 20)
+                                    .padding(.bottom, 30)
                             }
                             .transition(.opacity.animation(.linear(duration: 0.3)))
                         }

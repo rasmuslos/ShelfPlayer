@@ -16,6 +16,7 @@ extension NowPlayingViewModifier {
         @Default(.skipForwardsInterval) private var skipForwardsInterval
         @Default(.skipBackwardsInterval) private var skipBackwardsInterval
         
+        let namespace: Namespace.ID
         @Binding var controlsDragging: Bool
         
         @State private var seekDragging = false
@@ -66,6 +67,7 @@ extension NowPlayingViewModifier {
                             } else if let chapter = AudioPlayer.shared.chapter {
                                 Text(chapter.title)
                                     .animation(.easeInOut, value: chapter.title)
+                                    .matchedGeometryEffect(id: "chapter", in: namespace, properties: .frame, anchor: .top)
                             } else {
                                 Text(formatRemainingTime(AudioPlayer.shared.duration - AudioPlayer.shared.currentTime))
                             }
@@ -74,6 +76,7 @@ extension NowPlayingViewModifier {
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
                         .transition(.opacity)
+                        .padding(.vertical, 4)
                         
                         Spacer()
                         Text(AudioPlayer.shared.duration.hoursMinutesSecondsString())
@@ -82,16 +85,16 @@ extension NowPlayingViewModifier {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 }
-                .padding(.bottom, -10)
                 
                 HStack {
-                    Spacer()
-                    
                     Group {
+                        Spacer()
+                        
                         Image(systemName: "gobackward.\(skipBackwardsInterval)")
                             .symbolEffect(.bounce, value: animateBackwards)
                             .sensoryFeedback(.decrease, trigger: animateBackwards)
-                            .frame(width: 60)
+                            .font(.system(size: 30))
+                            .frame(width: 50, height:50)
                             .gesture(TapGesture()
                                 .onEnded { _ in
                                     animateBackwards.toggle()
@@ -110,7 +113,7 @@ extension NowPlayingViewModifier {
                             AudioPlayer.shared.playing = !AudioPlayer.shared.playing
                         } label: {
                             Image(systemName: AudioPlayer.shared.playing ? "pause.fill" : "play.fill")
-                                .frame(height: 50)
+                                .frame(width: 50, height:50)
                                 .font(.system(size: 47))
                                 .padding(.horizontal, 50)
                                 .contentTransition(.symbolEffect(.replace.downUp))
@@ -123,7 +126,8 @@ extension NowPlayingViewModifier {
                         Image(systemName: "goforward.\(skipForwardsInterval)")
                             .symbolEffect(.bounce, value: animateForwards)
                             .sensoryFeedback(.increase, trigger: animateForwards)
-                            .frame(width: 60)
+                            .font(.system(size: 30))
+                            .frame(width: 50, height:50)
                             .gesture(TapGesture()
                                 .onEnded { _ in
                                     animateForwards.toggle()
@@ -135,19 +139,18 @@ extension NowPlayingViewModifier {
                                         AudioPlayer.shared.seek(to: AudioPlayer.shared.duration, includeChapterOffset: true)
                                     }
                                 })
+                        
+                        Spacer()
                     }
-                    .font(.system(size: 34))
                     .foregroundStyle(.primary)
-                    
-                    Spacer()
                 }
-                .padding(.vertical, 57)
+                .padding(.top, 35)
+                .padding(.bottom, 65)
                 
                 VolumeSlider(dragging: .init(get: { volumeDragging }, set: {
                     volumeDragging = $0
                     controlsDragging = $0
                 }))
-                    .frame(height: 10)
                 VolumeView()
                     .frame(width: 0, height: 0)
             }
