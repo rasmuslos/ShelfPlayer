@@ -81,21 +81,20 @@ private extension PlaybackReporter {
         Task.detached { [self] in
             var success = true
             
+            Task.detached { @MainActor [self] in
+                if let playbackDurationTracker = playbackDurationTracker {
+                    playbackDurationTracker.duration += timeListened
+                    playbackDurationTracker.lastUpdate = Date()
+                }
+            }
+            
             do {
                 if let playbackSessionId = playbackSessionId {
                     try await AudiobookshelfClient.shared.reportPlaybackUpdate(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
                 } else {
                     try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
                 }
-                
-                Task.detached { @MainActor [self] in
-                    if let playbackDurationTracker = playbackDurationTracker {
-                        playbackDurationTracker.duration += timeListened
-                        playbackDurationTracker.lastUpdate = Date()
-                    }
-                }
             } catch {
-                self.lastReportedTime -= timeListened
                 success = false
             }
             
