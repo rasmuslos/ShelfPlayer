@@ -17,9 +17,11 @@ extension OfflineManager {
     
     @MainActor
     func syncLocalBookmarks(bookmarks: [AudiobookshelfClient.Bookmark]) throws {
-        for bookmark in bookmarks {
-            let entity = Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced)
-            PersistenceManager.shared.modelContainer.mainContext.insert(entity)
+        try PersistenceManager.shared.modelContainer.mainContext.transaction {
+            for bookmark in bookmarks {
+                let entity = Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced)
+                PersistenceManager.shared.modelContainer.mainContext.insert(entity)
+            }
         }
     }
     
