@@ -2515,6 +2515,166 @@
         }
       }
     },
+    "tip.bookmark.create" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bookmark"
+          }
+        }
+      }
+    },
+    "tip.bookmark.create.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstelle ein Lesezeichen um an einen bestimmten Moment erinnert zu werden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a bookmark to remember a specific moment in this audiobook"
+          }
+        }
+      }
+    },
+    "tip.bookmark.view" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View bookmarks"
+          }
+        }
+      }
+    },
+    "tip.bookmark.view.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sehe alle Lesezeichen für dieses Hörbuch hier ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View all bookmarks you created for this book here"
+          }
+        }
+      }
+    },
+    "tip.changeLibrary" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliothek wechseln"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change libraries"
+          }
+        }
+      }
+    },
+    "tip.changeLibrary.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle hier eine andere Hörbücher / Podcast Bibliothek aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to another audiobooks / podcasts library"
+          }
+        }
+      }
+    },
+    "tip.episodePreview" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episoden-Vorschau"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodes preview"
+          }
+        }
+      }
+    },
+    "tip.episodePreview.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier werden die neusten (bestimmt von den Filter- & Sortierungseinstellungen) Episoden angezeigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can see the latest episodes (determined by your podcast filter & sort settings) here"
+          }
+        }
+      }
+    },
+    "tip.player.longPress" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächstes Kapitel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip to the next chapter"
+          }
+        }
+      }
+    },
+    "tip.player.longPress.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drücke diese Schnittfläche lange um zum nächsten Kapitel zu gelangen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long press this control to skip to the next chapter"
+          }
+        }
+      }
+    },
     "title.episodes" : {
       "localizations" : {
         "de" : {

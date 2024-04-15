@@ -75,6 +75,7 @@ extension NowPlayingViewModifier {
                             Text("bookmark.create.cancel")
                         }
                     }
+                    .popoverTip(CommonTip(titleKey: "tip.bookmark.create", messageKey: "tip.bookmark.create.message"))
                 }
             }
         }
