@@ -58,9 +58,16 @@ struct NowPlayingBarModifier: ViewModifier {
                                     }
                                 
                                 VStack(alignment: .leading) {
-                                    Text(item.name)
-                                        .lineLimit(1)
-                                        .matchedGeometryEffect(id: "title", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
+                                    Group {
+                                        if let chapterTitle = AudioPlayer.shared.chapter?.title {
+                                            Text(chapterTitle)
+                                                .matchedGeometryEffect(id: "chapter", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
+                                        } else {
+                                            Text(item.name)
+                                                .matchedGeometryEffect(id: "title", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
+                                        }
+                                    }
+                                    .lineLimit(1)
                                     
                                     Group {
                                         if let episode = item as? Episode, let releaseDate = episode.releaseDate {
