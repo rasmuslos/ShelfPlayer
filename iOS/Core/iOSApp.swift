@@ -22,8 +22,6 @@ struct iOSApp: App {
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
         BackgroundTaskHandler.setup()
         
-        Tips.showAllTipsForTesting()
-        
         try? Tips.configure([
             .displayFrequency(.daily)
         ])

@@ -17,10 +17,21 @@ public final class Bookmark {
     public let note: String
     public let position: Double
     
-    init(itemId: String, episodeId: String?, note: String, position: Double) {
+    var status: SyncStatus
+    
+    init(itemId: String, episodeId: String?, note: String, position: Double, status: SyncStatus) {
         self.itemId = itemId
         self.episodeId = episodeId
         self.note = note
         self.position = position
+        self.status = status
+    }
+}
+
+extension Bookmark {
+    enum SyncStatus: Int, Codable {
+        case synced = 0
+        case pending = 1
+        case deleted = 2
     }
 }
