@@ -24,6 +24,9 @@ public extension OfflineManager {
             try await deleteSyncedProgressEntities()
             logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
+            try await syncRemoteBookmarks()
+            logger.info("Synced bookmarks to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
+            
             let (progress, bookmarks) = try await AudiobookshelfClient.shared.authorize()
             
             try await updateLocalProgressEntities(mediaProgress: progress)
