@@ -77,7 +77,7 @@ extension AudiobookView {
                             Divider()
                             
                             ProgressButton(item: viewModel.audiobook)
-                            DownloadButton(item: viewModel.audiobook)
+                            DownloadButton(item: viewModel.audiobook, downloadingLabel: false)
                         } label: {
                             Image(systemName: "ellipsis")
                                 .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))
