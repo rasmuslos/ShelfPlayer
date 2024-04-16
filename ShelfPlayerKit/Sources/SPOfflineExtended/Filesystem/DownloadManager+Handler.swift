@@ -28,7 +28,13 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
                 return
             }
             
-            let destination = getURL(track: track)
+            var destination = getURL(track: track)
+            try? destination.setResourceValues({
+                var values = URLResourceValues()
+                values.isExcludedFromBackup = true
+                
+                return values
+            }())
             
             do {
                 try? FileManager.default.removeItem(at: destination)
@@ -36,7 +42,7 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
                 
                 track.downloadReference = nil
                 NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: track.parentId)
-
+                
                 logger.info("Download track finished: \(track.id)")
             } catch {
                 try? FileManager.default.removeItem(at: tmpLocation)
