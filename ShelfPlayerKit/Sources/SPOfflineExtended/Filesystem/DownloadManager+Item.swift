@@ -16,7 +16,13 @@ extension DownloadManager {
             let request = URLRequest(url: image.url)
             
             let (location, _) = try await URLSession.shared.download(for: request)
-            let destination = getImageUrl(itemId: itemId)
+            var destination = getImageUrl(itemId: itemId)
+            try? destination.setResourceValues({
+                var values = URLResourceValues()
+                values.isExcludedFromBackup = true
+                
+                return values
+            }())
             
             try? FileManager.default.removeItem(at: destination)
             try FileManager.default.moveItem(at: location, to: destination)
