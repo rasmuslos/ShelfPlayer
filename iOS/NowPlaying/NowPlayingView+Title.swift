@@ -54,7 +54,7 @@ extension NowPlayingViewModifier {
                 if item as? Audiobook != nil {
                     Button {
                         createBookmarkFailed = false
-                        bookmarkCapturedTime = AudioPlayer.shared.currentTime
+                        bookmarkCapturedTime = AudioPlayer.shared.getItemCurrentTime()
                         createBookmarkAlertPresented = true
                     } label: {
                         Image(systemName: "bookmark")
