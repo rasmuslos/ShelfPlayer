@@ -40,7 +40,8 @@ Things to implement before i would consider ShelfPlayer feature complete:
 
 - Journal integration
 - Now playing widget suggestions
-- HomePod (possible but require a centralized server)
+- Queue in the Apple Watch now playing app
+- HomePod (possible but would require a centralized server)
 
 ## Screenshots
 
