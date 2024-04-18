@@ -20,4 +20,6 @@ extension Defaults.Keys {
     static let authorsAscending = Key("authorsAscending", default: true)
     static let showAuthorsRow = Key("showAuthorsRow", default: false)
     static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
+    
+    static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
 }

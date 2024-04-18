@@ -12,28 +12,32 @@ struct ProgressIndicator: View {
     let entity: ItemProgress
     
     var body: some View {
-        ZStack {
-            if entity.progress >= 1 {
-                Circle()
-                    .fill(Color.accentColor.quaternary)
-                
-                Image(systemName: "checkmark")
-                    .font(.caption)
-                    .foregroundStyle(.alternativeAccent)
-            } else {
-                Circle()
-                    .fill(Color.accentColor.quaternary)
-                    .stroke(Color.accentColor.secondary, lineWidth: 1)
-                
-                GeometryReader { proxy in
+        if entity.progress > 0 {
+            EmptyView()
+        } else {
+            ZStack {
+                if entity.progress >= 1 {
                     Circle()
-                        .inset(by: proxy.size.width / 4)
-                        .trim(from: 0, to: CGFloat(entity.progress))
-                        .stroke(.alternativeAccent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
-                        .rotationEffect(.degrees(-90))
-                        .animation(.spring, value: entity.progress)
+                        .fill(Color.accentColor.quaternary)
+                    
+                    Image(systemName: "checkmark")
+                        .font(.caption)
+                        .foregroundStyle(.alternativeAccent)
+                } else {
+                    Circle()
+                        .fill(Color.accentColor.quaternary)
+                        .stroke(Color.accentColor.secondary, lineWidth: 1)
+                    
+                    GeometryReader { proxy in
+                        Circle()
+                            .inset(by: proxy.size.width / 4)
+                            .trim(from: 0, to: CGFloat(entity.progress))
+                            .stroke(.alternativeAccent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
+                            .rotationEffect(.degrees(-90))
+                            .animation(.spring, value: entity.progress)
+                    }
+                    .padding(2)
                 }
-                .padding(2)
             }
         }
     }

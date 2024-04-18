@@ -15,6 +15,8 @@ extension NowPlayingViewModifier {
         let item: PlayableItem
         let namespace: Namespace.ID
         
+        @State private var bookmarkAnimation = false
+        
         @State private var bookmarkNote = ""
         @State private var createBookmarkFailed = false
         @State private var bookmarkCapturedTime: Double? = nil
@@ -52,30 +54,47 @@ extension NowPlayingViewModifier {
                 Spacer()
                 
                 if item as? Audiobook != nil {
-                    Button {
-                        createBookmarkFailed = false
-                        bookmarkCapturedTime = AudioPlayer.shared.getItemCurrentTime()
-                        createBookmarkAlertPresented = true
-                    } label: {
-                        Image(systemName: "bookmark")
-                    }
-                    .font(.system(size: 20))
-                    .foregroundStyle(createBookmarkFailed ? .red : .primary)
-                    .alert("bookmark.create.alert", isPresented: $createBookmarkAlertPresented) {
-                        TextField("bookmark.create.title", text: $bookmarkNote)
-                        
-                        Button {
-                            createBookmark()
-                        } label: {
-                            Text("bookmark.create.action")
+                    Image(systemName: "bookmark")
+                        .symbolEffect(.bounce.byLayer.up, value: bookmarkAnimation)
+                        .onTapGesture {
+                            createBookmarkFailed = false
+                            bookmarkCapturedTime = AudioPlayer.shared.getItemCurrentTime()
+                            createBookmarkAlertPresented = true
                         }
-                        Button(role: .cancel) {
-                            createBookmarkAlertPresented = false
-                        } label: {
-                            Text("bookmark.create.cancel")
+                        .onLongPressGesture {
+                            Task {
+                                await OfflineManager.shared.createBookmark(itemId: item.id, position: AudioPlayer.shared.getItemCurrentTime(), note: {
+                                    let dateFormatter = DateFormatter()
+                                    dateFormatter.locale = .autoupdatingCurrent
+                                    dateFormatter.timeZone = .current
+                                    
+                                    dateFormatter.dateStyle = .medium
+                                    dateFormatter.timeStyle = .medium
+                                    
+                                    return dateFormatter.string(from: .now)
+                                }())
+                                
+                                bookmarkAnimation.toggle()
+                            }
                         }
-                    }
-                    .popoverTip(CommonTip(titleKey: "tip.bookmark.create", messageKey: "tip.bookmark.create.message"))
+                        .font(.system(size: 20))
+                        .foregroundStyle(createBookmarkFailed ? .red : .primary)
+                        .alert("bookmark.create.alert", isPresented: $createBookmarkAlertPresented) {
+                            TextField("bookmark.create.title", text: $bookmarkNote)
+                            
+                            Button {
+                                createBookmark()
+                                bookmarkAnimation.toggle()
+                            } label: {
+                                Text("bookmark.create.action")
+                            }
+                            Button(role: .cancel) {
+                                createBookmarkAlertPresented = false
+                            } label: {
+                                Text("bookmark.create.cancel")
+                            }
+                        }
+                        .popoverTip(CommonTip(titleKey: "tip.bookmark.create", messageKey: "tip.bookmark.create.message"))
                 }
             }
         }
