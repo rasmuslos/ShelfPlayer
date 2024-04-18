@@ -66,10 +66,8 @@ extension OfflineAudiobookList {
                 
                 Spacer()
                 
-                if entity.progress > 0 {
-                    ProgressIndicator(entity: entity)
-                        .frame(width: 20)
-                }
+                ProgressIndicator(entity: entity)
+                    .frame(width: 20)
             }
         }
     }
