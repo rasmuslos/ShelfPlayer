@@ -72,6 +72,7 @@
 			<key>Titles</key>
 			<array>
 				<string>15 seconds</string>
+				<string>20 seconds</string>
 				<string>30 seconds</string>
 				<string>45 seconds</string>
 				<string>60 seconds</string>
@@ -79,6 +80,7 @@
 			<key>Values</key>
 			<array>
 				<string>15</string>
+				<string>20</string>
 				<string>30</string>
 				<string>45</string>
 				<string>60</string>
@@ -96,6 +98,7 @@
 			<key>Titles</key>
 			<array>
 				<string>15 seconds</string>
+				<string>20 seconds</string>
 				<string>30 seconds</string>
 				<string>45 seconds</string>
 				<string>60 seconds</string>
@@ -103,6 +106,7 @@
 			<key>Values</key>
 			<array>
 				<string>15</string>
+				<string>20</string>
 				<string>30</string>
 				<string>45</string>
 				<string>60</string>

@@ -78,7 +78,10 @@ extension NowPlayingViewModifier {
                         }
                         
                         Group {
-                            Text((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ") + Text("time.left")
+                            Text(
+                                ((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()) * (1 / Double(AudioPlayer.shared.playbackRate)))
+                                    .hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ")
+                            + Text("time.left")
                         }
                         .font(.caption)
                         .foregroundStyle(.secondary)

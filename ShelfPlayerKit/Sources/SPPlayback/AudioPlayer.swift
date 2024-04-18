@@ -95,6 +95,14 @@ public class AudioPlayer {
     }
 }
 
+// MARK: Connivence
+
+public extension AudioPlayer {
+    var adjustedTimeLeft: Double {
+        (duration - currentTime) * (1 / Double(playbackRate))
+    }
+}
+
 // MARK: Singleton
 
 extension AudioPlayer {

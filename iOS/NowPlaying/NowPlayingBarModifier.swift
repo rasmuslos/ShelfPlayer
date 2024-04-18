@@ -74,7 +74,7 @@ struct NowPlayingBarModifier: ViewModifier {
                                             Text(releaseDate, style: .date)
                                                 .matchedGeometryEffect(id: "releaseDate", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
                                         } else {
-                                            Text((AudioPlayer.shared.duration - AudioPlayer.shared.currentTime).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
+                                            Text(AudioPlayer.shared.adjustedTimeLeft.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
                                             + Text(verbatim: " ")
                                             + Text("time.left")
                                         }

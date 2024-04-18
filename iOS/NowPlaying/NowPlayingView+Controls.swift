@@ -69,7 +69,7 @@ extension NowPlayingViewModifier {
                                     .animation(.easeInOut, value: chapter.title)
                                     .matchedGeometryEffect(id: "chapter", in: namespace, properties: .frame, anchor: .top)
                             } else {
-                                Text(formatRemainingTime(AudioPlayer.shared.duration - AudioPlayer.shared.currentTime))
+                                Text(formatRemainingTime(AudioPlayer.shared.adjustedTimeLeft))
                             }
                         }
                         .font(.caption2)
