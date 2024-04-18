@@ -7,11 +7,14 @@
 
 import SwiftUI
 import SwiftData
+import Defaults
 import SPBase
 import SPOffline
 import SPOfflineExtended
 
 struct StatusOverlay: View {
+    @Default(.itemImageStatusPercentageText) private var itemImageStatusPercentageText
+    
     let item: Item
     let entity: ItemProgress
     let offlineTracker: ItemOfflineTracker?
@@ -24,14 +27,16 @@ struct StatusOverlay: View {
         offlineTracker = item.offlineTracker
     }
     
-    @State var progress: Double?
+    @State private var progress: Double?
     
     var body: some View {
         GeometryReader { geometry in
-            let size = geometry.size.width / 3
+            let size = geometry.size.width / 2.5
+            let fontSize = size * 0.23
             
             HStack(alignment: .top) {
                 Spacer()
+                
                 if entity.progress > 0 {
                     Triangle()
                         .frame(width: size, height: size)
@@ -40,17 +45,24 @@ struct StatusOverlay: View {
                             Group {
                                 if entity.progress >= 1 {
                                     Image(systemName: "checkmark")
-                                        .font(.caption)
+                                        .font(.system(size: fontSize))
+                                        .fontWeight(.heavy)
                                 } else {
-                                    ZStack {
-                                        Circle()
-                                            .trim(from: CGFloat(entity.progress), to: 360 - CGFloat(entity.progress))
-                                            .stroke(Color.black.opacity(0.4), lineWidth: 3)
-                                        Circle()
-                                            .trim(from: 0, to: CGFloat(entity.progress))
-                                            .stroke(Color.black.opacity(0.85), lineWidth: 3)
+                                    if itemImageStatusPercentageText {
+                                        Text(verbatim: "\(Int(entity.progress * 100))")
+                                            .font(.system(size: fontSize))
+                                            .fontWeight(.heavy)
+                                    } else {
+                                        ZStack {
+                                            Circle()
+                                                .trim(from: CGFloat(entity.progress), to: 360 - CGFloat(entity.progress))
+                                                .stroke(Color.black.opacity(0.4), lineWidth: 3)
+                                            Circle()
+                                                .trim(from: 0, to: CGFloat(entity.progress))
+                                                .stroke(Color.black.opacity(0.85), lineWidth: 3)
+                                        }
+                                        .rotationEffect(.degrees(-90))
                                     }
-                                    .rotationEffect(.degrees(-90))
                                 }
                             }
                             .frame(width: size / 3, height: size / 3)
