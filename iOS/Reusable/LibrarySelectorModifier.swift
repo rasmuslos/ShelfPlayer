@@ -38,7 +38,7 @@ struct LibrarySelectorModifier: ViewModifier {
                     } label: {
                         Image(systemName: "books.vertical.fill")
                     }
-                    .popoverTip(CommonTip(titleKey: "tip.changeLibrary", messageKey: "tip.changeLibrary.message"))
+                    .popoverTip(SelectLibraryTip())
                 }
             }
     }

@@ -74,7 +74,7 @@ struct PodcastView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 
-                TipView(CommonTip(titleKey: "tip.episodePreview", messageKey: "tip.episodePreview.message"))
+                TipView(EpisodePreviewTip())
                     .listRowSeparator(.hidden)
                     .listRowInsets(.init(top: 0, leading: 10, bottom: 10, trailing: 10))
                 
