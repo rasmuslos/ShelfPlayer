@@ -48,7 +48,7 @@ struct AudiobookView: View {
                     VStack(alignment: .leading) {
                         RowTitle(title: String(localized: "audiobook.similar.series"))
                             .padding(.horizontal, 20)
-                        AudiobookHGrid(audiobooks: viewModel.audiobooksInSeries, amount: 4)
+                        AudiobookHGrid(audiobooks: viewModel.audiobooksInSeries, small: true)
                     }
                     .padding(.bottom, 20)
                 }
@@ -59,7 +59,7 @@ struct AudiobookView: View {
                     VStack(alignment: .leading) {
                         RowTitle(title: String(localized: "audiobook.similar.author \(author)"))
                             .padding(.horizontal, 20)
-                        AudiobookHGrid(audiobooks: viewModel.audiobooksByAuthor, amount: 4)
+                        AudiobookHGrid(audiobooks: viewModel.audiobooksByAuthor, small: true)
                     }
                 }
                 

@@ -11,7 +11,7 @@ import Nuke
 import TipKit
 
 @main
-struct iOSApp: App {
+struct MultiplatformApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
@@ -30,7 +30,7 @@ struct iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                #if true
+                #if false
                 .overlay {
                     HStack(spacing: 0) {
                         Rectangle()

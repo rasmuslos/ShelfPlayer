@@ -59,7 +59,7 @@ struct SearchView: View {
                 }
             }
             .navigationTitle("title.search")
-            .searchable(text: $query)
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
             .modifier(NowPlayingBarSafeAreaModifier())
             .modifier(AccountSheetToolbarModifier())
             .onChange(of: query) {
