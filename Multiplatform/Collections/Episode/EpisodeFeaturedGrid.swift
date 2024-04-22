@@ -65,12 +65,14 @@ struct EpisodeFeaturedGrid: View {
 
 extension EpisodeFeaturedGrid {
     struct EpisodeGridItem: View {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        
         let episode: Episode
         
         var body: some View {
             ZStack(alignment: .bottom) {
                 LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
-                    .frame(height: 325)
+                    .frame(height: horizontalSizeClass == .compact ? 325 : 375)
                 
                 Title(episode: episode)
             }
