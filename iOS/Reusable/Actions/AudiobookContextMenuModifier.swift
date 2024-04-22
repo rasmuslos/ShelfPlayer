@@ -71,7 +71,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                     }
                 }
                 .frame(width: 250)
-                .padding()
+                .padding(20)
                 .onAppear {
                     Task.detached {
                         if let author = audiobook.author {

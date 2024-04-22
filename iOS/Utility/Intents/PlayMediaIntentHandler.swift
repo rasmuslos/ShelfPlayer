@@ -13,7 +13,7 @@ import SPOffline
 import SPOfflineExtended
 import SPPlayback
 
-class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
+final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     func handle(intent: INPlayMediaIntent) async -> INPlayMediaIntentResponse {
         guard let item = intent.mediaItems?.first, let identifier = item.identifier else { return .init(code: .failure, userActivity: nil) }
         

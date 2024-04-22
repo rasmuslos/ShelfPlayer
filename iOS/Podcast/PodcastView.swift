@@ -69,10 +69,8 @@ struct PodcastView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 15)
-                .frame(height: 45)
+                .padding(.horizontal, 20)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .listRowSeparator(.hidden)
                 
                 TipView(EpisodePreviewTip())
                     .listRowSeparator(.hidden)

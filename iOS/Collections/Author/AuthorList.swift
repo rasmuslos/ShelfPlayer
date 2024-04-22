@@ -16,6 +16,7 @@ struct AuthorList: View {
             NavigationLink(destination: AuthorView(author: author)) {
                 AuthorRow(author: author)
             }
+            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
         }
     }
 }

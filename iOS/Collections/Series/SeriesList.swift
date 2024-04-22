@@ -16,6 +16,7 @@ struct SeriesList: View {
             NavigationLink(destination: SeriesView(series: item)) {
                 SeriesRow(series: item)
             }
+            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
         }
     }
 }

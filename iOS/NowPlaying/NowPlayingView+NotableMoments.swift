@@ -37,6 +37,7 @@ extension NowPlayingViewModifier {
                     List {
                         ForEach(bookmarks) {
                             BookmarkRow(bookmark: $0)
+                                .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
                         }
                         .onDelete { indexSet in
                             for index in indexSet {
@@ -52,6 +53,7 @@ extension NowPlayingViewModifier {
                             ForEach(AudioPlayer.shared.chapters) {
                                 ChapterRow(chapter: $0)
                                     .id($0.id)
+                                    .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
                             }
                         }
                         .onAppear {
@@ -62,7 +64,7 @@ extension NowPlayingViewModifier {
             }
             .listStyle(.plain)
             .safeAreaInset(edge: .top) {
-                HStack {
+                HStack(spacing: 15) {
                     ItemImage(image: AudioPlayer.shared.item?.image)
                     
                     VStack(alignment: .leading) {
@@ -87,9 +89,9 @@ extension NowPlayingViewModifier {
                         .foregroundStyle(.secondary)
                     }
                     
-                    Spacer()
-                    
                     if AudioPlayer.shared.item as? Audiobook != nil {
+                        Spacer()
+                        
                         Button {
                             bookmarksActive.toggle()
                         } label: {
@@ -101,7 +103,7 @@ extension NowPlayingViewModifier {
                         .popoverTip(ViewBookmarkTip())
                     }
                 }
-                .padding()
+                .padding(20)
                 .background(.regularMaterial)
                 .frame(height: 100)
             }

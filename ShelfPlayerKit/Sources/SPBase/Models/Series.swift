@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class Series: Item {
+public final class Series: Item {
     public let images: [Image]
     
     public init(id: String, libraryId: String, name: String, author: String?, description: String?, image: Item.Image?, genres: [String], addedAt: Date, released: String?, images: [Image]) {

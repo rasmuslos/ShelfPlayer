@@ -42,6 +42,8 @@ extension AudiobookEntryView {
                                     if row.id != "discover" || !disableDiscoverRow {
                                         VStack(alignment: .leading) {
                                             RowTitle(title: row.label)
+                                                .padding(.horizontal, 20)
+                                            
                                             AudiobookHGrid(audiobooks: row.audiobooks.filter { audiobook in
                                                 if row.id != "continue-listening" {
                                                     return true
@@ -56,6 +58,8 @@ extension AudiobookEntryView {
                                 if !downloadedAudiobooks.isEmpty {
                                     VStack(alignment: .leading) {
                                         RowTitle(title: String(localized: "downloads"))
+                                            .padding(.horizontal, 20)
+                                        
                                         AudiobookHGrid(audiobooks: downloadedAudiobooks)
                                     }
                                 }
@@ -64,6 +68,8 @@ extension AudiobookEntryView {
                                     ForEach(authorRows) { row in
                                         VStack(alignment: .leading) {
                                             RowTitle(title: row.label)
+                                                .padding(.horizontal, 20)
+                                            
                                             AuthorGrid(authors: row.authors)
                                         }
                                     }

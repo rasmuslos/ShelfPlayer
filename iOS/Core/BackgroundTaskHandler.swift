@@ -14,7 +14,7 @@ import SPOffline
 import SPOfflineExtended
 import UserNotifications
 
-class BackgroundTaskHandler {
+final class BackgroundTaskHandler {
     static let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Background Tasks")
 }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class Podcast: Item {
+public final class Podcast: Item {
     public let explicit: Bool
     public var episodeCount: Int
     

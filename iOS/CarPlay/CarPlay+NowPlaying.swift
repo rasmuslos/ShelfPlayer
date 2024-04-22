@@ -32,7 +32,7 @@ internal extension CarPlayDelegate {
         return observer
     }
     
-    class NowPlayingObserver: NSObject, CPNowPlayingTemplateObserver {
+    final class NowPlayingObserver: NSObject, CPNowPlayingTemplateObserver {
         private var interfaceController: CPInterfaceController?
         
         init(interfaceController: CPInterfaceController?) {

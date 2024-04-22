@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public class PodcastFetchConfiguration {
+public final class PodcastFetchConfiguration {
     @Attribute(.unique)
     public let id: String
     

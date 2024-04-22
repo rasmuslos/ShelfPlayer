@@ -27,11 +27,12 @@ extension PodcastView {
                     Text(podcast.name)
                         .font(.headline)
                         .multilineTextAlignment(.center)
-                        .padding(.top)
+                        .padding(.top, 20)
                     
                     if let author = podcast.author {
                         Text(author)
                             .font(.subheadline)
+                            .multilineTextAlignment(.center)
                     }
                     
                     HStack {
@@ -76,8 +77,7 @@ extension PodcastView {
                     .font(.footnote)
                     .padding(.top, 5)
                 }
-                .padding(.vertical)
-                .padding(.horizontal, 15)
+                .padding(20)
             }
             .background(imageColors.background)
             .foregroundStyle(imageColors.isLight ? .black : .white)

@@ -10,13 +10,13 @@ import Defaults
 import SPBase
 
 struct SeriesView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.libraryId) private var libraryId
     
-    @Default(.audiobooksDisplay) var audiobookDisplay
-    @Default(.audiobooksFilter) var audiobooksFilter
+    @Default(.audiobooksDisplay) private var audiobookDisplay
+    @Default(.audiobooksFilter) private var audiobooksFilter
     
-    @State var audiobooksSortOrder = AudiobookSortFilter.SortOrder.series
-    @State var audiobooksAscending = true
+    @State private var audiobooksSortOrder = AudiobookSortFilter.SortOrder.series
+    @State private var audiobooksAscending = true
     
     let series: Series
     
@@ -39,7 +39,7 @@ struct SeriesView: View {
                     ScrollView {
                         Header(series: series)
                         AudiobookVGrid(audiobooks: visibleAudiobooks)
-                            .padding(.horizontal)
+                            .padding(.horizontal, 20)
                     }
                 case .list:
                     List {

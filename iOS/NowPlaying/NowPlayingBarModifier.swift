@@ -113,7 +113,7 @@ struct NowPlayingBarModifier: ViewModifier {
                                 .imageScale(.large)
                             }
                             .frame(height: 56)
-                            .padding(.horizontal, 8)
+                            .padding(.horizontal, 10)
                             .foregroundStyle(.primary)
                             .background {
                                 Rectangle()
@@ -124,7 +124,7 @@ struct NowPlayingBarModifier: ViewModifier {
                             .modifier(NowPlayingBarContextMenuModifier(item: item, animateForwards: $animateForwards))
                             .shadow(color: .black.opacity(0.25), radius: 20)
                             .padding(.bottom, 10)
-                            .padding(.horizontal, 8)
+                            .padding(.horizontal, 10)
                             .zIndex(1)
                             .onTapGesture {
                                 nowPlayingViewState.setNowPlayingViewPresented(true)

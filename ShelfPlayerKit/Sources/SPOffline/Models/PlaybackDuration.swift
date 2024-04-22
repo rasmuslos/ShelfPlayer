@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public class PlaybackDuration: Identifiable {
+public final class PlaybackDuration: Identifiable {
     @Attribute(.unique)
     public var id: String
     

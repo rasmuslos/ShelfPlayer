@@ -79,7 +79,7 @@ struct NowPlayingBarContextMenuModifier: ViewModifier {
                     }
                 }
                 .frame(width: 250)
-                .padding()
+                .padding(20)
             }
     }
 }

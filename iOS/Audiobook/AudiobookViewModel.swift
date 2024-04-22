@@ -11,7 +11,7 @@ import SPBase
 import SPOfflineExtended
 
 @Observable
-class AudiobookViewModel {
+final class AudiobookViewModel {
     let audiobook: Audiobook
     var libraryId: String!
     
