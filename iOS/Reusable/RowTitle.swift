@@ -15,8 +15,6 @@ struct RowTitle: View {
         Text(title)
             .font(.headline)
             .fontDesign(fontDesign)
-            .padding(.horizontal)
-            .padding(.bottom, 0)
             .padding(.top, 10)
     }
 }

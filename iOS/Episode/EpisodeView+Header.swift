@@ -19,9 +19,9 @@ extension EpisodeView {
             ZStack {
                 FullscreenBackground(threshold: -300, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
                 
-                VStack {
+                VStack(spacing: 5) {
                     ItemImage(image: episode.image)
-                        .frame(width: 150)
+                        .frame(width: 175)
                     
                     HStack(spacing: 0) {
                         if let releaseDate = episode.releaseDate {
@@ -33,7 +33,7 @@ extension EpisodeView {
                     }
                     .font(.caption.smallCaps())
                     .foregroundStyle(.secondary)
-                    .padding(.vertical, 5)
+                    .padding(.top, 7)
                     
                     VStack(spacing: 7) {
                         Text(episode.name)
@@ -52,14 +52,12 @@ extension EpisodeView {
                         }
                         .buttonStyle(.plain)
                     }
+                    .padding(.vertical, 15)
                     
                     PlayButton(item: episode)
-                        .padding()
-                        .padding(.bottom, 10)
                 }
-                .padding(.top, 100)
-                .padding(.horizontal, 30)
-                .frame(maxWidth: .infinity)
+                .padding(.top, 125)
+                .padding(.horizontal, 20)
                 .background {
                     LinearGradient(colors: [imageColors.background.opacity(0.9), .secondary.opacity(0.1)], startPoint: .top, endPoint: .bottom)
                 }

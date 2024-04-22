@@ -7,5 +7,5 @@
 
 import Foundation
 
-public class Author: Item {
+public final class Author: Item {
 }

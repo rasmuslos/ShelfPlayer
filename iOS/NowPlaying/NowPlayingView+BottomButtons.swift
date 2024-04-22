@@ -16,6 +16,7 @@ extension NowPlayingViewModifier {
             HStack {
                 PlaybackSpeedButton()
                     .frame(width: 60)
+                    .font(.system(size: 21))
                     .foregroundStyle(.secondary)
                 
                 Spacer()
@@ -23,12 +24,13 @@ extension NowPlayingViewModifier {
                 SleepTimerButton()
                     .frame(width: 60)
                     .labelStyle(.iconOnly)
+                    .font(.system(size: 19))
                     .foregroundStyle(.secondary)
                 
                 Spacer()
                 
                 AirPlayView()
-                    .frame(width: 45)
+                    .frame(width: 60, height: 45)
                 
                 Spacer()
                 
@@ -45,7 +47,6 @@ extension NowPlayingViewModifier {
             .bold()
             .font(.system(size: 20))
             .frame(height: 45)
-            .padding(.horizontal, 10)
             .sheet(isPresented: $notableMomentSheetPresented, content: {
                 NotableMomentsSheet()
                     .presentationDragIndicator(.visible)

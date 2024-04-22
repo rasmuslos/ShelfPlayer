@@ -18,7 +18,7 @@ struct EpisodeView: View {
         ScrollView {
             Header(episode: episode, imageColors: imageColors, navigationBarVisible: $navigationBarVisible)
             Description(description: episode.description)
-                .padding()
+                .padding(20)
         }
         .ignoresSafeArea(edges: .top)
         .modifier(NowPlayingBarSafeAreaModifier())

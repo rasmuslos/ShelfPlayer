@@ -23,20 +23,22 @@ extension AuthorView {
                 Text(author.name)
                     .fontDesign(.serif)
                     .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
                 
                 if let description = author.description {
                     Button {
                         descriptionSheetVisible.toggle()
                     } label: {
                         Text(description)
-                            .padding(.horizontal)
+                            .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                             .lineLimit(3)
                             .sheet(isPresented: $descriptionSheetVisible) {
                                 NavigationStack {
                                     Text(description)
                                         .navigationTitle(author.name)
-                                        .padding()
+                                        .padding(20)
                                     
                                     Spacer()
                                 }

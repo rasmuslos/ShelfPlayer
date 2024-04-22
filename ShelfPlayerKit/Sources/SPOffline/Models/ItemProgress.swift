@@ -10,7 +10,7 @@ import SwiftData
 import SPBase
 
 @Model
-public class ItemProgress: Identifiable {
+public final class ItemProgress: Identifiable {
     @Attribute(.unique)
     public let id: String
     public let itemId: String

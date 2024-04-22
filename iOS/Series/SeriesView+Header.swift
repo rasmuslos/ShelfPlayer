@@ -34,9 +34,10 @@ extension SeriesView {
                     }
                     
                     Text(series.name)
-                        .fontDesign(.serif)
                         .font(.title)
+                        .fontDesign(.serif)
                         .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
                         .toolbar {
                             ToolbarItem(placement: .principal) {
                                 Text(verbatim: "")
@@ -44,7 +45,7 @@ extension SeriesView {
                         }
                 }
                 .listRowSeparator(.hidden)
-                .padding(.bottom)
+                .padding(.bottom, 20)
             }
         }
     }

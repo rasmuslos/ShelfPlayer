@@ -8,7 +8,7 @@
 import CarPlay
 import SPBase
 
-public class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     // we need to keep a strong reference to this object
     internal var nowPlayingObserver: NowPlayingObserver?
     internal var interfaceController: CPInterfaceController?

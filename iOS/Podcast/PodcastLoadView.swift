@@ -23,14 +23,18 @@ struct PodcastLoadView: View {
             PodcastView(podcast: podcast)
         } else {
             LoadingView()
-                .navigationBarBackButtonHidden()
-                .task {
-                    if let (podcast, _) = try? await AudiobookshelfClient.shared.getPodcast(podcastId: podcastId) {
-                        self.podcast = podcast
-                    } else {
-                        failed = true
-                    }
-                }
+                .task { await fetchPodcast() }
+                .refreshable { await fetchPodcast() }
+        }
+    }
+}
+
+extension PodcastLoadView {
+    private func fetchPodcast() async {
+        if let (podcast, _) = try? await AudiobookshelfClient.shared.getPodcast(podcastId: podcastId) {
+            self.podcast = podcast
+        } else {
+            failed = true
         }
     }
 }

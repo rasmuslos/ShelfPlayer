@@ -10,7 +10,7 @@ import Defaults
 import SPBase
 
 struct AuthorsView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.libraryId) private var libraryId
     @Default(.authorsAscending) private var authorsAscending
     
     @State private var authors = [Author]()

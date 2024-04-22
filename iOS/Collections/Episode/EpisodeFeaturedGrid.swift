@@ -85,7 +85,7 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
                 
                 Spacer()
             }
-            .padding()
+            .padding(20)
         }
     }
     

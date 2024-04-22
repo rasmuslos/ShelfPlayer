@@ -36,6 +36,7 @@ extension PodcastEntryView {
                                 ForEach(episodeRows) { row in
                                     VStack(alignment: .leading) {
                                         RowTitle(title: row.label)
+                                            .padding(.horizontal, 20)
                                         
                                         if row.id == "continue-listening" {
                                             EpisodeFeaturedGrid(episodes: row.episodes.filter { episode in
@@ -50,6 +51,8 @@ extension PodcastEntryView {
                                 ForEach(podcastRows) { row in
                                     VStack(alignment: .leading) {
                                         RowTitle(title: row.label)
+                                            .padding(.horizontal, 20)
+                                        
                                         PodcastHGrid(podcasts: row.podcasts)
                                     }
                                 }

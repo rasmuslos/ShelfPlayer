@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public class OfflineChapter {
+public final class OfflineChapter {
     public let id: Int
     public let itemId: String
     

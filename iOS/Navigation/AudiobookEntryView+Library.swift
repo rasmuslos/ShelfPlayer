@@ -68,7 +68,7 @@ extension AudiobookEntryView {
                                 case .grid:
                                     ScrollView {
                                         AudiobookVGrid(audiobooks: visibleAudiobooks)
-                                            .padding(.horizontal)
+                                            .padding(.horizontal, 20)
                                     }
                                 case .list:
                                     List {

@@ -17,7 +17,7 @@ extension PlayableItem {
 }
 
 @Observable
-public class ItemOfflineTracker {
+public final class ItemOfflineTracker {
     let itemId: String
     
     var _status: OfflineStatus? = nil

@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public class OfflineAudiobook {
+public final class OfflineAudiobook {
     @Attribute(.unique)
     public let id: String
     public let libraryId: String

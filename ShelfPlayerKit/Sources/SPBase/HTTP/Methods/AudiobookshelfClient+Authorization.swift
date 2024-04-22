@@ -93,7 +93,7 @@ public extension AudiobookshelfClient {
         return response.user.token
     }
     
-    class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
+    final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
         public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
             nil
         }

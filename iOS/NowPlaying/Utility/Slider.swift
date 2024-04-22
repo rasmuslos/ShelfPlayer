@@ -45,6 +45,6 @@ struct Slider: View {
 #Preview {
     VStack {
         Slider(percentage: .constant(50), dragging: .constant(false))
-            .padding(.horizontal)
+            .padding(.horizontal, 20)
     }
 }

@@ -12,7 +12,7 @@ import AVKit
 import OSLog
 
 @Observable
-public class AudioPlayer {
+public final class AudioPlayer {
     // MARK: Public
     public internal(set) var item: PlayableItem?
     public internal(set) var chapters: PlayableItem.Chapters

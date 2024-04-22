@@ -17,17 +17,15 @@ struct SeriesLoadView: View {
     @State private var resolved: Series?
     
     var body: some View {
-        Group {
-            if failed {
-                SeriesUnavailableView()
-            } else if let resolved = resolved {
-                SeriesView(series: resolved)
-            } else {
-                LoadingView()
-                    .task { await fetchSeries() }
-            }
+        if failed {
+            SeriesUnavailableView()
+        } else if let resolved = resolved {
+            SeriesView(series: resolved)
+        } else {
+            LoadingView()
+                .task { await fetchSeries() }
+                .refreshable { await fetchSeries() }
         }
-        .refreshable { await fetchSeries() }
     }
 }
 

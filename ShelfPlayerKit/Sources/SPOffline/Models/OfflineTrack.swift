@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public class OfflineTrack {
+public final class OfflineTrack {
     @Attribute(.unique)
     public let id: String
     public let parentId: String

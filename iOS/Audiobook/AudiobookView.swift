@@ -18,24 +18,28 @@ struct AudiobookView: View {
     }
     
     let divider: some View = Divider()
-        .padding(.horizontal)
+        .padding(.horizontal, 20)
         .padding(.vertical, 10)
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 Header()
-                    .padding()
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 20)
                 
                 divider
                 
                 Description(description: viewModel.audiobook.description)
-                    .padding()
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 20)
                 
                 if let chapters = viewModel.chapters, chapters.count > 1 {
                     divider
+                    
                     ChaptersList(chapters: chapters)
-                        .padding()
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 20)
                 }
                 
                 if viewModel.audiobooksInSeries.count > 1 {
@@ -43,6 +47,7 @@ struct AudiobookView: View {
                     
                     VStack(alignment: .leading) {
                         RowTitle(title: String(localized: "audiobook.similar.series"))
+                            .padding(.horizontal, 20)
                         AudiobookHGrid(audiobooks: viewModel.audiobooksInSeries, amount: 4)
                     }
                     .padding(.bottom, 20)
@@ -53,6 +58,7 @@ struct AudiobookView: View {
                     
                     VStack(alignment: .leading) {
                         RowTitle(title: String(localized: "audiobook.similar.author \(author)"))
+                            .padding(.horizontal, 20)
                         AudiobookHGrid(audiobooks: viewModel.audiobooksByAuthor, amount: 4)
                     }
                 }

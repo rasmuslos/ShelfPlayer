@@ -19,7 +19,7 @@ struct AudiobookList: View {
                 AudiobookRow(audiobook: audiobook)
             }
             .modifier(SwipeActionsModifier(item: audiobook))
-            .listRowSeparator(offset == 0 ? .hidden : .visible, edges: .top)
+            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
         }
     }
 }
@@ -100,21 +100,6 @@ extension AudiobookList {
                 .padding(.leading, 5)
             }
             .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
-        }
-    }
-}
-
-extension AudiobookList {
-    struct GridView: View {
-        let title: String
-        let audiobooks: [Audiobook]
-        
-        var body: some View {
-            ScrollView {
-                AudiobookVGrid(audiobooks: audiobooks)
-                    .padding(.horizontal)
-            }
-            .navigationTitle(title)
         }
     }
 }

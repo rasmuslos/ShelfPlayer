@@ -28,7 +28,7 @@ extension PodcastEntryView {
                     } else {
                         ScrollView {
                             PodcastVGrid(podcasts: podcasts)
-                                .padding(.horizontal)
+                                .padding(.horizontal, 20)
                         }
                     }
                 }

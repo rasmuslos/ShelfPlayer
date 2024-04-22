@@ -51,7 +51,7 @@ public extension Library {
 }
 
 @Observable
-public class AvailableLibraries {
+public final class AvailableLibraries {
     public let libraries: [Library]
     
     public init(libraries: [Library]) {
