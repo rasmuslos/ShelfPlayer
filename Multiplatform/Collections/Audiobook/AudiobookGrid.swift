@@ -46,7 +46,7 @@ struct AudiobookHGrid: View {
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimum = horizontalSizeClass == .compact ? small ? 90.0 : 120.0 : small ? 120.0 : 200.0
+        let minimum = horizontalSizeClass == .compact ? small ? 90.0 : 120.0 : small ? 120.0 : 150.0
         
         let usable = width - padding * 2
         let amount = CGFloat(Int(usable / minimum))
