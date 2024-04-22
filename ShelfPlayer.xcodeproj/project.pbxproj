@@ -302,7 +302,6 @@
 				3A0AE6BB2AB624EB00ACCD68 /* Core */,
 				3A9E5E042BC6CFBA00FF6F7A /* Utility */,
 				3A5210042B6D2A9F00F59101 /* Common */,
-				3A9874212B5995CE00B2704F /* Collections */,
 				3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */,
 				3A77B7002ACDF00100F22C7F /* Series */,
 				3A77B6FB2ACDE2DA00F22C7F /* Author */,
@@ -518,6 +517,7 @@
 				3A5210062B6D2C9100F59101 /* Actions */,
 				3AADC0382B6D104400C4088D /* Buttons */,
 				3A5210052B6D2AD600F59101 /* Fullscreen */,
+				3A9874212B5995CE00B2704F /* Collections */,
 			);
 			path = Reusable;
 			sourceTree = "<group>";
