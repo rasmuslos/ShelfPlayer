@@ -46,7 +46,7 @@ struct PodcastFullListView: View {
         .listStyle(.plain)
         .navigationTitle("title.episodes")
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $query)
+        .searchable(text: $query, placement: .toolbar)
         .modifier(NowPlayingBarSafeAreaModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

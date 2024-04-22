@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */; };
-		3A0AE6A42AB623F400ACCD68 /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* iOSApp.swift */; };
+		3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */; };
 		3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A52AB623F400ACCD68 /* ContentView.swift */; };
 		3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */; };
 		3A0AE6BA2AB624E700ACCD68 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6B92AB624E700ACCD68 /* LoginView.swift */; };
@@ -137,7 +137,7 @@
 
 /* Begin PBXFileReference section */
 		3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringKey+Key.swift"; sourceTree = "<group>"; };
-		3A0AE6A32AB623F400ACCD68 /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
+		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A0AE6AB2AB623F500ACCD68 /* Audiobooks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Audiobooks.entitlements; sourceTree = "<group>"; };
@@ -289,14 +289,14 @@
 			children = (
 				3A82864B2AEC0DD800384BC9 /* README.md */,
 				3AF6A5292B603FA000770A1E /* Configuration */,
-				3A0AE6A22AB623F400ACCD68 /* iOS */,
+				3A0AE6A22AB623F400ACCD68 /* Multiplatform */,
 				3A97FEB52B4175EC00A6A5C7 /* ShelfPlayerKit */,
 				3A21CC542B0A1CBB002D5D55 /* Products */,
 				3AE3E9672B1E37D3005FBFA6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		3A0AE6A22AB623F400ACCD68 /* iOS */ = {
+		3A0AE6A22AB623F400ACCD68 /* Multiplatform */ = {
 			isa = PBXGroup;
 			children = (
 				3A0AE6BB2AB624EB00ACCD68 /* Core */,
@@ -305,8 +305,8 @@
 				3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */,
 				3A77B7002ACDF00100F22C7F /* Series */,
 				3A77B6FB2ACDE2DA00F22C7F /* Author */,
-				3A8810FC2AD2D2B3009696D1 /* Podcast */,
 				3A8810EC2AD2C061009696D1 /* Episode */,
+				3A8810FC2AD2D2B3009696D1 /* Podcast */,
 				3A98246A2B6EAB0A0098C06A /* Offline */,
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
@@ -323,7 +323,7 @@
 				3A0AE6AB2AB623F500ACCD68 /* Audiobooks.entitlements */,
 				3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */,
 			);
-			path = iOS;
+			path = Multiplatform;
 			sourceTree = "<group>";
 		};
 		3A0AE6B62AB624CC00ACCD68 /* Account */ = {
@@ -340,9 +340,9 @@
 		3A0AE6BB2AB624EB00ACCD68 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				3A0AE6A32AB623F400ACCD68 /* iOSApp.swift */,
-				3A0AE6A52AB623F400ACCD68 /* ContentView.swift */,
 				3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */,
+				3A0AE6A52AB623F400ACCD68 /* ContentView.swift */,
+				3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */,
 				3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */,
 			);
 			path = Core;
@@ -692,9 +692,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3A0AE69F2AB623F400ACCD68 /* iOS */ = {
+		3A0AE69F2AB623F400ACCD68 /* Multiplatform */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "iOS" */;
+			buildConfigurationList = 3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "Multiplatform" */;
 			buildPhases = (
 				3A0AE69C2AB623F400ACCD68 /* Sources */,
 				3A0AE69D2AB623F400ACCD68 /* Frameworks */,
@@ -705,7 +705,7 @@
 			);
 			dependencies = (
 			);
-			name = iOS;
+			name = Multiplatform;
 			packageProductDependencies = (
 				3A1EAB922ACC80690064C80C /* NukeUI */,
 				3A8810F42AD2C35B009696D1 /* UIImageColors */,
@@ -754,7 +754,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3A0AE69F2AB623F400ACCD68 /* iOS */,
+				3A0AE69F2AB623F400ACCD68 /* Multiplatform */,
 			);
 		};
 /* End PBXProject section */
@@ -906,7 +906,7 @@
 				3AA089312B6E306F00773414 /* SeriesList.swift in Sources */,
 				3A1507992AD4494300D7D6CF /* UINavigationController+Gesture.swift in Sources */,
 				3ACFD7272BD14B2500C7998B /* SelectLibraryTip.swift in Sources */,
-				3A0AE6A42AB623F400ACCD68 /* iOSApp.swift in Sources */,
+				3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */,
 				3A77B7092ACDF8F200F22C7F /* FullscreenBackButton.swift in Sources */,
 				3A36D78B2ACF2C1D002EEC54 /* AudiobookGrid.swift in Sources */,
 				3A17E68F2AD5F15900E59464 /* NowPlayingView+Title.swift in Sources */,
@@ -1084,9 +1084,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iOS/Audiobooks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Multiplatform/Audiobooks.entitlements;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
@@ -1112,7 +1112,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1121,9 +1121,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iOS/Audiobooks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Multiplatform/Audiobooks.entitlements;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
@@ -1149,7 +1149,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1165,7 +1165,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "iOS" */ = {
+		3A0AE6B12AB623F500ACCD68 /* Build configuration list for PBXNativeTarget "Multiplatform" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A0AE6B22AB623F500ACCD68 /* Debug */,
