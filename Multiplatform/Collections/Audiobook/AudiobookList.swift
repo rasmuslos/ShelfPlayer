@@ -14,7 +14,7 @@ struct AudiobookList: View {
     let audiobooks: [Audiobook]
     
     var body: some View {
-        ForEach(Array(audiobooks.enumerated()), id: \.offset) { offset, audiobook in
+        ForEach(audiobooks) { audiobook in
             NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
                 AudiobookRow(audiobook: audiobook)
             }

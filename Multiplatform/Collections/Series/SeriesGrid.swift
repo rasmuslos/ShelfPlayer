@@ -9,11 +9,17 @@ import SwiftUI
 import SPBase
 
 struct SeriesGrid: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
     let series: [Series]
     
+    private var minimumWidth: CGFloat {
+        horizontalSizeClass == .compact ? 160.0 : 200.0
+    }
+    
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible())], spacing: 10) {
-            ForEach(Array(series.enumerated()), id: \.offset) { index, item in
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 15)], spacing: 20) {
+            ForEach(series) { item in
                 NavigationLink(destination: SeriesView(series: item)) {
                     SeriesGridItem(series: item)
                 }
