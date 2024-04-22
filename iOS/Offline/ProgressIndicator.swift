@@ -12,7 +12,7 @@ struct ProgressIndicator: View {
     let entity: ItemProgress
     
     var body: some View {
-        if entity.progress > 0 {
+        if entity.progress < 0 {
             EmptyView()
         } else {
             ZStack {
