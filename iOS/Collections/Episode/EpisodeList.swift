@@ -17,6 +17,7 @@ struct EpisodeList: View {
                     EpisodeRow(episode: episode)
                 }
                 .modifier(SwipeActionsModifier(item: episode))
+                .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
             }
     }
 }

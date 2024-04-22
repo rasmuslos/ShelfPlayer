@@ -41,7 +41,7 @@ struct AuthorView: View {
                         ScrollView {
                             Header(author: author)
                             AudiobookVGrid(audiobooks: visibleAudiobooks)
-                                .padding()
+                                .padding(20)
                         }
                     case .list:
                         List {

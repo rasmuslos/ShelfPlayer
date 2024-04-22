@@ -28,7 +28,7 @@ extension AudiobookEntryView {
                     } else {
                         ScrollView {
                             SeriesGrid(series: series)
-                                .padding()
+                                .padding(20)
                         }
                         .modifier(NowPlayingBarSafeAreaModifier())
                     }

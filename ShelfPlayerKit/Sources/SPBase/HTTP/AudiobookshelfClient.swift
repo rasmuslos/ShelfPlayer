@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class AudiobookshelfClient {
+public final class AudiobookshelfClient {
     public private(set) var serverUrl: URL!
     public private(set) var token: String!
     

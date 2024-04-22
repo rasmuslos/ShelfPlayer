@@ -91,7 +91,7 @@ extension EpisodePlayButton {
 }
 
 @Observable
-class EpisodePlayButtonViewModel {
+final class EpisodePlayButtonViewModel {
     let episode: Episode
     let highlighted: Bool
     

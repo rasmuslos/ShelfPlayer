@@ -8,7 +8,7 @@
 import Foundation
 import OSLog
 
-class DownloadManager: NSObject {
+final class DownloadManager: NSObject {
     private(set) var documentsURL: URL!
     private(set) var urlSession: URLSession!
     

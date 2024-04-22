@@ -24,14 +24,19 @@ struct AuthorLoadView: View {
             AuthorView(author: author, audiobooks: audiobooks ?? [])
         } else {
             LoadingView()
-                .task {
-                    if let author = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId) {
-                        self.audiobooks = author.1
-                        self.author = author.0
-                    } else {
-                        failed = true
-                    }
-                }
+                .task { await fetchAuthor() }
+                .refreshable { await fetchAuthor() }
+        }
+    }
+}
+
+extension AuthorLoadView {
+    private func fetchAuthor() async {
+        if let author = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId) {
+            self.audiobooks = author.1
+            self.author = author.0
+        } else {
+            failed = true
         }
     }
 }

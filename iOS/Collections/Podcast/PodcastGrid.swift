@@ -85,7 +85,7 @@ struct PodcastGridItem: View {
                 Podcast.fixture,
                 Podcast.fixture,
             ])
-            .padding(.horizontal)
+            .padding(.horizontal, 20)
         }
     }
 }

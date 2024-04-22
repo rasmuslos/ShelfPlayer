@@ -18,7 +18,6 @@ extension AudiobookView {
                 .bold()
                 .underline()
                 .lineLimit(1)
-                .padding(5)
         }
         
         var body: some View {
@@ -26,32 +25,35 @@ extension AudiobookView {
                 FullscreenBackground(threshold: -300, backgroundColor: .clear, navigationBarVisible: .init(get: { viewModel.navigationBarVisible }, set: { viewModel.navigationBarVisible = $0 }))
                     .frame(height: 0)
                 
-                VStack {
+                VStack(spacing: 0) {
                     ItemImage(image: viewModel.audiobook.image)
                         .padding(.horizontal, 50)
                         .shadow(radius: 30)
                     
                     if !viewModel.audiobook.series.isEmpty, let seriesName = viewModel.audiobook.seriesName {
-                        if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
-                            NavigationLink(destination: SeriesLoadView(series: series)){
-                                seriesNameComponent(seriesName)
-                            }
-                            .buttonStyle(.plain)
-                        } else {
-                            Menu {
-                                ForEach(viewModel.audiobook.series, id: \.name) { series in
-                                    NavigationLink(destination: SeriesLoadView(series: series)) {
-                                        seriesNameComponent(series.name)
-                                    }
+                        Group {
+                            if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
+                                NavigationLink(destination: SeriesLoadView(series: series)){
+                                    seriesNameComponent(seriesName)
                                 }
-                            } label: {
-                                seriesNameComponent(seriesName)
+                                .buttonStyle(.plain)
+                            } else {
+                                Menu {
+                                    ForEach(viewModel.audiobook.series, id: \.name) { series in
+                                        NavigationLink(destination: SeriesLoadView(series: series)) {
+                                            seriesNameComponent(series.name)
+                                        }
+                                    }
+                                } label: {
+                                    seriesNameComponent(seriesName)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
+                        .padding(.top, 7)
                     }
                     
-                    VStack(spacing: 0) {
+                    VStack(spacing: 5) {
                         Text(viewModel.audiobook.name)
                             .font(.headline)
                             .fontDesign(.serif)
@@ -74,7 +76,6 @@ extension AudiobookView {
                                             .offset(x: 17)
                                     }
                                     .font(.subheadline)
-                                    .padding(.vertical, 4)
                             }
                             .buttonStyle(.plain)
                         }
@@ -107,7 +108,7 @@ extension AudiobookView {
                         .foregroundStyle(.secondary)
                         .imageScale(.small)
                     }
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 15)
                     
                     PlayButton(item: viewModel.audiobook)
                 }

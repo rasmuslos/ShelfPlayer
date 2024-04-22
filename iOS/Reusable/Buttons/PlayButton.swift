@@ -80,7 +80,6 @@ struct PlayNowButtonStyle: ButtonStyle {
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 7))
-            .padding(.horizontal, 20)
     }
 }
 

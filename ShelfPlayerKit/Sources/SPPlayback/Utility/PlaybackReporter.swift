@@ -15,7 +15,7 @@ import SPOfflineExtended
 #endif
 
 /// An object that reports playback progress to the ABS server or alternatively stores is for future syncing
-internal class PlaybackReporter {
+internal final class PlaybackReporter {
     private let itemId: String
     private let episodeId: String?
     

@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public class OfflineEpisode {
+public final class OfflineEpisode {
     @Attribute(.unique)
     public let id: String
     public let libraryId: String

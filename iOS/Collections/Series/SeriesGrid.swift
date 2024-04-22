@@ -12,12 +12,10 @@ struct SeriesGrid: View {
     let series: [Series]
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible())], spacing: 10) {
             ForEach(Array(series.enumerated()), id: \.offset) { index, item in
                 NavigationLink(destination: SeriesView(series: item)) {
                     SeriesGridItem(series: item)
-                        .padding(.trailing, index % 2 == 0 ? 5 : 0)
-                        .padding(.leading, index % 2 == 1 ? 5 : 0)
                 }
                 .buttonStyle(.plain)
             }
@@ -36,7 +34,7 @@ extension SeriesGrid {
                 } else if series.images.count < 4 {
                     ItemImage(image: series.images.randomElement()!)
                 } else {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible())], spacing: 10) {
                         ItemImage(image: series.images[0])
                         ItemImage(image: series.images[1])
                         ItemImage(image: series.images[2])
@@ -62,7 +60,7 @@ extension SeriesGrid {
                 Series.fixture,
                 Series.fixture,
             ])
-            .padding()
+            .padding(20)
         }
     }
 }
