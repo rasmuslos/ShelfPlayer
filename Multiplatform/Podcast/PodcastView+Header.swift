@@ -20,7 +20,7 @@ extension PodcastView {
         
         var body: some View {
             ZStack {
-                FullscreenBackground(threshold: -250, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
+                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -150 : -250, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
                 
                 // Because both of these have approximately the same size `ViewThatFits` does not work here.
                 if horizontalSizeClass == .compact {
@@ -38,17 +38,19 @@ extension PodcastView {
 extension PodcastView.Header {
     struct Title: View {
         let podcast: Podcast
+        
         let largeFont: Bool
+        let alignment: TextAlignment
         
         var body: some View {
             Text(podcast.name)
                 .font(largeFont ? .title : .headline)
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(alignment)
             
             if let author = podcast.author {
                 Text(author)
                     .font(largeFont ? .title2 : .subheadline)
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(alignment)
             }
         }
     }
@@ -115,7 +117,7 @@ extension PodcastView.Header {
                 ItemImage(image: podcast.image)
                     .frame(width: 200)
                 
-                Title(podcast: podcast, largeFont: false)
+                Title(podcast: podcast, largeFont: false, alignment: .center)
                     .padding(.top, 20)
                 
                 Description(podcast: podcast)
@@ -139,7 +141,7 @@ extension PodcastView.Header {
                 VStack(alignment: .leading, spacing: 10) {
                     Additional(podcast: podcast)
                         .foregroundStyle(.secondary)
-                    Title(podcast: podcast, largeFont: true)
+                    Title(podcast: podcast, largeFont: true, alignment: .leading)
                     Description(podcast: podcast)
                 }
                 

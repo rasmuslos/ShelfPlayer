@@ -38,12 +38,21 @@ struct SeriesView: View {
                 case .grid:
                     ScrollView {
                         Header(series: series)
+                        
+                        HStack {
+                            RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                        
                         AudiobookVGrid(audiobooks: visibleAudiobooks)
                             .padding(.horizontal, 20)
                     }
                 case .list:
                     List {
                         Header(series: series)
+                        RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                            .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 20))
                         AudiobookList(audiobooks: visibleAudiobooks)
                     }
                     .listStyle(.plain)

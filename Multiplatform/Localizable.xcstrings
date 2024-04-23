@@ -633,6 +633,22 @@
         }
       }
     },
+    "books" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bücher"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Books"
+          }
+        }
+      }
+    },
     "carPlay.chapters" : {
       "localizations" : {
         "de" : {

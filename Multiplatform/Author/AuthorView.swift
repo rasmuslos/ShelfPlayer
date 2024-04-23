@@ -40,6 +40,13 @@ struct AuthorView: View {
                     case .grid:
                         ScrollView {
                             Header(author: author)
+                            
+                            HStack {
+                                RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+                            
                             AudiobookVGrid(audiobooks: visibleAudiobooks)
                                 .padding(20)
                         }
@@ -55,6 +62,8 @@ struct AuthorView: View {
                             .listRowSeparator(.hidden)
                             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                             
+                            RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                                .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 20))
                             AudiobookList(audiobooks: visibleAudiobooks)
                         }
                         .listStyle(.plain)

@@ -10,18 +10,24 @@ import SPBase
 
 extension PodcastView {
     struct ToolbarModifier: ViewModifier {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        
         let podcast: Podcast
         let navigationBarVisible: Bool
         let imageColors: Item.ImageColors
         
         @State private var settingsSheetPresented = false
         
+        private var regularPresentation: Bool {
+            horizontalSizeClass == .regular
+        }
+        
         func body(content: Content) -> some View {
             content
                 .navigationTitle(podcast.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(navigationBarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!navigationBarVisible)
+                .toolbarBackground(regularPresentation ? .automatic : navigationBarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!navigationBarVisible && !regularPresentation)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         if navigationBarVisible {
@@ -43,13 +49,13 @@ extension PodcastView {
                         Button {
                             settingsSheetPresented.toggle()
                         } label: {
-                            Image(systemName: "ellipsis.circle.fill")
+                            Image(systemName: "ellipsis")
                         }
                         .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
                     }
                 }
                 .toolbar {
-                    if !navigationBarVisible {
+                    if !navigationBarVisible && !regularPresentation {
                         ToolbarItem(placement: .navigation) {
                             FullscreenBackButton(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight)
                         }

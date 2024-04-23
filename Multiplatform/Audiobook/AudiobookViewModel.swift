@@ -13,6 +13,7 @@ import SPOfflineExtended
 @Observable
 final class AudiobookViewModel {
     let audiobook: Audiobook
+    
     var libraryId: String!
     
     var navigationBarVisible: Bool
@@ -29,7 +30,7 @@ final class AudiobookViewModel {
         self.audiobook = audiobook
         
         offlineTracker = audiobook.offlineTracker
-        navigationBarVisible = false
+        _navigationBarVisible = false
     }
 }
 

@@ -12,11 +12,17 @@ import SPOfflineExtended
 
 extension EpisodeView {
     struct ToolbarModifier: ViewModifier {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        
         let episode: Episode
         let offlineTracker: ItemOfflineTracker
         
         let navigationBarVisible: Bool
         let imageColors: Item.ImageColors
+        
+        private var regularPresentation: Bool {
+            horizontalSizeClass == .regular
+        }
         
         init(episode: Episode, navigationBarVisible: Bool, imageColors: Item.ImageColors) {
             self.episode = episode
@@ -30,15 +36,18 @@ extension EpisodeView {
             content
                 .navigationTitle(episode.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(navigationBarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!navigationBarVisible)
+                .toolbarBackground(regularPresentation ? .automatic : navigationBarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!navigationBarVisible && !regularPresentation)
                 .toolbar {
                     if !navigationBarVisible {
-                        ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(navigationBarVisible: false, isLight: imageColors.isLight)
-                        }
                         ToolbarItem(placement: .principal) {
                             Text(verbatim: "")
+                        }
+                        
+                        if !regularPresentation {
+                            ToolbarItem(placement: .navigation) {
+                                FullscreenBackButton(navigationBarVisible: false, isLight: imageColors.isLight)
+                            }
                         }
                     }
                     
