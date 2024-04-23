@@ -30,8 +30,15 @@ struct PodcastEntryView: View {
                 .tag(Tab.latest)
             LibraryView()
                 .tag(Tab.library)
-            SearchView()
-                .tag(Tab.search)
+            
+            NavigationStack {
+                SearchView()
+            }
+            .modifier(NowPlayingBarModifier())
+            .tag(Tab.search)
+            .tabItem {
+                Label("tab.search", systemImage: "magnifyingglass")
+            }
         }
     }
 }

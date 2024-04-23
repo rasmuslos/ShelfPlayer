@@ -8,7 +8,7 @@
 import SwiftUI
 import SPBase
 
-struct EntryView: View {
+struct CompactEntryView: View {
     @State var failed = false
     @State var libraries = [Library]()
     @State var activeLibrary: Library?
@@ -48,7 +48,7 @@ struct EntryView: View {
 
 // MARK: Helper
 
-extension EntryView {
+extension CompactEntryView {
     func fetchLibraries() async {
         if let libraries = try? await AudiobookshelfClient.shared.getLibraries(), !libraries.isEmpty {
             self.libraries = libraries
@@ -81,5 +81,5 @@ extension EnvironmentValues {
 
 
 #Preview {
-    EntryView()
+    CompactEntryView()
 }

@@ -262,7 +262,11 @@ struct AccountSheet: View {
 }
 
 struct AccountSheetToolbarModifier: ViewModifier {
-    @State var accountSheetPresented = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    @State private var accountSheetPresented = false
+    
+    let requiredSize: UserInterfaceSizeClass?
     
     func body(content: Content) -> some View {
         content
@@ -274,7 +278,7 @@ struct AccountSheetToolbarModifier: ViewModifier {
                     Button {
                         accountSheetPresented.toggle()
                     } label: {
-                        Image(systemName: "server.rack")
+                        Image(systemName: "person.crop.circle")
                     }
                 }
             }
@@ -291,6 +295,6 @@ struct AccountSheetToolbarModifier: ViewModifier {
 #Preview {
     NavigationStack {
         Text(":)")
-            .modifier(AccountSheetToolbarModifier())
+            .modifier(AccountSheetToolbarModifier(requiredSize: nil))
     }
 }
