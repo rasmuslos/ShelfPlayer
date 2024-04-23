@@ -10,13 +10,14 @@ import Defaults
 import SPBase
 
 struct AudiobookLibraryView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.libraryId) private var libraryId
     
-    @Default(.audiobooksDisplay) var audiobookDisplay
-    @Default(.audiobooksFilter) var audiobooksFilter
+    @Default(.audiobooksDisplay) private var audiobookDisplay
+    @Default(.audiobooksFilter) private var audiobooksFilter
     
-    @Default(.audiobooksSortOrder) var audiobooksSortOrder
-    @Default(.audiobooksAscending) var audiobooksAscending
+    @Default(.audiobooksSortOrder) private var audiobooksSortOrder
+    @Default(.audiobooksAscending) private var audiobooksAscending
     
     @State private var failed = false
     @State private var audiobooks = [Audiobook]()
@@ -76,9 +77,11 @@ struct AudiobookLibraryView: View {
                     }
                 }
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        NavigationLink(destination: AuthorsView()) {
-                            Image(systemName: "person.fill")
+                    if horizontalSizeClass == .compact {
+                        ToolbarItem(placement: .topBarLeading) {
+                            NavigationLink(destination: AuthorsView()) {
+                                Image(systemName: "person.fill")
+                            }
                         }
                     }
                 }
