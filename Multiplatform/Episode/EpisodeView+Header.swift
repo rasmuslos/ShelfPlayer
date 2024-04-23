@@ -72,7 +72,9 @@ extension EpisodeView.Header {
                     .foregroundStyle(.secondary)
                     .buttonStyle(.plain)
                     
-                    Spacer()
+                    if alignment == .leading {
+                        Spacer()
+                    }
                 }
             }
         }
