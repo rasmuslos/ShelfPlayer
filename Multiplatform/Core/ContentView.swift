@@ -12,7 +12,19 @@ import Intents
 import SPOffline
 
 struct ContentView: View {
-    @State var state: Step = AudiobookshelfClient.shared.isAuthorized ? .sessionImport : .login
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    @State private var state: Step = AudiobookshelfClient.shared.isAuthorized ? .sessionImport : .login
+    
+    private var navigationController: some View {
+        Group {
+            if horizontalSizeClass == .compact {
+                CompactEntryView()
+            } else {
+                SidebarView()
+            }
+        }
+    }
     
     var body: some View {
         Group {
@@ -30,7 +42,7 @@ struct ContentView: View {
                         }
                     }
                 case .library:
-                    EntryView()
+                    navigationController
                         .onAppear {
                             VocabularyDonator.donateVocabulary()
                             
