@@ -23,12 +23,13 @@ extension SidebarView {
         case series
         case podcastLibrary
         case audiobookLibrary
+        case authors
         case search
     }
 }
 
 extension SidebarView.LibrarySection {
-    var title: LocalizedStringKey {
+    var label: LocalizedStringKey {
         switch self {
             case .audiobookListenNow, .podcastListenNow:
                 "section.listenNow"
@@ -38,8 +39,31 @@ extension SidebarView.LibrarySection {
                 "section.series"
             case .audiobookLibrary, .podcastLibrary:
                 "section.library"
+            case .authors:
+                "section.authors"
             case .search:
                 "section.search"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+            case .podcastListenNow:
+                "waveform"
+            case .audiobookListenNow:
+                "bookmark.fill"
+            case .latest:
+                "clock"
+            case .series:
+                "books.vertical.fill"
+            case .podcastLibrary:
+                "tray.fill"
+            case .audiobookLibrary:
+                "book.fill"
+            case .authors:
+                "person.fill"
+            case .search:
+                "magnifyingglass"
         }
     }
     
@@ -58,6 +82,8 @@ extension SidebarView.LibrarySection {
                     PodcastLibraryView()
                 case .audiobookLibrary:
                     AudiobookLibraryView()
+                case .authors:
+                    AuthorsView()
                 case .search:
                     SearchView()
             }
@@ -67,7 +93,7 @@ extension SidebarView.LibrarySection {
     static func filtered(libraryType: Library.MediaType) -> [Self] {
         switch libraryType {
             case .audiobooks:
-                return [.audiobookListenNow, .series, .audiobookLibrary, .search]
+                return [.audiobookListenNow, .series, authors, .audiobookLibrary, .search]
             case .podcasts:
                 return [.podcastListenNow, .latest, .podcastLibrary, .search]
         }
