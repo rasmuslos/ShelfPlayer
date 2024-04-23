@@ -46,6 +46,7 @@ Things to implement before i would consider ShelfPlayer feature complete:
 | Library | Audiobook | Player | Podcast |
 | ------------- | ------------- | ------------- | ------------- |
 | <img src="/Screenshots/Library.png?raw=true" alt="Library" width="200"/> | <img src="/Screenshots/Audiobook.png?raw=true" alt="Album" width="200"/> | <img src="/Screenshots/Player.png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/Podcast.png?raw=true" alt="Queue" width="200"/> 
+| <img src="/Screenshots/Library%20(iPad).png?raw=true" alt="Library" width="200"/> | <img src="/Screenshots/Audiobook%20(iPad).png?raw=true" alt="Album" width="200"/> | <img src="/Screenshots/Player%20(iPad).png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/Podcast%20(iPad).png?raw=true" alt="Queue" width="200"/> 
 
 ## Sideload
 
