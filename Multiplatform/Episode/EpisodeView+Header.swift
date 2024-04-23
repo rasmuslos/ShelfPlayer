@@ -21,9 +21,12 @@ extension EpisodeView {
             ZStack {
                 FullscreenBackground(threshold: horizontalSizeClass == .regular ? -100 : -300, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
                 
-                ViewThatFits {
-                    RegularPresentation(episode: episode)
-                    CompactPresentation(episode: episode)
+                Group {
+                    if horizontalSizeClass == .regular {
+                        RegularPresentation(episode: episode)
+                    } else {
+                        CompactPresentation(episode: episode)
+                    }
                 }
                 .background {
                     LinearGradient(colors: [imageColors.background.opacity(0.9), .secondary.opacity(0.1)], startPoint: .top, endPoint: .bottom)
@@ -60,7 +63,8 @@ extension EpisodeView.Header {
                 Text(episode.name)
                     .font(.title3)
                     .bold()
-                    .multilineTextAlignment(.center)
+                    .lineLimit(4)
+                    .multilineTextAlignment(alignment == .center ? .center : .leading)
                 
                 HStack {
                     NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {

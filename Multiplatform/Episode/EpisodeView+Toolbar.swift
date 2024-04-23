@@ -59,7 +59,7 @@ extension EpisodeView {
                     
                     ToolbarItem(placement: .topBarTrailing) {
                         ProgressButton(item: episode)
-                            .symbolVariant(.circle.fill)
+                            .symbolVariant(.circle)
                             .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
                     }
                 }

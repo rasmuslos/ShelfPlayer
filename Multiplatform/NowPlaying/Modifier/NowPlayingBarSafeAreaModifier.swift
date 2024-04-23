@@ -52,7 +52,7 @@ struct NowPlayingBarSafeAreaModifier: ViewModifier {
                 .frame(height: 0)
                 
                 content
-                    .safeAreaPadding(.bottom, isVisible ? 75 : 0)
+                    .safeAreaPadding(.bottom, isVisible ? 75 : 20)
             }
         }
     }
