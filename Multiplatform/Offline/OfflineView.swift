@@ -58,8 +58,8 @@ struct OfflineView: View {
             .modifier(NowPlayingBarSafeAreaModifier())
             .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in Task { try? await loadItems() }}
         }
-        .modifier(NowPlayingBarModifier(offset: 30))
-        .modifier(NowPlayingViewModifier(offset: 39))
+        .modifier(CompactNowPlayingBarModifier(offset: 30))
+        .modifier(CompactNowPlayingViewModifier(offset: 39))
         .sheet(isPresented: $accountSheetPresented) { AccountSheet() }
     }
 }

@@ -15,7 +15,7 @@ extension AudiobookEntryView {
                 AudiobookListenNowView()
                     .modifier(LibrarySelectorModifier())
             }
-            .modifier(NowPlayingBarModifier())
+            .modifier(CompactNowPlayingBarModifier())
             .tabItem {
                 Label("tab.home", systemImage: "bookmark.fill")
             }

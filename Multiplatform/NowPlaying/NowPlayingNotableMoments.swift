@@ -11,59 +11,61 @@ import SPBase
 import SPOffline
 import SPPlayback
 
-extension NowPlayingViewModifier {
-    struct NotableMomentsSheet: View {
-        @State private var bookmarks = [Bookmark]()
-        @State private var bookmarksActive = false
-        
-        private var empty: Bool {
-            if bookmarksActive {
-                return bookmarks.isEmpty
-            } else {
-                return AudioPlayer.shared.chapters.count <= 1
-            }
+struct NowPlayingNotableMomentsView: View {
+    let includeHeader: Bool
+    @Binding var bookmarksActive: Bool
+    
+    @State private var bookmarks = [Bookmark]()
+    
+    private var empty: Bool {
+        if bookmarksActive {
+            return bookmarks.isEmpty
+        } else {
+            return AudioPlayer.shared.chapters.count <= 1
         }
-        
-        var body: some View {
-            Group {
-                if empty {
-                    VStack {
-                        Spacer()
-                        Text(bookmarksActive ? "bookmarks.empty" : "chapters.empty")
-                            .font(.headline.smallCaps())
-                        Spacer()
+    }
+    
+    var body: some View {
+        Group {
+            if empty {
+                VStack {
+                    Spacer()
+                    Text(bookmarksActive ? "bookmarks.empty" : "chapters.empty")
+                        .font(.headline.smallCaps())
+                    Spacer()
+                }
+            } else if bookmarksActive {
+                List {
+                    ForEach(bookmarks) {
+                        BookmarkRow(bookmark: $0)
+                            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
                     }
-                } else if bookmarksActive {
-                    List {
-                        ForEach(bookmarks) {
-                            BookmarkRow(bookmark: $0)
-                                .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
-                        }
-                        .onDelete { indexSet in
-                            for index in indexSet {
-                                Task {
-                                    await OfflineManager.shared.deleteBookmark(bookmarks[index])
-                                }
+                    .onDelete { indexSet in
+                        for index in indexSet {
+                            Task {
+                                await OfflineManager.shared.deleteBookmark(bookmarks[index])
                             }
-                        }
-                    }
-                } else {
-                    ScrollViewReader { proxy in
-                        List {
-                            ForEach(AudioPlayer.shared.chapters) {
-                                ChapterRow(chapter: $0)
-                                    .id($0.id)
-                                    .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
-                            }
-                        }
-                        .onAppear {
-                            proxy.scrollTo(AudioPlayer.shared.chapter?.id, anchor: .center)
                         }
                     }
                 }
+            } else {
+                ScrollViewReader { proxy in
+                    List {
+                        ForEach(AudioPlayer.shared.chapters) {
+                            ChapterRow(chapter: $0)
+                                .id($0.id)
+                                .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
+                        }
+                    }
+                    .onAppear {
+                        proxy.scrollTo(AudioPlayer.shared.chapter?.id, anchor: .center)
+                    }
+                }
             }
-            .listStyle(.plain)
-            .safeAreaInset(edge: .top) {
+        }
+        .listStyle(.plain)
+        .safeAreaInset(edge: .top) {
+            if includeHeader {
                 HStack(spacing: 15) {
                     ItemImage(image: AudioPlayer.shared.item?.image)
                     
@@ -107,17 +109,17 @@ extension NowPlayingViewModifier {
                 .background(.regularMaterial)
                 .frame(height: 100)
             }
-            .onReceive(NotificationCenter.default.publisher(for: OfflineManager.bookmarksUpdatedNotification)) { _ in
-                fetchBookmarks()
-            }
-            .onAppear {
-                fetchBookmarks()
-            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: OfflineManager.bookmarksUpdatedNotification)) { _ in
+            fetchBookmarks()
+        }
+        .onAppear {
+            fetchBookmarks()
         }
     }
 }
 
-private extension NowPlayingViewModifier.NotableMomentsSheet {
+private extension NowPlayingNotableMomentsView {
     @MainActor
     func fetchBookmarks() {
         if let itemId = AudioPlayer.shared.item?.id, let bookmarks = try? OfflineManager.shared.getBookmarks(itemId: itemId) {
@@ -128,7 +130,7 @@ private extension NowPlayingViewModifier.NotableMomentsSheet {
 
 // MARK: Chapter
 
-private extension NowPlayingViewModifier.NotableMomentsSheet {
+private extension NowPlayingNotableMomentsView {
     struct ChapterRow: View {
         @Environment(\.dismiss) private var dismiss
         
@@ -179,7 +181,7 @@ private extension NowPlayingViewModifier.NotableMomentsSheet {
 
 // MARK: Bookmark
 
-private extension NowPlayingViewModifier.NotableMomentsSheet {
+private extension NowPlayingNotableMomentsView {
     struct BookmarkRow: View {
         @Environment(\.dismiss) private var dismiss
         
