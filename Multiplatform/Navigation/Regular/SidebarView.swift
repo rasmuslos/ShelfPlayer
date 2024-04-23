@@ -31,6 +31,16 @@ struct SidebarView: View {
                         }
                     }
                 }
+                
+                Section {
+                    Button {
+                        NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                            "offline": true,
+                        ])
+                    } label: {
+                        Label("offline.enable", systemImage: "network.slash")
+                    }
+                }
             }
             .modifier(NowPlayingBarLeadingOffsetModifier())
             .modifier(AccountSheetToolbarModifier(requiredSize: nil))

@@ -75,7 +75,6 @@ struct RegularNowPlayingBarModifier: ViewModifier {
                                 .symbolEffect(.bounce, value: animateForwards)
                         }
                         .font(.title3)
-                        .foregroundStyle(.secondary)
                         .padding(.horizontal, 7)
                         
                         Group {
@@ -92,7 +91,7 @@ struct RegularNowPlayingBarModifier: ViewModifier {
                         }
                         .frame(width: 30)
                         .transition(.blurReplace)
-                        .font(.title)
+                        .font(.largeTitle)
                         
                         Button {
                             animateForwards.toggle()
@@ -102,7 +101,6 @@ struct RegularNowPlayingBarModifier: ViewModifier {
                                 .symbolEffect(.bounce, value: animateForwards)
                         }
                         .font(.title3)
-                        .foregroundStyle(.secondary)
                         .padding(.horizontal, 7)
                     }
                     .padding(.horizontal, 8)
