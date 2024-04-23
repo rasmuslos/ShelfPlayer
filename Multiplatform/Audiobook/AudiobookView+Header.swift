@@ -140,7 +140,7 @@ extension AudiobookView.Header {
         var body: some View {
             VStack(spacing: 0) {
                 ItemImage(image: viewModel.audiobook.image)
-                    .padding(.trailing, 50)
+                    .padding(.horizontal, 50)
                     .shadow(radius: 30)
                 
                 SeriesName()

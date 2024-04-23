@@ -30,13 +30,14 @@ struct FullscreenToolbarModifier: ViewModifier {
         if horizontalSizeClass == .regular {
             content
                 .symbolVariant(.circle)
+        } else if navigationBarVisible {
+            content
+                .symbolVariant(.circle)
         } else {
             content
                 .symbolVariant(.circle.fill)
                 .symbolRenderingMode(.palette)
-                .foregroundStyle(
-                    navigationBarVisible ? accentColor : appearance == .light ? .black : .white,
-                    navigationBarVisible ? .gray.opacity(0.1) : .black.opacity(0.25))
+                .foregroundStyle(appearance == .light ? .black : .white, .black.opacity(0.25))
         }
     }
 }
