@@ -27,10 +27,10 @@ extension AudiobookView {
                     .frame(height: 0)
                 
                 // `ViewThatFits` does not work here.
-                if horizontalSizeClass == .compact {
-                    CompactPresentation()
-                } else {
+                if horizontalSizeClass == .regular {
                     RegularPresentation()
+                } else {
+                    CompactPresentation()
                 }
             }
         }
@@ -49,6 +49,7 @@ extension AudiobookView.Header {
                 Text(viewModel.audiobook.name)
                     .font(largeFont ? .title : .headline)
                     .fontDesign(.serif)
+                    .lineLimit(4)
                     .multilineTextAlignment(alignment == .center ? .center : .leading)
                 
                 if let author = viewModel.audiobook.author {
@@ -156,22 +157,37 @@ extension AudiobookView.Header {
     struct RegularPresentation: View {
         @Environment(AudiobookViewModel.self) private var viewModel
         
+        @State private var availableWidth: CGFloat = .zero
+        
         var body: some View {
-            HStack(spacing: 40) {
-                ItemImage(image: viewModel.audiobook.image)
-                    .shadow(radius: 30)
-                    .frame(width: 400)
+            ZStack {
+                GeometryReader { proxy in
+                    Color.clear
+                        .onAppear {
+                            availableWidth = proxy.size.width
+                        }
+                        .onChange(of: proxy.size.width) {
+                            availableWidth = proxy.size.width
+                        }
+                }
+                .frame(height: 0)
                 
-                VStack(alignment: .leading, spacing: 5) {
-                    Spacer()
+                HStack(spacing: 40) {
+                    ItemImage(image: viewModel.audiobook.image)
+                        .shadow(radius: 30)
+                        .frame(width: min(400, (availableWidth - 40) / 2))
                     
-                    SeriesName()
-                    Title(largeFont: true, alignment: .leading)
-                        .padding(.trailing, 15)
-                    
-                    Spacer()
-                    
-                    PlayButton(item: viewModel.audiobook)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Spacer()
+                        
+                        SeriesName()
+                        Title(largeFont: true, alignment: .leading)
+                            .padding(.trailing, 15)
+                        
+                        Spacer()
+                        
+                        PlayButton(item: viewModel.audiobook)
+                    }
                 }
             }
         }

@@ -12,26 +12,41 @@ struct Description: View {
     
     @State var height = CGFloat.zero
     
+    @State var availableWidth: CGFloat = .zero
+    
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text("description")
-                    .bold()
-                    .underline()
-                    .padding(.bottom, 2)
-                
-                if let description = description {
-                    HTMLTextView(height: $height, html: description)
-                        .padding(.horizontal, -5)
-                        .frame(height: height)
-                } else {
-                    Text("description.unavailable")
-                        .font(.body.smallCaps())
-                        .foregroundStyle(.secondary)
-                }
+        ZStack {
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        availableWidth = proxy.size.width
+                    }
+                    .onChange(of: proxy.size.width) {
+                        availableWidth = proxy.size.width
+                    }
             }
+            .frame(height: 0)
             
-            Spacer()
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("description")
+                        .bold()
+                        .underline()
+                        .padding(.bottom, 2)
+                    
+                    if let description = description {
+                        HTMLTextView(height: $height, html: description, width: availableWidth)
+                            .padding(.horizontal, -5)
+                            .frame(height: height)
+                    } else {
+                        Text("description.unavailable")
+                            .font(.body.smallCaps())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                
+                Spacer()
+            }
         }
     }
 }
@@ -40,6 +55,7 @@ struct HTMLTextView: UIViewRepresentable {
     @Binding var height: CGFloat
     
     let html: String
+    let width: CGFloat
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView(frame: .zero)
@@ -66,8 +82,8 @@ struct HTMLTextView: UIViewRepresentable {
             }
             
             height = textView.sizeThatFits(.init(
-                width: UIScreen.main.bounds.width - 40,
-                height: UIScreen.main.bounds.height)
+                width: width,
+                height: 10_000_000)
             ).height
         }
     }

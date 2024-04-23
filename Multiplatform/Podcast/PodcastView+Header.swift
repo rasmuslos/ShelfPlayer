@@ -45,11 +45,13 @@ extension PodcastView.Header {
         var body: some View {
             Text(podcast.name)
                 .font(largeFont ? .title : .headline)
+                .lineLimit(4)
                 .multilineTextAlignment(alignment)
             
             if let author = podcast.author {
                 Text(author)
                     .font(largeFont ? .title2 : .subheadline)
+                    .lineLimit(2)
                     .multilineTextAlignment(alignment)
             }
         }
@@ -87,6 +89,7 @@ extension PodcastView.Header {
                 
                 if let type = podcast.type {
                     Text(verbatim: "•")
+                    
                     switch type {
                         case .episodic:
                             Text("podcast.episodic")

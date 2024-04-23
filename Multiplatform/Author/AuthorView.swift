@@ -63,7 +63,7 @@ struct AuthorView: View {
                             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                             
                             RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                                .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 20))
+                                .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 0))
                             AudiobookList(audiobooks: visibleAudiobooks)
                         }
                         .listStyle(.plain)
