@@ -33,11 +33,13 @@ struct FullscreenToolbarModifier: ViewModifier {
         } else if navigationBarVisible {
             content
                 .symbolVariant(.circle)
+                .animation(.easeInOut, value: navigationBarVisible)
         } else {
             content
                 .symbolVariant(.circle.fill)
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(appearance == .light ? .black : .white, .black.opacity(0.25))
+                .animation(.easeInOut, value: navigationBarVisible)
         }
     }
 }
