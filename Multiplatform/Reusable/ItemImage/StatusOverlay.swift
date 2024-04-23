@@ -38,36 +38,52 @@ struct StatusOverlay: View {
                 Spacer()
                 
                 if entity.progress > 0 {
-                    Triangle()
-                        .frame(width: size, height: size)
-                        .foregroundStyle(offlineTracker?.status == .downloaded ? Color.alternativeAccent : Color.accentColor)
-                        .reverseMask(alignment: .topTrailing) {
-                            Group {
-                                if entity.progress >= 1 {
-                                    Image(systemName: "checkmark")
-                                        .font(.system(size: fontSize))
-                                        .fontWeight(.heavy)
-                                } else {
-                                    if itemImageStatusPercentageText {
-                                        Text(verbatim: "\(Int(entity.progress * 100))")
-                                            .font(.system(size: fontSize))
-                                            .fontWeight(.heavy)
-                                    } else {
-                                        ZStack {
-                                            Circle()
-                                                .trim(from: CGFloat(entity.progress), to: 360 - CGFloat(entity.progress))
-                                                .stroke(Color.black.opacity(0.4), lineWidth: 3)
-                                            Circle()
-                                                .trim(from: 0, to: CGFloat(entity.progress))
-                                                .stroke(Color.black.opacity(0.85), lineWidth: 3)
-                                        }
-                                        .rotationEffect(.degrees(-90))
-                                    }
+                    ZStack {
+                        Triangle()
+                            .foregroundStyle(.black.opacity(0.2))
+                        
+                        Triangle()
+                            .foregroundStyle(offlineTracker?.status == .downloaded ? Color.alternativeAccent : Color.accentColor)
+                        /*
+                            .overlay(alignment: .topTrailing) {
+                                if entity.progress < 1 {
+                                    Circle()
+                                        .stroke(offlineTracker?.status == .downloaded ? Color.accentColor : Color.alternativeAccent, lineWidth: 3)
+                                        .frame(width: size / 3, height: size / 3)
+                                        .padding(size / 7)
                                 }
                             }
-                            .frame(width: size / 3, height: size / 3)
-                            .padding(size / 7)
-                        }
+                         */
+                            .reverseMask(alignment: .topTrailing) {
+                                Group {
+                                    if entity.progress < 1 {
+                                        if itemImageStatusPercentageText {
+                                            Text(verbatim: "\(Int(entity.progress * 100))")
+                                                .font(.system(size: fontSize))
+                                                .fontWeight(.heavy)
+                                        } else {
+                                            ZStack {
+                                                Circle()
+                                                    .trim(from: CGFloat(entity.progress), to: 360 - CGFloat(entity.progress))
+                                                    .stroke(Color.black.opacity(0.2), lineWidth: 3)
+                                                
+                                                Circle()
+                                                    .trim(from: 0, to: CGFloat(entity.progress))
+                                                    .stroke(Color.black, lineWidth: 3)
+                                            }
+                                            .rotationEffect(.degrees(-90))
+                                        }
+                                    } else {
+                                        Image(systemName: "checkmark")
+                                            .font(.system(size: fontSize))
+                                            .fontWeight(.heavy)
+                                    }
+                                }
+                                .frame(width: size / 3, height: size / 3)
+                                .padding(size / 7)
+                            }
+                    }
+                    .frame(width: size, height: size)
                 } else {
                     if offlineTracker?.status == .downloaded {
                         Image(systemName: "arrow.down.circle.fill")

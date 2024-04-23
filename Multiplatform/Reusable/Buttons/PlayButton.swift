@@ -74,7 +74,7 @@ struct PlayNowButtonStyle: ButtonStyle {
                     
                     GeometryReader { geometry in
                         Rectangle()
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.gray.opacity(0.4))
                             .frame(width: geometry.size.width * percentage)
                     }
                 }
