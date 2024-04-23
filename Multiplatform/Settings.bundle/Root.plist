@@ -216,6 +216,20 @@
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Title</key>
+			<string>Acknowledgements</string>
+			<key>File</key>
+			<string>Acknowledgements</string>
+		</dict>
 	</array>
 </dict>
 </plist>
