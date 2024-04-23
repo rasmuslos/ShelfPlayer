@@ -25,7 +25,7 @@ struct SidebarView: View {
                         Section(library.name) {
                             ForEach(LibrarySection.filtered(libraryType: library.type), id: \.hashValue) { section in
                                 NavigationLink(value: Selection(libraryId: library.id, section: section)) {
-                                    Text(section.title)
+                                    Label(section.label, systemImage: section.icon)
                                 }
                             }
                         }

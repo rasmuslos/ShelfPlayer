@@ -11,6 +11,8 @@ import SPBase
 
 extension PodcastView {
     struct Header: View {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        
         let podcast: Podcast
         let imageColors: Item.ImageColors
         
@@ -20,9 +22,11 @@ extension PodcastView {
             ZStack {
                 FullscreenBackground(threshold: -250, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
                 
-                ViewThatFits {
-                    RegularPresentation(podcast: podcast)
+                // Because both of these have approximately the same size `ViewThatFits` does not work here.
+                if horizontalSizeClass == .compact {
                     CompactPresentation(podcast: podcast)
+                } else {
+                    RegularPresentation(podcast: podcast)
                 }
             }
             .background(imageColors.background)
