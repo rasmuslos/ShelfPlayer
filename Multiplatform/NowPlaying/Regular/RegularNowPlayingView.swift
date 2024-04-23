@@ -33,14 +33,6 @@ struct RegularNowPlayingView: View {
             if let item = AudioPlayer.shared.item {
                 Rectangle()
                     .foregroundStyle(.background)
-                    .simultaneousGesture(
-                        DragGesture(minimumDistance: 25, coordinateSpace: .global)
-                            .onEnded {
-                                if $0.translation.height > 200 {
-                                    dismiss()
-                                }
-                            }
-                    )
                 
                 VStack {
                     HStack(spacing: availableWidth < 1000 ? 20 : 80) {
@@ -77,6 +69,14 @@ struct RegularNowPlayingView: View {
                     
                     Buttons(notableMomentsToggled: $bookmarksActive)
                 }
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 25, coordinateSpace: .global)
+                        .onEnded {
+                            if $0.translation.height > 200 {
+                                dismiss()
+                            }
+                        }
+                )
                 .padding(.bottom, 20)
                 .padding(.horizontal, 40)
                 .padding(.top, 60)
