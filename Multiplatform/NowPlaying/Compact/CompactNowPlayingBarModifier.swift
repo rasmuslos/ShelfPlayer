@@ -10,9 +10,9 @@ import Defaults
 import SPBase
 import SPPlayback
 
-struct NowPlayingBarModifier: ViewModifier {
+struct CompactNowPlayingBarModifier: ViewModifier {
     @Default(.skipForwardsInterval) private var skipForwardsInterval
-    @Environment(NowPlayingViewState.self) private var nowPlayingViewState
+    @Environment(CompactNowPlayingViewModifier.NowPlayingViewState.self) private var nowPlayingViewState
     
     var offset: CGFloat? = nil
     
@@ -133,25 +133,6 @@ struct NowPlayingBarModifier: ViewModifier {
                     }
                     .padding(.bottom, offset ?? 0)
                 }
-            }
-    }
-}
-
-struct NowPlayingBarSafeAreaModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .safeAreaPadding(.bottom, AudioPlayer.shared.item != nil ? 75 : 0)
-    }
-}
-
-#Preview {
-    TabView {
-        Rectangle()
-            .ignoresSafeArea()
-            .foregroundStyle(.red)
-            .modifier(NowPlayingBarModifier())
-            .tabItem {
-                Label(":)", systemImage: "command")
             }
     }
 }

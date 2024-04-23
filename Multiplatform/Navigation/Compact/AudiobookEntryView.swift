@@ -37,7 +37,7 @@ struct AudiobookEntryView: View {
             NavigationStack {
                 SearchView()
             }
-            .modifier(NowPlayingBarModifier())
+            .modifier(CompactNowPlayingBarModifier())
             .tag(Tab.search)
             .tabItem {
                 Label("tab.search", systemImage: "magnifyingglass")

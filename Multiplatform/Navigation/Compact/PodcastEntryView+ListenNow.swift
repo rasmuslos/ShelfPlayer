@@ -16,7 +16,7 @@ extension PodcastEntryView {
                 PodcastListenNowView()
                     .modifier(LibrarySelectorModifier())
             }
-            .modifier(NowPlayingBarModifier())
+            .modifier(CompactNowPlayingBarModifier())
             .tabItem {
                 Label("tab.home", systemImage: "waveform")
             }

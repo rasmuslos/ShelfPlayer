@@ -32,6 +32,7 @@ struct SidebarView: View {
                     }
                 }
             }
+            .modifier(NowPlayingBarLeadingOffsetModifier())
             .modifier(AccountSheetToolbarModifier(requiredSize: nil))
         } detail: {
             if let selection = selection {
@@ -44,6 +45,7 @@ struct SidebarView: View {
                 ContentUnavailableView("splitView.empty", systemImage: "bookmark.square.fill", description: Text("splitView.empty.description"))
             }
         }
+        .modifier(RegularNowPlayingBarModifier())
         .environment(\.libraryId, selection?.libraryId ?? "")
         .environment(AvailableLibraries(libraries: libraries))
     }
