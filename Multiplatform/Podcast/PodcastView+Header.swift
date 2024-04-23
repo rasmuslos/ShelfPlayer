@@ -117,8 +117,10 @@ extension PodcastView.Header {
                 ItemImage(image: podcast.image)
                     .frame(width: 200)
                 
-                Title(podcast: podcast, largeFont: false, alignment: .center)
-                    .padding(.top, 20)
+                VStack(spacing: 10) {
+                    Title(podcast: podcast, largeFont: false, alignment: .center)
+                }
+                .padding(.top, 20)
                 
                 Description(podcast: podcast)
                     .padding(.top, 20)

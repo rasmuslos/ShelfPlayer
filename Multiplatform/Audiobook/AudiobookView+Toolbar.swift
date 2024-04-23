@@ -84,6 +84,7 @@ extension AudiobookView {
                             ProgressButton(item: viewModel.audiobook)
                             DownloadButton(item: viewModel.audiobook, downloadingLabel: false)
                         } label: {
+                            // the modifier behaves (for some reason) different here, then if you apply it to the menu. this creates a bug in the animation when the value changes. but you cannot add it to the menu. ???
                             Image(systemName: "ellipsis")
                                 .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))
                         }
