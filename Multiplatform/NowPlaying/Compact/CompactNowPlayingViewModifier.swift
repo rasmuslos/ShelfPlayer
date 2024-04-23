@@ -9,7 +9,7 @@ import SwiftUI
 import SPBase
 import SPPlayback
 
-struct NowPlayingViewModifier: ViewModifier {
+struct CompactNowPlayingViewModifier: ViewModifier {
     @Namespace private var namespace
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.presentationMode) private var presentationMode
@@ -67,10 +67,10 @@ struct NowPlayingViewModifier: ViewModifier {
                             
                             Spacer()
                             
-                            Title(item: item, namespace: namespace)
+                            NowPlayingTitle(item: item, namespace: namespace)
                             
                             Group {
-                                Controls(namespace: namespace, controlsDragging: $controlsDragging)
+                                NowPlayingControls(namespace: namespace, compact: false, controlsDragging: $controlsDragging)
                                 Buttons()
                                     .padding(.top, 20)
                                     .padding(.bottom, 30)
@@ -137,78 +137,82 @@ struct NowPlayingViewModifier: ViewModifier {
 
 // TODO: can this be shared between AmpFin & ShelfPlayer?
 
-struct BackgroundInsertTransitionModifier: ViewModifier {
-    @Environment(NowPlayingViewState.self) private var viewState
+extension CompactNowPlayingViewModifier {
+    struct BackgroundInsertTransitionModifier: ViewModifier {
+        @Environment(NowPlayingViewState.self) private var viewState
+        
+        let active: Bool
+        var offset: CGFloat?
+        
+        func body(content: Content) -> some View {
+            content
+                .mask(alignment: .bottom) {
+                    Rectangle()
+                        .frame(maxHeight: active ? 0 : .infinity)
+                        .padding(.horizontal, active ? 12 : 0)
+                }
+                .offset(y: active ? (offset ?? 92) * -1 - 56 : 0)
+        }
+    }
     
-    let active: Bool
-    var offset: CGFloat?
-    
-    func body(content: Content) -> some View {
-        content
-            .mask(alignment: .bottom) {
-                Rectangle()
-                    .frame(maxHeight: active ? 0 : .infinity)
-                    .padding(.horizontal, active ? 12 : 0)
-            }
-            .offset(y: active ? (offset ?? 92) * -1 - 56 : 0)
+    // This is more a "collapse" than a move thing
+    struct BackgroundRemoveTransitionModifier: ViewModifier {
+        @Environment(NowPlayingViewState.self) private var viewState
+        
+        let active: Bool
+        var offset: CGFloat?
+        
+        func body(content: Content) -> some View {
+            content
+                .mask(alignment: .bottom) {
+                    Rectangle()
+                        .frame(maxHeight: active ? 0 : .infinity)
+                        .padding(.horizontal, active ? 12 : 0)
+                        .animation(Animation.smooth(duration: 0.5, extraBounce: 0.1), value: active)
+                }
+                .offset(y: active ? (offset ?? 92) * -1 : 0)
+        }
     }
 }
 
-// This is more a "collapse" than a move thing
-struct BackgroundRemoveTransitionModifier: ViewModifier {
-    @Environment(NowPlayingViewState.self) private var viewState
-    
-    let active: Bool
-    var offset: CGFloat?
-    
-    func body(content: Content) -> some View {
-        content
-            .mask(alignment: .bottom) {
-                Rectangle()
-                    .frame(maxHeight: active ? 0 : .infinity)
-                    .padding(.horizontal, active ? 12 : 0)
-                    .animation(Animation.smooth(duration: 0.5, extraBounce: 0.1), value: active)
-            }
-            .offset(y: active ? (offset ?? 92) * -1 : 0)
-    }
-}
-
-@Observable
-final class NowPlayingViewState {
-    var namespace: Namespace.ID?
-    
-    private(set) var presented = false
-    private(set) var containerPresented = false
-    
-    private(set) var active = false
-    private(set) var lastActive = Date()
-    
-    var safeNamespace: Namespace.ID {
-        namespace ?? Namespace().wrappedValue
-    }
-    
-    func setNowPlayingViewPresented(_ presented: Bool, completion: (() -> Void)? = nil) {
-        if active && lastActive.timeIntervalSince(Date()) > -1 {
-            return
+extension CompactNowPlayingViewModifier {
+    @Observable
+    final class NowPlayingViewState {
+        var namespace: Namespace.ID?
+        
+        private(set) var presented = false
+        private(set) var containerPresented = false
+        
+        private(set) var active = false
+        private(set) var lastActive = Date()
+        
+        var safeNamespace: Namespace.ID {
+            namespace ?? Namespace().wrappedValue
         }
         
-        active = true
-        lastActive = Date()
-        
-        if presented {
-            containerPresented = true
-        }
-        
-        withAnimation(.spring(duration: 0.6, bounce: 0.1)) {
-            self.presented = presented
-        } completion: {
-            self.active = false
-            
-            if !self.presented {
-                self.containerPresented = false
+        func setNowPlayingViewPresented(_ presented: Bool, completion: (() -> Void)? = nil) {
+            if active && lastActive.timeIntervalSince(Date()) > -1 {
+                return
             }
             
-            completion?()
+            active = true
+            lastActive = Date()
+            
+            if presented {
+                containerPresented = true
+            }
+            
+            withAnimation(.spring(duration: 0.6, bounce: 0.1)) {
+                self.presented = presented
+            } completion: {
+                self.active = false
+                
+                if !self.presented {
+                    self.containerPresented = false
+                }
+                
+                completion?()
+            }
         }
     }
 }

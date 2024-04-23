@@ -14,7 +14,7 @@ extension AudiobookEntryView {
             NavigationStack {
                 AudiobookSeriesView()
             }
-            .modifier(NowPlayingBarModifier())
+            .modifier(CompactNowPlayingBarModifier())
             .tabItem {
                 Label("tab.series", systemImage: "books.vertical.fill")
             }
