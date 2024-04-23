@@ -10,6 +10,8 @@ import SPBase
 
 extension EpisodeView {
     struct Header: View {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        
         let episode: Episode
         var imageColors: Item.ImageColors
         
@@ -17,7 +19,7 @@ extension EpisodeView {
         
         var body: some View {
             ZStack {
-                FullscreenBackground(threshold: -300, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
+                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -100 : -300, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
                 
                 ViewThatFits {
                     RegularPresentation(episode: episode)
@@ -108,11 +110,15 @@ extension EpisodeView.Header {
                     .frame(width: 225)
                 
                 VStack(alignment: .leading) {
+                    Spacer()
+                    
                     Eyebrow(episode: episode)
                     Title(episode: episode, alignment: .leading)
+                    
+                    Spacer()
+                    
+                    PlayButton(item: episode)
                 }
-                
-                Spacer()
             }
             .padding(20)
             .padding(.top, 75)
