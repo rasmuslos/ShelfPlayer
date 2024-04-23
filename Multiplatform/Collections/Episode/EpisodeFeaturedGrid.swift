@@ -72,7 +72,7 @@ extension EpisodeFeaturedGrid {
         var body: some View {
             ZStack(alignment: .bottom) {
                 LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
-                    .frame(height: horizontalSizeClass == .compact ? 325 : 350)
+                    .aspectRatio(0.8, contentMode: .fill)
                 
                 Title(episode: episode)
             }

@@ -8,21 +8,35 @@
 import SwiftUI
 
 struct FullscreenToolbarModifier: ViewModifier {
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.colorScheme) private var colorScheme
     
     let navigationBarVisible: Bool
     
     var isLight: Bool? = nil
     var accentColor: Color = .accent
     
+    private var appearance: ColorScheme {
+        if isLight == true {
+            return .light
+        } else if isLight == false {
+            return .dark
+        } else {
+            return colorScheme
+        }
+    }
+    
     func body(content: Content) -> some View {
-        let appearance: ColorScheme = isLight == true ? .light : isLight == false ? .dark : colorScheme
-        
-        content
-            .symbolVariant(.circle.fill)
-            .symbolRenderingMode(.palette)
-            .foregroundStyle(
-                navigationBarVisible ? accentColor : appearance == .light ? .black : .white,
-                navigationBarVisible ? .gray.opacity(0.1) : .black.opacity(0.25))
+        if horizontalSizeClass == .regular {
+            content
+                .symbolVariant(.circle)
+        } else {
+            content
+                .symbolVariant(.circle.fill)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(
+                    navigationBarVisible ? accentColor : appearance == .light ? .black : .white,
+                    navigationBarVisible ? .gray.opacity(0.1) : .black.opacity(0.25))
+        }
     }
 }

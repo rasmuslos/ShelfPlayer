@@ -9,7 +9,7 @@ import SwiftUI
 import SPBase
 
 struct AudiobookView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.libraryId) private var libraryId
     
     let viewModel: AudiobookViewModel
     
@@ -17,7 +17,7 @@ struct AudiobookView: View {
         viewModel = .init(audiobook: audiobook)
     }
     
-    let divider: some View = Divider()
+    private let divider: some View = Divider()
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
     

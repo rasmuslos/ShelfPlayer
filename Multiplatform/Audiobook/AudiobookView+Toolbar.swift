@@ -12,14 +12,19 @@ import SPOfflineExtended
 
 extension AudiobookView {
     struct ToolbarModifier: ViewModifier {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(AudiobookViewModel.self) var viewModel
+        
+        private var regularPresentation: Bool {
+            horizontalSizeClass == .regular
+        }
         
         func body(content: Content) -> some View {
             content
                 .navigationTitle(viewModel.audiobook.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(viewModel.navigationBarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!viewModel.navigationBarVisible)
+                .toolbarBackground(regularPresentation ? .automatic : viewModel.navigationBarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!viewModel.navigationBarVisible && !regularPresentation)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         if viewModel.navigationBarVisible {
@@ -42,7 +47,7 @@ extension AudiobookView {
                     }
                 }
                 .toolbar {
-                    if !viewModel.navigationBarVisible {
+                    if !viewModel.navigationBarVisible && !regularPresentation {
                         ToolbarItem(placement: .navigation) {
                             FullscreenBackButton(navigationBarVisible: viewModel.navigationBarVisible)
                         }
