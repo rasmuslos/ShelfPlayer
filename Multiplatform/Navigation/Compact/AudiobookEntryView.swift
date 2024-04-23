@@ -33,8 +33,15 @@ struct AudiobookEntryView: View {
                 .tag(Tab.series)
             LibraryView()
                 .tag(Tab.library)
-            SearchView()
-                .tag(Tab.search)
+            
+            NavigationStack {
+                SearchView()
+            }
+            .modifier(NowPlayingBarModifier())
+            .tag(Tab.search)
+            .tabItem {
+                Label("tab.search", systemImage: "magnifyingglass")
+            }
         }
     }
 }
