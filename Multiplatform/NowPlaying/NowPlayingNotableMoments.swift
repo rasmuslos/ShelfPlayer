@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import Defaults
 import SPBase
 import SPOffline
 import SPPlayback
@@ -23,6 +24,14 @@ struct NowPlayingNotableMomentsView: View {
         } else {
             return AudioPlayer.shared.chapters.count <= 1
         }
+    }
+    
+    private var currentChapter: PlayableItem.Chapter? {
+        if Defaults[.enableChapterTrack] {
+            return nil
+        }
+        
+        return AudioPlayer.shared.chapters.first { $0.start < AudioPlayer.shared.currentTime && $0.end > AudioPlayer.shared.currentTime }
     }
     
     var body: some View {
@@ -82,10 +91,19 @@ struct NowPlayingNotableMomentsView: View {
                         }
                         
                         Group {
-                            Text(
-                                ((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()) * (1 / Double(AudioPlayer.shared.playbackRate)))
-                                    .hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)) + Text(verbatim: " ")
-                            + Text("time.left")
+                            let speedAdjustment = (1 / Double(AudioPlayer.shared.playbackRate))
+                            
+                            if let currentChapter = currentChapter {
+                                Text(((currentChapter.end - AudioPlayer.shared.currentTime) * speedAdjustment).numericTimeLeft())
+                                + Text(verbatim: " ")
+                                + Text("\(currentChapter.title) chapter.remaining.in")
+                            } else {
+                                let remaining = ((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()) * speedAdjustment).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)
+                                
+                                Text(remaining)
+                                + Text(verbatim: " ")
+                                + Text("time.left")
+                            }
                         }
                         .font(.caption)
                         .foregroundStyle(.secondary)

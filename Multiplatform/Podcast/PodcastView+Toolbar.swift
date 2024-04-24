@@ -36,7 +36,7 @@ extension PodcastView {
                                     .font(.headline)
                                     .lineLimit(1)
                                 
-                                Text(String(podcast.episodeCount) + " Episodes")
+                                Text("\(podcast.episodeCount) episodes")
                                     .font(.caption2)
                                     .lineLimit(1)
                             }
