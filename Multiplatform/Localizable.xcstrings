@@ -148,7 +148,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete progress cache"
+            "value" : "Delete cache"
           }
         }
       }
@@ -165,6 +165,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete all downloads"
+          }
+        }
+      }
+    },
+    "account.delete.footer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durch das leeren des Zwischenspeichers werden lokale Fortschritte gelöscht und der Bild-Speicher geleert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting the cache will remove all local progress entities and flush the image cache"
           }
         }
       }

@@ -103,6 +103,8 @@ struct AccountSheet: View {
                     } label: {
                         Text("account.delete.cache")
                     }
+                } footer: {
+                    Text("account.delete.footer")
                 }
                 
                 Section("account.downloads") {
