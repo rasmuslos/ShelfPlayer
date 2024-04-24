@@ -97,5 +97,14 @@ internal extension AudioPlayer {
             seek(to: getItemCurrentTime() + Double(skipForwardsInterval))
             return .success
         }
+        
+        commandCenter.seekBackwardCommand.addTarget { [unowned self] event in
+            seek(to: getItemCurrentTime() - Double(skipBackwardsInterval))
+            return .success
+        }
+        commandCenter.seekForwardCommand.addTarget { [unowned self] event in
+            seek(to: getItemCurrentTime() + Double(skipForwardsInterval))
+            return .success
+        }
     }
 }
