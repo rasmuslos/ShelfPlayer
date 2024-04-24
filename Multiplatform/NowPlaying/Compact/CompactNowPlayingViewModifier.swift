@@ -68,6 +68,7 @@ struct CompactNowPlayingViewModifier: ViewModifier {
                             Spacer()
                             
                             NowPlayingTitle(item: item, namespace: namespace)
+                                .padding(.bottom, 10)
                             
                             Group {
                                 NowPlayingControls(namespace: namespace, compact: false, controlsDragging: $controlsDragging)

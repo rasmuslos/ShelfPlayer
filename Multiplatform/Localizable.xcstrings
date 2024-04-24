@@ -17,6 +17,22 @@
         }
       }
     },
+    "%@ chapter.remaining.in" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verbleibend in %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "remaining in %@"
+          }
+        }
+      }
+    },
     "%lld account.sleepTimer.hours" : {
       "localizations" : {
         "de" : {
@@ -61,6 +77,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld Chapters"
+          }
+        }
+      }
+    },
+    "%lld episodes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Folgen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Episodes"
           }
         }
       }

@@ -64,7 +64,7 @@ extension AudiobookList {
                 VStack(alignment: .leading, spacing: 0) {
                     if eyebrow.count > 0 {
                         Text(eyebrow.joined(separator: " • "))
-                            .font(.caption)
+                            .font(.caption.smallCaps())
                             .lineLimit(1)
                             .foregroundStyle(.secondary)
                     }
