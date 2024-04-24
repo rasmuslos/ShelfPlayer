@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import AVKit
+import SPBase
+import SPPlayback
 
 extension RegularNowPlayingView {
     struct Buttons: View {
@@ -31,14 +32,16 @@ extension RegularNowPlayingView {
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 20)
                 
-                Button {
-                    notableMomentsToggled.toggle()
-                } label: {
-                    Image(systemName: "bookmark.square")
-                        .symbolVariant(notableMomentsToggled ? .fill : .none)
+                if AudioPlayer.shared.item as? Audiobook != nil {
+                    Button {
+                        notableMomentsToggled.toggle()
+                    } label: {
+                        Image(systemName: "bookmark.square")
+                            .symbolVariant(notableMomentsToggled ? .fill : .none)
+                    }
+                    .font(.system(size: 23))
+                    .foregroundStyle(.secondary)
                 }
-                .font(.system(size: 23))
-                .foregroundStyle(.secondary)
             }
             .bold()
             .font(.system(size: 20))
