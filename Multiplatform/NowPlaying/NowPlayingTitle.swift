@@ -32,22 +32,24 @@ struct NowPlayingTitle: View {
                         Text(seriesName)
                     }
                 }
-                .font(.caption)
+                .font(.caption.smallCaps())
                 .foregroundStyle(.secondary)
                 
-                Text(item.name)
-                    .lineLimit(1)
-                    .font(.headline)
-                    .fontDesign(item as? Audiobook != nil ? .serif : .default)
-                    .foregroundStyle(.primary)
-                    .matchedGeometryEffect(id: "title", in: namespace, properties: .frame, anchor: .top)
-                
-                if let author = item.author {
-                    Text(author)
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                Group {
+                    Text(item.name)
+                        .font(.headline)
+                        .fontDesign(item as? Audiobook != nil ? .serif : .default)
+                        .foregroundStyle(.primary)
+                        .matchedGeometryEffect(id: "title", in: namespace, properties: .frame, anchor: .top)
+                    
+                    if let author = item.author {
+                        Text(author)
+                            .font(.subheadline)
+                            .lineLimit(1)
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .lineLimit(1)
             }
             
             Spacer()
