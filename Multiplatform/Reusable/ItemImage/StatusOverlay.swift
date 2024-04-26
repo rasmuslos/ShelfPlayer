@@ -101,9 +101,10 @@ struct StatusOverlay: View {
 
 struct ItemStatusImage: View {
     let item: PlayableItem
+    var aspectRatio = ItemImage.AspectRatioPolicy.square
     
     var body: some View {
-        ItemImage(image: item.image)
+        ItemImage(image: item.image, aspectRatio: aspectRatio)
             .overlay {
                 StatusOverlay(item: item)
             }

@@ -66,9 +66,10 @@ extension AuthorGrid {
         let author: Author
         
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
                 ItemImage(image: author.image)
                     .clipShape(RoundedRectangle(cornerRadius: 10000))
+                    .padding(.bottom, 5)
                 
                 Text(author.name)
                     .font(.caption)

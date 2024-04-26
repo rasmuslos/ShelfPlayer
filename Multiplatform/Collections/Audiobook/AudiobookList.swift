@@ -58,7 +58,7 @@ extension AudiobookList {
         
         var body: some View {
             HStack {
-                ItemStatusImage(item: audiobook)
+                ItemStatusImage(item: audiobook, aspectRatio: .none)
                     .frame(width: 85)
                 
                 VStack(alignment: .leading, spacing: 0) {
