@@ -31,21 +31,20 @@ extension AuthorView {
                         descriptionSheetVisible.toggle()
                     } label: {
                         Text(description)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
                             .lineLimit(3)
-                            .sheet(isPresented: $descriptionSheetVisible) {
-                                NavigationStack {
-                                    Text(description)
-                                        .navigationTitle(author.name)
-                                        .padding(20)
-                                    
-                                    Spacer()
-                                }
-                                .presentationDragIndicator(.visible)
-                            }
                     }
                     .buttonStyle(.plain)
+                    .padding(10)
+                    .sheet(isPresented: $descriptionSheetVisible) {
+                        NavigationStack {
+                            Text(description)
+                                .navigationTitle(author.name)
+                                .padding(20)
+                            
+                            Spacer()
+                        }
+                        .presentationDragIndicator(.visible)
+                    }
                 }
             }
         }
