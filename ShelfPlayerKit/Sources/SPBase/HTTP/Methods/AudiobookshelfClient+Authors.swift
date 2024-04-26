@@ -35,7 +35,7 @@ public extension AudiobookshelfClient {
         ]))
         
         let author = Author.convertFromAudiobookshelf(item: response)
-        let audiobooks = (response.libraryItems ?? []).map(Audiobook.convertFromAudiobookshelf)
+        let audiobooks = (response.libraryItems ?? []).compactMap(Audiobook.convertFromAudiobookshelf)
         let series = (response.series ?? []).map(Series.convertFromAudiobookshelf)
         
         return (author, audiobooks, series)
