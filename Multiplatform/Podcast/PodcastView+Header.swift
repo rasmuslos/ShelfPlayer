@@ -20,7 +20,7 @@ extension PodcastView {
         
         var body: some View {
             ZStack {
-                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -150 : -250, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
+                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -150 : -280, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
                 
                 // Because both of these have approximately the same size `ViewThatFits` does not work here.
                 if horizontalSizeClass == .compact {

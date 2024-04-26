@@ -23,7 +23,7 @@ extension AudiobookView {
         
         var body: some View {
             ZStack(alignment: .top) {
-                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -90 : -300, backgroundColor: .clear, navigationBarVisible: .init(get: { viewModel.navigationBarVisible }, set: { viewModel.navigationBarVisible = $0 }))
+                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -90 : -240, backgroundColor: .clear, navigationBarVisible: .init(get: { viewModel.navigationBarVisible }, set: { viewModel.navigationBarVisible = $0 }))
                     .frame(height: 0)
                 
                 // `ViewThatFits` does not work here.

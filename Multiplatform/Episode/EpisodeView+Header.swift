@@ -19,7 +19,7 @@ extension EpisodeView {
         
         var body: some View {
             ZStack {
-                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -100 : -300, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
+                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -100 : -280, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
                 
                 Group {
                     if horizontalSizeClass == .regular {
