@@ -16,7 +16,7 @@ public extension AudiobookshelfClient {
         
         for row in response {
             if row.type == "book" {
-                let audiobookRow = AudiobookHomeRow(id: row.id, label: row.label, audiobooks: row.entities.map(Audiobook.convertFromAudiobookshelf))
+                let audiobookRow = AudiobookHomeRow(id: row.id, label: row.label, audiobooks: row.entities.compactMap(Audiobook.convertFromAudiobookshelf))
                 audiobookRows.append(audiobookRow)
             } else if row.type == "authors" {
                 let authorsRow = AuthorHomeRow(id: row.id, label: row.label, authors: row.entities.map(Author.convertFromAudiobookshelf))
@@ -24,11 +24,13 @@ public extension AudiobookshelfClient {
             }
         }
         
+        audiobookRows = audiobookRows.filter { !$0.audiobooks.isEmpty }
+        
         return (audiobookRows, authorRows)
     }
     
     func getAudiobooks(libraryId: String) async throws -> [Audiobook] {
         let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET"))
-        return response.results.map(Audiobook.convertFromAudiobookshelf)
+        return response.results.compactMap(Audiobook.convertFromAudiobookshelf)
     }
 }
