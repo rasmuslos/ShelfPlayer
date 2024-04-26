@@ -39,8 +39,9 @@ struct RegularNowPlayingView: View {
                         VStack {
                             Spacer()
                             
-                            ItemImage(image: item.image)
+                            ItemImage(image: item.image, aspectRatio: .none)
                                 .shadow(radius: 15)
+                                .padding(.vertical, 10)
                                 .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                                 .animation(.spring(duration: 0.3, bounce: 0.6), value: AudioPlayer.shared.playing)
                             
