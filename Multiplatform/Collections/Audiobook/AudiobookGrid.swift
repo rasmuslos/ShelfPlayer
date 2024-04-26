@@ -25,7 +25,7 @@ struct AudiobookVGrid: View {
                 NavigationLink {
                     AudiobookView(audiobook: audiobook)
                 } label: {
-                    ItemStatusImage(item: audiobook)
+                    ItemStatusImage(item: audiobook, aspectRatio: .none)
                         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
                 }
                 .buttonStyle(.plain)
@@ -69,10 +69,10 @@ struct AudiobookHGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
+                HStack(alignment: .bottom, spacing: 0) {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
-                            ItemStatusImage(item: audiobook)
+                            ItemStatusImage(item: audiobook, aspectRatio: .none)
                                 .frame(width: size)
                                 .padding(.leading, gap)
                                 .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
