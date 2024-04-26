@@ -38,7 +38,10 @@ public extension AudiobookshelfClient {
             return (item, [track], chapters)
         }
         
-        let item = Audiobook.convertFromAudiobookshelf(item: response)
+        guard let item = Audiobook.convertFromAudiobookshelf(item: response) else {
+            throw AudiobookshelfClientError.invalidResponse
+        }
+        
         let tracks = response.media!.tracks!.map(PlayableItem.convertAudioTrackFromAudiobookshelf)
         let chapters = response.media!.chapters!.map(PlayableItem.convertChapterFromAudiobookshelf)
         
@@ -50,7 +53,7 @@ public extension AudiobookshelfClient {
             URLQueryItem(name: "q", value: query),
         ]))
         
-        let audiobooks = response.book?.map { Audiobook.convertFromAudiobookshelf(item: $0.libraryItem) }
+        let audiobooks = response.book?.compactMap { Audiobook.convertFromAudiobookshelf(item: $0.libraryItem) }
         let podcasts = response.podcast?.map { Podcast.convertFromAudiobookshelf(item: $0.libraryItem) }
         let authors = response.authors?.map(Author.convertFromAudiobookshelf)
         let series = response.series?.map { Series.convertFromAudiobookshelf(item: $0.series, books: $0.books) }

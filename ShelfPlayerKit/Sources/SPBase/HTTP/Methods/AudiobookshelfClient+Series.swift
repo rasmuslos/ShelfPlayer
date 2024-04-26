@@ -55,6 +55,6 @@ public extension AudiobookshelfClient {
             URLQueryItem(name: "limit", value: "100"),
             URLQueryItem(name: "page", value: "0"),
         ]))
-        return response.results.map(Audiobook.convertFromAudiobookshelf)
+        return response.results.compactMap(Audiobook.convertFromAudiobookshelf)
     }
 }

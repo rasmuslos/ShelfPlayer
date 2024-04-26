@@ -8,7 +8,11 @@
 import Foundation
 
 extension Audiobook {
-    static func convertFromAudiobookshelf(item: AudiobookshelfClient.AudiobookshelfItem) -> Audiobook {
+    static func convertFromAudiobookshelf(item: AudiobookshelfClient.AudiobookshelfItem) -> Audiobook? {
+        guard item.media?.numAudioFiles ?? 0 > 0 else {
+            return nil
+        }
+        
         return Audiobook(
             id: item.id,
             libraryId: item.libraryId!,
