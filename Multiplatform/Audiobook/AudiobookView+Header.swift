@@ -173,7 +173,7 @@ extension AudiobookView.Header {
                 .frame(height: 0)
                 
                 HStack(spacing: 40) {
-                    ItemImage(image: viewModel.audiobook.image)
+                    ItemImage(image: viewModel.audiobook.image, aspectRatio: .none)
                         .shadow(radius: 30)
                         .frame(width: min(400, (availableWidth - 40) / 2))
                     
