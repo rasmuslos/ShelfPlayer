@@ -44,8 +44,8 @@ struct CompactNowPlayingBarModifier: ViewModifier {
                         
                         if !nowPlayingViewState.presented {
                             HStack {
-                                ItemImage(image: item.image)
-                                    .frame(width: 40, height: 40)
+                                ItemImage(image: item.image, aspectRatio: .none)
+                                    .frame(height: 40)
                                     .scaleEffect(bounce ? AudioPlayer.shared.playing ? 1.1 : 0.9 : 1)
                                     .animation(.spring(duration: 0.2, bounce: 0.7), value: bounce)
                                     .matchedGeometryEffect(id: "image", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
