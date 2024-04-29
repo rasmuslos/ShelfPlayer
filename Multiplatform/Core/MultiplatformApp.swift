@@ -30,23 +30,6 @@ struct MultiplatformApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                #if false
-                .overlay {
-                    HStack(spacing: 0) {
-                        Rectangle()
-                            .frame(width: 1)
-                            .padding(.leading, 20)
-                            .foregroundStyle(.red)
-                        
-                        Spacer()
-                        
-                        Rectangle()
-                            .frame(width: 1)
-                            .padding(.trailing, 20)
-                            .foregroundStyle(.red)
-                    }
-                }
-                #endif
         }
     }
 }
