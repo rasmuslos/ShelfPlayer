@@ -7,11 +7,13 @@
 
 import SwiftUI
 import SwiftData
+import Defaults
 import SPBase
 import Intents
 import SPOffline
 
 struct ContentView: View {
+    @Default(.tintColor) private var tintColor
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @State private var state: Step = AudiobookshelfClient.shared.isAuthorized ? .sessionImport : .login
@@ -58,6 +60,7 @@ struct ContentView: View {
                     OfflineView()
             }
         }
+        .tint(tintColor.color)
         .onReceive(NotificationCenter.default.publisher(for: Library.libraryChangedNotification), perform: { notification in
             if let offline = notification.userInfo?["offline"] as? Bool {
                 state = offline ? .offline : .sessionImport

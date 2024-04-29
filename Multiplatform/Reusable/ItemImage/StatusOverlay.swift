@@ -43,17 +43,7 @@ struct StatusOverlay: View {
                             .foregroundStyle(.black.opacity(0.2))
                         
                         Triangle()
-                            .foregroundStyle(offlineTracker?.status == .downloaded ? Color.alternativeAccent : Color.accentColor)
-                        /*
-                            .overlay(alignment: .topTrailing) {
-                                if entity.progress < 1 {
-                                    Circle()
-                                        .stroke(offlineTracker?.status == .downloaded ? Color.accentColor : Color.alternativeAccent, lineWidth: 3)
-                                        .frame(width: size / 3, height: size / 3)
-                                        .padding(size / 7)
-                                }
-                            }
-                         */
+                            .foregroundStyle(offlineTracker?.status == .downloaded && Defaults[.tintColor] != .purple ? Color.alternativeAccent : Color.accentColor)
                             .reverseMask(alignment: .topTrailing) {
                                 Group {
                                     if entity.progress < 1 {

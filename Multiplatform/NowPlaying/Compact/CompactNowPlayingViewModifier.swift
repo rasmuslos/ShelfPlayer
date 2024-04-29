@@ -77,7 +77,7 @@ struct CompactNowPlayingViewModifier: ViewModifier {
                                     .padding(.top, 20)
                                     .padding(.bottom, 30)
                             }
-                            .transition(.opacity.animation(.linear(duration: 0.3)))
+                            .transition(.opacity.animation(.linear(duration: 0.2)))
                         }
                     }
                     .zIndex(2)
@@ -93,7 +93,7 @@ struct CompactNowPlayingViewModifier: ViewModifier {
                             }
                             .transition(.asymmetric(
                                 insertion: .opacity.animation(.linear(duration: 0.1).delay(0.3)),
-                                removal: .opacity.animation(.linear(duration: 0.1))))
+                                removal: .opacity.animation(.linear(duration: 0.05))))
                         }
                     }
                     .padding(.horizontal, 30)
