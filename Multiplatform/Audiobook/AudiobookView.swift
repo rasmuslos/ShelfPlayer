@@ -23,7 +23,7 @@ struct AudiobookView: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 0) {
+            VStack(spacing: 0) {
                 Header()
                     .padding(.vertical, 10)
                     .padding(.horizontal, 20)
