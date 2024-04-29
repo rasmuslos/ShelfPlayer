@@ -212,11 +212,14 @@ struct AccountSheet: View {
                 }
                 
                 Section {
+                    NavigationLink(destination: AccentColorSelectionView()) {
+                        Label("account.tint", systemImage: "circle.dashed")
+                    }
                     NavigationLink(destination: CustomHeaderEditView()) {
                         Label("login.customHTTPHeaders", systemImage: "network.badge.shield.half.filled")
                     }
-                    .foregroundStyle(.secondary)
                 }
+                .foregroundStyle(.secondary)
                 
                 Section {
                     Button {

@@ -22,4 +22,6 @@ extension Defaults.Keys {
     static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
     
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
+    
+    static let tintColor = Key<AccentColorSelectionView.TintColor>("tintColor", default: .shelfPlayer)
 }
