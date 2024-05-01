@@ -37,6 +37,18 @@
         }
       }
     },
+    "NSHumanReadableCopyright" : {
+      "comment" : "Copyright (human-readable)",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Rasmus Krämer"
+          }
+        }
+      }
+    },
     "NSSiriUsageDescription" : {
       "comment" : "Privacy - Siri Usage Description",
       "extractionState" : "extracted_with_value",
@@ -54,6 +66,12 @@
           }
         }
       }
+    },
+    "Shelf Player" : {
+
+    },
+    "shelfplayer" : {
+
     }
   },
   "version" : "1.0"

@@ -110,6 +110,8 @@ extension AudiobookshelfClient {
             
             let chapters: [AudiobookshelfChapter]?
             let metadata: AudiobookshelfItemMetadata
+            
+            let audioFiles: [AudiobookshelfAudioFile]?
         }
         struct AudiobookshelfItemMetadata: Codable {
             let title: String?
@@ -191,6 +193,12 @@ extension AudiobookshelfClient {
             struct AudioTrackMetadata: Codable {
                 let ext: String?
             }
+        }
+        
+        // MARK: Audio files
+        
+        struct AudiobookshelfAudioFile: Codable {
+            let index: Int
         }
         
         // MARK: Chapter

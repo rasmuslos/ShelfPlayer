@@ -95,6 +95,7 @@ struct CompactNowPlayingBarModifier: ViewModifier {
                                                 AudioPlayer.shared.playing = !AudioPlayer.shared.playing
                                             } label: {
                                                 Label("playback.toggle", systemImage: AudioPlayer.shared.playing ?  "pause.fill" : "play.fill")
+                                                    .labelStyle(.iconOnly)
                                                     .contentTransition(.symbolEffect(.replace))
                                             }
                                         }
@@ -106,6 +107,7 @@ struct CompactNowPlayingBarModifier: ViewModifier {
                                         AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
                                     } label: {
                                         Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
+                                            .labelStyle(.iconOnly)
                                             .symbolEffect(.bounce, value: animateForwards)
                                     }
                                     .padding(.horizontal, 10)

@@ -19,14 +19,14 @@
 			</array>
 		</dict>
 	</array>
-	<key>INIntentsSupported</key>
+	<key>INAlternativeAppNames</key>
 	<array>
-		<string>INPlayMediaIntent</string>
-	</array>
-	<key>INSupportedMediaCategories</key>
-	<array>
-		<string>INMediaCategoryPodcasts</string>
-		<string>INMediaCategoryAudiobooks</string>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Shelf Player</string>
+			<key>INAlternativeAppNamePronunciationHint</key>
+			<string>shelfplayer</string>
+		</dict>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
@@ -43,6 +43,11 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>INPlayMediaIntent</string>
+		<string>io.rfk.shelfplayer.audiobook</string>
+		<string>io.rfk.shelfplayer.author</string>
+		<string>io.rfk.shelfplayer.episode</string>
+		<string>io.rfk.shelfplayer.podcast</string>
+		<string>io.rfk.shelfplayer.series</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
