@@ -24,4 +24,5 @@ extension Defaults.Keys {
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
     
     static let tintColor = Key<AccentColorSelectionView.TintColor>("tintColor", default: .shelfPlayer)
+    static let useSerifFont = Key("useSerifFont", default: true)
 }

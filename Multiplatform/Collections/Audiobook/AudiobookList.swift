@@ -71,7 +71,7 @@ extension AudiobookList {
                     
                     Text(audiobook.name)
                         .font(.headline)
-                        .fontDesign(.serif)
+                        .modifier(SerifModifier())
                         .lineLimit(1)
                         .padding(.top, 4)
                         .padding(.bottom, 6)

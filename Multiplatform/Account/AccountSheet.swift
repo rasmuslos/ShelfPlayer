@@ -116,7 +116,7 @@ struct AccountSheet: View {
                                 
                                 VStack(alignment: .leading) {
                                     Text(audiobook.name)
-                                        .fontDesign(.serif)
+                                        .modifier(SerifModifier())
                                     if let author = audiobook.author {
                                         Text(author)
                                             .font(.subheadline)

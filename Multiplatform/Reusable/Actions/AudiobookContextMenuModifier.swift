@@ -55,7 +55,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                     
                     Text(audiobook.name)
                         .font(.headline)
-                        .fontDesign(.serif)
+                        .modifier(SerifModifier())
                         .padding(.top, 10)
                     
                     if let author = audiobook.author {
