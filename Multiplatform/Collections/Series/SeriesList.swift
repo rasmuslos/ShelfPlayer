@@ -43,7 +43,7 @@ extension SeriesList {
                 
                 VStack(alignment: .leading) {
                     Text(series.name)
-                        .fontDesign(.serif)
+                        .modifier(SerifModifier())
                     Text("series.count \(series.images.count)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)

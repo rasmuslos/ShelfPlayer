@@ -6,15 +6,18 @@
 //
 
 import SwiftUI
+import Defaults
 
 struct RowTitle: View {
+    @Default(.useSerifFont) private var useSerifFont
+    
     let title: String
     var fontDesign: Font.Design? = nil
     
     var body: some View {
         Text(title)
             .font(.headline)
-            .fontDesign(fontDesign)
+            .fontDesign(fontDesign == .serif && !useSerifFont ? nil : fontDesign)
             .padding(.top, 10)
     }
 }

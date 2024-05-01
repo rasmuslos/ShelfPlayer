@@ -35,7 +35,7 @@ extension SeriesView {
                     
                     Text(series.name)
                         .font(.title)
-                        .fontDesign(.serif)
+                        .modifier(SerifModifier())
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
                         .toolbar {

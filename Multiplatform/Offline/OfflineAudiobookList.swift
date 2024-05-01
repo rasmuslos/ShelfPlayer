@@ -53,7 +53,7 @@ extension OfflineAudiobookList {
                 
                 VStack(alignment: .leading) {
                     Text(audiobook.name)
-                        .fontDesign(.serif)
+                        .modifier(SerifModifier())
                         .lineLimit(1)
                     
                     if let author = audiobook.author {

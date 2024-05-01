@@ -21,7 +21,7 @@ extension AuthorView {
                     .clipShape(RoundedRectangle(cornerRadius: 10000))
                 
                 Text(author.name)
-                    .fontDesign(.serif)
+                    .modifier(SerifModifier())
                     .font(.headline)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)

@@ -31,7 +31,7 @@ extension AudiobookView {
                             VStack {
                                 Text(viewModel.audiobook.name)
                                     .font(.headline)
-                                    .fontDesign(.serif)
+                                    .modifier(SerifModifier())
                                     .lineLimit(1)
                                 
                                 if let author = viewModel.audiobook.author {

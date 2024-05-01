@@ -48,7 +48,7 @@ extension AudiobookView.Header {
             VStack(alignment: alignment, spacing: 5) {
                 Text(viewModel.audiobook.name)
                     .font(largeFont ? .title : .headline)
-                    .fontDesign(.serif)
+                    .modifier(SerifModifier())
                     .lineLimit(4)
                     .multilineTextAlignment(alignment == .center ? .center : .leading)
                 
