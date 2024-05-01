@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/FelixHerrmann/UIImageColors.git",
       "state" : {
-        "revision" : "e49e6c32ea556e9fa0109dc79686bea4a10d41a2",
-        "version" : "2.2.0"
+        "branch" : "master",
+        "revision" : "64b09b57d9f96c86ec7b0176e6e856e9c691579f"
       }
     }
   ],

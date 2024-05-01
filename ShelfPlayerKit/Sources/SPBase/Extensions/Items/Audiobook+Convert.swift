@@ -9,7 +9,8 @@ import Foundation
 
 extension Audiobook {
     static func convertFromAudiobookshelf(item: AudiobookshelfClient.AudiobookshelfItem) -> Audiobook? {
-        guard item.media?.numAudioFiles ?? 0 > 0 else {
+        // gibe items the benefit of the doubt while filtering out ebooks
+        guard item.media?.numAudioFiles ?? item.media?.audioFiles?.count ?? 1 > 0 else {
             return nil
         }
         

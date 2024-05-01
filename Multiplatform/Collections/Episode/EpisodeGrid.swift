@@ -22,7 +22,7 @@ struct EpisodeGrid: View {
     private var size: CGFloat {
         let minimum = horizontalSizeClass == .compact ? 300 : 450.0
         
-        let usable = width - padding * 2
+        let usable = width - (padding + gap)
         let amount = CGFloat(Int(usable / minimum))
         let available = usable - gap * (amount - 1)
         
@@ -40,7 +40,7 @@ struct EpisodeGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: [GridItem(.flexible())].repeated(count: amount), spacing: 0) {
+                LazyHGrid(rows: [GridItem(.flexible(), spacing: 15)].repeated(count: amount), spacing: 0) {
                     ForEach(episodes) { episode in
                         NavigationLink(destination: EpisodeView(episode: episode)) {
                             EpisodeList.EpisodeRow(episode: episode)

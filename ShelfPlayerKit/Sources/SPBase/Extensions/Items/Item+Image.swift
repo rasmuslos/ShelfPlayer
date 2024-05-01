@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import UIImageColors
 
 public extension Item {
     struct Image: Codable {
@@ -32,12 +33,26 @@ public extension Item {
             let image = UIImage(data: data)
             
             if let colors = image?.getColors(quality: .low) {
+                var primary = ImageColors.placeholder.primary
+                var secondary = ImageColors.placeholder.secondary
+                var detail = ImageColors.placeholder.detail
+                
                 let background = Color(colors.background)
                 
+                if let uiPrimary = colors.primary {
+                    primary = Color(uiPrimary)
+                }
+                if let uiSecondary = colors.secondary {
+                    secondary = Color(uiSecondary)
+                }
+                if let uiDetail = colors.detail {
+                    detail = Color(uiDetail)
+                }
+                
                 return .init(
-                    primary: Color(colors.primary),
-                    secondary: Color(colors.secondary),
-                    detail: Color(colors.detail),
+                    primary: primary,
+                    secondary: secondary,
+                    detail: detail,
                     background: background,
                     isLight: background.isLight())
             }

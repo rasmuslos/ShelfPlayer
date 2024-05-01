@@ -45,9 +45,7 @@ struct ContentView: View {
                     }
                 case .library:
                     navigationController
-                        .onAppear {
-                            VocabularyDonator.donateVocabulary()
-                            
+                        .onAppear {                            
                             Task.detached { @MainActor in
                                 try? await OfflineManager.shared.attemptPlaybackDurationSync()
                             }

@@ -62,7 +62,7 @@ public extension AudiobookshelfClient {
     }
     
     func createSession(itemId: String, episodeId: String?, id: String, timeListened: Double, startTime: Double, currentTime: Double, started: Date, updated: Date) async throws {
-        let (item, status, userId): (AudiobookshelfItem, StatusResponse, String) = try await (getItem(itemId: itemId, episodeId: episodeId), status(), userId())
+        let (item, status, userId): (AudiobookshelfItem, StatusResponse, String) = try await (getItem(itemId: itemId), status(), userId())
         
         let session = LocalSession(
             id: id,
