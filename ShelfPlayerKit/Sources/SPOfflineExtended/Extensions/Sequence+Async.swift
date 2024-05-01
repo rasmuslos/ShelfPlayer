@@ -6,7 +6,7 @@ public extension Collection {
     func parallelMap<T>(
         parallelism requestedParallelism: Int? = nil,
         _ transform: @escaping (Element) async throws -> T
-    ) async throws -> [T] {
+    ) async rethrows -> [T] {
         let defaultParallelism = 2
         let parallelism = requestedParallelism ?? defaultParallelism
         

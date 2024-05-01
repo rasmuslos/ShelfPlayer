@@ -45,13 +45,11 @@
 		3A50AABA2ACC523000BF5438 /* AudiobookEntryView+Series.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A50AAB92ACC523000BF5438 /* AudiobookEntryView+Series.swift */; };
 		3A5159562AD0374600CD5680 /* AudiobookSortFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5159552AD0374600CD5680 /* AudiobookSortFilter.swift */; };
 		3A5210082B6D30C900F59101 /* EpisodeSingleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5210072B6D30C900F59101 /* EpisodeSingleList.swift */; };
-		3A5A4DAB2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */; };
-		3A5A4DAD2B5EF81B00E72E8B /* VocabularyDonator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */; };
+		3A5A4DAB2B5EF6A400E72E8B /* PlayMediaHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DAA2B5EF6A400E72E8B /* PlayMediaHandler.swift */; };
 		3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */; };
 		3A5A4DB52B5F0A2700E72E8B /* SPBase in Frameworks */ = {isa = PBXBuildFile; productRef = 3A5A4DB42B5F0A2700E72E8B /* SPBase */; };
 		3A5A4DB72B5F0A2700E72E8B /* SPOfflineExtended in Frameworks */ = {isa = PBXBuildFile; productRef = 3A5A4DB62B5F0A2700E72E8B /* SPOfflineExtended */; };
 		3A5A4DB92B5F0A2700E72E8B /* SPPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = 3A5A4DB82B5F0A2700E72E8B /* SPPlayback */; };
-		3A5A4DBA2B5F0BCD00E72E8B /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3A5A4DBC2B5F0BCD00E72E8B /* Intents.intentdefinition */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
 		3A77B6FD2ACDE2FA00F22C7F /* AuthorUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */; };
 		3A77B7022ACDF01C00F22C7F /* SeriesUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B7012ACDF01C00F22C7F /* SeriesUnavailableView.swift */; };
@@ -67,7 +65,6 @@
 		3A8810EE2AD2C071009696D1 /* PodcastLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810ED2AD2C071009696D1 /* PodcastLoadView.swift */; };
 		3A8810F02AD2C0E4009696D1 /* PodcastUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810EF2AD2C0E4009696D1 /* PodcastUnavailableView.swift */; };
 		3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F12AD2C2C3009696D1 /* PodcastView.swift */; };
-		3A8810F52AD2C35B009696D1 /* UIImageColors in Frameworks */ = {isa = PBXBuildFile; productRef = 3A8810F42AD2C35B009696D1 /* UIImageColors */; };
 		3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F62AD2CDE9009696D1 /* PodcastView+Header.swift */; };
 		3A8810FB2AD2CEE7009696D1 /* PodcastView+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810FA2AD2CEE7009696D1 /* PodcastView+Toolbar.swift */; };
 		3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9206FE2B6CD86400A5CAB0 /* Defaults */; };
@@ -127,6 +124,14 @@
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
 		3ACD19B92ACB5B32007D01FE /* SessionsImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */; };
 		3ACD596C2BE2926F0060A841 /* SerifModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD596B2BE2926F0060A841 /* SerifModifier.swift */; };
+		3ACD59732BE29B8F0060A841 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ACD59722BE29B8E0060A841 /* Intents.framework */; platformFilters = (ios, maccatalyst, macos, tvos, watchos, xros, ); };
+		3ACD59762BE29B8F0060A841 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD59752BE29B8F0060A841 /* IntentHandler.swift */; };
+		3ACD597A2BE29B8F0060A841 /* Siri Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3ACD59712BE29B8E0060A841 /* Siri Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3ACD59812BE29CC20060A841 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3ACD59802BE29CC20060A841 /* PrivacyInfo.xcprivacy */; };
+		3ACD59862BE29DD30060A841 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD59852BE29DD30060A841 /* Intents.intentdefinition */; };
+		3ACD59922BE2A5210060A841 /* SPBase in Frameworks */ = {isa = PBXBuildFile; productRef = 3ACD59912BE2A5210060A841 /* SPBase */; };
+		3ACD59942BE2A5340060A841 /* SPOfflineExtended in Frameworks */ = {isa = PBXBuildFile; productRef = 3ACD59932BE2A5340060A841 /* SPOfflineExtended */; };
+		3ACD59962BE2BE0E0060A841 /* Handler+Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD59952BE2BE0E0060A841 /* Handler+Play.swift */; };
 		3ACFD71F2BD14A6000C7998B /* EpisodePreviewTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFD71E2BD14A6000C7998B /* EpisodePreviewTip.swift */; };
 		3ACFD7212BD14A9A00C7998B /* LongPressSeekTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFD7202BD14A9A00C7998B /* LongPressSeekTip.swift */; };
 		3ACFD7232BD14AC500C7998B /* ViewBookmarkTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFD7222BD14AC500C7998B /* ViewBookmarkTip.swift */; };
@@ -148,6 +153,30 @@
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
 		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3ACD59782BE29B8F0060A841 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3A0AE6982AB623F400ACCD68 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3ACD59702BE29B8E0060A841;
+			remoteInfo = siri;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3ACD597E2BE29B8F0060A841 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3ACD597A2BE29B8F0060A841 /* Siri Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringKey+Key.swift"; sourceTree = "<group>"; };
@@ -190,11 +219,9 @@
 		3A50AAB92ACC523000BF5438 /* AudiobookEntryView+Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookEntryView+Series.swift"; sourceTree = "<group>"; };
 		3A5159552AD0374600CD5680 /* AudiobookSortFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookSortFilter.swift; sourceTree = "<group>"; };
 		3A5210072B6D30C900F59101 /* EpisodeSingleList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeSingleList.swift; sourceTree = "<group>"; };
-		3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
-		3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyDonator.swift; sourceTree = "<group>"; };
+		3A5A4DAA2B5EF6A400E72E8B /* PlayMediaHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaHandler.swift; sourceTree = "<group>"; };
 		3A5A4DB12B5EFB1800E72E8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3A5A4DB32B5EFB1A00E72E8B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = de; path = de.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
-		3A5A4DBB2B5F0BCD00E72E8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorUnavailableView.swift; sourceTree = "<group>"; };
 		3A77B7012ACDF01C00F22C7F /* SeriesUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesUnavailableView.swift; sourceTree = "<group>"; };
@@ -270,6 +297,16 @@
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		3ACD19B82ACB5B32007D01FE /* SessionsImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsImportView.swift; sourceTree = "<group>"; };
 		3ACD596B2BE2926F0060A841 /* SerifModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerifModifier.swift; sourceTree = "<group>"; };
+		3ACD59712BE29B8E0060A841 /* Siri Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Siri Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3ACD59722BE29B8E0060A841 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		3ACD59752BE29B8F0060A841 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		3ACD59772BE29B8F0060A841 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3ACD597F2BE29C1C0060A841 /* Siri Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Siri Extension.entitlements"; sourceTree = "<group>"; };
+		3ACD59802BE29CC20060A841 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		3ACD59842BE29DD30060A841 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
+		3ACD598C2BE29DFC0060A841 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
+		3ACD598E2BE29DFD0060A841 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
+		3ACD59952BE2BE0E0060A841 /* Handler+Play.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Handler+Play.swift"; sourceTree = "<group>"; };
 		3ACFD71E2BD14A6000C7998B /* EpisodePreviewTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodePreviewTip.swift; sourceTree = "<group>"; };
 		3ACFD7202BD14A9A00C7998B /* LongPressSeekTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressSeekTip.swift; sourceTree = "<group>"; };
 		3ACFD7222BD14AC500C7998B /* ViewBookmarkTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBookmarkTip.swift; sourceTree = "<group>"; };
@@ -301,11 +338,20 @@
 			files = (
 				3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */,
 				3A5A4DB72B5F0A2700E72E8B /* SPOfflineExtended in Frameworks */,
-				3A8810F52AD2C35B009696D1 /* UIImageColors in Frameworks */,
 				3A5A4DB52B5F0A2700E72E8B /* SPBase in Frameworks */,
 				3A5A4DB92B5F0A2700E72E8B /* SPPlayback in Frameworks */,
 				3AEFA9562B8BB51A00220CA3 /* BetterSafariView in Frameworks */,
 				3A1EAB932ACC80690064C80C /* NukeUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3ACD596E2BE29B8E0060A841 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3ACD59922BE2A5210060A841 /* SPBase in Frameworks */,
+				3ACD59732BE29B8F0060A841 /* Intents.framework in Frameworks */,
+				3ACD59942BE2A5340060A841 /* SPOfflineExtended in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +364,7 @@
 				3A82864B2AEC0DD800384BC9 /* README.md */,
 				3AF6A5292B603FA000770A1E /* Configuration */,
 				3A0AE6A22AB623F400ACCD68 /* Multiplatform */,
+				3ACD59742BE29B8F0060A841 /* Siri Extension */,
 				3A97FEB52B4175EC00A6A5C7 /* ShelfPlayerKit */,
 				3A21CC542B0A1CBB002D5D55 /* Products */,
 				3AE3E9672B1E37D3005FBFA6 /* Frameworks */,
@@ -444,6 +491,7 @@
 			isa = PBXGroup;
 			children = (
 				3AA36E502B0A97FD0036038D /* ShelfPlayer.app */,
+				3ACD59712BE29B8E0060A841 /* Siri Extension.appex */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -481,9 +529,8 @@
 		3A5A4DA72B5EF65500E72E8B /* Intents */ = {
 			isa = PBXGroup;
 			children = (
-				3A5A4DAC2B5EF81B00E72E8B /* VocabularyDonator.swift */,
-				3A5A4DAA2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift */,
-				3A5A4DBC2B5F0BCD00E72E8B /* Intents.intentdefinition */,
+				3ACD59852BE29DD30060A841 /* Intents.intentdefinition */,
+				3A5A4DAA2B5EF6A400E72E8B /* PlayMediaHandler.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -732,6 +779,18 @@
 			path = Regular;
 			sourceTree = "<group>";
 		};
+		3ACD59742BE29B8F0060A841 /* Siri Extension */ = {
+			isa = PBXGroup;
+			children = (
+				3ACD59752BE29B8F0060A841 /* IntentHandler.swift */,
+				3ACD59952BE2BE0E0060A841 /* Handler+Play.swift */,
+				3ACD59772BE29B8F0060A841 /* Info.plist */,
+				3ACD59802BE29CC20060A841 /* PrivacyInfo.xcprivacy */,
+				3ACD597F2BE29C1C0060A841 /* Siri Extension.entitlements */,
+			);
+			path = "Siri Extension";
+			sourceTree = "<group>";
+		};
 		3ACFD71D2BD14A4400C7998B /* Tips */ = {
 			isa = PBXGroup;
 			children = (
@@ -747,6 +806,7 @@
 		3AE3E9672B1E37D3005FBFA6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3ACD59722BE29B8E0060A841 /* Intents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -789,16 +849,17 @@
 				3A0AE69C2AB623F400ACCD68 /* Sources */,
 				3A0AE69D2AB623F400ACCD68 /* Frameworks */,
 				3A0AE69E2AB623F400ACCD68 /* Resources */,
+				3ACD597E2BE29B8F0060A841 /* Embed Foundation Extensions */,
 				3AA954342AD2BAC10031C20D /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3ACD59792BE29B8F0060A841 /* PBXTargetDependency */,
 			);
 			name = Multiplatform;
 			packageProductDependencies = (
 				3A1EAB922ACC80690064C80C /* NukeUI */,
-				3A8810F42AD2C35B009696D1 /* UIImageColors */,
 				3A5A4DB42B5F0A2700E72E8B /* SPBase */,
 				3A5A4DB62B5F0A2700E72E8B /* SPOfflineExtended */,
 				3A5A4DB82B5F0A2700E72E8B /* SPPlayback */,
@@ -809,6 +870,28 @@
 			productReference = 3AA36E502B0A97FD0036038D /* ShelfPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
+		3ACD59702BE29B8E0060A841 /* Siri Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3ACD597B2BE29B8F0060A841 /* Build configuration list for PBXNativeTarget "Siri Extension" */;
+			buildPhases = (
+				3ACD596D2BE29B8E0060A841 /* Sources */,
+				3ACD596E2BE29B8E0060A841 /* Frameworks */,
+				3ACD596F2BE29B8E0060A841 /* Resources */,
+				3ACD59972BE2C2E40060A841 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Siri Extension";
+			packageProductDependencies = (
+				3ACD59912BE2A5210060A841 /* SPBase */,
+				3ACD59932BE2A5340060A841 /* SPOfflineExtended */,
+			);
+			productName = siri;
+			productReference = 3ACD59712BE29B8E0060A841 /* Siri Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -816,11 +899,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					3A0AE69F2AB623F400ACCD68 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					3ACD59702BE29B8E0060A841 = {
+						CreatedOnToolsVersion = 15.3;
 					};
 				};
 			};
@@ -836,7 +922,6 @@
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
 				3A1EAB912ACC80690064C80C /* XCRemoteSwiftPackageReference "Nuke" */,
-				3A8810F32AD2C35B009696D1 /* XCRemoteSwiftPackageReference "UIImageColors" */,
 				3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */,
 				3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */,
 			);
@@ -845,6 +930,7 @@
 			projectRoot = "";
 			targets = (
 				3A0AE69F2AB623F400ACCD68 /* Multiplatform */,
+				3ACD59702BE29B8E0060A841 /* Siri Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -863,10 +949,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3ACD596F2BE29B8E0060A841 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3ACD59812BE29CC20060A841 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		3AA954342AD2BAC10031C20D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    buildNumber=$(git rev-list --count head)\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n";
+		};
+		3ACD59972BE2C2E40060A841 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -932,7 +1044,6 @@
 				3AE73DB52B76137300058F70 /* BackgroundTaskHandler.swift in Sources */,
 				3AA9542B2AD2A87E0031C20D /* EpisodeFeaturedGrid.swift in Sources */,
 				3A50AAB82ACC522900BF5438 /* AudiobookEntryView+Library.swift in Sources */,
-				3A5A4DBA2B5F0BCD00E72E8B /* Intents.intentdefinition in Sources */,
 				3AB8BBB92BD7B66E0012023A /* AudiobookSeriesView.swift in Sources */,
 				3ACFD7212BD14A9A00C7998B /* LongPressSeekTip.swift in Sources */,
 				3AA0B0892AD322470009FBB4 /* EpisodeView.swift in Sources */,
@@ -976,6 +1087,7 @@
 				3A9874272B599BA600B2704F /* Chapters.swift in Sources */,
 				3A77B7022ACDF01C00F22C7F /* SeriesUnavailableView.swift in Sources */,
 				3A1011822AD6975C00AAE220 /* MPVolumeView+Volume.swift in Sources */,
+				3ACD59862BE29DD30060A841 /* Intents.intentdefinition in Sources */,
 				3A337E3A2B0E13CE009C932A /* EpisodeContextMenuModifier.swift in Sources */,
 				3A1011842AD697B600AAE220 /* Compact+Buttons.swift in Sources */,
 				3AD6BE852B89060F00EEA347 /* CarPlay+NowPlaying.swift in Sources */,
@@ -998,9 +1110,8 @@
 				3AA9541B2AD290380031C20D /* PodcastList.swift in Sources */,
 				3AA0B08B2AD32D4E0009FBB4 /* EpisodeView+Header.swift in Sources */,
 				3AB141DD2ADDC800007F68CB /* AccountSheet.swift in Sources */,
-				3A5A4DAD2B5EF81B00E72E8B /* VocabularyDonator.swift in Sources */,
 				3AB8BBB72BD7B5EF0012023A /* AudiobookListenNowView.swift in Sources */,
-				3A5A4DAB2B5EF6A400E72E8B /* PlayMediaIntentHandler.swift in Sources */,
+				3A5A4DAB2B5EF6A400E72E8B /* PlayMediaHandler.swift in Sources */,
 				3ABCC7E02AD4647D004AEADF /* EpisodeView+Toolbar.swift in Sources */,
 				3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */,
 				3A1A67122BD8244500528DA6 /* RegularNowPlayingView.swift in Sources */,
@@ -1021,7 +1132,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3ACD596D2BE29B8E0060A841 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3ACD59962BE2BE0E0060A841 /* Handler+Play.swift in Sources */,
+				3ACD59762BE29B8F0060A841 /* IntentHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3ACD59792BE29B8F0060A841 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3ACD59702BE29B8E0060A841 /* Siri Extension */;
+			targetProxy = 3ACD59782BE29B8F0060A841 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */ = {
@@ -1033,10 +1161,12 @@
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
 		};
-		3A5A4DBC2B5F0BCD00E72E8B /* Intents.intentdefinition */ = {
+		3ACD59852BE29DD30060A841 /* Intents.intentdefinition */ = {
 			isa = PBXVariantGroup;
 			children = (
-				3A5A4DBB2B5F0BCD00E72E8B /* Base */,
+				3ACD59842BE29DD30060A841 /* Base */,
+				3ACD598C2BE29DFC0060A841 /* en */,
+				3ACD598E2BE29DFD0060A841 /* de */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -1104,6 +1234,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -1111,8 +1242,10 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Debug;
@@ -1171,14 +1304,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1186,6 +1322,7 @@
 		3A0AE6B22AB623F500ACCD68 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Multiplatform/Audiobooks.entitlements;
@@ -1193,6 +1330,7 @@
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1214,8 +1352,6 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1223,6 +1359,7 @@
 		3A0AE6B32AB623F500ACCD68 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Multiplatform/Audiobooks.entitlements;
@@ -1230,6 +1367,7 @@
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play your audiobooks or podcasts using Siri";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1251,8 +1389,48 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3ACD597C2BE29B8F0060A841 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Siri Extension/Siri Extension.entitlements";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Siri Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Siri Extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.siri";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3ACD597D2BE29B8F0060A841 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Siri Extension/Siri Extension.entitlements";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Siri Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Siri Extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.siri";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1278,6 +1456,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		3ACD597B2BE29B8F0060A841 /* Build configuration list for PBXNativeTarget "Siri Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3ACD597C2BE29B8F0060A841 /* Debug */,
+				3ACD597D2BE29B8F0060A841 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -1287,14 +1474,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 12.1.6;
-			};
-		};
-		3A8810F32AD2C35B009696D1 /* XCRemoteSwiftPackageReference "UIImageColors" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/FelixHerrmann/UIImageColors.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.0;
 			};
 		};
 		3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */ = {
@@ -1333,15 +1512,18 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SPPlayback;
 		};
-		3A8810F42AD2C35B009696D1 /* UIImageColors */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3A8810F32AD2C35B009696D1 /* XCRemoteSwiftPackageReference "UIImageColors" */;
-			productName = UIImageColors;
-		};
 		3A9206FE2B6CD86400A5CAB0 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
+		};
+		3ACD59912BE2A5210060A841 /* SPBase */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SPBase;
+		};
+		3ACD59932BE2A5340060A841 /* SPOfflineExtended */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SPOfflineExtended;
 		};
 		3AEFA9552B8BB51A00220CA3 /* BetterSafariView */ = {
 			isa = XCSwiftPackageProductDependency;

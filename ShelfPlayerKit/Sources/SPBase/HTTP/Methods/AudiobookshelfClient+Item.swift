@@ -8,7 +8,7 @@
 import Foundation
 
 extension AudiobookshelfClient {
-    func getItem(itemId: String, episodeId: String?) async throws -> AudiobookshelfItem {
+    func getItem(itemId: String) async throws -> AudiobookshelfItem {
         try await request(ClientRequest<AudiobookshelfItem>(path: "api/items/\(itemId)", method: "GET", query: [
             URLQueryItem(name: "expanded", value: "1"),
         ]))
@@ -28,7 +28,7 @@ public extension AudiobookshelfClient {
     }
     
     func getItem(itemId: String, episodeId: String?) async throws -> (PlayableItem, PlayableItem.AudioTracks, PlayableItem.Chapters) {
-        let response: AudiobookshelfItem = try await getItem(itemId: itemId, episodeId: episodeId)
+        let response: AudiobookshelfItem = try await getItem(itemId: itemId)
         
         if let episodeId = episodeId, let episode = response.media?.episodes?.first(where: { $0.id == episodeId }) {
             let item = Episode.convertFromAudiobookshelf(podcastEpisode: episode, item: response)
