@@ -49,7 +49,8 @@ extension PodcastView {
                         Button {
                             settingsSheetPresented.toggle()
                         } label: {
-                            Image(systemName: "ellipsis")
+                            Label("more", systemImage: "ellipsis")
+                                .labelStyle(.iconOnly)
                         }
                         .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
                     }

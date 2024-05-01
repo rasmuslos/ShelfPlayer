@@ -36,7 +36,8 @@ extension RegularNowPlayingView {
                     Button {
                         notableMomentsToggled.toggle()
                     } label: {
-                        Image(systemName: "bookmark.square")
+                        Label("notableMoments", systemImage: "bookmark.square")
+                            .labelStyle(.iconOnly)
                             .symbolVariant(notableMomentsToggled ? .fill : .none)
                     }
                     .font(.system(size: 23))

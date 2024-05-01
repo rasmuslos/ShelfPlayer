@@ -43,7 +43,8 @@ struct AuthorsView: View {
                                 authorsAscending.toggle()
                             }
                         } label: {
-                            Image(systemName: "arrow.up.arrow.down.circle")
+                            Label("ascending", systemImage: "arrow.up.arrow.down.circle")
+                                .labelStyle(.iconOnly)
                                 .symbolVariant(authorsAscending ? .fill : .none)
                         }
                     }

@@ -80,7 +80,8 @@ struct AudiobookLibraryView: View {
                     if horizontalSizeClass == .compact {
                         ToolbarItem(placement: .topBarLeading) {
                             NavigationLink(destination: AuthorsView()) {
-                                Image(systemName: "person.fill")
+                                Label("authors", systemImage: "person.fill")
+                                    .labelStyle(.iconOnly)
                             }
                         }
                     }

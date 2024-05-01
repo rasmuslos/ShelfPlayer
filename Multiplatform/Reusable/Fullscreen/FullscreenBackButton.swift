@@ -20,7 +20,8 @@ struct FullscreenBackButton: View {
             Button {
                 presentationMode.wrappedValue.dismiss()
             } label: {
-                Image(systemName: "chevron.left")
+                Label("back", systemImage: "chevron.left")
+                    .labelStyle(.iconOnly)
                     .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: isLight, accentColor: accentColor))
             }
         }

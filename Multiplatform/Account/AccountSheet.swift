@@ -141,7 +141,8 @@ struct AccountSheet: View {
                                 Button(role: .destructive) {
                                     OfflineManager.shared.delete(audiobookId: audiobook.id)
                                 } label: {
-                                    Image(systemName: "trash.fill")
+                                    Label("download.remove", systemImage: "trash.fill")
+                                        .labelStyle(.iconOnly)
                                 }
                             }
                         }
@@ -174,7 +175,8 @@ struct AccountSheet: View {
                                 Button(role: .destructive) {
                                     try! OfflineManager.shared.delete(podcastId: podcast.id)
                                 } label: {
-                                    Image(systemName: "trash.fill")
+                                    Label("download.remove", systemImage: "trash.fill")
+                                        .labelStyle(.iconOnly)
                                 }
                             }
                         }
@@ -284,7 +286,8 @@ struct AccountSheetToolbarModifier: ViewModifier {
                         Button {
                             accountSheetPresented.toggle()
                         } label: {
-                            Image(systemName: "person.crop.circle")
+                            Label("account", systemImage: "person.crop.circle")
+                                .labelStyle(.iconOnly)
                         }
                     }
                 }

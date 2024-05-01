@@ -36,7 +36,8 @@ struct LibrarySelectorModifier: ViewModifier {
                             Label("offline.enable", systemImage: "network.slash")
                         }
                     } label: {
-                        Image(systemName: "books.vertical.fill")
+                        Label("tip.changeLibrary", systemImage: "books.vertical.fill")
+                            .labelStyle(.iconOnly)
                     }
                     .popoverTip(SelectLibraryTip())
                 }

@@ -46,7 +46,8 @@ struct AudiobookGenreFilterModifier: ViewModifier {
                                     Spacer()
                                     
                                     if active {
-                                        Image(systemName: "checkmark")
+                                        Label("active", systemImage: "checkmark")
+                                            .labelStyle(.iconOnly)
                                     }
                                 }
                             }
