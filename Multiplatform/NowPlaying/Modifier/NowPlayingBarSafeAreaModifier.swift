@@ -15,7 +15,7 @@ struct NowPlayingBarLeadingOffsetModifier: ViewModifier {
         ZStack {
             GeometryReader { reader in
                 Color.clear
-                    .onChange(of: reader.frame(in: .global).origin) {
+                    .onChange(of: reader.frame(in: .global).origin, initial: true) {
                         if reader.size.width < 400 {
                             NotificationCenter.default.post(name: SidebarView.offsetChangeNotification, object: reader.frame(in: .global).origin.x + reader.size.width)
                         }
@@ -42,10 +42,7 @@ struct NowPlayingBarSafeAreaModifier: ViewModifier {
             ZStack {
                 GeometryReader { reader in
                     Color.clear
-                        .onAppear {
-                            NotificationCenter.default.post(name: SidebarView.widthChangeNotification, object: reader.size.width)
-                        }
-                        .onChange(of: reader.size.width) {
+                        .onChange(of: reader.size.width, initial: true) {
                             NotificationCenter.default.post(name: SidebarView.widthChangeNotification, object: reader.size.width)
                         }
                 }

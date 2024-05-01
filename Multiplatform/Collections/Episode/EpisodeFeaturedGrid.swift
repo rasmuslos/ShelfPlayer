@@ -34,10 +34,7 @@ struct EpisodeFeaturedGrid: View {
         ZStack {
             GeometryReader { proxy in
                 Color.clear
-                    .onAppear {
-                        width = proxy.size.width
-                    }
-                    .onChange(of: proxy.size.width) {
+                    .onChange(of: proxy.size.width, initial: true) {
                         width = proxy.size.width
                     }
             }
