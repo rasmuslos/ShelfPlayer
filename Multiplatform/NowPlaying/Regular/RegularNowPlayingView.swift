@@ -21,10 +21,7 @@ struct RegularNowPlayingView: View {
         ZStack {
             GeometryReader { proxy in
                 Color.clear
-                    .onAppear {
-                        availableWidth = proxy.size.width
-                    }
-                    .onChange(of: proxy.size.width) {
+                    .onChange(of: proxy.size.width, initial: true) {
                         availableWidth = proxy.size.width
                     }
             }
