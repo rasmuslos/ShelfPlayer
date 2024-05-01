@@ -48,7 +48,7 @@ extension SeriesGrid {
                     }
                 }
                 Text(series.name)
-                    .fontDesign(.serif)
+                    .modifier(SerifModifier())
                     .lineLimit(1)
             }
         }
