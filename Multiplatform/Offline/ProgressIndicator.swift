@@ -20,7 +20,8 @@ struct ProgressIndicator: View {
                     Circle()
                         .fill(Color.accentColor.quaternary)
                     
-                    Image(systemName: "checkmark")
+                    Label("progress.completed", systemImage: "checkmark")
+                        .labelStyle(.iconOnly)
                         .font(.caption)
                         .foregroundStyle(.alternativeAccent)
                 } else {

@@ -40,7 +40,8 @@ struct PlayButton: View {
                     + Text(verbatim: " • ")
                     + Text(String((entity.duration - entity.currentTime).timeLeft()))
                 } icon: {
-                    Image(systemName: labelImage)
+                    Label("playing", systemImage: labelImage)
+                        .labelStyle(.iconOnly)
                         .frame(width: 25)
                         .contentTransition(.symbolEffect(.replace.downUp.byLayer))
                         .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")

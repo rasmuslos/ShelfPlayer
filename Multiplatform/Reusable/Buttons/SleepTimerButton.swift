@@ -51,7 +51,8 @@ struct SleepTimerButton: View {
                 Button {
                     AudioPlayer.shared.setSleepTimer(duration: nil)
                 } label: {
-                    Image(systemName: "book.pages.fill")
+                    Label("sleep.chapter", systemImage: "book.pages.fill")
+                        .labelStyle(.iconOnly)
                 }
             } else {
                 Menu {

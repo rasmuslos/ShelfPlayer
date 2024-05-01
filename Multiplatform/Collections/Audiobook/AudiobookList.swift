@@ -80,7 +80,7 @@ extension AudiobookList {
                         audiobook.startPlayback()
                     } label: {
                         HStack {
-                            Image(systemName: labelImage)
+                            Label("playing", systemImage: labelImage)
                                 .font(.subheadline)
                                 .imageScale(.large)
                                 .symbolVariant(.circle.fill)

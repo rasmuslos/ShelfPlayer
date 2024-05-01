@@ -91,7 +91,8 @@ struct NowPlayingControls: View {
                 Group {
                     Spacer()
                     
-                    Image(systemName: "gobackward.\(skipBackwardsInterval)")
+                    Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
+                        .labelStyle(.iconOnly)
                         .symbolEffect(.bounce, value: animateBackwards)
                         .sensoryFeedback(.decrease, trigger: animateBackwards)
                         .font(.system(size: 30))
@@ -113,7 +114,8 @@ struct NowPlayingControls: View {
                     Button {
                         AudioPlayer.shared.playing = !AudioPlayer.shared.playing
                     } label: {
-                        Image(systemName: AudioPlayer.shared.playing ? "pause.fill" : "play.fill")
+                        Label("playback.toggle", systemImage: AudioPlayer.shared.playing ? "pause.fill" : "play.fill")
+                            .labelStyle(.iconOnly)
                             .frame(width: 50, height:50)
                             .font(.system(size: 47))
                             .padding(.horizontal, 50)
@@ -124,7 +126,8 @@ struct NowPlayingControls: View {
                     
                     Spacer()
                     
-                    Image(systemName: "goforward.\(skipForwardsInterval)")
+                    Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
+                        .labelStyle(.iconOnly)
                         .symbolEffect(.bounce, value: animateForwards)
                         .sensoryFeedback(.increase, trigger: animateForwards)
                         .font(.system(size: 30))

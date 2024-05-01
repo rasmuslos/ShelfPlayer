@@ -64,7 +64,8 @@ extension AudiobookView.Header {
                             .font(largeFont ? .title2 : .subheadline)
                             .lineLimit(1)
                             .overlay(alignment: .trailingLastTextBaseline) {
-                                Image(systemName: "chevron.right.circle")
+                                Label("author.view", systemImage: "chevron.right.circle")
+                                    .labelStyle(.iconOnly)
                                     .imageScale(.small)
                                     .offset(x: 17)
                             }
@@ -82,10 +83,12 @@ extension AudiobookView.Header {
                     }
                     
                     if viewModel.audiobook.explicit {
-                        Image(systemName: "e.square.fill")
+                        Label("explicit", systemImage: "e.square.fill")
+                            .labelStyle(.iconOnly)
                     }
                     if viewModel.audiobook.abridged {
-                        Image(systemName: "a.square.fill")
+                        Label("abridged", systemImage: "a.square.fill")
+                            .labelStyle(.iconOnly)
                     }
                     
                     Group {

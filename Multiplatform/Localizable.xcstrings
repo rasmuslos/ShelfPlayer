@@ -137,6 +137,38 @@
         }
       }
     },
+    "abridged" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekürzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abridged"
+          }
+        }
+      }
+    },
+    "account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        }
+      }
+    },
     "account.delete.cache" : {
       "localizations" : {
         "de" : {
@@ -649,6 +681,38 @@
         }
       }
     },
+    "active" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active"
+          }
+        }
+      }
+    },
+    "ascending" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absteigend"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ascending"
+          }
+        }
+      }
+    },
     "audiobook.narrator %@" : {
       "localizations" : {
         "de" : {
@@ -729,6 +793,22 @@
         }
       }
     },
+    "authors" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authors"
+          }
+        }
+      }
+    },
     "authors.title" : {
       "localizations" : {
         "de" : {
@@ -745,6 +825,22 @@
         }
       }
     },
+    "back" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        }
+      }
+    },
     "backwards" : {
       "localizations" : {
         "de" : {
@@ -757,6 +853,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Backwards"
+          }
+        }
+      }
+    },
+    "bookmark.create" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create bookmark"
           }
         }
       }
@@ -837,6 +949,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No bookmarks"
+          }
+        }
+      }
+    },
+    "bookmarks.toggle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen umschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle bookmarks"
           }
         }
       }
@@ -1114,6 +1242,22 @@
         }
       }
     },
+    "downloaded" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heruntergeladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloaded"
+          }
+        }
+      }
+    },
     "downloading" : {
       "localizations" : {
         "de" : {
@@ -1258,6 +1402,22 @@
         }
       }
     },
+    "episodes.count" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodenanzahl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episode count"
+          }
+        }
+      }
+    },
     "episodes.new.body %lld" : {
       "localizations" : {
         "de" : {
@@ -1370,6 +1530,22 @@
         }
       }
     },
+    "explicit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explizit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicit"
+          }
+        }
+      }
+    },
     "filter.all" : {
       "localizations" : {
         "de" : {
@@ -1446,6 +1622,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filter & sort"
+          }
+        }
+      }
+    },
+    "finished" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finished"
           }
         }
       }
@@ -1915,6 +2107,54 @@
         }
       }
     },
+    "more" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        }
+      }
+    },
+    "mute" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stumm"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mute"
+          }
+        }
+      }
+    },
+    "notableMoments" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wichtige Momente"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notable moments"
+          }
+        }
+      }
+    },
     "offline.disable" : {
       "localizations" : {
         "de" : {
@@ -1975,6 +2215,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stop playback"
+          }
+        }
+      }
+    },
+    "playback.toggle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabe umschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle playback"
+          }
+        }
+      }
+    },
+    "playing" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playing"
           }
         }
       }
@@ -3103,6 +3375,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Series"
+          }
+        }
+      }
+    },
+    "volume.max" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max. Lautstärke"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max. volume"
           }
         }
       }

@@ -11,21 +11,22 @@ import SPBase
 
 struct ItemImage: View {
     let image: Item.Image?
+    var cornerRadius: CGFloat = 7
     var aspectRatio = AspectRatioPolicy.square
     
-    fileprivate var placeholder: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                Image(systemName: "book")
-                Spacer()
-            }
-            Spacer()
+    private var placeholder: some View {
+        ZStack {
+            Image(systemName: "book")
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: 100)
+                .foregroundStyle(.gray.opacity(0.5))
+                .padding(20)
         }
-        .background(.tertiary)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.gray.opacity(0.1))
         .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 7))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
     
     var body: some View {
@@ -36,7 +37,7 @@ struct ItemImage: View {
                         image
                             .resizable()
                             .scaledToFit()
-                            .clipShape(RoundedRectangle(cornerRadius: 7))
+                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                     } else {
                         placeholder
                     }
@@ -68,7 +69,7 @@ struct ItemImage: View {
                         }
                     }
                     .aspectRatio(1, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 7))
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                     .padding(0)
             }
         } else {

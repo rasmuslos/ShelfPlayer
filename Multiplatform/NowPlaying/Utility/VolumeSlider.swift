@@ -18,7 +18,8 @@ struct VolumeSlider: View {
             Button {
                 volume = 0
             } label: {
-                Image(systemName: "speaker.fill")
+                Label("mute", systemImage: "speaker.fill")
+                    .labelStyle(.iconOnly)
             }
             
             Slider(percentage: $volume, dragging: $dragging)
@@ -26,7 +27,8 @@ struct VolumeSlider: View {
             Button {
                 volume = 100.0
             } label: {
-                Image(systemName: "speaker.wave.3.fill")
+                Label("volume.max", systemImage: "speaker.wave.3.fill")
+                    .labelStyle(.iconOnly)
             }
         }
         .foregroundStyle(.primary)

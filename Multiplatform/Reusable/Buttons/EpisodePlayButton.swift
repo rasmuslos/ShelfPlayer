@@ -56,7 +56,8 @@ extension EpisodePlayButton {
         
         var body: some View {
             HStack(spacing: 6) {
-                Image(systemName: labelImage)
+                Label("playing", systemImage: labelImage)
+                    .labelStyle(.iconOnly)
                     .contentTransition(.symbolEffect(.replace.downUp.byLayer))
                     .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform" && AudioPlayer.shared.playing)
                     .frame(width: 20, height: 15)
