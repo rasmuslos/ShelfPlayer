@@ -115,7 +115,8 @@ struct NowPlayingNotableMomentsView: View {
                         Button {
                             bookmarksActive.toggle()
                         } label: {
-                            Image(systemName: "bookmark.square")
+                            Label("bookmarks.toggle", systemImage: "bookmark.square")
+                                .labelStyle(.iconOnly)
                                 .symbolVariant(bookmarksActive ? .fill : .none)
                         }
                         .font(.system(size: 26))
@@ -175,7 +176,8 @@ private extension NowPlayingNotableMomentsView {
                         Spacer()
                         
                         if active {
-                            Image(systemName: "waveform")
+                            Label("playing", systemImage: "waveform")
+                                .labelStyle(.iconOnly)
                                 .symbolEffect(.variableColor.iterative.dimInactiveLayers)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

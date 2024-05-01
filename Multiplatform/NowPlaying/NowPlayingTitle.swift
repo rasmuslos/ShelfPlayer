@@ -55,7 +55,8 @@ struct NowPlayingTitle: View {
             Spacer()
             
             if item as? Audiobook != nil {
-                Image(systemName: "bookmark")
+                Label("bookmark.create", systemImage: "bookmark")
+                    .labelStyle(.iconOnly)
                     .symbolEffect(.bounce.byLayer.up, value: bookmarkAnimation)
                     .onTapGesture {
                         createBookmarkFailed = false

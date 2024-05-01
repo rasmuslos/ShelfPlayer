@@ -78,13 +78,15 @@ extension PodcastView.Header {
         var body: some View {
             HStack {
                 HStack(spacing: 3) {
-                    Image(systemName: "number")
+                    Label("episodes.count", systemImage: "number")
+                        .labelStyle(.iconOnly)
                     Text(String(podcast.episodeCount))
                 }
                 
                 if podcast.explicit {
                     Text(verbatim: "•")
-                    Image(systemName: "e.square.fill")
+                    Label("explicit", systemImage: "e.square.fill")
+                        .labelStyle(.iconOnly)
                 }
                 
                 if let type = podcast.type {

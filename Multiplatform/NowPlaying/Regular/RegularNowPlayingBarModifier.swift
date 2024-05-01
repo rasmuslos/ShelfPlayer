@@ -71,7 +71,8 @@ struct RegularNowPlayingBarModifier: ViewModifier {
                             animateBackwards.toggle()
                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
                         } label: {
-                            Image(systemName: "gobackward.\(skipBackwardsInterval)")
+                            Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
+                                .labelStyle(.iconOnly)
                                 .symbolEffect(.bounce, value: animateForwards)
                         }
                         .font(.title3)
@@ -84,7 +85,8 @@ struct RegularNowPlayingBarModifier: ViewModifier {
                                 Button {
                                     AudioPlayer.shared.playing = !AudioPlayer.shared.playing
                                 } label: {
-                                    Image(systemName: AudioPlayer.shared.playing ?  "pause.fill" : "play.fill")
+                                    Label("playback.toggle", systemImage: AudioPlayer.shared.playing ?  "pause.fill" : "play.fill")
+                                        .labelStyle(.iconOnly)
                                         .contentTransition(.symbolEffect(.replace.byLayer.downUp))
                                 }
                             }
@@ -97,7 +99,8 @@ struct RegularNowPlayingBarModifier: ViewModifier {
                             animateForwards.toggle()
                             AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
                         } label: {
-                            Image(systemName: "goforward.\(skipForwardsInterval)")
+                            Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
+                                .labelStyle(.iconOnly)
                                 .symbolEffect(.bounce, value: animateForwards)
                         }
                         .font(.title3)

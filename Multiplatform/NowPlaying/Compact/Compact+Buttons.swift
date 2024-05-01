@@ -38,7 +38,8 @@ extension CompactNowPlayingViewModifier {
                 Menu {
                     ChapterSelectMenu()
                 } label: {
-                    Image(systemName: "list.dash")
+                    Label("notableMoments", systemImage: "list.dash")
+                        .labelStyle(.iconOnly)
                 } primaryAction: {
                     notableMomentSheetPresented.toggle()
                 }

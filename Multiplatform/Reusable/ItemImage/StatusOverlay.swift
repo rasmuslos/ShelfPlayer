@@ -64,7 +64,8 @@ struct StatusOverlay: View {
                                             .rotationEffect(.degrees(-90))
                                         }
                                     } else {
-                                        Image(systemName: "checkmark")
+                                        Label("finished", systemImage: "checkmark")
+                                            .labelStyle(.iconOnly)
                                             .font(.system(size: fontSize))
                                             .fontWeight(.heavy)
                                     }
@@ -76,7 +77,8 @@ struct StatusOverlay: View {
                     .frame(width: size, height: size)
                 } else {
                     if offlineTracker?.status == .downloaded {
-                        Image(systemName: "arrow.down.circle.fill")
+                        Label("downloaded", systemImage: "arrow.down.circle.fill")
+                            .labelStyle(.iconOnly)
                             .font(.caption)
                             .foregroundStyle(.ultraThickMaterial)
                             .padding(4)

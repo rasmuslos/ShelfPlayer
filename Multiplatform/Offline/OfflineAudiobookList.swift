@@ -41,7 +41,8 @@ extension OfflineAudiobookList {
             HStack {
                 Group {
                     if AudioPlayer.shared.item == audiobook {
-                        Image(systemName: "waveform")
+                        Label("playing", systemImage: "waveform")
+                            .labelStyle(.iconOnly)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .symbolEffect(.variableColor.iterative.dimInactiveLayers, isActive: AudioPlayer.shared.playing)

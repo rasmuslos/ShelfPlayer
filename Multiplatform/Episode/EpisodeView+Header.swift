@@ -69,7 +69,8 @@ extension EpisodeView.Header {
                 HStack {
                     NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {
                         Text(episode.podcastName)
-                        Image(systemName: "chevron.right.circle")
+                        Label("author.view", systemImage: "chevron.right.circle")
+                            .labelStyle(.iconOnly)
                     }
                     .lineLimit(1)
                     .font(.footnote)

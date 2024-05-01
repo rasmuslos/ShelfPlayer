@@ -83,7 +83,8 @@ struct AudiobookSortFilter: View {
                 }
             }
         } label: {
-            Image(systemName: "arrow.up.arrow.down.circle")
+            Label("filterSort", systemImage: "arrow.up.arrow.down.circle")
+                .labelStyle(.iconOnly)
                 .symbolVariant(filter == .all ? .none : .fill)
         }
     }
