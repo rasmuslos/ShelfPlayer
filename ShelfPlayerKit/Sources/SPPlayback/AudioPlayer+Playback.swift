@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import Intents
+import AVKit
 import Defaults
 import SPBase
-import AVKit
+import SPExtension
 
 extension AudioPlayer {
     func startPlayback(item: PlayableItem, tracks: PlayableItem.AudioTracks, chapters: PlayableItem.Chapters, startTime: Double, playbackReporter: PlaybackReporter) {
@@ -28,6 +30,52 @@ extension AudioPlayer {
             setPlaying(true)
             
             setupNowPlayingMetadata()
+        }
+        
+        Task.detached {
+            let intent = INPlayMediaIntent(
+                mediaItems: MediaResolver.shared.convert(items: [item]),
+                mediaContainer: nil,
+                playShuffled: false,
+                playbackRepeatMode: .none,
+                resumePlayback: true,
+                playbackQueueLocation: .now,
+                playbackSpeed: Double(self.playbackRate),
+                mediaSearch: nil)
+            
+            let activityType: String
+            let userInfo: [String: Any]
+            
+            switch item {
+                case is Audiobook:
+                    activityType = "audiobook"
+                    userInfo = [
+                        "audiobookId": item.id,
+                    ]
+                case is Episode:
+                    activityType = "episode"
+                    userInfo = [
+                        "episodeId": item.id,
+                    ]
+                default:
+                    activityType = "unknown"
+                    userInfo = [:]
+            }
+            
+            let activity = NSUserActivity(activityType: "io.rfk.shelfplayer.\(activityType)")
+            
+            activity.title = item.name
+            activity.persistentIdentifier = item.id
+            activity.targetContentIdentifier = "\(activityType):\(item.id)"
+            
+            // Are these journal suggestions?
+            activity.shortcutAvailability = [.sleepJournaling, .sleepPodcasts]
+            
+            activity.isEligibleForPrediction = true
+            activity.userInfo = userInfo
+            
+            let interaction = INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: activity))
+            try? await interaction.donate()
         }
     }
     
