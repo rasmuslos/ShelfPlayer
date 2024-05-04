@@ -110,9 +110,9 @@ extension NowPlaying {
                             .foregroundStyle(.secondary)
                         }
                         
+                        Spacer()
+                        
                         if AudioPlayer.shared.item as? Audiobook != nil {
-                            Spacer()
-                            
                             Button {
                                 bookmarksActive.toggle()
                             } label: {
