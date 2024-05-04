@@ -43,7 +43,7 @@ struct OfflinePodcastView: View {
                 EpisodeSortFilter(filter: $episodeFilter, sortOrder: $episodesSort, ascending: $episodesAscending)
             }
         }
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             do {
                 episodes = try OfflineManager.shared.getEpisodes(podcastId: podcast.id)

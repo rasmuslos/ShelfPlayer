@@ -66,7 +66,7 @@ struct AudiobookView: View {
                 Spacer()
             }
         }
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
         .environment(viewModel)
         .task { await viewModel.fetchData(libraryId: libraryId) }

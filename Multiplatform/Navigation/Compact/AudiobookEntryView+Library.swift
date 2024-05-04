@@ -15,7 +15,6 @@ extension AudiobookEntryView {
             NavigationStack {
                 AudiobookLibraryView()
             }
-            .modifier(CompactNowPlayingBarModifier())
             .tabItem {
                 Label("tab.library", systemImage: "book.fill")
             }

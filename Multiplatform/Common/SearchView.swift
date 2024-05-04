@@ -59,7 +59,7 @@ struct SearchView: View {
         }
         .navigationTitle("title.search")
         .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
         .onChange(of: query) {
             task?.cancel()

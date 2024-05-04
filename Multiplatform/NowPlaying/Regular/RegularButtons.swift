@@ -9,7 +9,7 @@ import SwiftUI
 import SPBase
 import SPPlayback
 
-extension RegularNowPlayingView {
+extension NowPlaying.RegularView {
     struct Buttons: View {
         @Binding var notableMomentsToggled: Bool
         
@@ -17,7 +17,7 @@ extension RegularNowPlayingView {
         
         var body: some View {
             HStack(alignment: .center) {
-                AirPlayView()
+                NowPlaying.AirPlayPicker()
                     .frame(width: 35)
                 
                 Spacer()

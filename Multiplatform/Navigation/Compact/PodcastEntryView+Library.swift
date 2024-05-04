@@ -14,7 +14,6 @@ extension PodcastEntryView {
             NavigationStack {
                 PodcastLibraryView()
             }
-            .modifier(CompactNowPlayingBarModifier())
             .tabItem {
                 Label("tab.library", systemImage: "tray.full")
             }

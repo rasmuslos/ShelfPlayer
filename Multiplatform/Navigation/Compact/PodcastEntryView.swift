@@ -24,21 +24,23 @@ struct PodcastEntryView: View {
     
     var body: some View {
         TabView(selection: $lastActivePodcastLibraryTab) {
-            ListenNowView()
-                .tag(Tab.listenNow)
-            LatestView()
-                .tag(Tab.latest)
-            LibraryView()
-                .tag(Tab.library)
-            
-            NavigationStack {
-                SearchView()
+            Group {
+                ListenNowView()
+                    .tag(Tab.listenNow)
+                LatestView()
+                    .tag(Tab.latest)
+                LibraryView()
+                    .tag(Tab.library)
+                
+                NavigationStack {
+                    SearchView()
+                }
+                .tag(Tab.search)
+                .tabItem {
+                    Label("tab.search", systemImage: "magnifyingglass")
+                }
             }
-            .modifier(CompactNowPlayingBarModifier())
-            .tag(Tab.search)
-            .tabItem {
-                Label("tab.search", systemImage: "magnifyingglass")
-            }
+            .modifier(NowPlaying.CompactBarModifier())
         }
     }
 }

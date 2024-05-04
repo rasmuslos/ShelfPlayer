@@ -27,7 +27,7 @@ struct CompactEntryView: View {
                         ErrorView()
                 }
             }
-            .modifier(CompactNowPlayingViewModifier())
+            .modifier(NowPlaying.CompactViewModifier())
             .environment(\.libraryId, activeLibrary.id)
             .environment(AvailableLibraries(libraries: libraries))
             .onReceive(NotificationCenter.default.publisher(for: Library.libraryChangedNotification), perform: { notification in

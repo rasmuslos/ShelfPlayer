@@ -82,7 +82,7 @@ struct AuthorView: View {
                 Text(verbatim: "")
             }
         }
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .task {
             if audiobooks.isEmpty {
                 await fetchAudiobooks()

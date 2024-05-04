@@ -47,10 +47,10 @@ extension OfflineAudiobookList {
                             .foregroundStyle(.secondary)
                             .symbolEffect(.variableColor.iterative.dimInactiveLayers, isActive: AudioPlayer.shared.playing)
                     } else {
-                        ItemImage(image: audiobook.image)
+                        ItemImage(image: audiobook.image, aspectRatio: .none)
                     }
                 }
-                .frame(width: 50, height: 50)
+                .frame(width: 50)
                 
                 VStack(alignment: .leading) {
                     Text(audiobook.name)
