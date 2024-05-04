@@ -11,6 +11,8 @@ import SPOffline
 import SPOfflineExtended
 
 struct EpisodeContextMenuModifier: ViewModifier {
+    @Environment(\.libraryId) private var libraryId
+    
     let episode: Episode
     let offlineTracker: ItemOfflineTracker
     
@@ -19,15 +21,21 @@ struct EpisodeContextMenuModifier: ViewModifier {
         offlineTracker = episode.offlineTracker
     }
     
+    private var offline: Bool {
+        libraryId == "offline"
+    }
+    
     func body(content: Content) -> some View {
         content
             .contextMenu {
                 NavigationLink(destination: EpisodeView(episode: episode)) {
                     Label("episode.view", systemImage: "waveform")
                 }
+                .disabled(offline)
                 NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {
                     Label("podcast.view", systemImage: "tray.full")
                 }
+                .disabled(offline)
                 
                 Divider()
                 

@@ -18,7 +18,7 @@ struct Sidebar: View {
         NavigationSplitView {
             List(selection: $selection) {
                 if libraries.isEmpty {
-                    ProgressView()
+                    ProgressIndicator()
                         .task { await fetchLibraries() }
                 } else {
                     ForEach(libraries) { library in

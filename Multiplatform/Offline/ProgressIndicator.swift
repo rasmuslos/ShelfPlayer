@@ -8,7 +8,7 @@
 import SwiftUI
 import SPOffline
 
-struct ProgressIndicator: View {
+struct CircularProgressIndicator: View {
     let entity: ItemProgress
     
     var body: some View {

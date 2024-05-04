@@ -12,6 +12,8 @@ import SPPlayback
 
 extension NowPlaying {
     struct Title: View {
+        @Environment(\.libraryId) private var libraryId
+        
         let item: PlayableItem
         let namespace: Namespace.ID
         
@@ -21,6 +23,10 @@ extension NowPlaying {
         @State private var createBookmarkFailed = false
         @State private var bookmarkCapturedTime: Double? = nil
         @State private var createBookmarkAlertPresented = false
+        
+        private var offline: Bool {
+            libraryId == "offline"
+        }
         
         var body: some View {
             HStack {
@@ -45,64 +51,67 @@ extension NowPlaying {
                         
                         if let author = item.author {
                             Menu {
-                                if let episode = item as? Episode {
-                                    Button {
-                                        Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
-                                    } label: {
-                                        Label("episode.view", systemImage: "waveform")
-                                    }
-                                    
-                                    Button(action: {
-                                        Navigation.navigate(podcastId: episode.podcastId)
-                                    }) {
-                                        Label("podcast.view", systemImage: "tray.full")
-                                        Text(episode.podcastName)
-                                    }
-                                }
-                                
-                                if let audiobook = item as? Audiobook {
-                                    Button {
-                                        Navigation.navigate(audiobookId: audiobook.id)
-                                    } label: {
-                                        Label("audiobook.view", systemImage: "book")
-                                    }
-                                    
-                                    if let author = audiobook.author {
+                                Group {
+                                    if let episode = item as? Episode {
+                                        Button {
+                                            Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
+                                        } label: {
+                                            Label("episode.view", systemImage: "waveform")
+                                        }
+                                        
                                         Button(action: {
-                                            Task {
-                                                if let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId) {
-                                                    Navigation.navigate(authorId: authorId)
-                                                }
-                                            }
+                                            Navigation.navigate(podcastId: episode.podcastId)
                                         }) {
-                                            Label("author.view", systemImage: "person")
-                                            Text(author)
+                                            Label("podcast.view", systemImage: "tray.full")
+                                            Text(episode.podcastName)
                                         }
                                     }
                                     
-                                    if !audiobook.series.isEmpty {
-                                        if audiobook.series.count == 1, let series = audiobook.series.first {
+                                    if let audiobook = item as? Audiobook {
+                                        Button {
+                                            Navigation.navigate(audiobookId: audiobook.id)
+                                        } label: {
+                                            Label("audiobook.view", systemImage: "book")
+                                        }
+                                        
+                                        if let author = audiobook.author {
                                             Button(action: {
-                                                Navigation.navigate(seriesName: series.name)
-                                            }) {
-                                                Label("series.view", systemImage: "text.justify.leading")
-                                                Text(series.name)
-                                            }
-                                        } else {
-                                            Menu {
-                                                ForEach(audiobook.series, id: \.name) { series in
-                                                    Button(action: {
-                                                        Navigation.navigate(seriesName: series.name)
-                                                    }) {
-                                                        Text(series.name)
+                                                Task {
+                                                    if let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId) {
+                                                        Navigation.navigate(authorId: authorId)
                                                     }
                                                 }
-                                            } label: {
-                                                Label("series.view", systemImage: "text.justify.leading")
+                                            }) {
+                                                Label("author.view", systemImage: "person")
+                                                Text(author)
+                                            }
+                                        }
+                                        
+                                        if !audiobook.series.isEmpty {
+                                            if audiobook.series.count == 1, let series = audiobook.series.first {
+                                                Button(action: {
+                                                    Navigation.navigate(seriesName: series.name)
+                                                }) {
+                                                    Label("series.view", systemImage: "text.justify.leading")
+                                                    Text(series.name)
+                                                }
+                                            } else {
+                                                Menu {
+                                                    ForEach(audiobook.series, id: \.name) { series in
+                                                        Button(action: {
+                                                            Navigation.navigate(seriesName: series.name)
+                                                        }) {
+                                                            Text(series.name)
+                                                        }
+                                                    }
+                                                } label: {
+                                                    Label("series.view", systemImage: "text.justify.leading")
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                .disabled(offline)
                             } label: {
                                 Text(author)
                                     .font(.subheadline)
@@ -162,6 +171,7 @@ extension NowPlaying {
                         .popoverTip(CreateBookmarkTip())
                 }
             }
+            .padding(.bottom)
         }
         
         private func createBookmark() {

@@ -40,7 +40,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 
                 ForEach(audiobook.series, id: \.name) { series in
                     NavigationLink(destination: SeriesLoadView(series: series)) {
-                        Text("series.view")
+                        Label("series.view", systemImage: "text.justify.leading")
                         Text(series.name)
                     }
                 }
@@ -51,7 +51,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 DownloadButton(item: audiobook)
             } preview: {
                 VStack(alignment: .leading) {
-                    ItemStatusImage(item: audiobook)
+                    ItemStatusImage(item: audiobook, aspectRatio: .none)
                     
                     Text(audiobook.name)
                         .font(.headline)
