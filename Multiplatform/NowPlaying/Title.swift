@@ -130,6 +130,9 @@ extension NowPlaying {
                     Label("bookmark.create", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
                         .symbolEffect(.bounce.byLayer.up, value: bookmarkAnimation)
+                        .font(.system(size: 20))
+                        .foregroundStyle(createBookmarkFailed ? .red : .primary)
+                        .modifier(ButtonHoverEffectModifier())
                         .onTapGesture {
                             createBookmarkFailed = false
                             bookmarkCapturedTime = AudioPlayer.shared.getItemCurrentTime()
@@ -151,8 +154,6 @@ extension NowPlaying {
                                 bookmarkAnimation.toggle()
                             }
                         }
-                        .font(.system(size: 20))
-                        .foregroundStyle(createBookmarkFailed ? .red : .primary)
                         .alert("bookmark.create.alert", isPresented: $createBookmarkAlertPresented) {
                             TextField("bookmark.create.title", text: $bookmarkNote)
                             

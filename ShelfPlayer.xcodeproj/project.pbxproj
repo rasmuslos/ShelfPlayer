@@ -13,6 +13,8 @@
 		3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */; };
 		3A0AE6BA2AB624E700ACCD68 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6B92AB624E700ACCD68 /* LoginView.swift */; };
 		3A0AE6BF2AB6253300ACCD68 /* LargeButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6BE2AB6253300ACCD68 /* LargeButtonStyle.swift */; };
+		3A0D2D0D2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0D2D0C2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift */; };
+		3A0D2D0F2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */; };
 		3A0E0ABC2ACD6E2F009F8EF1 /* AudiobookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E0ABB2ACD6E2F009F8EF1 /* AudiobookView.swift */; };
 		3A10117D2AD6971900AAE220 /* VolumeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A10117C2AD6971900AAE220 /* VolumeSlider.swift */; };
 		3A1011822AD6975C00AAE220 /* MPVolumeView+Volume.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */; };
@@ -187,6 +189,8 @@
 		3A0AE6AB2AB623F500ACCD68 /* Audiobooks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Audiobooks.entitlements; sourceTree = "<group>"; };
 		3A0AE6B92AB624E700ACCD68 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		3A0AE6BE2AB6253300ACCD68 /* LargeButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeButtonStyle.swift; sourceTree = "<group>"; };
+		3A0D2D0C2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentShapeKinds+HoverMenuInteraction.swift"; sourceTree = "<group>"; };
+		3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonHoverEffectModifier.swift; sourceTree = "<group>"; };
 		3A0E0ABB2ACD6E2F009F8EF1 /* AudiobookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookView.swift; sourceTree = "<group>"; };
 		3A10117C2AD6971900AAE220 /* VolumeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeSlider.swift; sourceTree = "<group>"; };
 		3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MPVolumeView+Volume.swift"; sourceTree = "<group>"; };
@@ -481,6 +485,7 @@
 				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
 				3A1011812AD6975C00AAE220 /* MPVolumeView+Volume.swift */,
 				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
+				3A0D2D0C2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -737,6 +742,7 @@
 				3AA9542F2AD2AE520031C20D /* EpisodePlayButton.swift */,
 				3A1011862AD69DDA00AAE220 /* PlaybackSpeedButton.swift */,
 				3A0AE6BE2AB6253300ACCD68 /* LargeButtonStyle.swift */,
+				3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -1048,6 +1054,7 @@
 				3A77B6FD2ACDE2FA00F22C7F /* AuthorUnavailableView.swift in Sources */,
 				3A0AE6BA2AB624E700ACCD68 /* LoginView.swift in Sources */,
 				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
+				3A0D2D0D2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift in Sources */,
 				3A4E8A192B8E52A700A2586C /* CarPlay+Offline.swift in Sources */,
 				3A9874292B59A7B500B2704F /* View+ReverseMask.swift in Sources */,
 				3ACFD7252BD14AF800C7998B /* CreateBookmarkTip.swift in Sources */,
@@ -1107,6 +1114,7 @@
 				3ACD596C2BE2926F0060A841 /* SerifModifier.swift in Sources */,
 				3A1507992AD4494300D7D6CF /* UINavigationController+Gesture.swift in Sources */,
 				3ACFD7272BD14B2500C7998B /* SelectLibraryTip.swift in Sources */,
+				3A0D2D0F2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift in Sources */,
 				3AA444CF2BDFED25000C4C53 /* AccentColorSelectionView.swift in Sources */,
 				3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */,
 				3A77B7092ACDF8F200F22C7F /* FullscreenBackButton.swift in Sources */,

@@ -87,7 +87,7 @@ extension AudiobookshelfClient {
                 let coverPath: String?
                 let metadata: AudiobookshelfItemMetadata
                 
-                let numAudioFiles: Int
+                let numAudioFiles: Int?
             }
         }
         

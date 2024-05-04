@@ -77,6 +77,7 @@ extension NowPlaying {
                                     .symbolEffect(.bounce, value: animateForwards)
                             }
                             .font(.title3)
+                            .modifier(ButtonHoverEffectModifier())
                             .padding(.horizontal, 7)
                             
                             Group {
@@ -92,9 +93,10 @@ extension NowPlaying {
                                     }
                                 }
                             }
-                            .frame(width: 30)
                             .transition(.blurReplace)
                             .font(.largeTitle)
+                            .modifier(ButtonHoverEffectModifier())
+                            .frame(width: 30)
                             
                             Button {
                                 animateForwards.toggle()
@@ -105,18 +107,21 @@ extension NowPlaying {
                                     .symbolEffect(.bounce, value: animateForwards)
                             }
                             .font(.title3)
+                            .modifier(ButtonHoverEffectModifier())
                             .padding(.horizontal, 7)
                         }
                         .padding(.horizontal, 8)
                         .frame(height: 66)
                         .frame(maxWidth: width)
                         .foregroundStyle(.primary)
+                        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 15, style: .continuous))
+                        .modifier(NowPlaying.ContextMenuModifier(item: item, animateForwards: $animateForwards))
                         .background {
                             Rectangle()
                                 .foregroundStyle(.regularMaterial)
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-                        .modifier(NowPlaying.ContextMenuModifier(item: item, animateForwards: $animateForwards))
+                        .hoverEffect(.highlight)
                         .shadow(color: .black.opacity(0.25), radius: 20)
                         .padding(.bottom, 10)
                         .padding(.horizontal, 25)

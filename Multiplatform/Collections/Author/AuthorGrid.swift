@@ -54,6 +54,7 @@ struct AuthorGrid: View {
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
+            .scrollClipDisabled()
         }
     }
 }
@@ -66,6 +67,7 @@ extension AuthorGrid {
             VStack(spacing: 0) {
                 ItemImage(image: author.image, cornerRadius: 10000)
                     .padding(.bottom, 5)
+                    .hoverEffect(.highlight)
                 
                 Text(author.name)
                     .font(.caption)

@@ -47,6 +47,7 @@ struct EpisodeFeaturedGrid: View {
                             EpisodeGridItem(episode: episode)
                                 .frame(width: size)
                                 .padding(.leading, gap)
+                                .shadow(radius: 5)
                         }
                         .buttonStyle(.plain)
                     }
@@ -56,6 +57,7 @@ struct EpisodeFeaturedGrid: View {
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
+            .scrollClipDisabled()
         }
     }
 }
@@ -69,13 +71,15 @@ extension EpisodeFeaturedGrid {
         var body: some View {
             ZStack(alignment: .bottom) {
                 LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
-                    .aspectRatio(0.8, contentMode: .fill)
+                    .aspectRatio(0.72, contentMode: .fill)
                 
                 Title(episode: episode)
             }
             .foregroundStyle(.white)
             .background(Background(image: episode.image))
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 10))
+            .hoverEffect(.highlight)
             .modifier(EpisodeContextMenuModifier(episode: episode))
         }
     }
@@ -92,7 +96,7 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
                         Text(releaseDate, style: .date)
                             .font(.caption.smallCaps())
                             .fontWeight(.bold)
-                            .foregroundStyle(.tertiary)
+                            .foregroundStyle(.secondary)
                     }
                     
                     Text(episode.name)
@@ -101,8 +105,8 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
                     
                     if let descriptionText = episode.descriptionText {
                         Text(descriptionText)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
+                            .foregroundStyle(.thickMaterial)
                             .lineLimit(3)
                     }
                     

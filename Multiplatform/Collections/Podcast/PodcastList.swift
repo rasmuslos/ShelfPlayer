@@ -41,6 +41,7 @@ extension PodcastList {
                     }
                 }
             }
+            .contentShape(.hoverMenuInteraction, Rectangle())
         }
     }
 }
