@@ -26,7 +26,7 @@ struct PodcastLatestView: View {
                     EpisodeList(episodes: episodes)
                 }
                 .listStyle(.plain)
-                .modifier(NowPlayingBarSafeAreaModifier())
+                .modifier(NowPlaying.SafeAreaModifier())
             }
         }
         .navigationTitle("title.latest")

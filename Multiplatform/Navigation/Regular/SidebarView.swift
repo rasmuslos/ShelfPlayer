@@ -31,19 +31,21 @@ struct SidebarView: View {
                         }
                     }
                 }
-                
-                Section {
+            }
+            .modifier(NowPlaying.LeadingOffsetModifier())
+            .modifier(AccountSheetToolbarModifier(requiredSize: nil))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
                             "offline": true,
                         ])
                     } label: {
                         Label("offline.enable", systemImage: "network.slash")
+                            .labelStyle(.iconOnly)
                     }
                 }
             }
-            .modifier(NowPlayingBarLeadingOffsetModifier())
-            .modifier(AccountSheetToolbarModifier(requiredSize: nil))
         } detail: {
             if let selection = selection {
                 NavigationStack {
@@ -55,7 +57,7 @@ struct SidebarView: View {
                 ContentUnavailableView("splitView.empty", systemImage: "bookmark.square.fill", description: Text("splitView.empty.description"))
             }
         }
-        .modifier(RegularNowPlayingBarModifier())
+        .modifier(NowPlaying.RegularBarModifier())
         .environment(\.libraryId, selection?.libraryId ?? "")
         .environment(AvailableLibraries(libraries: libraries))
     }

@@ -81,7 +81,7 @@ struct PodcastView: View {
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .task { await fetchEpisodes() }
         .refreshable { await fetchEpisodes() }
         .onAppear {

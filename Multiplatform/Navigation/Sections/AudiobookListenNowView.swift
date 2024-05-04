@@ -78,7 +78,7 @@ struct AudiobookListenNowView: View {
             }
         }
         .navigationTitle("title.listenNow")
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .refreshable { await fetchItems() }
     }
 }

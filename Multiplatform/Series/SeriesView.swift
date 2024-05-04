@@ -65,7 +65,7 @@ struct SeriesView: View {
                 AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
             }
         }
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .task{ await fetchAudiobooks() }
         .refreshable{ await fetchAudiobooks() }
     }

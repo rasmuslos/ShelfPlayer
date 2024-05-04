@@ -28,7 +28,7 @@ struct AudiobookSeriesView: View {
                     SeriesGrid(series: series)
                         .padding(20)
                 }
-                .modifier(NowPlayingBarSafeAreaModifier())
+                .modifier(NowPlaying.SafeAreaModifier())
             }
         }
         .navigationTitle("title.series")

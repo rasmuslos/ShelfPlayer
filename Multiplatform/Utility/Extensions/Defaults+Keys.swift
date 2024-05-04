@@ -9,20 +9,22 @@ import Foundation
 import Defaults
 
 extension Defaults.Keys {
+    // MARK: Settings
+    
     static let sleepTimerAdjustment = Key<Double>("sleepTimerAdjustment", default: 60)
     static let playbackSpeedAdjustment = Key<Float>("playbackSpeedAdjustment", default: 0.25)
     
-    static let lockSeekBar = Key("lockSeekBar", default: false)
-    static let siriOfflineMode = Key("siriOfflineMode", default: false)
-    
     static let customSleepTimer = Key<Int>("customSleepTimer", default: 0)
     
-    static let authorsAscending = Key("authorsAscending", default: true)
-    static let showAuthorsRow = Key("showAuthorsRow", default: false)
-    static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
+    static let useSerifFont = Key("useSerifFont", default: true)
+    static let tintColor = Key<AccentColorSelectionView.TintColor>("tintColor", default: .shelfPlayer)
     
+    static let lockSeekBar = Key("lockSeekBar", default: false)
+    static let siriOfflineMode = Key("siriOfflineMode", default: false)
+    static let forceAspectRatio = Key("forceAspectRatio", default: false)
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
     
-    static let tintColor = Key<AccentColorSelectionView.TintColor>("tintColor", default: .shelfPlayer)
-    static let useSerifFont = Key("useSerifFont", default: true)
+    static let showAuthorsRow = Key("showAuthorsRow", default: false)
+    static let authorsAscending = Key("authorsAscending", default: true)
+    static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
 }

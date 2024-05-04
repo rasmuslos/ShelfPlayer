@@ -55,11 +55,11 @@ struct OfflineView: View {
             .navigationTitle("title.offline")
             .task { try? await loadItems() }
             .refreshable { try? await loadItems() }
-            .modifier(NowPlayingBarSafeAreaModifier())
+            .modifier(NowPlaying.SafeAreaModifier())
             .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in Task { try? await loadItems() }}
         }
-        .modifier(CompactNowPlayingBarModifier(offset: 30))
-        .modifier(CompactNowPlayingViewModifier(offset: 39))
+        .modifier(NowPlaying.CompactBarModifier(offset: 30))
+        .modifier(NowPlaying.CompactViewModifier(offset: 39))
         .sheet(isPresented: $accountSheetPresented) { AccountSheet() }
     }
 }
