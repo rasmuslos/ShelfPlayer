@@ -23,7 +23,7 @@ struct DownloadIndicator: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         } else if offlineTracker.status == .working {
-            ProgressView()
+            ProgressIndicator()
                 .scaleEffect(0.75)
         }
     }

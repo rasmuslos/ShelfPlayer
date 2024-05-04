@@ -53,12 +53,11 @@ struct DownloadButton: View {
                 case .working:
                     if downloadingLabel {
                         HStack {
-                            ProgressView()
-                            
+                            ProgressIndicator()
                             Text("downloading")
                         }
                     } else {
-                        ProgressView()
+                        ProgressIndicator()
                     }
             }
         }

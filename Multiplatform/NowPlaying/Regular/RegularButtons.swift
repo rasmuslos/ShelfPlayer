@@ -16,7 +16,7 @@ extension NowPlaying.RegularView {
         @State private var notableMomentSheetPresented = false
         
         var body: some View {
-            HStack(alignment: .center) {
+            HStack {
                 NowPlaying.AirPlayPicker()
                     .frame(width: 35)
                 
@@ -30,7 +30,7 @@ extension NowPlaying.RegularView {
                     .labelStyle(.iconOnly)
                     .font(.system(size: 17))
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal, 20)
+                    .padding(.leading, 20)
                 
                 if AudioPlayer.shared.item as? Audiobook != nil {
                     Button {
@@ -42,6 +42,7 @@ extension NowPlaying.RegularView {
                     }
                     .font(.system(size: 23))
                     .foregroundStyle(.secondary)
+                    .padding(.leading, 20)
                 }
             }
             .bold()

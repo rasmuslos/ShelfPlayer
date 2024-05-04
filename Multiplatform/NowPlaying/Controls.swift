@@ -49,12 +49,12 @@ extension NowPlaying {
                             controlsDragging = $0
                         }))
                     .frame(height: 10)
-                    .padding(.bottom, compact ? 3 : 10)
+                    .padding(.bottom, compact ? 3 : 5)
                     
                     HStack {
                         Group {
                             if AudioPlayer.shared.buffering {
-                                ProgressView()
+                                ProgressIndicator()
                                     .scaleEffect(0.5)
                             } else {
                                 Text(AudioPlayer.shared.currentTime.hoursMinutesSecondsString())

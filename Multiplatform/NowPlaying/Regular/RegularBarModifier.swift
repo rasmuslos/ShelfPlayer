@@ -81,7 +81,7 @@ extension NowPlaying {
                             
                             Group {
                                 if AudioPlayer.shared.buffering {
-                                    ProgressView()
+                                    ProgressIndicator()
                                 } else {
                                     Button {
                                         AudioPlayer.shared.playing = !AudioPlayer.shared.playing

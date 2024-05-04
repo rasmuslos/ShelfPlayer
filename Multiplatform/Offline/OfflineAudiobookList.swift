@@ -67,7 +67,7 @@ extension OfflineAudiobookList {
                 
                 Spacer()
                 
-                ProgressIndicator(entity: entity)
+                CircularProgressIndicator(entity: entity)
                     .frame(width: 20)
             }
         }

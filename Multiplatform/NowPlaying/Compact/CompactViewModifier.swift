@@ -73,7 +73,6 @@ extension NowPlaying {
                                 Spacer()
                                 
                                 Title(item: item, namespace: namespace)
-                                    .padding(.bottom, 10)
                                 
                                 Group {
                                     Controls(namespace: namespace, compact: false, controlsDragging: $controlsDragging)

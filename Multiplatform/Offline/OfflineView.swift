@@ -61,6 +61,7 @@ struct OfflineView: View {
         .modifier(NowPlaying.CompactBarModifier(offset: 30))
         .modifier(NowPlaying.CompactViewModifier(offset: 39))
         .sheet(isPresented: $accountSheetPresented) { AccountSheet() }
+        .environment(\.libraryId, "offline")
     }
 }
 

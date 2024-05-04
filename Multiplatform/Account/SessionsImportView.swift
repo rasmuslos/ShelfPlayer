@@ -17,7 +17,8 @@ struct SessionsImportView: View {
     @State var task: Task<(), Error>?
     
     var body: some View {
-        ProgressView {
+        VStack {
+            ProgressIndicator()
             Button {
                 task?.cancel()
                 callback(false)

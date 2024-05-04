@@ -75,7 +75,7 @@ extension EpisodeFeaturedGrid {
             }
             .foregroundStyle(.white)
             .background(Background(image: episode.image))
-            .clipShape(RoundedRectangle(cornerRadius: 7))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             .modifier(EpisodeContextMenuModifier(episode: episode))
         }
     }
@@ -90,30 +90,35 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
                 VStack(alignment: .leading) {
                     if let releaseDate = episode.releaseDate {
                         Text(releaseDate, style: .date)
-                            .font(.subheadline.smallCaps())
-                            .foregroundStyle(.regularMaterial)
+                            .font(.caption.smallCaps())
+                            .fontWeight(.bold)
+                            .foregroundStyle(.tertiary)
                     }
                     
                     Text(episode.name)
                         .font(.headline)
-                        .lineLimit(1)
+                        .lineLimit(2)
                     
-                    Text(episode.descriptionText ?? "")
-                        .font(.subheadline)
-                        .lineLimit(3, reservesSpace: true)
+                    if let descriptionText = episode.descriptionText {
+                        Text(descriptionText)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(3)
+                    }
                     
                     HStack {
                         EpisodePlayButton(episode: episode, highlighted: true)
                             .bold()
                         
                         Spacer()
+                        
                         DownloadIndicator(item: episode)
                     }
                 }
                 
                 Spacer()
             }
-            .padding(20)
+            .padding(15)
         }
     }
     
@@ -140,14 +145,20 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
 
 #Preview {
     NavigationStack {
-        EpisodeFeaturedGrid(episodes: [
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-        ])
+        ScrollView(.horizontal) {
+            EpisodeFeaturedGrid(episodes: [
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+                Episode.fixture,
+            ])
+        }
     }
+}
+
+#Preview {
+    EpisodeFeaturedGrid.EpisodeGridItem(episode: .fixture)
 }
