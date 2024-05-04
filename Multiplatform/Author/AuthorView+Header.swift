@@ -34,7 +34,7 @@ extension AuthorView {
                             .lineLimit(3)
                     }
                     .buttonStyle(.plain)
-                    .padding(10)
+                    .padding(20)
                     .sheet(isPresented: $descriptionSheetVisible) {
                         NavigationStack {
                             Text(description)
@@ -47,6 +47,7 @@ extension AuthorView {
                     }
                 }
             }
+            .frame(maxWidth: .infinity)
         }
     }
 }

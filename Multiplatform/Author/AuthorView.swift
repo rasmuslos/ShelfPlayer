@@ -52,15 +52,9 @@ struct AuthorView: View {
                         }
                     case .list:
                         List {
-                            HStack {
-                                Spacer()
-                                
-                                Header(author: author)
-                                
-                                Spacer()
-                            }
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                            Header(author: author)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                             
                             RowTitle(title: String(localized: "books"), fontDesign: .serif)
                                 .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 0))
