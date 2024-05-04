@@ -47,6 +47,7 @@ extension NowPlaying {
                                 
                                 Title(item: item, namespace: namespace)
                                 Controls(namespace: namespace, compact: true, controlsDragging: $controlsDragging)
+                                    .padding(.bottom, 30)
                                 
                             }
                             .frame(width: min(availableWidth / 2.25, 450))

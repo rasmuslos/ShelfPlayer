@@ -27,7 +27,7 @@ struct AccountSheet: View {
                     if let username = username {
                         Text(username)
                     } else {
-                        ProgressView()
+                        ProgressIndicator()
                             .task {
                                 username = try? await AudiobookshelfClient.shared.username()
                             }
@@ -129,7 +129,7 @@ struct AccountSheet: View {
                                 
                                 if let status = downloadStatus.0[audiobook] {
                                     if status.0 == 0 && status.1 == 1 {
-                                        ProgressView()
+                                        ProgressIndicator()
                                     } else {
                                         Text(verbatim: "\(status.0)/\(status.1)")
                                             .fontDesign(.rounded)

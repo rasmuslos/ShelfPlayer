@@ -7,12 +7,20 @@
 
 import SwiftUI
 
-struct LoadingView: View {
+struct LoadingView: View {    
     var body: some View {
-        ProgressView {
+        VStack {
+            ProgressIndicator()
             Text("loading")
         }
         .foregroundStyle(.gray)
+    }
+}
+
+struct ProgressIndicator: View {
+    var body: some View {
+        ProgressView()
+            .tint(.gray)
     }
 }
 

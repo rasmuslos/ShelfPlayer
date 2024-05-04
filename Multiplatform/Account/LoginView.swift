@@ -121,13 +121,13 @@ struct LoginView: View {
                     }
                 case .credentialsOpenID:
                     if let openIDLoginURL = openIDLoginURL {
-                        ProgressView()
+                        ProgressIndicator()
                             .webAuthenticationSession(isPresented: .constant(true)) {
                                 WebAuthenticationSession(url: openIDLoginURL, callbackURLScheme: "shelfplayer", completionHandler: self.openIDCallback)
                                     .prefersEphemeralWebBrowserSession(true)
                             }
                     } else {
-                        ProgressView()
+                        ProgressIndicator()
                             .task { await fetchOpenIDLoginURL() }
                     }
                 case .credentialsSelect:
@@ -160,7 +160,7 @@ struct LoginView: View {
                         .padding()
                 case .serverLoading, .credentialsLoading:
                     VStack {
-                        ProgressView()
+                        ProgressIndicator()
                         Text("login.loading")
                             .font(.caption)
                             .foregroundStyle(.secondary)
