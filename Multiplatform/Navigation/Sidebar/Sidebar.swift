@@ -9,8 +9,8 @@ import SwiftUI
 import Defaults
 import SPBase
 
-struct SidebarView: View {
-    @Default(.lastSidebarSelection) private var selection
+struct Sidebar: View {
+    @Default(.sidebarSelection) private var selection
     
     @State var libraries = [Library]()
     
@@ -23,9 +23,9 @@ struct SidebarView: View {
                 } else {
                     ForEach(libraries) { library in
                         Section(library.name) {
-                            ForEach(LibrarySection.filtered(libraryType: library.type), id: \.hashValue) { section in
-                                NavigationLink(value: Selection(libraryId: library.id, section: section)) {
-                                    Label(section.label, systemImage: section.icon)
+                            ForEach(Panel.filtered(libraryType: library.type), id: \.hashValue) { panel in
+                                NavigationLink(value: Selection(libraryId: library.id, panel: panel)) {
+                                    Label(panel.label!, systemImage: panel.icon!)
                                 }
                             }
                         }
@@ -49,8 +49,8 @@ struct SidebarView: View {
         } detail: {
             if let selection = selection {
                 NavigationStack {
-                    selection.section.content
-                        .id(selection.section)
+                    selection.panel.content
+                        .id(selection.panel)
                         .id(selection.libraryId)
                 }
             } else {
@@ -60,21 +60,27 @@ struct SidebarView: View {
         .modifier(NowPlaying.RegularBarModifier())
         .environment(\.libraryId, selection?.libraryId ?? "")
         .environment(AvailableLibraries(libraries: libraries))
+        .modifier(Navigation.NotificationModifier(
+            navigateAudiobook: {
+                selection = .init(libraryId: $1, panel: .audiobook(id: $0))
+            }, navigateAuthor: {
+                selection = .init(libraryId: $1, panel: .author(id: $0))
+            }, navigateSeries: {
+                selection = .init(libraryId: $1, panel: .singleSeries(name: $0))
+            }, navigatePodcast: {
+                selection = .init(libraryId: $1, panel: .podcast(id: $0))
+            }, navigateEpisode: {
+                selection = .init(libraryId: $2, panel: .episode(id: $0, podcastId: $1))
+            }))
     }
-}
-
-extension SidebarView {
-    func fetchLibraries() async {
+    
+    private func fetchLibraries() async {
         if let libraries = try? await AudiobookshelfClient.shared.getLibraries(), !libraries.isEmpty {
             self.libraries = libraries
         }
     }
 }
 
-private extension Defaults.Keys {
-    static let lastSidebarSelection = Key<SidebarView.Selection?>("lastSidebarSelection")
-}
-
 #Preview {
-    SidebarView()
+    Sidebar()
 }

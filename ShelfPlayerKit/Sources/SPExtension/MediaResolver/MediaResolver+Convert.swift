@@ -37,7 +37,7 @@ extension MediaResolver {
         
         return ("", "")
     }
-    private func convertIdentifier(item: Item) -> String {
+    public func convertIdentifier(item: Item) -> String {
         if let episode = item as? Episode {
             return "\(episode.podcastId)::\(episode.id)"
         }

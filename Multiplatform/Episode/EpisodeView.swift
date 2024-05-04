@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SPBase
+import SPExtension
 
 struct EpisodeView: View {
     let episode: Episode
@@ -35,6 +36,17 @@ struct EpisodeView: View {
                     }
                 }
             }
+        }
+        .userActivity("io.rfk.shelfplayer.episode") {
+            $0.title = episode.name
+            $0.isEligibleForHandoff = true
+            $0.persistentIdentifier = MediaResolver.shared.convertIdentifier(item: episode)
+            $0.targetContentIdentifier = "episode:\(episode.id)::\(episode.podcastId)"
+            $0.userInfo = [
+                "episodeId": episode.id,
+                "podcastId": episode.podcastId,
+            ]
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: episode.podcastId)
         }
     }
 }

@@ -107,12 +107,19 @@ extension BackgroundTaskHandler {
             content.body = episode.descriptionText ?? String(localized: "description.unavailable")
             
             content.threadIdentifier = episode.podcastId
+            content.userInfo = [
+                "episodeId": episode.id,
+                "podcastId": podcastId,
+            ]
         } else if !submitted.isEmpty {
             content.title = String(localized: "episodes.new.title \(submitted.count)")
             content.subtitle = episodes.first!.podcastName
             content.body = String(localized: "episodes.new.body \(submitted.count)")
             
             content.threadIdentifier = episodes.first!.podcastId
+            content.userInfo = [
+                "podcastId": podcastId,
+            ]
         } else {
             sendNotification = false
         }
