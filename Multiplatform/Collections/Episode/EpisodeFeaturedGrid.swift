@@ -107,6 +107,7 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
                         Text(descriptionText)
                             .font(.subheadline)
                             .foregroundStyle(.thickMaterial)
+                            .environment(\.colorScheme, .light)
                             .lineLimit(3)
                     }
                     
