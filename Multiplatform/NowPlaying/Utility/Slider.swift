@@ -21,7 +21,8 @@ extension NowPlaying {
                         .foregroundStyle(dragging ? Color.primary : Color.primary.opacity(0.8))
                         .frame(width: geometry.size.width * CGFloat(max(0, min(1, self.percentage / 100))))
                 }
-                .cornerRadius(7)
+                .clipShape(RoundedRectangle(cornerRadius: 7))
+                .modifier(ButtonHoverEffectModifier())
                 .highPriorityGesture(DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         withAnimation(.spring) {
@@ -35,7 +36,6 @@ extension NowPlaying {
                         }
                     }
                 )
-                .modifier(ButtonHoverEffectModifier())
             }
             .frame(height: dragging ? 10 : 7)
             .accessibilityRepresentation {
