@@ -9,6 +9,13 @@ import Foundation
 import Defaults
 
 extension Defaults.Keys {
+    // MARK: Navigation
+    
+    static let sidebarSelection = Key<Sidebar.Selection?>("sidebarSelection")
+    
+    static let audiobookTab = Key<AudiobookTabs.Tab>("audiobookTab", default: .listenNow)
+    static let podcastTab = Key<PodcastTabs.Tab>("podcastTab", default: .listenNow)
+    
     // MARK: Settings
     
     static let sleepTimerAdjustment = Key<Double>("sleepTimerAdjustment", default: 60)

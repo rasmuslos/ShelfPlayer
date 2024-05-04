@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import Intents
 import SwiftData
 import Defaults
 import SPBase
-import Intents
 import SPOffline
+import SPExtension
 
 struct ContentView: View {
     @Default(.tintColor) private var tintColor
@@ -21,9 +22,9 @@ struct ContentView: View {
     private var navigationController: some View {
         Group {
             if horizontalSizeClass == .compact {
-                CompactEntryView()
+                Tabs()
             } else {
-                SidebarView()
+                Sidebar()
             }
         }
     }
@@ -45,7 +46,43 @@ struct ContentView: View {
                     }
                 case .library:
                     navigationController
-                        .onAppear {                            
+                        .onContinueUserActivity("io.rfk.shelfplayer.audiobook") { activity in
+                            guard let identifier = activity.persistentIdentifier else {
+                                return
+                            }
+                            
+                            Navigation.navigate(audiobookId: identifier)
+                        }
+                        .onContinueUserActivity("io.rfk.shelfplayer.author") { activity in
+                            guard let identifier = activity.persistentIdentifier else {
+                                return
+                            }
+                            
+                            Navigation.navigate(authorId: identifier)
+                        }
+                        .onContinueUserActivity("io.rfk.shelfplayer.series") { activity in
+                            guard let name = activity.persistentIdentifier else {
+                                return
+                            }
+                            
+                            Navigation.navigate(seriesName: name)
+                        }
+                        .onContinueUserActivity("io.rfk.shelfplayer.podcast") { activity in
+                            guard let identifier = activity.persistentIdentifier else {
+                                return
+                            }
+                            
+                            Navigation.navigate(podcastId: identifier)
+                        }
+                        .onContinueUserActivity("io.rfk.shelfplayer.episode") { activity in
+                            guard let identifier = activity.persistentIdentifier else {
+                                return
+                            }
+                            
+                            let (podcastId, episodeId) = MediaResolver.shared.convertIdentifier(identifier: identifier)
+                            Navigation.navigate(episodeId: episodeId, podcastId: podcastId)
+                        }
+                        .onAppear {
                             Task.detached { @MainActor in
                                 try? await OfflineManager.shared.attemptPlaybackDurationSync()
                             }

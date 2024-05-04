@@ -15,6 +15,11 @@ public extension AudiobookshelfClient {
         return response.authors.map(Author.convertFromAudiobookshelf)
     }
     
+    func getAuthor(authorId: String) async throws -> Author {
+        let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/authors/\(authorId)", method: "GET"))
+        return Author.convertFromAudiobookshelf(item: response)
+    }
+    
     func getAuthorId(name: String, libraryId: String) async throws -> String {
         let response = try? await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: name),

@@ -8,7 +8,7 @@
 import SwiftUI
 import SPBase
 
-struct LibrarySelectorModifier: ViewModifier {
+struct LibrarySelectModifier: ViewModifier {
     @Environment(AvailableLibraries.self) var availableLibraries
     
     func body(content: Content) -> some View {
@@ -48,7 +48,7 @@ struct LibrarySelectorModifier: ViewModifier {
 #Preview {
     NavigationStack {
         Text(":)")
-            .modifier(LibrarySelectorModifier())
+            .modifier(LibrarySelectModifier())
             .environment(AvailableLibraries(libraries: [
                 Library.audiobooksFixture,
                 Library.audiobooksFixture,

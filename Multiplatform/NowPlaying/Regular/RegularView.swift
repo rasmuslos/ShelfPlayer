@@ -91,6 +91,9 @@ extension NowPlaying {
                         }
                         .padding(.top, 35)
                     }
+                    .modifier(Navigation.NavigationModifier() {
+                        dismiss()
+                    })
                 }
             }
         }
