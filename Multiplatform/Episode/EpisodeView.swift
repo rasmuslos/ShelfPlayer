@@ -23,7 +23,7 @@ struct EpisodeView: View {
                 .padding(.horizontal, 20)
         }
         .ignoresSafeArea(edges: .top)
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier(episode: episode, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
         .onAppear {
             Task.detached {

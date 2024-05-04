@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import AVKit
 
-extension CompactNowPlayingViewModifier {
+extension NowPlaying.CompactViewModifier {
     struct Buttons: View {
         @State private var bookmarksActive = false
         @State private var notableMomentSheetPresented = false
@@ -30,13 +29,13 @@ extension CompactNowPlayingViewModifier {
                 
                 Spacer()
                 
-                AirPlayView()
+                NowPlaying.AirPlayPicker()
                     .frame(width: 45)
                 
                 Spacer()
                 
                 Menu {
-                    ChapterSelectMenu()
+                    NowPlaying.ChapterMenu()
                 } label: {
                     Label("notableMoments", systemImage: "list.dash")
                         .labelStyle(.iconOnly)
@@ -50,25 +49,10 @@ extension CompactNowPlayingViewModifier {
             .font(.system(size: 20))
             .frame(height: 45)
             .sheet(isPresented: $notableMomentSheetPresented, content: {
-                NowPlayingNotableMomentsView(includeHeader: true, bookmarksActive: $bookmarksActive)
+                NowPlaying.NotableMomentsView(includeHeader: true, bookmarksActive: $bookmarksActive)
                     .presentationDragIndicator(.visible)
                     .presentationDetents([.large, .medium])
             })
         }
     }
-}
-
-// MARK: Airplay view
-
-struct AirPlayView: UIViewRepresentable {
-    func makeUIView(context: Context) -> UIView {
-        let routePickerView = AVRoutePickerView()
-        routePickerView.backgroundColor = UIColor.clear
-        routePickerView.activeTintColor = UIColor(Color.accentColor)
-        routePickerView.tintColor = UIColor(Color.secondary)
-        
-        return routePickerView
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {}
 }

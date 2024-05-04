@@ -95,7 +95,7 @@ struct AudiobookLibraryView: View {
         }
         .navigationTitle("title.library")
         .navigationBarTitleDisplayMode(.large)
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
         .refreshable { await fetchItems() }
     }

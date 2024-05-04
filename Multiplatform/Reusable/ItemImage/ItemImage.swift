@@ -7,9 +7,12 @@
 
 import SwiftUI
 import NukeUI
+import Defaults
 import SPBase
 
 struct ItemImage: View {
+    @Default(.forceAspectRatio) private var forceAspectRatio
+    
     let image: Item.Image?
     var cornerRadius: CGFloat = 7
     var aspectRatio = AspectRatioPolicy.square
@@ -29,9 +32,17 @@ struct ItemImage: View {
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
     
+    private var aspectRatioPolicy: AspectRatioPolicy {
+        if forceAspectRatio && aspectRatio == .none {
+            return .squareFit
+        }
+        
+        return aspectRatio
+    }
+    
     var body: some View {
         if let image = image {
-            if aspectRatio == .none {
+            if aspectRatioPolicy == .none {
                 LazyImage(url: image.url) { phase in
                     if let image = phase.image {
                         image
@@ -47,12 +58,12 @@ struct ItemImage: View {
                     .overlay {
                         LazyImage(url: image.url) { phase in
                             if let image = phase.image {
-                                if aspectRatio == .square {
+                                if aspectRatioPolicy == .square {
                                     image
                                         .resizable()
                                         .scaledToFill()
                                         .clipped()
-                                } else if aspectRatio == .squareFit {
+                                } else if aspectRatioPolicy == .squareFit {
                                     ZStack {
                                         image
                                             .resizable()

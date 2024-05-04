@@ -32,7 +32,7 @@ struct PodcastLibraryView: View {
         }
         .navigationTitle("title.library")
         .navigationBarTitleDisplayMode(.large)
-        .modifier(NowPlayingBarSafeAreaModifier())
+        .modifier(NowPlaying.SafeAreaModifier())
         .refreshable { await fetchItems() }
     }
 }

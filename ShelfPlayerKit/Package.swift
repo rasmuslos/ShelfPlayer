@@ -47,7 +47,8 @@ let package = Package(
             
                 .byName(name: "SPBase"),
             .byName(name: "SPOffline"),
-            .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS])),
+            .byName(name: "SPExtension"),
+            .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS, .watchOS, .visionOS, .macOS])),
         ]),
     ]
 )

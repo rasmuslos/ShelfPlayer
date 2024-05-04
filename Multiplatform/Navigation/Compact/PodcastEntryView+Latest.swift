@@ -14,7 +14,6 @@ extension PodcastEntryView {
             NavigationStack {
                 PodcastLatestView()
             }
-            .modifier(CompactNowPlayingBarModifier())
             .tabItem {
                 Label("tab.latest", systemImage: "clock")
             }

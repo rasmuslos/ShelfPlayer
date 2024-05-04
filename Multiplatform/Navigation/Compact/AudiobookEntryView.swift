@@ -29,21 +29,23 @@ struct AudiobookEntryView: View {
     
     var body: some View {
         TabView(selection: $lastActiveAudiobookLibraryTab) {
-            ListenNowView()
-                .tag(Tab.listenNow)
-            SeriesView()
-                .tag(Tab.series)
-            LibraryView()
-                .tag(Tab.library)
-            
-            NavigationStack {
-                SearchView()
+            Group {
+                ListenNowView()
+                    .tag(Tab.listenNow)
+                SeriesView()
+                    .tag(Tab.series)
+                LibraryView()
+                    .tag(Tab.library)
+                
+                NavigationStack {
+                    SearchView()
+                }
+                .tag(Tab.search)
+                .tabItem {
+                    Label("tab.search", systemImage: "magnifyingglass")
+                }
             }
-            .modifier(CompactNowPlayingBarModifier())
-            .tag(Tab.search)
-            .tabItem {
-                Label("tab.search", systemImage: "magnifyingglass")
-            }
+            .modifier(NowPlaying.CompactBarModifier())
         }
     }
 }
