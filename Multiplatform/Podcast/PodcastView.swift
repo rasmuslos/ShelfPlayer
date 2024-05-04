@@ -96,6 +96,16 @@ struct PodcastView: View {
             }
         }
         .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
+        .userActivity("io.rfk.shelfplayer.podcast") {
+            $0.title = podcast.name
+            $0.isEligibleForHandoff = true
+            $0.persistentIdentifier = podcast.id
+            $0.targetContentIdentifier = "podcast:\(podcast.id)"
+            $0.userInfo = [
+                "podcastId": podcast.id,
+            ]
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: podcast.id)
+        }
     }
 }
 

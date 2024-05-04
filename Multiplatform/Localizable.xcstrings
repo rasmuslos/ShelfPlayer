@@ -1450,6 +1450,9 @@
         }
       }
     },
+    "error.unavailable.audiobook" : {
+
+    },
     "error.unavailable.author" : {
       "localizations" : {
         "de" : {
@@ -1465,6 +1468,9 @@
           }
         }
       }
+    },
+    "error.unavailable.episode" : {
+
     },
     "error.unavailable.podcast" : {
       "localizations" : {

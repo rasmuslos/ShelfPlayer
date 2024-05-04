@@ -39,6 +39,9 @@ extension NowPlaying {
                     .onAppear {
                         viewState.namespace = namespace
                     }
+                    .modifier(Navigation.NavigationModifier() {
+                        viewState.setNowPlayingViewPresented(false)
+                    })
                 
                 Group {
                     if presentedItem != nil {
@@ -98,6 +101,7 @@ extension NowPlaying {
                             }
                         }
                         .padding(.horizontal, 30)
+                        .padding(.top, UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }?.safeAreaInsets.top)
                         .simultaneousGesture(
                             DragGesture(minimumDistance: 25, coordinateSpace: .global)
                                 .onChanged {
@@ -128,8 +132,6 @@ extension NowPlaying {
                     }
                 }
                 .allowsHitTesting(presentedItem != nil)
-                // This is very reasonable and sane
-                .padding(.top, UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }?.safeAreaInsets.top)
                 .offset(y: dragOffset)
                 .animation(.spring, value: dragOffset)
             }

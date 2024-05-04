@@ -44,10 +44,72 @@ extension NowPlaying {
                             .matchedGeometryEffect(id: "title", in: namespace, properties: .frame, anchor: .top)
                         
                         if let author = item.author {
-                            Text(author)
-                                .font(.subheadline)
-                                .lineLimit(1)
-                                .foregroundStyle(.secondary)
+                            Menu {
+                                if let episode = item as? Episode {
+                                    Button {
+                                        Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
+                                    } label: {
+                                        Label("episode.view", systemImage: "waveform")
+                                    }
+                                    
+                                    Button(action: {
+                                        Navigation.navigate(podcastId: episode.podcastId)
+                                    }) {
+                                        Label("podcast.view", systemImage: "tray.full")
+                                        Text(episode.podcastName)
+                                    }
+                                }
+                                
+                                if let audiobook = item as? Audiobook {
+                                    Button {
+                                        Navigation.navigate(audiobookId: audiobook.id)
+                                    } label: {
+                                        Label("audiobook.view", systemImage: "book")
+                                    }
+                                    
+                                    if let author = audiobook.author {
+                                        Button(action: {
+                                            Task {
+                                                if let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId) {
+                                                    Navigation.navigate(authorId: authorId)
+                                                }
+                                            }
+                                        }) {
+                                            Label("author.view", systemImage: "person")
+                                            Text(author)
+                                        }
+                                    }
+                                    
+                                    if !audiobook.series.isEmpty {
+                                        if audiobook.series.count == 1, let series = audiobook.series.first {
+                                            Button(action: {
+                                                Navigation.navigate(seriesName: series.name)
+                                            }) {
+                                                Label("series.view", systemImage: "text.justify.leading")
+                                                Text(series.name)
+                                            }
+                                        } else {
+                                            Menu {
+                                                ForEach(audiobook.series, id: \.name) { series in
+                                                    Button(action: {
+                                                        Navigation.navigate(seriesName: series.name)
+                                                    }) {
+                                                        Text(series.name)
+                                                    }
+                                                }
+                                            } label: {
+                                                Label("series.view", systemImage: "text.justify.leading")
+                                            }
+                                        }
+                                    }
+                                }
+                            } label: {
+                                Text(author)
+                                    .font(.subheadline)
+                                    .lineLimit(1)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                     .lineLimit(1)

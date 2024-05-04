@@ -9,13 +9,13 @@ import SwiftUI
 import SPBase
 
 struct AuthorLoadView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.libraryId) private var libraryId
     
     let authorId: String
     
-    @State var failed = false
-    @State var author: Author?
-    @State var audiobooks: [Audiobook]?
+    @State private var failed = false
+    @State private var author: Author?
+    @State private var audiobooks: [Audiobook]?
     
     var body: some View {
         if failed {
@@ -32,6 +32,8 @@ struct AuthorLoadView: View {
 
 extension AuthorLoadView {
     private func fetchAuthor() async {
+        failed = false
+        
         if let author = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId) {
             self.audiobooks = author.1
             self.author = author.0
@@ -39,8 +41,4 @@ extension AuthorLoadView {
             failed = true
         }
     }
-}
-
-#Preview {
-    AuthorLoadView(authorId: Author.fixture.id)
 }

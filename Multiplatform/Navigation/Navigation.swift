@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SPBase
 
 struct Navigation {
     static let navigateNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation")
@@ -21,57 +22,101 @@ struct Navigation {
 }
 
 extension Navigation {
-    func navigate(audiobookId: String) {
+    static func navigate(audiobookId: String) {
         NotificationCenter.default.post(name: Self.navigateAudiobookNotification, object: audiobookId)
     }
-    func navigate(authorId: String) {
+    static func navigate(authorId: String) {
         NotificationCenter.default.post(name: Self.navigateAuthorNotification, object: authorId)
     }
-    func navigate(seriesId: String) {
-        NotificationCenter.default.post(name: Self.navigateSeriesNotification, object: seriesId)
+    static func navigate(seriesName: String) {
+        NotificationCenter.default.post(name: Self.navigateSeriesNotification, object: seriesName)
     }
-    func navigate(podcastId: String) {
+    static func navigate(podcastId: String) {
         NotificationCenter.default.post(name: Self.navigatePodcastNotification, object: podcastId)
     }
-    func navigate(episodeId: String) {
-        NotificationCenter.default.post(name: Self.navigateEpisodeNotification, object: episodeId)
+    static func navigate(episodeId: String, podcastId: String) {
+        NotificationCenter.default.post(name: Self.navigateEpisodeNotification, object: (episodeId, podcastId))
     }
 }
 
 extension Navigation {
     struct NotificationModifier: ViewModifier {
-        let navigateAudiobook: (String) -> Void
-        let navigateAuthor: (String) -> Void
-        let navigateSeries: (String) -> Void
-        let navigatePodcast: (String) -> Void
-        let navigateEpisode: (String) -> Void
+        let navigateAudiobook: (String, String) -> Void
+        let navigateAuthor: (String, String) -> Void
+        let navigateSeries: (String, String) -> Void
+        let navigatePodcast: (String, String) -> Void
+        let navigateEpisode: (String, String, String) -> Void
         
         func body(content: Content) -> some View {
             content
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAudiobookNotification)) { notification in
                     if let id = notification.object as? String {
-                        navigateAudiobook(id)
+                        Task {
+                            let libraryId = try await AudiobookshelfClient.shared.getItem(itemId: id, episodeId: nil).0.libraryId
+                            navigateAudiobook(id, libraryId)
+                        }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAuthorNotification)) { notification in
                     if let id = notification.object as? String {
-                        navigateSeries(id)
+                        Task {
+                            let libraryId = try await AudiobookshelfClient.shared.getAuthor(authorId: id).libraryId
+                            navigateAuthor(id, libraryId)
+                        }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateSeriesNotification)) { notification in
-                    if let id = notification.object as? String {
-                        navigateSeries(id)
+                    if let name = notification.object as? String {
+                        Task {
+                            guard let libraries = try? await AudiobookshelfClient.shared.getLibraries().filter({ $0.type == .audiobooks }) else { return }
+                            let fetched = await libraries.parallelMap {
+                                let series = try? await AudiobookshelfClient.shared.getSeries(libraryId: $0.id).filter { $0.name == name }
+                                return series ?? []
+                            }
+                            
+                            // this is certainly something
+                            guard let libraryId = fetched.flatMap({ $0 }).first?.libraryId else { return }
+                            navigateSeries(name, libraryId)
+                        }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigatePodcastNotification)) { notification in
                     if let id = notification.object as? String {
-                        navigatePodcast(id)
+                        Task {
+                            let libraryId = try await AudiobookshelfClient.shared.getPodcast(podcastId: id).0.libraryId
+                            navigatePodcast(id, libraryId)
+                        }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateEpisodeNotification)) { notification in
-                    if let id = notification.object as? String {
-                        navigateEpisode(id)
+                    if let (episodeId, podcastId) = notification.object as? (String, String) {
+                        Task {
+                            let libraryId = try await AudiobookshelfClient.shared.getPodcast(podcastId: podcastId).0.libraryId
+                            navigateEpisode(episodeId, podcastId, libraryId)
+                        }
                     }
+                }
+        }
+    }
+    struct NavigationModifier: ViewModifier {
+        let didNavigate: () -> Void
+        
+        func body(content: Content) -> some View {
+            content
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAudiobookNotification)) { notification in
+                    didNavigate()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAuthorNotification)) { notification in
+                    didNavigate()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateSeriesNotification)) { notification in
+                    didNavigate()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigatePodcastNotification)) { notification in
+                    didNavigate()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateEpisodeNotification)) { notification in
+                    didNavigate()
                 }
         }
     }
@@ -80,19 +125,19 @@ extension Navigation {
         func body(content: Content) -> some View {
             content
                 .navigationDestination(for: Navigation.AudiobookLoadDestination.self) { data in
-                    
+                    AudiobookLoadView(audiobookId: data.audiobookId)
                 }
                 .navigationDestination(for: Navigation.AuthorLoadDestination.self) { data in
                     AuthorLoadView(authorId: data.authorId)
                 }
                 .navigationDestination(for: Navigation.SeriesLoadDestination.self) { data in
-                    SeriesLoadView(series: .init(id: data.seriesId, name: "Unknown", sequence: nil))
+                    SeriesLoadView(series: .init(id: nil, name: data.seriesName, sequence: nil))
                 }
                 .navigationDestination(for: Navigation.PodcastLoadDestination.self) { data in
                     PodcastLoadView(podcastId: data.podcastId)
                 }
                 .navigationDestination(for: Navigation.EpisodeLoadDestination.self) { data in
-                    
+                    EpisodeLoadView(id: data.episodeId, podcastId: data.podcastId)
                 }
         }
     }
@@ -108,7 +153,7 @@ extension Navigation {
     }
     
     struct SeriesLoadDestination: Hashable {
-        let seriesId: String
+        let seriesName: String
     }
     
     struct PodcastLoadDestination: Hashable {
@@ -117,5 +162,16 @@ extension Navigation {
     
     struct EpisodeLoadDestination: Hashable {
         let episodeId: String
+        let podcastId: String
+    }
+}
+
+struct LibraryIdDefault: EnvironmentKey {
+    static var defaultValue: String = ""
+}
+extension EnvironmentValues {
+    var libraryId: String {
+        get { self[LibraryIdDefault.self] }
+        set { self[LibraryIdDefault.self] = newValue }
     }
 }

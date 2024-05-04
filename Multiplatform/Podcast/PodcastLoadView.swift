@@ -9,12 +9,12 @@ import SwiftUI
 import SPBase
 
 struct PodcastLoadView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.libraryId) private var libraryId
     
     let podcastId: String
     
-    @State var failed = false
-    @State var podcast: Podcast?
+    @State private var failed = false
+    @State private var podcast: Podcast?
     
     var body: some View {
         if failed {
@@ -27,18 +27,14 @@ struct PodcastLoadView: View {
                 .refreshable { await fetchPodcast() }
         }
     }
-}
-
-extension PodcastLoadView {
+    
     private func fetchPodcast() async {
+        failed = false
+        
         if let (podcast, _) = try? await AudiobookshelfClient.shared.getPodcast(podcastId: podcastId) {
             self.podcast = podcast
         } else {
             failed = true
         }
     }
-}
-
-#Preview {
-    PodcastLoadView(podcastId: "fixture")
 }

@@ -89,6 +89,16 @@ struct AuthorView: View {
             }
         }
         .refreshable { await fetchAudiobooks() }
+        .userActivity("io.rfk.shelfplayer.author") {
+            $0.title = author.name
+            $0.isEligibleForHandoff = true
+            $0.persistentIdentifier = author.id
+            $0.targetContentIdentifier = "audiobook:\(author.id)"
+            $0.userInfo = [
+                "authorId": author.id,
+            ]
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: author.id)
+        }
     }
 }
 

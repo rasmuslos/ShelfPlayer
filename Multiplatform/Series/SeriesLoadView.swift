@@ -27,10 +27,9 @@ struct SeriesLoadView: View {
                 .refreshable { await fetchSeries() }
         }
     }
-}
-
-extension SeriesLoadView {
-    func fetchSeries() async {
+    
+    private func fetchSeries() async {
+        failed = false
         var id = series.id
         
         if id == nil {

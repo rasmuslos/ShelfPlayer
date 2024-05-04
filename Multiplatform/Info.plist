@@ -42,7 +42,6 @@
 	</dict>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>INPlayMediaIntent</string>
 		<string>io.rfk.shelfplayer.audiobook</string>
 		<string>io.rfk.shelfplayer.author</string>
 		<string>io.rfk.shelfplayer.episode</string>

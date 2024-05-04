@@ -68,6 +68,17 @@ struct SeriesView: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .task{ await fetchAudiobooks() }
         .refreshable{ await fetchAudiobooks() }
+        .userActivity("io.rfk.shelfplayer.series") {
+            $0.title = series.name
+            $0.isEligibleForHandoff = true
+            $0.persistentIdentifier = series.name
+            $0.targetContentIdentifier = "series:\(series.name)"
+            $0.userInfo = [
+                "seriesId": series.id,
+                "seriesName": series.name,
+            ]
+            // TODO: webpage, i cannot be fucked right now
+        }
     }
 }
 

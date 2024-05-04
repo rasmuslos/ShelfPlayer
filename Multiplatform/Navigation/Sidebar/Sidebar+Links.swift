@@ -10,26 +10,35 @@ import Defaults
 import SwiftUI
 import SPBase
 
-extension SidebarView {
+extension Sidebar {
     struct Selection: Codable, Hashable, _DefaultsSerializable {
         let libraryId: String
-        let section: LibrarySection
+        let panel: Panel
     }
     
-    enum LibrarySection: Codable, Hashable, _DefaultsSerializable {
-        case podcastListenNow
+    enum Panel: Codable, Hashable, _DefaultsSerializable {
         case audiobookListenNow
-        case latest
         case series
-        case podcastLibrary
-        case audiobookLibrary
         case authors
+        
+        case audiobookLibrary
+        
+        case podcastListenNow
+        case podcastLibrary
+        case latest
+        
         case search
+        
+        case audiobook(id: String)
+        case author(id: String)
+        case singleSeries(name: String)
+        case podcast(id: String)
+        case episode(id: String, podcastId: String)
     }
 }
 
-extension SidebarView.LibrarySection {
-    var label: LocalizedStringKey {
+extension Sidebar.Panel {
+    var label: LocalizedStringKey? {
         switch self {
             case .audiobookListenNow, .podcastListenNow:
                 "section.listenNow"
@@ -43,10 +52,12 @@ extension SidebarView.LibrarySection {
                 "section.authors"
             case .search:
                 "section.search"
+            default:
+                nil
         }
     }
     
-    var icon: String {
+    var icon: String? {
         switch self {
             case .podcastListenNow:
                 "waveform"
@@ -64,28 +75,43 @@ extension SidebarView.LibrarySection {
                 "person.fill"
             case .search:
                 "magnifyingglass"
+            default:
+                nil
         }
     }
     
     var content: some View {
         Group {
             switch self {
-                case .podcastListenNow:
-                    PodcastListenNowView()
                 case .audiobookListenNow:
                     AudiobookListenNowView()
-                case .latest:
-                    PodcastLatestView()
                 case .series:
                     AudiobookSeriesView()
-                case .podcastLibrary:
-                    PodcastLibraryView()
-                case .audiobookLibrary:
-                    AudiobookLibraryView()
                 case .authors:
                     AuthorsView()
+                case .audiobookLibrary:
+                    AudiobookLibraryView()
+                    
+                case .podcastListenNow:
+                    PodcastListenNowView()
+                case .latest:
+                    PodcastLatestView()
+                case .podcastLibrary:
+                    PodcastLibraryView()
+                    
                 case .search:
                     SearchView()
+                    
+                case .audiobook(let id):
+                    AudiobookLoadView(audiobookId: id)
+                case .author(let id):
+                    AuthorLoadView(authorId: id)
+                case .singleSeries(let name):
+                    SeriesLoadView(series: .init(id: nil, name: name, sequence: nil))
+                case .podcast(let id):
+                    PodcastLoadView(podcastId: id)
+                case .episode(let id, let podcastId):
+                    EpisodeLoadView(id: id, podcastId: podcastId)
             }
         }
     }

@@ -70,6 +70,16 @@ struct AudiobookView: View {
         .modifier(ToolbarModifier())
         .environment(viewModel)
         .task { await viewModel.fetchData(libraryId: libraryId) }
+        .userActivity("io.rfk.shelfplayer.audiobook") {
+            $0.title = viewModel.audiobook.name
+            $0.isEligibleForHandoff = true
+            $0.persistentIdentifier = viewModel.audiobook.id
+            $0.targetContentIdentifier = "audiobook:\(viewModel.audiobook.id)"
+            $0.userInfo = [
+                "audiobookId": viewModel.audiobook.id,
+            ]
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.audiobook.id)
+        }
     }
 }
 
