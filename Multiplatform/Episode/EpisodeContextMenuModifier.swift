@@ -28,6 +28,14 @@ struct EpisodeContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
+                Button {
+                    episode.startPlayback()
+                } label: {
+                    Label("play", systemImage: "play")
+                }
+                
+                Divider()
+                
                 NavigationLink(destination: EpisodeView(episode: episode)) {
                     Label("episode.view", systemImage: "waveform")
                 }

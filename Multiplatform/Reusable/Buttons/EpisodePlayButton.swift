@@ -28,7 +28,6 @@ struct EpisodePlayButton: View {
                 .padding(.horizontal, 12)
                 .background(viewModel.highlighted ? .white : .secondary.opacity(0.25))
                 .foregroundStyle(viewModel.highlighted ? .black : .primary)
-                .clipShape(RoundedRectangle(cornerRadius: 10000))
                 .reverseMask {
                     if viewModel.highlighted {
                         ButtonText()
@@ -36,6 +35,8 @@ struct EpisodePlayButton: View {
                 }
         }
         .buttonStyle(.plain)
+        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+        .modifier(ButtonHoverEffectModifier(cornerRadius: .infinity, hoverEffect: .lift))
         .id(viewModel.episode.id)
         .environment(viewModel)
     }

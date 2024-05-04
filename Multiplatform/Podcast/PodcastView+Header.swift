@@ -143,6 +143,7 @@ extension PodcastView.Header {
             HStack(spacing: 40) {
                 ItemImage(image: podcast.image)
                     .frame(height: 300)
+                    .hoverEffect(.highlight)
                 
                 VStack(alignment: .leading, spacing: 10) {
                     Additional(podcast: podcast)

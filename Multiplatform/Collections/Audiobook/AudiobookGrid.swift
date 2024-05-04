@@ -27,6 +27,7 @@ struct AudiobookVGrid: View {
                 } label: {
                     ItemStatusImage(item: audiobook, aspectRatio: .none)
                         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+                        .hoverEffect(.highlight)
                 }
                 .buttonStyle(.plain)
             }
@@ -70,9 +71,10 @@ struct AudiobookHGrid: View {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
                             ItemStatusImage(item: audiobook, aspectRatio: .none)
+                                .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+                                .hoverEffect(.highlight)
                                 .frame(width: size)
                                 .padding(.leading, gap)
-                                .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
                         }
                         .buttonStyle(.plain)
                     }
@@ -82,6 +84,7 @@ struct AudiobookHGrid: View {
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
+            .scrollClipDisabled()
         }
     }
 }

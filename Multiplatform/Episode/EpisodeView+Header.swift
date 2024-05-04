@@ -115,6 +115,7 @@ extension EpisodeView.Header {
             HStack(spacing: 20) {
                 ItemImage(image: episode.image)
                     .frame(width: 225)
+                    .hoverEffect(.highlight)
                 
                 VStack(alignment: .leading) {
                     Spacer()

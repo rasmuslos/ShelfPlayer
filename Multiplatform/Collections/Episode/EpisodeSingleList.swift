@@ -57,6 +57,7 @@ extension EpisodeSingleList {
                     DownloadIndicator(item: episode)
                 }
             }
+            .contentShape([.contextMenuPreview, .hoverEffect, .interaction], Rectangle())
             .modifier(EpisodeContextMenuModifier(episode: episode))
         }
     }

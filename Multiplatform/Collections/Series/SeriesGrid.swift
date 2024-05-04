@@ -35,18 +35,22 @@ extension SeriesGrid {
         
         var body: some View {
             VStack {
-                if series.images.isEmpty {
-                    ItemImage(image: nil)
-                } else if series.images.count < 4 {
-                    ItemImage(image: series.images.randomElement()!)
-                } else {
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible())], spacing: 10) {
-                        ItemImage(image: series.images[0])
-                        ItemImage(image: series.images[1])
-                        ItemImage(image: series.images[2])
-                        ItemImage(image: series.images[3])
+                Group {
+                    if series.images.isEmpty {
+                        ItemImage(image: nil)
+                    } else if series.images.count < 4 {
+                        ItemImage(image: series.images.randomElement()!)
+                    } else {
+                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible())], spacing: 10) {
+                            ItemImage(image: series.images[0])
+                            ItemImage(image: series.images[1])
+                            ItemImage(image: series.images[2])
+                            ItemImage(image: series.images[3])
+                        }
                     }
                 }
+                .hoverEffect(.highlight)
+                
                 Text(series.name)
                     .modifier(SerifModifier())
                     .lineLimit(1)

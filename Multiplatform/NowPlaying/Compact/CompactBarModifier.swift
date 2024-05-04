@@ -118,13 +118,14 @@ extension NowPlaying {
                                 .frame(height: 56)
                                 .padding(.horizontal, 10)
                                 .foregroundStyle(.primary)
+                                .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 15, style: .continuous))
+                                .modifier(ContextMenuModifier(item: item, animateForwards: $animateForwards))
                                 .background {
                                     Rectangle()
                                         .foregroundStyle(.regularMaterial)
                                 }
                                 .transition(.move(edge: .bottom))
                                 .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-                                .modifier(ContextMenuModifier(item: item, animateForwards: $animateForwards))
                                 .shadow(color: .black.opacity(0.25), radius: 20)
                                 .padding(.bottom, 10)
                                 .padding(.horizontal, 10)

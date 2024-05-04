@@ -25,11 +25,13 @@ extension NowPlaying.RegularView {
                 PlaybackSpeedButton()
                     .font(.system(size: 21))
                     .foregroundStyle(.secondary)
+                    .modifier(ButtonHoverEffectModifier())
                 
                 SleepTimerButton()
                     .labelStyle(.iconOnly)
                     .font(.system(size: 17))
                     .foregroundStyle(.secondary)
+                    .modifier(ButtonHoverEffectModifier())
                     .padding(.leading, 20)
                 
                 if AudioPlayer.shared.item as? Audiobook != nil {
@@ -42,6 +44,7 @@ extension NowPlaying.RegularView {
                     }
                     .font(.system(size: 23))
                     .foregroundStyle(.secondary)
+                    .modifier(ButtonHoverEffectModifier())
                     .padding(.leading, 20)
                 }
             }

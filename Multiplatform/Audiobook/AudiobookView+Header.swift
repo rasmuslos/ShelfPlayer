@@ -176,6 +176,7 @@ extension AudiobookView.Header {
                     ItemImage(image: viewModel.audiobook.image, aspectRatio: .none)
                         .shadow(radius: 30)
                         .frame(width: min(400, (availableWidth - 40) / 2))
+                        .hoverEffect(.highlight)
                     
                     VStack(alignment: .leading, spacing: 5) {
                         Spacer()

@@ -97,6 +97,7 @@ extension AudiobookList {
                         .foregroundStyle(.secondary)
                     }
                     .buttonStyle(.plain)
+                    .modifier(ButtonHoverEffectModifier())
                 }
                 .padding(.leading, 5)
             }
