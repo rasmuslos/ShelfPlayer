@@ -1451,7 +1451,20 @@
       }
     },
     "error.unavailable.audiobook" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hörbuch nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiobook unavailable"
+          }
+        }
+      }
     },
     "error.unavailable.author" : {
       "localizations" : {
@@ -1470,7 +1483,20 @@
       }
     },
     "error.unavailable.episode" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folge nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episode unavailable"
+          }
+        }
+      }
     },
     "error.unavailable.podcast" : {
       "localizations" : {
@@ -2198,7 +2224,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anhören"
+            "value" : "Wiedergeben"
           }
         },
         "en" : {
