@@ -24,6 +24,14 @@ struct AudiobookContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
+                Button {
+                    audiobook.startPlayback()
+                } label: {
+                    Label("play", systemImage: "play")
+                }
+                
+                Divider()
+                
                 NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
                     Label("audiobook.view", systemImage: "book")
                 }

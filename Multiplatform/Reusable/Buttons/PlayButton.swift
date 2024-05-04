@@ -11,6 +11,8 @@ import SPOffline
 import SPPlayback
 
 struct PlayButton: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let item: PlayableItem
     let entity: ItemProgress
     
@@ -50,37 +52,27 @@ struct PlayButton: View {
                 Label(label, systemImage: labelImage)
             }
         }
-        .buttonStyle(PlayNowButtonStyle(percentage: entity.progress))
-    }
-}
-
-struct PlayNowButtonStyle: ButtonStyle {
-    @Environment(\.colorScheme) var colorScheme
-    
-    let percentage: Double
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .padding(.vertical, 15)
-            .frame(maxWidth: .infinity)
-            .foregroundColor(colorScheme == .dark ? .black : .white)
-            .background {
-                ZStack {
-                    if colorScheme == .dark {
-                        Color.white
-                    } else {
-                        Color.black
-                    }
-                    
-                    GeometryReader { geometry in
-                        Rectangle()
-                            .foregroundStyle(Color.gray.opacity(0.4))
-                            .frame(width: geometry.size.width * percentage)
-                    }
+        .font(.headline)
+        .padding(.vertical, 15)
+        .frame(maxWidth: .infinity)
+        .foregroundColor(colorScheme == .dark ? .black : .white)
+        .background {
+            ZStack {
+                if colorScheme == .dark {
+                    Color.white
+                } else {
+                    Color.black
+                }
+                
+                GeometryReader { geometry in
+                    Rectangle()
+                        .foregroundStyle(Color.gray.opacity(0.4))
+                        .frame(width: geometry.size.width * entity.progress)
                 }
             }
-            .clipShape(RoundedRectangle(cornerRadius: 7))
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 7))
+        .modifier(ButtonHoverEffectModifier(cornerRadius: 7, hoverEffect: .lift))
     }
 }
 

@@ -85,6 +85,7 @@ struct PodcastGridItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ItemImage(image: podcast.image)
+                .hoverEffect(.highlight)
             
             Text(podcast.name)
                 .lineLimit(1)
@@ -98,6 +99,7 @@ struct PodcastGridItem: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .contentShape(.hoverMenuInteraction, Rectangle())
     }
 }
 

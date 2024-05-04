@@ -30,6 +30,7 @@ extension EpisodeList {
             HStack {
                 ItemImage(image: episode.image)
                     .frame(width: 90)
+                    .hoverEffect(.highlight)
                 
                 VStack(alignment: .leading) {
                     Group {
@@ -62,7 +63,7 @@ extension EpisodeList {
                 
                 Spacer()
             }
-            // .frame(height: 90)
+            .contentShape(.hoverMenuInteraction, Rectangle())
             .modifier(EpisodeContextMenuModifier(episode: episode))
         }
     }

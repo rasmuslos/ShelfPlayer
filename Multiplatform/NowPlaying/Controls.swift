@@ -97,7 +97,8 @@ extension NowPlaying {
                             .symbolEffect(.bounce, value: animateBackwards)
                             .sensoryFeedback(.decrease, trigger: animateBackwards)
                             .font(.system(size: 30))
-                            .frame(width: 50, height:50)
+                            .modifier(ButtonHoverEffectModifier())
+                            .frame(width: 50, height: 50)
                             .gesture(TapGesture()
                                 .onEnded { _ in
                                     animateBackwards.toggle()
@@ -117,8 +118,9 @@ extension NowPlaying {
                         } label: {
                             Label("playback.toggle", systemImage: AudioPlayer.shared.playing ? "pause.fill" : "play.fill")
                                 .labelStyle(.iconOnly)
-                                .frame(width: 50, height:50)
                                 .font(.system(size: 47))
+                                .modifier(ButtonHoverEffectModifier())
+                                .frame(width: 50, height:50)
                                 .padding(.horizontal, 50)
                                 .contentTransition(.symbolEffect(.replace.downUp))
                         }
@@ -132,6 +134,7 @@ extension NowPlaying {
                             .symbolEffect(.bounce, value: animateForwards)
                             .sensoryFeedback(.increase, trigger: animateForwards)
                             .font(.system(size: 30))
+                            .modifier(ButtonHoverEffectModifier())
                             .frame(width: 50, height:50)
                             .gesture(TapGesture()
                                 .onEnded { _ in

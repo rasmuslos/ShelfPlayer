@@ -35,6 +35,7 @@ extension NowPlaying {
                         }
                     }
                 )
+                .modifier(ButtonHoverEffectModifier())
             }
             .frame(height: dragging ? 10 : 7)
             .accessibilityRepresentation {

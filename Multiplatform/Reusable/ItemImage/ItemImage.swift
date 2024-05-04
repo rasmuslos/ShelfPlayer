@@ -30,6 +30,7 @@ struct ItemImage: View {
         .background(.gray.opacity(0.1))
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: cornerRadius))
     }
     
     private var aspectRatioPolicy: AspectRatioPolicy {
