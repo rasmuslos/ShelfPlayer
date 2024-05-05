@@ -179,6 +179,7 @@ extension AudiobookView.Header {
                     
                     // this piece of shit is required for `ViewThatFits` to work properly
                     Color.clear
+                        .frame(minWidth: 275)
                         .overlay {
                             VStack(alignment: .leading, spacing: 5) {
                                 Spacer()
