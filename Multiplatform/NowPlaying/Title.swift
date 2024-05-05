@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Defaults
 import SPBase
 import SPOffline
 import SPPlayback
 
 extension NowPlaying {
     struct Title: View {
+        @Default(.useSerifFont) private var useSerifFont
         @Environment(\.libraryId) private var libraryId
         
         let item: PlayableItem
@@ -45,7 +47,7 @@ extension NowPlaying {
                     Group {
                         Text(item.name)
                             .font(.headline)
-                            .fontDesign(item as? Audiobook != nil ? .serif : .default)
+                            .fontDesign(item as? Audiobook != nil && useSerifFont ? .serif : .default)
                             .foregroundStyle(.primary)
                             .matchedGeometryEffect(id: "title", in: namespace, properties: .frame, anchor: .top)
                         
