@@ -12,16 +12,6 @@ import SPOfflineExtended
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem
-    let entity: ItemProgress
-    let offlineTracker: ItemOfflineTracker
-    
-    @MainActor
-    init(item: PlayableItem) {
-        self.item = item
-        
-        entity = OfflineManager.shared.requireProgressEntity(item: item)
-        offlineTracker = item.offlineTracker
-    }
     
     func body(content: Content) -> some View {
         content

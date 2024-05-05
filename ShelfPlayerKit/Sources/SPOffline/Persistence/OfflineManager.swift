@@ -68,6 +68,7 @@ public extension OfflineManager {
 
 public extension OfflineManager {
     static let bookmarksUpdatedNotification = NSNotification.Name("io.rfk.shelfplayer.bookmarks.updated")
+    static let downloadProgressUpdatedNotification = NSNotification.Name("io.rfk.shelfplayer.download.progress")
 }
 
 public extension OfflineManager {
