@@ -44,8 +44,8 @@ let package = Package(
         
         .target(name: "SPPlayback", dependencies: [
             .byName(name: "Defaults"),
+            .byName(name: "SPBase"),
             
-                .byName(name: "SPBase"),
             .byName(name: "SPOffline"),
             .byName(name: "SPExtension"),
             .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS, .watchOS, .visionOS, .macOS])),

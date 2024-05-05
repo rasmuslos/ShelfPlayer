@@ -59,7 +59,7 @@ struct StatusOverlay: View {
                                                 
                                                 Circle()
                                                     .trim(from: 0, to: CGFloat(entity.progress))
-                                                    .stroke(Color.black, lineWidth: 3)
+                                                    .stroke(Color.black, style: .init(lineWidth: 3, lineCap: .round))
                                             }
                                             .rotationEffect(.degrees(-90))
                                         }

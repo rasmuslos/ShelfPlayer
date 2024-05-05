@@ -12,12 +12,6 @@ import SPOfflineExtended
 
 struct AudiobookContextMenuModifier: ViewModifier {
     let audiobook: Audiobook
-    let offlineTracker: ItemOfflineTracker
-    
-    init(audiobook: Audiobook) {
-        self.audiobook = audiobook
-        offlineTracker = audiobook.offlineTracker
-    }
     
     @State var authorId: String?
     

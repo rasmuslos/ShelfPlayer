@@ -134,6 +134,8 @@ extension OfflineManager {
             
             task.resume()
         }
+        
+        DownloadManager.shared.startProgressTracking(itemId: itemId, trackCount: tracks.count)
     }
     
     @MainActor

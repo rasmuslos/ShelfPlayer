@@ -15,21 +15,12 @@ extension EpisodeView {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         
         let episode: Episode
-        let offlineTracker: ItemOfflineTracker
         
         let navigationBarVisible: Bool
         let imageColors: Item.ImageColors
         
         private var regularPresentation: Bool {
             horizontalSizeClass == .regular
-        }
-        
-        init(episode: Episode, navigationBarVisible: Bool, imageColors: Item.ImageColors) {
-            self.episode = episode
-            self.navigationBarVisible = navigationBarVisible
-            self.imageColors = imageColors
-            
-            offlineTracker = episode.offlineTracker
         }
         
         func body(content: Content) -> some View {
