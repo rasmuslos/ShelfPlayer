@@ -81,7 +81,6 @@ struct PlayButton: View {
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 7))
-        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 7))
         .modifier(ButtonHoverEffectModifier(cornerRadius: 7, hoverEffect: .lift))
         .onAppear {
             // If this is inside `init` the app will hang

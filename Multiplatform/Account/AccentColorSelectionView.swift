@@ -44,8 +44,16 @@ struct AccentColorSelectionView: View {
                         .padding(.trailing, 5)
                     
                     Text(tint.title)
-                        .bold(active)
+                    
+                    Spacer()
+                    
+                    if active {
+                        
+                        Label("active", systemImage: "checkmark")
+                            .labelStyle(.iconOnly)
+                    }
                 }
+                .contentShape(.hoverMenuInteraction, Rectangle())
             }
             .buttonStyle(.plain)
         }
