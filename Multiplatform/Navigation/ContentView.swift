@@ -17,7 +17,7 @@ struct ContentView: View {
     @Default(.tintColor) private var tintColor
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    @State private var state: Step = AudiobookshelfClient.shared.isAuthorized ? .sessionImport : .login
+    @State private var state: Step = AudiobookshelfClient.shared.authorized ? .sessionImport : .login
     
     private var navigationController: some View {
         Group {
@@ -33,9 +33,7 @@ struct ContentView: View {
         Group {
             switch state {
                 case .login:
-                    LoginView() {
-                        state = .sessionImport
-                    }
+                    LoginView()
                 case .sessionImport:
                     SessionsImportView() { success in
                         if success {
@@ -101,6 +99,9 @@ struct ContentView: View {
                 state = offline ? .offline : .sessionImport
             }
         })
+        .onChange(of: AudiobookshelfClient.shared.authorized) {
+            state = AudiobookshelfClient.shared.authorized ? .sessionImport : .login
+        }
     }
 }
 

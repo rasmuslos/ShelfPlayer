@@ -18,7 +18,7 @@ public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDeleg
         
         Task {
             // Check if the user is logged in
-            if !AudiobookshelfClient.shared.isAuthorized {
+            if !AudiobookshelfClient.shared.authorized {
                 try await interfaceController.presentTemplate(CPAlertTemplate(titleVariants: [String(localized: "carPlay.unauthorized.short"), String(localized: "carPlay.unauthorized")], actions: []), animated: true)
                 
                 return

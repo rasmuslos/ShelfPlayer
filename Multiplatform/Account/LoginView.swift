@@ -11,12 +11,10 @@ import BetterSafariView
 import CommonCrypto
 
 struct LoginView: View {
-    var callback : () -> ()
-    
     @State private var loginSheetPresented = false
     @State private var loginFlowState: LoginFlowState = .server
     
-    @State private var server = AudiobookshelfClient.shared.serverUrl?.absoluteString ?? "https://"
+    @State private var server = AudiobookshelfClient.shared._serverUrl?.absoluteString ?? "https://"
     @State private var username = ""
     @State private var password = ""
     
@@ -180,7 +178,7 @@ extension LoginView {
             
             // Verify url format
             do {
-                try AudiobookshelfClient.shared.setServerUrl(server)
+                try AudiobookshelfClient.shared.store(serverUrl: server)
             } catch {
                 loginError = .url
                 loginFlowState = .server
@@ -217,9 +215,7 @@ extension LoginView {
             Task {
                 do {
                     let token = try await AudiobookshelfClient.shared.login(username: username, password: password)
-                    
-                    AudiobookshelfClient.shared.setToken(token)
-                    callback()
+                    AudiobookshelfClient.shared.store(token: token)
                 } catch {
                     loginError = .failed
                     loginFlowState = .credentialsLocal
@@ -267,8 +263,7 @@ extension LoginView {
                let state = components?.queryItems?.first(where: { $0.name == "state" })?.value {
                 Task {
                     if let token = try? await AudiobookshelfClient.shared.openIDExchange(code: code, state: state, verifier: verifier) {
-                        AudiobookshelfClient.shared.setToken(token)
-                        callback()
+                        AudiobookshelfClient.shared.store(token: token)
                     } else {
                         openIDLoginURL = nil
                         
@@ -289,7 +284,5 @@ extension LoginView {
 }
 
 #Preview {
-    LoginView() {
-        print("Login flow finished")
-    }
+    LoginView()
 }
