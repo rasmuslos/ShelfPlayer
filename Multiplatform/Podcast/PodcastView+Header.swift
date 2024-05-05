@@ -22,10 +22,9 @@ extension PodcastView {
                 FullscreenBackground(threshold: horizontalSizeClass == .regular ? -150 : -280, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
                 
                 // Because both of these have approximately the same size `ViewThatFits` does not work here.
-                if horizontalSizeClass == .compact {
-                    CompactPresentation(podcast: podcast)
-                } else {
+                ViewThatFits {
                     RegularPresentation(podcast: podcast)
+                    CompactPresentation(podcast: podcast)
                 }
             }
             .background(imageColors.background)
@@ -145,14 +144,15 @@ extension PodcastView.Header {
                     .frame(height: 300)
                     .hoverEffect(.highlight)
                 
-                VStack(alignment: .leading, spacing: 10) {
-                    Additional(podcast: podcast)
-                        .foregroundStyle(.secondary)
-                    Title(podcast: podcast, largeFont: true, alignment: .leading)
-                    Description(podcast: podcast)
-                }
-                
-                Spacer()
+                Color.clear
+                    .overlay {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Additional(podcast: podcast)
+                                .foregroundStyle(.secondary)
+                            Title(podcast: podcast, largeFont: true, alignment: .leading)
+                            Description(podcast: podcast)
+                        }
+                    }
             }
             .padding(20)
             .padding(.top, 60)
