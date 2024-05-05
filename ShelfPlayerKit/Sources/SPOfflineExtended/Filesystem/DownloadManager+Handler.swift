@@ -18,13 +18,17 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
             try FileManager.default.moveItem(at: location, to: tmpLocation)
         } catch {
             logger.fault("Error while moving tmp file: \(error.localizedDescription)")
+            abortProgressTracking(taskIdentifier: downloadTask.taskIdentifier)
+            
             return
         }
         
         Task.detached { @MainActor [self] in
             guard let track = try? OfflineManager.shared.getOfflineTrack(downloadReference: downloadTask.taskIdentifier) else {
                 logger.fault("Unknown download finished")
+                
                 try? FileManager.default.removeItem(at: tmpLocation)
+                abortProgressTracking(taskIdentifier: downloadTask.taskIdentifier)
                 
                 return
             }
@@ -58,7 +62,11 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
     
     func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten _: Int64, totalBytesExpectedToWrite _: Int64) {
         Task.detached { @MainActor [self] in
-            guard let track = try? OfflineManager.shared.getOfflineTrack(downloadReference: downloadTask.taskIdentifier) else { return }
+            guard let track = try? OfflineManager.shared.getOfflineTrack(downloadReference: downloadTask.taskIdentifier) else {
+                abortProgressTracking(taskIdentifier: downloadTask.taskIdentifier)
+                return
+            }
+            
             updateProgress(taskIdentifier: downloadTask.taskIdentifier, itemId: track.parentId, progress: downloadTask.progress.fractionCompleted)
         }
     }
@@ -69,6 +77,8 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
             Task.detached { @MainActor [self] in
                 guard let track = try? OfflineManager.shared.getOfflineTrack(downloadReference: task.taskIdentifier) else {
                     logger.fault("Error while downloading unknown track: \(error.localizedDescription)")
+                    abortProgressTracking(taskIdentifier: task.taskIdentifier)
+                    
                     return
                 }
                 
@@ -79,6 +89,7 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
                 }
                 
                 logger.fault("Error while downloading track \(track.id): \(error.localizedDescription)")
+                abortProgressTracking(taskIdentifier: task.taskIdentifier, itemId: track.parentId)
             }
         }
     }
