@@ -101,6 +101,7 @@ struct ItemStatusImage: View {
                 StatusOverlay(item: item)
             }
             .clipShape(RoundedRectangle(cornerRadius: 7))
+            .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 7))
     }
 }
 

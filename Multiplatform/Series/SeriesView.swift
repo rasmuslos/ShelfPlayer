@@ -52,6 +52,7 @@ struct SeriesView: View {
                     List {
                         Header(series: series)
                         RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                            .listRowSeparator(.hidden, edges: .top)
                             .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 20))
                         AudiobookList(audiobooks: visibleAudiobooks)
                     }
