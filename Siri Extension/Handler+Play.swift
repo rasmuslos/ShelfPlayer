@@ -25,7 +25,7 @@ extension IntentHandler: INPlayMediaIntentHandling {
     }
     
     func resolveMediaItems(for intent: INPlayMediaIntent) async -> [INPlayMediaMediaItemResolutionResult] {
-        guard AudiobookshelfClient.shared.isAuthorized else {
+        guard AudiobookshelfClient.shared.authorized else {
             return [.unsupported(forReason: .loginRequired)]
         }
         

@@ -6,15 +6,18 @@
 //
 
 import Foundation
+import SwiftUI
 
+@Observable
 public final class AudiobookshelfClient {
-    public private(set) var serverUrl: URL!
-    public private(set) var token: String!
+    public private(set) var _serverUrl: URL?
+    public private(set) var _token: String?
     
     public private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     
     public private(set) var clientId: String
+    
     public static let defaults = ENABLE_ALL_FEATURES ? UserDefaults(suiteName: "group.io.rfk.shelfplayer")! : UserDefaults.standard
     
     fileprivate var _customHTTPHeaders: [CustomHTTPHeader]?
@@ -24,8 +27,8 @@ public final class AudiobookshelfClient {
             print("[WARNING] User data will not be stored in an app group")
         }
         
-        self.serverUrl = serverUrl
-        self.token = token
+        _serverUrl = serverUrl
+        _token = token
         
         if let clientId = Self.defaults.string(forKey: "clientId") {
             self.clientId = clientId
@@ -37,27 +40,33 @@ public final class AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
-    var isAuthorized: Bool {
-        self.token != nil
+    var authorized: Bool {
+        _token != nil
     }
     
-    func setServerUrl(_ serverUrl: String) throws {        
+    var serverUrl: URL {
+        _serverUrl ?? .temporaryDirectory
+    }
+    var token: String {
+        _token ?? ""
+    }
+    
+    func store(serverUrl: String) throws {
         guard let serverUrl = URL(string: serverUrl) else {
             throw AudiobookshelfClientError.invalidServerUrl
         }
         
         Self.defaults.set(serverUrl, forKey: "serverUrl")
-        self.serverUrl = serverUrl
+        _serverUrl = serverUrl
     }
     
-    func setToken(_ token: String) {
+    func store(token: String?) {
         Self.defaults.set(token, forKey: "token")
-        self.token = token
+        _token = token
     }
     
     func logout() {
-        Self.defaults.set(nil, forKey: "token")
-        exit(0)
+        store(token: nil)
     }
 }
 

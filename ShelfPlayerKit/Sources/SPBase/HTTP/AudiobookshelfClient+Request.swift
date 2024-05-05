@@ -28,9 +28,7 @@ extension AudiobookshelfClient {
         request.httpMethod = clientRequest.method
         request.httpShouldHandleCookies = true
         
-        if let token = token {
-            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         for pair in customHTTPHeaders {
             request.addValue(pair.value, forHTTPHeaderField: pair.key)
