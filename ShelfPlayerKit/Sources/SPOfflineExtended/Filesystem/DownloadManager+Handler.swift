@@ -12,6 +12,7 @@ import SPOffline
 extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let tmpLocation = documentsURL.appending(path: String(downloadTask.taskIdentifier))
+        
         do {
             try? FileManager.default.removeItem(at: tmpLocation)
             try FileManager.default.moveItem(at: location, to: tmpLocation)
@@ -27,6 +28,8 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
                 
                 return
             }
+            
+            stopProgressTracking(taskIdentifier: downloadTask.taskIdentifier, itemId: track.parentId)
             
             var destination = getURL(track: track)
             try? destination.setResourceValues({
@@ -50,6 +53,13 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
                 
                 logger.fault("Error while moving track \(track.id): \(error.localizedDescription)")
             }
+        }
+    }
+    
+    func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten _: Int64, totalBytesExpectedToWrite _: Int64) {
+        Task.detached { @MainActor [self] in
+            guard let track = try? OfflineManager.shared.getOfflineTrack(downloadReference: downloadTask.taskIdentifier) else { return }
+            updateProgress(taskIdentifier: downloadTask.taskIdentifier, itemId: track.parentId, progress: downloadTask.progress.fractionCompleted)
         }
     }
     

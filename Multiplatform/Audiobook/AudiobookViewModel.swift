@@ -16,8 +16,7 @@ final class AudiobookViewModel {
     
     var libraryId: String!
     
-    var navigationBarVisible: Bool
-    let offlineTracker: ItemOfflineTracker
+    var navigationBarVisible = false
     
     var chapters: PlayableItem.Chapters?
     
@@ -28,9 +27,6 @@ final class AudiobookViewModel {
     
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
-        
-        offlineTracker = audiobook.offlineTracker
-        _navigationBarVisible = false
     }
 }
 

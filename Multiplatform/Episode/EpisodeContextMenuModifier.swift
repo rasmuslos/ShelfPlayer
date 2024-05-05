@@ -14,12 +14,6 @@ struct EpisodeContextMenuModifier: ViewModifier {
     @Environment(\.libraryId) private var libraryId
     
     let episode: Episode
-    let offlineTracker: ItemOfflineTracker
-    
-    init(episode: Episode) {
-        self.episode = episode
-        offlineTracker = episode.offlineTracker
-    }
     
     private var offline: Bool {
         libraryId == "offline"

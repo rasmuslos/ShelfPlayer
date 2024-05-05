@@ -52,12 +52,11 @@ struct DownloadButton: View {
                     }
                 case .working:
                     if downloadingLabel {
-                        HStack {
-                            ProgressIndicator()
-                            Text("downloading")
-                        }
+                        Label("downloading", systemImage: "arrow.down")
                     } else {
-                        ProgressIndicator()
+                        DownloadProgressIndicator(itemId: item.id)
+                            .frame(width: 19)
+                            .padding(.trailing, 15)
                     }
             }
         }
@@ -91,4 +90,23 @@ extension DownloadButton {
 
 #Preview {
     DownloadButton(item: Audiobook.fixture, downloadingLabel: false)
+}
+
+#Preview {
+    NavigationStack {
+        Text(verbatim: ":)")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    DownloadButton(item: Audiobook.fixture, downloadingLabel: false)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Image(systemName: "command.circle.fill")
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Image(systemName: "command.circle.fill")
+                }
+            }
+    }
 }

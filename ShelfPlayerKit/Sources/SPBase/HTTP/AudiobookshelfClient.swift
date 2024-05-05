@@ -15,7 +15,7 @@ public final class AudiobookshelfClient {
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     
     public private(set) var clientId: String
-    static let defaults = ENABLE_ALL_FEATURES ? UserDefaults(suiteName: "group.io.rfk.shelfplayer")! : UserDefaults.standard
+    public static let defaults = ENABLE_ALL_FEATURES ? UserDefaults(suiteName: "group.io.rfk.shelfplayer")! : UserDefaults.standard
     
     fileprivate var _customHTTPHeaders: [CustomHTTPHeader]?
     
