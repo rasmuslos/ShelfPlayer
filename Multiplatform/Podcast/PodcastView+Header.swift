@@ -145,6 +145,7 @@ extension PodcastView.Header {
                     .hoverEffect(.highlight)
                 
                 Color.clear
+                    .frame(minWidth: 250)
                     .overlay {
                         VStack(alignment: .leading, spacing: 10) {
                             Additional(podcast: podcast)
