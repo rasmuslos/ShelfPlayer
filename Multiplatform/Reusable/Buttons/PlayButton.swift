@@ -14,12 +14,12 @@ struct PlayButton: View {
     @Environment(\.colorScheme) private var colorScheme
     
     let item: PlayableItem
-    let entity: ItemProgress
+    
+    @State private var entity: ItemProgress? = nil
     
     @MainActor
     init(item: PlayableItem) {
         self.item = item
-        entity = OfflineManager.shared.requireProgressEntity(item: item)
     }
     
     private var labelImage: String {
@@ -36,20 +36,24 @@ struct PlayButton: View {
         Button {
             item.startPlayback()
         } label: {
-            if entity.progress > 0 && entity.progress < 1 {
-                Label {
-                    Text(label)
-                    + Text(verbatim: " • ")
-                    + Text(String((entity.duration - entity.currentTime).timeLeft()))
-                } icon: {
-                    Label("playing", systemImage: labelImage)
-                        .labelStyle(.iconOnly)
-                        .frame(width: 25)
-                        .contentTransition(.symbolEffect(.replace.downUp.byLayer))
-                        .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
+            if let entity = entity {
+                if entity.progress > 0 && entity.progress < 1 {
+                    Label {
+                        Text(label)
+                        + Text(verbatim: " • ")
+                        + Text(String((entity.duration - entity.currentTime).timeLeft()))
+                    } icon: {
+                        Label("playing", systemImage: labelImage)
+                            .labelStyle(.iconOnly)
+                            .frame(width: 25)
+                            .contentTransition(.symbolEffect(.replace.downUp.byLayer))
+                            .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
+                    }
+                } else {
+                    Label(label, systemImage: labelImage)
                 }
             } else {
-                Label(label, systemImage: labelImage)
+                ProgressIndicator()
             }
         }
         .font(.headline)
@@ -67,12 +71,16 @@ struct PlayButton: View {
                 GeometryReader { geometry in
                     Rectangle()
                         .foregroundStyle(Color.gray.opacity(0.4))
-                        .frame(width: geometry.size.width * entity.progress)
+                        .frame(width: geometry.size.width * (entity?.progress ?? 0))
                 }
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 7))
         .modifier(ButtonHoverEffectModifier(cornerRadius: 7, hoverEffect: .lift))
+        .onAppear {
+            // If this is inside `init` the app will hang
+            entity = OfflineManager.shared.requireProgressEntity(item: item)
+        }
     }
 }
 

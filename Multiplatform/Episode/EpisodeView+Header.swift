@@ -22,9 +22,8 @@ extension EpisodeView {
                 FullscreenBackground(threshold: horizontalSizeClass == .regular ? -100 : -280, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
                 
                 Group {
-                    if horizontalSizeClass == .regular {
+                    ViewThatFits {
                         RegularPresentation(episode: episode)
-                    } else {
                         CompactPresentation(episode: episode)
                     }
                 }
@@ -117,16 +116,19 @@ extension EpisodeView.Header {
                     .frame(width: 225)
                     .hoverEffect(.highlight)
                 
-                VStack(alignment: .leading) {
-                    Spacer()
-                    
-                    Eyebrow(episode: episode)
-                    Title(episode: episode, alignment: .leading)
-                    
-                    Spacer()
-                    
-                    PlayButton(item: episode)
-                }
+                Color.clear
+                    .overlay {
+                        VStack(alignment: .leading) {
+                            Spacer()
+                            
+                            Eyebrow(episode: episode)
+                            Title(episode: episode, alignment: .leading)
+                            
+                            Spacer()
+                            
+                            PlayButton(item: episode)
+                        }
+                    }
             }
             .padding(20)
             .padding(.top, 75)
