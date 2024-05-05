@@ -37,7 +37,7 @@ struct AudiobookView: View {
                 if let chapters = viewModel.chapters, chapters.count > 1 {
                     divider
                     
-                    ChaptersList(chapters: chapters)
+                    ChaptersList(item: viewModel.audiobook, chapters: chapters)
                         .padding(.vertical, 10)
                         .padding(.horizontal, 20)
                 }
