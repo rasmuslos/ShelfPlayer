@@ -505,6 +505,22 @@
         }
       }
     },
+    "account.tint.black" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwarz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Black"
+          }
+        }
+      }
+    },
     "account.tint.blue" : {
       "localizations" : {
         "de" : {

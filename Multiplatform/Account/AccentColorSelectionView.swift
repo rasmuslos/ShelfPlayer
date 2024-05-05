@@ -72,6 +72,7 @@ extension AccentColorSelectionView {
         case aqua
         case mint
         case green
+        case black
     }
 }
 
@@ -96,6 +97,8 @@ extension AccentColorSelectionView.TintColor {
                 "account.tint.green"
             case .mint:
                 "account.tint.mint"
+            case .black:
+                "account.tint.black"
         }
     }
     
@@ -119,6 +122,8 @@ extension AccentColorSelectionView.TintColor {
                     .green
             case .mint:
                     .mint
+            case .black:
+                    .black
         }
     }
 }
