@@ -10,7 +10,7 @@ import SPBase
 import SPOffline
 
 extension DownloadManager {
-    private static let serialQueue = DispatchQueue(label: "com.test.mySerialQueue")
+    private static let serialQueue = DispatchQueue(label: "io.rfk.shelfplayer.progress.serialQueue")
     
     func startProgressTracking(itemId: String, trackCount: Int) {
         Self.serialQueue.sync {
@@ -34,6 +34,23 @@ extension DownloadManager {
                 AudiobookshelfClient.defaults.set(finished, forKey: "downloadTrackFinishedCount_\(itemId)")
             }
             
+            AudiobookshelfClient.defaults.removeObject(forKey: "downloadProgress_\(taskIdentifier)")
+            NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+        }
+    }
+    
+    func abortProgressTracking(taskIdentifier: Int, itemId: String) {
+        Self.serialQueue.sync {
+            AudiobookshelfClient.defaults.removeObject(forKey: "downloadTrackCount_\(itemId)")
+            AudiobookshelfClient.defaults.removeObject(forKey: "downloadTotalProgress_\(itemId)")
+            AudiobookshelfClient.defaults.removeObject(forKey: "downloadTrackFinishedCount_\(itemId)")
+            
+            AudiobookshelfClient.defaults.removeObject(forKey: "downloadProgress_\(taskIdentifier)")
+            NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+        }
+    }
+    func abortProgressTracking(taskIdentifier: Int) {
+        Self.serialQueue.sync {
             AudiobookshelfClient.defaults.removeObject(forKey: "downloadProgress_\(taskIdentifier)")
             NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
         }

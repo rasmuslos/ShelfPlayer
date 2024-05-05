@@ -63,24 +63,22 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     .foregroundStyle(.secondary)
                     .padding(.top, 5)
                     
-                    Text(episode.name)
-                        .font(.headline)
-                    
-                    Text(episode.podcastName)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .padding(.bottom, 5)
-                    
-                    HStack {
-                        Text(episode.descriptionText ?? "description.unavailable")
-                            .lineLimit(5)
+                    Group {
+                        Text(episode.name)
+                            .font(.headline)
                         
-                        Spacer()
+                        Text(episode.podcastName)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .padding(.bottom, 5)
+                        
+                        Text(episode.descriptionText ?? "description.unavailable")
                     }
+                    .multilineTextAlignment(.leading)
                 }
+                .frame(width: 300)
                 .padding(20)
-                .frame(width: 400)
             }
     }
 }

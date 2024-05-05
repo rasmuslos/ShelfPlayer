@@ -115,7 +115,7 @@ extension NowPlaying {
                         .frame(maxWidth: width)
                         .foregroundStyle(.primary)
                         .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 15, style: .continuous))
-                        .modifier(NowPlaying.ContextMenuModifier(item: item, animateForwards: $animateForwards))
+                        .modifier(ContextMenuModifier(item: item, animateForwards: $animateForwards))
                         .background {
                             Rectangle()
                                 .foregroundStyle(.regularMaterial)
