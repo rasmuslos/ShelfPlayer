@@ -28,21 +28,6 @@ extension NowPlaying {
         func body(content: Content) -> some View {
             content
                 .contextMenu {
-                    Button {
-                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
-                    } label: {
-                        Label("backwards", systemImage: "gobackward.\(skipForwardsInterval)")
-                    }
-                    
-                    Button {
-                        animateForwards.toggle()
-                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
-                    } label: {
-                        Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
-                    }
-                    
-                    Divider()
-                    
                     Group {
                         if let episode = item as? Episode {
                             Button {
@@ -117,6 +102,21 @@ extension NowPlaying {
                     
                     SleepTimerButton()
                     PlaybackSpeedButton()
+                    
+                    Divider()
+                    
+                    Button {
+                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
+                    } label: {
+                        Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
+                    }
+                    
+                    Button {
+                        animateForwards.toggle()
+                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
+                    } label: {
+                        Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
+                    }
                     
                     Divider()
                     

@@ -13,7 +13,11 @@ import UIKit
 internal extension AudioPlayer {
     func setupTimeObserver() {
         audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: nil) { [unowned self] _ in
-            self.chapter = getChapter()
+            let chapter = getChapter()
+            if self.chapter != chapter {
+                self.chapter = chapter
+            }
+            
             self.buffering = !(audioPlayer.currentItem?.isPlaybackLikelyToKeepUp ?? false)
             
             self.duration = getChapterDuration()
