@@ -117,6 +117,7 @@ extension EpisodeView.Header {
                     .hoverEffect(.highlight)
                 
                 Color.clear
+                    .frame(minWidth: 350)
                     .overlay {
                         VStack(alignment: .leading) {
                             Spacer()
