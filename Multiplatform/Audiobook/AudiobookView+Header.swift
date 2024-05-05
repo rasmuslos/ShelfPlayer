@@ -27,9 +27,8 @@ extension AudiobookView {
                     .frame(height: 0)
                 
                 // `ViewThatFits` does not work here.
-                if horizontalSizeClass == .regular {
+                ViewThatFits {
                     RegularPresentation()
-                } else {
                     CompactPresentation()
                 }
             }
@@ -178,17 +177,21 @@ extension AudiobookView.Header {
                         .frame(width: min(400, (availableWidth - 40) / 2))
                         .hoverEffect(.highlight)
                     
-                    VStack(alignment: .leading, spacing: 5) {
-                        Spacer()
-                        
-                        SeriesName()
-                        Title(largeFont: true, alignment: .leading)
-                            .padding(.trailing, 15)
-                        
-                        Spacer()
-                        
-                        PlayButton(item: viewModel.audiobook)
-                    }
+                    // this piece of shit is required for `ViewThatFits` to work properly
+                    Color.clear
+                        .overlay {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Spacer()
+                                
+                                SeriesName()
+                                Title(largeFont: true, alignment: .leading)
+                                    .padding(.trailing, 15)
+                                
+                                Spacer()
+                                
+                                PlayButton(item: viewModel.audiobook)
+                            }
+                        }
                 }
             }
         }
