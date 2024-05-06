@@ -8,24 +8,25 @@
 import SwiftUI
 import Defaults
 
-struct AccentColorSelectionView: View {
+struct TintMenu: View {
     var body: some View {
-        List {
-            Section {
-                Row(tint: .shelfPlayer)
-            }
+        Menu {
+            Row(tint: .shelfPlayer)
+            
+            Divider()
             
             ForEach(TintColor.allCases.filter { $0 != .shelfPlayer }, id: \.hashValue) {
                 Row(tint: $0)
             }
+        } label: {
+            Label("account.tint", systemImage: "circle.dashed")
         }
-        .navigationTitle("account.tint")
     }
     
     struct Row: View {
         @Default(.tintColor) private var tintColor
         
-        let tint: AccentColorSelectionView.TintColor
+        let tint: TintMenu.TintColor
         
         private var active: Bool {
             tint == tintColor
@@ -35,32 +36,16 @@ struct AccentColorSelectionView: View {
             Button {
                 Defaults[.tintColor] = tint
             } label: {
-                HStack {
-                    Rectangle()
-                        .foregroundStyle(tint.color)
-                        .aspectRatio(1, contentMode: .fit)
-                        .frame(height: 20)
-                        .clipShape(RoundedRectangle(cornerRadius: 10000))
-                        .padding(.trailing, 5)
-                    
-                    Text(tint.title)
-                    
-                    Spacer()
-                    
-                    if active {
-                        
-                        Label("active", systemImage: "checkmark")
-                            .labelStyle(.iconOnly)
-                    }
-                }
-                .contentShape(.hoverMenuInteraction, Rectangle())
+                Label(tint.title, systemImage: active ? "checkmark" : "circle.fill")
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(tint.color)
             }
             .buttonStyle(.plain)
         }
     }
 }
 
-extension AccentColorSelectionView {
+extension TintMenu {
     enum TintColor: CaseIterable, Codable, _DefaultsSerializable {
         case shelfPlayer
         
@@ -76,7 +61,7 @@ extension AccentColorSelectionView {
     }
 }
 
-extension AccentColorSelectionView.TintColor {
+extension TintMenu.TintColor {
     var title: LocalizedStringKey {
         switch self {
             case .shelfPlayer:
@@ -129,7 +114,7 @@ extension AccentColorSelectionView.TintColor {
 }
 
 #Preview {
-    NavigationStack {
-        AccentColorSelectionView()
+    List {
+        TintMenu()
     }
 }
