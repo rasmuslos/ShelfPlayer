@@ -16,8 +16,6 @@ struct AccountSheet: View {
     @Default(.customSleepTimer) private var customSleepTimer
     
     @State private var username: String?
-    @State private var downloadStatus: OfflineManager.DownloadStatus?
-    
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
     var body: some View {
@@ -32,11 +30,13 @@ struct AccountSheet: View {
                                 username = try? await AudiobookshelfClient.shared.username()
                             }
                     }
+                    
                     Button(role: .destructive) {
                         OfflineManager.shared.deleteProgressEntities()
                         AudiobookshelfClient.shared.logout()
                     } label: {
-                        Text("account.logout")
+                        Label("account.logout", systemImage: "person.crop.circle.badge.minus")
+                            .foregroundStyle(.red)
                     }
                 } header: {
                     Text("account.user")
@@ -45,154 +45,51 @@ struct AccountSheet: View {
                 }
                 
                 Section {
-                    Button {
-                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                    } label: {
-                        Text("account.settings")
-                    }
-                    
-                    Button {
-                        Task {
-                            try? await BackgroundTaskHandler.runAutoDownload()
+                    Group {
+                        Button {
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                        } label: {
+                            Label("account.settings", systemImage: "gear")
                         }
-                    } label: {
-                        Text("account.newEpisodes.check")
-                    }
-                    
-                    switch notificationPermission {
-                        case .notDetermined:
-                            Button {
-                                Task {
-                                    try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+                        
+                        switch notificationPermission {
+                            case .notDetermined:
+                                Button {
+                                    Task {
+                                        try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+                                        notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                                    }
+                                } label: {
+                                    Label("account.notifications.request", systemImage: "bell.badge.waveform.fill")
+                                }
+                                .task {
                                     notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                                 }
-                            } label: {
-                                Text("account.notifications.request")
+                            case .denied:
+                                Text("account.notifications.denied")
+                                    .foregroundStyle(.red)
+                            case .authorized:
+                                Text("account.notifications.granted")
+                                    .foregroundStyle(.secondary)
+                            default:
+                                Text("account.notifications.unknown")
+                                    .foregroundStyle(.red)
+                        }
+                        
+                        Button {
+                            Task {
+                                try? await BackgroundTaskHandler.runAutoDownload()
                             }
-                            .task {
-                                notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                            }
-                        case .denied:
-                            Text("account.notifications.denied")
-                                .foregroundStyle(.red)
-                        case .authorized:
-                            Text("account.notifications.granted")
-                                .foregroundStyle(.secondary)
-                        default:
-                            Text("account.notifications.unknown")
-                                .foregroundStyle(.red)
+                        } label: {
+                            Label("account.newEpisodes.check", systemImage: "antenna.radiowaves.left.and.right")
+                        }
                     }
+                    .foregroundStyle(.primary)
                 } footer: {
                     Text("account.notifications.footer")
                 }
                 
-                Section {
-                    Button(role: .destructive) {
-                        OfflineManager.shared.deleteDownloads()
-                    } label: {
-                        Text("account.delete.downloads")
-                    }
-                    
-                    Button(role: .destructive) {
-                        ImagePipeline.shared.cache.removeAll()
-                        OfflineManager.shared.deleteProgressEntities()
-                        
-                        NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
-                            "offline": false,
-                        ])
-                    } label: {
-                        Text("account.delete.cache")
-                    }
-                } footer: {
-                    Text("account.delete.footer")
-                }
-                
-                Section("account.downloads") {
-                    if let downloadStatus = downloadStatus, !(downloadStatus.0.isEmpty && downloadStatus.1.isEmpty) {
-                        ForEach(Array(downloadStatus.0.keys).sorted { $0.name.localizedStandardCompare($1.name) == .orderedDescending }) { audiobook in
-                            HStack {
-                                ItemImage(image: audiobook.image)
-                                    .frame(width: 55)
-                                
-                                VStack(alignment: .leading) {
-                                    Text(audiobook.name)
-                                        .modifier(SerifModifier())
-                                    if let author = audiobook.author {
-                                        Text(author)
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                .lineLimit(1)
-                                
-                                Spacer()
-                                
-                                if let status = downloadStatus.0[audiobook] {
-                                    if status.0 == 0 && status.1 == 1 {
-                                        ProgressIndicator()
-                                    } else {
-                                        Text(verbatim: "\(status.0)/\(status.1)")
-                                            .fontDesign(.rounded)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    OfflineManager.shared.delete(audiobookId: audiobook.id)
-                                } label: {
-                                    Label("download.remove", systemImage: "trash.fill")
-                                        .labelStyle(.iconOnly)
-                                }
-                            }
-                        }
-                        
-                        ForEach(Array(downloadStatus.1.keys).sorted { $0.name.localizedStandardCompare($1.name) == .orderedDescending }) { podcast in
-                            HStack {
-                                ItemImage(image: podcast.image)
-                                    .frame(width: 55)
-                                
-                                VStack(alignment: .leading) {
-                                    Text(podcast.name)
-                                    
-                                    if let author = podcast.author {
-                                        Text(author)
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                .lineLimit(1)
-                                
-                                Spacer()
-                                
-                                if let status = downloadStatus.1[podcast] {
-                                    Text(verbatim: "\(status.0)/\(status.1)")
-                                        .fontDesign(.rounded)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    try! OfflineManager.shared.delete(podcastId: podcast.id)
-                                } label: {
-                                    Label("download.remove", systemImage: "trash.fill")
-                                        .labelStyle(.iconOnly)
-                                }
-                            }
-                        }
-                    } else {
-                        Text("accounts.downloads.empty")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .task {
-                    downloadStatus = try? await OfflineManager.shared.getDownloadStatus()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
-                    Task.detached { @MainActor in
-                        downloadStatus = try? await OfflineManager.shared.getDownloadStatus()
-                    }
-                }
+                Downloads()
                 
                 Section {
                     let hours = customSleepTimer / 60
@@ -214,34 +111,59 @@ struct AccountSheet: View {
                 }
                 
                 Section {
-                    NavigationLink(destination: AccentColorSelectionView()) {
-                        Label("account.tint", systemImage: "circle.dashed")
-                    }
+                    TintMenu()
+                        .menuStyle(.borderlessButton)
                     NavigationLink(destination: CustomHeaderEditView()) {
                         Label("login.customHTTPHeaders", systemImage: "network.badge.shield.half.filled")
                     }
                 }
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.primary)
                 
                 Section {
                     Button {
                         UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/ShelfPlayer")!)
                     } label: {
-                        Text("account.github")
+                        Label("account.github", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
                     
                     Button {
                         UIApplication.shared.open(URL(string: "https://rfk.io/support.htm")!)
                     } label: {
-                        Text("account.support")
+                        Label("account.support", systemImage: "lifepreserver")
                     }
+                }
+                .foregroundStyle(.primary)
+                
+                Section {
+                    Group {
+                        Button(role: .destructive) {
+                            OfflineManager.shared.deleteDownloads()
+                        } label: {
+                            Label("account.delete.downloads", systemImage: "slash.circle")
+                        }
+                        
+                        Button(role: .destructive) {
+                            ImagePipeline.shared.cache.removeAll()
+                            OfflineManager.shared.deleteProgressEntities()
+                            
+                            NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                                "offline": false,
+                            ])
+                        } label: {
+                            Label("account.delete.cache", systemImage: "square.stack.3d.up.slash")
+                        }
+                    }
+                    .foregroundStyle(.red)
+                } footer: {
+                    Text("account.delete.footer")
                 }
                 
                 Group {
                     Section("account.server") {
-                        Text(AudiobookshelfClient.shared.token)
                         Text(AudiobookshelfClient.shared.serverUrl.absoluteString)
+                        Text(AudiobookshelfClient.shared.clientId)
                     }
+                    .fontDesign(.monospaced)
                     
                     Section {
                         Text("account.version \(AudiobookshelfClient.shared.clientVersion) (\(AudiobookshelfClient.shared.clientBuild))")
@@ -249,19 +171,6 @@ struct AccountSheet: View {
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                
-                #if !ENABLE_ALL_FEATURES
-                Section {
-                    HStack {
-                        Spacer()
-                        Text("developedBy")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                }
-                .listRowBackground(Color.clear)
-                #endif
             }
             .navigationTitle("account.manage")
         }
