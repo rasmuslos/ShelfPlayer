@@ -25,6 +25,8 @@ extension AudioPlayer {
         self.chapters = chapters.sorted()
         self.playbackReporter = playbackReporter
         
+        updateBookmarkCommand(active: item as? Audiobook != nil)
+        
         Task { @MainActor in
             await seek(to: startTime)
             setPlaying(true)
