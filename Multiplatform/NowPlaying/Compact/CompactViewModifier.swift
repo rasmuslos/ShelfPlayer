@@ -46,8 +46,8 @@ extension NowPlaying {
                 Group {
                     if presentedItem != nil {
                         Rectangle()
-                            .ignoresSafeArea(edges: .all)
                             .foregroundStyle(colorScheme == .dark ? .black : .white)
+                            .clipShape(RoundedRectangle(cornerRadius: dragOffset == 0 ? 0 : UIScreen.main.displayCornerRadius, style: .continuous))
                             .zIndex(1)
                             .transition(.asymmetric(
                                 insertion: .modifier(active: BackgroundInsertTransitionModifier(active: true, offset: offset), identity: BackgroundInsertTransitionModifier(active: false, offset: offset)),
@@ -132,7 +132,6 @@ extension NowPlaying {
                 }
                 .allowsHitTesting(presentedItem != nil)
                 .offset(y: dragOffset)
-                .animation(.spring, value: dragOffset)
             }
             .ignoresSafeArea(edges: .all)
             .environment(viewState)
