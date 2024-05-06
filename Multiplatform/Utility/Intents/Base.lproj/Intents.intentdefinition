@@ -41,15 +41,6 @@
 			<string>PlayMedia</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key></key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Play</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>f3d3kn</string>
-				</dict>
 				<key>mediaContainer</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
