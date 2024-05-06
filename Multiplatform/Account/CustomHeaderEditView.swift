@@ -34,25 +34,29 @@ struct CustomHeaderEditView: View {
                 }
             }
             
-            Button {
-                current.append(.init(key: "", value: ""))
-            } label: {
-                Text("login.customHTTPHeaders.add")
+            Group {
+                Button {
+                    current.append(.init(key: "", value: ""))
+                } label: {
+                    Label("login.customHTTPHeaders.add", systemImage: "plus")
+                }
+                Button {
+                    AudiobookshelfClient.shared.customHTTPHeaders = current
+                    callback?()
+                } label: {
+                    Label("login.customHTTPHeaders.save", systemImage: "checkmark")
+                }
             }
-            Button {
-                AudiobookshelfClient.shared.customHTTPHeaders = current
-                callback?()
-            } label: {
-                Text("login.customHTTPHeaders.save")
-            }
+            .foregroundStyle(.primary)
             
             if let callback = callback {
                 Button(role: .destructive) {
                     AudiobookshelfClient.shared.customHTTPHeaders = current
                     callback()
                 } label: {
-                    Text("login.customHTTPHeaders.discard")
+                    Label("login.customHTTPHeaders.discard", systemImage: "minus")
                 }
+                .foregroundStyle(.red)
             }
         }
         .navigationTitle("login.customHTTPHeaders")
@@ -61,4 +65,10 @@ struct CustomHeaderEditView: View {
 
 #Preview {
     CustomHeaderEditView()
+}
+
+#Preview {
+    CustomHeaderEditView() {
+        
+    }
 }

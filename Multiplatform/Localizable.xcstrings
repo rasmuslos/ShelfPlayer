@@ -318,7 +318,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Benachrichtigung-Berechtigung verweigert"
+            "value" : "Mitteilungen verweigert"
           }
         },
         "en" : {
@@ -334,7 +334,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erteile die Berechtigung um eine Benachrichtigung bei neuen Episoden zu erhalten"
+            "value" : "Erteile die Berechtigung um eine Mitteilung bei neuen Episoden zu erhalten"
           }
         },
         "en" : {
@@ -350,7 +350,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Benachrichtigung-Berechtigung erlaubt"
+            "value" : "Mitteilungen aktiviert"
           }
         },
         "en" : {
@@ -366,7 +366,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Benachrichtigung-Berechtigung erhalten"
+            "value" : "Sendet Mitteilungen"
           }
         },
         "en" : {
@@ -382,7 +382,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Benachrichtigung-Berechtigung unbekannt"
+            "value" : "Berechtigung unbekannt"
           }
         },
         "en" : {
@@ -2384,7 +2384,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ShelfPlayer sendet Push-Benachrichtigungen wenn neue Episoden verfügbar sind"
+            "value" : "ShelfPlayer sendet Push-Mitteilungen wenn neue Episoden verfügbar sind"
           }
         },
         "en" : {
@@ -2400,7 +2400,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Benachrichtigungen aktivieren"
+            "value" : "Mitteilungen aktivieren"
           }
         },
         "en" : {
