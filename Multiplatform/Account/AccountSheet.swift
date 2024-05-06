@@ -66,13 +66,13 @@ struct AccountSheet: View {
                                     notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                                 }
                             case .denied:
-                                Text("account.notifications.denied")
+                                Label("account.notifications.denied", systemImage: "bell.slash.fill")
                                     .foregroundStyle(.red)
                             case .authorized:
-                                Text("account.notifications.granted")
+                                Label("account.notifications.granted", systemImage: "bell.badge.fill")
                                     .foregroundStyle(.secondary)
                             default:
-                                Text("account.notifications.unknown")
+                                Label("account.notifications.unknown", systemImage: "bell.and.waves.left.and.right.fill")
                                     .foregroundStyle(.red)
                         }
                         
