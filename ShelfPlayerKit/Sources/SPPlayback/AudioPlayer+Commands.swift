@@ -8,6 +8,8 @@
 import Foundation
 import Defaults
 import MediaPlayer
+import SPBase
+import SPOffline
 
 internal extension AudioPlayer {
     func setupAudioSession() {
@@ -70,6 +72,30 @@ internal extension AudioPlayer {
             return .commandFailed
         }
         
+        commandCenter.bookmarkCommand.addTarget { [unowned self] event in
+            guard let bookmarkCommandEvent = event as? MPFeedbackCommandEvent else {
+                return .commandFailed
+            }
+            
+            guard let audiobook = item as? Audiobook else {
+                return .noActionableNowPlayingItem
+            }
+            
+            Task { @MainActor in
+                if bookmarkCommandEvent.isNegative {
+                    guard let bookmarks = try? OfflineManager.shared.getBookmarks(itemId: audiobook.id), let bookmark = bookmarks.first(where: { abs($0.position - getItemCurrentTime()) <= 5 }) else {
+                        return
+                    }
+                    
+                    await OfflineManager.shared.deleteBookmark(bookmark)
+                } else {
+                    await OfflineManager.shared.createBookmark(itemId: audiobook.id, position: getItemCurrentTime(), note: "Siri Bookmark")
+                }
+            }
+            
+            return .success
+        }
+        
         commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(value: skipBackwardsInterval)]
         commandCenter.skipBackwardCommand.addTarget { [unowned self] event in
             if let changePlaybackPositionCommandEvent = event as? MPSkipIntervalCommandEvent {
@@ -106,5 +132,9 @@ internal extension AudioPlayer {
             seek(to: getItemCurrentTime() + Double(skipForwardsInterval))
             return .success
         }
+    }
+    
+    func updateBookmarkCommand(active: Bool) {
+        MPRemoteCommandCenter.shared().bookmarkCommand.isEnabled = active
     }
 }
