@@ -14,9 +14,20 @@ import SPOfflineExtended
 
 struct AccountSheet: View {
     @Default(.customSleepTimer) private var customSleepTimer
+    @Default(.customPlaybackSpeed) private var customPlaybackSpeed
+    @Default(.defaultPlaybackSpeed) private var defaultPlaybackSpeed
     
     @State private var username: String?
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
+    
+    private var playbackSpeedText: String {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        
+        return formatter.string(from: NSNumber(value: customPlaybackSpeed))!
+    }
     
     var body: some View {
         NavigationStack {
@@ -92,6 +103,15 @@ struct AccountSheet: View {
                 Downloads()
                 
                 Section {
+                    Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
+                        PlaybackSpeedButton.Options {
+                            defaultPlaybackSpeed = $0
+                        }
+                    }
+                    .tint(.primary)
+                    
+                    Stepper("account.playbackSpeed \(playbackSpeedText)", value: $customPlaybackSpeed, in: 0.25...4, step: 0.05)
+                    
                     let hours = customSleepTimer / 60
                     let minutes = customSleepTimer % 60
                     
@@ -105,7 +125,7 @@ struct AccountSheet: View {
                         customSleepTimer += $0
                     }), in: 0...60)
                 } header: {
-                    Text("account.sleepTimer")
+                    Text("account.custom")
                 } footer: {
                     Text("account.sleepTimer.text")
                 }

@@ -17,4 +17,9 @@ public extension Defaults.Keys {
     
     static let smartRewind = Key<Bool>("smartRewind", default: false)
     static let deleteFinishedDownloads = Key<Bool>("deleteFinishedDownloads", default: false)
+    
+    static let defaultPlaybackSpeed = Key<Float>("defaultPlaybackSpeed", default: 1)
+    static func playbackSpeed(itemId: String, episodeId: String?) -> Key<Float?> {
+        .init("playbackSpeed_\(itemId)_\(episodeId ?? "Rasmus_was_here")", default: nil)
+    }
 }
