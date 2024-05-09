@@ -24,7 +24,7 @@ extension Defaults.Keys {
     static let customSleepTimer = Key<Int>("customSleepTimer", default: 0)
     
     static let useSerifFont = Key("useSerifFont", default: true)
-    static let tintColor = Key<TintMenu.TintColor>("tintColor", default: .shelfPlayer)
+    static let tintColor = Key<TintPicker.TintColor>("tintColor", default: .shelfPlayer)
     
     static let lockSeekBar = Key("lockSeekBar", default: false)
     static let siriOfflineMode = Key("siriOfflineMode", default: false)

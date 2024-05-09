@@ -8,9 +8,11 @@
 import SwiftUI
 import Defaults
 
-struct TintMenu: View {
+struct TintPicker: View {
+    @Default(.tintColor) private var tintColor
+    
     var body: some View {
-        Menu {
+        Picker(selection: $tintColor) {
             Row(tint: .shelfPlayer)
             
             Divider()
@@ -26,26 +28,23 @@ struct TintMenu: View {
     struct Row: View {
         @Default(.tintColor) private var tintColor
         
-        let tint: TintMenu.TintColor
-        
-        private var active: Bool {
-            tint == tintColor
-        }
+        let tint: TintPicker.TintColor
         
         var body: some View {
             Button {
                 Defaults[.tintColor] = tint
             } label: {
-                Label(tint.title, systemImage: active ? "checkmark" : "circle.fill")
+                Label(tint.title, systemImage: "circle.fill")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(tint.color)
             }
             .buttonStyle(.plain)
+            .tag(tint)
         }
     }
 }
 
-extension TintMenu {
+extension TintPicker {
     enum TintColor: CaseIterable, Codable, _DefaultsSerializable {
         case shelfPlayer
         
@@ -61,7 +60,7 @@ extension TintMenu {
     }
 }
 
-extension TintMenu.TintColor {
+extension TintPicker.TintColor {
     var title: LocalizedStringKey {
         switch self {
             case .shelfPlayer:
@@ -111,10 +110,50 @@ extension TintMenu.TintColor {
                     .black
         }
     }
+    
+    var accent: Color {
+        switch self {
+            case .shelfPlayer:
+                    .orange
+            case .yellow:
+                    .orange
+            case .red:
+                    .yellow
+            case .purple:
+                    .blue
+            case .violet:
+                    .blue
+            case .blue:
+                    .purple
+            case .aqua:
+                    .orange
+            case .mint:
+                    .blue
+            case .green:
+                    .blue
+            case .black:
+                    .gray
+        }
+    }
 }
 
 #Preview {
     List {
-        TintMenu()
+        TintPicker()
+    }
+}
+
+#Preview {
+    ScrollView {
+        ForEach(TintPicker.TintColor.allCases, id: \.hashValue) { tint in
+            HStack {
+                Rectangle()
+                    .foregroundStyle(tint.color)
+                
+                Rectangle()
+                    .foregroundStyle(tint.accent)
+            }
+            .frame(height: 100)
+        }
     }
 }
