@@ -28,8 +28,6 @@ struct StatusOverlay: View {
         offlineTracker = item.offlineTracker
     }
     
-    @State private var progress: Double?
-    
     var body: some View {
         GeometryReader { geometry in
             let size = geometry.size.width / 2.5
@@ -41,11 +39,8 @@ struct StatusOverlay: View {
                 if entity.progress > 0 {
                     ZStack {
                         Triangle()
-                            .foregroundStyle(.black.opacity(0.2))
-                        
-                        Triangle()
                             .foregroundStyle(offlineTracker?.status == .downloaded && Defaults[.tintColor] != .purple ? tintColor.accent : Color.accentColor)
-                            .reverseMask(alignment: .topTrailing) {
+                            .overlay(alignment: .topTrailing) {
                                 Group {
                                     if entity.progress < 1 {
                                         if itemImageStatusPercentageText {
@@ -56,11 +51,11 @@ struct StatusOverlay: View {
                                             ZStack {
                                                 Circle()
                                                     .trim(from: CGFloat(entity.progress), to: 360 - CGFloat(entity.progress))
-                                                    .stroke(Color.black.opacity(0.2), lineWidth: 3)
+                                                    .stroke(Color.white.opacity(0.3), lineWidth: 3)
                                                 
                                                 Circle()
                                                     .trim(from: 0, to: CGFloat(entity.progress))
-                                                    .stroke(Color.black, style: .init(lineWidth: 3, lineCap: .round))
+                                                    .stroke(Color.white, style: .init(lineWidth: 3, lineCap: .round))
                                             }
                                             .rotationEffect(.degrees(-90))
                                         }
@@ -72,6 +67,7 @@ struct StatusOverlay: View {
                                     }
                                 }
                                 .frame(width: size / 3, height: size / 3)
+                                .foregroundStyle(.white)
                                 .padding(size / 7)
                             }
                     }

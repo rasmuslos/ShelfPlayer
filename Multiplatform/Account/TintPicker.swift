@@ -147,11 +147,18 @@ extension TintPicker.TintColor {
     ScrollView {
         ForEach(TintPicker.TintColor.allCases, id: \.hashValue) { tint in
             HStack {
-                Rectangle()
-                    .foregroundStyle(tint.color)
-                
-                Rectangle()
-                    .foregroundStyle(tint.accent)
+                Group {
+                    Rectangle()
+                        .foregroundStyle(tint.color)
+                    
+                    Rectangle()
+                        .foregroundStyle(tint.accent)
+                }
+                .overlay {
+                    Rectangle()
+                        .frame(width: 30, height: 30)
+                        .foregroundStyle(.white)
+                }
             }
             .frame(height: 100)
         }
