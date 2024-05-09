@@ -173,17 +173,21 @@ extension PlaybackReporter {
                 }
             }
             
-            #if canImport(SPOfflineExtended)
-            if Defaults[.deleteFinishedDownloads] && currentTime >= duration {
-                Task.detached {
-                    if let episodeId = episodeId {
-                        await OfflineManager.shared.delete(episodeId: episodeId)
-                    } else {
-                        await OfflineManager.shared.delete(audiobookId: itemId)
+            if currentTime >= duration {
+                Defaults.reset(.playbackSpeed(itemId: itemId, episodeId: episodeId))
+                
+                #if canImport(SPOfflineExtended)
+                if Defaults[.deleteFinishedDownloads] {
+                    Task.detached {
+                        if let episodeId = episodeId {
+                            await OfflineManager.shared.delete(episodeId: episodeId)
+                        } else {
+                            await OfflineManager.shared.delete(audiobookId: itemId)
+                        }
                     }
                 }
+                #endif
             }
-            #endif
         }
     
     private static func reportWithoutPlaybackSession(itemId: String, episodeId: String?, currentTime: Double, duration: Double) async throws {
