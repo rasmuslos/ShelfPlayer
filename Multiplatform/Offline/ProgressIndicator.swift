@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import Defaults
 import SPOffline
 
 struct CircularProgressIndicator: View {
+    @Default(.tintColor) private var tintColor
+    
     let entity: ItemProgress
     
     var body: some View {
@@ -23,7 +26,7 @@ struct CircularProgressIndicator: View {
                     Label("progress.completed", systemImage: "checkmark")
                         .labelStyle(.iconOnly)
                         .font(.caption)
-                        .foregroundStyle(.alternativeAccent)
+                        .foregroundStyle(tintColor.accent)
                 } else {
                     Circle()
                         .fill(Color.accentColor.quaternary)
@@ -33,7 +36,7 @@ struct CircularProgressIndicator: View {
                         Circle()
                             .inset(by: proxy.size.width / 4)
                             .trim(from: 0, to: CGFloat(entity.progress))
-                            .stroke(.alternativeAccent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
+                            .stroke(tintColor.accent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
                             .rotationEffect(.degrees(-90))
                             .animation(.spring, value: entity.progress)
                     }

@@ -14,6 +14,7 @@ import SPOfflineExtended
 
 struct StatusOverlay: View {
     @Default(.itemImageStatusPercentageText) private var itemImageStatusPercentageText
+    @Default(.tintColor) private var tintColor
     
     let item: Item
     let entity: ItemProgress
@@ -43,7 +44,7 @@ struct StatusOverlay: View {
                             .foregroundStyle(.black.opacity(0.2))
                         
                         Triangle()
-                            .foregroundStyle(offlineTracker?.status == .downloaded && Defaults[.tintColor] != .purple ? Color.alternativeAccent : Color.accentColor)
+                            .foregroundStyle(offlineTracker?.status == .downloaded && Defaults[.tintColor] != .purple ? tintColor.accent : Color.accentColor)
                             .reverseMask(alignment: .topTrailing) {
                                 Group {
                                     if entity.progress < 1 {
