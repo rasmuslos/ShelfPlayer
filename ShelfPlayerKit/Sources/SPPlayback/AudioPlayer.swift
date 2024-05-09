@@ -41,7 +41,7 @@ public final class AudioPlayer {
         }
     }
     
-    public var _playbackRate: Float = 1.0
+    public var _playbackRate: Float = Defaults[.defaultPlaybackSpeed]
     public var playbackRate: Float {
         get {
             _playbackRate

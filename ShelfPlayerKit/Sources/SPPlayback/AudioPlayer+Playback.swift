@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 import Intents
 import AVKit
 import Defaults
@@ -25,7 +26,15 @@ extension AudioPlayer {
         self.chapters = chapters.sorted()
         self.playbackReporter = playbackReporter
         
+        let playbackSpeed: Float?
+        if let episode = item as? Episode {
+            playbackSpeed = Defaults[.playbackSpeed(itemId: episode.podcastId, episodeId: episode.id)]
+        } else {
+            playbackSpeed = Defaults[.playbackSpeed(itemId: item.id, episodeId: nil)]
+        }
+        
         updateBookmarkCommand(active: item as? Audiobook != nil)
+        setPlaybackRate(playbackSpeed ?? Defaults[.defaultPlaybackSpeed])
         
         Task { @MainActor in
             await seek(to: startTime)
@@ -111,6 +120,14 @@ extension AudioPlayer {
     func setPlaybackRate(_ playbackRate: Float) {
         _playbackRate = playbackRate
         audioPlayer.defaultRate = playbackRate
+        
+        if let item = item {
+            if let episode = item as? Episode {
+                Defaults[.playbackSpeed(itemId: episode.podcastId, episodeId: episode.id)] = playbackRate
+            } else {
+                Defaults[.playbackSpeed(itemId: item.id, episodeId: nil)] = playbackRate
+            }
+        }
         
         if playing {
             audioPlayer.rate = playbackRate

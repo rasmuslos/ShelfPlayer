@@ -169,6 +169,38 @@
         }
       }
     },
+    "account.custom" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Optionen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom options"
+          }
+        }
+      }
+    },
+    "account.defaultPlaybackSpeed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standardrate"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default rate"
+          }
+        }
+      }
+    },
     "account.delete.cache" : {
       "localizations" : {
         "de" : {
@@ -393,6 +425,22 @@
         }
       }
     },
+    "account.playbackSpeed %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergaberate: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playback rate: %@"
+          }
+        }
+      }
+    },
     "account.server" : {
       "localizations" : {
         "de" : {
@@ -421,22 +469,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
-          }
-        }
-      }
-    },
-    "account.sleepTimer" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eigener Sleep-Timer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom sleep timer"
           }
         }
       }

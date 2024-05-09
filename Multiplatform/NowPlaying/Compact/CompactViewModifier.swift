@@ -47,7 +47,7 @@ extension NowPlaying {
                     if presentedItem != nil {
                         Rectangle()
                             .foregroundStyle(colorScheme == .dark ? .black : .white)
-                            .clipShape(RoundedRectangle(cornerRadius: dragOffset == 0 ? 0 : UIScreen.main.displayCornerRadius, style: .continuous))
+                            .clipShape(RoundedRectangle(cornerRadius: dragOffset == 0 ? 0 : UIScreen.main.displayCornerRadius))
                             .zIndex(1)
                             .transition(.asymmetric(
                                 insertion: .modifier(active: BackgroundInsertTransitionModifier(active: true, offset: offset), identity: BackgroundInsertTransitionModifier(active: false, offset: offset)),
