@@ -75,6 +75,7 @@ private extension ChaptersList {
                     Text((chapter.end - chapter.start).numericDuration())
                         .foregroundStyle(.secondary)
                 }
+                .lineLimit(1)
                 .contentShape(.hoverMenuInteraction, Rectangle())
             }
             .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
@@ -84,7 +85,7 @@ private extension ChaptersList {
 
 #Preview {
     ChaptersList(item: Audiobook.fixture, chapters: [
-        .init(id: 1, start: 0000, end: 1000, title: "Chapter 1"),
+        .init(id: 1, start: 0000, end: 1000, title: "Chapter 1 TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT"),
         .init(id: 2, start: 1001, end: 2000, title: "Chapter 2"),
         .init(id: 3, start: 2001, end: 3000, title: "Chapter 3"),
         .init(id: 4, start: 3001, end: 4000, title: "Chapter 4"),
