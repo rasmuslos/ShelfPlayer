@@ -6,37 +6,37 @@
 
 "G3J6fP" = "播放媒体";
 
-"KcCcQu" = "回放 ${mediaItems}";
+"KcCcQu" = "播放 ${mediaItems}";
 
 "LdrEPN" = "播放媒体的请求。";
 
-"No0K9w" = "简历";
+"No0K9w" = "继续播放";
 
-"Pk1Fkx" = "不要继续";
+"Pk1Fkx" = "不继续";
 
-"QqdHiR" = "洗牌的";
+"QqdHiR" = "随机";
 
 "RvX3Zd" = "播放速度";
 
-"WEjMGd" = "回放 ${mediaContainer}";
+"WEjMGd" = "播放 ${mediaContainer}";
 
-"WktFNa" = "洗牌";
+"WktFNa" = "随机";
 
-"YYfsKp" = "回放 ${mediaContainer}";
+"YYfsKp" = "播放 ${mediaContainer}";
 
-"cV2HLF" = "排队位置";
+"cV2HLF" = "队列位置";
 
 "cfJexL" = "项目";
 
-"mCAocc" = "没有洗牌";
+"mCAocc" = "非随机的";
 
-"mIvv3D" = "恢复 ${mediaItems}";
+"mIvv3D" = "随机播放 ${mediaItems}";
 
-"o6CuZu" = "恢复 ${mediaContainer}";
+"o6CuZu" = "继续播放 ${mediaContainer}";
 
-"rvNMpm" = "恢复";
+"rvNMpm" = "继续";
 
-"sLPQxZ" = "恢复 ${mediaContainer}";
+"sLPQxZ" = "继续播放 ${mediaContainer}";
 
 "vUAqfM" = "${mediaItems}";
 
