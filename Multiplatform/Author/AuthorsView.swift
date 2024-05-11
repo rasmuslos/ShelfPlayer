@@ -35,6 +35,7 @@ struct AuthorsView: View {
                 List {
                     AuthorList(authors: authorsSorted)
                 }
+                .listStyle(.plain)
                 .navigationTitle("authors.title")
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
