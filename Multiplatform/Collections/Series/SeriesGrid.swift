@@ -41,11 +41,15 @@ extension SeriesGrid {
                     } else if series.images.count < 4 {
                         ItemImage(image: series.images.randomElement()!)
                     } else {
-                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible())], spacing: 10) {
-                            ItemImage(image: series.images[0])
-                            ItemImage(image: series.images[1])
-                            ItemImage(image: series.images[2])
-                            ItemImage(image: series.images[3])
+                        VStack(spacing: 10) {
+                            HStack(spacing: 10) {
+                                ItemImage(image: series.images[0])
+                                ItemImage(image: series.images[1])
+                            }
+                            HStack(spacing: 10) {
+                                ItemImage(image: series.images[2])
+                                ItemImage(image: series.images[3])
+                            }
                         }
                     }
                 }
