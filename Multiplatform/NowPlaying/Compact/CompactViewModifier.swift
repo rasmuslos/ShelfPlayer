@@ -42,7 +42,11 @@ extension NowPlaying {
                     .modifier(Navigation.NavigationModifier() {
                         viewState.setNowPlayingViewPresented(false)
                     })
-                
+                    .onChange(of: AudioPlayer.shared.item) {
+                        if AudioPlayer.shared.item == nil {
+                            viewState.setNowPlayingViewPresented(false)
+                        }
+                    }
                 Group {
                     if presentedItem != nil {
                         Rectangle()
