@@ -14,6 +14,12 @@
             "state" : "translated",
             "value" : "hours"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小时"
+          }
         }
       }
     },
@@ -29,6 +35,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "h"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时"
           }
         }
       }
@@ -46,6 +58,12 @@
             "state" : "translated",
             "value" : "minutes"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分钟"
+          }
         }
       }
     },
@@ -61,6 +79,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "m"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分"
           }
         }
       }
@@ -78,6 +102,12 @@
             "state" : "translated",
             "value" : "min."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分"
+          }
         }
       }
     },
@@ -93,6 +123,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "seconds"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "秒"
           }
         }
       }
@@ -110,6 +146,12 @@
             "state" : "translated",
             "value" : "s"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "秒"
+          }
         }
       }
     },
@@ -126,6 +168,12 @@
             "state" : "translated",
             "value" : "sec."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "秒"
+          }
         }
       }
     },
@@ -141,6 +189,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "left"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剩余"
           }
         }
       }
