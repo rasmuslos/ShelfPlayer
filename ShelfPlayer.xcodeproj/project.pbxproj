@@ -184,6 +184,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3A00397D2BEF55E600849F70 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
+		3A00397E2BEF55E600849F70 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringKey+Key.swift"; sourceTree = "<group>"; };
 		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -917,6 +919,7 @@
 				en,
 				Base,
 				de,
+				"zh-Hans",
 			);
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
@@ -1161,6 +1164,7 @@
 			children = (
 				3A5A4DB12B5EFB1800E72E8B /* en */,
 				3A5A4DB32B5EFB1A00E72E8B /* de */,
+				3A00397E2BEF55E600849F70 /* zh-Hans */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
@@ -1171,6 +1175,7 @@
 				3ACD59842BE29DD30060A841 /* Base */,
 				3ACD598C2BE29DFC0060A841 /* en */,
 				3ACD598E2BE29DFD0060A841 /* de */,
+				3A00397D2BEF55E600849F70 /* zh-Hans */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";

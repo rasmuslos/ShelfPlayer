@@ -12,7 +12,8 @@
 			<key>Title</key>
 			<string>Contributors</string>
 			<key>FooterText</key>
-			<string>@gnattu (GitHub): The iPadOS app uses some of their contributions to AmpFin</string>
+			<string>@gnattu (GitHub): The iPadOS app uses some of their contributions to AmpFin
+@zhimiaoli (GitHub): Simplified Chinese translation</string>
 		</dict>
 		<dict>
 			<key>Type</key>
