@@ -163,7 +163,12 @@ public extension AudioPlayer {
             to += AudioPlayer.shared.getChapter()?.start ?? 0
         }
         
-        if let index = getTrackIndex(currentTime: to) {
+        if to >= getItemDuration() {
+            playbackReporter?.reportProgress(currentTime: getItemDuration(), duration: getItemDuration())
+            stopPlayback()
+            
+            return
+        } else if let index = getTrackIndex(currentTime: to) {
             if index == activeAudioTrackIndex {
                 let offset = getTrack(currentTime: to)!.offset
                 await audioPlayer.seek(to: CMTime(seconds: to - offset, preferredTimescale: 1000))
@@ -188,9 +193,6 @@ public extension AudioPlayer {
                 activeAudioTrackIndex = index
                 setPlaying(resume)
             }
-        } else if to >= getItemDuration() {
-            playbackReporter?.reportProgress(currentTime: getItemDuration(), duration: getItemDuration())
-            stopPlayback()
         } else {
             logger.fault("Seek to position outside of range")
         }
