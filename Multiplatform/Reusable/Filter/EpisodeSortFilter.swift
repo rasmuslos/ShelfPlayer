@@ -11,13 +11,13 @@ import SPBase
 import SPOffline
 
 struct EpisodeSortFilter: View {
-    @Binding var filter: Filter
-    @Binding var sortOrder: SortOrder
+    @Binding var filter: AudiobookshelfClient.EpisodeFilter
+    @Binding var sortOrder: AudiobookshelfClient.EpisodeSortOrder
     @Binding var ascending: Bool
     
     var body: some View {
         Menu {
-            ForEach(Filter.allCases, id: \.hashValue) { option in
+            ForEach(AudiobookshelfClient.EpisodeFilter.allCases, id: \.hashValue) { option in
                 Button {
                     withAnimation {
                         filter = option
@@ -33,7 +33,7 @@ struct EpisodeSortFilter: View {
             
             Divider()
             
-            ForEach(SortOrder.allCases, id: \.hashValue) { sortCase in
+            ForEach(AudiobookshelfClient.EpisodeSortOrder.allCases, id: \.hashValue) { sortCase in
                 Button {
                     withAnimation {
                         sortOrder = sortCase
@@ -67,95 +67,15 @@ struct EpisodeSortFilter: View {
     }
 }
 
-extension EpisodeSortFilter {
-    enum Filter: LocalizedStringKey, CaseIterable, Codable, Defaults.Serializable {
-        case all = "sort.all"
-        case progress = "sort.progress"
-        case unfinished = "sort.unfinished"
-        case finished = "sort.finished"
-    }
-    
-    enum SortOrder: LocalizedStringKey, CaseIterable, Codable, Defaults.Serializable {
-        case name = "sort.name"
-        case index = "sort.index"
-        case released = "sort.released"
-        case duration = "sort.duration"
-    }
-}
-
-extension Defaults.Keys {
-    static func episodesFilter(podcastId: String) -> Defaults.Key<EpisodeSortFilter.Filter> {
-        .init("episodesFilter-\(podcastId)", default: .unfinished)
-    }
-    
-    static func episodesSort(podcastId: String) -> Defaults.Key<EpisodeSortFilter.SortOrder> {
-        .init("episodesSort-\(podcastId)", default: .released)
-    }
-    static func episodesAscending(podcastId: String) -> Defaults.Key<Bool> {
-        .init("episodesFilterAscending-\(podcastId)", default: false)
-    }
-}
-
-// MARK: Sort
-
-extension EpisodeSortFilter {
-    @MainActor
-    static func filterSort(episodes: [Episode], filter: Filter, sortOrder: SortOrder, ascending: Bool) -> [Episode] {
-        var episodes = episodes.filter {
-            switch filter {
-                case .all:
-                    return true
-                case .progress, .unfinished, .finished:
-                    let entity = OfflineManager.shared.requireProgressEntity(item: $0)
-                    
-                    if entity.progress > 0 {
-                        if filter == .unfinished {
-                            return entity.progress < 1
-                        }
-                        if entity.progress < 1 && filter == .finished {
-                            return false
-                        }
-                        if entity.progress >= 1 && filter == .progress {
-                            return false
-                        }
-                        
-                        return true
-                    } else {
-                        if filter == .unfinished {
-                            return true
-                        } else {
-                            return false
-                        }
-                    }
-            }
-        }
-        
-        episodes.sort {
-            switch sortOrder {
-                case .name:
-                    return $0.name.localizedStandardCompare($1.name) == .orderedAscending
-                case .index:
-                    return $0.index < $1.index
-                case .released:
-                    guard let lhsReleaseDate = $0.releaseDate else { return false }
-                    guard let rhsReleaseDate = $1.releaseDate else { return true }
-                    
-                    return lhsReleaseDate < rhsReleaseDate
-                case .duration:
-                    return $0.duration < $1.duration
-            }
-        }
-        
-        if ascending {
-            return episodes
-        } else {
-            return episodes.reversed()
-        }
-    }
-}
-
 // MARK: Preview
 
 #Preview {
-    EpisodeSortFilter(filter: .constant(.all), sortOrder: .constant(.released), ascending: .constant(false))
+    // these are here because swiftui does not like things in packages
+    let _ = String(localized: "sort.unfinished")
+    let _ = String(localized: "sort.progress")
+    let _ = String(localized: "sort.index")
+    let _ = String(localized: "sort.finished")
+    let _ = String(localized: "sort.all")
+    
+    return EpisodeSortFilter(filter: .constant(.all), sortOrder: .constant(.released), ascending: .constant(false))
 }

@@ -163,7 +163,7 @@ public extension AudioPlayer {
             to += AudioPlayer.shared.getChapter()?.start ?? 0
         }
         
-        if to >= getItemDuration() {
+        if to >= getItemDuration() && getItemDuration() > 0 {
             playbackReporter?.reportProgress(currentTime: getItemDuration(), duration: getItemDuration())
             stopPlayback()
             

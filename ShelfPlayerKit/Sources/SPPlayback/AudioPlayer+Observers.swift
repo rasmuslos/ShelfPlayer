@@ -9,6 +9,7 @@ import Foundation
 import Defaults
 import AVKit
 import UIKit
+import SPBase
 
 internal extension AudioPlayer {
     func setupTimeObserver() {
@@ -54,6 +55,12 @@ internal extension AudioPlayer {
             if self?.activeAudioTrackIndex == (self?.tracks.count ?? 0) - 1 {
                 if let duration = self?.getItemDuration() {
                     self?.playbackReporter?.reportProgress(currentTime: duration, duration: duration)
+                }
+                
+                Task { [self] in
+                    if let episode = self?.item as? Episode, let (_, next) = await Self.nextEpisode(podcastId: episode.podcastId) {
+                        next.startPlayback()
+                    }
                 }
                 
                 self?.stopPlayback()

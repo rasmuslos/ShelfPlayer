@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SPBase
 import Defaults
 
 extension Defaults.Keys {
@@ -37,4 +38,19 @@ extension Defaults.Keys {
     static let showAuthorsRow = Key("showAuthorsRow", default: false)
     static let authorsAscending = Key("authorsAscending", default: true)
     static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
+    
+    static let podcastNextUp = Key("podcastNextUp", default: false)
+    
+    // MARK: Podcast filter & sort
+    
+    static func episodesFilter(podcastId: String) -> Defaults.Key<AudiobookshelfClient.EpisodeFilter> {
+        .init("episodesFilter-\(podcastId)", default: .unfinished)
+    }
+    
+    static func episodesSort(podcastId: String) -> Defaults.Key<AudiobookshelfClient.EpisodeSortOrder> {
+        .init("episodesSort-\(podcastId)", default: .released)
+    }
+    static func episodesAscending(podcastId: String) -> Defaults.Key<Bool> {
+        .init("episodesFilterAscending-\(podcastId)", default: false)
+    }
 }

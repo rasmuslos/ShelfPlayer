@@ -41,7 +41,7 @@ struct DownloadButton: View {
                         Label("download", systemImage: "arrow.down")
                     }
                 case .downloaded:
-                    Button {
+                    Button(role: .destructive) {
                         if let episode = item as? Episode {
                             OfflineManager.shared.delete(episodeId: episode.id)
                         } else {
