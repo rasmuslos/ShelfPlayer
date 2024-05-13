@@ -53,17 +53,6 @@ extension NowPlaying {
                             .frame(width: min(availableWidth / 2.25, 450))
                             
                             NotableMomentsView(includeHeader: false, bookmarksActive: $bookmarksActive)
-                                .mask(
-                                    VStack(spacing: 0) {
-                                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black]), startPoint: .top, endPoint: .bottom)
-                                            .frame(height: 40)
-                                        
-                                        Rectangle().fill(Color.black)
-                                        
-                                        LinearGradient(gradient: Gradient(colors: [Color.black, Color.black.opacity(0)]), startPoint: .top, endPoint: .bottom)
-                                            .frame(height: 40)
-                                    }
-                                )
                                 .frame(maxWidth: .infinity)
                         }
                         

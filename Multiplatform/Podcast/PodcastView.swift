@@ -11,9 +11,9 @@ import Defaults
 import SPBase
 
 struct PodcastView: View {
-    @Default private var episodesFilter: EpisodeSortFilter.Filter
+    @Default private var episodesFilter: AudiobookshelfClient.EpisodeFilter
     
-    @Default private var episodesSort: EpisodeSortFilter.SortOrder
+    @Default private var episodesSort: AudiobookshelfClient.EpisodeSortOrder
     @Default private var episodesAscending: Bool
     
     var podcast: Podcast
@@ -34,7 +34,7 @@ struct PodcastView: View {
     @State private var imageColors = Item.ImageColors.placeholder
     
     private var visibleEpisodes: [Episode] {
-        let episodes = EpisodeSortFilter.filterSort(episodes: episodes, filter: episodesFilter, sortOrder: episodesSort, ascending: episodesAscending)
+        let episodes = AudiobookshelfClient.filterSort(episodes: episodes, filter: episodesFilter, sortOrder: episodesSort, ascending: episodesAscending)
         return Array(episodes.prefix(15))
     }
     

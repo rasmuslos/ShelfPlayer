@@ -158,6 +158,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Continue with next episode</string>
+			<key>Key</key>
+			<string>podcastNextUp</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Smart rewind</string>
 			<key>Key</key>
 			<string>smartRewind</string>
