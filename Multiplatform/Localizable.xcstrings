@@ -3443,6 +3443,22 @@
         }
       }
     },
+    "queue.nextUp: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Nächstes: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next up: %@"
+          }
+        }
+      }
+    },
     "search.empty.description" : {
       "localizations" : {
         "de" : {

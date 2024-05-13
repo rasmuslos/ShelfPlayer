@@ -14,6 +14,8 @@ import SPPlayback
 
 extension NowPlaying {
     struct NotableMomentsView: View {
+        @Default(.podcastNextUp) private var podcastNextUp
+        
         let includeHeader: Bool
         @Binding var bookmarksActive: Bool
         
@@ -58,6 +60,17 @@ extension NowPlaying {
                             }
                         }
                     }
+                    .mask(
+                        VStack(spacing: 0) {
+                            LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black]), startPoint: .top, endPoint: .bottom)
+                                .frame(height: 40)
+                            
+                            Rectangle().fill(Color.black)
+                            
+                            LinearGradient(gradient: Gradient(colors: [Color.black, Color.black.opacity(0)]), startPoint: .top, endPoint: .bottom)
+                                .frame(height: 40)
+                        }
+                    )
                 } else {
                     ScrollViewReader { proxy in
                         List {
@@ -75,7 +88,9 @@ extension NowPlaying {
             }
             .listStyle(.plain)
             .safeAreaInset(edge: .top) {
-                if includeHeader {
+                if podcastNextUp, let episode = AudioPlayer.shared.item as? Episode {
+                    NextUp(episode: episode)
+                } else if includeHeader {
                     HStack(spacing: 15) {
                         ItemImage(image: AudioPlayer.shared.item?.image)
                         
@@ -222,4 +237,58 @@ private extension NowPlaying {
             }
         }
     }
+}
+
+// MARK: Next Up
+
+private extension NowPlaying {
+    struct NextUp: View {
+        let episode: Episode
+        
+        @State private var next: Episode? = nil
+        @State private var podcast: Podcast? = nil
+        
+        var body: some View {
+            if let podcast = podcast, let next = next {
+                HStack {
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("queue.nextUp: \(next.name)")
+                            .font(.callout.smallCaps())
+                            .lineLimit(1)
+                            .foregroundStyle(.secondary)
+                        
+                        PodcastList.PodcastRow(podcast: podcast)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.top, 15)
+                .padding(.bottom, 15)
+                .padding(.horizontal, 20)
+                .frame(maxWidth: .infinity)
+                .background(.regularMaterial)
+            } else {
+                Color.clear
+                    .frame(height: 0)
+                    .task {
+                        if let (podcast, next) = await AudioPlayer.nextEpisode(podcastId: episode.podcastId) {
+                            self.podcast = podcast
+                            self.next = next
+                        }
+                    }
+            }
+        }
+    }
+}
+
+#Preview {
+    NowPlaying.NotableMomentsView(includeHeader: true, bookmarksActive: .constant(false))
+}
+
+#Preview {
+    NowPlaying.NotableMomentsView(includeHeader: true, bookmarksActive: .constant(true))
+}
+
+#Preview {
+    NowPlaying.NotableMomentsView(includeHeader: false, bookmarksActive: .constant(false))
 }

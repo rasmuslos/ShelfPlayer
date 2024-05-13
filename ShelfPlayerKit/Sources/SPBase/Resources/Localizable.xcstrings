@@ -177,6 +177,38 @@
         }
       }
     },
+    "sort.all" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
+    "sort.duration" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
+    "sort.finished" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
+    "sort.index" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
+    "sort.name" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
+    "sort.progress" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
+    "sort.released" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
+    "sort.unfinished" : {
+      "comment" : "Broken. Do not translate",
+      "extractionState" : "manual"
+    },
     "time.left" : {
       "localizations" : {
         "de" : {

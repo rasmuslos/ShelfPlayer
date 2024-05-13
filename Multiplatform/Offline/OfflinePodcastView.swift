@@ -12,9 +12,9 @@ import SPOffline
 import SPOfflineExtended
 
 struct OfflinePodcastView: View {
-    @State private var episodeFilter = EpisodeSortFilter.Filter.all
+    @State private var episodeFilter = AudiobookshelfClient.EpisodeFilter.all
     
-    @Default private var episodesSort: EpisodeSortFilter.SortOrder
+    @Default private var episodesSort: AudiobookshelfClient.EpisodeSortOrder
     @Default private var episodesAscending: Bool
     
     let podcast: Podcast
