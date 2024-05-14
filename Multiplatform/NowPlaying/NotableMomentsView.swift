@@ -29,14 +29,6 @@ extension NowPlaying {
             }
         }
         
-        private var currentChapter: PlayableItem.Chapter? {
-            if Defaults[.enableChapterTrack] {
-                return nil
-            }
-            
-            return AudioPlayer.shared.chapters.first { $0.start < AudioPlayer.shared.currentTime && $0.end > AudioPlayer.shared.currentTime }
-        }
-        
         var body: some View {
             Group {
                 if empty {
@@ -88,62 +80,7 @@ extension NowPlaying {
             }
             .listStyle(.plain)
             .safeAreaInset(edge: .top) {
-                if podcastNextUp, let episode = AudioPlayer.shared.item as? Episode {
-                    NextUp(episode: episode)
-                } else if includeHeader {
-                    HStack(spacing: 15) {
-                        ItemImage(image: AudioPlayer.shared.item?.image)
-                        
-                        VStack(alignment: .leading) {
-                            Text(AudioPlayer.shared.item?.name ?? "-/-")
-                                .font(.headline)
-                                .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
-                                .lineLimit(1)
-                            
-                            if let author = AudioPlayer.shared.item?.author {
-                                Text(author)
-                                    .font(.subheadline)
-                                    .lineLimit(1)
-                            }
-                            
-                            Group {
-                                let speedAdjustment = (1 / Double(AudioPlayer.shared.playbackRate))
-                                
-                                if let currentChapter = currentChapter {
-                                    Text(((currentChapter.end - AudioPlayer.shared.currentTime) * speedAdjustment).numericTimeLeft())
-                                    + Text(verbatim: " ")
-                                    + Text("\(currentChapter.title) chapter.remaining.in")
-                                } else {
-                                    let remaining = ((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()) * speedAdjustment).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)
-                                    
-                                    Text(remaining)
-                                    + Text(verbatim: " ")
-                                    + Text("time.left")
-                                }
-                            }
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        }
-                        
-                        Spacer()
-                        
-                        if AudioPlayer.shared.item as? Audiobook != nil {
-                            Button {
-                                bookmarksActive.toggle()
-                            } label: {
-                                Label("bookmarks.toggle", systemImage: "bookmark.square")
-                                    .labelStyle(.iconOnly)
-                                    .symbolVariant(bookmarksActive ? .fill : .none)
-                            }
-                            .font(.system(size: 26))
-                            .foregroundStyle(.primary)
-                            .popoverTip(ViewBookmarkTip())
-                        }
-                    }
-                    .padding(20)
-                    .background(.regularMaterial)
-                    .frame(height: 100)
-                }
+                Header(includeHeader: includeHeader, bookmarksActive: $bookmarksActive)
             }
             .onReceive(NotificationCenter.default.publisher(for: OfflineManager.bookmarksUpdatedNotification)) { _ in
                 fetchBookmarks()
@@ -242,22 +179,31 @@ private extension NowPlaying {
 // MARK: Next Up
 
 private extension NowPlaying {
-    struct NextUp: View {
-        let episode: Episode
+    struct Header: View {
+        let includeHeader: Bool
+        @Binding var bookmarksActive: Bool
         
         @State private var next: Episode? = nil
         @State private var podcast: Podcast? = nil
+        
+        private var currentChapter: PlayableItem.Chapter? {
+            if Defaults[.enableChapterTrack] {
+                return nil
+            }
+            
+            return AudioPlayer.shared.chapters.first { $0.start < AudioPlayer.shared.currentTime && $0.end > AudioPlayer.shared.currentTime }
+        }
         
         var body: some View {
             if let podcast = podcast, let next = next {
                 HStack {
                     VStack(alignment: .leading, spacing: 15) {
+                        PodcastList.PodcastRow(podcast: podcast)
+                        
                         Text("queue.nextUp: \(next.name)")
-                            .font(.callout.smallCaps())
+                            .font(.footnote)
                             .lineLimit(1)
                             .foregroundStyle(.secondary)
-                        
-                        PodcastList.PodcastRow(podcast: podcast)
                     }
                     
                     Spacer()
@@ -267,15 +213,65 @@ private extension NowPlaying {
                 .padding(.horizontal, 20)
                 .frame(maxWidth: .infinity)
                 .background(.regularMaterial)
-            } else {
-                Color.clear
-                    .frame(height: 0)
-                    .task {
-                        if let (podcast, next) = await AudioPlayer.nextEpisode(podcastId: episode.podcastId) {
-                            self.podcast = podcast
-                            self.next = next
+            } else if includeHeader {
+                HStack(spacing: 15) {
+                    ItemImage(image: AudioPlayer.shared.item?.image)
+                    
+                    VStack(alignment: .leading) {
+                        Text(AudioPlayer.shared.item?.name ?? "-/-")
+                            .font(.headline)
+                            .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
+                            .lineLimit(1)
+                        
+                        if let author = AudioPlayer.shared.item?.author {
+                            Text(author)
+                                .font(.subheadline)
+                                .lineLimit(1)
                         }
+                        
+                        Group {
+                            let speedAdjustment = (1 / Double(AudioPlayer.shared.playbackRate))
+                            
+                            if let currentChapter = currentChapter {
+                                Text(((currentChapter.end - AudioPlayer.shared.currentTime) * speedAdjustment).numericTimeLeft())
+                                + Text(verbatim: " ")
+                                + Text("\(currentChapter.title) chapter.remaining.in")
+                            } else {
+                                let remaining = ((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()) * speedAdjustment).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)
+                                
+                                Text(remaining)
+                                + Text(verbatim: " ")
+                                + Text("time.left")
+                            }
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     }
+                    
+                    Spacer()
+                    
+                    if AudioPlayer.shared.item as? Audiobook != nil {
+                        Button {
+                            bookmarksActive.toggle()
+                        } label: {
+                            Label("bookmarks.toggle", systemImage: "bookmark.square")
+                                .labelStyle(.iconOnly)
+                                .symbolVariant(bookmarksActive ? .fill : .none)
+                        }
+                        .font(.system(size: 26))
+                        .foregroundStyle(.primary)
+                        .popoverTip(ViewBookmarkTip())
+                    }
+                }
+                .padding(20)
+                .background(.regularMaterial)
+                .frame(height: 100)
+                .task {
+                    if let (podcast, next) = await AudioPlayer.nextEpisode() {
+                        self.podcast = podcast
+                        self.next = next
+                    }
+                }
             }
         }
     }
