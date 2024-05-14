@@ -13,19 +13,19 @@ import SPOffline
 #endif
 
 extension AudioPlayer {
-    public static func nextEpisode(podcastId: String) async -> (Podcast, Episode)? {
-        if !Defaults[.podcastNextUp] {
+    public static func nextEpisode() async -> (Podcast, Episode)? {
+        guard Defaults[.podcastNextUp], let item = AudioPlayer.shared.item as? Episode else {
             return nil
         }
         
-        if let podcast = try? await OfflineManager.shared.getPodcast(podcastId: podcastId), let episodes = try? await OfflineManager.shared.getEpisodes(podcastId: podcastId), !episodes.isEmpty {
+        if let podcast = try? await OfflineManager.shared.getPodcast(podcastId: item.podcastId), let episodes = try? await OfflineManager.shared.getEpisodes(podcastId: item.podcastId), !episodes.isEmpty {
             
-            if let episode = await AudiobookshelfClient.filterSort(episodes: episodes, filter: Defaults[.episodesFilter(podcastId: podcast.id)], sortOrder: Defaults[.episodesSort(podcastId: podcast.id)], ascending: Defaults[.episodesAscending(podcastId: podcast.id)]).first {
+            if let episode = await AudiobookshelfClient.filterSort(episodes: episodes, filter: Defaults[.episodesFilter(podcastId: podcast.id)], sortOrder: Defaults[.episodesSort(podcastId: podcast.id)], ascending: Defaults[.episodesAscending(podcastId: podcast.id)]).first, episode != item {
                 return (podcast, episode)
             }
         }
         
-        if let (podcast, episodes) = try? await AudiobookshelfClient.shared.getPodcast(podcastId: podcastId), let episode = await AudiobookshelfClient.filterSort(episodes: episodes, filter: Defaults[.episodesFilter(podcastId: podcast.id)], sortOrder: Defaults[.episodesSort(podcastId: podcast.id)], ascending: Defaults[.episodesAscending(podcastId: podcast.id)]).first {
+        if let (podcast, episodes) = try? await AudiobookshelfClient.shared.getPodcast(podcastId: item.podcastId), let episode = await AudiobookshelfClient.filterSort(episodes: episodes, filter: Defaults[.episodesFilter(podcastId: podcast.id)], sortOrder: Defaults[.episodesSort(podcastId: podcast.id)], ascending: Defaults[.episodesAscending(podcastId: podcast.id)]).first, episode != item {
             return (podcast, episode)
         }
         

@@ -57,8 +57,8 @@ internal extension AudioPlayer {
                     self?.playbackReporter?.reportProgress(currentTime: duration, duration: duration)
                 }
                 
-                Task { [self] in
-                    if let episode = self?.item as? Episode, let (_, next) = await Self.nextEpisode(podcastId: episode.podcastId) {
+                Task {
+                    if let (_, next) = await Self.nextEpisode() {
                         next.startPlayback()
                     }
                 }
