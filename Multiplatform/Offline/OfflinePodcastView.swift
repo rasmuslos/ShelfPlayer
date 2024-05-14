@@ -28,9 +28,13 @@ struct OfflinePodcastView: View {
         _episodesAscending = .init(.episodesAscending(podcastId: podcast.id))
     }
     
+    private var sorted: [Episode] {
+        AudiobookshelfClient.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSort, ascending: episodesAscending)
+    }
+    
     var body: some View {
         List {
-            ForEach(episodes) {
+            ForEach(sorted) {
                 EpisodeSingleList.EpisodeRow(episode: $0)
                     .modifier(SwipeActionsModifier(item: $0))
             }
