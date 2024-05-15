@@ -14,7 +14,7 @@ struct LoginView: View {
     @State private var loginSheetPresented = false
     @State private var loginFlowState: LoginFlowState = .server
     
-    @State private var server = AudiobookshelfClient.shared._serverUrl?.absoluteString ?? "https://"
+    @State private var server = AudiobookshelfClient.shared.serverUrl?.absoluteString ?? "https://"
     @State private var username = ""
     @State private var password = ""
     

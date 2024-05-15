@@ -10,7 +10,7 @@ import SwiftUI
 
 @Observable
 public final class AudiobookshelfClient {
-    public private(set) var _serverUrl: URL?
+    public private(set) var serverUrl: URL!
     public private(set) var _token: String?
     
     public private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
@@ -42,10 +42,6 @@ public final class AudiobookshelfClient {
 public extension AudiobookshelfClient {
     var authorized: Bool {
         _token != nil
-    }
-    
-    var serverUrl: URL {
-        _serverUrl ?? .temporaryDirectory
     }
     var token: String {
         _token ?? ""
