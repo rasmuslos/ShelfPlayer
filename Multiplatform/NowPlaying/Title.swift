@@ -135,6 +135,7 @@ extension NowPlaying {
                         .font(.system(size: 20))
                         .foregroundStyle(createBookmarkFailed ? .red : .primary)
                         .modifier(ButtonHoverEffectModifier())
+                        .sensoryFeedback(.success, trigger: bookmarkAnimation)
                         .onTapGesture {
                             createBookmarkFailed = false
                             bookmarkCapturedTime = AudioPlayer.shared.getItemCurrentTime()
