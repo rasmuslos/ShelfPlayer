@@ -1770,6 +1770,22 @@
         }
       }
     },
+    "download.remove.force" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen erzwingen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Force remove"
+          }
+        }
+      }
+    },
     "downloaded" : {
       "localizations" : {
         "de" : {
@@ -1788,28 +1804,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已下载"
-          }
-        }
-      }
-    },
-    "downloading" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Downloading"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Downloading"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下载中"
           }
         }
       }

@@ -42,17 +42,17 @@ struct DownloadButton: View {
                     }
                 case .downloaded:
                     Button(role: .destructive) {
-                        if let episode = item as? Episode {
-                            OfflineManager.shared.delete(episodeId: episode.id)
-                        } else {
-                            OfflineManager.shared.delete(audiobookId: item.id)
-                        }
+                        deleteDownload()
                     } label: {
                         Label("download.remove", systemImage: "xmark")
                     }
                 case .working:
                     if downloadingLabel {
-                        Label("downloading", systemImage: "arrow.down")
+                        Button(role: .destructive) {
+                            deleteDownload()
+                        } label: {
+                            Label("download.remove.force", systemImage: "xmark")
+                        }
                     } else {
                         DownloadProgressIndicator(itemId: item.id)
                             .frame(width: 19)
@@ -62,20 +62,27 @@ struct DownloadButton: View {
         }
         .modifier(TintModifier(tint: tint, offlineStatus: offlineTracker.status))
     }
+    
+    @MainActor
+    private func deleteDownload() {
+        if let episode = item as? Episode {
+            OfflineManager.shared.delete(episodeId: episode.id)
+        } else {
+            OfflineManager.shared.delete(audiobookId: item.id)
+        }
+    }
 }
 
-extension DownloadButton {
-    struct TintModifier: ViewModifier {
-        let tint: Bool
-        let offlineStatus: ItemOfflineTracker.OfflineStatus
-        
-        func body(content: Content) -> some View {
-            if tint {
-                content
-                    .tint(offlineStatus == .downloaded ? .red : .green)
-            } else {
-                content
-            }
+private struct TintModifier: ViewModifier {
+    let tint: Bool
+    let offlineStatus: ItemOfflineTracker.OfflineStatus
+    
+    func body(content: Content) -> some View {
+        if tint {
+            content
+                .tint(offlineStatus == .downloaded ? .red : .green)
+        } else {
+            content
         }
     }
 }
