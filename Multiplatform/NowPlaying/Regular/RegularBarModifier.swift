@@ -79,6 +79,7 @@ extension NowPlaying {
                             .font(.title3)
                             .modifier(ButtonHoverEffectModifier())
                             .padding(.horizontal, 7)
+                            .sensoryFeedback(.decrease, trigger: animateBackwards)
                             
                             Group {
                                 if AudioPlayer.shared.buffering {
@@ -97,6 +98,7 @@ extension NowPlaying {
                             .font(.largeTitle)
                             .modifier(ButtonHoverEffectModifier())
                             .frame(width: 30)
+                            .sensoryFeedback(.selection, trigger: AudioPlayer.shared.playing)
                             
                             Button {
                                 animateForwards.toggle()
@@ -109,6 +111,7 @@ extension NowPlaying {
                             .font(.title3)
                             .modifier(ButtonHoverEffectModifier())
                             .padding(.horizontal, 7)
+                            .sensoryFeedback(.increase, trigger: animateForwards)
                         }
                         .padding(.horizontal, 8)
                         .frame(height: 66)

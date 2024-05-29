@@ -3272,7 +3272,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ShelfPlayer will download %lld episodes of this podcast. Please not that not the latest episodes are downloaded, rather the first episodes matching the filter & sort settings of this podcast "
+            "value" : "ShelfPlayer will download %lld episodes of this podcast. Please note that not the latest episodes are downloaded, rather the first episodes matching the filter & sort settings of this podcast "
           }
         },
         "zh-Hans" : {

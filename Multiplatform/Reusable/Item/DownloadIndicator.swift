@@ -26,14 +26,14 @@ struct DownloadIndicator: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         } else if offlineTracker.status == .working {
-            DownloadProgressIndicator(itemId: itemId)
-                .frame(width: 10)
+            DownloadProgressIndicator(itemId: itemId, small: true)
         }
     }
 }
 
 struct DownloadProgressIndicator: View {
     let itemId: String
+    let small: Bool
     
     @State private var downloadProgress: CGFloat = 0.0
     
@@ -41,6 +41,7 @@ struct DownloadProgressIndicator: View {
         Group {
             if downloadProgress <= 0 {
                 ProgressIndicator()
+                    .scaleEffect(small ? 0.75 : 1)
             } else {
                 ZStack {
                     Circle()
@@ -51,6 +52,7 @@ struct DownloadProgressIndicator: View {
                         .stroke(Color.accentColor, style: .init(lineWidth: 4, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                 }
+                .frame(width: small ? 10 : 19)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: OfflineManager.downloadProgressUpdatedNotification)) { _ in
