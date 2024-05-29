@@ -102,6 +102,7 @@ extension NowPlaying {
                                             }
                                         }
                                         .transition(.blurReplace)
+                                        .sensoryFeedback(.selection, trigger: AudioPlayer.shared.playing)
                                         
                                         Button {
                                             animateForwards.toggle()
@@ -112,6 +113,7 @@ extension NowPlaying {
                                                 .symbolEffect(.bounce, value: animateForwards)
                                         }
                                         .padding(.horizontal, 10)
+                                        .sensoryFeedback(.increase, trigger: animateForwards)
                                     }
                                     .imageScale(.large)
                                 }
