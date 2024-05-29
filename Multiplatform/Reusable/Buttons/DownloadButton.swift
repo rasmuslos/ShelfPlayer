@@ -17,6 +17,8 @@ struct DownloadButton: View {
     
     let offlineTracker: ItemOfflineTracker
     
+    @State private var hapticFeedback = false
+    
     init(item: PlayableItem, tint: Bool = false, downloadingLabel: Bool = true) {
         self.item = item
         self.tint = tint
@@ -36,15 +38,11 @@ struct DownloadButton: View {
                             } else if let audiobook = item as? Audiobook {
                                 try? await OfflineManager.shared.download(audiobookId: audiobook.id)
                             }
+                            
+                            hapticFeedback.toggle()
                         }
                     } label: {
                         Label("download", systemImage: "arrow.down")
-                    }
-                case .downloaded:
-                    Button(role: .destructive) {
-                        deleteDownload()
-                    } label: {
-                        Label("download.remove", systemImage: "xmark")
                     }
                 case .working:
                     if downloadingLabel {
@@ -54,12 +52,18 @@ struct DownloadButton: View {
                             Label("download.remove.force", systemImage: "xmark")
                         }
                     } else {
-                        DownloadProgressIndicator(itemId: item.id)
-                            .frame(width: 19)
+                        DownloadProgressIndicator(itemId: item.id, small: false)
                             .padding(.trailing, 15)
+                    }
+                case .downloaded:
+                    Button(role: .destructive) {
+                        deleteDownload()
+                    } label: {
+                        Label("download.remove", systemImage: "xmark")
                     }
             }
         }
+        .sensoryFeedback(.success, trigger: hapticFeedback)
         .modifier(TintModifier(tint: tint, offlineStatus: offlineTracker.status))
     }
     
@@ -70,6 +74,8 @@ struct DownloadButton: View {
         } else {
             OfflineManager.shared.delete(audiobookId: item.id)
         }
+        
+        hapticFeedback.toggle()
     }
 }
 
