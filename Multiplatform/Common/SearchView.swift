@@ -8,18 +8,18 @@
 import SwiftUI
 import SPBase
 
-struct SearchView: View {
-    @Environment(\.libraryId) var libraryId
+internal struct SearchView: View {
+    @Environment(\.libraryId) private var libraryId
     
-    @State var query = ""
-    @State var task: Task<(), Error>? = nil
+    @State private var query = ""
+    @State private var task: Task<(), Error>? = nil
     
-    @State var audiobooks = [Audiobook]()
-    @State var podcasts = [Podcast]()
-    @State var authors = [Author]()
-    @State var series = [Series]()
+    @State private var audiobooks = [Audiobook]()
+    @State private var podcasts = [Podcast]()
+    @State private var authors = [Author]()
+    @State private var series = [Series]()
     
-    @State var loading = false
+    @State private var loading = false
     
     var body: some View {
         Group {
@@ -31,17 +31,6 @@ struct SearchView: View {
                 }
             } else {
                 List {
-                    if !audiobooks.isEmpty {
-                        Section("section.audiobooks") {
-                            AudiobookList(audiobooks: audiobooks)
-                        }
-                    }
-                    if !podcasts.isEmpty {
-                        Section("section.podcasts") {
-                            PodcastList(podcasts: podcasts)
-                        }
-                    }
-                    
                     if !series.isEmpty {
                         Section("section.series") {
                             SeriesList(series: series)
@@ -51,6 +40,18 @@ struct SearchView: View {
                     if !authors.isEmpty {
                         Section("section.authors") {
                             AuthorList(authors: authors)
+                        }
+                    }
+                    
+                    if !audiobooks.isEmpty {
+                        Section("section.audiobooks") {
+                            AudiobookList(audiobooks: audiobooks)
+                        }
+                    }
+                    
+                    if !podcasts.isEmpty {
+                        Section("section.podcasts") {
+                            PodcastList(podcasts: podcasts)
                         }
                     }
                 }
@@ -63,7 +64,7 @@ struct SearchView: View {
         .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
         .onChange(of: query) {
             task?.cancel()
-            task = Task.detached {
+            task = Task {
                 loading = true
                 
                 if query == "" {
@@ -80,11 +81,6 @@ struct SearchView: View {
         }
     }
 }
-
-#Preview {
-    SearchView()
-}
-
 
 #Preview {
     SearchView()

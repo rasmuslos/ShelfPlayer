@@ -8,7 +8,7 @@
 import SwiftUI
 import SPBase
 
-struct AudiobookLoadView: View {
+internal struct AudiobookLoadView: View {
     @Environment(\.libraryId) private var libraryId
     
     let audiobookId: String
@@ -20,21 +20,22 @@ struct AudiobookLoadView: View {
         if failed {
             AudiobookUnavailableView()
         } else if let audiobook = audiobook {
-            AudiobookView(audiobook: audiobook)
+            AudiobookView(viewModel: .init(audiobook: audiobook))
         } else {
             LoadingView()
-                .task { await fetchAudiobook() }
-                .refreshable { await fetchAudiobook() }
+                .task { await loadAudiobook() }
+                .refreshable { await loadAudiobook() }
         }
     }
     
-    private func fetchAudiobook() async {
+    private func loadAudiobook() async {
         failed = false
         
-        if let audiobook = try? await AudiobookshelfClient.shared.getItem(itemId: audiobookId, episodeId: nil).0 as? Audiobook {
-            self.audiobook = audiobook
-        } else {
+        guard let audiobook = try? await AudiobookshelfClient.shared.getItem(itemId: audiobookId, episodeId: nil).0 as? Audiobook else {
             failed = true
+            return
         }
+        
+        self.audiobook = audiobook
     }
 }

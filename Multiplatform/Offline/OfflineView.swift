@@ -66,8 +66,15 @@ struct OfflineView: View {
 }
 
 extension OfflineView {
-    func loadItems() async throws {
-        (audiobooks, podcasts) = try await (OfflineManager.shared.getAudiobooks(), OfflineManager.shared.getPodcasts())
+    nonisolated func loadItems() async throws {
+        guard let (audiobooks, podcasts) = try? await (OfflineManager.shared.getAudiobooks(), OfflineManager.shared.getPodcasts()) else {
+            return
+        }
+        
+        await MainActor.run {
+            self.audiobooks = audiobooks
+            self.podcasts = podcasts
+        }
     }
 }
 

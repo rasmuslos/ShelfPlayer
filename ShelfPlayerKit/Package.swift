@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: .init(2, 6, 0)),
-        .package(url: "https://github.com/sindresorhus/Defaults", from: .init(8, 0, 0)),
+        .package(url: "https://github.com/sindresorhus/Defaults", from: .init(8, 2, 0)),
         .package(url: "https://github.com/FelixHerrmann/UIImageColors.git", branch: "master"),
     ],
     targets: [

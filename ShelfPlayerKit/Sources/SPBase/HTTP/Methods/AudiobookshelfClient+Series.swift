@@ -51,7 +51,7 @@ public extension AudiobookshelfClient {
     
     func getAudiobooks(seriesId: String, libraryId: String) async throws -> [Audiobook] {
         let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET", query: [
-            URLQueryItem(name: "filter", value: "series.\(seriesId.toBase64())"),
+            URLQueryItem(name: "filter", value: "series.\(seriesId.base64)"),
             URLQueryItem(name: "limit", value: "100"),
             URLQueryItem(name: "page", value: "0"),
         ]))

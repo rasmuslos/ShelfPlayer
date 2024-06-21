@@ -89,7 +89,7 @@ struct AccountSheet: View {
                         
                         Button {
                             Task {
-                                try? await BackgroundTaskHandler.runAutoDownload()
+                                try? await BackgroundTaskHandler.updateDownloads()
                             }
                         } label: {
                             Label("account.newEpisodes.check", systemImage: "antenna.radiowaves.left.and.right")

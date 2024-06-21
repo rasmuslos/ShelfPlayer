@@ -14,15 +14,15 @@ import SPOffline
 import SPOfflineExtended
 import UserNotifications
 
-final class BackgroundTaskHandler {
-    static let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Background Tasks")
+final internal class BackgroundTaskHandler {
+    static let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Background-Refresh")
 }
 
-extension BackgroundTaskHandler {
+internal extension BackgroundTaskHandler {
     static func handle(task: BGTask) {
         let backgroundTask = Task.detached {
             do {
-                try await Self.runAutoDownload()
+                try await Self.updateDownloads()
                 
                 task.setTaskCompleted(success: true)
                 submitTask()
@@ -38,19 +38,21 @@ extension BackgroundTaskHandler {
     }
 }
  
-extension BackgroundTaskHandler {
-    static func runAutoDownload() async throws {
+internal extension BackgroundTaskHandler {
+    static func updateDownloads() async throws {
         let configurations = try await OfflineManager.shared.getConfigurations(active: true)
         
         try await withThrowingTaskGroup(of: Void.self) { group in
             for configuration in configurations {
-                group.addTask { try await runAutoDownload(configuration: configuration) }
+                group.addTask {
+                    try await updateDownloads(configuration: configuration)
+                }
             }
             
             try await group.waitForAll()
         }
     }
-    static func runAutoDownload(configuration: PodcastFetchConfiguration) async throws {
+    static func updateDownloads(configuration: PodcastFetchConfiguration) async throws {
         let podcastId = configuration.id
         logger.info("Auto downloading podcast \(podcastId)")
         
@@ -99,7 +101,6 @@ extension BackgroundTaskHandler {
         }
         
         let content = UNMutableNotificationContent()
-        var sendNotification = true
         
         if submitted.count == 1, let episode = submitted.first {
             content.title = String(localized: "episode.new.title \(episode.name)")
@@ -121,19 +122,17 @@ extension BackgroundTaskHandler {
                 "podcastId": podcastId,
             ]
         } else {
-            sendNotification = false
+            return
         }
         
         content.sound = UNNotificationSound.default
         
-        if sendNotification {
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
-            try? await UNUserNotificationCenter.current().add(request)
-        }
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
+        try? await UNUserNotificationCenter.current().add(request)
     }
 }
 
-extension BackgroundTaskHandler {
+internal extension BackgroundTaskHandler {
     static func setup() {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "io.rfk.shelfplayer.autoDownloadEpisodes", using: nil, launchHandler: BackgroundTaskHandler.handle)
         submitTask()
@@ -166,8 +165,4 @@ extension BackgroundTaskHandler {
             print(error)
         }
     }
-}
-
-extension Defaults.Keys {
-    static let backgroundTaskFailCount = Key<Int>("backgroundTaskFailCount", default: 0)
 }

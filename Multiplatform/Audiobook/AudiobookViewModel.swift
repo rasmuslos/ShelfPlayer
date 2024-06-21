@@ -11,8 +11,8 @@ import SPBase
 import SPOfflineExtended
 
 @Observable
-final class AudiobookViewModel {
-    let audiobook: Audiobook
+final internal class AudiobookViewModel {
+    var audiobook: Audiobook
     
     var libraryId: String!
     
@@ -22,44 +22,76 @@ final class AudiobookViewModel {
     
     var authorId: String?
     
-    var audiobooksByAuthor = [Audiobook]()
-    var audiobooksInSeries = [Audiobook]()
+    var sameAuthor = [Audiobook]()
+    var sameSeries = [Audiobook]()
+    var sameNarrator = [Audiobook]()
     
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
+        libraryId = audiobook.libraryId
     }
 }
 
-extension AudiobookViewModel {
-    func fetchData(libraryId: String) async {
-        self.libraryId = libraryId
-        let _ = await (fetchAuthorData(), fetchSeriesData(), fetchAudiobookData())
+internal extension AudiobookViewModel {
+    func load() async {
+        await withTaskGroup(of: Void.self) {
+            $0.addTask { await self.loadAudiobook() }
+            $0.addTask { await self.loadAuthor() }
+            $0.addTask { await self.loadSeries() }
+            $0.addTask { await self.loadNarrator() }
+            
+            await $0.waitForAll()
+        }
     }
     
-    private func fetchAudiobookData() async {
-        if let (_, _, chapters) = try? await AudiobookshelfClient.shared.getItem(itemId: audiobook.id, episodeId: nil) {
+    private func loadAudiobook() async {
+        if let (item, _, chapters) = try? await AudiobookshelfClient.shared.getItem(itemId: audiobook.id, episodeId: nil) {
+            self.audiobook = item as! Audiobook
             self.chapters = chapters
         }
     }
     
-    private func fetchAuthorData() async {
-        if let author = audiobook.author, let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: libraryId) {
-            self.authorId = authorId
-            audiobooksByAuthor = (try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId).1) ?? []
+    private func loadAuthor() async {
+        guard let author = audiobook.author, let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: libraryId) else {
+            return
         }
+        
+        self.authorId = authorId
+        
+        guard let audiobooks = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId).1 else {
+            return
+        }
+        
+        sameAuthor = audiobooks
     }
     
-    private func fetchSeriesData() async {
-        var seriesId: String?
+    private func loadSeries() async {
+        let seriesId: String
         
         if let id = audiobook.series.first?.id {
             seriesId = id
-        } else if let name = audiobook.series.first?.name {
-            seriesId = try? await AudiobookshelfClient.shared.getSeriesId(name: name, libraryId: libraryId)
+        } else if let name = audiobook.series.first?.name, let id = try? await AudiobookshelfClient.shared.getSeriesId(name: name, libraryId: libraryId) {
+            seriesId = id
+        } else {
+            return
         }
         
-        if let seriesId = seriesId {
-            audiobooksInSeries = (try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: seriesId, libraryId: libraryId)) ?? []
+        guard let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: seriesId, libraryId: libraryId) else {
+            return
         }
+        
+        sameSeries = audiobooks
+    }
+    
+    private func loadNarrator() async {
+        guard let narratorName = audiobook.narrator else {
+            return
+        }
+        
+        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(narratorName: narratorName, libraryId: libraryId) else {
+            return
+        }
+        
+        sameNarrator = audiobooks
     }
 }

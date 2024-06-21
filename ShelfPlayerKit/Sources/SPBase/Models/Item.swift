@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@Observable
 public class Item: Identifiable {
     public let id: String
     public let libraryId: String

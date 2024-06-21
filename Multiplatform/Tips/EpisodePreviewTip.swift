@@ -7,7 +7,7 @@
 
 import TipKit
 
-struct EpisodePreviewTip: Tip {
+internal struct EpisodePreviewTip: Tip {
     var title: Text {
         .init("tip.episodePreview")
     }

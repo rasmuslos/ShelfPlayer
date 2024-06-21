@@ -12,8 +12,8 @@ import SPOfflineExtended
 
 extension AudiobookView {
     struct ToolbarModifier: ViewModifier {
+        @Environment(AudiobookViewModel.self) private var viewModel
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-        @Environment(AudiobookViewModel.self) var viewModel
         
         private var regularPresentation: Bool {
             horizontalSizeClass == .regular
@@ -84,7 +84,6 @@ extension AudiobookView {
                             ProgressButton(item: viewModel.audiobook)
                             DownloadButton(item: viewModel.audiobook)
                         } label: {
-                            // the modifier behaves (for some reason) different here, then if you apply it to the menu. this creates a bug in the animation when the value changes. but you cannot add it to the menu. ???
                             Image(systemName: "ellipsis")
                                 .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))
                         }
