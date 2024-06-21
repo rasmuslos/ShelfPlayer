@@ -8,7 +8,7 @@
 import SwiftUI
 import SPBase
 
-extension AudiobookView {
+internal extension AudiobookView {
     struct Header: View {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(AudiobookViewModel.self) private var viewModel
@@ -26,7 +26,6 @@ extension AudiobookView {
                 FullscreenBackground(threshold: horizontalSizeClass == .regular ? -90 : -240, backgroundColor: .clear, navigationBarVisible: .init(get: { viewModel.navigationBarVisible }, set: { viewModel.navigationBarVisible = $0 }))
                     .frame(height: 0)
                 
-                // `ViewThatFits` does not work here.
                 ViewThatFits {
                     RegularPresentation()
                     CompactPresentation()
@@ -36,7 +35,7 @@ extension AudiobookView {
     }
 }
 
-extension AudiobookView.Header {
+internal extension AudiobookView.Header {
     struct Title: View {
         @Environment(AudiobookViewModel.self) private var viewModel
         
@@ -44,7 +43,7 @@ extension AudiobookView.Header {
         let alignment: HorizontalAlignment
         
         var body: some View {
-            VStack(alignment: alignment, spacing: 5) {
+            VStack(alignment: alignment, spacing: 2) {
                 Text(viewModel.audiobook.name)
                     .font(largeFont ? .title : .headline)
                     .modifier(SerifModifier())
@@ -73,7 +72,7 @@ extension AudiobookView.Header {
                     .buttonStyle(.plain)
                 }
                 
-                HStack(spacing: 3) {
+                HStack(spacing: 2) {
                     if let narrator = viewModel.audiobook.narrator {
                         Text("audiobook.narrator \(narrator)")
                             .font(.caption)
@@ -130,29 +129,31 @@ extension AudiobookView.Header {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.top, 7)
+                .padding(.top, 8)
             }
         }
     }
 }
 
-extension AudiobookView.Header {
+internal extension AudiobookView.Header {
     struct CompactPresentation: View {
         @Environment(AudiobookViewModel.self) private var viewModel
         
         var body: some View {
             VStack(spacing: 0) {
                 ItemImage(image: viewModel.audiobook.image, aspectRatio: .none)
-                    .padding(.horizontal, 50)
-                    .shadow(radius: 30)
+                    .padding(.horizontal, 40)
+                    .shadow(radius: 40)
                 
                 SeriesName()
                 
                 Title(largeFont: false, alignment: .center)
-                    .padding(.vertical, 15)
+                    .padding(.top, 12)
+                    .padding(.bottom, 16)
                 
                 PlayButton(item: viewModel.audiobook)
             }
+            .padding(.top, 32)
         }
     }
     
@@ -173,20 +174,20 @@ extension AudiobookView.Header {
                 
                 HStack(spacing: 40) {
                     ItemImage(image: viewModel.audiobook.image, aspectRatio: .none)
-                        .shadow(radius: 30)
+                        .shadow(radius: 40)
                         .frame(width: min(400, (availableWidth - 40) / 2))
                         .hoverEffect(.highlight)
                     
                     // this piece of shit is required for `ViewThatFits` to work properly
                     Color.clear
-                        .frame(minWidth: 275)
+                        .frame(minWidth: 280)
                         .overlay {
                             VStack(alignment: .leading, spacing: 5) {
                                 Spacer()
                                 
                                 SeriesName()
                                 Title(largeFont: true, alignment: .leading)
-                                    .padding(.trailing, 15)
+                                    .padding(.trailing, 16)
                                 
                                 Spacer()
                                 
@@ -195,6 +196,7 @@ extension AudiobookView.Header {
                         }
                 }
             }
+            .padding(.top, 12)
         }
     }
 }

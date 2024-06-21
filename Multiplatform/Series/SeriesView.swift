@@ -9,16 +9,16 @@ import SwiftUI
 import Defaults
 import SPBase
 
-struct SeriesView: View {
+internal struct SeriesView: View {
     @Environment(\.libraryId) private var libraryId
     
     @Default(.audiobooksDisplay) private var audiobookDisplay
     @Default(.audiobooksFilter) private var audiobooksFilter
     
+    let series: Series
+    
     @State private var audiobooksSortOrder = AudiobookSortFilter.SortOrder.series
     @State private var audiobooksAscending = true
-    
-    let series: Series
     
     @State private var audiobooks = [Audiobook]()
     
@@ -37,7 +37,7 @@ struct SeriesView: View {
             switch audiobookDisplay {
                 case .grid:
                     ScrollView {
-                        Header(series: series)
+                        Header(series: series, audiobooks: audiobooks)
                         
                         HStack {
                             RowTitle(title: String(localized: "books"), fontDesign: .serif)
@@ -50,10 +50,14 @@ struct SeriesView: View {
                     }
                 case .list:
                     List {
-                        Header(series: series)
+                        Header(series: series, audiobooks: audiobooks)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        
                         RowTitle(title: String(localized: "books"), fontDesign: .serif)
                             .listRowSeparator(.hidden, edges: .top)
                             .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 20))
+                        
                         AudiobookList(audiobooks: visibleAudiobooks)
                     }
                     .listStyle(.plain)
@@ -67,8 +71,12 @@ struct SeriesView: View {
             }
         }
         .modifier(NowPlaying.SafeAreaModifier())
-        .task{ await fetchAudiobooks() }
-        .refreshable{ await fetchAudiobooks() }
+        .task {
+            await loadAudiobooks()
+        }
+        .refreshable {
+            await loadAudiobooks()
+        }
         .userActivity("io.rfk.shelfplayer.series") {
             $0.title = series.name
             $0.isEligibleForHandoff = true
@@ -78,18 +86,18 @@ struct SeriesView: View {
                 "seriesId": series.id,
                 "seriesName": series.name,
             ]
-            // TODO: webpage, i cannot be fucked right now
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: libraryId).appending(path: "series").appending(path: series.id)
         }
     }
 }
-
-// MARK: Helper
-
-extension SeriesView {
-    func fetchAudiobooks() async {
-        if let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: series.id, libraryId: libraryId) {
-            self.audiobooks = audiobooks
+    
+private extension SeriesView {
+    func loadAudiobooks() async {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: series.id, libraryId: libraryId) else {
+            return
         }
+        
+        self.audiobooks = audiobooks
     }
 }
 

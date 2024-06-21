@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stleamist/BetterSafariView.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "884533749e55949b2566030948c6fdbe2873ed0c"
+        "revision" : "884533749e55949b2566030948c6fdbe2873ed0c",
+        "version" : "2.4.2"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sindresorhus/Defaults",
       "state" : {
-        "branch" : "main",
-        "revision" : "38925e3cfacf3fb89a81a35b1cd44fd5a5b7e0fa"
+        "revision" : "38925e3cfacf3fb89a81a35b1cd44fd5a5b7e0fa",
+        "version" : "8.2.0"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Nuke.git",
       "state" : {
-        "revision" : "4625c73ea00a9fb4b4f3e28d95d0021a44af7e59",
-        "version" : "12.5.0"
+        "revision" : "311016d972aa751ae8ab0cd5897422ebe7db0501",
+        "version" : "12.7.3"
       }
     },
     {

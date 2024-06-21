@@ -7,7 +7,7 @@
 
 import TipKit
 
-struct SelectLibraryTip: Tip {
+internal struct SelectLibraryTip: Tip {
     var title: Text {
         .init("tip.changeLibrary")
     }

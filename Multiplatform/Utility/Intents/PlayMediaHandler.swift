@@ -14,7 +14,7 @@ import SPExtension
 import SPOfflineExtended
 import SPPlayback
 
-final class PlayMediaHandler: NSObject, INPlayMediaIntentHandling {
+final internal class PlayMediaHandler: NSObject, INPlayMediaIntentHandling {
     func handle(intent: INPlayMediaIntent) async -> INPlayMediaIntentResponse {
         if intent.resumePlayback == true && AudioPlayer.shared.item != nil {
             AudioPlayer.shared.playing = true

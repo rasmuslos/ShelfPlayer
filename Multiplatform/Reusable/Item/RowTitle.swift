@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Defaults
+import SPBase
 
 struct RowTitle: View {
     @Default(.useSerifFont) private var useSerifFont
@@ -18,7 +19,42 @@ struct RowTitle: View {
         Text(title)
             .font(.headline)
             .fontDesign(fontDesign == .serif && !useSerifFont ? nil : fontDesign)
-            .padding(.top, 10)
+    }
+}
+
+struct AudiobookRow: View {
+    let title: String
+    let audiobooks: [Audiobook]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Group {
+                if audiobooks.count > 5 {
+                    NavigationLink {
+                        ScrollView {
+                            AudiobookVGrid(audiobooks: audiobooks)
+                                .padding(.horizontal, 20)
+                        }
+                        .navigationTitle(title)
+                        .modifier(NowPlaying.SafeAreaModifier())
+                    } label: {
+                        HStack(alignment: .firstTextBaseline) {
+                            RowTitle(title: title, fontDesign: .serif)
+                            
+                            Image(systemName: "chevron.right.circle.fill")
+                                .imageScale(.small)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    RowTitle(title: title, fontDesign: .serif)
+                }
+            }
+            .padding(.bottom, 8)
+            .padding(.horizontal, 20)
+            
+            AudiobookHGrid(audiobooks: audiobooks, small: true)
+        }
     }
 }
 

@@ -7,7 +7,7 @@
 
 import TipKit
 
-struct CreateBookmarkTip: Tip {
+internal struct CreateBookmarkTip: Tip {
     var title: Text {
         .init("tip.bookmark.create")
     }
