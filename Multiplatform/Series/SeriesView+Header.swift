@@ -11,26 +11,26 @@ import SPBase
 extension SeriesView {
     struct Header: View {
         let series: Series
+        let audiobooks: [Audiobook]
+        
+        @State private var images = [Item.Image]()
+        
+        private var count: Int {
+            min(images.count, 5)
+        }
         
         var body: some View {
-            if !series.images.isEmpty {
+            if !images.isEmpty {
                 VStack {
-                    HStack {
-                        Spacer()
-                        
-                        let count = min(series.images.count, 5)
-                        ZStack {
-                            ForEach(0..<count, id: \.hashValue) {
-                                let index = count - $0 - 1
-                                
-                                ItemImage(image: series.images[index])
-                                    .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 175 : 140)
-                                    .offset(x: index == 0 ? 0 : index == 1 ? -50 : index == 2 ? 50 : index == 3 ? -90 : 90)
-                                    .shadow(radius: 5)
-                            }
+                    ZStack {
+                        ForEach(0..<count, id: \.hashValue) {
+                            let index = count - $0 - 1
+                            
+                            ItemImage(image: images[index])
+                                .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 180 : 160)
+                                .offset(x: index == 0 ? 0 : index == 1 ? -40 : index == 2 ? 40 : index == 3 ? -80 : 80)
+                                .shadow(radius: 4)
                         }
-                        
-                        Spacer()
                     }
                     
                     Text(series.name)
@@ -44,9 +44,18 @@ extension SeriesView {
                             }
                         }
                 }
-                .listRowSeparator(.hidden)
+                .frame(maxWidth: .infinity)
                 .padding(.bottom, 20)
             }
+            
+            EmptyView()
+                .onChange(of: audiobooks, initial: true) {
+                    if !series.images.isEmpty {
+                        images = series.images
+                    } else {
+                        images = audiobooks.compactMap { $0.image }
+                    }
+                }
         }
     }
 }

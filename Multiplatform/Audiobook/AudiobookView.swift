@@ -8,59 +8,43 @@
 import SwiftUI
 import SPBase
 
-struct AudiobookView: View {
-    @Environment(\.libraryId) private var libraryId
-    
+internal struct AudiobookView: View {
     let viewModel: AudiobookViewModel
-    
-    init(audiobook: Audiobook) {
-        viewModel = .init(audiobook: audiobook)
-    }
     
     private let divider: some View = Divider()
         .padding(.horizontal, 20)
-        .padding(.vertical, 10)
+        .padding(.vertical, 24)
     
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
                 Header()
-                    .padding(.vertical, 10)
                     .padding(.horizontal, 20)
                 
                 divider
                 
                 Description(description: viewModel.audiobook.description)
-                    .padding(.vertical, 10)
                     .padding(.horizontal, 20)
                 
                 if let chapters = viewModel.chapters, chapters.count > 1 {
                     divider
                     
                     ChaptersList(item: viewModel.audiobook, chapters: chapters)
-                        .padding(.vertical, 10)
                         .padding(.horizontal, 20)
                 }
                 
-                if viewModel.audiobooksInSeries.count > 1 {
-                    divider
-                    
-                    VStack(alignment: .leading) {
-                        RowTitle(title: String(localized: "audiobook.similar.series"))
-                            .padding(.horizontal, 20)
-                        AudiobookHGrid(audiobooks: viewModel.audiobooksInSeries, small: true)
-                    }
-                    .padding(.bottom, 20)
-                }
+                divider
                 
-                if viewModel.audiobooksByAuthor.count > 1, let author = viewModel.audiobook.author {
-                    divider
-                    
-                    VStack(alignment: .leading) {
-                        RowTitle(title: String(localized: "audiobook.similar.author \(author)"))
-                            .padding(.horizontal, 20)
-                        AudiobookHGrid(audiobooks: viewModel.audiobooksByAuthor, small: true)
-                    }
+                if viewModel.sameSeries.count > 1 {
+                    AudiobookRow(title: String(localized: "audiobook.similar.series"), audiobooks: viewModel.sameSeries)
+                        .padding(.bottom, 20)
+                }
+                if viewModel.sameAuthor.count > 1, let author = viewModel.audiobook.author {
+                    AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), audiobooks: viewModel.sameAuthor)
+                        .padding(.bottom, 20)
+                }
+                if viewModel.sameNarrator.count > 1, let narrator = viewModel.audiobook.narrator {
+                    AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), audiobooks: viewModel.sameNarrator)
                 }
                 
                 Spacer()
@@ -69,7 +53,9 @@ struct AudiobookView: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
         .environment(viewModel)
-        .task { await viewModel.fetchData(libraryId: libraryId) }
+        .task {
+            await viewModel.load()
+        }
         .userActivity("io.rfk.shelfplayer.audiobook") {
             $0.title = viewModel.audiobook.name
             $0.isEligibleForHandoff = true
@@ -85,6 +71,6 @@ struct AudiobookView: View {
 
 #Preview {
     NavigationStack {
-        AudiobookView(audiobook: Audiobook.fixture)
+        AudiobookView(viewModel: .init(audiobook: .fixture))
     }
 }

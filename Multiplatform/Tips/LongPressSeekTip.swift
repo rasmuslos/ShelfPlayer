@@ -7,7 +7,7 @@
 
 import TipKit
 
-struct LongPressSeekTip: Tip {
+internal struct LongPressSeekTip: Tip {
     var title: Text {
         .init("tip.player.longPress")
     }

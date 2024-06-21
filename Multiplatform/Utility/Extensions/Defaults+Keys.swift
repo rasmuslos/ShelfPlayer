@@ -9,7 +9,9 @@ import Foundation
 import SPBase
 import Defaults
 
-extension Defaults.Keys {
+internal extension Defaults.Keys {
+    static let backgroundTaskFailCount = Key<Int>("backgroundTaskFailCount", default: 0)
+    
     // MARK: Navigation
     
     static let sidebarSelection = Key<Sidebar.Selection?>("sidebarSelection")

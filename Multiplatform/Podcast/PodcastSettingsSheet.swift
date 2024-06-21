@@ -55,7 +55,7 @@ struct PodcastSettingsSheet: View {
         .onChange(of: configuration) {
             if configuration.autoDownload {
                 Task {
-                    try? await BackgroundTaskHandler.runAutoDownload(configuration: configuration)
+                    try? await BackgroundTaskHandler.updateDownloads(configuration: configuration)
                 }
             }
         }

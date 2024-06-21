@@ -10,10 +10,10 @@ import SPBase
 import SPOffline
 import SPOfflineExtended
 
-struct AudiobookContextMenuModifier: ViewModifier {
+internal struct AudiobookContextMenuModifier: ViewModifier {
     let audiobook: Audiobook
     
-    @State var authorId: String?
+    @State private var authorId: String?
     
     func body(content: Content) -> some View {
         content
@@ -26,7 +26,7 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                NavigationLink(destination: AudiobookView(audiobook: audiobook)) {
+                NavigationLink(destination: AudiobookView(viewModel: .init(audiobook: audiobook))) {
                     Label("audiobook.view", systemImage: "book")
                 }
                 
@@ -52,13 +52,13 @@ struct AudiobookContextMenuModifier: ViewModifier {
                 ProgressButton(item: audiobook)
                 DownloadButton(item: audiobook)
             } preview: {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 2) {
                     ItemStatusImage(item: audiobook, aspectRatio: .none)
+                        .padding(.bottom, 10)
                     
                     Text(audiobook.name)
                         .font(.headline)
                         .modifier(SerifModifier())
-                        .padding(.top, 10)
                     
                     if let author = audiobook.author {
                         Text(author)
@@ -72,20 +72,30 @@ struct AudiobookContextMenuModifier: ViewModifier {
                             .foregroundStyle(.tertiary)
                     }
                 }
-                .frame(width: 250)
+                .frame(width: 240)
                 .padding(20)
-                .onAppear {
-                    Task.detached {
-                        if let author = audiobook.author {
-                            authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId)
-                        }
-                    }
+                .task {
+                    await loadAuthorID()
                 }
             }
+    }
+    
+    private nonisolated func loadAuthorID() async {
+        guard let author = await audiobook.author else {
+            return
+        }
+        
+        guard let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId) else {
+            return
+        }
+        
+        await MainActor.run {
+            self.authorId = authorId
+        }
     }
 }
 
 #Preview {
-    Text(":)")
+    Text(verbatim: ":)")
         .modifier(AudiobookContextMenuModifier(audiobook: Audiobook.fixture))
 }

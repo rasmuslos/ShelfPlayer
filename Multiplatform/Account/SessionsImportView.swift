@@ -31,7 +31,7 @@ struct SessionsImportView: View {
         .onAppear {
             task = Task.detached {
                 let success = await OfflineManager.shared.authorizeAndSync()
-                callback(success)
+                await callback(success)
             }
         }
     }

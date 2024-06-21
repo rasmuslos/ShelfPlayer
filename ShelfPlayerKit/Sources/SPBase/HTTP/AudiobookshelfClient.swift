@@ -36,6 +36,10 @@ public final class AudiobookshelfClient {
             clientId = String.random(length: 100)
             Self.defaults.set(clientId, forKey: "clientId")
         }
+        
+        if UserDefaults.standard.object(forKey: "siriOfflineMode") != nil {
+            Self.defaults.set(UserDefaults.standard.bool(forKey: "siriOfflineMode"), forKey: "siriOfflineMode")
+        }
     }
 }
 

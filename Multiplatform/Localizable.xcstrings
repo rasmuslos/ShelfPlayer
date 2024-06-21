@@ -1,28 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    ":)" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ":)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ":)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ":)"
-          }
-        }
-      }
-    },
     "%@ chapter.remaining.in" : {
       "localizations" : {
         "de" : {
@@ -1070,19 +1048,35 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auch geschrieben von %@"
+            "value" : "Geschrieben von %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Also written by %@"
+            "value" : "Written by %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "第二作者: %@"
+          }
+        }
+      }
+    },
+    "audiobook.similar.narrator %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelesen von %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narrated by %@"
           }
         }
       }
@@ -1092,18 +1086,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auch in der Serie"
+            "value" : "In der Serie"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Also in series"
+            "value" : "In Series"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "也在系列中"
           }
         }
@@ -3946,6 +3940,7 @@
       }
     },
     "sort.all" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4034,6 +4029,7 @@
       }
     },
     "sort.finished" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4078,6 +4074,7 @@
       }
     },
     "sort.index" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4144,6 +4141,7 @@
       }
     },
     "sort.progress" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4188,6 +4186,7 @@
       }
     },
     "sort.unfinished" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
