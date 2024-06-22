@@ -9,7 +9,9 @@ import SwiftUI
 
 internal struct ErrorView: View {
     var body: some View {
-        ContentUnavailableView("error.unavailable.title", systemImage: "xmark.circle", description: Text("error.unavailable.text"))
+        UnavailableWrapper {
+            ContentUnavailableView("error.unavailable.title", systemImage: "xmark.circle", description: Text("error.unavailable.text"))
+        }
     }
 }
 

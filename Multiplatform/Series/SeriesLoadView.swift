@@ -17,29 +17,37 @@ struct SeriesLoadView: View {
     @State private var resolved: Series?
     
     var body: some View {
-        if failed {
-            SeriesUnavailableView()
-        } else if let resolved = resolved {
+        if let resolved = resolved {
             SeriesView(series: resolved)
+                .refreshable {
+                    await loadSeries()
+                }
+        } else if failed {
+            SeriesUnavailableView()
         } else {
             LoadingView()
-                .task { await fetchSeries() }
-                .refreshable { await fetchSeries() }
+                .task {
+                    await loadSeries()
+                }
         }
     }
     
-    private func fetchSeries() async {
-        failed = false
+    private func loadSeries() async {
         var id = series.id
         
         if id == nil {
             id = try? await AudiobookshelfClient.shared.getSeriesId(name: series.name, libraryId: libraryId)
         }
         
-        if let id = id, let series = await AudiobookshelfClient.shared.getSeries(seriesId: id, libraryId: libraryId) {
-            self.resolved = series
-        } else {
-            failed = true
+        guard let id else {
+            return
         }
+        
+        guard let series = await AudiobookshelfClient.shared.getSeries(seriesId: id, libraryId: libraryId) else {
+            failed = true
+            return
+        }
+        
+        self.resolved = series
     }
 }

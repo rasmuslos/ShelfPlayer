@@ -10,15 +10,16 @@ import Defaults
 import SPBase
 
 struct AuthorView: View {
-    @Environment(\.libraryId) var libraryId
+    @Environment(\.libraryId) private var libraryId
     
-    @Default(.audiobooksDisplay) var audiobookDisplay
-    @Default(.audiobooksFilter) var audiobooksFilter
+    @Default(.audiobooksFilter) private var audiobooksFilter
+    @Default(.audiobooksDisplay) private var audiobookDisplay
     
-    @Default(.audiobooksSortOrder) var audiobooksSortOrder
-    @Default(.audiobooksAscending) var audiobooksAscending
+    @Default(.audiobooksSortOrder) private var audiobooksSortOrder
+    @Default(.audiobooksAscending) private var audiobooksAscending
     
     let author: Author
+    
     @State var audiobooks = [Audiobook]()
     
     private var visibleAudiobooks: [Audiobook] {
@@ -41,10 +42,11 @@ struct AuthorView: View {
                         ScrollView {
                             Header(author: author)
                             
-                            HStack {
+                            HStack(spacing: 0) {
                                 RowTitle(title: String(localized: "books"), fontDesign: .serif)
                                 Spacer()
                             }
+                            .padding(.top, 16)
                             .padding(.horizontal, 20)
                             
                             AudiobookVGrid(audiobooks: visibleAudiobooks)
@@ -57,7 +59,8 @@ struct AuthorView: View {
                                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                             
                             RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                                .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 0))
+                                .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+                            
                             AudiobookList(audiobooks: visibleAudiobooks)
                         }
                         .listStyle(.plain)
@@ -71,38 +74,31 @@ struct AuthorView: View {
                 AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text(verbatim: "")
-            }
-        }
         .modifier(NowPlaying.SafeAreaModifier())
         .task {
-            if audiobooks.isEmpty {
-                await fetchAudiobooks()
-            }
+            await loadAudiobooks()
         }
-        .refreshable { await fetchAudiobooks() }
+        .refreshable {
+            await loadAudiobooks()
+        }
         .userActivity("io.rfk.shelfplayer.author") {
             $0.title = author.name
             $0.isEligibleForHandoff = true
             $0.persistentIdentifier = author.id
-            $0.targetContentIdentifier = "audiobook:\(author.id)"
+            $0.targetContentIdentifier = "author:\(author.id)"
             $0.userInfo = [
                 "authorId": author.id,
             ]
             $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: author.id)
         }
     }
-}
-
-// MARK: Helper
-
-extension AuthorView {
-    func fetchAudiobooks() async {
-        if let audiobooks = try? await AudiobookshelfClient.shared.getAuthorData(authorId: author.id, libraryId: libraryId).1 {
-            self.audiobooks = audiobooks
+    
+    func loadAudiobooks() async {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.getAuthorData(authorId: author.id, libraryId: libraryId).1 else {
+            return
         }
+        
+        self.audiobooks = audiobooks
     }
 }
 
