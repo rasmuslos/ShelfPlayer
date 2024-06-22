@@ -15,16 +15,24 @@ extension AuthorView {
         @State var descriptionSheetVisible = false
         
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
                 ItemImage(image: author.image)
                     .frame(width: 100, height: 100)
-                    .clipShape(RoundedRectangle(cornerRadius: 10000))
+                    .clipShape(.rect(cornerRadius: .infinity))
+                    .shadow(radius: 20)
                 
                 Text(author.name)
                     .modifier(SerifModifier())
                     .font(.headline)
                     .multilineTextAlignment(.center)
+                    .padding(.top, 8)
+                    .padding(.bottom, 12)
                     .padding(.horizontal, 20)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            Text(verbatim: "")
+                        }
+                    }
                 
                 if let description = author.description {
                     Button {
@@ -34,7 +42,7 @@ extension AuthorView {
                             .lineLimit(3)
                     }
                     .buttonStyle(.plain)
-                    .padding(20)
+                    .padding(.horizontal, 20)
                     .sheet(isPresented: $descriptionSheetVisible) {
                         NavigationStack {
                             Text(description)

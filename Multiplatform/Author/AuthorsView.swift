@@ -9,62 +9,58 @@ import SwiftUI
 import Defaults
 import SPBase
 
-struct AuthorsView: View {
+internal struct AuthorsView: View {
     @Environment(\.libraryId) private var libraryId
     @Default(.authorsAscending) private var authorsAscending
     
-    @State private var authors = [Author]()
     @State private var failed = false
+    @State private var authors = [Author]()
     
-    private var authorsSorted: [Author] {
+    private var sorted: [Author] {
         authors.sorted {
             $0.name.localizedStandardCompare($1.name) == (authorsAscending ? .orderedAscending : .orderedDescending)
         }
     }
     
     var body: some View {
-        Group {
-            if authors.isEmpty {
-                if failed {
-                    ErrorView()
-                } else {
-                    LoadingView()
-                        .task { await loadAuthors() }
-                }
+        if authors.isEmpty {
+            if failed {
+                ErrorView()
+                    .refreshable { await loadAuthors() }
             } else {
-                List {
-                    AuthorList(authors: authorsSorted)
-                }
-                .listStyle(.plain)
-                .navigationTitle("authors.title")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            withAnimation {
-                                authorsAscending.toggle()
-                            }
-                        } label: {
-                            Label("ascending", systemImage: "arrow.up.arrow.down.circle")
-                                .labelStyle(.iconOnly)
-                                .symbolVariant(authorsAscending ? .fill : .none)
+                LoadingView()
+                    .task { await loadAuthors() }
+            }
+        } else {
+            List {
+                AuthorList(authors: sorted)
+            }
+            .listStyle(.plain)
+            .navigationTitle("authors.title")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        withAnimation {
+                            authorsAscending.toggle()
                         }
+                    } label: {
+                        Label("ascending", systemImage: "arrow.up.arrow.down.circle")
+                            .labelStyle(.iconOnly)
+                            .symbolVariant(authorsAscending ? .none : .fill)
                     }
                 }
             }
+            .refreshable { await loadAuthors() }
         }
-        .refreshable { await loadAuthors() }
     }
-}
-
-extension AuthorsView {
+    
     func loadAuthors() async {
-        failed = false
-        
-        if let authors = try? await AudiobookshelfClient.shared.getAuthors(libraryId: libraryId) {
-            self.authors = authors
-        } else {
+        guard let authors = try? await AudiobookshelfClient.shared.getAuthors(libraryId: libraryId) else {
             failed = true
+            return
         }
+        
+        self.authors = authors
     }
 }
 
