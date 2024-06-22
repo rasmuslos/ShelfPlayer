@@ -15,30 +15,26 @@ struct AuthorLoadView: View {
     
     @State private var failed = false
     @State private var author: Author?
-    @State private var audiobooks: [Audiobook]?
+    @State private var audiobooks = [Audiobook]()
     
     var body: some View {
-        if failed {
+        if let author = author {
+            AuthorView(author: author, audiobooks: audiobooks)
+        } else if failed {
             AuthorUnavailableView()
-        } else if let author = author {
-            AuthorView(author: author, audiobooks: audiobooks ?? [])
+                .refreshable { await loadAuthor() }
         } else {
             LoadingView()
-                .task { await fetchAuthor() }
-                .refreshable { await fetchAuthor() }
+                .task { await loadAuthor() }
         }
     }
-}
-
-extension AuthorLoadView {
-    private func fetchAuthor() async {
-        failed = false
-        
-        if let author = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId) {
-            self.audiobooks = author.1
-            self.author = author.0
-        } else {
-            failed = true
+    
+    private func loadAuthor() async {
+        guard let data = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId) else {
+            return
         }
+        
+        audiobooks = data.1
+        author = data.0
     }
 }

@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct AuthorUnavailableView: View {
+internal struct AuthorUnavailableView: View {
     var body: some View {
-        ContentUnavailableView("error.unavailable.author", systemImage: "person", description: Text("error.unavailable.text"))
+        UnavailableWrapper {
+            ContentUnavailableView("error.unavailable.author", systemImage: "person", description: Text("error.unavailable.text"))
+        }
     }
 }
 

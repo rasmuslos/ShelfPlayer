@@ -16,92 +16,89 @@ struct AudiobookList: View {
     var body: some View {
         ForEach(audiobooks) { audiobook in
             NavigationLink(destination: AudiobookView(viewModel: .init(audiobook: audiobook))) {
-                AudiobookRow(audiobook: audiobook)
+                Row(audiobook: audiobook)
             }
             .modifier(SwipeActionsModifier(item: audiobook))
-            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
+            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         }
     }
 }
 
-extension AudiobookList {
-    struct AudiobookRow: View {
-        let audiobook: Audiobook
-        let entity: ItemProgress
+
+private struct Row: View {
+    let audiobook: Audiobook
+    
+    @State private var entity: ItemProgress? = nil
+    
+    private var labelImage: String {
+        if audiobook == AudioPlayer.shared.item {
+            return AudioPlayer.shared.playing ? "waveform" : "pause"
+        } else {
+            return "play"
+        }
+    }
+    
+    private var eyebrow: [String] {
+        var parts = [String]()
         
-        @MainActor
-        init(audiobook: Audiobook) {
-            self.audiobook = audiobook
-            entity = OfflineManager.shared.requireProgressEntity(item: audiobook)
+        if let author = audiobook.author {
+            parts.append(author)
+        }
+        if let released = audiobook.released {
+            parts.append(released)
         }
         
-        var labelImage: String {
-            if audiobook == AudioPlayer.shared.item {
-                return AudioPlayer.shared.playing ? "waveform" : "pause"
-            } else {
-                return "play"
-            }
-        }
-        
-        var eyebrow: [String] {
-            var parts = [String]()
+        return parts
+    }
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            ItemStatusImage(item: audiobook, aspectRatio: .none)
+                .frame(width: 88)
+                .shadow(radius: 4)
             
-            if let author = audiobook.author {
-                parts.append(author)
-            }
-            if let released = audiobook.released {
-                parts.append(released)
-            }
-            
-            return parts
-        }
-        
-        var body: some View {
-            HStack {
-                ItemStatusImage(item: audiobook, aspectRatio: .none)
-                    .frame(width: 85)
-                
-                VStack(alignment: .leading, spacing: 0) {
-                    if eyebrow.count > 0 {
-                        Text(eyebrow.joined(separator: " • "))
-                            .font(.caption.smallCaps())
-                            .lineLimit(1)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Text(audiobook.name)
-                        .font(.headline)
-                        .modifier(SerifModifier())
+            VStack(alignment: .leading, spacing: 0) {
+                if !eyebrow.isEmpty {
+                    Text(eyebrow.joined(separator: " • "))
                         .lineLimit(1)
-                        .padding(.top, 4)
-                        .padding(.bottom, 6)
-                    
-                    Button {
-                        audiobook.startPlayback()
-                    } label: {
-                        HStack {
-                            Label("playing", systemImage: labelImage)
-                                .labelStyle(.iconOnly)
-                                .font(.subheadline)
-                                .imageScale(.large)
-                                .symbolVariant(.circle.fill)
-                                .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
-                            
-                            if entity.progress > 0 {
-                                Text(entity.readableProgress(spaceConstrained: false))
-                            } else {
-                                Text(verbatim: audiobook.duration.timeLeft(spaceConstrained: false))
-                            }
-                        }
-                        .font(.caption)
+                        .font(.caption.smallCaps())
                         .foregroundStyle(.secondary)
-                    }
-                    .buttonStyle(.plain)
-                    .modifier(ButtonHoverEffectModifier())
+                        .padding(.bottom, 4)
                 }
-                .padding(.leading, 5)
+                
+                Text(audiobook.name)
+                    .lineLimit(1)
+                    .font(.headline)
+                    .modifier(SerifModifier())
+                    .padding(.bottom, 8)
+                
+                Button {
+                    audiobook.startPlayback()
+                } label: {
+                    HStack {
+                        Label("playing", systemImage: labelImage)
+                            .labelStyle(.iconOnly)
+                            .font(.subheadline)
+                            .imageScale(.large)
+                            .symbolVariant(.circle.fill)
+                            .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
+                        
+                        if let entity, entity.progress > 0 {
+                            Text(entity.readableProgress(spaceConstrained: false))
+                        } else {
+                            Text(audiobook.duration.timeLeft(spaceConstrained: false))
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .modifier(ButtonHoverEffectModifier())
             }
-            .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+        }
+        .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+        .task {
+            entity = OfflineManager.shared.requireProgressEntity(item: audiobook)
         }
     }
 }

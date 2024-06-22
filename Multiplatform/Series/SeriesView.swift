@@ -89,9 +89,7 @@ internal struct SeriesView: View {
             $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: libraryId).appending(path: "series").appending(path: series.id)
         }
     }
-}
     
-private extension SeriesView {
     func loadAudiobooks() async {
         guard let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: series.id, libraryId: libraryId) else {
             return
