@@ -3,52 +3,71 @@
 
 import PackageDescription
 
+private let offlineCondition: TargetDependencyCondition? = .when(platforms: [.iOS, .watchOS, .visionOS, .macOS, .macCatalyst])
+
 let package = Package(
     name: "ShelfPlayerKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v17), .watchOS(.v10)],
+    platforms: [
+        .iOS(.v17),
+    ],
     products: [
-        .library(name: "SPBase", targets: ["SPBase", "SPExtension", "SPOffline"]),
-        .library(name: "SPOfflineExtended", targets: ["SPOfflineExtended"]),
+        .library(name: "ShelfPlayerKit", targets: ["ShelfPlayerKit"]),
         .library(name: "SPPlayback", targets: ["SPPlayback"]),
     ],
     dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: .init(2, 6, 0)),
         .package(url: "https://github.com/sindresorhus/Defaults", from: .init(8, 2, 0)),
-        .package(url: "https://github.com/FelixHerrmann/UIImageColors.git", branch: "master"),
     ],
     targets: [
+        // Umbrella library
+        .target(name: "ShelfPlayerKit", dependencies: [
+            .targetItem(name: "SPFoundation", condition: .none),
+            .targetItem(name: "SPExtension", condition: .none),
+            .targetItem(name: "SPNetwork", condition: .none),
+            .targetItem(name: "SPOffline", condition: .none),
+            
+            .targetItem(name: "SPOfflineExtended", condition: offlineCondition),
+        ]),
+        
+        // Foundation
         .target(
-            name: "SPBase",
+            name: "SPFoundation",
             dependencies: [
                 .byName(name: "Defaults"),
                 .byName(name: "SwiftSoup"),
-                .byName(name: "UIImageColors"),
-            ],
-            resources: [.process("Resources")]),
-    
+            ]
+        ),
         .target(name: "SPExtension", dependencies: [
-            .byName(name: "SPBase"),
-            .byName(name: "SPOffline"),
-            .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS, .watchOS, .visionOS, .macOS]))
+            .targetItem(name: "SPFoundation", condition: .none),
+            .targetItem(name: "SPOffline", condition: .none),
+            .targetItem(name: "SPOfflineExtended", condition: offlineCondition),
         ]),
         
+        // Network
+        .target(name: "SPNetwork", dependencies: [
+            .targetItem(name: "SPFoundation", condition: .none),
+        ]),
+        
+        // Offline
         .target(name: "SPOffline", dependencies: [
-            .byName(name: "SPBase"),
             .byName(name: "Defaults"),
+            
+            .targetItem(name: "SPFoundation", condition: .none),
         ]),
         .target(name: "SPOfflineExtended", dependencies: [
-            .byName(name: "SPBase"),
-            .byName(name: "SPOffline"),
+            .targetItem(name: "SPFoundation", condition: .none),
+            .targetItem(name: "SPOffline", condition: .none),
         ]),
         
+        // Playback
         .target(name: "SPPlayback", dependencies: [
             .byName(name: "Defaults"),
-            .byName(name: "SPBase"),
             
-            .byName(name: "SPOffline"),
-            .byName(name: "SPExtension"),
-            .byName(name: "SPOfflineExtended", condition: .when(platforms: [.iOS, .watchOS, .visionOS, .macOS])),
+            .targetItem(name: "SPFoundation", condition: .none),
+            .targetItem(name: "SPExtension", condition: .none),
+            .targetItem(name: "SPOffline", condition: .none),
+            .targetItem(name: "SPOfflineExtended", condition: offlineCondition),
         ]),
     ]
 )
