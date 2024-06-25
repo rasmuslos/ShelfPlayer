@@ -6,13 +6,15 @@
 //
 
 import Foundation
-import SPBase
+import SPFoundation
 import SPOffline
 import SPOfflineExtended
 
 public extension MediaResolver {
     func search(audiobookName: String?, author: String?) async throws -> [Audiobook] {
-        guard let audiobookName = audiobookName else { throw ResolveError.missing }
+        guard let audiobookName = audiobookName else {
+            throw ResolveError.missing
+        }
         
         var result = [Audiobook]()
         
