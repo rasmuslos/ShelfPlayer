@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SPFoundation
 
 public extension AudiobookshelfClient {
     func audiobooks(narratorName: String, libraryId: String) async throws -> [Audiobook] {
@@ -14,6 +15,7 @@ public extension AudiobookshelfClient {
             URLQueryItem(name: "limit", value: "100"),
             URLQueryItem(name: "page", value: "0"),
         ]))
-        return response.results.compactMap(Audiobook.convertFromAudiobookshelf)
+        
+        return response.results.compactMap(Audiobook.init)
     }
 }

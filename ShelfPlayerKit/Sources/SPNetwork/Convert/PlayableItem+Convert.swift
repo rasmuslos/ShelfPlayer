@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import SPFoundation
 
-extension PlayableItem {
-    static func convertAudioTrackFromAudiobookshelf(track: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfAudioTrack) -> AudioTrack {
-        AudioTrack(
+internal extension PlayableItem.AudioTrack {
+    init(track: AudiobookshelfAudioTrack) {
+        self.init(
             index: track.index!,
             offset: track.startOffset,
             duration: track.duration,
@@ -18,8 +19,11 @@ extension PlayableItem {
             contentUrl: track.contentUrl,
             fileExtension: track.metadata!.ext!)
     }
-    static func convertChapterFromAudiobookshelf(chapter: AudiobookshelfClient.AudiobookshelfItem.AudiobookshelfChapter) -> Chapter {
-        Chapter(
+}
+
+internal extension PlayableItem.Chapter {
+    init(chapter: AudiobookshelfChapter) {
+        self.init(
             id: chapter.id,
             start: chapter.start,
             end: chapter.end,

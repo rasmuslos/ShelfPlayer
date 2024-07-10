@@ -6,13 +6,9 @@
 //
 
 import Foundation
-import CommonCrypto
+import SPFoundation
 
 public extension AudiobookshelfClient {
-    func status() async throws -> StatusResponse {
-        return try await request(ClientRequest<StatusResponse>(path: "status", method: "GET"))
-    }
-    
     func login(username: String, password: String) async throws -> String {
         let response = try await request(ClientRequest<AuthorizationResponse>(path: "login", method: "POST", body: [
             "username": username,
@@ -22,13 +18,13 @@ public extension AudiobookshelfClient {
         return response.user.token
     }
     
-    func username() async throws -> String {
-        let response = try await request(ClientRequest<MeResponse>(path: "api/me", method: "GET"))
-        return response.username
+    func status() async throws -> StatusResponse {
+        try await request(ClientRequest<StatusResponse>(path: "status", method: "GET"))
     }
-    func userId() async throws -> String {
+    
+    func me() async throws -> (String, String) {
         let response = try await request(ClientRequest<MeResponse>(path: "api/me", method: "GET"))
-        return response.id
+        return (response.id, response.username)
     }
     
     func authorize() async throws -> ([MediaProgress], [Bookmark]) {
@@ -38,16 +34,14 @@ public extension AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
-    private func sha256(data : Data) -> Data {
-        var hash = [UInt8](repeating: 0,  count: Int(CC_SHA256_DIGEST_LENGTH))
-        data.withUnsafeBytes {
-            _ = CC_SHA256($0.baseAddress, CC_LONG(data.count), &hash)
+    private final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
+        public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
+            nil
         }
-        return Data(hash)
     }
     
     func openIDLoginURL(verifier: String) async throws -> URL {
-        var challenge = sha256(data: Data(verifier.compactMap { $0.asciiValue })).base64EncodedString()
+        var challenge = Data(verifier.compactMap { $0.asciiValue }).sha256.base64EncodedString()
         
         // Base64 --> URL-Base64
         challenge = challenge.replacingOccurrences(of: "+", with: "-")
@@ -80,7 +74,7 @@ public extension AudiobookshelfClient {
             return url
         }
         
-        throw AudiobookshelfClientError.invalidResponse
+        throw ClientError.invalidResponse
     }
     
     func openIDExchange(code: String, state: String, verifier: String) async throws -> String {
@@ -91,11 +85,5 @@ public extension AudiobookshelfClient {
         ]))
         
         return response.user.token
-    }
-    
-    final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
-        public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
-            nil
-        }
     }
 }
