@@ -6,23 +6,34 @@
 //
 
 import Foundation
+import SPFoundation
 
-extension Podcast {
-    static func convertFromAudiobookshelf(item: AudiobookshelfClient.AudiobookshelfItem) -> Podcast {
-        Podcast(
+internal extension Podcast {
+    convenience init(item: AudiobookshelfItem) {
+        let addedAt = item.addedAt ?? 0
+        let podcastType: PodcastType?
+        
+        if item.type == "episodic" {
+            podcastType = .episodic
+        } else if item.type == "serial" {
+            podcastType = .serial
+        } else {
+            podcastType = nil
+        }
+        
+        self.init(
             id: item.id,
-            additionalId: nil,
             libraryId: item.libraryId!,
             name: item.media!.metadata.title!,
             author: item.media?.metadata.author,
             description: item.media?.metadata.description,
-            image: Item.Image.convertFromAudiobookshelf(item: item),
+            cover: Cover(item: item),
             genres: item.media?.metadata.genres ?? [],
-            addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
+            addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             released: item.media?.metadata.releaseDate, 
             explicit: item.media?.metadata.explicit ?? false,
             episodeCount: item.media?.episodes?.count ?? 0,
-            type: PodcastType.convertFromAudiobookshelf(type: item.media?.metadata.type)
+            type: podcastType
         )
     }
 }

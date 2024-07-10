@@ -6,25 +6,28 @@
 //
 
 import Foundation
+import OSLog
 import SwiftUI
+import SPFoundation
 
 @Observable
 public final class AudiobookshelfClient {
     public private(set) var serverUrl: URL!
     public private(set) var _token: String?
     
-    public private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
+    public private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
     public private(set) var clientId: String
     
-    public static let defaults = ENABLE_ALL_FEATURES ? UserDefaults(suiteName: "group.io.rfk.shelfplayer")! : UserDefaults.standard
+    public static let defaults = SPKit_ENABLE_ALL_FEATURES ? UserDefaults(suiteName: "group.io.rfk.shelfplayer")! : UserDefaults.standard
     
-    fileprivate var _customHTTPHeaders: [CustomHTTPHeader]?
+    internal var _customHTTPHeaders: [CustomHTTPHeader]?
+    internal let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "HTTP")
     
-    init(serverUrl: URL!, token: String!) {
-        if !ENABLE_ALL_FEATURES {
-            print("[WARNING] User data will not be stored in an app group")
+    private init(serverUrl: URL?, token: String?) {
+        if !SPKit_ENABLE_ALL_FEATURES {
+            logger.warning("User-data will not be stored in a shared app group")
         }
         
         _serverUrl = serverUrl
@@ -33,7 +36,7 @@ public final class AudiobookshelfClient {
         if let clientId = Self.defaults.string(forKey: "clientId") {
             self.clientId = clientId
         } else {
-            clientId = String.random(length: 100)
+            clientId = String(length: 100)
             Self.defaults.set(clientId, forKey: "clientId")
         }
         
@@ -44,6 +47,10 @@ public final class AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
+    var siriOfflineMode: Bool {
+        Self.defaults.bool(forKey: "siriOfflineMode")
+    }
+    
     var authorized: Bool {
         _token != nil
     }
@@ -53,7 +60,7 @@ public extension AudiobookshelfClient {
     
     func store(serverUrl: String) throws {
         guard let serverUrl = URL(string: serverUrl) else {
-            throw AudiobookshelfClientError.invalidServerUrl
+            throw ClientError.invalidServerUrl
         }
         
         Self.defaults.set(serverUrl, forKey: "serverUrl")
@@ -64,61 +71,17 @@ public extension AudiobookshelfClient {
         Self.defaults.set(token, forKey: "token")
         _token = token
     }
-    
-    func logout() {
-        store(token: nil)
-    }
-    
-    var siriOfflineMode: Bool {
-        Self.defaults.bool(forKey: "siriOfflineMode")
+}
+
+internal extension AudiobookshelfClient {
+    enum ClientError: Error {
+        case invalidServerUrl
+        case invalidHttpBody
+        case invalidResponse
+        case missing
     }
 }
 
 public extension AudiobookshelfClient {
-    var customHTTPHeaders: [CustomHTTPHeader] {
-        get {
-            if let customHTTPHeaders = _customHTTPHeaders {
-                return customHTTPHeaders
-            }
-            
-            let decoder = JSONDecoder()
-            if
-                let object = Self.defaults.object(forKey: "customHTTPHeaders") as? Data,
-                let headers = try? decoder.decode([CustomHTTPHeader].self, from: object) {
-                _customHTTPHeaders = headers
-                return headers
-            }
-            
-            return []
-        }
-        set {
-            _customHTTPHeaders = newValue
-            
-            let encoder = JSONEncoder()
-            if let object = try? encoder.encode(newValue) {
-                Self.defaults.set(object, forKey: "customHTTPHeaders")
-            }
-        }
-    }
-    
-    struct CustomHTTPHeader: Codable {
-        public var key: String
-        public var value: String
-        
-        public init(key: String, value: String) {
-            self.key = key
-            self.value = value
-        }
-    }
-}
-
-enum AudiobookshelfClientError: Error {
-    case invalidServerUrl
-    case invalidHttpBody
-    case invalidResponse
-    case missing
-}
-
-extension AudiobookshelfClient {
-    public static let shared = AudiobookshelfClient(serverUrl: defaults.url(forKey: "serverUrl"), token: defaults.string(forKey: "token"))
+    static let shared = AudiobookshelfClient(serverUrl: defaults.url(forKey: "serverUrl"), token: defaults.string(forKey: "token"))
 }

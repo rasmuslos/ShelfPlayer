@@ -10,9 +10,9 @@ import Foundation
 public final class Series: Item {
     public let covers: [Cover]
     
-    public init(id: String, libraryId: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, covers: [Cover]) {
+    public init(id: String, libraryId: String, name: String, description: String?, addedAt: Date, covers: [Cover]) {
         self.covers = covers
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)
+        super.init(id: id, libraryId: libraryId, name: name, author: nil, description: description, cover: nil, genres: [], addedAt: addedAt, released: nil)
     }
 }

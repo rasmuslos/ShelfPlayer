@@ -14,12 +14,12 @@ public final class Episode: PlayableItem {
     
     public let index: Int
     
-    public init(id: String, libraryId: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: Double, podcastId: String, podcastName: String, index: Int) {
+    public init(id: String, libraryId: String, name: String, author: String?, description: String?, cover: Cover?, addedAt: Date, released: String?, size: Int64, duration: Double, podcastId: String, podcastName: String, index: Int) {
         self.podcastId = podcastId
         self.podcastName = podcastName
         self.index = index
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
+        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, cover: cover, genres: [], addedAt: addedAt, released: released, size: size, duration: duration)
     }
 }
 

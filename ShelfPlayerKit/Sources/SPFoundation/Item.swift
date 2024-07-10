@@ -48,3 +48,26 @@ extension Item: Hashable {
         hasher.combine(id)
     }
 }
+
+extension Item: Comparable {
+    public static func < (lhs: Item, rhs: Item) -> Bool {
+        lhs.sortName < rhs.sortName
+    }
+}
+
+public extension Item {
+    var sortName: String {
+        get {
+            var sortName = name.lowercased()
+            
+            if sortName.starts(with: "a ") {
+                sortName = String(sortName.dropFirst(2))
+            }
+            if sortName.starts(with: "the ") {
+                sortName = String(sortName.dropFirst(4))
+            }
+            
+            return sortName
+        }
+    }
+}
