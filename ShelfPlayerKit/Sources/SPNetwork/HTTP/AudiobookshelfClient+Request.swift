@@ -6,17 +6,8 @@
 //
 
 import Foundation
-
-extension AudiobookshelfClient {
-    struct ClientRequest<T> {
-        var path: String
-        var method: String
-        var body: Any?
-        var query: [URLQueryItem]?
-    }
-    
-    struct EmptyResponse: Decodable {}
-    
+ 
+internal extension AudiobookshelfClient {
     func request<T: Decodable>(_ clientRequest: ClientRequest<T>) async throws -> T {
         var url = serverUrl.appending(path: clientRequest.path)
         
@@ -35,6 +26,8 @@ extension AudiobookshelfClient {
         }
         
         if let body = clientRequest.body {
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
             do {
                 if let encodable = body as? Encodable {
                     let encoder = JSONEncoder()
@@ -44,13 +37,9 @@ extension AudiobookshelfClient {
                 }
                 
                 // print(clientRequest.path, clientRequest.method, String(data: request.httpBody!, encoding: .ascii))
-                
-                if request.value(forHTTPHeaderField: "Content-Type") == nil {
-                    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                }
             } catch {
-                print("Unable to encode body \(error)")
-                throw AudiobookshelfClientError.invalidHttpBody
+                logger.fault("Unable to encode body \(error)")
+                throw ClientError.invalidHttpBody
             }
         }
         
@@ -64,8 +53,19 @@ extension AudiobookshelfClient {
             
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            print(url, error)
-            throw AudiobookshelfClientError.invalidResponse
+            logger.fault("Failed to parse \(url): \(error)")
+            throw ClientError.invalidResponse
         }
     }
+}
+
+internal extension AudiobookshelfClient {
+    struct ClientRequest<T> {
+        var path: String
+        var method: String
+        var body: Any?
+        var query: [URLQueryItem]?
+    }
+    
+    struct EmptyResponse: Decodable {}
 }
