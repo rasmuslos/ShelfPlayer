@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftData
-import SPBase
+import SPFoundation
 
 public struct PersistenceManager {
     public let modelContainer: ModelContainer = {
@@ -23,10 +23,10 @@ public struct PersistenceManager {
             OfflineEpisode.self,
             
             PodcastFetchConfiguration.self,
-            PlaybackDuration.self,
-        ], version: .init(1, 0, 1))
+            OfflineListeningTimeTracker.self,
+        ], version: .init(1, 1, 0))
         
-        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: ENABLE_ALL_FEATURES ? .identifier("group.io.rfk.shelfplayer") : .none)
+        let modelConfiguration = ModelConfiguration("ShelfPlayer", schema: schema, isStoredInMemoryOnly: false, allowsSave: true, groupContainer: SPKit_ENABLE_ALL_FEATURES ? .identifier("group.io.rfk.shelfplayer") : .none)
         
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])

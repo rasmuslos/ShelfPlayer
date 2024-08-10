@@ -6,37 +6,36 @@
 //
 
 import Foundation
-import SPBase
+import SPFoundation
 
-public extension AudiobookshelfClient {
+public extension Episode {
     @MainActor
     static func filterSort(episodes: [Episode], filter: EpisodeFilter, sortOrder: EpisodeSortOrder, ascending: Bool) -> [Episode] {
-        var episodes = episodes.filter {
-            switch filter {
-                case .all:
-                    return true
-                case .progress, .unfinished, .finished:
-                    let entity = OfflineManager.shared.requireProgressEntity(item: $0)
+        var episodes
+        
+        if filter != .all {
+            episodes = episodes.filter {
+                let entity = OfflineManager.shared.requireProgressEntity(item: $0)
+                
+                if entity.progress > 0 {
+                    if filter == .unfinished {
+                        return entity.progress < 1
+                    }
+                    if entity.progress < 1 && filter == .finished {
+                        return false
+                    }
+                    if entity.progress >= 1 && filter == .progress {
+                        return false
+                    }
                     
-                    if entity.progress > 0 {
-                        if filter == .unfinished {
-                            return entity.progress < 1
-                        }
-                        if entity.progress < 1 && filter == .finished {
-                            return false
-                        }
-                        if entity.progress >= 1 && filter == .progress {
-                            return false
-                        }
-                        
+                    return true
+                } else {
+                    if filter == .unfinished {
                         return true
                     } else {
-                        if filter == .unfinished {
-                            return true
-                        } else {
-                            return false
-                        }
+                        return false
                     }
+                }
             }
         }
         

@@ -7,28 +7,34 @@
 
 import Foundation
 import SwiftData
-import SPBase
+import SPFoundation
+import SPNetwork
 
-extension OfflineManager {
-    @MainActor
+// MARK: Internal (Higher order)
+
+internal extension OfflineManager {
     func deleteBookmarks() throws {
-        try PersistenceManager.shared.modelContainer.mainContext.delete(model: Bookmark.self)
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        try context.delete(model: Bookmark.self)
+        try context.save()
     }
     
-    @MainActor
     func syncLocalBookmarks(bookmarks: [AudiobookshelfClient.Bookmark]) throws {
-        try PersistenceManager.shared.modelContainer.mainContext.transaction {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        try context.transaction {
             for bookmark in bookmarks {
-                let entity = Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced)
-                PersistenceManager.shared.modelContainer.mainContext.insert(entity)
+                context.insert(Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced))
             }
         }
+        try context.save()
     }
     
-    @MainActor
     func syncRemoteBookmarks() async throws {
-        // isn't it really inefficient to do this instead of two queries? maybe but SwiftData does not allow it any way else
-        let bookmarks = try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor<Bookmark>())
+        // isn't it really inefficient to do this instead of two queries? maybe but SwiftData does not allow it any other way
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let bookmarks = try context.fetch(FetchDescriptor<Bookmark>())
         
         for entity in bookmarks.filter({ $0.status == .deleted }) {
             try? await AudiobookshelfClient.shared.deleteBookmark(itemId: entity.itemId, position: entity.position)
@@ -42,26 +48,36 @@ extension OfflineManager {
     }
 }
 
+// MARK: Public (Higher order)
+
 public extension OfflineManager {
     @MainActor
     func createBookmark(itemId: String, position: Double, note: String) async {
+        let bookmark = try? await AudiobookshelfClient.shared.createBookmark(itemId: itemId, position: position, note: note)
+        
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
         let entity: Bookmark
         
-        if let bookmark = try? await AudiobookshelfClient.shared.createBookmark(itemId: itemId, position: position, note: note) {
+        if let bookmark {
             entity = Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced)
         } else {
             entity = Bookmark(itemId: itemId, episodeId: nil, note: note, position: position, status: .pending)
         }
         
-        PersistenceManager.shared.modelContainer.mainContext.insert(entity)
+        context.insert(entity)
+        try? context.save()
+        
         NotificationCenter.default.post(name: Self.bookmarksUpdatedNotification, object: itemId)
     }
     
-    @MainActor
     func deleteBookmark(_ bookmark: Bookmark) async {
         do {
             try await AudiobookshelfClient.shared.deleteBookmark(itemId: bookmark.itemId, position: bookmark.position)
-            PersistenceManager.shared.modelContainer.mainContext.delete(bookmark)
+            
+            let context = ModelContext(PersistenceManager.shared.modelContainer)
+            
+            context.delete(bookmark)
+            try? context.save()
         } catch {
             bookmark.status = Bookmark.SyncStatus.deleted
         }
@@ -69,9 +85,9 @@ public extension OfflineManager {
         NotificationCenter.default.post(name: Self.bookmarksUpdatedNotification, object: bookmark.itemId)
     }
     
-    @MainActor
-    func getBookmarks(itemId: String) throws -> [Bookmark] {
-        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor<Bookmark>(predicate: #Predicate {
+    func bookmarks(itemId: String) throws -> [Bookmark] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        try context.fetch(FetchDescriptor<Bookmark>(predicate: #Predicate {
             $0.itemId == itemId
         }))
         // why is this not part of the predicate? because it does not compile

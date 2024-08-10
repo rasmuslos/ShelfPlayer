@@ -7,28 +7,32 @@
 
 import Foundation
 import SwiftData
-import SPBase
+import SPFoundation
+import SPNetwork
+
+// MARK: Public (Higher order)
 
 public extension OfflineManager {
-    @MainActor
-    func getPlaybackDurationTracker(itemId: String, episodeId: String?) -> PlaybackDuration {
+    func listeningTimeTracker(itemId: String, episodeId: String?) -> OfflineListeningTimeTracker {
         let id = UUID().uuidString
-        let tracker = PlaybackDuration(id: id, itemId: itemId, episodeId: episodeId)
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let tracker = OfflineListeningTimeTracker(id: id, itemId: itemId, episodeId: episodeId)
         
-        PersistenceManager.shared.modelContainer.mainContext.insert(tracker)
+        context.insert(tracker)
+        try? context.save()
+        
         return tracker
     }
     
-    @MainActor
-    func attemptPlaybackDurationSync(tracker: PlaybackDuration) async throws {
+    func attemptListeningTimeSync(tracker: OfflineListeningTimeTracker) async throws {
         if tracker.startTime.isNaN {
-            PersistenceManager.shared.modelContainer.mainContext.delete(tracker)
+            delete(listeningTimeTracker: tracker)
             return
         }
         
         let progressEntity = requireProgressEntity(itemId: tracker.itemId, episodeId: tracker.episodeId)
         
-        try await AudiobookshelfClient.shared.createSession(
+        try await AudiobookshelfClient.shared.createListeningSession(
             itemId: tracker.itemId,
             episodeId: tracker.episodeId,
             id: tracker.id,
@@ -38,8 +42,14 @@ public extension OfflineManager {
             started: tracker.started,
             updated: tracker.lastUpdate)
         
-        PersistenceManager.shared.modelContainer.mainContext.delete(tracker)
+        delete(listeningTimeTracker: tracker)
         logger.info("Created session \(tracker.id)")
+    }
+    func delete(listeningTimeTracker: OfflineListeningTimeTracker) throws {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        context.delete(listeningTimeTracker)
+        try context.save()
     }
     
     @MainActor
