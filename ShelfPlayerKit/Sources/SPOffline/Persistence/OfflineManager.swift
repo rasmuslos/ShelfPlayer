@@ -7,7 +7,8 @@
 
 import Foundation
 import OSLog
-import SPBase
+import SPFoundation
+import SPNetwork
 
 public struct OfflineManager {
     public let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "OfflineProgress")
@@ -17,10 +18,10 @@ public extension OfflineManager {
     func authorizeAndSync() async -> Bool {
         do {
             // Do not make any changes to the database unless all of the following methods succeed
-            try await Task { @MainActor in
+            try await MainActor.run {
                 try PersistenceManager.shared.modelContainer.mainContext.save()
                 PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = false
-            }.value
+            }
             
             let start = Date.timeIntervalSinceReferenceDate
             
@@ -38,7 +39,7 @@ public extension OfflineManager {
             try await updateLocalProgressEntities(mediaProgress: progress)
             logger.info("Imported sessions (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
-            // bookmarks don't have an id, so its more efficient to delete them instead of doing expensive queries
+            // Bookmarks don't have an id, so its more efficient to delete them instead of doing expensive queries
             try await deleteBookmarks()
             logger.info("Deleted bookmarks (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
@@ -46,20 +47,20 @@ public extension OfflineManager {
             logger.info("Created bookmarks (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
             // Commit changes
-            try await Task { @MainActor in
+            try await MainActor.run {
                 try PersistenceManager.shared.modelContainer.mainContext.save()
                 PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = true
-            }.value
+            }
             
             return true
         } catch {
             logger.fault("Error while syncing progress & bookmarks. Rolling back changes...")
             print(error)
             
-            await Task { @MainActor in
+            try await MainActor.run {
                 PersistenceManager.shared.modelContainer.mainContext.rollback()
                 PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = true
-            }.value
+            }
             
             return false
         }

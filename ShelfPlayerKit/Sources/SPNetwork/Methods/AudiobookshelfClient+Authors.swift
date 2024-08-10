@@ -30,7 +30,7 @@ public extension AudiobookshelfClient {
         throw ClientError.missing
     }
     
-    func authorFull(authorId: String, libraryId: String) async throws -> (Author, [Audiobook], [Series]) {
+    func author(authorId: String, libraryId: String) async throws -> (Author, [Audiobook], [Series]) {
         let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/authors/\(authorId)", method: "GET", query: [
             URLQueryItem(name: "library", value: libraryId),
             URLQueryItem(name: "include", value: "items,series"),

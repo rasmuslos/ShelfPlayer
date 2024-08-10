@@ -8,31 +8,27 @@
 import Foundation
 import SwiftData
 import Defaults
-import SPBase
+import SPFoundation
+import SPNetwork
 
-extension OfflineManager {
-    @MainActor
-    func getProgressEntities() throws -> [ItemProgress] {
+// MARK: Internal (Higher order)
+
+internal extension OfflineManager {
+    func progressEntities() throws -> [ItemProgress] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
         let descriptor = FetchDescriptor<ItemProgress>(sortBy: [SortDescriptor(\.lastUpdate)])
-        return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor)
+        
+        return try context.fetch(descriptor)
     }
-    @MainActor
-    func getProgressEntities(type: ItemProgress.ProgressType) async throws -> [ItemProgress] {
-        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor()).filter { $0.progressType == type }
+    func progressEntities(type: ItemProgress.ProgressType) throws -> [ItemProgress] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        return try context.fetch(.init()).filter { $0.progressType == type }
     }
     
-    @MainActor
-    func requireProgressEntity(itemId: String, episodeId: String?) -> ItemProgress {
-        var descriptor: FetchDescriptor<ItemProgress>
+    func progressEntity(itemId: String, episodeId: String?) -> ItemProgress {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
         
-        if let episodeId = episodeId {
-            descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
-        } else {
-            descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == itemId })
-        }
-        
-        descriptor.fetchLimit = 1
-        if let entity = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first {
+        if let entity = progressEntity(itemId: itemId, episodeId: episodeId, context: context) {
             return entity
         }
         
@@ -47,133 +43,155 @@ extension OfflineManager {
             lastUpdate: Date(),
             progressType: .localSynced)
         
-        PersistenceManager.shared.modelContainer.mainContext.insert(progress)
+        context.insert(progress)
+        try? context.save()
+        
         return progress
     }
     
-    @MainActor
     func deleteProgressEntity(id: String) throws {
-        try PersistenceManager.shared.modelContainer.mainContext.delete(model: ItemProgress.self, where: #Predicate { $0.id == id })
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        try context.delete(model: ItemProgress.self, where: #Predicate { $0.id == id })
+        try context.save()
     }
     
     func syncCachedProgressEntities() async throws {
-        let cached = try await OfflineManager.shared.getProgressEntities(type: .localCached)
+        let cached = try OfflineManager.shared.progressEntities(type: .localCached)
         
         for progress in cached {
-            try await AudiobookshelfClient.shared.updateMediaProgress(itemId: progress.itemId, episodeId: progress.episodeId, currentTime: progress.currentTime, duration: progress.duration)
-            progress.progressType = .localSynced
+            try await AudiobookshelfClient.shared.updateProgress(itemId: progress.itemId, episodeId: progress.episodeId, currentTime: progress.currentTime, duration: progress.duration)
+            updateProgressType(.localSynced, itemId: progress.itemId, episodeId: progress.episodeId)
         }
     }
     
-    func deleteSyncedProgressEntities() async throws {
-        try await OfflineManager.shared.deleteProgressEntities(type: .localSynced)
+    func updateProgressType(_ type: ItemProgress.ProgressType, itemId: String, episodeId: String?) {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let entity = progressEntity(itemId: itemId, episodeId: episodeId, context: context)
+        
+        entity?.progressType = type
+        try? context.save()
     }
     
-    func updateLocalProgressEntities(mediaProgress: [AudiobookshelfClient.MediaProgress]) async throws {
-        try await Task<Void, Error> { @MainActor in
-            var hideFromContinueListening = [Defaults.Keys.HideFromContinueListeningEntity]()
-            
-            try PersistenceManager.shared.modelContainer.mainContext.transaction {
-                for mediaProgress in mediaProgress {
-                    if mediaProgress.hideFromContinueListening {
-                        hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
-                    }
-                    
-                    let existing: ItemProgress?
-                    var descriptor: FetchDescriptor<ItemProgress>
-                    
-                    if let episodeId = mediaProgress.episodeId {
-                        descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
-                    } else {
-                        descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == mediaProgress.libraryItemId })
-                    }
-                    
-                    descriptor.fetchLimit = 1
-                    existing = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first
-                    
-                    if let existing = existing {
-                        if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
-                            logger.info("Updating progress: \(existing.id)")
-                            
-                            existing.duration = mediaProgress.duration
-                            existing.currentTime = mediaProgress.currentTime
-                            existing.progress = mediaProgress.progress
-                            
-                            existing.startedAt = Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000)
-                            existing.lastUpdate = Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000)
-                        }
-                    } else {
-                        logger.info("Creating progress: \(mediaProgress.id)")
+    func updateLocalProgressEntities(mediaProgress: [MediaProgress]) throws {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        var hideFromContinueListening = [HideFromContinueListeningEntity]()
+        
+        try context.transaction {
+            for mediaProgress in mediaProgress {
+                if mediaProgress.hideFromContinueListening {
+                    hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
+                }
+                
+                let existing = progressEntity(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId, context: context)
+                
+                if let existing = existing {
+                    if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
+                        logger.info("Updating progress: \(existing.id)")
                         
-                        let progress = ItemProgress(
-                            id: mediaProgress.id,
-                            itemId: mediaProgress.libraryItemId,
-                            episodeId: mediaProgress.episodeId,
-                            duration: mediaProgress.duration,
-                            currentTime: mediaProgress.currentTime,
-                            progress: mediaProgress.progress,
-                            startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
-                            lastUpdate: Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000),
-                            progressType: .receivedFromServer)
+                        existing.duration = mediaProgress.duration
+                        existing.currentTime = mediaProgress.currentTime
+                        existing.progress = mediaProgress.progress
                         
-                        PersistenceManager.shared.modelContainer.mainContext.insert(progress)
+                        existing.startedAt = Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000)
+                        existing.lastUpdate = Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000)
                     }
+                } else {
+                    logger.info("Creating progress: \(mediaProgress.id)")
+                    
+                    let progress = ItemProgress(
+                        id: mediaProgress.id,
+                        itemId: mediaProgress.libraryItemId,
+                        episodeId: mediaProgress.episodeId,
+                        duration: mediaProgress.duration,
+                        currentTime: mediaProgress.currentTime,
+                        progress: mediaProgress.progress,
+                        startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
+                        lastUpdate: Date(timeIntervalSince1970: Double(mediaProgress.lastUpdate) / 1000),
+                        progressType: .receivedFromServer)
+                    
+                    context.insert(progress)
                 }
             }
-            
-            Defaults[.hideFromContinueListening] = hideFromContinueListening
-        }.result.get()
+        }
+        try context.save()
+        
+        Defaults[.hideFromContinueListening] = hideFromContinueListening
     }
 }
 
-public extension OfflineManager {
-    @MainActor
-    func requireProgressEntity(item: Item) -> ItemProgress {
-        if let episode = item as? Episode {
-            return requireProgressEntity(itemId: episode.podcastId, episodeId: episode.id)
+// MARK: Internal (Helper)
+
+internal extension OfflineManager {
+    func progressEntity(itemId: String, episodeId: String?, context: ModelContext) -> ItemProgress? {
+        var descriptor: FetchDescriptor<ItemProgress>
+        
+        if let episodeId = episodeId {
+            descriptor = FetchDescriptor(predicate: #Predicate { $0.episodeId == episodeId })
+        } else {
+            descriptor = FetchDescriptor(predicate: #Predicate { $0.itemId == itemId })
         }
         
-        return requireProgressEntity(itemId: item.id, episodeId: nil)
+        descriptor.fetchLimit = 1
+        return try? context.fetch(descriptor).first
     }
-    
-    @MainActor
-    func deleteProgressEntities() {
-        for entity in try! getProgressEntities() {
-            PersistenceManager.shared.modelContainer.mainContext.delete(entity)
+}
+
+// MARK: Public (Higher order)
+
+public extension OfflineManager {
+    func progressEntity(item: Item) -> ItemProgress {
+        if let episode = item as? Episode {
+            return progressEntity(itemId: episode.podcastId, episodeId: episode.id)
+        } else {
+            return progressEntity(itemId: item.id, episodeId: nil)
         }
     }
     
-    @MainActor
-    func deleteProgressEntities(type: ItemProgress.ProgressType) async throws {
-        for entity in try await getProgressEntities(type: type) {
-            PersistenceManager.shared.modelContainer.mainContext.delete(entity)
-        }
+    func deleteProgressEntities() throws {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+            
+        try context.delete(model: ItemProgress.self)
+        try context.save()
     }
     
-    @MainActor
-    func setProgress(item: Item, finished: Bool) {
-        let progress = requireProgressEntity(item: item)
+    func deleteProgressEntities(type: ItemProgress.ProgressType) throws {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        for entity in try progressEntities(type: type) {
+            context.delete(entity)
+        }
+        
+        try context.save()
+    }
+    
+    func finished(_ finished: Bool, item: Item) {
+        let entity = progressEntity(item: item)
         
         if finished {
-            progress.progress = 1
-            progress.currentTime = progress.duration
+            entity.progress = 1
+            entity.currentTime = entity.duration
         } else {
-            progress.progress = 0
-            progress.currentTime = 0
+            entity.progress = 0
+            entity.currentTime = 0
         }
         
-        progress.lastUpdate = Date()
-        progress.progressType = .localSynced
+        entity.lastUpdate = Date()
+        entity.progressType = .localSynced
+        
+        try? entity.modelContext?.save()
     }
     
     @MainActor
     func updateProgressEntity(itemId: String, episodeId: String?, currentTime: Double, duration: Double, success: Bool) {
-        let progress = OfflineManager.shared.requireProgressEntity(itemId: itemId, episodeId: episodeId)
+        let entity = OfflineManager.shared.progressEntity(itemId: itemId, episodeId: episodeId)
         
-        progress.currentTime = currentTime
-        progress.duration = duration
-        progress.progress = currentTime / duration
-        progress.lastUpdate = Date()
-        progress.progressType = success ? .localSynced : .localCached
+        entity.currentTime = currentTime
+        entity.duration = duration
+        entity.progress = currentTime / duration
+        entity.lastUpdate = Date()
+        entity.progressType = success ? .localSynced : .localCached
+        
+        try? entity.modelContext?.save()
     }
 }
