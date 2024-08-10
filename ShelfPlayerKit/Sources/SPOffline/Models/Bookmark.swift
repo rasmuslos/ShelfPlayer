@@ -17,9 +17,9 @@ public final class Bookmark {
     public let note: String
     public let position: Double
     
-    var status: SyncStatus
+    internal var status: SyncStatus
     
-    init(itemId: String, episodeId: String?, note: String, position: Double, status: SyncStatus) {
+    internal init(itemId: String, episodeId: String?, note: String, position: Double, status: SyncStatus) {
         self.itemId = itemId
         self.episodeId = episodeId
         self.note = note
@@ -28,7 +28,7 @@ public final class Bookmark {
     }
 }
 
-extension Bookmark {
+internal extension Bookmark {
     enum SyncStatus: Int, Codable {
         case synced = 0
         case pending = 1

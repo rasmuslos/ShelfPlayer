@@ -8,8 +8,6 @@
 import Foundation
 import SPFoundation
 
-// MARK: Home
-
 public extension AudiobookshelfClient {
     func home(libraryId: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
         let response = try await request(ClientRequest<[AudiobookshelfHomeRow]>(path: "api/libraries/\(libraryId)/personalized", method: "GET"))

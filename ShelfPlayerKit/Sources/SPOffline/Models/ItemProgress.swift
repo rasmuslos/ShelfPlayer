@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftData
-import SPBase
 
 @Model
 public final class ItemProgress: Identifiable {
@@ -39,21 +38,9 @@ public final class ItemProgress: Identifiable {
 }
 
 public extension ItemProgress {
-    enum ProgressType: Int, Codable, Equatable {
+    enum ProgressType: Int, Codable, Equatable, Identifiable {
         case receivedFromServer = 0
         case localSynced = 1
         case localCached = 2
-    }
-}
-
-public extension ItemProgress {
-    func readableProgress(spaceConstrained: Bool = true) -> String {
-        let remainingTime = max(duration - currentTime, 0)
-        
-        if remainingTime <= 5 {
-            return "100%"
-        } else {
-            return remainingTime.timeLeft(spaceConstrained: spaceConstrained)
-        }
     }
 }

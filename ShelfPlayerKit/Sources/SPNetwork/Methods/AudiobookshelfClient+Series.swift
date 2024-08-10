@@ -8,8 +8,6 @@
 import Foundation
 import SPFoundation
 
-// MARK: Search
-
 public extension AudiobookshelfClient {
     func seriesID(name: String, libraryId: String) async throws -> String {
         let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [

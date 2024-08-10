@@ -10,8 +10,4 @@ import Defaults
 
 public extension Defaults.Keys {
     static let hideFromContinueListening = Key<[HideFromContinueListeningEntity]>("hideFromContinueListening", default: [])
-    struct HideFromContinueListeningEntity: Codable, _DefaultsSerializable {
-        public let itemId: String
-        public let episodeId: String?
-    }
 }

@@ -20,6 +20,15 @@ public extension AudiobookshelfClient {
             "isFinished": finished,
         ]))
     }
+    func deleteProgress(itemId: String, episodeId: String?) async throws {
+        var url = "api/me/progress/\(itemId)"
+        
+        if let episodeId {
+            url.append("/\(episodeId)")
+        }
+        
+        let _ = try await request(ClientRequest<EmptyResponse>(path: url, method: "DELETE"))
+    }
 }
 
 public extension AudiobookshelfClient {
@@ -86,7 +95,7 @@ public extension AudiobookshelfClient {
         ]))
     }
     
-    func createSession(itemId: String, episodeId: String?, id: String, timeListened: Double, startTime: Double, currentTime: Double, started: Date, updated: Date) async throws {
+    func createListeningSession(itemId: String, episodeId: String?, id: String, timeListened: Double, startTime: Double, currentTime: Double, started: Date, updated: Date) async throws {
         let (item, status, userId): (AudiobookshelfItem, StatusResponse, String) = try await (item(itemId: itemId), status(), me().0)
         
         let session = LocalSession(
@@ -113,9 +122,5 @@ public extension AudiobookshelfClient {
             updatedAt: updated.timeIntervalSince1970 * 1000)
         
         let _ = try await request(ClientRequest<EmptyResponse>(path: "api/session/local", method: "POST", body: session))
-    }
-    
-    func deleteSession(sessionId: String) async throws {
-        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/sessions/\(sessionId)", method: "DELETE"))
     }
 }

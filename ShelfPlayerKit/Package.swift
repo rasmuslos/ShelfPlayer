@@ -54,9 +54,11 @@ let package = Package(
             .byName(name: "Defaults"),
             
             .targetItem(name: "SPFoundation", condition: .none),
+            .targetItem(name: "SPNetwork", condition: .none),
         ]),
         .target(name: "SPOfflineExtended", dependencies: [
             .targetItem(name: "SPFoundation", condition: .none),
+            .targetItem(name: "SPNetwork", condition: .none),
             .targetItem(name: "SPOffline", condition: .none),
         ]),
         
