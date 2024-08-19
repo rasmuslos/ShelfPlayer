@@ -9,7 +9,7 @@ import Foundation
 import Defaults
 import AVKit
 import UIKit
-import SPBase
+import SPFoundation
 
 internal extension AudioPlayer {
     func setupTimeObserver() {

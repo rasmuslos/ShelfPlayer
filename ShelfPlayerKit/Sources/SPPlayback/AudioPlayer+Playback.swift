@@ -10,7 +10,7 @@ import Defaults
 import Intents
 import AVKit
 import Defaults
-import SPBase
+import SPFoundation
 import SPExtension
 
 extension AudioPlayer {

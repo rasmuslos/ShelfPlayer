@@ -26,11 +26,11 @@ public extension OfflineManager {
     
     func attemptListeningTimeSync(tracker: OfflineListeningTimeTracker) async throws {
         if tracker.startTime.isNaN {
-            delete(listeningTimeTracker: tracker)
+            try delete(listeningTimeTracker: tracker)
             return
         }
         
-        let progressEntity = requireProgressEntity(itemId: tracker.itemId, episodeId: tracker.episodeId)
+        let progressEntity = progressEntity(itemId: tracker.itemId, episodeId: tracker.episodeId)
         
         try await AudiobookshelfClient.shared.createListeningSession(
             itemId: tracker.itemId,
@@ -42,7 +42,7 @@ public extension OfflineManager {
             started: tracker.started,
             updated: tracker.lastUpdate)
         
-        delete(listeningTimeTracker: tracker)
+        try delete(listeningTimeTracker: tracker)
         logger.info("Created session \(tracker.id)")
     }
     func delete(listeningTimeTracker: OfflineListeningTimeTracker) throws {
@@ -52,15 +52,15 @@ public extension OfflineManager {
         try context.save()
     }
     
-    @MainActor
-    func attemptPlaybackDurationSync() async throws {
+    func attemptListeningTimeSync() async throws {
         // can be ignored at startup
         // let descriptor = FetchDescriptor<PlaybackDuration>(predicate: #Predicate { $0.eligibleForSync == true })
-        let descriptor = FetchDescriptor<PlaybackDuration>()
-        let entities = try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor)
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let descriptor = FetchDescriptor<OfflineListeningTimeTracker>()
+        let entities = try context.fetch(descriptor)
         
         for entity in entities {
-            try await attemptPlaybackDurationSync(tracker: entity)
+            try await attemptListeningTimeSync(tracker: entity)
         }
     }
 }

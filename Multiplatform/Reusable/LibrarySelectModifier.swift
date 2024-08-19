@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 
 struct LibrarySelectModifier: ViewModifier {
     @Environment(AvailableLibraries.self) var availableLibraries

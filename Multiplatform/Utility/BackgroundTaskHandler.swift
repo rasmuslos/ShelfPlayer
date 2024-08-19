@@ -9,7 +9,7 @@ import OSLog
 import Defaults
 import Foundation
 import BackgroundTasks
-import SPBase
+import SPFoundation
 import SPOffline
 import SPOfflineExtended
 import UserNotifications

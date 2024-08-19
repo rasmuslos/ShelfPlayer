@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 
 internal struct AudiobookView: View {
     let viewModel: AudiobookViewModel

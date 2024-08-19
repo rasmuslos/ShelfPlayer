@@ -7,7 +7,7 @@
 
 import Foundation
 import Intents
-import SPBase
+import SPFoundation
 
 extension IntentHandler: INPlayMediaIntentHandling {
     func handle(intent: INPlayMediaIntent) async -> INPlayMediaIntentResponse {

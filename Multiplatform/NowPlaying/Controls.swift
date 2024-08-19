@@ -8,7 +8,7 @@
 import SwiftUI
 import Defaults
 import MediaPlayer
-import SPBase
+import SPFoundation
 import SPPlayback
 
 extension NowPlaying {

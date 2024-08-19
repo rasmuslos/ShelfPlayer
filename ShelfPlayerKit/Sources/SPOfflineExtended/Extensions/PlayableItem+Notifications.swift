@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SPBase
+import SPFoundation
 
 extension PlayableItem {
     public static let downloadStatusUpdatedNotification = NSNotification.Name("io.rfk..shelfplayer.download.updated")

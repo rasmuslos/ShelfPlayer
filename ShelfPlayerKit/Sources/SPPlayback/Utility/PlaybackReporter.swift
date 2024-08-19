@@ -7,7 +7,7 @@
 
 import Foundation
 import Defaults
-import SPBase
+import SPFoundation
 import SPOffline
 
 #if canImport(SPOfflineExtended)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 
 struct PodcastLatestView: View {
     @Environment(\.libraryId) var libraryId

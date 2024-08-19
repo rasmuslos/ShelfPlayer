@@ -6,24 +6,24 @@
 //
 
 import Foundation
-import SPBase
+import SPFoundation
 import SPOffline
 
-extension Audiobook {
-    static func convertFromOffline(audiobook: OfflineAudiobook) -> Audiobook {
-        Audiobook(
+internal extension Audiobook {
+    convenience init(audiobook: OfflineAudiobook) {
+        self.init(
             id: audiobook.id,
             libraryId: audiobook.libraryId,
             name: audiobook.name,
             author: audiobook.author,
             description: audiobook.overview,
-            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: audiobook.id), type: .local),
+            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.getImageUrl(itemId: audiobook.id)),
             genres: audiobook.genres,
             addedAt: audiobook.addedAt,
             released: audiobook.released,
             size: audiobook.size,
             duration: audiobook.duration, narrator: audiobook.narrator,
-            series: audiobook.seriesName != nil ? ReducedSeries.convert(seriesName: audiobook.seriesName!) : [],
+            series: audiobook.seriesName != nil ? ReducedSeries(audiobook.seriesName!) : [],
             explicit: audiobook.explicit,
             abridged: audiobook.abridged)
     }

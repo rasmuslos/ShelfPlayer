@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 
 struct EpisodeLoadView: View {
     @Environment(\.libraryId) private var libraryId

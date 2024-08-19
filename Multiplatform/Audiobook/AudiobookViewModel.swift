@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import SPBase
+import SPFoundation
 import SPOfflineExtended
 
 @Observable

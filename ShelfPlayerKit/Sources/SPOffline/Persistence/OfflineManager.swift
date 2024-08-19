@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 import OSLog
 import SPFoundation
 import SPNetwork
@@ -17,50 +18,41 @@ public struct OfflineManager {
 public extension OfflineManager {
     func authorizeAndSync() async -> Bool {
         do {
-            // Do not make any changes to the database unless all of the following methods succeed
-            try await MainActor.run {
-                try PersistenceManager.shared.modelContainer.mainContext.save()
-                PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = false
-            }
-            
             let start = Date.timeIntervalSinceReferenceDate
-            
-            try await syncCachedProgressEntities()
-            logger.info("Synced progress to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
-            
-            try await deleteSyncedProgressEntities()
-            logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
             try await syncRemoteBookmarks()
             logger.info("Synced bookmarks to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
+            try await syncCachedProgressEntities()
+            logger.info("Synced progress to server (took \(Date.timeIntervalSinceReferenceDate - start)s)")
+            
             let (progress, bookmarks) = try await AudiobookshelfClient.shared.authorize()
             
-            try await updateLocalProgressEntities(mediaProgress: progress)
+            // No context switches after this point
+            let context = ModelContext(PersistenceManager.shared.modelContainer)
+            // Do not make any changes to the database unless all of the following methods succeed
+            context.autosaveEnabled = false
+            
+            try deleteProgressEntities(type: .localSynced, context: context)
+            logger.info("Deleted synced progress (took \(Date.timeIntervalSinceReferenceDate - start)s)")
+            
+            try updateLocalProgressEntities(mediaProgress: progress, context: context)
             logger.info("Imported sessions (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
             // Bookmarks don't have an id, so its more efficient to delete them instead of doing expensive queries
-            try await deleteBookmarks()
+            try deleteBookmarks(context: context)
             logger.info("Deleted bookmarks (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
-            try await syncLocalBookmarks(bookmarks: bookmarks)
+            try syncLocalBookmarks(bookmarks: bookmarks, context: context)
             logger.info("Created bookmarks (took \(Date.timeIntervalSinceReferenceDate - start)s)")
             
             // Commit changes
-            try await MainActor.run {
-                try PersistenceManager.shared.modelContainer.mainContext.save()
-                PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = true
-            }
+            try context.save()
             
             return true
         } catch {
-            logger.fault("Error while syncing progress & bookmarks. Rolling back changes...")
+            logger.fault("Error while syncing progress & bookmarks. Changes will not be committed...")
             print(error)
-            
-            try await MainActor.run {
-                PersistenceManager.shared.modelContainer.mainContext.rollback()
-                PersistenceManager.shared.modelContainer.mainContext.autosaveEnabled = true
-            }
             
             return false
         }
