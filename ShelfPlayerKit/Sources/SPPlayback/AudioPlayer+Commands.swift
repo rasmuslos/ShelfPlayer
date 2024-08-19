@@ -8,7 +8,7 @@
 import Foundation
 import Defaults
 import MediaPlayer
-import SPBase
+import SPFoundation
 import SPOffline
 
 internal extension AudioPlayer {

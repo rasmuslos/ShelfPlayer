@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SPBase
+import SPFoundation
 import AVKit
 
 #if canImport(SPOfflineExtended)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 import SPOffline
 
 struct AudiobookSortFilter: View {

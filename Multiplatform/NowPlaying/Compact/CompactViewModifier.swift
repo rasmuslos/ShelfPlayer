@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 import SPPlayback
 
 extension NowPlaying {

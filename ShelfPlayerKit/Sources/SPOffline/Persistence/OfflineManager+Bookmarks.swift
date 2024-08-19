@@ -13,24 +13,6 @@ import SPNetwork
 // MARK: Internal (Higher order)
 
 internal extension OfflineManager {
-    func deleteBookmarks() throws {
-        let context = ModelContext(PersistenceManager.shared.modelContainer)
-        
-        try context.delete(model: Bookmark.self)
-        try context.save()
-    }
-    
-    func syncLocalBookmarks(bookmarks: [AudiobookshelfClient.Bookmark]) throws {
-        let context = ModelContext(PersistenceManager.shared.modelContainer)
-        
-        try context.transaction {
-            for bookmark in bookmarks {
-                context.insert(Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced))
-            }
-        }
-        try context.save()
-    }
-    
     func syncRemoteBookmarks() async throws {
         // isn't it really inefficient to do this instead of two queries? maybe but SwiftData does not allow it any other way
         let context = ModelContext(PersistenceManager.shared.modelContainer)
@@ -45,6 +27,20 @@ internal extension OfflineManager {
         }
         
         // all entities will be deleted later
+    }
+}
+
+// MARK: Internal (Helper)
+
+internal extension OfflineManager {
+    func syncLocalBookmarks(bookmarks: [SPFoundation.Bookmark], context: ModelContext) throws {
+        for bookmark in bookmarks {
+            context.insert(Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced))
+        }
+    }
+    
+    func deleteBookmarks(context: ModelContext) throws {
+        try context.delete(model: Bookmark.self)
     }
 }
 
@@ -87,7 +83,8 @@ public extension OfflineManager {
     
     func bookmarks(itemId: String) throws -> [Bookmark] {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
-        try context.fetch(FetchDescriptor<Bookmark>(predicate: #Predicate {
+        
+        return try context.fetch(FetchDescriptor<Bookmark>(predicate: #Predicate {
             $0.itemId == itemId
         }))
         // why is this not part of the predicate? because it does not compile

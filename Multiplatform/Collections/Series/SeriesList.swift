@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 
 struct SeriesList: View {
     let series: [Series]

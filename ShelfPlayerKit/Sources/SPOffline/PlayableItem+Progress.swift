@@ -12,7 +12,7 @@ import SPNetwork
 
 public extension PlayableItem {
     func finished(_ finished: Bool) async throws {
-        await OfflineManager.shared.setProgress(item: self, finished: finished)
+        OfflineManager.shared.finished(finished, item: self)
         
         if let episode = self as? Episode {
             try await AudiobookshelfClient.shared.finished(finished, itemId: episode.podcastId, episodeId: episode.id)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 
 struct AudiobookTabs: View {
     @Default(.audiobookTab) var audiobookTab

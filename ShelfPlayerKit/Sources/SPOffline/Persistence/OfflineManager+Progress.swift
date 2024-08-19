@@ -20,10 +20,6 @@ internal extension OfflineManager {
         
         return try context.fetch(descriptor)
     }
-    func progressEntities(type: ItemProgress.ProgressType) throws -> [ItemProgress] {
-        let context = ModelContext(PersistenceManager.shared.modelContainer)
-        return try context.fetch(.init()).filter { $0.progressType == type }
-    }
     
     func progressEntity(itemId: String, episodeId: String?) -> ItemProgress {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
@@ -57,7 +53,8 @@ internal extension OfflineManager {
     }
     
     func syncCachedProgressEntities() async throws {
-        let cached = try OfflineManager.shared.progressEntities(type: .localCached)
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let cached = try OfflineManager.shared.progressEntities(type: .localCached, context: context)
         
         for progress in cached {
             try await AudiobookshelfClient.shared.updateProgress(itemId: progress.itemId, episodeId: progress.episodeId, currentTime: progress.currentTime, duration: progress.duration)
@@ -73,8 +70,7 @@ internal extension OfflineManager {
         try? context.save()
     }
     
-    func updateLocalProgressEntities(mediaProgress: [MediaProgress]) throws {
-        let context = ModelContext(PersistenceManager.shared.modelContainer)
+    func updateLocalProgressEntities(mediaProgress: [MediaProgress], context: ModelContext) throws {
         var hideFromContinueListening = [HideFromContinueListeningEntity]()
         
         try context.transaction {
@@ -114,7 +110,6 @@ internal extension OfflineManager {
                 }
             }
         }
-        try context.save()
         
         Defaults[.hideFromContinueListening] = hideFromContinueListening
     }
@@ -134,6 +129,10 @@ internal extension OfflineManager {
         
         descriptor.fetchLimit = 1
         return try? context.fetch(descriptor).first
+    }
+    
+    func progressEntities(type: ItemProgress.ProgressType, context: ModelContext) throws -> [ItemProgress] {
+        try context.fetch(.init()).filter { $0.progressType == type }
     }
 }
 
@@ -155,14 +154,10 @@ public extension OfflineManager {
         try context.save()
     }
     
-    func deleteProgressEntities(type: ItemProgress.ProgressType) throws {
-        let context = ModelContext(PersistenceManager.shared.modelContainer)
-        
-        for entity in try progressEntities(type: type) {
+    func deleteProgressEntities(type: ItemProgress.ProgressType, context: ModelContext) throws {
+        for entity in try progressEntities(type: type, context: context) {
             context.delete(entity)
         }
-        
-        try context.save()
     }
     
     func finished(_ finished: Bool, item: Item) {

@@ -8,7 +8,7 @@
 import Foundation
 import Defaults
 import SwiftUI
-import SPBase
+import SPFoundation
 
 extension Sidebar {
     struct Selection: Codable, Hashable, _DefaultsSerializable {

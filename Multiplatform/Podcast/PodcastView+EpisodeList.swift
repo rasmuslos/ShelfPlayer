@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 
 struct PodcastFullListView: View {
     @Default private var episodesFilter: AudiobookshelfClient.EpisodeFilter

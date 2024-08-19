@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 
 struct AuthorGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

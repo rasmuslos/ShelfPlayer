@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 
 struct EpisodeFeaturedGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

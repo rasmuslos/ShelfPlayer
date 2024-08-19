@@ -8,7 +8,7 @@
 import SwiftUI
 import NukeUI
 import Defaults
-import SPBase
+import SPFoundation
 
 struct ItemImage: View {
     @Default(.forceAspectRatio) private var forceAspectRatio

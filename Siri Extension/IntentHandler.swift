@@ -6,7 +6,7 @@
 //
 
 import Intents
-import SPBase
+import SPFoundation
 import SPExtension
 
 class IntentHandler: INExtension {

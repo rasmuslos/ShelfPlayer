@@ -7,7 +7,7 @@
 
 import Foundation
 import Intents
-import SPBase
+import SPFoundation
 
 extension MediaResolver {
     public func convert(items: [Item]) -> [INMediaItem] {

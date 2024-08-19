@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPBase
+import SPFoundation
 
 internal struct AudiobookLoadView: View {
     @Environment(\.libraryId) private var libraryId

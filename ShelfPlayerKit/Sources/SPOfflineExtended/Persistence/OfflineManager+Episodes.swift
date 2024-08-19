@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftData
-import SPBase
+import SPFoundation
 import SPOffline
 
 public extension OfflineManager {

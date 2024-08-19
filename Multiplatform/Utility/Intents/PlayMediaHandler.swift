@@ -8,7 +8,7 @@
 import Foundation
 import Defaults
 import Intents
-import SPBase
+import SPFoundation
 import SPOffline
 import SPExtension
 import SPOfflineExtended

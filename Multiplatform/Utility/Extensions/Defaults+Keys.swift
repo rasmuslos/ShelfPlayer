@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SPBase
+import SPFoundation
 import Defaults
 
 internal extension Defaults.Keys {

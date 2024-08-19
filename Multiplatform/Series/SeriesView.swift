@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 
 internal struct SeriesView: View {
     @Environment(\.libraryId) private var libraryId

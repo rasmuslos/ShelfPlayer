@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 
 struct Sidebar: View {
     @Default(.sidebarSelection) private var selection

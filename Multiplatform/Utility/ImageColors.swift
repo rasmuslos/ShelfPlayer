@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import UIImageColors
-import SPBase
+import SPFoundation
 
 @Observable
 internal class ImageColors {
