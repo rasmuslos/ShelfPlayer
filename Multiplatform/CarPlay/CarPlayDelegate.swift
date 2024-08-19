@@ -6,7 +6,7 @@
 //
 
 import CarPlay
-import SPBase
+import SPFoundation
 
 public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     // we need to keep a strong reference to this object

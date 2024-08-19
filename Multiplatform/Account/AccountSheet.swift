@@ -8,7 +8,7 @@
 import SwiftUI
 import Defaults
 import Nuke
-import SPBase
+import SPFoundation
 import SPOffline
 import SPOfflineExtended
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SPBase
+import SPFoundation
 
 internal extension AudioPlayer {
     func getQueue(currentTime: Double) -> PlayableItem.AudioTracks {

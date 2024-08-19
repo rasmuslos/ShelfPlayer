@@ -9,7 +9,7 @@ import SwiftUI
 import Intents
 import SwiftData
 import Defaults
-import SPBase
+import SPFoundation
 import SPOffline
 import SPExtension
 

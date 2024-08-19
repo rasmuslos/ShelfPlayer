@@ -8,7 +8,7 @@
 import SwiftUI
 import TipKit
 import Defaults
-import SPBase
+import SPFoundation
 
 struct PodcastView: View {
     @Default private var episodesFilter: AudiobookshelfClient.EpisodeFilter

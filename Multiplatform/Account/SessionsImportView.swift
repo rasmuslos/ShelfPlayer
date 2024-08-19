@@ -7,7 +7,7 @@
 
 import SwiftUI
 import OSLog
-import SPBase
+import SPFoundation
 import SPOffline
 
 struct SessionsImportView: View {

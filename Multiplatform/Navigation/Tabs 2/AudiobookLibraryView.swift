@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 
 struct AudiobookLibraryView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

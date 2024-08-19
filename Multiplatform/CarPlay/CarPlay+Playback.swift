@@ -6,7 +6,7 @@
 //
 
 import CarPlay
-import SPBase
+import SPFoundation
 import SPOffline
 import SPPlayback
 

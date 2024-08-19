@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 import SPPlayback
 
 struct PlaybackSpeedButton: View {

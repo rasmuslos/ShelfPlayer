@@ -7,7 +7,7 @@
 
 import Foundation
 import Defaults
-import SPBase
+import SPFoundation
 
 public extension Defaults.Keys {
     static let skipForwardsInterval = Key<Int>("skipForwardsInterval", default: 30)

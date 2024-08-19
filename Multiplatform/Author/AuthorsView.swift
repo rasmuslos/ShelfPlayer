@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPBase
+import SPFoundation
 
 internal struct AuthorsView: View {
     @Environment(\.libraryId) private var libraryId

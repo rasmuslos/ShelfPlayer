@@ -42,5 +42,9 @@ public extension ItemProgress {
         case receivedFromServer = 0
         case localSynced = 1
         case localCached = 2
+        
+        public var id: Int {
+            rawValue
+        }
     }
 }
