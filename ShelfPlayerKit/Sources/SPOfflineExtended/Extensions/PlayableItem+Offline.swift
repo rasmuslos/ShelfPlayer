@@ -10,8 +10,8 @@ import SPFoundation
 import OSLog
 import SPOffline
 
-extension PlayableItem {
-    public var offlineTracker: ItemOfflineTracker {
+public extension PlayableItem {
+    var offlineTracker: ItemOfflineTracker {
         .init(itemId: self.id)
     }
 }
@@ -30,7 +30,7 @@ public final class ItemOfflineTracker {
     }
     
     deinit {
-        if let token = token {
+        if let token {
             NotificationCenter.default.removeObserver(token)
         }
     }

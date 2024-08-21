@@ -9,16 +9,15 @@ import Foundation
 import SPFoundation
 import SPOffline
 
-extension Podcast {
-    static func convertFromOffline(podcast: OfflinePodcast) -> Podcast {
-        Podcast(
+internal extension Podcast {
+    convenience init(_ podcast: OfflinePodcast) {
+        self.init(
             id: podcast.id,
-            additionalId: nil,
             libraryId: podcast.libraryId,
             name: podcast.name,
             author: podcast.author,
             description: podcast.overview,
-            image: Item.Image(url: DownloadManager.shared.getImageUrl(itemId: podcast.id), type: .local),
+            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.getImageUrl(itemId: podcast.id)),
             genres: podcast.genres,
             addedAt: podcast.addedAt,
             released: podcast.released,

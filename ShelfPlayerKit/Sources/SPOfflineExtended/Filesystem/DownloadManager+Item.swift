@@ -10,13 +10,14 @@ import SPFoundation
 
 // MARK: Image
 
-extension DownloadManager {
-    func downloadImage(itemId: String, image: Item.Image?) async throws {
-        if let image = image {
-            let request = URLRequest(url: image.url)
+internal extension DownloadManager {
+    func download(cover: Cover?, itemId: String) async throws {
+        if let cover = cover {
+            let request = URLRequest(url: cover.url)
             
             let (location, _) = try await URLSession.shared.download(for: request)
-            var destination = getImageUrl(itemId: itemId)
+            var destination = imageURL(identifiedBy: itemId)
+            
             try? destination.setResourceValues({
                 var values = URLResourceValues()
                 values.isExcludedFromBackup = true
@@ -29,11 +30,11 @@ extension DownloadManager {
         }
     }
     
-    func deleteImage(itemId: String) throws {
-        try FileManager.default.removeItem(at: getImageUrl(itemId: itemId))
+    func deleteImage(identifiedBy itemId: String) throws {
+        try FileManager.default.removeItem(at: imageURL(identifiedBy: itemId))
     }
     
-    func getImageUrl(itemId: String) -> URL {
+    func imageURL(identifiedBy itemId: String) -> URL {
         documentsURL.appending(path: "images").appending(path: "\(itemId).png")
     }
 }

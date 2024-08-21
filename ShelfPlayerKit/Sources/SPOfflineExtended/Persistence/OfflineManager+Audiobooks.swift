@@ -8,34 +8,63 @@
 import Foundation
 import SwiftData
 import SPFoundation
+import SPNetwork
 import SPOffline
 
-public extension OfflineManager {
-    @MainActor
-    func getAudiobooks() throws -> [Audiobook] {
-        try getOfflineAudiobooks().map(Audiobook.convertFromOffline)
-    }
-    
-    @MainActor
-    func getAudiobooks(query: String) throws -> [Audiobook] {
-        let descriptor = FetchDescriptor<OfflineAudiobook>(predicate: #Predicate { $0.name.localizedStandardContains(query) })
-        return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).map(Audiobook.convertFromOffline)
-    }
-    
-    @MainActor
-    func getAudiobook(audiobookId: String) throws -> Audiobook {
-        try Audiobook.convertFromOffline(audiobook: getOfflineAudiobook(audiobookId: audiobookId))
-    }
-    
-    @MainActor
-    func download(audiobookId: String) async throws {
-        if (try? getOfflineAudiobook(audiobookId: audiobookId)) != nil {
-            logger.error("Audiobook is already downloaded")
-            return
+// MARK: Internal (Helper)
+
+internal extension OfflineManager {
+    func offlineAudiobook(audiobookId: String, context: ModelContext) throws -> OfflineAudiobook {
+        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineAudiobook> { $0.id == audiobookId })
+        descriptor.fetchLimit = 1
+        
+        if let audiobook = try context.fetch(descriptor).first {
+            return audiobook
         }
         
-        let (audiobook, tracks, chapters) = try await AudiobookshelfClient.shared.getItem(itemId: audiobookId, episodeId: nil)
-        guard let audiobook = audiobook as? Audiobook else { throw OfflineError.fetchFailed }
+        throw OfflineError.missing
+    }
+    
+    func offlineAudiobooks(context: ModelContext) throws -> [OfflineAudiobook] {
+        try context.fetch(.init())
+    }
+}
+
+// MARK: Public
+
+public extension OfflineManager {
+    func audiobook(audiobookId: String) throws -> Audiobook {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        return try Audiobook(audiobook: offlineAudiobook(audiobookId: audiobookId, context: context))
+    }
+    
+    func audiobooks() throws -> [Audiobook] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        return try offlineAudiobooks(context: context).map(Audiobook.init)
+    }
+    
+    func audiobooks(query: String) throws -> [Audiobook] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let descriptor = FetchDescriptor<OfflineAudiobook>(predicate: #Predicate { $0.name.localizedStandardContains(query) })
+        let result = try context.fetch(descriptor)
+        
+        return result.map(Audiobook.init)
+    }
+    
+    func download(audiobookId: String) async throws {
+        let (audiobook, tracks, chapters) = try await AudiobookshelfClient.shared.item(itemId: audiobookId, episodeId: nil)
+        guard let audiobook = audiobook as? Audiobook else {
+            throw OfflineError.fetchFailed
+        }
+        
+        try await DownloadManager.shared.download(cover: audiobook.cover, itemId: audiobook.id)
+        
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        guard ((try? offlineAudiobook(audiobookId: audiobookId, context: context)) ?? nil) == nil else {
+            logger.error("Audiobook is already downloaded")
+            throw OfflineError.existing
+        }
         
         let offlineAudiobook = OfflineAudiobook(
             id: audiobook.id,
@@ -53,48 +82,32 @@ public extension OfflineManager {
             explicit: audiobook.explicit,
             abridged: audiobook.abridged)
         
-        PersistenceManager.shared.modelContainer.mainContext.insert(offlineAudiobook)
-        try await DownloadManager.shared.downloadImage(itemId: audiobook.id, image: audiobook.image)
+        context.insert(offlineAudiobook)
+        storeChapters(chapters, itemId: audiobook.id, context: context)
+        download(tracks: tracks, for: audiobook.id, type: .audiobook, context: context)
         
-        await storeChapters(chapters, itemId: audiobook.id)
-        download(itemId: audiobook.id, tracks: tracks, type: .audiobook)
+        try context.save()
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobook.id)
     }
     
-    @MainActor
-    func delete(audiobookId: String) {
-        try? DownloadManager.shared.deleteImage(itemId: audiobookId)
-        deleteChapters(itemId: audiobookId)
+    func remove(audiobookId: String) {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        try? DownloadManager.shared.deleteImage(identifiedBy: audiobookId)
+        try? removeChapters(itemId: audiobookId, context: context)
         
-        if let audiobook = try? getOfflineAudiobook(audiobookId: audiobookId) {
-            PersistenceManager.shared.modelContainer.mainContext.delete(audiobook)
+        if let audiobook = try? offlineAudiobook(audiobookId: audiobookId, context: context) {
+            context.delete(audiobook)
         }
-        if let tracks = try? getOfflineTracks(parentId: audiobookId) {
+        
+        if let tracks = try? offlineTracks(parentId: audiobookId, context: context) {
             for track in tracks {
-                delete(track: track)
+                remove(track: track, context: context)
             }
         }
         
+        try? context.save()
+        
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobookId)
-    }
-}
-
-extension OfflineManager {
-    @MainActor
-    func getOfflineAudiobook(audiobookId: String) throws -> OfflineAudiobook {
-        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineAudiobook> { $0.id == audiobookId })
-        descriptor.fetchLimit = 1
-        
-        if let audiobook = try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first {
-            return audiobook
-        }
-        
-        throw OfflineError.missing
-    }
-    
-    @MainActor
-    func getOfflineAudiobooks() throws -> [OfflineAudiobook] {
-        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor())
     }
 }

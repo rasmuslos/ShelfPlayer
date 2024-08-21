@@ -60,6 +60,14 @@ public extension OfflineManager {
 }
 
 public extension OfflineManager {
+    enum OfflineError: Error {
+        case existing
+        case missing
+        case fetchFailed
+    }
+}
+
+public extension OfflineManager {
     static let bookmarksUpdatedNotification = NSNotification.Name("io.rfk.shelfplayer.bookmarks.updated")
     static let downloadProgressUpdatedNotification = NSNotification.Name("io.rfk.shelfplayer.download.progress")
 }
