@@ -8,7 +8,7 @@
 import Foundation
 import OSLog
 
-final class DownloadManager: NSObject {
+internal final class DownloadManager: NSObject {
     private(set) var documentsURL: URL!
     private(set) var urlSession: URLSession!
     
@@ -26,13 +26,24 @@ final class DownloadManager: NSObject {
         
         createDirectories()
     }
-    
+}
+
+internal extension DownloadManager {
     func createDirectories() {
         try! FileManager.default.createDirectory(at: documentsURL.appending(path: "images"), withIntermediateDirectories: true)
         try! FileManager.default.createDirectory(at: documentsURL.appending(path: "tracks"), withIntermediateDirectories: true)
     }
+    
+    func clearDirectories() throws {
+        let contents = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
+        try contents.forEach {
+            try FileManager.default.removeItem(at: $0)
+        }
+        
+        createDirectories()
+    }
 }
 
-extension DownloadManager {
+internal extension DownloadManager {
     static let shared = DownloadManager()
 }

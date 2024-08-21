@@ -23,7 +23,7 @@ internal extension Audiobook {
             released: audiobook.released,
             size: audiobook.size,
             duration: audiobook.duration, narrator: audiobook.narrator,
-            series: audiobook.seriesName != nil ? ReducedSeries(audiobook.seriesName!) : [],
+            series: audiobook.seriesName == nil ? [] : ReducedSeries.parse(seriesName: audiobook.seriesName!),
             explicit: audiobook.explicit,
             abridged: audiobook.abridged)
     }
