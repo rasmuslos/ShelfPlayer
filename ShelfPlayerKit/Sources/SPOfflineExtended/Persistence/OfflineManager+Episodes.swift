@@ -8,31 +8,69 @@
 import Foundation
 import SwiftData
 import SPFoundation
+import SPNetwork
 import SPOffline
 
-public extension OfflineManager {
-    @MainActor
-    func getEpisodes(query: String) throws -> [Episode] {
-        let descriptor = FetchDescriptor<OfflineEpisode>(predicate: #Predicate { $0.name.localizedStandardContains(query) })
-        return try PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).map(Episode.convertFromOffline)
-    }
-    
-    @MainActor
-    func getEpisode(episodeId: String) throws -> Episode {
-        try Episode.convertFromOffline(episode: getOfflineEpisode(episodeId: episodeId))
-    }
-    
-    @MainActor
-    func download(episodeId: String, podcastId: String) async throws {
-        if (try? getOfflineEpisode(episodeId: episodeId)) != nil {
-            logger.error("Episode is already downloaded")
-            return
+// MARK: Helper
+
+internal extension OfflineManager {
+    func offlineEpisode(episodeId: String, context: ModelContext) throws -> OfflineEpisode {
+        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineEpisode> { $0.id == episodeId })
+        descriptor.fetchLimit = 1
+        
+        if let episode = try context.fetch(descriptor).first {
+            return episode
         }
         
-        let (item, tracks, chapters) = try await AudiobookshelfClient.shared.getItem(itemId: podcastId, episodeId: episodeId)
-        let podcast = try await requirePodcast(podcastId: podcastId)
+        throw OfflineError.missing
+    }
+    
+    func offlineEpisodes(context: ModelContext) throws -> [OfflineEpisode] {
+        try context.fetch(.init())
+    }
+    
+    func offlineEpisodes(podcastId: String, context: ModelContext) throws -> [OfflineEpisode] {
+        try context.fetch(.init()).filter { $0.podcast.id == podcastId }
+    }
+}
+
+// MARK: Public
+
+public extension OfflineManager {
+    func episode(episodeId: String) throws -> Episode {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        return try Episode(offlineEpisode(episodeId: episodeId, context: context))
+    }
+    
+    func episodes(query: String) throws -> [Episode] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let descriptor = FetchDescriptor<OfflineEpisode>(predicate: #Predicate { $0.name.localizedStandardContains(query) })
         
-        guard let episode = item as? Episode else { throw OfflineError.fetchFailed }
+        return try context.fetch(descriptor).map(Episode.init)
+    }
+    
+    func episodes(podcastId: String) throws -> [Episode] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        return try offlineEpisodes(podcastId: podcastId, context: context).map(Episode.init)
+    }
+    
+    func download(episodeId: String, podcastId: String) async throws {
+        let (item, tracks, chapters) = try await AudiobookshelfClient.shared.item(itemId: podcastId, episodeId: episodeId)
+        let (podcast, _) = try await AudiobookshelfClient.shared.podcast(podcastId: podcastId)
+        
+        guard let episode = item as? Episode else {
+            throw OfflineError.fetchFailed
+        }
+        
+        try await DownloadManager.shared.download(cover: podcast.cover, itemId: podcast.id)
+        
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let offlinePodcast = offlinePodcast(podcast: podcast, context: context)
+        
+        guard ((try? offlineEpisode(episodeId: episodeId, context: context)) ?? nil) == nil else {
+            logger.error("Audiobook is already downloaded")
+            throw OfflineError.existing
+        }
         
         let offlineEpisode = OfflineEpisode(
             id: episode.id,
@@ -42,70 +80,45 @@ public extension OfflineManager {
             overview: episode.description,
             addedAt: episode.addedAt,
             released: episode.released,
-            podcast: podcast,
+            podcast: offlinePodcast,
             index: episode.index,
             duration: episode.duration)
         
-        PersistenceManager.shared.modelContainer.mainContext.insert(offlineEpisode)
+        context.insert(offlineEpisode)
         
-        await storeChapters(chapters, itemId: episode.id)
-        download(itemId: episode.id, tracks: tracks, type: .episode)
+        storeChapters(chapters, itemId: episode.id, context: context)
+        download(tracks: tracks, for: episode.id, type: .episode, context: context)
+        
+        try context.save()
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
     }
     
-    @MainActor
-    func isDownloadFinished(episodeId: String) -> Bool {
-        if let track = try? getOfflineTracks(parentId: episodeId).first {
-            return isDownloadFinished(track: track)
+    func remove(episodeId: String) {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        let podcastId: String?
+        
+        if let episode = try? offlineEpisode(episodeId: episodeId, context: context) {
+            podcastId = episode.podcast.id
+            context.delete(episode)
+        } else {
+            podcastId = nil
         }
         
-        return false
-    }
-    
-    @MainActor
-    func delete(episodeId: String) {
-        if let episode = try? getOfflineEpisode(episodeId: episodeId) {
-            let podcastId = episode.podcast.id
-            PersistenceManager.shared.modelContainer.mainContext.delete(episode)
-            
-            // there is only a bad way to delete the podcast so i will not do it
-            logger.warning("Podcast may be orphaned: \(podcastId)")
+        if let podcastId, let episodes = try? offlineEpisodes(podcastId: podcastId, context: context), episodes.isEmpty {
+            remove(podcastId: podcastId)
         }
         
-        if let tracks = try? getOfflineTracks(parentId: episodeId) {
+        if let tracks = try? offlineTracks(parentId: episodeId, context: context) {
             for track in tracks {
-                delete(track: track)
+                remove(track: track, context: context)
             }
         }
         
-        deleteChapters(itemId: episodeId)
+        try? removeChapters(itemId: episodeId, context: context)
+        try? context.save()
+        
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episodeId)
-    }
-}
-
-
-
-extension OfflineManager {
-    @MainActor
-    func getOfflineEpisode(episodeId: String) throws -> OfflineEpisode {
-        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineEpisode> { $0.id == episodeId })
-        descriptor.fetchLimit = 1
-        
-        if let episode = try? PersistenceManager.shared.modelContainer.mainContext.fetch(descriptor).first {
-            return episode
-        }
-        
-        throw OfflineError.missing
-    }
-    
-    @MainActor
-    func getOfflineEpisodes() throws -> [OfflineEpisode] {
-        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor())
-    }
-    
-    @MainActor
-    func getOfflineEpisodes(podcastId: String) throws -> [OfflineEpisode] {
-        try PersistenceManager.shared.modelContainer.mainContext.fetch(FetchDescriptor()).filter { $0.podcast.id == podcastId }
     }
 }

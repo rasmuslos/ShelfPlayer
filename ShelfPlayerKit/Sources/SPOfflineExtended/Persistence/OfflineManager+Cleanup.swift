@@ -9,31 +9,39 @@ import Foundation
 import SwiftData
 import SPOffline
 
-extension OfflineManager {
-    @MainActor
-    public func deleteDownloads() {
-        if let audiobooks = try? getOfflineAudiobooks() {
+public extension OfflineManager {
+    func removeAllDownloads() {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        if let audiobooks = try? offlineAudiobooks(context: context) {
             for audiobook in audiobooks {
-                delete(audiobookId: audiobook.id)
+                remove(audiobookId: audiobook.id)
             }
         }
         
-        if let tracks = try? getOfflineTracks() {
-            for track in tracks {
-                delete(track: track)
-            }
-        }
-        
-        if let episodes = try? getOfflineEpisodes() {
+        if let episodes = try? offlineEpisodes(context: context) {
             for episode in episodes {
-                delete(episodeId: episode.id)
+                remove(episodeId: episode.id)
             }
         }
         
-        try? PersistenceManager.shared.modelContainer.mainContext.delete(model: OfflineChapter.self)
-        try? PersistenceManager.shared.modelContainer.mainContext.delete(model: OfflinePodcast.self)
-        try? PersistenceManager.shared.modelContainer.mainContext.delete(model: PlaybackDuration.self)
+        if let podcasts = try? offlinePodcasts(context: context) {
+            for podcast in podcasts {
+                remove(podcastId: podcast.id)
+            }
+        }
         
-        try? DownloadManager.shared.cleanupDirectory()
+        if let tracks = try? offlineTracks(context: context) {
+            for track in tracks {
+                remove(track: track, context: context)
+            }
+        }
+        
+        try? context.delete(model: OfflineChapter.self)
+        try? context.delete(model: OfflineListeningTimeTracker.self)
+        
+        try? DownloadManager.shared.clearDirectories()
+        
+        try? context.save()
     }
 }

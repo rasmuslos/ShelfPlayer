@@ -36,7 +36,7 @@ internal extension Series {
     }
 }
 
-internal extension Audiobook.ReducedSeries {
+public extension Audiobook.ReducedSeries {
     static func parse(seriesName: String) -> [Self] {
         let series = seriesName.split(separator: ", ")
         

@@ -39,3 +39,9 @@ public final class OfflineTrack {
         case audiobook
     }
 }
+
+public extension OfflineTrack {
+    var isDownloaded: Bool {
+        downloadReference == nil
+    }
+}

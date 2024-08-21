@@ -8,6 +8,6 @@
 import Foundation
 import SPFoundation
 
-extension PlayableItem {
-    public static let downloadStatusUpdatedNotification = NSNotification.Name("io.rfk..shelfplayer.download.updated")
+public extension PlayableItem {
+    static let downloadStatusUpdatedNotification = NSNotification.Name("io.rfk.shelfplayer.download.statusUpdated")
 }

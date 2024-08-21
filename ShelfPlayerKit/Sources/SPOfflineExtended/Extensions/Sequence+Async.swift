@@ -1,12 +1,10 @@
 import Foundation
 
-// Taken from https://gist.github.com/DougGregor/92a2e4f6e11f6d733fb5065e9d1c880f
-
 public extension Collection {
-    func parallelMap<T>(
-        parallelism requestedParallelism: Int? = nil,
-        _ transform: @escaping (Element) async throws -> T
-    ) async rethrows -> [T] {
+    /// Asynchronously map all items
+    ///
+    /// Original gist by [DougGregor](https://gist.github.com/DougGregor/92a2e4f6e11f6d733fb5065e9d1c880f)
+    func parallelMap<T>(parallelism requestedParallelism: Int? = nil, _ transform: @escaping (Element) async throws -> T) async rethrows -> [T] {
         let defaultParallelism = 2
         let parallelism = requestedParallelism ?? defaultParallelism
         
