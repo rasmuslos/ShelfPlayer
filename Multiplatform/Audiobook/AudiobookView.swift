@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 internal struct AudiobookView: View {
     let viewModel: AudiobookViewModel

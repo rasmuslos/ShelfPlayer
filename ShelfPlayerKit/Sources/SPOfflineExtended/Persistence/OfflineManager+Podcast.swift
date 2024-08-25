@@ -71,6 +71,7 @@ public extension OfflineManager {
         
         return result.filter {
             if $0.value.isEmpty {
+                remove(podcastId: $0.key.id)
                 return false
             }
             
@@ -150,7 +151,7 @@ internal extension OfflineManager {
             return
         }
         
-        configuration.maxEpisodes = 4
+        configuration.maxEpisodes = 3
         configuration.autoDownload = false
         configuration.notifications = false
     }

@@ -119,6 +119,8 @@ public extension OfflineManager {
         try? removeChapters(itemId: episodeId, context: context)
         try? context.save()
         
+        removePlaybackSpeedOverride(for: episodeId)
+        
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episodeId)
     }
 }

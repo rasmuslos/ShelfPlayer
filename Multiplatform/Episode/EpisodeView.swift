@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPExtension
+import ShelfPlayerKit
 
 struct EpisodeView: View {
     let episode: Episode
     
     @State var navigationBarVisible = false
-    @State var imageColors = Item.ImageColors.placeholder
+    @State var imageColors = ImageColors()
     
     var body: some View {
         ScrollView {
@@ -28,8 +27,6 @@ struct EpisodeView: View {
         .modifier(ToolbarModifier(episode: episode, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
         .onAppear {
             Task.detached {
-                let colors = episode.getImageColors()
-                
                 Task { @MainActor in
                     withAnimation(.spring) {
                         self.imageColors = colors

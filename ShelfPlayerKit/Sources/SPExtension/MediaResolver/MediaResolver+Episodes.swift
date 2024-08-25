@@ -7,6 +7,7 @@
 
 import Foundation
 import SPFoundation
+import SPNetwork
 import SPOffline
 import SPOfflineExtended
 
@@ -16,7 +17,7 @@ public extension MediaResolver {
         
         var result = [Episode]()
         
-        if let offlineEpisodes = try? await OfflineManager.shared.getEpisodes(query: episodeName) {
+        if let offlineEpisodes = try? OfflineManager.shared.episodes(query: episodeName) {
             result += offlineEpisodes
         }
         
@@ -39,11 +40,11 @@ public extension MediaResolver {
         let (podcastId, episodeId) = MediaResolver.shared.convertIdentifier(identifier: episodeId)
         
         #if canImport(SPOfflineExtended)
-        if let episode = try? await OfflineManager.shared.getEpisode(episodeId: episodeId) {
+        if let episode = try? OfflineManager.shared.episode(episodeId: episodeId) {
             return episode
         }
         #endif
         
-        return try await AudiobookshelfClient.shared.getItem(itemId: podcastId, episodeId: episodeId).0
+        return try await AudiobookshelfClient.shared.item(itemId: podcastId, episodeId: episodeId).0
     }
 }

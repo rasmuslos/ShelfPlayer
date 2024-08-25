@@ -8,6 +8,7 @@
 import Foundation
 import Intents
 import SPFoundation
+import SPNetwork
 
 extension IntentHandler: INSearchForMediaIntentHandling {
     func handle(intent: INSearchForMediaIntent) async -> INSearchForMediaIntentResponse {

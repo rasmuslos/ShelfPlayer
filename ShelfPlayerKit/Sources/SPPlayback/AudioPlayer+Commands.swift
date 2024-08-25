@@ -1,37 +1,15 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Rasmus Krämer on 02.02.24.
 //
 
 import Foundation
-import Defaults
 import MediaPlayer
+import Defaults
 import SPFoundation
 import SPOffline
-
-internal extension AudioPlayer {
-    func setupAudioSession() {
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
-        } catch {
-            logger.fault("Failed to setup audio session")
-        }
-    }
-    
-    func updateAudioSession(active: Bool) {
-        if active {
-            setupAudioSession()
-        }
-        
-        do {
-            try AVAudioSession.sharedInstance().setActive(active)
-        } catch {
-            logger.fault("Failed to update audio session")
-        }
-    }
-}
 
 internal extension AudioPlayer {
     func setupRemoteControls() {
@@ -46,30 +24,18 @@ internal extension AudioPlayer {
             return .success
         }
         commandCenter.togglePlayPauseCommand.addTarget { [unowned self] event in
-            playing = !playing
+            playing.toggle()
             return .success
         }
         
-        commandCenter.changePlaybackPositionCommand.addTarget { [unowned self] event in
-            if Defaults[.lockSeekBar] {
-                return .noActionableNowPlayingItem
-            }
-            
-            if let changePlaybackPositionCommandEvent = event as? MPChangePlaybackPositionCommandEvent {
-                seek(to: changePlaybackPositionCommandEvent.positionTime, includeChapterOffset: true)
-                return .success
-            }
-            
-            return .commandFailed
-        }
         commandCenter.changePlaybackRateCommand.supportedPlaybackRates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
         commandCenter.changePlaybackRateCommand.addTarget { [unowned self] event in
-            if let changePlaybackPositionCommandEvent = event as? MPChangePlaybackRateCommandEvent {
-                playbackRate = changePlaybackPositionCommandEvent.playbackRate
-                return .success
+            guard let changePlaybackPositionCommandEvent = event as? MPChangePlaybackRateCommandEvent else {
+                return .commandFailed
             }
             
-            return .commandFailed
+            playbackRate = changePlaybackPositionCommandEvent.playbackRate
+            return .success
         }
         
         commandCenter.bookmarkCommand.addTarget { [unowned self] event in
@@ -81,25 +47,48 @@ internal extension AudioPlayer {
                 return .noActionableNowPlayingItem
             }
             
-            Task { @MainActor in
-                if bookmarkCommandEvent.isNegative {
-                    guard let bookmarks = try? OfflineManager.shared.getBookmarks(itemId: audiobook.id), let bookmark = bookmarks.first(where: { abs($0.position - getItemCurrentTime()) <= 5 }) else {
-                        return
-                    }
-                    
+            if bookmarkCommandEvent.isNegative {
+                guard let bookmarks = try? OfflineManager.shared.bookmarks(itemId: audiobook.id),
+                      let bookmark = bookmarks.first(where: { abs($0.position - itemCurrentTime) <= 5 }) else {
+                    return .noSuchContent
+                }
+                
+                Task {
                     await OfflineManager.shared.deleteBookmark(bookmark)
-                } else {
-                    await OfflineManager.shared.createBookmark(itemId: audiobook.id, position: getItemCurrentTime(), note: "Siri Bookmark")
+                }
+            } else {
+                let dateFormatter = DateFormatter()
+                dateFormatter.locale = .autoupdatingCurrent
+                dateFormatter.timeZone = .current
+                
+                dateFormatter.dateStyle = .medium
+                dateFormatter.timeStyle = .medium
+                
+                Task {
+                    await OfflineManager.shared.createBookmark(itemId: audiobook.id, position: itemCurrentTime, note: dateFormatter.string(from: .now))
                 }
             }
             
             return .success
         }
         
+        commandCenter.changePlaybackPositionCommand.addTarget { [unowned self] event in
+            if Defaults[.lockSeekBar] {
+                return .noActionableNowPlayingItem
+            }
+            
+            guard let changePlaybackPositionCommandEvent = event as? MPChangePlaybackPositionCommandEvent else {
+                return .commandFailed
+            }
+            
+            chapterCurrentTime = changePlaybackPositionCommandEvent.positionTime
+            return .success
+        }
+        
         commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(value: skipBackwardsInterval)]
         commandCenter.skipBackwardCommand.addTarget { [unowned self] event in
             if let changePlaybackPositionCommandEvent = event as? MPSkipIntervalCommandEvent {
-                seek(to: getItemCurrentTime() - changePlaybackPositionCommandEvent.interval)
+                itemCurrentTime = itemCurrentTime - changePlaybackPositionCommandEvent.interval
                 return .success
             }
             
@@ -108,7 +97,7 @@ internal extension AudioPlayer {
         commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: skipForwardsInterval)]
         commandCenter.skipForwardCommand.addTarget { [unowned self] event in
             if let changePlaybackPositionCommandEvent = event as? MPSkipIntervalCommandEvent {
-                seek(to: getItemCurrentTime() + changePlaybackPositionCommandEvent.interval)
+                itemCurrentTime = itemCurrentTime + changePlaybackPositionCommandEvent.interval
                 return .success
             }
             
@@ -116,20 +105,20 @@ internal extension AudioPlayer {
         }
         
         commandCenter.previousTrackCommand.addTarget { [unowned self] event in
-            seek(to: getItemCurrentTime() - Double(skipBackwardsInterval))
+            itemCurrentTime = itemCurrentTime - Double(skipBackwardsInterval)
             return .success
         }
         commandCenter.nextTrackCommand.addTarget { [unowned self] event in
-            seek(to: getItemCurrentTime() + Double(skipForwardsInterval))
+            itemCurrentTime = itemCurrentTime + Double(skipBackwardsInterval)
             return .success
         }
         
         commandCenter.seekBackwardCommand.addTarget { [unowned self] event in
-            seek(to: getItemCurrentTime() - Double(skipBackwardsInterval))
+            itemCurrentTime = itemCurrentTime - Double(skipBackwardsInterval)
             return .success
         }
         commandCenter.seekForwardCommand.addTarget { [unowned self] event in
-            seek(to: getItemCurrentTime() + Double(skipForwardsInterval))
+            itemCurrentTime = itemCurrentTime + Double(skipBackwardsInterval)
             return .success
         }
     }

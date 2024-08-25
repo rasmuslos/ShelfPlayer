@@ -26,7 +26,7 @@ public extension OfflineManager {
     
     func attemptListeningTimeSync(tracker: OfflineListeningTimeTracker) async throws {
         if tracker.startTime.isNaN {
-            try delete(listeningTimeTracker: tracker)
+            try remove(listeningTimeTracker: tracker)
             return
         }
         
@@ -42,10 +42,10 @@ public extension OfflineManager {
             started: tracker.started,
             updated: tracker.lastUpdate)
         
-        try delete(listeningTimeTracker: tracker)
+        try remove(listeningTimeTracker: tracker)
         logger.info("Created session \(tracker.id)")
     }
-    func delete(listeningTimeTracker: OfflineListeningTimeTracker) throws {
+    func remove(listeningTimeTracker: OfflineListeningTimeTracker) throws {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
         context.delete(listeningTimeTracker)
