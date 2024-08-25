@@ -15,13 +15,12 @@ import SPOffline
 import SPOfflineExtended
 #endif
 
-/// An object that reports playback progress to the ABS server or alternatively stores is for future syncing
 internal final class PlaybackReporter {
     private let itemId: String
     private let episodeId: String?
     
     private let playbackSessionId: String?
-    private let playbackDurationTracker: OfflineListeningTimeTracker?
+    private let listeningTimeTracker: OfflineListeningTimeTracker?
     
     private var duration: Double
     private var currentTime: Double
@@ -37,14 +36,24 @@ internal final class PlaybackReporter {
         lastReportedTime = Date.timeIntervalSinceReferenceDate
         
         if playbackSessionId == nil {
-            playbackDurationTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
+            listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
         } else {
-            playbackDurationTracker = nil
+            listeningTimeTracker = nil
         }
     }
     
     deinit {
-        Self.reportPlaybackStop(playbackSessionId: playbackSessionId, playbackDurationTracker: playbackDurationTracker, itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, timeListened: getTimeListened())
+        Self.reportPlaybackStop(playbackSessionId: playbackSessionId,
+                                playbackDurationTracker: listeningTimeTracker,
+                                itemId: itemId,
+                                episodeId: episodeId,
+                                currentTime: currentTime,
+                                duration: duration,
+                                timeListened: timeListened())
+    }
+    
+    enum ReportError: Error {
+        case playbackSessionIdMissing
     }
 }
 
@@ -61,14 +70,13 @@ internal extension PlaybackReporter {
         updateTime(currentTime: currentTime, duration: duration)
         
         if playing {
-            let _ = getTimeListened()
+            // Reset time listened when playing again (was running in the background)
+            let _ = timeListened()
         } else {
             reportProgress()
         }
     }
 }
-
-// MARK: Report
 
 private extension PlaybackReporter {
     func reportProgress() {
@@ -76,21 +84,20 @@ private extension PlaybackReporter {
             return
         }
         
-        let timeListened = getTimeListened()
+        let timeListened = timeListened()
         
-        Task.detached { [self] in
+        Task { [self] in
             var success = true
             
-            Task.detached { @MainActor [self] in
-                if let playbackDurationTracker = playbackDurationTracker {
-                    playbackDurationTracker.duration += timeListened
-                    playbackDurationTracker.lastUpdate = Date()
-                }
-            }
+            listeningTimeTracker?.duration += timeListened
+            listeningTimeTracker?.lastUpdate = Date()
             
             do {
-                if let playbackSessionId = playbackSessionId {
-                    try await AudiobookshelfClient.shared.reportUpdate(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
+                if let playbackSessionId {
+                    try await AudiobookshelfClient.shared.reportUpdate(playbackSessionId: playbackSessionId,
+                                                                       currentTime: currentTime,
+                                                                       duration: duration,
+                                                                       timeListened: timeListened)
                 } else {
                     try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
                 }
@@ -101,12 +108,8 @@ private extension PlaybackReporter {
             await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
         }
     }
-}
-
-// MARK: Helper
-
-fileprivate extension PlaybackReporter {
-    func getTimeListened() -> Double {
+    
+    func timeListened() -> Double {
         let timeListened = Date.timeIntervalSinceReferenceDate - lastReportedTime
         lastReportedTime = Date.timeIntervalSinceReferenceDate
         
@@ -125,8 +128,8 @@ fileprivate extension PlaybackReporter {
         if currentTime.isFinite && currentTime != 0 {
             self.currentTime = currentTime
             
-            if playbackDurationTracker?.startTime.isNaN == true {
-                playbackDurationTracker?.startTime = currentTime
+            if listeningTimeTracker?.startTime.isNaN == true {
+                listeningTimeTracker?.startTime = currentTime
             }
         }
     }
@@ -147,11 +150,11 @@ extension PlaybackReporter {
                 return
             }
             
-            Task.detached {
+            Task {
                 var success = true
                 
                 do {
-                    if let playbackSessionId = playbackSessionId {
+                    if let playbackSessionId {
                         try await AudiobookshelfClient.shared.reportClose(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
                     } else {
                         try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
@@ -163,36 +166,18 @@ extension PlaybackReporter {
                 await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
             }
             
-            if let playbackDurationTracker = playbackDurationTracker {
-                Task.detached { @MainActor in
-                    playbackDurationTracker.duration += timeListened
-                    playbackDurationTracker.lastUpdate = Date()
-                    playbackDurationTracker.eligibleForSync = true
+            playbackDurationTracker?.duration += timeListened
+            playbackDurationTracker?.lastUpdate = Date()
+            playbackDurationTracker?.eligibleForSync = true
                     
+            if let playbackDurationTracker {
+                Task {
                     try? await OfflineManager.shared.attemptListeningTimeSync(tracker: playbackDurationTracker)
                 }
-            }
-            
-            if currentTime >= duration {
-                Defaults.reset(.playbackSpeed(itemId: itemId, episodeId: episodeId))
-                
-                #if canImport(SPOfflineExtended)
-                if Defaults[.deleteFinishedDownloads] {
-                    if let episodeId = episodeId {
-                        OfflineManager.shared.remove(episodeId: episodeId)
-                    } else {
-                        OfflineManager.shared.remove(audiobookId: itemId)
-                    }
-                }
-                #endif
             }
         }
     
     private static func reportWithoutPlaybackSession(itemId: String, episodeId: String?, currentTime: Double, duration: Double) async throws {
         try await AudiobookshelfClient.shared.updateProgress(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
-    }
-    
-    enum ReportError: Error {
-        case playbackSessionIdMissing
     }
 }
