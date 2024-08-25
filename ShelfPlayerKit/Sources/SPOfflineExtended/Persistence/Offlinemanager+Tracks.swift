@@ -55,7 +55,7 @@ internal extension OfflineManager {
     }
     
     func remove(track: OfflineTrack, context: ModelContext) {
-        DownloadManager.shared.delete(track: track)
+        DownloadManager.shared.remove(track: track)
         context.delete(track)
     }
 }
@@ -76,13 +76,13 @@ public extension OfflineManager {
         let tracks = try offlineTracks(parentId: itemId, context: context)
         
         if let track = tracks.filter({ $0.index == track.index }).first {
-            return DownloadManager.shared.getURL(track: track)
+            return DownloadManager.shared.trackURL(track: track)
         }
         
         throw OfflineError.missing
     }
     
-    func getOfflineStatus(parentId: String) -> ItemOfflineTracker.OfflineStatus {
+    func getOfflineStatus(parentId: String) -> OfflineStatus {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
         guard let tracks = try? offlineTracks(parentId: parentId, context: context), !tracks.isEmpty else {
@@ -90,5 +90,11 @@ public extension OfflineManager {
         }
         
         return tracks.reduce(true) { $1.isDownloaded ? $0 : false } ? .downloaded : .working
+    }
+    
+    enum OfflineStatus: Int {
+        case none = 0
+        case working = 1
+        case downloaded = 2
     }
 }

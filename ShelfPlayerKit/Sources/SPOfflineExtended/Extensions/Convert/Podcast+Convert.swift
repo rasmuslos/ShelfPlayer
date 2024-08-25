@@ -17,7 +17,7 @@ internal extension Podcast {
             name: podcast.name,
             author: podcast.author,
             description: podcast.overview,
-            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.getImageUrl(itemId: podcast.id)),
+            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.imageURL(identifiedBy: podcast.id)),
             genres: podcast.genres,
             addedAt: podcast.addedAt,
             released: podcast.released,

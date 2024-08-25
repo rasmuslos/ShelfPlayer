@@ -10,7 +10,7 @@ import SPFoundation
 
 internal extension Episode {
     convenience init?(item: AudiobookshelfItem) {
-        guard let recentEpisode = item.recentEpisode, let media = item.media, let id = recentEpisode.id, let libraryId = item.libraryId, let title = recentEpisode.title, let name = media.metadata.title else {
+        guard let recentEpisode = item.recentEpisode, let media = item.media, let id = recentEpisode.id, let libraryId = item.libraryId, let title = recentEpisode.title else {
             return nil
         }
         

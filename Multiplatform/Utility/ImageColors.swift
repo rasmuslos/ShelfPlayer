@@ -7,8 +7,7 @@
 
 import Foundation
 import SwiftUI
-import UIImageColors
-import SPFoundation
+import ShelfPlayerKit
 
 @Observable
 internal class ImageColors {
@@ -29,8 +28,8 @@ internal class ImageColors {
 }
 
 extension ImageColors {
-    internal func update(image: Item.Image?) async {
-        await self.extractColors(image: cover)
+    internal func update(cover: Cover?) async {
+        await self.extractColors(cover: cover)
     }
     
     internal func update(saturation: CGFloat, luminance: CGFloat) {
@@ -50,21 +49,6 @@ extension ImageColors {
         return Color(hue: hue, saturation: max(saturation, saturation), brightness: min(brightness, luminance), opacity: alpha)
     }
     
-    private func extractColors(image: Item.ImageColors?) async {
-        guard let image = image, let data = try? Data(contentsOf: image.url), let image = UIImage(data: data), let colors = image.getColors(quality: .high) else {
-            return
-        }
-        
-        guard !Task.isCancelled else {
-            return
-        }
-        
-        withAnimation(.spring) {
-            self.background = Color(colors.background)
-            self.primary = Color(colors.primary)
-            self.secondary = Color(colors.secondary)
-            self.detail = Color(colors.detail)
-            self.isLight = self.background.isLight()
-        }
+    private func extractColors(cover: Cover?) async {
     }
 }

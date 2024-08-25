@@ -7,6 +7,7 @@
 
 import Foundation
 import SPFoundation
+import SPNetwork
 import SPOffline
 
 extension DownloadManager {
@@ -18,11 +19,11 @@ extension DownloadManager {
             ])))
     }
     
-    func delete(track: OfflineTrack) {
-        try? FileManager.default.removeItem(at: getURL(track: track))
+    func remove(track: OfflineTrack) {
+        try? FileManager.default.removeItem(at: trackURL(track: track))
     }
     
-    func getURL(track: OfflineTrack) -> URL {
+    func trackURL(track: OfflineTrack) -> URL {
         documentsURL.appending(path: "tracks").appending(path: "\(track.id).\(track.fileExtension)")
     }
 }

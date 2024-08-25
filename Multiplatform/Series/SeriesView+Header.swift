@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 extension SeriesView {
     struct Header: View {
         let series: Series
         let audiobooks: [Audiobook]
         
-        @State private var images = [Item.Image]()
+        @State private var images = [Cover]()
         
         private var count: Int {
             min(images.count, 5)

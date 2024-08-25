@@ -7,6 +7,7 @@
 
 import Foundation
 import SPFoundation
+import SPNetwork
 import SPOffline
 import SPOfflineExtended
 
@@ -18,13 +19,13 @@ public extension MediaResolver {
         
         var result = [Audiobook]()
         
-        if let offlineAudiobooks = try? await OfflineManager.shared.getAudiobooks(query: audiobookName) {
+        if let offlineAudiobooks = try? OfflineManager.shared.audiobooks(query: audiobookName) {
             result += offlineAudiobooks
         }
             
-        if !UserDefaults.standard.bool(forKey: "siriOfflineMode"), let libraries = try? await AudiobookshelfClient.shared.getLibraries().filter({ $0.type == .audiobooks }) {
+        if !UserDefaults.standard.bool(forKey: "siriOfflineMode"), let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) {
             let fetched = await libraries.parallelMap {
-                let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(libraryId: $0.id)
+                let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(libraryId: $0.id)
                 return audiobooks ?? []
             }
             
@@ -48,11 +49,11 @@ public extension MediaResolver {
     
     func resolve(audiobookId: String) async throws -> PlayableItem {
         #if canImport(SPOfflineExtended)
-        if let audiobook = try? await OfflineManager.shared.getAudiobook(audiobookId: audiobookId) {
+        if let audiobook = try? OfflineManager.shared.audiobook(audiobookId: audiobookId) {
             return audiobook
         }
         #endif
         
-        return try await AudiobookshelfClient.shared.getItem(itemId: audiobookId, episodeId: nil).0
+        return try await AudiobookshelfClient.shared.item(itemId: audiobookId, episodeId: nil).0
     }
 }

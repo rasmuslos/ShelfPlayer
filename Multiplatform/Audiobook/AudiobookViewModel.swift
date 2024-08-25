@@ -7,28 +7,35 @@
 
 import Foundation
 import SwiftUI
-import SPFoundation
-import SPOfflineExtended
+import ShelfPlayerKit
 
 @Observable
 final internal class AudiobookViewModel {
-    var audiobook: Audiobook
+    @MainActor var audiobook: Audiobook
+    @MainActor var libraryId: String!
     
-    var libraryId: String!
+    @MainActor var navigationBarVisible: Bool
     
-    var navigationBarVisible = false
+    @MainActor var chapters: [PlayableItem.Chapter]
+    @MainActor var authorID: String?
     
-    var chapters: PlayableItem.Chapters?
+    @MainActor private(set) var sameAuthor: [Audiobook]
+    @MainActor private(set) var sameSeries: [Audiobook]
+    @MainActor private(set) var sameNarrator: [Audiobook]
     
-    var authorId: String?
-    
-    var sameAuthor = [Audiobook]()
-    var sameSeries = [Audiobook]()
-    var sameNarrator = [Audiobook]()
-    
+    @MainActor
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
         libraryId = audiobook.libraryId
+        
+        navigationBarVisible = false
+        
+        chapters = []
+        authorID = nil
+        
+        sameAuthor = []
+        sameSeries = []
+        sameNarrator = []
     }
 }
 
@@ -45,46 +52,54 @@ internal extension AudiobookViewModel {
     }
     
     private func loadAudiobook() async {
-        if let (item, _, chapters) = try? await AudiobookshelfClient.shared.getItem(itemId: audiobook.id, episodeId: nil) {
-            self.audiobook = item as! Audiobook
-            self.chapters = chapters
+        if let (item, _, chapters) = try? await AudiobookshelfClient.shared.item(itemId: audiobook.id, episodeId: nil) {
+            await MainActor.withAnimation {
+                self.audiobook = item as! Audiobook
+                self.chapters = chapters
+            }
         }
     }
     
     private func loadAuthor() async {
-        guard let author = audiobook.author, let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: libraryId) else {
+        guard let author = await audiobook.author, let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: libraryId) else {
             return
         }
         
-        self.authorId = authorId
+        await MainActor.withAnimation {
+            self.authorID = authorId
+        }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId).1 else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryId: libraryId).1 else {
             return
         }
         
-        sameAuthor = audiobooks
+        await MainActor.withAnimation {
+            self.sameAuthor = audiobooks
+        }
     }
     
     private func loadSeries() async {
         let seriesId: String
         
-        if let id = audiobook.series.first?.id {
+        if let id = await audiobook.series.first?.id {
             seriesId = id
-        } else if let name = audiobook.series.first?.name, let id = try? await AudiobookshelfClient.shared.getSeriesId(name: name, libraryId: libraryId) {
+        } else if let name = await audiobook.series.first?.name, let id = try? await AudiobookshelfClient.shared.seriesID(name: name, libraryId: libraryId) {
             seriesId = id
         } else {
             return
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: seriesId, libraryId: libraryId) else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryId: libraryId) else {
             return
         }
         
-        sameSeries = audiobooks
+        await MainActor.withAnimation {
+            self.sameSeries = audiobooks
+        }
     }
     
     private func loadNarrator() async {
-        guard let narratorName = audiobook.narrator else {
+        guard let narratorName = await audiobook.narrator else {
             return
         }
         
@@ -92,6 +107,8 @@ internal extension AudiobookViewModel {
             return
         }
         
-        sameNarrator = audiobooks
+        await MainActor.withAnimation {
+            self.sameNarrator = audiobooks
+        }
     }
 }

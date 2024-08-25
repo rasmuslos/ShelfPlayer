@@ -8,6 +8,7 @@
 import Foundation
 import Defaults
 import SPFoundation
+import SPNetwork
 import SPOffline
 
 #if canImport(SPOfflineExtended)
@@ -20,7 +21,7 @@ internal final class PlaybackReporter {
     private let episodeId: String?
     
     private let playbackSessionId: String?
-    private let playbackDurationTracker: PlaybackDuration?
+    private let playbackDurationTracker: OfflineListeningTimeTracker?
     
     private var duration: Double
     private var currentTime: Double
@@ -37,7 +38,7 @@ internal final class PlaybackReporter {
         lastReportedTime = Date.timeIntervalSinceReferenceDate
         
         if playbackSessionId == nil {
-            playbackDurationTracker = OfflineManager.shared.getPlaybackDurationTracker(itemId: itemId, episodeId: episodeId)
+            playbackDurationTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
         } else {
             playbackDurationTracker = nil
         }
@@ -90,7 +91,7 @@ private extension PlaybackReporter {
             
             do {
                 if let playbackSessionId = playbackSessionId {
-                    try await AudiobookshelfClient.shared.reportPlaybackUpdate(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
+                    try await AudiobookshelfClient.shared.reportUpdate(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
                 } else {
                     try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
                 }
@@ -137,7 +138,7 @@ fileprivate extension PlaybackReporter {
 extension PlaybackReporter {
     private static func reportPlaybackStop(
         playbackSessionId: String?,
-        playbackDurationTracker: PlaybackDuration?,
+        playbackDurationTracker: OfflineListeningTimeTracker?,
         itemId: String,
         episodeId: String?,
         currentTime: Double,
@@ -152,7 +153,7 @@ extension PlaybackReporter {
                 
                 do {
                     if let playbackSessionId = playbackSessionId {
-                        try await AudiobookshelfClient.shared.reportPlaybackClose(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
+                        try await AudiobookshelfClient.shared.reportClose(playbackSessionId: playbackSessionId, currentTime: currentTime, duration: duration, timeListened: timeListened)
                     } else {
                         try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
                     }
@@ -169,7 +170,7 @@ extension PlaybackReporter {
                     playbackDurationTracker.lastUpdate = Date()
                     playbackDurationTracker.eligibleForSync = true
                     
-                    try? await OfflineManager.shared.attemptPlaybackDurationSync(tracker: playbackDurationTracker)
+                    try? await OfflineManager.shared.attemptListeningTimeSync(tracker: playbackDurationTracker)
                 }
             }
             
@@ -178,12 +179,10 @@ extension PlaybackReporter {
                 
                 #if canImport(SPOfflineExtended)
                 if Defaults[.deleteFinishedDownloads] {
-                    Task.detached {
-                        if let episodeId = episodeId {
-                            await OfflineManager.shared.delete(episodeId: episodeId)
-                        } else {
-                            await OfflineManager.shared.delete(audiobookId: itemId)
-                        }
+                    if let episodeId = episodeId {
+                        OfflineManager.shared.remove(episodeId: episodeId)
+                    } else {
+                        OfflineManager.shared.remove(audiobookId: itemId)
                     }
                 }
                 #endif
@@ -191,7 +190,7 @@ extension PlaybackReporter {
         }
     
     private static func reportWithoutPlaybackSession(itemId: String, episodeId: String?, currentTime: Double, duration: Double) async throws {
-        try await AudiobookshelfClient.shared.updateMediaProgress(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
+        try await AudiobookshelfClient.shared.updateProgress(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
     }
     
     enum ReportError: Error {

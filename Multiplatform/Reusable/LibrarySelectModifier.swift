@@ -9,7 +9,7 @@ import SwiftUI
 import SPFoundation
 
 struct LibrarySelectModifier: ViewModifier {
-    @Environment(AvailableLibraries.self) var availableLibraries
+    @Environment(Libraries.self) var availableLibraries
     
     func body(content: Content) -> some View {
         content
