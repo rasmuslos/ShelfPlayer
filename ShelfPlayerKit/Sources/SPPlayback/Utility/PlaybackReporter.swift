@@ -27,7 +27,6 @@ internal final class PlaybackReporter {
     private var currentTime: Double
     private var lastReportedTime: Double
     
-    @MainActor
     internal init(itemId: String, episodeId: String?, playbackSessionId: String?) {
         self.itemId = itemId
         self.episodeId = episodeId
