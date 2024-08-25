@@ -170,4 +170,21 @@ internal extension AudioPlayer {
         
         try await start(queue.removeFirst())
     }
+    func itemDidFinish(_ item: PlayableItem) {
+        if let episode = item as? Episode {
+            OfflineManager.shared.removePlaybackSpeedOverride(for: episode.podcastId, episodeID: episode.id)
+        } else {
+            OfflineManager.shared.removePlaybackSpeedOverride(for: item.id, episodeID: nil)
+        }
+            
+        #if canImport(SPOfflineExtended)
+        if Defaults[.deleteFinishedDownloads] {
+            if let episode = item as? Episode {
+                OfflineManager.shared.remove(episodeId: episode.id)
+            } else {
+                OfflineManager.shared.remove(audiobookId: item.id)
+            }
+        }
+        #endif
+    }
 }

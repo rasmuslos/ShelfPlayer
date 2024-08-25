@@ -44,6 +44,10 @@ internal extension AudioPlayer {
         
         NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { _ in
             guard let currentTrackIndex = self.currentTrackIndex, currentTrackIndex + 1 < self.tracks.count else {
+                if let item = self.item {
+                    self.itemDidFinish(item)
+                }
+                
                 Task {
                     try await self.advance()
                 }
