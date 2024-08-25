@@ -82,7 +82,7 @@ public extension OfflineManager {
         throw OfflineError.missing
     }
     
-    func getOfflineStatus(parentId: String) -> OfflineStatus {
+    func offlineStatus(parentId: String) -> OfflineStatus {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
         guard let tracks = try? offlineTracks(parentId: parentId, context: context), !tracks.isEmpty else {
