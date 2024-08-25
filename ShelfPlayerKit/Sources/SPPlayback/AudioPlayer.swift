@@ -45,7 +45,6 @@ public final class AudioPlayer {
             }
             
             updateNowPlayingWidget()
-            
             NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
         }
     }
@@ -56,7 +55,6 @@ public final class AudioPlayer {
             }
             
             updateChapterIndex()
-            
             NotificationCenter.default.post(name: AudioPlayer.bufferingDidChangeNotification, object: nil)
         }
     }
@@ -182,6 +180,8 @@ public final class AudioPlayer {
             if playing {
                 audioPlayer.rate = playbackRate
             }
+            
+            NotificationCenter.default.post(name: AudioPlayer.speedDidChangeNotification, object: nil)
         }
     }
     
@@ -192,13 +192,21 @@ public final class AudioPlayer {
     internal var tracks: [PlayableItem.AudioTrack]
     internal var currentTrackIndex: Int?
     
+    internal var chapterTTL: Double
+    
     internal var lastPause: Date?
     internal var playbackReporter: PlaybackReporter?
     
     internal var systemVolume: Float
     internal var volumeSubscription: AnyCancellable?
     
-    internal var enableChapterTrack: Bool
+    internal var rateSubscription: NSKeyValueObservation?
+    
+    internal var enableChapterTrack: Bool {
+        didSet {
+            updateChapterIndex()
+        }
+    }
     internal var skipForwardsInterval: Int
     internal var skipBackwardsInterval: Int
     
@@ -206,8 +214,7 @@ public final class AudioPlayer {
     
     private init() {
         audioPlayer = AVQueuePlayer()
-        
-        buffering = false
+        buffering = true
         
         item = nil
         queue = []
@@ -222,6 +229,8 @@ public final class AudioPlayer {
         tracks = []
         currentTrackIndex = nil
         
+        chapterTTL = 0
+        
         lastPause = nil
         playbackReporter = nil
         
@@ -231,21 +240,17 @@ public final class AudioPlayer {
         skipForwardsInterval = Defaults[.skipForwardsInterval]
         skipBackwardsInterval = Defaults[.skipBackwardsInterval]
         
+        setupObservers()
+        setupRemoteControls()
+        
+        setupAudioSession()
         updateAudioSession(active: false)
     }
 }
 
-public extension AudioPlayer {
-    var remaining: Double {
-        (chapterDuration - chapterCurrentTime) * (1 / Double(playbackRate))
-    }
-    
-    var chapter: PlayableItem.Chapter? {
-        if let currentChapterIndex {
-            return chapters[currentChapterIndex]
-        }
-        
-        return nil
+internal extension AudioPlayer {
+    enum AudioPlayerError: Error {
+        case missing
     }
 }
 

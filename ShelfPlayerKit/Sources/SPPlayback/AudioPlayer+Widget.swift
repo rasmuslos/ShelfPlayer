@@ -41,7 +41,7 @@ internal extension AudioPlayer {
         }
         
         if enableChapterTrack, chapters.count > 1 {
-            nowPlayingInfo[MPMediaItemPropertyTitle] = getChapter()?.title
+            nowPlayingInfo[MPMediaItemPropertyTitle] = chapter?.title
             nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = item.name
         } else {
             nowPlayingInfo[MPMediaItemPropertyTitle] = item.name
@@ -61,9 +61,9 @@ internal extension AudioPlayer {
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
         nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = playbackRate
         
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = getChapterDuration()
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = getChapterCurrentTime()
-        nowPlayingInfo[MPNowPlayingInfoPropertyChapterNumber] = activeChapterIndex
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = chapterDuration
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = chapterCurrentTime
+        nowPlayingInfo[MPNowPlayingInfoPropertyChapterNumber] = currentChapterIndex
         
         MPNowPlayingInfoCenter.default().playbackState = playing ? .playing : .paused
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo

@@ -12,80 +12,74 @@ import UIKit
 import SPFoundation
 
 internal extension AudioPlayer {
-    func setupTimeObserver() {
-        audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: nil) { [unowned self] _ in
-            let chapter = getChapter()
-            if self.chapter != chapter {
-                self.chapter = chapter
-            }
-            
-            self.buffering = !(audioPlayer.currentItem?.isPlaybackLikelyToKeepUp ?? false)
-            
-            self.duration = getChapterDuration()
-            self.currentTime = getChapterCurrentTime()
-            
-            updateNowPlayingStatus()
-            playbackReporter?.reportProgress(currentTime: getItemCurrentTime(), duration: getItemDuration())
-            
-            let currentTime = getItemCurrentTime()
-            if currentTime.isFinite && !currentTime.isNaN, Int(currentTime) % 5 == 0 {
+    func setupObservers() {
+        audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.25, preferredTimescale: 1000), queue: nil) { [unowned self] _ in
+            if chapterTTL < itemCurrentTime {
                 updateChapterIndex()
             }
             
-            if remainingSleepTimerTime != nil && playing {
-                remainingSleepTimerTime! -= 0.5
-                
-                if remainingSleepTimerTime! <= 0 {
-                    sleepTimerDidExpire()
-                } else if remainingSleepTimerTime! <= 10 {
-                    audioPlayer.volume = Float(remainingSleepTimerTime! / 10)
+            updateNowPlayingWidget()
+            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration)
+            
+            if let playItem = audioPlayer.currentItem, playing {
+                if playItem.isPlaybackBufferEmpty {
+                    buffering = true
+                } else {
+                    buffering = !playItem.isPlaybackLikelyToKeepUp && !playItem.isPlaybackBufferFull
                 }
-            } else if pauseAtEndOfChapter && playing {
-                let delta = getChapterDuration() - getChapterCurrentTime()
-                
-                if delta <= 10 {
-                    audioPlayer.volume = Float(delta / 10)
-                }
+            } else {
+                buffering = false
             }
+            
+            NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
         }
-    }
-    
-    func setupObservers() {
-        NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { [weak self] _ in
-            if self?.activeAudioTrackIndex == (self?.tracks.count ?? 0) - 1 {
-                if let duration = self?.getItemDuration() {
-                    self?.playbackReporter?.reportProgress(currentTime: duration, duration: duration)
+        
+        rateSubscription = audioPlayer.observe(\.rate) { _, _ in
+            NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
+        }
+        volumeSubscription = AVAudioSession.sharedInstance().publisher(for: \.outputVolume).sink { volume in
+            self.systemVolume = volume
+            NotificationCenter.default.post(name: AudioPlayer.volumeDidChangeNotification, object: nil)
+        }
+        
+        NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { _ in
+            guard let currentTrackIndex = self.currentTrackIndex, currentTrackIndex + 1 < self.tracks.count else {
+                Task {
+                    try await self.advance()
                 }
                 
-                self?.stopPlayback()
                 return
             }
             
-            self?.activeAudioTrackIndex? += 1
+            self.currentTrackIndex? += 1
         }
         
-        NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { [weak self] notification in
+        NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { notification in
             guard let userInfo = notification.userInfo, let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt, let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
                 return
             }
             
             switch type {
                 case .began:
-                    self?.setPlaying(false)
+                    self.playing = false
                 case .ended:
                     guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
                     let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
                     
                     if options.contains(.shouldResume) {
-                        self?.setPlaying(true)
+                        self.playing = true
                     }
                 default: ()
             }
         }
         
+        NotificationCenter.default.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: nil) { _ in
+            NotificationCenter.default.post(name: AudioPlayer.routeDidChangeNotification, object: nil)
+        }
+        
         #if os(iOS)
-        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.playbackReporter = nil
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { _ in
+            self.playbackReporter = nil
         }
         #endif
         
