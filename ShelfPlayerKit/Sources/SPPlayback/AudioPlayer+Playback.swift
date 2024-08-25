@@ -14,7 +14,7 @@ import SPFoundation
 import SPExtension
 
 extension AudioPlayer {
-    func startPlayback(item: PlayableItem, tracks: PlayableItem.AudioTracks, chapters: PlayableItem.Chapters, startTime: Double, playbackReporter: PlaybackReporter) {
+    func startPlayback(item: PlayableItem, tracks: [PlayableItem.AudioTrack], chapters: [PlayableItem.Chapter], startTime: Double, playbackReporter: PlaybackReporter) {
         if tracks.isEmpty {
             return
         }
@@ -89,50 +89,6 @@ extension AudioPlayer {
             try? await interaction.donate()
         }
     }
-    
-    // The following functions are invoked using the computed variables
-    
-    func setPlaying(_ playing: Bool) {
-        updateNowPlayingStatus()
-        
-        if playing {
-            Task {
-                if let lastPause = lastPause, lastPause.timeIntervalSince(Date()) <= -10 * 60 {
-                    await seek(to: getItemCurrentTime() - 30)
-                }
-                
-                lastPause = nil
-                audioPlayer.play()
-                updateAudioSession(active: true)
-            }
-        } else {
-            audioPlayer.pause()
-            
-            if Defaults[.smartRewind] {
-                lastPause = Date()
-            }
-        }
-        
-        _playing = playing
-        playbackReporter?.reportProgress(playing: playing, currentTime: getItemCurrentTime(), duration: getItemDuration())
-    }
-    
-    func setPlaybackRate(_ playbackRate: Float) {
-        _playbackRate = playbackRate
-        audioPlayer.defaultRate = playbackRate
-        
-        if let item = item {
-            if let episode = item as? Episode {
-                Defaults[.playbackSpeed(itemId: episode.podcastId, episodeId: episode.id)] = playbackRate
-            } else {
-                Defaults[.playbackSpeed(itemId: item.id, episodeId: nil)] = playbackRate
-            }
-        }
-        
-        if playing {
-            audioPlayer.rate = playbackRate
-        }
-    }
 }
  
 public extension AudioPlayer {
@@ -152,14 +108,14 @@ public extension AudioPlayer {
         clearNowPlayingMetadata()
     }
     
-    func seek(to: Double, includeChapterOffset: Bool = false) async {
+    func seek(to: Double, inCurrentChapter: Bool = false) async {
         if to < 0 {
-            await seek(to: 0, includeChapterOffset: includeChapterOffset)
+            await seek(to: 0, inCurrentChapter: inCurrentChapter)
             return
         }
         
         var to = to
-        if includeChapterOffset {
+        if inCurrentChapter {
             to += AudioPlayer.shared.getChapter()?.start ?? 0
         }
         
@@ -198,10 +154,5 @@ public extension AudioPlayer {
         }
         
         updateNowPlayingStatus()
-    }
-    func seek(to: Double, includeChapterOffset: Bool = false) {
-        Task {
-            await seek(to: to, includeChapterOffset: includeChapterOffset)
-        }
     }
 }

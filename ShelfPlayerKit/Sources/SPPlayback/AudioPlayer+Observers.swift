@@ -57,12 +57,6 @@ internal extension AudioPlayer {
                     self?.playbackReporter?.reportProgress(currentTime: duration, duration: duration)
                 }
                 
-                Task {
-                    if let (_, next) = await Self.nextEpisode() {
-                        next.startPlayback()
-                    }
-                }
-                
                 self?.stopPlayback()
                 return
             }

@@ -18,7 +18,7 @@ extension MediaResolver {
             identifier: item.id,
             title: item.name,
             type: convertType(item: item),
-            artwork: convertImage(cover: item.image),
+            artwork: convertImage(cover: item.cover),
             artist: item.author)
     }
     
@@ -58,7 +58,7 @@ extension MediaResolver {
         }
     }
     
-    private func convertImage(cover: Item.Image?) -> INImage? {
+    private func convertImage(cover: Cover?) -> INImage? {
         guard let cover = cover else { return nil }
         
         if cover.type == .local {

@@ -17,7 +17,7 @@ internal extension Episode {
             name: episode.name,
             author: episode.author,
             description: episode.overview,
-            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.getImageUrl(itemId: episode.podcast.id)),
+            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.imageURL(identifiedBy: episode.podcast.id)),
             addedAt: episode.addedAt,
             released: episode.released,
             size: 0,

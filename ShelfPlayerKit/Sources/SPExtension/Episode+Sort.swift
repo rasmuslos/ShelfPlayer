@@ -7,15 +7,16 @@
 
 import Foundation
 import SPFoundation
+import SPOffline
 
 public extension Episode {
     @MainActor
     static func filterSort(episodes: [Episode], filter: EpisodeFilter, sortOrder: EpisodeSortOrder, ascending: Bool) -> [Episode] {
-        var episodes
+        var episodes = episodes
         
         if filter != .all {
             episodes = episodes.filter {
-                let entity = OfflineManager.shared.requireProgressEntity(item: $0)
+                let entity = OfflineManager.shared.progressEntity(item: $0)
                 
                 if entity.progress > 0 {
                     if filter == .unfinished {

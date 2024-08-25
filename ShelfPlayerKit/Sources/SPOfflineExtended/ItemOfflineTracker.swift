@@ -10,23 +10,20 @@ import SPFoundation
 import OSLog
 import SPOffline
 
-public extension PlayableItem {
-    var offlineTracker: ItemOfflineTracker {
-        .init(itemId: self.id)
-    }
-}
-
 @Observable
 public final class ItemOfflineTracker {
     let itemId: String
     
-    var _status: OfflineStatus? = nil
-    var token: Any? = nil
+    var token: Any?
+    var _status: OfflineManager.OfflineStatus?
     
     let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Item")
     
     init(itemId: String) {
         self.itemId = itemId
+        
+        token = nil
+        _status = nil
     }
     
     deinit {
@@ -37,17 +34,14 @@ public final class ItemOfflineTracker {
 }
 
 extension ItemOfflineTracker {
-    @MainActor
-    public var status: OfflineStatus {
+    public var status: OfflineManager.OfflineStatus {
         get {
             if _status == nil {
                 logger.info("Enabled offline tracking for \(self.itemId)")
                 
                 token = NotificationCenter.default.addObserver(forName: PlayableItem.downloadStatusUpdatedNotification, object: nil, queue: nil) { [weak self] notification in
                     if notification.object as? String == self?.itemId {
-                        Task.detached { [self] in
-                            self?._status = await self?.checkOfflineStatus()
-                        }
+                        self?._status = self?.checkOfflineStatus()
                     }
                 }
                 
@@ -58,18 +52,7 @@ extension ItemOfflineTracker {
         }
     }
     
-    @MainActor
-    func checkOfflineStatus() -> OfflineStatus {
+    private func checkOfflineStatus() -> OfflineManager.OfflineStatus {
         return OfflineManager.shared.getOfflineStatus(parentId: itemId)
-    }
-}
-
-// MARK: Helper
-
-extension ItemOfflineTracker {
-    public enum OfflineStatus: Int {
-        case none = 0
-        case working = 1
-        case downloaded = 2
     }
 }

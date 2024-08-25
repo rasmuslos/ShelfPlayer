@@ -7,9 +7,10 @@
 
 import Foundation
 import SPFoundation
+import SPNetwork
 import SPOffline
 
-extension DownloadManager {
+internal extension DownloadManager {
     private static let serialQueue = DispatchQueue(label: "io.rfk.shelfplayer.progress.serialQueue")
     
     func startProgressTracking(itemId: String, trackCount: Int) {

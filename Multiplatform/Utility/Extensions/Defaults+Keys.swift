@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SPFoundation
 import Defaults
+import ShelfPlayerKit
 
 internal extension Defaults.Keys {
     static let backgroundTaskFailCount = Key<Int>("backgroundTaskFailCount", default: 0)
@@ -45,11 +45,11 @@ internal extension Defaults.Keys {
     
     // MARK: Podcast filter & sort
     
-    static func episodesFilter(podcastId: String) -> Defaults.Key<AudiobookshelfClient.EpisodeFilter> {
+    static func episodesFilter(podcastId: String) -> Defaults.Key<EpisodeFilter> {
         .init("episodesFilter-\(podcastId)", default: .unfinished)
     }
     
-    static func episodesSort(podcastId: String) -> Defaults.Key<AudiobookshelfClient.EpisodeSortOrder> {
+    static func episodesSort(podcastId: String) -> Defaults.Key<EpisodeSortOrder> {
         .init("episodesSort-\(podcastId)", default: .released)
     }
     static func episodesAscending(podcastId: String) -> Defaults.Key<Bool> {

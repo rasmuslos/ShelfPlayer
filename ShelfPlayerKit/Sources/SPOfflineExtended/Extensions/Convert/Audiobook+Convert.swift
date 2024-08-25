@@ -17,7 +17,7 @@ internal extension Audiobook {
             name: audiobook.name,
             author: audiobook.author,
             description: audiobook.overview,
-            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.getImageUrl(itemId: audiobook.id)),
+            cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.imageURL(identifiedBy: audiobook.id)),
             genres: audiobook.genres,
             addedAt: audiobook.addedAt,
             released: audiobook.released,
