@@ -99,7 +99,7 @@ extension EpisodeView.Header {
                 Title(episode: episode, alignment: .center)
                     .padding(.vertical, 15)
                 
-                PlayButton(item: episode)
+                PlayButton(item: episode, color: .accentColor)
             }
             .padding(.top, 125)
             .padding(.bottom, 20)
@@ -127,7 +127,7 @@ extension EpisodeView.Header {
                             
                             Spacer()
                             
-                            PlayButton(item: episode)
+                            PlayButton(item: episode, color: .accentColor)
                         }
                     }
             }

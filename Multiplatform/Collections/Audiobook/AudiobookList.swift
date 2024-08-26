@@ -15,7 +15,7 @@ struct AudiobookList: View {
     
     var body: some View {
         ForEach(audiobooks) { audiobook in
-            NavigationLink(destination: AudiobookView(viewModel: .init(audiobook: audiobook))) {
+            NavigationLink(destination: AudiobookView(audiobook)) {
                 Row(audiobook: audiobook)
             }
             .modifier(SwipeActionsModifier(item: audiobook))

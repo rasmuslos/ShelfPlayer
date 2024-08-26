@@ -27,7 +27,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                NavigationLink(destination: AudiobookView(viewModel: .init(audiobook: audiobook))) {
+                NavigationLink(destination: AudiobookView(audiobook)) {
                     Label("audiobook.view", systemImage: "book")
                 }
                 

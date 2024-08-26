@@ -151,7 +151,7 @@ internal extension AudiobookView.Header {
                     .padding(.top, 12)
                     .padding(.bottom, 16)
                 
-                PlayButton(item: viewModel.audiobook)
+                PlayButton(item: viewModel.audiobook, color: viewModel.dominantColor)
             }
             .padding(.top, 32)
         }
@@ -191,7 +191,7 @@ internal extension AudiobookView.Header {
                                 
                                 Spacer()
                                 
-                                PlayButton(item: viewModel.audiobook)
+                                PlayButton(item: viewModel.audiobook, color: viewModel.dominantColor)
                             }
                         }
                 }

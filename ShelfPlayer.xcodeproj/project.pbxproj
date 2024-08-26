@@ -39,6 +39,7 @@
 		3A36D78B2ACF2C1D002EEC54 /* AudiobookGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobookGrid.swift */; };
 		3A36ED3D2BE8EC0E00AECE9C /* AccountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36ED3C2BE8EC0E00AECE9C /* AccountSheet.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
+		3A3A36FD2C7CAF84001A29FD /* RFKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3A36FC2C7CAF84001A29FD /* RFKit */; };
 		3A48D2512AD0661500991139 /* LibrarySelectModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2502AD0661500991139 /* LibrarySelectModifier.swift */; };
 		3A48D2542AD074DC00991139 /* PodcastEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2532AD074DC00991139 /* PodcastEntryView.swift */; };
 		3A4E8A192B8E52A700A2586C /* CarPlay+Offline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4E8A182B8E52A700A2586C /* CarPlay+Offline.swift */; };
@@ -74,6 +75,7 @@
 		3A8810FB2AD2CEE7009696D1 /* PodcastView+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810FA2AD2CEE7009696D1 /* PodcastView+Toolbar.swift */; };
 		3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9206FE2B6CD86400A5CAB0 /* Defaults */; };
 		3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9207042B6D018100A5CAB0 /* AudiobookViewModel.swift */; };
+		3A93AE422C7CB19B00D2AE43 /* Color+IsLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */; };
 		3A98246C2B6EAB200098C06A /* OfflineAudiobookList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A98246B2B6EAB200098C06A /* OfflineAudiobookList.swift */; };
 		3A98246E2B6EAC7F0098C06A /* ProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A98246D2B6EAC7F0098C06A /* ProgressIndicator.swift */; };
 		3A9824702B6EAF520098C06A /* OfflinePodcastList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A98246F2B6EAF520098C06A /* OfflinePodcastList.swift */; };
@@ -261,6 +263,7 @@
 		3A8810F62AD2CDE9009696D1 /* PodcastView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PodcastView+Header.swift"; sourceTree = "<group>"; };
 		3A8810FA2AD2CEE7009696D1 /* PodcastView+Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PodcastView+Toolbar.swift"; sourceTree = "<group>"; };
 		3A9207042B6D018100A5CAB0 /* AudiobookViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookViewModel.swift; sourceTree = "<group>"; };
+		3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+IsLight.swift"; sourceTree = "<group>"; };
 		3A97FEB52B4175EC00A6A5C7 /* ShelfPlayerKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ShelfPlayerKit; sourceTree = "<group>"; };
 		3A98246B2B6EAB200098C06A /* OfflineAudiobookList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAudiobookList.swift; sourceTree = "<group>"; };
 		3A98246D2B6EAC7F0098C06A /* ProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicator.swift; sourceTree = "<group>"; };
@@ -353,6 +356,7 @@
 				3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */,
 				3AE700522C7A12BA00D93BA8 /* ShelfPlayerKit in Frameworks */,
 				3AEFA9562B8BB51A00220CA3 /* BetterSafariView in Frameworks */,
+				3A3A36FD2C7CAF84001A29FD /* RFKit in Frameworks */,
 				3AE700542C7A12BA00D93BA8 /* SPPlayback in Frameworks */,
 				3A1EAB932ACC80690064C80C /* NukeUI in Frameworks */,
 			);
@@ -482,6 +486,7 @@
 		3A1EAB972ACC822F0064C80C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */,
 				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
 				3AA089362B6E43FA00773414 /* Defaults+Keys.swift */,
 				3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */,
@@ -855,6 +860,7 @@
 				3AEFA9552B8BB51A00220CA3 /* BetterSafariView */,
 				3AE700512C7A12BA00D93BA8 /* ShelfPlayerKit */,
 				3AE700532C7A12BA00D93BA8 /* SPPlayback */,
+				3A3A36FC2C7CAF84001A29FD /* RFKit */,
 			);
 			productName = Audiobooks;
 			productReference = 3AA36E502B0A97FD0036038D /* ShelfPlayer.app */;
@@ -914,6 +920,7 @@
 				3A1EAB912ACC80690064C80C /* XCRemoteSwiftPackageReference "Nuke" */,
 				3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */,
 				3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */,
+				3A3A36FB2C7CAF03001A29FD /* XCRemoteSwiftPackageReference "RFKit" */,
 			);
 			productRefGroup = 3A21CC542B0A1CBB002D5D55 /* Products */;
 			projectDirPath = "";
@@ -1069,6 +1076,7 @@
 				3AB8BBBB2BD7B6AF0012023A /* AudiobookLibraryView.swift in Sources */,
 				3A5A5B822BE629C700481888 /* EpisodeLoadView.swift in Sources */,
 				3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */,
+				3A93AE422C7CB19B00D2AE43 /* Color+IsLight.swift in Sources */,
 				3AE7005F2C7B1ED500D93BA8 /* MainActor+withAnimation.swift in Sources */,
 				3A1A67142BD827D200528DA6 /* RegularButtons.swift in Sources */,
 				3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */,
@@ -1468,6 +1476,14 @@
 				minimumVersion = 12.1.6;
 			};
 		};
+		3A3A36FB2C7CAF03001A29FD /* XCRemoteSwiftPackageReference "RFKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rasmuslos/RFKit";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Defaults";
@@ -1491,6 +1507,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3A1EAB912ACC80690064C80C /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeUI;
+		};
+		3A3A36FC2C7CAF84001A29FD /* RFKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A3A36FB2C7CAF03001A29FD /* XCRemoteSwiftPackageReference "RFKit" */;
+			productName = RFKit;
 		};
 		3A9206FE2B6CD86400A5CAB0 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
