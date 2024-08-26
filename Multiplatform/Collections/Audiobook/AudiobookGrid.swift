@@ -23,7 +23,7 @@ struct AudiobookVGrid: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 15)], spacing: 20) {
             ForEach(audiobooks) { audiobook in
                 NavigationLink {
-                    AudiobookView(viewModel: .init(audiobook: audiobook))
+                    AudiobookView(audiobook)
                 } label: {
                     ItemStatusImage(item: audiobook, aspectRatio: .none)
                         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
@@ -69,7 +69,7 @@ struct AudiobookHGrid: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .bottom, spacing: 0) {
                     ForEach(audiobooks) { audiobook in
-                        NavigationLink(destination: AudiobookView(viewModel: .init(audiobook: audiobook))) {
+                        NavigationLink(destination: AudiobookView(audiobook)) {
                             ItemStatusImage(item: audiobook, aspectRatio: .none)
                                 .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
                                 .hoverEffect(.highlight)

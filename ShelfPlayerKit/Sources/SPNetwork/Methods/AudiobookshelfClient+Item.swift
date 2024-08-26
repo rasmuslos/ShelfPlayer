@@ -37,9 +37,9 @@ public extension AudiobookshelfClient {
         return (audiobook, tracks.map(PlayableItem.AudioTrack.init), chapters.map(PlayableItem.Chapter.init))
     }
     
-    func items(query: String, libraryId: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
+    func items(search: String, libraryId: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
         let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
-            URLQueryItem(name: "q", value: query),
+            URLQueryItem(name: "q", value: search),
         ]))
         
         return (

@@ -3437,6 +3437,9 @@
         }
       }
     },
+    "queue.last" : {
+
+    },
     "queue.nextUp: %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3453,6 +3456,9 @@
           }
         }
       }
+    },
+    "queue.play" : {
+
     },
     "search.empty.description" : {
       "localizations" : {
@@ -3497,6 +3503,9 @@
           }
         }
       }
+    },
+    "search.placeholder" : {
+
     },
     "section.audiobooks" : {
       "localizations" : {
@@ -3675,6 +3684,7 @@
       }
     },
     "section.podcasts" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

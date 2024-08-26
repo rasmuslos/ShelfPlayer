@@ -14,12 +14,19 @@ struct PlayButton: View {
     @Environment(\.colorScheme) private var colorScheme
     
     let item: PlayableItem
+    let color: Color
     
-    @State private var entity: ItemProgress? = nil
+    @State private var error = false
+    @State private var loading = false
+    
+    @State private var progressEntity: ItemProgress
     
     @MainActor
-    init(item: PlayableItem) {
+    init(item: PlayableItem, color: Color) {
         self.item = item
+        self.color = color
+        
+        _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
     }
     
     private var labelImage: String {
@@ -33,64 +40,93 @@ struct PlayButton: View {
     var body: some View {
         let label = item as? Audiobook != nil ? String(localized: "listen") : String(localized: "play")
         
-        Button {
-            Task {
-                try await AudioPlayer.shared.play(item)
+        Menu {
+            Button {
+                play()
+            } label: {
+                Label("queue.play", systemImage: "play.fill")
             }
+            
+            Button {
+                AudioPlayer.shared.queue(item)
+            } label: {
+                Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
+                
+                if let last = AudioPlayer.shared.queue.last {
+                    Text(last.name)
+                }
+            }
+            
+            ProgressButton(item: item)
         } label: {
             ZStack {
                 Label(String("FFS"), systemImage: "waveform")
-                    .opacity(0)
+                    .hidden()
                 
-                if let entity = entity {
-                    if entity.progress > 0 && entity.progress < 1 {
-                        Label {
-                            Text(label)
-                            + Text(verbatim: " • ")
-                            + Text("duration") // Text(String((entity.duration - entity.currentTime).timeLeft()))
-                        } icon: {
+                if progressEntity.progress > 0 && progressEntity.progress < 1 {
+                    Label {
+                        Text(label)
+                        + Text(verbatim: " • ")
+                        + Text("duration") // Text(String((entity.duration - entity.currentTime).timeLeft()))
+                    } icon: {
+                        if loading {
+                            ProgressIndicator()
+                        } else {
                             Label("playing", systemImage: labelImage)
                                 .labelStyle(.iconOnly)
                                 .frame(width: 25)
                                 .contentTransition(.symbolEffect(.replace.downUp.byLayer))
                                 .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
                         }
-                    } else {
-                        Label(label, systemImage: labelImage)
                     }
                 } else {
-                    ProgressIndicator()
+                    Label(label, systemImage: labelImage)
                 }
             }
             .font(.headline)
-            .padding(.vertical, 15)
             .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .contentShape(.rect)
+        } primaryAction: {
+            play()
         }
-        .foregroundColor(colorScheme == .dark ? .black : .white)
+        .foregroundColor(color.isLight() ?? false ? .black : .white)
         .background {
             ZStack {
-                if colorScheme == .dark {
-                    Color.white
-                } else {
-                    Color.black
-                }
+                color
                 
                 GeometryReader { geometry in
                     Rectangle()
                         .foregroundStyle(Color.gray.opacity(0.4))
-                        .frame(width: geometry.size.width * (entity?.progress ?? 0))
+                        .frame(width: geometry.size.width * progressEntity.progress)
                 }
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 7))
-        .modifier(ButtonHoverEffectModifier(cornerRadius: 7, hoverEffect: .lift))
-        .onAppear {
-            // If this is inside `init` the app will hang
-            entity = OfflineManager.shared.progressEntity(item: item)
+        .animation(.smooth, value: color)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .modifier(ButtonHoverEffectModifier(cornerRadius: 8, hoverEffect: .lift))
+    }
+    
+    func play() {
+        if loading {
+            return
+        }
+        
+        Task {
+            loading = true
+            
+            do {
+                try await AudioPlayer.shared.play(item)
+            } catch {
+                self.error.toggle()
+                loading = false
+            }
+            
+            loading = false
         }
     }
 }
 
 #Preview {
-    PlayButton(item: Audiobook.fixture)
+    PlayButton(item: Audiobook.fixture, color: .yellow)
 }
