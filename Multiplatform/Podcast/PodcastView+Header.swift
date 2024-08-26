@@ -13,7 +13,7 @@ extension PodcastView {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         
         let podcast: Podcast
-        let imageColors: Item.ImageColors
+        let imageColors: ImageColors
         
         @Binding var navigationBarVisible: Bool
         
@@ -117,7 +117,7 @@ extension PodcastView.Header {
         
         var body: some View {
             VStack {
-                ItemImage(image: podcast.image)
+                ItemImage(image: podcast.cover)
                     .frame(width: 200)
                 
                 VStack(spacing: 10) {
@@ -140,7 +140,7 @@ extension PodcastView.Header {
         
         var body: some View {
             HStack(spacing: 40) {
-                ItemImage(image: podcast.image)
+                ItemImage(image: podcast.cover)
                     .frame(height: 300)
                     .hoverEffect(.highlight)
                 

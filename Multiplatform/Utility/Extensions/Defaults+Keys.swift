@@ -14,6 +14,8 @@ internal extension Defaults.Keys {
     
     // MARK: Navigation
     
+    static let lastActiveLibraryID = Key<String?>("lastActiveLibraryID")
+    
     static let sidebarSelection = Key<Sidebar.Selection?>("sidebarSelection")
     
     static let audiobookTab = Key<AudiobookTabs.Tab>("audiobookTab", default: .listenNow)

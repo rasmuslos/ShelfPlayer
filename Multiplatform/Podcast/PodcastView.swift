@@ -8,12 +8,12 @@
 import SwiftUI
 import TipKit
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
 struct PodcastView: View {
-    @Default private var episodesFilter: AudiobookshelfClient.EpisodeFilter
+    @Default private var episodesFilter: EpisodeFilter
     
-    @Default private var episodesSort: AudiobookshelfClient.EpisodeSortOrder
+    @Default private var episodesSort: EpisodeSortOrder
     @Default private var episodesAscending: Bool
     
     var podcast: Podcast
@@ -31,10 +31,10 @@ struct PodcastView: View {
     @State private var navigationBarVisible = false
     
     @State private var episodes = [Episode]()
-    @State private var imageColors = Item.ImageColors.placeholder
+    @State private var imageColors = ImageColors()
     
     private var visibleEpisodes: [Episode] {
-        let episodes = AudiobookshelfClient.filterSort(episodes: episodes, filter: episodesFilter, sortOrder: episodesSort, ascending: episodesAscending)
+        let episodes = Episode.filterSort(episodes: episodes, filter: episodesFilter, sortOrder: episodesSort, ascending: episodesAscending)
         return Array(episodes.prefix(15))
     }
     
@@ -72,10 +72,6 @@ struct PodcastView: View {
                 .padding(.horizontal, 20)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 
-                TipView(EpisodePreviewTip())
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(.init(top: 0, leading: 10, bottom: 10, trailing: 10))
-                
                 EpisodeSingleList(episodes: visibleEpisodes)
             }
         }
@@ -84,17 +80,6 @@ struct PodcastView: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .task { await fetchEpisodes() }
         .refreshable { await fetchEpisodes() }
-        .onAppear {
-            Task.detached {
-                let colors = await podcast.getImageColors()
-                
-                Task { @MainActor in
-                    withAnimation(.spring) {
-                        self.imageColors = colors
-                    }
-                }
-            }
-        }
         .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
         .userActivity("io.rfk.shelfplayer.podcast") {
             $0.title = podcast.name
@@ -115,7 +100,7 @@ extension PodcastView {
     func fetchEpisodes() async {
         failed = false
         
-        if let episodes = try? await AudiobookshelfClient.shared.getEpisodes(podcastId: podcast.id) {
+        if let episodes = try? await AudiobookshelfClient.shared.episodes(podcastId: podcast.id) {
             self.episodes = episodes
             podcast.episodeCount = episodes.count
         } else {

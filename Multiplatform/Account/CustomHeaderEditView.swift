@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
 struct CustomHeaderEditView: View {
     @State private var current = AudiobookshelfClient.shared.customHTTPHeaders

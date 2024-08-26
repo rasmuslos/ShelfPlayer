@@ -14,7 +14,7 @@ extension NowPlaying {
         var body: some View {
             ForEach(AudioPlayer.shared.chapters) { chapter in
                 Button {
-                    AudioPlayer.shared.seek(to: chapter.start)
+                    AudioPlayer.shared.itemCurrentTime = chapter.start
                 } label: {
                     if chapter == AudioPlayer.shared.chapter {
                         Label(chapter.title, systemImage: "checkmark")

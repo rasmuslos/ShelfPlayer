@@ -8,10 +8,7 @@
 import Foundation
 import Defaults
 import Intents
-import SPFoundation
-import SPOffline
-import SPExtension
-import SPOfflineExtended
+import ShelfPlayerKit
 import SPPlayback
 
 final internal class PlayMediaHandler: NSObject, INPlayMediaIntentHandling {
@@ -40,7 +37,11 @@ final internal class PlayMediaHandler: NSObject, INPlayMediaIntentHandling {
                 throw MediaResolver.ResolveError.empty
             }
             
-            item.startPlayback()
+            if intent.playbackQueueLocation == .now {
+                try await AudioPlayer.shared.play(item)
+            } else {
+                AudioPlayer.shared.queue(item)
+            }
             
             return .init(code: .success, userActivity: nil)
         } catch {

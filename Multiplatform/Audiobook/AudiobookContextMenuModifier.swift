@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
+import SPPlayback
 
 internal struct AudiobookContextMenuModifier: ViewModifier {
     let audiobook: Audiobook
@@ -19,7 +18,9 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
         content
             .contextMenu {
                 Button {
-                    audiobook.startPlayback()
+                    Task {
+                        try await AudioPlayer.shared.play(audiobook)
+                    }
                 } label: {
                     Label("play", systemImage: "play")
                 }
@@ -85,7 +86,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
             return
         }
         
-        guard let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId) else {
+        guard let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) else {
             return
         }
         

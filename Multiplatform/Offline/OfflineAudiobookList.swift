@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPOffline
+import ShelfPlayerKit
 import SPPlayback
 
 struct OfflineAudiobookList: View {
@@ -16,7 +15,9 @@ struct OfflineAudiobookList: View {
     var body: some View {
         ForEach(audiobooks.sorted()) { audiobook in
             Button {
-                audiobook.startPlayback()
+                Task {
+                    try await AudioPlayer.shared.play(audiobook)
+                }
             } label: {
                 AudiobookRow(audiobook: audiobook)
                     .modifier(SwipeActionsModifier(item: audiobook))
@@ -34,7 +35,7 @@ extension OfflineAudiobookList {
         @MainActor
         init(audiobook: Audiobook) {
             self.audiobook = audiobook
-            entity = OfflineManager.shared.requireProgressEntity(item: audiobook)
+            entity = OfflineManager.shared.progressEntity(item: audiobook)
         }
         
         var body: some View {
@@ -47,7 +48,7 @@ extension OfflineAudiobookList {
                             .foregroundStyle(.secondary)
                             .symbolEffect(.variableColor.iterative.dimInactiveLayers, isActive: AudioPlayer.shared.playing)
                     } else {
-                        ItemImage(image: audiobook.image, aspectRatio: .none)
+                        ItemImage(image: audiobook.cover, aspectRatio: .none)
                     }
                 }
                 .frame(width: 50)

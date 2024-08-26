@@ -20,7 +20,7 @@ struct EpisodePlayButton: View {
     
     var body: some View {
         Button {
-            viewModel.episode.startPlayback()
+            
         } label: {
             ButtonText()
                 .opacity(viewModel.highlighted ? 0 : 1)
@@ -81,10 +81,10 @@ extension EpisodePlayButton {
                                 .clipShape(RoundedRectangle(cornerRadius: 10000))
                         }
                         
-                        Text((viewModel.entity.duration - viewModel.entity.currentTime).numericTimeLeft())
+                        Text("duration") // Text((viewModel.entity.duration - viewModel.entity.currentTime).numericTimeLeft())
                     }
                 } else {
-                    Text(viewModel.episode.duration.numericTimeLeft())
+                    Text("duration") // Text(viewModel.episode.duration.numericTimeLeft())
                 }
             }
             .font(.caption)
@@ -104,7 +104,7 @@ final class EpisodePlayButtonViewModel {
         self.episode = episode
         self.highlighted = highlighted
         
-        entity = OfflineManager.shared.requireProgressEntity(item: episode)
+        entity = OfflineManager.shared.progressEntity(item: episode)
     }
 }
 

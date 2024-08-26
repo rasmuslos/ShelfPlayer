@@ -7,17 +7,16 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
-import SPOffline
+import ShelfPlayerKit
 
 struct EpisodeSortFilter: View {
-    @Binding var filter: AudiobookshelfClient.EpisodeFilter
-    @Binding var sortOrder: AudiobookshelfClient.EpisodeSortOrder
+    @Binding var filter: EpisodeFilter
+    @Binding var sortOrder: EpisodeSortOrder
     @Binding var ascending: Bool
     
     var body: some View {
         Menu {
-            ForEach(AudiobookshelfClient.EpisodeFilter.allCases, id: \.hashValue) { option in
+            ForEach(EpisodeFilter.allCases, id: \.hashValue) { option in
                 Button {
                     withAnimation {
                         filter = option
@@ -33,7 +32,7 @@ struct EpisodeSortFilter: View {
             
             Divider()
             
-            ForEach(AudiobookshelfClient.EpisodeSortOrder.allCases, id: \.hashValue) { sortCase in
+            ForEach(EpisodeSortOrder.allCases, id: \.hashValue) { sortCase in
                 Button {
                     withAnimation {
                         sortOrder = sortCase

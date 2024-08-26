@@ -21,7 +21,7 @@ extension NowPlaying.CompactViewModifier {
                 
                 Spacer()
                 
-                SleepTimerButton()
+                Text("sleep") // SleepTimerButton()
                     .frame(width: 45)
                     .labelStyle(.iconOnly)
                     .font(.system(size: 19))

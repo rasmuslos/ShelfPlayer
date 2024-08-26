@@ -8,8 +8,7 @@
 import SwiftUI
 import SwiftData
 import Defaults
-import SPFoundation
-import SPOffline
+import ShelfPlayerKit
 import SPPlayback
 
 extension NowPlaying {
@@ -92,7 +91,7 @@ extension NowPlaying {
         
         @MainActor
         private func fetchBookmarks() {
-            if let itemId = AudioPlayer.shared.item?.id, let bookmarks = try? OfflineManager.shared.getBookmarks(itemId: itemId) {
+            if let itemId = AudioPlayer.shared.item?.id, let bookmarks = try? OfflineManager.shared.bookmarks(itemId: itemId) {
                 self.bookmarks = bookmarks
             }
         }
@@ -113,11 +112,11 @@ private extension NowPlaying {
         
         var body: some View {
             Button {
-                AudioPlayer.shared.seek(to: chapter.start)
+                AudioPlayer.shared.itemCurrentTime = chapter.start
                 dismiss()
             } label: {
                 VStack(alignment: .leading) {
-                    Text((chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
+                    Text("duration") // Text((chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
@@ -157,12 +156,12 @@ private extension NowPlaying {
         
         var body: some View {
             Button {
-                AudioPlayer.shared.seek(to: bookmark.position)
+                AudioPlayer.shared.itemCurrentTime = bookmark.position
                 dismiss()
             } label: {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(bookmark.position.hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
+                        Text("duration") // Text(bookmark.position.hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         
@@ -183,39 +182,18 @@ private extension NowPlaying {
         let includeHeader: Bool
         @Binding var bookmarksActive: Bool
         
-        @State private var next: Episode? = nil
-        @State private var podcast: Podcast? = nil
-        
         private var currentChapter: PlayableItem.Chapter? {
             if Defaults[.enableChapterTrack] {
                 return nil
             }
             
-            return AudioPlayer.shared.chapters.first { $0.start < AudioPlayer.shared.currentTime && $0.end > AudioPlayer.shared.currentTime }
+            return AudioPlayer.shared.chapters.first { $0.start < AudioPlayer.shared.itemCurrentTime && $0.end > AudioPlayer.shared.itemCurrentTime }
         }
         
         var body: some View {
-            if let podcast = podcast, let next = next {
-                HStack {
-                    VStack(alignment: .leading, spacing: 15) {
-                        PodcastList.PodcastRow(podcast: podcast)
-                        
-                        Text("queue.nextUp: \(next.name)")
-                            .font(.footnote)
-                            .lineLimit(1)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Spacer()
-                }
-                .padding(.top, 15)
-                .padding(.bottom, 15)
-                .padding(.horizontal, 20)
-                .frame(maxWidth: .infinity)
-                .background(.regularMaterial)
-            } else if includeHeader {
+            if includeHeader {
                 HStack(spacing: 15) {
-                    ItemImage(image: AudioPlayer.shared.item?.image)
+                    ItemImage(image: AudioPlayer.shared.item?.cover)
                     
                     VStack(alignment: .leading) {
                         Text(AudioPlayer.shared.item?.name ?? "-/-")
@@ -233,11 +211,11 @@ private extension NowPlaying {
                             let speedAdjustment = (1 / Double(AudioPlayer.shared.playbackRate))
                             
                             if let currentChapter = currentChapter {
-                                Text(((currentChapter.end - AudioPlayer.shared.currentTime) * speedAdjustment).numericTimeLeft())
+                                Text("duration") // Text(((currentChapter.end - AudioPlayer.shared.currentTime * speedAdjustment).numericTimeLeft())
                                 + Text(verbatim: " ")
                                 + Text("\(currentChapter.title) chapter.remaining.in")
                             } else {
-                                let remaining = ((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()) * speedAdjustment).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)
+                                let remaining = "duration" // ((AudioPlayer.shared.getItemDuration() - AudioPlayer.shared.getItemCurrentTime()) * speedAdjustment).hoursMinutesSecondsString(includeSeconds: false, includeLabels: true)
                                 
                                 Text(remaining)
                                 + Text(verbatim: " ")
@@ -260,18 +238,11 @@ private extension NowPlaying {
                         }
                         .font(.system(size: 26))
                         .foregroundStyle(.primary)
-                        .popoverTip(ViewBookmarkTip())
                     }
                 }
                 .padding(20)
                 .background(.regularMaterial)
                 .frame(height: 100)
-                .task {
-                    if let (podcast, next) = await AudioPlayer.nextEpisode() {
-                        self.podcast = podcast
-                        self.next = next
-                    }
-                }
             }
         }
     }

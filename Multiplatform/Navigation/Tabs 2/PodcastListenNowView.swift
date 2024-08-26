@@ -7,14 +7,14 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
 struct PodcastListenNowView: View {
     @Environment(\.libraryId) private var libraryId: String
     @Default(.hideFromContinueListening) private var hideFromContinueListening
     
-    @State var episodeRows = [EpisodeHomeRow]()
-    @State var podcastRows = [PodcastHomeRow]()
+    @State var episodeRows = [HomeRow<Episode>]()
+    @State var podcastRows = [HomeRow<Podcast>]()
     
     @State var failed = false
     
@@ -37,11 +37,11 @@ struct PodcastListenNowView: View {
                                     .padding(.horizontal, 20)
                                 
                                 if row.id == "continue-listening" {
-                                    EpisodeFeaturedGrid(episodes: row.episodes.filter { episode in
+                                    EpisodeFeaturedGrid(episodes: row.entities.filter { episode in
                                         !hideFromContinueListening.contains { $0.itemId == episode.podcastId && $0.episodeId == episode.id }
                                     })
                                 } else {
-                                    EpisodeGrid(episodes: row.episodes)
+                                    EpisodeGrid(episodes: row.entities)
                                 }
                             }
                         }
@@ -51,7 +51,7 @@ struct PodcastListenNowView: View {
                                 RowTitle(title: row.label)
                                     .padding(.horizontal, 20)
                                 
-                                PodcastHGrid(podcasts: row.podcasts)
+                                PodcastHGrid(podcasts: row.entities)
                             }
                         }
                     }
@@ -69,7 +69,7 @@ extension PodcastListenNowView {
         failed = false
         
         do {
-            (episodeRows, podcastRows) = try await AudiobookshelfClient.shared.getPodcastsHome(libraryId: libraryId)
+            // (episodeRows, podcastRows) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
         } catch {
             failed = true
         }

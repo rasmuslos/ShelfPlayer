@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
 internal struct SeriesView: View {
     @Environment(\.libraryId) private var libraryId
@@ -91,7 +91,7 @@ internal struct SeriesView: View {
     }
     
     func loadAudiobooks() async {
-        guard let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(seriesId: series.id, libraryId: libraryId) else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: series.id, libraryId: libraryId) else {
             return
         }
         

@@ -7,14 +7,12 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
 
 struct OfflinePodcastView: View {
-    @State private var episodeFilter = AudiobookshelfClient.EpisodeFilter.all
+    @State private var episodeFilter = EpisodeFilter.all
     
-    @Default private var episodesSort: AudiobookshelfClient.EpisodeSortOrder
+    @Default private var episodesSort: EpisodeSortOrder
     @Default private var episodesAscending: Bool
     
     let podcast: Podcast
@@ -29,7 +27,7 @@ struct OfflinePodcastView: View {
     }
     
     private var sorted: [Episode] {
-        AudiobookshelfClient.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSort, ascending: episodesAscending)
+        Episode.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSort, ascending: episodesAscending)
     }
     
     var body: some View {
@@ -50,7 +48,7 @@ struct OfflinePodcastView: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             do {
-                episodes = try OfflineManager.shared.getEpisodes(podcastId: podcast.id)
+                episodes = try OfflineManager.shared.episodes(podcastId: podcast.id)
             } catch {}
         }
     }

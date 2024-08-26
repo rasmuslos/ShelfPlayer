@@ -13,7 +13,7 @@ extension EpisodeView {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         
         let episode: Episode
-        var imageColors: Item.ImageColors
+        var imageColors: ImageColors
         
         @Binding var navigationBarVisible: Bool
         
@@ -46,7 +46,7 @@ extension EpisodeView.Header {
                     Text(verbatim: " • ")
                 }
                 
-                Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
+                Text(episode.duration.description)
             }
             .font(.caption.smallCaps())
             .foregroundStyle(.secondary)
@@ -91,7 +91,7 @@ extension EpisodeView.Header {
         
         var body: some View {
             VStack(spacing: 5) {
-                ItemImage(image: episode.image)
+                ItemImage(image: episode.cover)
                     .frame(width: 175)
                 
                 Eyebrow(episode: episode)
@@ -112,7 +112,7 @@ extension EpisodeView.Header {
         
         var body: some View {
             HStack(spacing: 20) {
-                ItemImage(image: episode.image)
+                ItemImage(image: episode.cover)
                     .frame(width: 225)
                     .hoverEffect(.highlight)
                 

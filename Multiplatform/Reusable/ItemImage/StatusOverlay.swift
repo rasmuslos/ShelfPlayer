@@ -24,8 +24,8 @@ struct StatusOverlay: View {
     init(item: PlayableItem) {
         self.item = item
         
-        entity = OfflineManager.shared.requireProgressEntity(item: item)
-        offlineTracker = item.offlineTracker
+        entity = OfflineManager.shared.progressEntity(item: item)
+        offlineTracker = ItemOfflineTracker(item)
     }
     
     var body: some View {
@@ -93,7 +93,7 @@ struct ItemStatusImage: View {
     var aspectRatio = ItemImage.AspectRatioPolicy.square
     
     var body: some View {
-        ItemImage(image: item.image, aspectRatio: aspectRatio)
+        ItemImage(image: item.cover, aspectRatio: aspectRatio)
             .overlay {
                 StatusOverlay(item: item)
             }

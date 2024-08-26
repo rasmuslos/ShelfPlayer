@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
 struct PodcastLatestView: View {
     @Environment(\.libraryId) var libraryId
@@ -40,7 +40,7 @@ extension PodcastLatestView {
         failed = false
         
         do {
-            episodes = try await AudiobookshelfClient.shared.getEpisodes(limit: 20, libraryId: libraryId)
+            episodes = try await AudiobookshelfClient.shared.recentEpisodes(limit: 20, libraryId: libraryId)
         } catch {
             failed = true
         }

@@ -15,7 +15,7 @@ struct ChaptersList: View {
     @Environment(\.defaultMinListRowHeight) private var minimumHeight
     
     let item: PlayableItem
-    let chapters: PlayableItem.Chapters
+    let chapters: [PlayableItem.Chapter]
     
     @State private var entity: ItemProgress? = nil
     
@@ -37,7 +37,7 @@ struct ChaptersList: View {
             }
             .foregroundStyle(.primary)
             .task {
-                entity = OfflineManager.shared.requireProgressEntity(item: item)
+                entity = OfflineManager.shared.progressEntity(item: item)
             }
         }
     }
@@ -58,11 +58,8 @@ private extension ChaptersList {
         
         var body: some View {
             Button {
-                item.startPlayback()
-                
                 Task {
-                    try await Task.sleep(nanoseconds: UInt64(2 * TimeInterval(NSEC_PER_SEC)))
-                    await AudioPlayer.shared.seek(to: chapter.start)
+                    try await AudioPlayer.shared.play(item, at: chapter.start)
                 }
             } label: {
                 HStack {
@@ -72,7 +69,7 @@ private extension ChaptersList {
                     
                     Spacer()
                     
-                    Text((chapter.end - chapter.start).numericDuration())
+                    Text("duration") // Text((chapter.end - chapter.start).numericDuration())
                         .foregroundStyle(.secondary)
                 }
                 .lineLimit(1)

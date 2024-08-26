@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct Navigation {
     static let navigateNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation")
@@ -52,7 +52,7 @@ extension Navigation {
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAudiobookNotification)) { notification in
                     if let id = notification.object as? String {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.getItem(itemId: id, episodeId: nil).0.libraryId
+                            let libraryId = try await AudiobookshelfClient.shared.item(itemId: id, episodeId: nil).0.libraryId
                             navigateAudiobook(id, libraryId)
                         }
                     }
@@ -60,7 +60,7 @@ extension Navigation {
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAuthorNotification)) { notification in
                     if let id = notification.object as? String {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.getAuthor(authorId: id).libraryId
+                            let libraryId = try await AudiobookshelfClient.shared.author(authorId: id).libraryId
                             navigateAuthor(id, libraryId)
                         }
                     }
@@ -68,9 +68,9 @@ extension Navigation {
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateSeriesNotification)) { notification in
                     if let name = notification.object as? String {
                         Task {
-                            guard let libraries = try? await AudiobookshelfClient.shared.getLibraries().filter({ $0.type == .audiobooks }) else { return }
+                            guard let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) else { return }
                             let fetched = await libraries.parallelMap {
-                                let series = try? await AudiobookshelfClient.shared.getSeries(libraryId: $0.id).filter { $0.name == name }
+                                let series = try? await AudiobookshelfClient.shared.series(libraryId: $0.id).filter { $0.name == name }
                                 return series ?? []
                             }
                             
@@ -83,7 +83,7 @@ extension Navigation {
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigatePodcastNotification)) { notification in
                     if let id = notification.object as? String {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.getPodcast(podcastId: id).0.libraryId
+                            let libraryId = try await AudiobookshelfClient.shared.podcast(podcastId: id).0.libraryId
                             navigatePodcast(id, libraryId)
                         }
                     }
@@ -91,7 +91,7 @@ extension Navigation {
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateEpisodeNotification)) { notification in
                     if let (episodeId, podcastId) = notification.object as? (String, String) {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.getPodcast(podcastId: podcastId).0.libraryId
+                            let libraryId = try await AudiobookshelfClient.shared.podcast(podcastId: podcastId).0.libraryId
                             navigateEpisode(episodeId, podcastId, libraryId)
                         }
                     }

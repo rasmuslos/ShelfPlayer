@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct AuthorLoadView: View {
     @Environment(\.libraryId) private var libraryId
@@ -30,7 +30,7 @@ struct AuthorLoadView: View {
     }
     
     private func loadAuthor() async {
-        guard let data = try? await AudiobookshelfClient.shared.getAuthorData(authorId: authorId, libraryId: libraryId) else {
+        guard let data = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryId: libraryId) else {
             return
         }
         

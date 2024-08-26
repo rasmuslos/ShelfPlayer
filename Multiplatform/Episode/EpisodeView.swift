@@ -25,15 +25,6 @@ struct EpisodeView: View {
         .ignoresSafeArea(edges: .top)
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier(episode: episode, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
-        .onAppear {
-            Task.detached {
-                Task { @MainActor in
-                    withAnimation(.spring) {
-                        self.imageColors = colors
-                    }
-                }
-            }
-        }
         .userActivity("io.rfk.shelfplayer.episode") {
             $0.title = episode.name
             $0.isEligibleForHandoff = true

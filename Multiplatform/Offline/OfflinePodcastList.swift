@@ -23,7 +23,7 @@ struct OfflinePodcastList: View {
         }
         .onDelete { indexSet in
             indexSet.forEach { index in
-                try! OfflineManager.shared.delete(podcastId: Array(podcasts.keys)[index].id)
+                OfflineManager.shared.remove(podcastId: Array(podcasts.keys)[index].id)
             }
         }
     }
@@ -36,7 +36,7 @@ extension OfflinePodcastList {
         
         var body: some View {
             HStack {
-                ItemImage(image: podcast.image)
+                ItemImage(image: podcast.cover)
                     .frame(height: 50)
                 
                 VStack(alignment: .leading) {

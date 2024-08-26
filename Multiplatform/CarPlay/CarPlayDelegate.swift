@@ -6,7 +6,7 @@
 //
 
 import CarPlay
-import SPFoundation
+import ShelfPlayerKit
 
 public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     // we need to keep a strong reference to this object
