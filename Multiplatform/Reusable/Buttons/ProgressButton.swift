@@ -20,13 +20,13 @@ struct ProgressButton: View {
         self.item = item
         self.tint = tint
         
-        entity = OfflineManager.shared.requireProgressEntity(item: item)
+        entity = OfflineManager.shared.progressEntity(item: item)
     }
     
     var body: some View {
         Button {
             Task {
-                await item.setProgress(finished: entity.progress < 1)
+                try await item.finished(entity.progress < 1)
             }
         } label: {
             if entity.progress >= 1 {

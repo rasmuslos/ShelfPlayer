@@ -17,7 +17,7 @@ extension EpisodeView {
         let episode: Episode
         
         let navigationBarVisible: Bool
-        let imageColors: Item.ImageColors
+        let imageColors: ImageColors
         
         private var regularPresentation: Bool {
             horizontalSizeClass == .regular

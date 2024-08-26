@@ -62,7 +62,7 @@ extension AudiobookView {
                     
                     ToolbarItem(placement: .primaryAction) {
                         Menu {
-                            if let authorId = viewModel.authorId {
+                            if let authorId = viewModel.authorID {
                                 NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
                                     Label("author.view", systemImage: "person")
                                     

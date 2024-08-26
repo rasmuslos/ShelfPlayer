@@ -27,12 +27,12 @@ extension SeriesList {
         
         var body: some View {
             HStack {
-                let count = min(series.images.count, 5)
+                let count = min(series.covers.count, 5)
                 ZStack {
                     ForEach(0..<count, id: \.hashValue) {
                         let index = (count - 1) - $0
                         
-                        ItemImage(image: series.images[$0])
+                        ItemImage(image: series.covers[$0])
                             .frame(height: 50)
                             .offset(x: CGFloat(index) * 20)
                             .scaleEffect(index == 0 ? 1 : index == 1 ? 0.95 : index == 2 ? 0.9 : index == 3 ? 0.85 : index == 4 ? 0.8 : 0)
@@ -44,7 +44,7 @@ extension SeriesList {
                 VStack(alignment: .leading) {
                     Text(series.name)
                         .modifier(SerifModifier())
-                    Text("series.count \(series.images.count)")
+                    Text("series.count \(series.covers.count)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

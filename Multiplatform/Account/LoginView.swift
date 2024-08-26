@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import SPFoundation
 import BetterSafariView
 import CommonCrypto
+import ShelfPlayerKit
 
 struct LoginView: View {
     @State private var loginSheetPresented = false
@@ -51,11 +51,11 @@ struct LoginView: View {
             
             Spacer()
             
-#if !ENABLE_ALL_FEATURES
+            #if !ENABLE_ALL_FEATURES
             Text("developedBy")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-#endif
+            #endif
         }
         .sheet(isPresented: $loginSheetPresented) {
             switch loginFlowState {

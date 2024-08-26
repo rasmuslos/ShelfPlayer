@@ -9,10 +9,9 @@ import OSLog
 import Defaults
 import Foundation
 import BackgroundTasks
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
 import UserNotifications
+import ShelfPlayerKit
+import SPPlayback
 
 final internal class BackgroundTaskHandler {
     static let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Background-Refresh")
@@ -40,7 +39,7 @@ internal extension BackgroundTaskHandler {
  
 internal extension BackgroundTaskHandler {
     static func updateDownloads() async throws {
-        let configurations = try await OfflineManager.shared.getConfigurations(active: true)
+        let configurations = try OfflineManager.shared.getConfigurations(active: true)
         
         try await withThrowingTaskGroup(of: Void.self) { group in
             for configuration in configurations {
@@ -62,24 +61,24 @@ internal extension BackgroundTaskHandler {
         
         // Remove existing episodes
         
-        let preDownloaded = try await OfflineManager.shared.getEpisodes(podcastId: podcastId)
-        let valid = await AudiobookshelfClient.filterSort(episodes: preDownloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        let preDownloaded = try OfflineManager.shared.episodes(podcastId: podcastId)
+        let valid = await Episode.filterSort(episodes: preDownloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
         let invalid = preDownloaded.filter { episode in !valid.contains { $0.id == episode.id } }
         
         for episode in invalid {
-            await OfflineManager.shared.delete(episodeId: episode.id)
+            OfflineManager.shared.remove(episodeId: episode.id)
         }
         
         // Download new episodes
         
-        let episodes = try await AudiobookshelfClient.shared.getEpisodes(podcastId: configuration.id)
-        let sorted = await AudiobookshelfClient.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        let episodes = try await AudiobookshelfClient.shared.episodes(podcastId: configuration.id)
+        let sorted = await Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         let candidates = sorted.prefix(configuration.maxEpisodes)
         var submitted = [Episode]()
         
         for candidate in candidates {
-            if !(await OfflineManager.shared.isDownloadFinished(episodeId: candidate.id)) {
+            if OfflineManager.shared.offlineStatus(parentId: candidate.id) != .downloaded {
                 try await OfflineManager.shared.download(episodeId: candidate.id, podcastId: candidate.podcastId)
                 submitted.append(candidate)
             }
@@ -87,11 +86,11 @@ internal extension BackgroundTaskHandler {
         
         // Remove additional episodes
         
-        let downloaded = try await OfflineManager.shared.getEpisodes(podcastId: podcastId)
-        var reversed = await AudiobookshelfClient.filterSort(episodes: downloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        let downloaded = try OfflineManager.shared.episodes(podcastId: podcastId)
+        var reversed = await Episode.filterSort(episodes: downloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         while reversed.count > configuration.maxEpisodes {
-            await OfflineManager.shared.delete(episodeId: reversed.removeLast().id)
+            OfflineManager.shared.remove(episodeId: reversed.removeLast().id)
         }
         
         // Send notifications

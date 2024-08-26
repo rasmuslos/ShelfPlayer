@@ -46,10 +46,10 @@ internal extension CarPlayDelegate {
                         .init(items: AudioPlayer.shared.chapters.map { chapter in
                             let item = CPListItem(
                                 text: chapter.title,
-                                detailText: (chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
+                                detailText: "chapter duration") // (chapter.end - chapter.start).hoursMinutesSecondsString(includeSeconds: true, includeLabels: false))
                             
                             item.handler = { _, completion in
-                                AudioPlayer.shared.seek(to: chapter.start)
+                                AudioPlayer.shared.itemCurrentTime = chapter.start
                                 Task {
                                     try await self.interfaceController?.popTemplate(animated: true)
                                     completion()

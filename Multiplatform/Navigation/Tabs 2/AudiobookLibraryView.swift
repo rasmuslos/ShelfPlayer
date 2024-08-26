@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
 struct AudiobookLibraryView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -105,7 +105,7 @@ extension AudiobookLibraryView {
     func fetchItems() async {
         failed = false
         
-        if let audiobooks = try? await AudiobookshelfClient.shared.getAudiobooks(libraryId: libraryId) {
+        if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(libraryId: libraryId) {
             self.audiobooks = audiobooks
         } else {
             failed = true

@@ -47,6 +47,7 @@ extension NowPlaying {
                             viewState.setNowPlayingViewPresented(false)
                         }
                     }
+                
                 Group {
                     if presentedItem != nil {
                         Rectangle()
@@ -67,7 +68,7 @@ extension NowPlaying {
                             if let item = presentedItem {
                                 Spacer()
                                 
-                                ItemImage(image: item.image, aspectRatio: .none)
+                                ItemImage(image: item.cover, aspectRatio: .none)
                                     .shadow(radius: 15)
                                     .padding(.vertical, 10)
                                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)

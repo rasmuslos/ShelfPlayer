@@ -6,19 +6,19 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct LibrarySelectModifier: ViewModifier {
-    @Environment(Libraries.self) var availableLibraries
+    @Environment(\.libraries) var libraries
     
     func body(content: Content) -> some View {
         content
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        ForEach(availableLibraries.libraries) { library in
+                        ForEach(libraries) { library in
                             Button {
-                                NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                                NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
                                     "libraryId": library.id,
                                 ])
                             } label: {
@@ -29,7 +29,7 @@ struct LibrarySelectModifier: ViewModifier {
                         Divider()
                         
                         Button {
-                            NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                            NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
                                 "offline": true,
                             ])
                         } label: {
@@ -39,21 +39,7 @@ struct LibrarySelectModifier: ViewModifier {
                         Label("tip.changeLibrary", systemImage: "books.vertical.fill")
                             .labelStyle(.iconOnly)
                     }
-                    .popoverTip(SelectLibraryTip())
                 }
             }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        Text(":)")
-            .modifier(LibrarySelectModifier())
-            .environment(AvailableLibraries(libraries: [
-                Library.audiobooksFixture,
-                Library.audiobooksFixture,
-                Library.audiobooksFixture,
-                Library.audiobooksFixture,
-            ]))
     }
 }

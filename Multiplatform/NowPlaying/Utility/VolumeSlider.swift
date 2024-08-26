@@ -6,48 +6,48 @@
 //
 
 import SwiftUI
-import MediaPlayer
+import SPPlayback
 
-extension NowPlaying {
+internal extension NowPlaying {
     struct VolumeSlider: View {
         @Binding var dragging: Bool
         
-        @State private var volume: Double = 0
+        @State private var volume = Double(AudioPlayer.shared.volume)
         
         var body: some View {
             HStack {
                 Button {
-                    volume = 0
+                    AudioPlayer.shared.volume = 0
                 } label: {
                     Label("mute", systemImage: "speaker.fill")
                         .labelStyle(.iconOnly)
                 }
+                .buttonStyle(.plain)
                 
                 Slider(percentage: $volume, dragging: $dragging)
                 
                 Button {
-                    volume = 100.0
+                    AudioPlayer.shared.volume = 1
                 } label: {
                     Label("volume.max", systemImage: "speaker.wave.3.fill")
                         .labelStyle(.iconOnly)
                 }
+                .buttonStyle(.plain)
             }
-            .foregroundStyle(.primary)
+            .foregroundStyle(.white.opacity(0.4))
             .dynamicTypeSize(dragging ? .xLarge : .medium)
             .frame(height: 0)
             .animation(.easeInOut, value: dragging)
-            .onChange(of: volume) {
-                if dragging {
-                    MPVolumeView.setVolume(Float(volume / 100))
+            .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.volumeDidChangeNotification)) { _ in
+                if !dragging {
+                    volume = Double(AudioPlayer.shared.volume)
                 }
             }
-            .onReceive(AVAudioSession.sharedInstance().publisher(for: \.outputVolume), perform: { value in
-                if !dragging {
-                    withAnimation {
-                        volume = Double(value) * 100
-                    }
+            .onChange(of: volume) {
+                if dragging {
+                    AudioPlayer.shared.volume = Float(volume)
                 }
-            })
+            }
         }
     }
 }

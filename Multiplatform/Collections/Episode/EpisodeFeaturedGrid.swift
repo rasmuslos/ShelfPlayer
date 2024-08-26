@@ -76,7 +76,7 @@ extension EpisodeFeaturedGrid {
                 Title(episode: episode)
             }
             .foregroundStyle(.white)
-            .background(Background(image: episode.image))
+            .background(Background(image: episode.cover))
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 10))
             .hoverEffect(.highlight)
@@ -128,7 +128,7 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
     }
     
     struct Background: View {
-        let image: Item.Image?
+        let image: Cover?
         
         var body: some View {
             GeometryReader { geometry in

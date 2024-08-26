@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
+import Defaults
 
 struct Tabs: View {
     @State var failed = false
@@ -29,8 +30,8 @@ struct Tabs: View {
             }
             .modifier(NowPlaying.CompactViewModifier())
             .environment(\.libraryId, activeLibrary.id)
-            .environment(AvailableLibraries(libraries: libraries))
-            .onReceive(NotificationCenter.default.publisher(for: Library.libraryChangedNotification), perform: { notification in
+            .environment(\.libraries, libraries)
+            .onReceive(NotificationCenter.default.publisher(for: Library.changeLibraryNotification), perform: { notification in
                 if let libraryId = notification.userInfo?["libraryId"] as? String, let library = libraries.first(where: { $0.id == libraryId }) {
                     setActiveLibrary(library)
                 }
@@ -111,10 +112,12 @@ struct Tabs: View {
 
 private extension Tabs {
     func fetchLibraries() async {
-        if let libraries = try? await AudiobookshelfClient.shared.getLibraries(), !libraries.isEmpty {
+        let lastActiveLibraryID = Defaults[.lastActiveLibraryID]
+        
+        if let libraries = try? await AudiobookshelfClient.shared.libraries(), !libraries.isEmpty {
             self.libraries = libraries
             
-            if let id = Library.getLastActiveLibraryId(), let library = libraries.first(where: { $0.id == id }) {
+            if let id = lastActiveLibraryID, let library = libraries.first(where: { $0.id == id }) {
                 setActiveLibrary(library)
             } else if libraries.count > 0 {
                 setActiveLibrary(libraries[0])
@@ -124,7 +127,7 @@ private extension Tabs {
     
     func setActiveLibrary(_ library: Library) {
         activeLibrary = library
-        library.setAsLastActiveLibrary()
+        Defaults[.lastActiveLibraryID] = library.id
     }
 }
 

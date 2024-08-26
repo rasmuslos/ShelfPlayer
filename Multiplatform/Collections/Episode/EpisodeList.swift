@@ -28,7 +28,7 @@ extension EpisodeList {
         
         var body: some View {
             HStack {
-                ItemImage(image: episode.image)
+                ItemImage(image: episode.cover)
                     .frame(width: 90)
                     .hoverEffect(.highlight)
                 

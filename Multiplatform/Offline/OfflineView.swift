@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPOffline
+import ShelfPlayerKit
 import SPPlayback
 
 struct OfflineView: View {
@@ -42,7 +41,7 @@ struct OfflineView: View {
                 }
                 
                 Button {
-                    NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                    NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
                         "offline": false,
                     ])
                 } label: {
@@ -69,7 +68,7 @@ struct OfflineView: View {
 
 extension OfflineView {
     nonisolated func loadItems() async throws {
-        guard let (audiobooks, podcasts) = try? await (OfflineManager.shared.getAudiobooks(), OfflineManager.shared.getPodcasts()) else {
+        guard let (audiobooks, podcasts) = try? await (OfflineManager.shared.audiobooks(), OfflineManager.shared.podcasts()) else {
             return
         }
         

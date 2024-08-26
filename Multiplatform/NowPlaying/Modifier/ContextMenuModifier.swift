@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 import SPPlayback
 
 extension NowPlaying {
@@ -54,7 +54,7 @@ extension NowPlaying {
                             if let author = audiobook.author {
                                 Button(action: {
                                     Task {
-                                        if let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId) {
+                                        if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) {
                                             Navigation.navigate(authorId: authorId)
                                         }
                                     }
@@ -100,20 +100,20 @@ extension NowPlaying {
                     
                     Divider()
                     
-                    SleepTimerButton()
+                    // SleepTimerButton()
                     PlaybackSpeedButton()
                     
                     Divider()
                     
                     Button {
-                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
+                        AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime - Double(skipBackwardsInterval)
                     } label: {
                         Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
                     }
                     
                     Button {
                         animateForwards.toggle()
-                        AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
+                        AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
                     } label: {
                         Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
                     }
@@ -121,13 +121,13 @@ extension NowPlaying {
                     Divider()
                     
                     Button {
-                        AudioPlayer.shared.stopPlayback()
+                        AudioPlayer.shared.stop()
                     } label: {
                         Label("playback.stop", systemImage: "xmark")
                     }
                 } preview: {
                     VStack(alignment: .leading) {
-                        ItemImage(image: item.image, aspectRatio: .none)
+                        ItemImage(image: item.cover, aspectRatio: .none)
                             .padding(.bottom, 10)
                         
                         Group {

@@ -50,10 +50,10 @@ extension SeriesView {
             
             EmptyView()
                 .onChange(of: audiobooks, initial: true) {
-                    if !series.images.isEmpty {
-                        images = series.images
+                    if !series.covers.isEmpty {
+                        images = series.covers
                     } else {
-                        images = audiobooks.compactMap { $0.image }
+                        images = audiobooks.compactMap { $0.cover }
                     }
                 }
         }

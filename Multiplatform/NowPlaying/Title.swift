@@ -7,8 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
-import SPOffline
+import ShelfPlayerKit
 import SPPlayback
 
 extension NowPlaying {
@@ -79,7 +78,7 @@ extension NowPlaying {
                                         if let author = audiobook.author {
                                             Button(action: {
                                                 Task {
-                                                    if let authorId = try? await AudiobookshelfClient.shared.getAuthorId(name: author, libraryId: audiobook.libraryId) {
+                                                    if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) {
                                                         Navigation.navigate(authorId: authorId)
                                                     }
                                                 }
@@ -138,12 +137,12 @@ extension NowPlaying {
                         .sensoryFeedback(.success, trigger: bookmarkAnimation)
                         .onTapGesture {
                             createBookmarkFailed = false
-                            bookmarkCapturedTime = AudioPlayer.shared.getItemCurrentTime()
+                            bookmarkCapturedTime = AudioPlayer.shared.itemCurrentTime
                             createBookmarkAlertPresented = true
                         }
                         .onLongPressGesture {
                             Task {
-                                await OfflineManager.shared.createBookmark(itemId: item.id, position: AudioPlayer.shared.getItemCurrentTime(), note: {
+                                await OfflineManager.shared.createBookmark(itemId: item.id, position: AudioPlayer.shared.itemCurrentTime, note: {
                                     let dateFormatter = DateFormatter()
                                     dateFormatter.locale = .autoupdatingCurrent
                                     dateFormatter.timeZone = .current
@@ -172,7 +171,6 @@ extension NowPlaying {
                                 Text("bookmark.create.cancel")
                             }
                         }
-                        .popoverTip(CreateBookmarkTip())
                 }
             }
             .padding(.bottom)

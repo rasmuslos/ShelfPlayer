@@ -112,6 +112,7 @@
       }
     },
     "%lld sleep.minutes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "variations" : {
@@ -318,6 +319,7 @@
       }
     },
     "account.downloads" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -956,6 +958,7 @@
       }
     },
     "accounts.downloads.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1889,6 +1892,9 @@
           }
         }
       }
+    },
+    "duration" : {
+
     },
     "episode.new.title %@" : {
       "localizations" : {
@@ -3432,6 +3438,7 @@
       }
     },
     "queue.nextUp: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3807,7 +3814,11 @@
         }
       }
     },
+    "sleep" : {
+
+    },
     "sleep.chapter" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3830,6 +3841,7 @@
       }
     },
     "sleep.clear" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3852,6 +3864,7 @@
       }
     },
     "sleep.decrease" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3874,6 +3887,7 @@
       }
     },
     "sleep.increase" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3896,6 +3910,7 @@
       }
     },
     "sleepTimer" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4385,6 +4400,7 @@
       }
     },
     "tip.bookmark.create" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4407,6 +4423,7 @@
       }
     },
     "tip.bookmark.create.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4429,6 +4446,7 @@
       }
     },
     "tip.bookmark.view" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4451,6 +4469,7 @@
       }
     },
     "tip.bookmark.view.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4495,6 +4514,7 @@
       }
     },
     "tip.changeLibrary.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4517,6 +4537,7 @@
       }
     },
     "tip.episodePreview" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4539,6 +4560,7 @@
       }
     },
     "tip.episodePreview.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4561,6 +4583,7 @@
       }
     },
     "tip.player.longPress" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4583,6 +4606,7 @@
       }
     },
     "tip.player.longPress.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

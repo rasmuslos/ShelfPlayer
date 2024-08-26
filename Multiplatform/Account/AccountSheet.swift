@@ -8,9 +8,7 @@
 import SwiftUI
 import Defaults
 import Nuke
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
 
 struct AccountSheet: View {
     @Default(.customSleepTimer) private var customSleepTimer
@@ -38,13 +36,13 @@ struct AccountSheet: View {
                     } else {
                         ProgressIndicator()
                             .task {
-                                username = try? await AudiobookshelfClient.shared.username()
+                                username = try? await AudiobookshelfClient.shared.me().1
                             }
                     }
                     
                     Button(role: .destructive) {
-                        OfflineManager.shared.deleteProgressEntities()
-                        AudiobookshelfClient.shared.logout()
+                        try? OfflineManager.shared.deleteProgressEntities()
+                        AudiobookshelfClient.shared.store(token: nil)
                     } label: {
                         Label("account.logout", systemImage: "person.crop.circle.badge.minus")
                             .foregroundStyle(.red)
@@ -99,8 +97,6 @@ struct AccountSheet: View {
                 } footer: {
                     Text("account.notifications.footer")
                 }
-                
-                Downloads()
                 
                 Section {
                     Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
@@ -157,16 +153,16 @@ struct AccountSheet: View {
                 Section {
                     Group {
                         Button(role: .destructive) {
-                            OfflineManager.shared.deleteDownloads()
+                            OfflineManager.shared.removeAllDownloads()
                         } label: {
                             Label("account.delete.downloads", systemImage: "slash.circle")
                         }
                         
                         Button(role: .destructive) {
                             ImagePipeline.shared.cache.removeAll()
-                            OfflineManager.shared.deleteProgressEntities()
+                            try? OfflineManager.shared.deleteProgressEntities()
                             
-                            NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                            NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
                                 "offline": false,
                             ])
                         } label: {

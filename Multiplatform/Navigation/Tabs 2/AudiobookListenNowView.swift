@@ -7,9 +7,8 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
+import SPPlayback
 
 struct AudiobookListenNowView: View {
     @Environment(\.libraryId) private var libraryId: String
@@ -18,8 +17,8 @@ struct AudiobookListenNowView: View {
     @Default(.showAuthorsRow) private var showAuthorsRow
     @Default(.disableDiscoverRow) private var disableDiscoverRow
     
-    @State private var audiobookRows = [AudiobookHomeRow]()
-    @State private var authorRows = [AuthorHomeRow]()
+    @State private var audiobookRows = [HomeRow<Audiobook>]()
+    @State private var authorRows = [HomeRow<Author>]()
     
     @State private var downloadedAudiobooks = [Audiobook]()
     
@@ -43,7 +42,7 @@ struct AudiobookListenNowView: View {
                                     RowTitle(title: row.label)
                                         .padding(.horizontal, 20)
                                     
-                                    AudiobookHGrid(audiobooks: row.audiobooks.filter { audiobook in
+                                    AudiobookHGrid(audiobooks: row.entities.filter { audiobook in
                                         if row.id != "continue-listening" {
                                             return true
                                         }
@@ -69,7 +68,7 @@ struct AudiobookListenNowView: View {
                                     RowTitle(title: row.label)
                                         .padding(.horizontal, 20)
                                     
-                                    AuthorGrid(authors: row.authors)
+                                    AuthorGrid(authors: row.entities)
                                 }
                             }
                         }
@@ -87,12 +86,12 @@ extension AudiobookListenNowView {
     func fetchItems() async {
         failed = false
         
-        if let downloadedAudiobooks = try? OfflineManager.shared.getAudiobooks() {
+        if let downloadedAudiobooks = try? OfflineManager.shared.audiobooks() {
             self.downloadedAudiobooks = downloadedAudiobooks
         }
         
         do {
-            (audiobookRows, authorRows) = try await AudiobookshelfClient.shared.getAudiobooksHome(libraryId: libraryId)
+            (audiobookRows, authorRows) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
         } catch {
             failed = true
         }

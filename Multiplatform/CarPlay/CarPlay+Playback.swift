@@ -12,8 +12,10 @@ import SPPlayback
 
 internal extension CarPlayDelegate {
     static func startPlayback(item: CPSelectableListItem, completion: () -> Void) {
-        (item.userInfo! as! PlayableItem).startPlayback()
-        NotificationCenter.default.post(name: Self.updateContentNotifications, object: nil)
+        Task {
+            try await AudioPlayer.shared.play((item.userInfo! as! PlayableItem))
+            NotificationCenter.default.post(name: Self.updateContentNotifications, object: nil)
+        }
         
         completion()
     }
@@ -26,7 +28,7 @@ internal extension CarPlayDelegate {
                     
                     if AudioPlayer.shared.item == playableItem {
                         item.isPlaying = true
-                        item.playbackProgress = OfflineManager.shared.requireProgressEntity(item: playableItem).progress
+                        item.playbackProgress = OfflineManager.shared.progressEntity(item: playableItem).progress
                     } else {
                         item.isPlaying = false
                     }

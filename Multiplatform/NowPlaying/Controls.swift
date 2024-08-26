@@ -8,7 +8,7 @@
 import SwiftUI
 import Defaults
 import MediaPlayer
-import SPFoundation
+import ShelfPlayerKit
 import SPPlayback
 
 extension NowPlaying {
@@ -29,7 +29,7 @@ extension NowPlaying {
         @State private var animateForwards = false
         
         private var playedPercentage: Double {
-            (AudioPlayer.shared.currentTime / AudioPlayer.shared.duration) * 100
+            (AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100
         }
         
         var body: some View {
@@ -42,7 +42,7 @@ extension NowPlaying {
                             }
                             
                             draggedPercentage = $0
-                            AudioPlayer.shared.seek(to: AudioPlayer.shared.duration * (draggedPercentage / 100), includeChapterOffset: true)
+                            AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration * (draggedPercentage / 100)
                         }),
                         dragging: .init(get: { seekDragging }, set: {
                             seekDragging = $0
@@ -57,7 +57,7 @@ extension NowPlaying {
                                 ProgressIndicator()
                                     .scaleEffect(0.5)
                             } else {
-                                Text(AudioPlayer.shared.currentTime.hoursMinutesSecondsString())
+                                Text("duration") // Text(AudioPlayer.shared.currentTime.hoursMinutesSecondsString())
                             }
                         }
                         .frame(width: 65, alignment: .leading)
@@ -65,13 +65,13 @@ extension NowPlaying {
                         
                         Group {
                             if seekDragging {
-                                Text(formatRemainingTime(AudioPlayer.shared.duration - AudioPlayer.shared.duration * (playedPercentage / 100)))
+                                Text("duration") // Text(formatRemainingTime(AudioPlayer.shared.duration - AudioPlayer.shared.duration * (playedPercentage / 100)))
                             } else if let chapter = AudioPlayer.shared.chapter {
                                 Text(chapter.title)
                                     .animation(.easeInOut, value: chapter.title)
                                     .matchedGeometryEffect(id: "chapter", in: namespace, properties: .frame, anchor: .top)
                             } else {
-                                Text(formatRemainingTime(AudioPlayer.shared.adjustedTimeLeft))
+                                Text("duration") // Text(formatRemainingTime(AudioPlayer.shared.adjustedTimeLeft))
                             }
                         }
                         .font(.caption2)
@@ -81,7 +81,7 @@ extension NowPlaying {
                         .padding(.vertical, compact ? 2 : 4)
                         
                         Spacer()
-                        Text(AudioPlayer.shared.duration.hoursMinutesSecondsString())
+                        Text("duration") // Text(AudioPlayer.shared.duration.hoursMinutesSecondsString())
                             .frame(width: 65, alignment: .trailing)
                     }
                     .font(.caption)
@@ -102,19 +102,19 @@ extension NowPlaying {
                             .gesture(TapGesture()
                                 .onEnded { _ in
                                     animateBackwards.toggle()
-                                    AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
+                                    AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime - Double(skipBackwardsInterval)
                                 })
                             .gesture(LongPressGesture()
                                 .onEnded { _ in
                                     if AudioPlayer.shared.chapter != nil {
-                                        AudioPlayer.shared.seek(to: 0, includeChapterOffset: true)
+                                        AudioPlayer.shared.chapterCurrentTime = 0
                                     }
                                 })
                         
                         Spacer()
                         
                         Button {
-                            AudioPlayer.shared.playing = !AudioPlayer.shared.playing
+                            AudioPlayer.shared.playing.toggle()
                         } label: {
                             Label("playback.toggle", systemImage: AudioPlayer.shared.playing ? "pause.fill" : "play.fill")
                                 .labelStyle(.iconOnly)
@@ -139,15 +139,14 @@ extension NowPlaying {
                             .gesture(TapGesture()
                                 .onEnded { _ in
                                     animateForwards.toggle()
-                                    AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
+                                    AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
                                 })
                             .gesture(LongPressGesture()
                                 .onEnded { _ in
                                     if AudioPlayer.shared.chapter != nil {
-                                        AudioPlayer.shared.seek(to: AudioPlayer.shared.duration, includeChapterOffset: true)
+                                        AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration
                                     }
                                 })
-                            .popoverTip(LongPressSeekTip())
                         
                         Spacer()
                     }
@@ -166,7 +165,7 @@ extension NowPlaying {
         }
         
         private func formatRemainingTime(_ time: Double) -> String {
-            time.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true) + " " + String(localized: "time.left")
+            "duration" // time.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true) + " " + String(localized: "time.left")
         }
     }
 }

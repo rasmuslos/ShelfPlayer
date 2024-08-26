@@ -45,7 +45,7 @@ extension NowPlaying {
                             
                             if !nowPlayingViewState.presented {
                                 HStack {
-                                    ItemImage(image: item.image, aspectRatio: .none)
+                                    ItemImage(image: item.cover, aspectRatio: .none)
                                         .frame(height: 40)
                                         .scaleEffect(bounce ? AudioPlayer.shared.playing ? 1.1 : 0.9 : 1)
                                         .animation(.spring(duration: 0.2, bounce: 0.7), value: bounce)
@@ -75,7 +75,7 @@ extension NowPlaying {
                                                 Text(releaseDate, style: .date)
                                                     .matchedGeometryEffect(id: "releaseDate", in: nowPlayingViewState.safeNamespace, properties: .frame, anchor: .top)
                                             } else {
-                                                Text(AudioPlayer.shared.adjustedTimeLeft.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
+                                                Text("duration") // Text(AudioPlayer.shared.adjustedTimeLeft.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
                                                 + Text(verbatim: " ")
                                                 + Text("time.left")
                                             }
@@ -106,7 +106,7 @@ extension NowPlaying {
                                         
                                         Button {
                                             animateForwards.toggle()
-                                            AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
+                                            AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
                                         } label: {
                                             Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
                                                 .labelStyle(.iconOnly)

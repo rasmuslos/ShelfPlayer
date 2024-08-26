@@ -36,19 +36,20 @@ extension SeriesGrid {
         var body: some View {
             VStack {
                 Group {
-                    if series.images.isEmpty {
+                    if series.covers.isEmpty {
                         ItemImage(image: nil)
-                    } else if series.images.count < 4 {
-                        ItemImage(image: series.images.randomElement()!)
+                    } else if series.covers.count < 4 {
+                        // TODO: more
+                        ItemImage(image: series.covers.randomElement()!)
                     } else {
                         VStack(spacing: 10) {
                             HStack(spacing: 10) {
-                                ItemImage(image: series.images[0])
-                                ItemImage(image: series.images[1])
+                                ItemImage(image: series.covers[0])
+                                ItemImage(image: series.covers[1])
                             }
                             HStack(spacing: 10) {
-                                ItemImage(image: series.images[2])
-                                ItemImage(image: series.images[3])
+                                ItemImage(image: series.covers[2])
+                                ItemImage(image: series.covers[3])
                             }
                         }
                     }
