@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct PodcastLibraryView: View {
     @Environment(\.libraryId) var libraryId
@@ -42,7 +42,7 @@ extension PodcastLibraryView {
         failed = false
         
         do {
-            podcasts = try await AudiobookshelfClient.shared.getPodcasts(libraryId: libraryId)
+            podcasts = try await AudiobookshelfClient.shared.podcasts(libraryId: libraryId)
         } catch {
             failed = true
         }

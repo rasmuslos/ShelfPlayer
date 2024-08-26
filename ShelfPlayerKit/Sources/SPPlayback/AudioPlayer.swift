@@ -48,7 +48,7 @@ public final class AudioPlayer {
             NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
         }
     }
-    var buffering: Bool {
+    public internal(set) var buffering: Bool {
         didSet {
             guard oldValue != buffering else {
                 return
@@ -59,7 +59,7 @@ public final class AudioPlayer {
         }
     }
     
-    var itemCurrentTime: Double {
+    public var itemCurrentTime: Double {
         get {
             var seconds: Double
             
@@ -84,7 +84,7 @@ public final class AudioPlayer {
             }
         }
     }
-    var itemDuration: Double {
+    public var itemDuration: Double {
         let duration = tracks.reduce(0, { $0 + $1.duration })
         
         guard duration.isFinite && !duration.isNaN else {
@@ -94,7 +94,7 @@ public final class AudioPlayer {
         return duration
     }
     
-    var chapterCurrentTime: Double {
+    public var chapterCurrentTime: Double {
         get {
             if let chapter {
                 return itemCurrentTime - chapter.start
@@ -108,7 +108,7 @@ public final class AudioPlayer {
             }
         }
     }
-    var chapterDuration: Double {
+    public var chapterDuration: Double {
         if let chapter {
             return chapter.end - chapter.start
         } else {
@@ -116,7 +116,7 @@ public final class AudioPlayer {
         }
     }
     
-    var volume: Float {
+    public var volume: Float {
         get {
             systemVolume
         }
@@ -133,7 +133,7 @@ public final class AudioPlayer {
         }
     }
     
-    var item: PlayableItem? {
+    public internal(set) var item: PlayableItem? {
         didSet {
             guard oldValue != item else {
                 return
@@ -143,7 +143,7 @@ public final class AudioPlayer {
             NotificationCenter.default.post(name: AudioPlayer.itemDidChangeNotification, object: nil)
         }
     }
-    var queue: [PlayableItem] {
+    public internal(set) var queue: [PlayableItem] {
         didSet {
             guard oldValue != queue else {
                 return

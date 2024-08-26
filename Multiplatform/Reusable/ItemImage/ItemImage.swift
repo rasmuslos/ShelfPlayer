@@ -13,7 +13,7 @@ import SPFoundation
 struct ItemImage: View {
     @Default(.forceAspectRatio) private var forceAspectRatio
     
-    let image: Item.Image?
+    let image: Cover?
     var cornerRadius: CGFloat = 7
     var aspectRatio = AspectRatioPolicy.square
     
@@ -97,15 +97,8 @@ struct ItemImage: View {
 }
 
 #Preview {
-    ItemImage(image: Audiobook.fixture.image)
+    ItemImage(image: Audiobook.fixture.cover)
 }
 #Preview {
     ItemImage(image: nil)
-}
-
-#Preview {
-    ItemImage(image: .init(url: .init(string: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.bookerworm.com%2Fimages%2F1984.jpg&f=1&nofb=1&ipt=064d244a11179919556d396a90b76dd33d095fc794135c0e7d889a5792fc0abc&ipo=images")!, type: .remote), aspectRatio: .squareFit)
-}
-#Preview {
-    ItemImage(image: .init(url: .init(string: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.bookerworm.com%2Fimages%2F1984.jpg&f=1&nofb=1&ipt=064d244a11179919556d396a90b76dd33d095fc794135c0e7d889a5792fc0abc&ipo=images")!, type: .remote), aspectRatio: .none)
 }

@@ -25,6 +25,9 @@ public final class ItemOfflineTracker {
         token = nil
         _status = nil
     }
+    public convenience init(_ item: Item) {
+        self.init(itemId: item.id)
+    }
     
     deinit {
         if let token {
@@ -40,19 +43,19 @@ extension ItemOfflineTracker {
                 logger.info("Enabled offline tracking for \(self.itemId)")
                 
                 token = NotificationCenter.default.addObserver(forName: PlayableItem.downloadStatusUpdatedNotification, object: nil, queue: nil) { [weak self] notification in
-                    if notification.object as? String == self?.itemId {
-                        self?._status = self?.checkOfflineStatus()
+                    guard let self else {
+                        return
+                    }
+                    
+                    if notification.object as? String == itemId {
+                        _status = OfflineManager.shared.offlineStatus(parentId: itemId)
                     }
                 }
                 
-                _status = checkOfflineStatus()
+                _status = OfflineManager.shared.offlineStatus(parentId: itemId)
             }
             
             return _status!
         }
-    }
-    
-    private func checkOfflineStatus() -> OfflineManager.OfflineStatus {
-        return OfflineManager.shared.getOfflineStatus(parentId: itemId)
     }
 }

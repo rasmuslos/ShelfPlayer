@@ -24,7 +24,7 @@ struct DownloadButton: View {
         self.tint = tint
         self.downloadingLabel = downloadingLabel
         
-        offlineTracker = item.offlineTracker
+        offlineTracker = ItemOfflineTracker(item)
     }
     
     var body: some View {
@@ -70,9 +70,9 @@ struct DownloadButton: View {
     @MainActor
     private func deleteDownload() {
         if let episode = item as? Episode {
-            OfflineManager.shared.delete(episodeId: episode.id)
+            OfflineManager.shared.remove(episodeId: episode.id)
         } else {
-            OfflineManager.shared.delete(audiobookId: item.id)
+            OfflineManager.shared.remove(audiobookId: item.id)
         }
         
         hapticFeedback.toggle()
@@ -81,7 +81,7 @@ struct DownloadButton: View {
 
 private struct TintModifier: ViewModifier {
     let tint: Bool
-    let offlineStatus: ItemOfflineTracker.OfflineStatus
+    let offlineStatus: OfflineManager.OfflineStatus
     
     func body(content: Content) -> some View {
         if tint {

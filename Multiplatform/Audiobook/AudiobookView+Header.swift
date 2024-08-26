@@ -52,7 +52,7 @@ internal extension AudiobookView.Header {
                 
                 if let author = viewModel.audiobook.author {
                     NavigationLink {
-                        if let authorId = viewModel.authorId {
+                        if let authorId = viewModel.authorID {
                             AuthorLoadView(authorId: authorId)
                         } else {
                             AuthorUnavailableView()
@@ -94,7 +94,7 @@ internal extension AudiobookView.Header {
                             Text(verbatim: " • ")
                         }
                         
-                        Text(viewModel.audiobook.duration.numericDuration())
+                        Text("duration") // Text(viewModel.audiobook.duration.numericDuration())
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -141,7 +141,7 @@ internal extension AudiobookView.Header {
         
         var body: some View {
             VStack(spacing: 0) {
-                ItemImage(image: viewModel.audiobook.image, aspectRatio: .none)
+                ItemImage(image: viewModel.audiobook.cover, aspectRatio: .none)
                     .padding(.horizontal, 40)
                     .shadow(radius: 40)
                 
@@ -173,7 +173,7 @@ internal extension AudiobookView.Header {
                 .frame(height: 0)
                 
                 HStack(spacing: 40) {
-                    ItemImage(image: viewModel.audiobook.image, aspectRatio: .none)
+                    ItemImage(image: viewModel.audiobook.cover, aspectRatio: .none)
                         .shadow(radius: 40)
                         .frame(width: min(400, (availableWidth - 40) / 2))
                         .hoverEffect(.highlight)

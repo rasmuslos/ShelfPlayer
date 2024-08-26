@@ -29,15 +29,15 @@ extension CarPlayDelegate {
     }
     
     private func getOfflineSections() throws -> [CPListSection] {
-        let podcasts = try OfflineManager.shared.getPodcasts()
-        let audiobooks = try OfflineManager.shared.getAudiobooks()
+        let podcasts = try OfflineManager.shared.podcasts()
+        let audiobooks = try OfflineManager.shared.audiobooks()
         
         var sections: [CPListSection] = [
             .init(items: audiobooks.map { @MainActor in
                 var image: UIImage?
                 var detailText = ""
                 
-                if let imageUrl = $0.image?.url, let data = try? Data(contentsOf: imageUrl) {
+                if let imageUrl = $0.cover?.url, let data = try? Data(contentsOf: imageUrl) {
                     image = UIImage(data: data)
                 }
                 
@@ -62,7 +62,7 @@ extension CarPlayDelegate {
                 item.userInfo = $0
                 item.handler = Self.startPlayback
                 
-                item.playbackProgress = OfflineManager.shared.requireProgressEntity(item: $0).progress
+                item.playbackProgress = OfflineManager.shared.progressEntity(item: $0).progress
                 
                 return item
             }, header: String(localized: "carPlay.offline.sections.audiobooks"), headerSubtitle: nil, headerImage: UIImage(systemName: "bookmark.fill"), headerButton: nil, sectionIndexTitle: nil),
@@ -78,11 +78,11 @@ extension CarPlayDelegate {
                 item.playingIndicatorLocation = .trailing
                 item.isPlaying = AudioPlayer.shared.item == $0
                 
-                item.playbackProgress = OfflineManager.shared.requireProgressEntity(item: $0).progress
+                item.playbackProgress = OfflineManager.shared.progressEntity(item: $0).progress
                 
                 return item
             }, header: $0.key.name, headerSubtitle: $0.key.author, headerImage: {
-                if let imageUrl = $0.image?.url, let data = try? Data(contentsOf: imageUrl) {
+                if let imageUrl = $0.cover?.url, let data = try? Data(contentsOf: imageUrl) {
                     return UIImage(data: data)
                 }
                 

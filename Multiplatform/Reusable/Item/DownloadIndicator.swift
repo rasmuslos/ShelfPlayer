@@ -6,9 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
 
 struct DownloadIndicator: View {
     let itemId: String
@@ -16,7 +14,7 @@ struct DownloadIndicator: View {
     
     init(item: PlayableItem) {
         itemId = item.id
-        offlineTracker = item.offlineTracker
+        offlineTracker = .init(item)
     }
     
     var body: some View {

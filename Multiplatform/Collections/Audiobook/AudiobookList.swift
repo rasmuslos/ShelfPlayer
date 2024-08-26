@@ -73,7 +73,9 @@ private struct Row: View {
                     .padding(.bottom, 8)
                 
                 Button {
-                    audiobook.startPlayback()
+                    Task {
+                        try await AudioPlayer.shared.play(audiobook)
+                    }
                 } label: {
                     HStack {
                         Label("playing", systemImage: labelImage)
@@ -84,9 +86,9 @@ private struct Row: View {
                             .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
                         
                         if let entity, entity.progress > 0 {
-                            Text(entity.readableProgress(spaceConstrained: false))
+                            Text("duration") // Text(entity.readableProgress(spaceConstrained: false))
                         } else {
-                            Text(audiobook.duration.timeLeft(spaceConstrained: false))
+                            Text("duration") // Text(audiobook.duration.timeLeft(spaceConstrained: false))
                         }
                     }
                     .font(.caption)
@@ -98,7 +100,7 @@ private struct Row: View {
         }
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
         .task {
-            entity = OfflineManager.shared.requireProgressEntity(item: audiobook)
+            entity = OfflineManager.shared.progressEntity(item: audiobook)
         }
     }
 }

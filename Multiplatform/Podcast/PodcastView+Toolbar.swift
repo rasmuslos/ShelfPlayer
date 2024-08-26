@@ -14,7 +14,7 @@ extension PodcastView {
         
         let podcast: Podcast
         let navigationBarVisible: Bool
-        let imageColors: Item.ImageColors
+        let imageColors: ImageColors
         
         @State private var settingsSheetPresented = false
         

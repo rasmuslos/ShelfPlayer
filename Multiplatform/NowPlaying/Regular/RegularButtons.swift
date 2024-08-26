@@ -27,7 +27,7 @@ extension NowPlaying.RegularView {
                     .foregroundStyle(.secondary)
                     .modifier(ButtonHoverEffectModifier())
                 
-                SleepTimerButton()
+                Text("sleep") // SleepTimerButton()
                     .labelStyle(.iconOnly)
                     .font(.system(size: 17))
                     .foregroundStyle(.secondary)

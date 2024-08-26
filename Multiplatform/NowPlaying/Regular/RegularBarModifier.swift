@@ -30,7 +30,7 @@ extension NowPlaying {
                 .safeAreaInset(edge: .bottom) {
                     if let item = AudioPlayer.shared.item {
                         HStack {
-                            ItemImage(image: item.image, aspectRatio: .none)
+                            ItemImage(image: item.cover, aspectRatio: .none)
                                 .frame(height: 50)
                                 .scaleEffect(bounce ? AudioPlayer.shared.playing ? 1.1 : 0.9 : 1)
                                 .animation(.spring(duration: 0.2, bounce: 0.7), value: bounce)
@@ -56,7 +56,7 @@ extension NowPlaying {
                                     if let episode = item as? Episode, let releaseDate = episode.releaseDate {
                                         Text(releaseDate, style: .date)
                                     } else {
-                                        Text(AudioPlayer.shared.adjustedTimeLeft.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
+                                        Text("duration") // Text(AudioPlayer.shared.adjustedTimeLeft.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
                                         + Text(verbatim: " ")
                                         + Text("time.left")
                                     }
@@ -70,7 +70,7 @@ extension NowPlaying {
                             
                             Button {
                                 animateBackwards.toggle()
-                                AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() - Double(skipBackwardsInterval))
+                                AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime - Double(skipBackwardsInterval)
                             } label: {
                                 Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
                                     .labelStyle(.iconOnly)
@@ -102,7 +102,7 @@ extension NowPlaying {
                             
                             Button {
                                 animateForwards.toggle()
-                                AudioPlayer.shared.seek(to: AudioPlayer.shared.getItemCurrentTime() + Double(skipForwardsInterval))
+                                AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
                             } label: {
                                 Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
                                     .labelStyle(.iconOnly)

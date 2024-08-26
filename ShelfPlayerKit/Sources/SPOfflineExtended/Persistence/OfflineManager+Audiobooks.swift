@@ -108,7 +108,7 @@ public extension OfflineManager {
         
         try? context.save()
         
-        removePlaybackSpeedOverride(for: audiobookId)
+        removePlaybackSpeedOverride(for: audiobookId, episodeID: nil)
         
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobookId)
     }

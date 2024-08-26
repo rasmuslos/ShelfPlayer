@@ -15,9 +15,9 @@ import SPExtension
 import SPOffline
 
 public extension AudioPlayer {
-    func play(_ item: PlayableItem) async throws {
+    func play(_ item: PlayableItem, at seconds: Double? = nil) async throws {
         stop()
-        try await start(item)
+        try await start(item, at: seconds)
     }
     func queue(_ item: PlayableItem) {
         if self.item == nil && queue.isEmpty {
@@ -109,12 +109,13 @@ public extension AudioPlayer {
 }
 
 internal extension AudioPlayer {
-    func start(_ item: PlayableItem) async throws {
+    func start(_ item: PlayableItem, at seconds: Double? = nil) async throws {
         let startTime: Double
         self.item = item
         
         do {
-            startTime = try await retrievePlaybackSession()
+            var suggested = try await retrievePlaybackSession()
+            startTime = seconds ?? suggested
         } catch {
             self.item = nil
             throw error

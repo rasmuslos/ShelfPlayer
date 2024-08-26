@@ -33,7 +33,7 @@ internal extension OfflineManager {
 // MARK: Internal (Helper)
 
 internal extension OfflineManager {
-    func syncLocalBookmarks(bookmarks: [SPFoundation.Bookmark], context: ModelContext) throws {
+    func syncLocalBookmarks(bookmarks: [AudiobookshelfClient.Bookmark], context: ModelContext) throws {
         for bookmark in bookmarks {
             context.insert(Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced))
         }

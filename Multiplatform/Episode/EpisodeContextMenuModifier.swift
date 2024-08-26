@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
+import SPPlayback
 
 struct EpisodeContextMenuModifier: ViewModifier {
     @Environment(\.libraryId) private var libraryId
@@ -23,7 +22,9 @@ struct EpisodeContextMenuModifier: ViewModifier {
         content
             .contextMenu {
                 Button {
-                    episode.startPlayback()
+                    Task {
+                        try await AudioPlayer.shared.play(episode)
+                    }
                 } label: {
                     Label("play", systemImage: "play")
                 }
@@ -45,11 +46,11 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 DownloadButton(item: episode)
             } preview: {
                 VStack(alignment: .leading) {
-                    ItemImage(image: episode.image)
+                    ItemImage(image: episode.cover)
                         .frame(height: 50)
                     
                     Group {
-                        let durationText = Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
+                        let durationText = Text("duration") // Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
                         
                         if let releaseDate = episode.releaseDate {
                             Text(releaseDate, style: .date)

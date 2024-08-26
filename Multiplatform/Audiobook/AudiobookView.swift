@@ -26,10 +26,10 @@ internal struct AudiobookView: View {
                 Description(description: viewModel.audiobook.description)
                     .padding(.horizontal, 20)
                 
-                if let chapters = viewModel.chapters, chapters.count > 1 {
+                if viewModel.chapters.count > 1 {
                     divider
                     
-                    ChaptersList(item: viewModel.audiobook, chapters: chapters)
+                    ChaptersList(item: viewModel.audiobook, chapters: viewModel.chapters)
                         .padding(.horizontal, 20)
                 }
                 

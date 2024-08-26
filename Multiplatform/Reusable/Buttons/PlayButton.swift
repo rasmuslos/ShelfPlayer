@@ -34,7 +34,9 @@ struct PlayButton: View {
         let label = item as? Audiobook != nil ? String(localized: "listen") : String(localized: "play")
         
         Button {
-            item.startPlayback()
+            Task {
+                try await AudioPlayer.shared.play(item)
+            }
         } label: {
             ZStack {
                 Label(String("FFS"), systemImage: "waveform")
@@ -45,7 +47,7 @@ struct PlayButton: View {
                         Label {
                             Text(label)
                             + Text(verbatim: " • ")
-                            + Text(String((entity.duration - entity.currentTime).timeLeft()))
+                            + Text("duration") // Text(String((entity.duration - entity.currentTime).timeLeft()))
                         } icon: {
                             Label("playing", systemImage: labelImage)
                                 .labelStyle(.iconOnly)
@@ -84,7 +86,7 @@ struct PlayButton: View {
         .modifier(ButtonHoverEffectModifier(cornerRadius: 7, hoverEffect: .lift))
         .onAppear {
             // If this is inside `init` the app will hang
-            entity = OfflineManager.shared.requireProgressEntity(item: item)
+            entity = OfflineManager.shared.progressEntity(item: item)
         }
     }
 }

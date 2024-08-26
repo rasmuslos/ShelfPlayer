@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
+import SPPlayback
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem
@@ -23,7 +22,9 @@ struct SwipeActionsModifier: ViewModifier {
             }
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button {
-                    item.startPlayback()
+                    Task {
+                        try await AudioPlayer.shared.play(item)
+                    }
                 } label: {
                     Label("play", systemImage: "play")
                 }

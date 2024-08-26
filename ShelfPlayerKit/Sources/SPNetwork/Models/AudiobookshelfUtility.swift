@@ -25,7 +25,7 @@ struct AuthorizationResponse: Codable {
         let token: String
         let username: String
         
-        let bookmarks: [Bookmark]
+        let bookmarks: [AudiobookshelfClient.Bookmark]
         let mediaProgress: [MediaProgress]
     }
 }
@@ -84,4 +84,13 @@ struct EpisodesResponse: Codable {
 
 struct AuthorsResponse: Codable {
     let authors: [AudiobookshelfItem]
+}
+
+public extension AudiobookshelfClient {
+    struct Bookmark: Codable {
+        public let libraryItemId: String
+        public let title: String
+        public let time: Double
+        public let createdAt: Double
+    }
 }

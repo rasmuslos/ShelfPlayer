@@ -9,9 +9,7 @@ import SwiftUI
 import Intents
 import SwiftData
 import Defaults
-import SPFoundation
-import SPOffline
-import SPExtension
+import ShelfPlayerKit
 
 struct ContentView: View {
     @Default(.tintColor) private var tintColor
@@ -82,7 +80,7 @@ struct ContentView: View {
                         }
                         .onAppear {
                             Task.detached { @MainActor in
-                                try? await OfflineManager.shared.attemptPlaybackDurationSync()
+                                try? await OfflineManager.shared.attemptListeningTimeSync()
                             }
                             
                             #if ENABLE_ALL_FEATURES
@@ -94,7 +92,7 @@ struct ContentView: View {
             }
         }
         .tint(tintColor.color)
-        .onReceive(NotificationCenter.default.publisher(for: Library.libraryChangedNotification), perform: { notification in
+        .onReceive(NotificationCenter.default.publisher(for: Library.changeLibraryNotification), perform: { notification in
             if let offline = notification.userInfo?["offline"] as? Bool {
                 state = offline ? .offline : .sessionImport
             }

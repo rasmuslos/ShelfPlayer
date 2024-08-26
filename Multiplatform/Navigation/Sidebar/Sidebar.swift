@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
 struct Sidebar: View {
     @Default(.sidebarSelection) private var selection
@@ -37,7 +37,7 @@ struct Sidebar: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        NotificationCenter.default.post(name: Library.libraryChangedNotification, object: nil, userInfo: [
+                        NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
                             "offline": true,
                         ])
                     } label: {
@@ -58,8 +58,8 @@ struct Sidebar: View {
             }
         }
         .modifier(NowPlaying.RegularBarModifier())
+        .environment(\.libraries, libraries)
         .environment(\.libraryId, selection?.libraryId ?? "")
-        .environment(AvailableLibraries(libraries: libraries))
         .modifier(Navigation.NotificationModifier(
             navigateAudiobook: {
                 selection = .init(libraryId: $1, panel: .audiobook(id: $0))
@@ -75,7 +75,7 @@ struct Sidebar: View {
     }
     
     private func fetchLibraries() async {
-        if let libraries = try? await AudiobookshelfClient.shared.getLibraries(), !libraries.isEmpty {
+        if let libraries = try? await AudiobookshelfClient.shared.libraries(), !libraries.isEmpty {
             self.libraries = libraries
         }
     }

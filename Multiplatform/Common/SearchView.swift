@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 internal struct SearchView: View {
     @Environment(\.libraryId) private var libraryId
@@ -73,7 +73,7 @@ internal struct SearchView: View {
                     authors = []
                     series = []
                 } else {
-                    (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.getItems(query: query, libraryId: libraryId)
+                    (audiobooks, podcasts, authors, series) = try await AudiobookshelfClient.shared.items(query: query, libraryId: libraryId)
                 }
                 
                 loading = false
