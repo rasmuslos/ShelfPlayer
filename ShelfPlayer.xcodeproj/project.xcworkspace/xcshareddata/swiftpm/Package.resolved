@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "rfkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rasmuslos/RFKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "1e66d3244d32eff4ce27c4349b6d2077a2383c45"
+      }
+    },
+    {
       "identity" : "swiftsoup",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup.git",

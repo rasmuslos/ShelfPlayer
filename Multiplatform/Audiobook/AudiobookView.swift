@@ -9,7 +9,11 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct AudiobookView: View {
-    let viewModel: AudiobookViewModel
+    @State private var viewModel: AudiobookViewModel
+    
+    internal init(_ audiobook: Audiobook) {
+        _viewModel = .init(initialValue: .init(audiobook: audiobook))
+    }
     
     private let divider: some View = Divider()
         .padding(.horizontal, 20)
@@ -71,6 +75,6 @@ internal struct AudiobookView: View {
 
 #Preview {
     NavigationStack {
-        AudiobookView(viewModel: .init(audiobook: .fixture))
+        AudiobookView(.fixture)
     }
 }

@@ -14,14 +14,16 @@ public struct PersistenceManager {
         let schema = Schema([
             OfflineTrack.self,
             OfflineChapter.self,
+            
+            Bookmark.self,
             ItemProgress.self,
             
             OfflineAudiobook.self,
-            Bookmark.self,
             
             OfflinePodcast.self,
             OfflineEpisode.self,
             
+            PlaybackSpeedOverride.self,
             PodcastFetchConfiguration.self,
             OfflineListeningTimeTracker.self,
         ], version: .init(1, 1, 0))

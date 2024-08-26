@@ -18,7 +18,7 @@ internal struct AudiobookLoadView: View {
     
     var body: some View {
         if let audiobook = audiobook {
-            AudiobookView(viewModel: .init(audiobook: audiobook))
+            AudiobookView(audiobook)
         } else if failed {
             AudiobookUnavailableView()
                 .refreshable { await loadAudiobook() }

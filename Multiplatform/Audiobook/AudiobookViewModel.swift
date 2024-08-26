@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import RFKVisuals
 import ShelfPlayerKit
 
 @Observable
@@ -14,6 +15,7 @@ final internal class AudiobookViewModel {
     @MainActor var audiobook: Audiobook
     @MainActor var libraryId: String!
     
+    @MainActor private(set) var dominantColor: Color
     @MainActor var navigationBarVisible: Bool
     
     @MainActor var chapters: [PlayableItem.Chapter]
@@ -28,6 +30,7 @@ final internal class AudiobookViewModel {
         self.audiobook = audiobook
         libraryId = audiobook.libraryId
         
+        dominantColor = .accentColor
         navigationBarVisible = false
         
         chapters = []
@@ -43,9 +46,12 @@ internal extension AudiobookViewModel {
     func load() async {
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.loadAudiobook() }
+            
             $0.addTask { await self.loadAuthor() }
             $0.addTask { await self.loadSeries() }
             $0.addTask { await self.loadNarrator() }
+            
+            $0.addTask { await self.extractColor() }
             
             await $0.waitForAll()
         }
@@ -109,6 +115,20 @@ internal extension AudiobookViewModel {
         
         await MainActor.withAnimation {
             self.sameNarrator = audiobooks
+        }
+    }
+    
+    private func extractColor() async {
+        guard let url = await audiobook.cover?.url else {
+            return
+        }
+        
+        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineSaturated(colors.map { $0.color }) else {
+            return
+        }
+        
+        await MainActor.withAnimation {
+            self.dominantColor = result
         }
     }
 }
