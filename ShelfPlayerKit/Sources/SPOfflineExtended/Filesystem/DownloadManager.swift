@@ -32,6 +32,13 @@ internal extension DownloadManager {
     func createDirectories() {
         try! FileManager.default.createDirectory(at: documentsURL.appending(path: "images"), withIntermediateDirectories: true)
         try! FileManager.default.createDirectory(at: documentsURL.appending(path: "tracks"), withIntermediateDirectories: true)
+        
+        var documentsURL = documentsURL
+        
+        var excludedFromBackupResourceValues = URLResourceValues()
+        excludedFromBackupResourceValues.isExcludedFromBackup = true
+        
+        try? documentsURL?.setResourceValues(excludedFromBackupResourceValues)
     }
     
     func clearDirectories() throws {
