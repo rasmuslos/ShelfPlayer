@@ -20,7 +20,7 @@ struct SeriesGrid: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 15)], spacing: 20) {
             ForEach(series) { item in
-                NavigationLink(destination: SeriesView(series: item)) {
+                NavigationLink(destination: SeriesView(item)) {
                     SeriesGridItem(series: item)
                 }
                 .buttonStyle(.plain)

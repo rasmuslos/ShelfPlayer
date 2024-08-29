@@ -20,67 +20,48 @@ struct AudiobookSortFilter: View {
     var body: some View {
         Menu {
             Section("section.display") {
-                Button {
-                    withAnimation {
-                        display = .list
+                ControlGroup {
+                    Button {
+                        withAnimation {
+                            display = .list
+                        }
+                    } label: {
+                        Label("sort.list", systemImage: "list.bullet")
                     }
-                } label: {
-                    Label("sort.list", systemImage: "list.bullet")
-                }
-                
-                Button {
-                    withAnimation {
-                        display = .grid
+                    
+                    Button {
+                        withAnimation {
+                            display = .grid
+                        }
+                    } label: {
+                        Label("sort.grid", systemImage: "square.grid.2x2")
                     }
-                } label: {
-                    Label("sort.grid", systemImage: "square.grid.2x2")
                 }
             }
             
             Section("section.filter") {
-                ForEach(Filter.allCases, id: \.hashValue) { filter in
-                    Button {
-                        withAnimation {
-                            self.filter = filter
+                ForEach(Filter.allCases, id: \.hashValue) { option in
+                    Toggle(option.rawValue, isOn: .init(get: { filter == option }, set: {
+                        if $0 {
+                            filter = option
                         }
-                    } label: {
-                        if self.filter == filter {
-                            Label(filter.rawValue, systemImage: "checkmark")
-                        } else {
-                            Text(filter.rawValue)
-                        }
-                    }
+                    }))
                 }
             }
             
             Section("section.order") {
                 ForEach(SortOrder.allCases, id: \.hashValue) { order in
-                    Button {
-                        withAnimation {
+                    Toggle(order.rawValue, isOn: .init(get: { sort == order }, set: {
+                        if $0 {
                             sort = order
                         }
-                    } label: {
-                        if sort == order {
-                            Label(order.rawValue, systemImage: "checkmark")
-                        } else {
-                            Text(order.rawValue)
-                        }
-                    }
+                    }))
                 }
                 
                 Divider()
                 
-                Button {
-                    withAnimation {
-                        ascending.toggle()
-                    }
-                } label: {
-                    if ascending {
-                        Label("sort.ascending", systemImage: "checkmark")
-                    } else {
-                        Text("sort.ascending")
-                    }
-                }
+                
+                Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
             }
         } label: {
             Label("filterSort", systemImage: "arrow.up.arrow.down.circle")

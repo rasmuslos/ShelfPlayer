@@ -21,19 +21,28 @@ internal struct AudiobookLoadView: View {
             AudiobookView(audiobook)
         } else if failed {
             AudiobookUnavailableView()
-                .refreshable { await loadAudiobook() }
+                .refreshable {
+                    await loadAudiobook()
+                }
         } else {
             LoadingView()
-                .task { await loadAudiobook() }
+                .task {
+                    await loadAudiobook()
+                }
         }
     }
     
-    private func loadAudiobook() async {
+    private nonisolated func loadAudiobook() async {
         guard let audiobook = try? await AudiobookshelfClient.shared.item(itemId: audiobookId, episodeId: nil).0 as? Audiobook else {
-            failed = true
+            await MainActor.run {
+                failed = true
+            }
+            
             return
         }
         
-        self.audiobook = audiobook
+        await MainActor.run {
+            self.audiobook = audiobook
+        }
     }
 }

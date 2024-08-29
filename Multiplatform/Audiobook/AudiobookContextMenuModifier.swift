@@ -17,12 +17,24 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
-                Button {
-                    Task {
-                        try await AudioPlayer.shared.play(audiobook)
+                ControlGroup {
+                    Button {
+                        Task {
+                            try await AudioPlayer.shared.play(audiobook)
+                        }
+                    } label: {
+                        Label("play", systemImage: "play.fill")
                     }
-                } label: {
-                    Label("play", systemImage: "play")
+                    
+                    Button {
+                        AudioPlayer.shared.queue(audiobook)
+                    } label: {
+                        Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
+                        
+                        if let last = AudioPlayer.shared.queue.last {
+                            Text(last.name)
+                        }
+                    }
                 }
                 
                 Divider()
@@ -50,19 +62,20 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ProgressButton(item: audiobook)
                 DownloadButton(item: audiobook)
+                
+                ProgressButton(item: audiobook)
             } preview: {
                 VStack(alignment: .leading, spacing: 2) {
                     ItemStatusImage(item: audiobook, aspectRatio: .none)
-                        .padding(.bottom, 10)
+                        .padding(.bottom, 12)
                     
                     Text(audiobook.name)
                         .font(.headline)
                         .modifier(SerifModifier())
                     
                     if let author = audiobook.author {
-                        Text(author)
+                        Text("readBy \(author)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
