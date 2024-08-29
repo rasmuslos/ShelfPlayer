@@ -11,10 +11,8 @@ struct FullscreenToolbarModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
-    let navigationBarVisible: Bool
-    
     var isLight: Bool? = nil
-    var accentColor: Color = .accent
+    let navigationBarVisible: Bool
     
     private var appearance: ColorScheme {
         if isLight == true {
@@ -38,7 +36,7 @@ struct FullscreenToolbarModifier: ViewModifier {
             content
                 .symbolVariant(.circle.fill)
                 .symbolRenderingMode(.palette)
-                .foregroundStyle(appearance == .light ? .black : .white, .black.opacity(0.25))
+                .foregroundStyle(appearance == .light ? .black : .white, .gray.opacity(0.3))
                 .animation(.easeInOut, value: navigationBarVisible)
         }
     }

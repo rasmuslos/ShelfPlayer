@@ -15,7 +15,7 @@ final internal class AudiobookViewModel {
     @MainActor var audiobook: Audiobook
     @MainActor var libraryId: String!
     
-    @MainActor private(set) var dominantColor: Color
+    @MainActor private(set) var dominantColor: Color?
     @MainActor var navigationBarVisible: Bool
     
     @MainActor var chapters: [PlayableItem.Chapter]
@@ -30,7 +30,7 @@ final internal class AudiobookViewModel {
         self.audiobook = audiobook
         libraryId = audiobook.libraryId
         
-        dominantColor = .accentColor
+        dominantColor = nil
         navigationBarVisible = false
         
         chapters = []

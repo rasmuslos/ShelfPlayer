@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RFKVisuals
 import SPFoundation
 import SPOffline
 import SPPlayback
@@ -14,7 +15,7 @@ struct PlayButton: View {
     @Environment(\.colorScheme) private var colorScheme
     
     let item: PlayableItem
-    let color: Color
+    let color: Color?
     
     @State private var error = false
     @State private var loading = false
@@ -22,13 +23,21 @@ struct PlayButton: View {
     @State private var progressEntity: ItemProgress
     
     @MainActor
-    init(item: PlayableItem, color: Color) {
+    init(item: PlayableItem, color: Color?) {
         self.item = item
         self.color = color
         
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
+        progressEntity.beginReceivingUpdates()
     }
     
+    private var background: Color {
+        if let color {
+            return color
+        }
+        
+        return colorScheme == .dark ? .white : .black
+    }
     private var labelImage: String {
         if item == AudioPlayer.shared.item {
             return AudioPlayer.shared.playing ? "waveform" : "pause.fill"
@@ -88,17 +97,24 @@ struct PlayButton: View {
             .padding(.vertical, 16)
             .contentShape(.rect)
         } primaryAction: {
+            if AudioPlayer.shared.item == item {
+                AudioPlayer.shared.playing.toggle()
+                return
+            }
+            
             play()
         }
-        .foregroundColor(color.isLight() ?? false ? .black : .white)
+        .foregroundColor(background.isLight ? .black : .white)
         .background {
             ZStack {
-                color
+                RFKVisuals.adjust(background, saturation: 0, brightness: -0.8)
                 
                 GeometryReader { geometry in
                     Rectangle()
-                        .foregroundStyle(Color.gray.opacity(0.4))
+                        .fill(background.isLight ? .white : .black)
+                        .opacity(0.2)
                         .frame(width: geometry.size.width * progressEntity.progress)
+                        .animation(.smooth, value: progressEntity.progress)
                 }
             }
         }

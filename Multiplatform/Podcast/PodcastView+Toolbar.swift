@@ -52,13 +52,13 @@ extension PodcastView {
                             Label("more", systemImage: "ellipsis")
                                 .labelStyle(.iconOnly)
                         }
-                        .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
+                        .modifier(FullscreenToolbarModifier(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible))
                     }
                 }
                 .toolbar {
                     if !navigationBarVisible && !regularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight)
+                            FullscreenBackButton(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible)
                         }
                     }
                 }

@@ -22,27 +22,8 @@ extension MediaResolver {
             artist: item.author)
     }
     
-    public func convertIdentifier(item: INMediaItem) -> (String, String) {
+    public func convertItemIdentifier(item: INMediaItem) -> (String, String) {
         return convertIdentifier(identifier: item.identifier ?? "")
-    }
-    public func convertIdentifier(identifier: String) -> (String, String) {
-        var parts = identifier.split(separator: "::")
-        
-        if parts.count == 2 {
-            let podcastId = String(parts.removeFirst())
-            let episodeId = String(parts.removeFirst())
-            
-            return (podcastId, episodeId)
-        }
-        
-        return ("", "")
-    }
-    public func convertIdentifier(item: Item) -> String {
-        if let episode = item as? Episode {
-            return "\(episode.podcastId)::\(episode.id)"
-        }
-        
-        return item.id
     }
     
     private func convertType(item: Item) -> INMediaItemType {
