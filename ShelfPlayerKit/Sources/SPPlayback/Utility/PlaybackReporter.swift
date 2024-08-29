@@ -58,11 +58,11 @@ internal final class PlaybackReporter {
 }
 
 internal extension PlaybackReporter {
-    func reportProgress(currentTime: TimeInterval, duration: TimeInterval) {
+    func reportProgress(currentTime: TimeInterval, duration: TimeInterval, forceReport: Bool = false) {
         updateTime(currentTime: currentTime, duration: duration)
         
         // report every 30 seconds
-        if Int(currentTime) % 30 == 0 {
+        if Int(currentTime) % 30 == 0 || forceReport {
             reportProgress()
         }
     }

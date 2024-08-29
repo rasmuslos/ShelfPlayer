@@ -10,10 +10,8 @@ import SwiftUI
 struct FullscreenBackButton: View {
     @Environment(\.presentationMode) var presentationMode
     
-    let navigationBarVisible: Bool
-    
     var isLight: Bool? = nil
-    var accentColor: Color = .accentColor
+    let navigationBarVisible: Bool
     
     var body: some View {
         if presentationMode.wrappedValue.isPresented {
@@ -22,7 +20,7 @@ struct FullscreenBackButton: View {
             } label: {
                 Label("back", systemImage: "chevron.left")
                     .labelStyle(.iconOnly)
-                    .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: isLight, accentColor: accentColor))
+                    .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: navigationBarVisible))
             }
         }
     }

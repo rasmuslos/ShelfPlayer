@@ -37,7 +37,7 @@ extension EpisodeView {
                         
                         if !regularPresentation {
                             ToolbarItem(placement: .navigation) {
-                                FullscreenBackButton(navigationBarVisible: false, isLight: imageColors.isLight)
+                                FullscreenBackButton(isLight: imageColors.isLight, navigationBarVisible: false)
                             }
                         }
                     }
@@ -45,13 +45,13 @@ extension EpisodeView {
                     ToolbarItem(placement: .topBarTrailing) {
                         DownloadButton(item: episode, downloadingLabel: false)
                             .labelStyle(.iconOnly)
-                            .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
+                            .modifier(FullscreenToolbarModifier(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible))
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
                         ProgressButton(item: episode)
                             .symbolVariant(.circle)
-                            .modifier(FullscreenToolbarModifier(navigationBarVisible: navigationBarVisible, isLight: imageColors.isLight))
+                            .modifier(FullscreenToolbarModifier(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible))
                     }
                 }
         }

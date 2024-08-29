@@ -36,9 +36,44 @@ public final class ItemProgress: Identifiable {
         self.lastUpdate = lastUpdate
         self.progressType = progressType
     }
+    
+    @ObservationIgnored @Transient var token: Any? = nil
+    
+    public func beginReceivingUpdates() {
+        token = NotificationCenter.default.addObserver(forName: Self.progressUpdatedNotification, object: nil, queue: nil) { [weak self] notification in
+            guard let self else {
+                return
+            }
+            
+            let id = convertIdentifier(itemID: itemId, episodeID: episodeId)
+            
+            guard notification.object as? String == id || notification.object == nil else {
+                return
+            }
+            
+            let updated = OfflineManager.shared.progressEntity(itemId: self.itemId, episodeId: self.episodeId)
+            
+            self.duration = updated.duration
+            self.currentTime = updated.currentTime
+            self.progress = updated.progress
+            
+            self.startedAt = updated.startedAt
+            self.lastUpdate = updated.lastUpdate
+            
+            self.progressType = updated.progressType
+        }
+    }
+    
+    deinit {
+        if let token {
+            NotificationCenter.default.removeObserver(token)
+        }
+    }
 }
 
 public extension ItemProgress {
+    static let progressUpdatedNotification = NSNotification.Name("io.rfk.shelfPlayer.progressUpdatedNotification")
+    
     enum ProgressType: Int, Codable, Equatable, Identifiable {
         case receivedFromServer = 0
         case localSynced = 1

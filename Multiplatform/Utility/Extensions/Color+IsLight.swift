@@ -9,6 +9,10 @@ import Foundation
 import SwiftUI
 
 internal extension Color {
+    var isLight: Bool {
+        isLight() ?? false
+    }
+    
     func isLight(threshold: Float = 0.6) -> Bool? {
         guard let originalCGColor = self.cgColor else {
             return nil

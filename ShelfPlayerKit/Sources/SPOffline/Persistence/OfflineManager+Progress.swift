@@ -47,9 +47,14 @@ internal extension OfflineManager {
     
     func deleteProgressEntity(id: String) throws {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let entity = try context.fetch(.init(predicate: #Predicate<ItemProgress> { $0.id == id })).first
         
         try context.delete(model: ItemProgress.self, where: #Predicate { $0.id == id })
         try context.save()
+        
+        if let entity {
+            NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemId, episodeID: entity.episodeId))
+        }
     }
     
     func syncCachedProgressEntities() async throws {
@@ -152,12 +157,17 @@ public extension OfflineManager {
             
         try context.delete(model: ItemProgress.self)
         try context.save()
+        
+        NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: nil)
     }
     
     func deleteProgressEntities(type: ItemProgress.ProgressType, context: ModelContext) throws {
         for entity in try progressEntities(type: type, context: context) {
             context.delete(entity)
         }
+        
+        try context.save()
+        NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: nil)
     }
     
     func finished(_ finished: Bool, item: Item) {
@@ -175,6 +185,7 @@ public extension OfflineManager {
         entity.progressType = .localSynced
         
         try? entity.modelContext?.save()
+        NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemId, episodeID: entity.episodeId))
     }
     
     @MainActor
@@ -188,5 +199,6 @@ public extension OfflineManager {
         entity.progressType = success ? .localSynced : .localCached
         
         try? entity.modelContext?.save()
+        NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemId, episodeID: entity.episodeId))
     }
 }
