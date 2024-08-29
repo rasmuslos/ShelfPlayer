@@ -15,11 +15,11 @@ public final class Bookmark {
     public let episodeId: String?
     
     public let note: String
-    public let position: Double
+    public let position: TimeInterval
     
     internal var status: SyncStatus
     
-    internal init(itemId: String, episodeId: String?, note: String, position: Double, status: SyncStatus) {
+    internal init(itemId: String, episodeId: String?, note: String, position: TimeInterval, status: SyncStatus) {
         self.itemId = itemId
         self.episodeId = episodeId
         self.note = note

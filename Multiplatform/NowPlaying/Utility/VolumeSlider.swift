@@ -7,12 +7,13 @@
 
 import SwiftUI
 import SPPlayback
+import SPFoundation
 
 internal extension NowPlaying {
     struct VolumeSlider: View {
         @Binding var dragging: Bool
         
-        @State private var volume = Double(AudioPlayer.shared.volume)
+        @State private var volume = Percentage(AudioPlayer.shared.volume)
         
         var body: some View {
             HStack {
@@ -24,7 +25,7 @@ internal extension NowPlaying {
                 }
                 .buttonStyle(.plain)
                 
-                Slider(percentage: $volume, dragging: $dragging)
+                Slider(value: $volume, dragging: $dragging)
                 
                 Button {
                     AudioPlayer.shared.volume = 1
@@ -40,12 +41,12 @@ internal extension NowPlaying {
             .animation(.easeInOut, value: dragging)
             .onReceive(NotificationCenter.default.publisher(for: AudioPlayer.volumeDidChangeNotification)) { _ in
                 if !dragging {
-                    volume = Double(AudioPlayer.shared.volume)
+                    volume = AudioPlayer.shared.volume
                 }
             }
             .onChange(of: volume) {
                 if dragging {
-                    AudioPlayer.shared.volume = Float(volume)
+                    AudioPlayer.shared.volume = volume
                 }
             }
         }

@@ -18,8 +18,11 @@ import SPOfflineExtended
 #endif
 
 public extension AudioPlayer {
-    var remaining: Double {
-        (chapterDuration - chapterCurrentTime) * (1 / Double(playbackRate))
+    var remaining: TimeInterval {
+        (chapterDuration - chapterCurrentTime) * (1 / .init(playbackRate))
+    }
+    var played: Percentage {
+        .init((AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100)
     }
     
     var chapter: PlayableItem.Chapter? {
@@ -32,7 +35,7 @@ public extension AudioPlayer {
 }
 
 internal extension AudioPlayer {
-    func queue(currentTime: Double) -> [PlayableItem.AudioTrack] {
+    func queue(currentTime: TimeInterval) -> [PlayableItem.AudioTrack] {
         tracks.filter { $0.offset > currentTime }
     }
     
@@ -44,7 +47,7 @@ internal extension AudioPlayer {
         return Array(tracks.prefix(currentTrackIndex))
     }
     
-    func trackIndex(currentTime: Double) -> Int? {
+    func trackIndex(currentTime: TimeInterval) -> Int? {
         tracks.firstIndex { $0.offset <= currentTime && $0.offset + $0.duration > currentTime }
     }
 }
@@ -67,7 +70,7 @@ internal extension AudioPlayer {
 }
 
 internal extension AudioPlayer {
-    func retrievePlaybackSession() async throws -> Double {
+    func retrievePlaybackSession() async throws -> TimeInterval {
         guard let item else {
             throw AudioPlayerError.missing
         }
@@ -77,7 +80,7 @@ internal extension AudioPlayer {
             tracks = try OfflineManager.shared.audioTracks(parentId: item.id)
             chapters = try OfflineManager.shared.chapters(itemId: item.id)
             
-            var startTime: Double = .zero
+            var startTime: TimeInterval = .zero
             
             if let episode = item as? Episode {
                 playbackReporter = PlaybackReporter(itemId: episode.podcastId, episodeId: item.id, playbackSessionId: nil)
@@ -100,7 +103,7 @@ internal extension AudioPlayer {
         }
         #endif
         
-        let startTime: Double
+        let startTime: TimeInterval
         let playbackSessionId: String
         
         if let episode = item as? Episode {

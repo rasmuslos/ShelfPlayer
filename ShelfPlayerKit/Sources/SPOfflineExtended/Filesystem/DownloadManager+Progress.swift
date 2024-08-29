@@ -57,7 +57,7 @@ internal extension DownloadManager {
         }
     }
     
-    func updateProgress(taskIdentifier: Int, itemId: String, progress: Double) {
+    func updateProgress(taskIdentifier: Int, itemId: String, progress: Percentage) {
         Self.serialQueue.sync {
             let previous = max(AudiobookshelfClient.defaults.double(forKey: "downloadProgress_\(taskIdentifier)"), 0)
             let delta = progress - previous

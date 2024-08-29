@@ -29,12 +29,12 @@ public final class OfflineAudiobook {
     public let narrator: String?
     public let seriesName: String?
     
-    public let duration: Double
+    public let duration: TimeInterval
     
     public let explicit: Bool
     public let abridged: Bool
     
-    public init(id: String, libraryId: String, name: String, author: String?, overview: String?, genres: [String], addedAt: Date, released: String?, size: Int64, narrator: String?, seriesName: String?, duration: Double, explicit: Bool, abridged: Bool) {
+    public init(id: String, libraryId: String, name: String, author: String?, overview: String?, genres: [String], addedAt: Date, released: String?, size: Int64, narrator: String?, seriesName: String?, duration: TimeInterval, explicit: Bool, abridged: Bool) {
         self.id = id
         self.libraryId = libraryId
         self.name = name

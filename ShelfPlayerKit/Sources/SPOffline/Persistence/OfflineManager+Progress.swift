@@ -178,7 +178,7 @@ public extension OfflineManager {
     }
     
     @MainActor
-    func updateProgressEntity(itemId: String, episodeId: String?, currentTime: Double, duration: Double, success: Bool) {
+    func updateProgressEntity(itemId: String, episodeId: String?, currentTime: TimeInterval, duration: TimeInterval, success: Bool) {
         let entity = OfflineManager.shared.progressEntity(itemId: itemId, episodeId: episodeId)
         
         entity.currentTime = currentTime

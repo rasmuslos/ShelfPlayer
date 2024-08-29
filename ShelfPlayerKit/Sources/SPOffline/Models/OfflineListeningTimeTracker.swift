@@ -17,9 +17,9 @@ public final class OfflineListeningTimeTracker: Identifiable {
     public var episodeId: String?
     
     public var started: Date
-    public var startTime: Double
+    public var startTime: TimeInterval
     
-    public var duration: Double
+    public var duration: TimeInterval
     public var lastUpdate: Date
     
     public var eligibleForSync: Bool

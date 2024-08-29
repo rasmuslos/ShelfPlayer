@@ -26,9 +26,9 @@ public final class OfflineEpisode {
     public var podcast: OfflinePodcast
     
     public let index: Int
-    public let duration: Double
+    public let duration: TimeInterval
     
-    public init(id: String, libraryId: String, name: String, author: String?, overview: String?, addedAt: Date, released: String?, podcast: OfflinePodcast, index: Int, duration: Double) {
+    public init(id: String, libraryId: String, name: String, author: String?, overview: String?, addedAt: Date, released: String?, podcast: OfflinePodcast, index: Int, duration: TimeInterval) {
         self.id = id
         self.libraryId = libraryId
         self.name = name

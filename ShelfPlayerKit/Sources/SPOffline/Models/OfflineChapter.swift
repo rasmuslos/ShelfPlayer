@@ -13,11 +13,11 @@ public final class OfflineChapter {
     public let id: Int
     public let itemId: String
     
-    public let start: Double
-    public let end: Double
+    public let start: TimeInterval
+    public let end: TimeInterval
     public let title: String
     
-    public init(id: Int, itemId: String, start: Double, end: Double, title: String) {
+    public init(id: Int, itemId: String, start: TimeInterval, end: TimeInterval, title: String) {
         self.id = id
         self.itemId = itemId
         self.start = start

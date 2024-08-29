@@ -28,7 +28,7 @@ extension NowPlaying {
         @State private var animateBackwards = false
         @State private var animateForwards = false
         
-        private var playedPercentage: Double {
+        private var amountPlayed: Percentage {
             (AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100
         }
         
@@ -36,7 +36,7 @@ extension NowPlaying {
             VStack {
                 VStack {
                     Slider(
-                        percentage: .init(get: { seekDragging ? draggedPercentage : playedPercentage }, set: {
+                        value: .init(get: { seekDragging ? draggedPercentage : amountPlayed }, set: {
                             if Defaults[.lockSeekBar] {
                                 return
                             }
@@ -102,7 +102,7 @@ extension NowPlaying {
                             .gesture(TapGesture()
                                 .onEnded { _ in
                                     animateBackwards.toggle()
-                                    AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime - Double(skipBackwardsInterval)
+                                    AudioPlayer.shared.skipBackwards()
                                 })
                             .gesture(LongPressGesture()
                                 .onEnded { _ in
@@ -139,7 +139,7 @@ extension NowPlaying {
                             .gesture(TapGesture()
                                 .onEnded { _ in
                                     animateForwards.toggle()
-                                    AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
+                                    AudioPlayer.shared.skipForwards()
                                 })
                             .gesture(LongPressGesture()
                                 .onEnded { _ in
@@ -162,10 +162,6 @@ extension NowPlaying {
                 VolumeIndicator()
                     .frame(width: 0, height: 0)
             }
-        }
-        
-        private func formatRemainingTime(_ time: Double) -> String {
-            "duration" // time.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true) + " " + String(localized: "time.left")
         }
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A012E272C806B680073A619 /* Double+FormatDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A012E262C806B5D0073A619 /* Double+FormatDuration.swift */; };
+		3A012E292C806D9A0073A619 /* View+ReverseMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A012E282C806D970073A619 /* View+ReverseMask.swift */; };
 		3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */; };
 		3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */; };
 		3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A52AB623F400ACCD68 /* ContentView.swift */; };
@@ -81,7 +83,6 @@
 		3A9824702B6EAF520098C06A /* OfflinePodcastList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A98246F2B6EAF520098C06A /* OfflinePodcastList.swift */; };
 		3A9824722B6EB0DE0098C06A /* OfflinePodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9824712B6EB0DE0098C06A /* OfflinePodcastView.swift */; };
 		3A9874272B599BA600B2704F /* Chapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9874262B599BA600B2704F /* Chapters.swift */; };
-		3A9874292B59A7B500B2704F /* View+ReverseMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9874282B59A7B500B2704F /* View+ReverseMask.swift */; };
 		3A9AB5382AD941DC0089231A /* SwipeActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9AB5372AD941DC0089231A /* SwipeActionsModifier.swift */; };
 		3A9E5DFF2BC6C7D400FF6F7A /* ContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9E5DFE2BC6C7D400FF6F7A /* ContextMenuModifier.swift */; };
 		3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */; };
@@ -193,6 +194,8 @@
 /* Begin PBXFileReference section */
 		3A00397D2BEF55E600849F70 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
 		3A00397E2BEF55E600849F70 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
+		3A012E262C806B5D0073A619 /* Double+FormatDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+FormatDuration.swift"; sourceTree = "<group>"; };
+		3A012E282C806D970073A619 /* View+ReverseMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ReverseMask.swift"; sourceTree = "<group>"; };
 		3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringKey+Key.swift"; sourceTree = "<group>"; };
 		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -270,7 +273,6 @@
 		3A98246F2B6EAF520098C06A /* OfflinePodcastList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflinePodcastList.swift; sourceTree = "<group>"; };
 		3A9824712B6EB0DE0098C06A /* OfflinePodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflinePodcastView.swift; sourceTree = "<group>"; };
 		3A9874262B599BA600B2704F /* Chapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chapters.swift; sourceTree = "<group>"; };
-		3A9874282B59A7B500B2704F /* View+ReverseMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ReverseMask.swift"; sourceTree = "<group>"; };
 		3A9AB5372AD941DC0089231A /* SwipeActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionsModifier.swift; sourceTree = "<group>"; };
 		3A9E5DFE2BC6C7D400FF6F7A /* ContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuModifier.swift; sourceTree = "<group>"; };
 		3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -486,12 +488,13 @@
 		3A1EAB972ACC822F0064C80C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				3A012E282C806D970073A619 /* View+ReverseMask.swift */,
+				3A012E262C806B5D0073A619 /* Double+FormatDuration.swift */,
 				3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */,
 				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
 				3AA089362B6E43FA00773414 /* Defaults+Keys.swift */,
 				3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */,
 				3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */,
-				3A9874282B59A7B500B2704F /* View+ReverseMask.swift */,
 				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
 				3AE7005E2C7B1ED500D93BA8 /* MainActor+withAnimation.swift */,
 				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
@@ -1043,6 +1046,7 @@
 				3AB8BBB92BD7B66E0012023A /* AudiobookSeriesView.swift in Sources */,
 				3AA0B0892AD322470009FBB4 /* EpisodeView.swift in Sources */,
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
+				3A012E272C806B680073A619 /* Double+FormatDuration.swift in Sources */,
 				3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */,
 				3AE73DB72B7624FB00058F70 /* PodcastSettingsSheet.swift in Sources */,
 				3AA089332B6E315900773414 /* AuthorList.swift in Sources */,
@@ -1060,7 +1064,6 @@
 				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
 				3A0D2D0D2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift in Sources */,
 				3A4E8A192B8E52A700A2586C /* CarPlay+Offline.swift in Sources */,
-				3A9874292B59A7B500B2704F /* View+ReverseMask.swift in Sources */,
 				3A5A5B7E2BE6290600481888 /* AudiobookLoadView.swift in Sources */,
 				3A9E5DFF2BC6C7D400FF6F7A /* ContextMenuModifier.swift in Sources */,
 				3A1EAB962ACC808A0064C80C /* ItemImage.swift in Sources */,
@@ -1101,6 +1104,7 @@
 				3AB8BBBF2BD7B76B0012023A /* PodcastLatestView.swift in Sources */,
 				3A36ED3D2BE8EC0E00AECE9C /* AccountSheet.swift in Sources */,
 				3A8810FB2AD2CEE7009696D1 /* PodcastView+Toolbar.swift in Sources */,
+				3A012E292C806D9A0073A619 /* View+ReverseMask.swift in Sources */,
 				3A48D2542AD074DC00991139 /* PodcastEntryView.swift in Sources */,
 				3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */,
 				3A0E0ABC2ACD6E2F009F8EF1 /* AudiobookView.swift in Sources */,
