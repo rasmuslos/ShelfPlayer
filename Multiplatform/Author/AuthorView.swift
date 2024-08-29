@@ -12,98 +12,110 @@ import ShelfPlayerKit
 struct AuthorView: View {
     @Environment(\.libraryId) private var libraryId
     
-    @Default(.audiobooksFilter) private var audiobooksFilter
-    @Default(.audiobooksDisplay) private var audiobookDisplay
+    @State private var viewModel: AuthorViewModel
     
-    @Default(.audiobooksSortOrder) private var audiobooksSortOrder
-    @Default(.audiobooksAscending) private var audiobooksAscending
+    init(_ author: Author, audiobooks: [Audiobook] = []) {
+        viewModel = .init(author: author, audiobooks: audiobooks)
+    }
     
-    let author: Author
+    var loadingPresentation: some View {
+        VStack {
+            Header()
+            
+            Spacer()
+            LoadingView()
+            Spacer()
+        }
+    }
     
-    @State var audiobooks = [Audiobook]()
-    
-    private var visibleAudiobooks: [Audiobook] {
-        AudiobookSortFilter.filterSort(audiobooks: audiobooks, filter: audiobooksFilter, order: audiobooksSortOrder, ascending: audiobooksAscending)
+    var gridPresentation: some View {
+        ScrollView {
+            Header()
+            
+            HStack(spacing: 0) {
+                RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                Spacer()
+            }
+            .padding(.top, 16)
+            .padding(.horizontal, 20)
+            
+            AudiobookVGrid(audiobooks: viewModel.visible)
+                .padding(20)
+        }
+    }
+    var listPresentation: some View {
+        List {
+            Header()
+                .listRowSeparator(.hidden)
+                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            
+            RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+            
+            AudiobookList(audiobooks: viewModel.visible)
+        }
+        .listStyle(.plain)
     }
     
     var body: some View {
         Group {
-            if audiobooks.isEmpty {
-                VStack {
-                    Header(author: author)
-                    
-                    Spacer()
-                    LoadingView()
-                    Spacer()
-                }
+            if viewModel.audiobooks.isEmpty {
+                loadingPresentation
             } else {
-                switch audiobookDisplay {
+                switch viewModel.displayMode {
                     case .grid:
-                        ScrollView {
-                            Header(author: author)
-                            
-                            HStack(spacing: 0) {
-                                RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                                Spacer()
-                            }
-                            .padding(.top, 16)
-                            .padding(.horizontal, 20)
-                            
-                            AudiobookVGrid(audiobooks: visibleAudiobooks)
-                                .padding(20)
-                        }
+                        gridPresentation
                     case .list:
-                        List {
-                            Header(author: author)
-                                .listRowSeparator(.hidden)
-                                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-                            
-                            RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                                .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
-                            
-                            AudiobookList(audiobooks: visibleAudiobooks)
-                        }
-                        .listStyle(.plain)
+                        listPresentation
                 }
             }
         }
-        .navigationTitle(author.name)
+        .navigationTitle(viewModel.author.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
+                AudiobookSortFilter(display: $viewModel.displayMode, filter: $viewModel.filter, sort: $viewModel.sortOrder, ascending: $viewModel.ascending)
             }
         }
         .modifier(NowPlaying.SafeAreaModifier())
+        .sensoryFeedback(.error, trigger: viewModel.errorNotify)
+        .environment(viewModel)
+        .onAppear {
+            viewModel.libraryID = libraryId
+        }
         .task {
-            await loadAudiobooks()
+            await viewModel.load()
         }
         .refreshable {
-            await loadAudiobooks()
+            await viewModel.load()
+        }
+        .sheet(isPresented: $viewModel.descriptionSheetVisible) {
+            if let description = viewModel.author.description {
+                NavigationStack {
+                    Text(description)
+                        .navigationTitle(viewModel.author.name)
+                        .padding(20)
+                    
+                    Spacer()
+                }
+                .presentationDragIndicator(.visible)
+            }
         }
         .userActivity("io.rfk.shelfplayer.author") {
-            $0.title = author.name
+            $0.title = viewModel.author.name
             $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = author.id
-            $0.targetContentIdentifier = "author:\(author.id)"
+            $0.persistentIdentifier = viewModel.author.id
+            $0.targetContentIdentifier = "author:\(viewModel.author.id)"
             $0.userInfo = [
-                "authorId": author.id,
+                "authorId": viewModel.author.id,
             ]
-            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: author.id)
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: viewModel.author.id)
         }
-    }
-    
-    func loadAudiobooks() async {
-        guard let audiobooks = try? await AudiobookshelfClient.shared.author(authorId: author.id, libraryId: libraryId).1 else {
-            return
-        }
-        
-        self.audiobooks = audiobooks
     }
 }
 
 #Preview {
     NavigationStack {
-        AuthorView(author: Author.fixture)
+        AuthorView(.fixture)
     }
 }

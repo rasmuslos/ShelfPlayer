@@ -13,7 +13,7 @@ struct AuthorList: View {
     
     var body: some View {
         ForEach(authors) { author in
-            NavigationLink(destination: AuthorView(author: author)) {
+            NavigationLink(destination: AuthorView(author)) {
                 AuthorRow(author: author)
             }
             .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))

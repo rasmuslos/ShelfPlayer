@@ -17,8 +17,16 @@ internal class SeriesViewModel {
     
     @MainActor internal var libraryID: String!
     
-    @MainActor internal var filter: AudiobookSortFilter.Filter
-    @MainActor internal var displayMode: AudiobookSortFilter.DisplayType
+    @MainActor internal var filter: AudiobookSortFilter.Filter {
+        didSet {
+            Defaults[.audiobooksFilter] = filter
+        }
+    }
+    @MainActor internal var displayMode: AudiobookSortFilter.DisplayType {
+        didSet {
+            Defaults[.audiobooksDisplay] = displayMode
+        }
+    }
     
     @MainActor internal var ascending: Bool
     @MainActor internal var sortOrder: AudiobookSortFilter.SortOrder
@@ -32,8 +40,8 @@ internal class SeriesViewModel {
         filter = Defaults[.audiobooksFilter]
         displayMode = Defaults[.audiobooksDisplay]
         
-        ascending = Defaults[.audiobooksAscending]
-        sortOrder = Defaults[.audiobooksSortOrder]
+        ascending = true
+        sortOrder = .series
     }
 }
 

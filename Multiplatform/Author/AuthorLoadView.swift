@@ -8,7 +8,7 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct AuthorLoadView: View {
+internal struct AuthorLoadView: View {
     @Environment(\.libraryId) private var libraryId
     
     let authorId: String
@@ -19,22 +19,32 @@ struct AuthorLoadView: View {
     
     var body: some View {
         if let author = author {
-            AuthorView(author: author, audiobooks: audiobooks)
+            AuthorView(author, audiobooks: audiobooks)
         } else if failed {
             AuthorUnavailableView()
-                .refreshable { await loadAuthor() }
+                .refreshable {
+                    await loadAuthor()
+                }
         } else {
             LoadingView()
-                .task { await loadAuthor() }
+                .task {
+                    await loadAuthor()
+                }
         }
     }
     
-    private func loadAuthor() async {
+    private nonisolated func loadAuthor() async {
         guard let data = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryId: libraryId) else {
+            await MainActor.run {
+                failed = true
+            }
+            
             return
         }
         
-        audiobooks = data.1
-        author = data.0
+        await MainActor.withAnimation {
+            audiobooks = data.1
+            author = data.0
+        }
     }
 }
