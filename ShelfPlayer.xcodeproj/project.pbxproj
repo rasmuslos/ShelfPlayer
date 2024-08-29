@@ -19,6 +19,7 @@
 		3A0D2D0F2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */; };
 		3A0E0ABC2ACD6E2F009F8EF1 /* AudiobookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E0ABB2ACD6E2F009F8EF1 /* AudiobookView.swift */; };
 		3A0E42E52C80CFD60034873F /* SeriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E42E42C80CFD30034873F /* SeriesViewModel.swift */; };
+		3A0E42E82C811AAB0034873F /* AuthorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E42E72C811AA60034873F /* AuthorViewModel.swift */; };
 		3A0F99F22BE8C08700F6B7B4 /* UIScreen+Radius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */; };
 		3A10117D2AD6971900AAE220 /* VolumeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A10117C2AD6971900AAE220 /* VolumeSlider.swift */; };
 		3A1011842AD697B600AAE220 /* CompactButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1011832AD697B600AAE220 /* CompactButtons.swift */; };
@@ -208,6 +209,7 @@
 		3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonHoverEffectModifier.swift; sourceTree = "<group>"; };
 		3A0E0ABB2ACD6E2F009F8EF1 /* AudiobookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookView.swift; sourceTree = "<group>"; };
 		3A0E42E42C80CFD30034873F /* SeriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesViewModel.swift; sourceTree = "<group>"; };
+		3A0E42E72C811AA60034873F /* AuthorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorViewModel.swift; sourceTree = "<group>"; };
 		3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Radius.swift"; sourceTree = "<group>"; };
 		3A10117C2AD6971900AAE220 /* VolumeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeSlider.swift; sourceTree = "<group>"; };
 		3A1011832AD697B600AAE220 /* CompactButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactButtons.swift; sourceTree = "<group>"; };
@@ -578,6 +580,7 @@
 				3AE31DCD2B4B3C310092DF36 /* AuthorsView.swift */,
 				3AB695372ACF3D1200823049 /* AuthorView.swift */,
 				3A853FAE2AD03FA600FACAF6 /* AuthorView+Header.swift */,
+				3A0E42E72C811AA60034873F /* AuthorViewModel.swift */,
 				3AB695352ACF3BAF00823049 /* AuthorLoadView.swift */,
 				3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */,
 			);
@@ -1043,6 +1046,7 @@
 				3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */,
 				3A17E6882AD5EC3000E59464 /* CompactBarModifier.swift in Sources */,
 				3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */,
+				3A0E42E82C811AAB0034873F /* AuthorViewModel.swift in Sources */,
 				3A17E6932AD5F24500E59464 /* Controls.swift in Sources */,
 				3AA089372B6E43FA00773414 /* Defaults+Keys.swift in Sources */,
 				3AE73DB52B76137300058F70 /* BackgroundTaskHandler.swift in Sources */,

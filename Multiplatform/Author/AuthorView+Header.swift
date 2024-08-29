@@ -8,20 +8,18 @@
 import SwiftUI
 import SPFoundation
 
-extension AuthorView {
+internal extension AuthorView {
     struct Header: View {
-        let author: Author
-        
-        @State var descriptionSheetVisible = false
+        @Environment(AuthorViewModel.self) private var viewModel
         
         var body: some View {
             VStack(spacing: 0) {
-                ItemImage(image: author.cover)
+                ItemImage(image: viewModel.author.cover)
                     .frame(width: 100, height: 100)
                     .clipShape(.rect(cornerRadius: .infinity))
-                    .shadow(radius: 20)
+                    .shadow(color: .black.opacity(0.4), radius: 20)
                 
-                Text(author.name)
+                Text(viewModel.author.name)
                     .modifier(SerifModifier())
                     .font(.headline)
                     .multilineTextAlignment(.center)
@@ -34,25 +32,15 @@ extension AuthorView {
                         }
                     }
                 
-                if let description = author.description {
+                if let description = viewModel.author.description {
                     Button {
-                        descriptionSheetVisible.toggle()
+                        viewModel.descriptionSheetVisible.toggle()
                     } label: {
                         Text(description)
                             .lineLimit(3)
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal, 20)
-                    .sheet(isPresented: $descriptionSheetVisible) {
-                        NavigationStack {
-                            Text(description)
-                                .navigationTitle(author.name)
-                                .padding(20)
-                            
-                            Spacer()
-                        }
-                        .presentationDragIndicator(.visible)
-                    }
                 }
             }
             .frame(maxWidth: .infinity)
