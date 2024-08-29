@@ -41,7 +41,7 @@ struct AuthorGrid: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 0) {
                     ForEach(authors) { author in
-                        NavigationLink(destination: AuthorView(author: author)) {
+                        NavigationLink(destination: AuthorView(author)) {
                             AuthorGridItem(author: author)
                                 .frame(width: size)
                                 .padding(.leading, gap)

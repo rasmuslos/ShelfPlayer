@@ -18,7 +18,7 @@ internal struct AuthorsView: View {
     
     private var sorted: [Author] {
         authors.sorted {
-            $0.name.localizedStandardCompare($1.name) == (authorsAscending ? .orderedAscending : .orderedDescending)
+            $0.name.localizedStandardCompare($1.name) == (authorsAscending ? .orderedDescending : .orderedAscending)
         }
     }
     
@@ -26,10 +26,14 @@ internal struct AuthorsView: View {
         if authors.isEmpty {
             if failed {
                 ErrorView()
-                    .refreshable { await loadAuthors() }
+                    .refreshable {
+                        await loadAuthors()
+                    }
             } else {
                 LoadingView()
-                    .task { await loadAuthors() }
+                    .task {
+                        await loadAuthors()
+                    }
             }
         } else {
             List {
@@ -39,28 +43,31 @@ internal struct AuthorsView: View {
             .navigationTitle("authors.title")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        withAnimation {
-                            authorsAscending.toggle()
-                        }
-                    } label: {
-                        Label("ascending", systemImage: "arrow.up.arrow.down.circle")
-                            .labelStyle(.iconOnly)
-                            .symbolVariant(authorsAscending ? .none : .fill)
-                    }
+                    Toggle("ascending", systemImage: authorsAscending ? "arrowshape.up.circle.fill" : "arrowshape.down.circle.fill", isOn: $authorsAscending)
+                        .foregroundStyle(Color.accentColor)
+                        .contentTransition(.symbolEffect(.replace))
+                        .toggleStyle(.button)
+                        .buttonStyle(.plain)
                 }
             }
-            .refreshable { await loadAuthors() }
+            .refreshable {
+                await loadAuthors()
+            }
         }
     }
     
-    func loadAuthors() async {
+    private nonisolated func loadAuthors() async {
         guard let authors = try? await AudiobookshelfClient.shared.authors(libraryId: libraryId) else {
-            failed = true
+            await MainActor.run {
+                failed = true
+            }
+            
             return
         }
         
-        self.authors = authors
+        await MainActor.withAnimation {
+            self.authors = authors
+        }
     }
 }
 
