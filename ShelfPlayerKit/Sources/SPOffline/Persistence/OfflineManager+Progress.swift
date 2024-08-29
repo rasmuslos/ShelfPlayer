@@ -35,8 +35,8 @@ internal extension OfflineManager {
             duration: 0,
             currentTime: 0,
             progress: 0,
-            startedAt: Date(),
-            lastUpdate: Date(),
+            startedAt: nil,
+            lastUpdate: .now,
             progressType: .localSynced)
         
         context.insert(progress)
@@ -145,11 +145,25 @@ internal extension OfflineManager {
 
 public extension OfflineManager {
     func progressEntity(item: Item) -> ItemProgress {
-        if let episode = item as? Episode {
-            return progressEntity(itemId: episode.podcastId, episodeId: episode.id)
-        } else {
-            return progressEntity(itemId: item.id, episodeId: nil)
+        progressEntity(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID)
+    }
+    
+    func resetProgressEntity(id: String) throws {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        guard let entity = try context.fetch(.init(predicate: #Predicate<ItemProgress> { $0.id == id })).first else {
+            throw OfflineError.missing
         }
+        
+        entity.duration = 0
+        entity.currentTime = 0
+        entity.progress = 0
+        
+        entity.startedAt = nil
+        entity.lastUpdate = .now
+        
+        try context.save()
+        NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemId, episodeID: entity.episodeId))
     }
     
     func deleteProgressEntities() throws {
@@ -181,7 +195,7 @@ public extension OfflineManager {
             entity.currentTime = 0
         }
         
-        entity.lastUpdate = Date()
+        entity.lastUpdate = .now
         entity.progressType = .localSynced
         
         try? entity.modelContext?.save()
@@ -195,7 +209,12 @@ public extension OfflineManager {
         entity.currentTime = currentTime
         entity.duration = duration
         entity.progress = currentTime / duration
-        entity.lastUpdate = Date()
+        
+        if entity.startedAt == nil {
+            entity.startedAt = .now
+        }
+        entity.lastUpdate = .now
+        
         entity.progressType = success ? .localSynced : .localCached
         
         try? entity.modelContext?.save()

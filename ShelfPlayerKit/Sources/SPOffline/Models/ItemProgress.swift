@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import SwiftData
 import SPFoundation
 
@@ -20,12 +21,12 @@ public final class ItemProgress: Identifiable {
     public var currentTime: TimeInterval
     public var progress: Percentage
     
-    public var startedAt: Date
+    public var startedAt: Date?
     public var lastUpdate: Date
     
     public var progressType: ProgressType
     
-    public init(id: String, itemId: String, episodeId: String?, duration: TimeInterval, currentTime: TimeInterval, progress: Percentage, startedAt: Date, lastUpdate: Date, progressType: ProgressType) {
+    public init(id: String, itemId: String, episodeId: String?, duration: TimeInterval, currentTime: TimeInterval, progress: Percentage, startedAt: Date?, lastUpdate: Date, progressType: ProgressType) {
         self.id = id
         self.itemId = itemId
         self.episodeId = episodeId

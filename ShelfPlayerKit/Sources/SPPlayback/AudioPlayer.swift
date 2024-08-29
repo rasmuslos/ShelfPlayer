@@ -172,11 +172,7 @@ public final class AudioPlayer {
             audioPlayer.defaultRate = .init(playbackRate)
             
             if let item {
-                if let episode = item as? Episode {
-                    try? OfflineManager.shared.overrideDefaultPlaybackSpeed(playbackRate, for: episode.podcastId, episodeID: episode.id)
-                } else {
-                    try? OfflineManager.shared.overrideDefaultPlaybackSpeed(playbackRate, for: item.id, episodeID: nil)
-                }
+                try? OfflineManager.shared.overrideDefaultPlaybackSpeed(playbackRate, for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
             }
             
             if playing {
