@@ -142,11 +142,7 @@ internal extension AudioPlayer {
         tracks.sort()
         chapters.sort()
         
-        if let episode = item as? Episode {
-            playbackRate = OfflineManager.shared.playbackSpeed(for: episode.podcastId, episodeID: episode.id)
-        } else {
-            playbackRate = OfflineManager.shared.playbackSpeed(for: item.id, episodeID: nil)
-        }
+        playbackRate = OfflineManager.shared.playbackSpeed(for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
         
         updateAudioSession(active: true)
         updateBookmarkCommand(active: item as? Audiobook != nil)
@@ -190,18 +186,14 @@ internal extension AudioPlayer {
         try await start(queue.removeFirst())
     }
     func itemDidFinish(_ item: PlayableItem) {
-        if let episode = item as? Episode {
-            OfflineManager.shared.removePlaybackSpeedOverride(for: episode.podcastId, episodeID: episode.id)
-        } else {
-            OfflineManager.shared.removePlaybackSpeedOverride(for: item.id, episodeID: nil)
-        }
+        OfflineManager.shared.removePlaybackSpeedOverride(for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
             
         #if canImport(SPOfflineExtended)
         if Defaults[.deleteFinishedDownloads] {
-            if let episode = item as? Episode {
-                OfflineManager.shared.remove(episodeId: episode.id)
+            if let episodeID = item.identifiers.episodeID {
+                OfflineManager.shared.remove(episodeId: episodeID)
             } else {
-                OfflineManager.shared.remove(audiobookId: item.id)
+                OfflineManager.shared.remove(audiobookId: item.identifiers.itemID)
             }
         }
         #endif

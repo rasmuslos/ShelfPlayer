@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
+import SPPlayback
 
 extension AudiobookView {
     struct ToolbarModifier: ViewModifier {
@@ -62,6 +61,24 @@ extension AudiobookView {
                     
                     ToolbarItem(placement: .primaryAction) {
                         Menu {
+                            Button {
+                                viewModel.play()
+                            } label: {
+                                Label("queue.play", systemImage: "play.fill")
+                            }
+                            
+                            Button {
+                                viewModel.queue()
+                            } label: {
+                                Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
+                                
+                                if let last = AudioPlayer.shared.queue.last {
+                                    Text(last.name)
+                                }
+                            }
+                            
+                            Divider()
+                            
                             if let authorId = viewModel.authorID {
                                 NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
                                     Label("author.view", systemImage: "person")
@@ -82,6 +99,17 @@ extension AudiobookView {
                             Divider()
                             
                             ProgressButton(item: viewModel.audiobook)
+                            
+                            if viewModel.progressEntity.startedAt != nil {
+                                Button(role: .destructive) {
+                                    viewModel.resetProgress()
+                                } label: {
+                                    Label("progress.reset", systemImage: "xmark")
+                                }
+                            }
+                            
+                            Divider()
+                            
                             DownloadButton(item: viewModel.audiobook)
                         } label: {
                             Image(systemName: "ellipsis")

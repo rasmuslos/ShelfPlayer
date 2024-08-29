@@ -82,11 +82,7 @@ internal extension AudioPlayer {
             
             var startTime: TimeInterval = .zero
             
-            if let episode = item as? Episode {
-                playbackReporter = PlaybackReporter(itemId: episode.podcastId, episodeId: item.id, playbackSessionId: nil)
-            } else {
-                playbackReporter = PlaybackReporter(itemId: item.id, episodeId: nil, playbackSessionId: nil)
-            }
+            playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID, playbackSessionId: nil)
             
             let entity = OfflineManager.shared.progressEntity(item: item)
             if entity.progress < 1 {
@@ -106,20 +102,20 @@ internal extension AudioPlayer {
         let startTime: TimeInterval
         let playbackSessionId: String
         
-        if let episode = item as? Episode {
+        if let episodeID = item.identifiers.episodeID {
             (tracks,
              chapters,
              startTime,
-             playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: episode.podcastId, episodeId: item.id)
+             playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: item.identifiers.itemID, episodeId: episodeID)
             
-            playbackReporter = PlaybackReporter(itemId: episode.podcastId, episodeId: item.id, playbackSessionId: playbackSessionId)
+            playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: episodeID, playbackSessionId: playbackSessionId)
         } else {
             (tracks,
              chapters,
              startTime,
-             playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: item.id, episodeId: nil)
+             playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: item.identifiers.itemID, episodeId: nil)
             
-            playbackReporter = PlaybackReporter(itemId: item.id, episodeId: nil, playbackSessionId: playbackSessionId)
+            playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: nil, playbackSessionId: playbackSessionId)
         }
         
         return startTime

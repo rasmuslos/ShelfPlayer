@@ -56,6 +56,7 @@ internal struct AudiobookView: View {
         }
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
+        .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .environment(viewModel)
         .task {
             await viewModel.load()

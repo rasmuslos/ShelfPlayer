@@ -33,10 +33,12 @@ struct DownloadButton: View {
                 case .none:
                     Button {
                         Task {
-                            if let episode = item as? Episode {
-                                try? await OfflineManager.shared.download(episodeId: episode.id, podcastId: episode.podcastId)
-                            } else if let audiobook = item as? Audiobook {
-                                try? await OfflineManager.shared.download(audiobookId: audiobook.id)
+                            let identifiers = item.identifiers
+                            
+                            if let episodeID = identifiers.episodeID {
+                                try? await OfflineManager.shared.download(episodeId: episodeID, podcastId: identifiers.itemID)
+                            } else {
+                                try? await OfflineManager.shared.download(audiobookId: identifiers.itemID)
                             }
                             
                             hapticFeedback.toggle()
@@ -69,10 +71,12 @@ struct DownloadButton: View {
     
     @MainActor
     private func deleteDownload() {
-        if let episode = item as? Episode {
-            OfflineManager.shared.remove(episodeId: episode.id)
+        let identifiers = item.identifiers
+        
+        if let episodeID = identifiers.episodeID {
+            OfflineManager.shared.remove(episodeId: episodeID)
         } else {
-            OfflineManager.shared.remove(audiobookId: item.id)
+            OfflineManager.shared.remove(audiobookId: identifiers.itemID)
         }
         
         hapticFeedback.toggle()

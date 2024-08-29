@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import RFKVisuals
 import ShelfPlayerKit
+import SPPlayback
 
 @Observable
 final internal class AudiobookViewModel {
@@ -25,6 +26,9 @@ final internal class AudiobookViewModel {
     @MainActor private(set) var sameSeries: [Audiobook]
     @MainActor private(set) var sameNarrator: [Audiobook]
     
+    @MainActor private(set) var errorNotify: Bool
+    @MainActor private(set) var progressEntity: ItemProgress
+    
     @MainActor
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
@@ -39,6 +43,11 @@ final internal class AudiobookViewModel {
         sameAuthor = []
         sameSeries = []
         sameNarrator = []
+        
+        errorNotify = false
+        progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
+        
+        progressEntity.beginReceivingUpdates()
     }
 }
 
@@ -57,6 +66,37 @@ internal extension AudiobookViewModel {
         }
     }
     
+    func play() {
+        Task {
+            do {
+                try await AudioPlayer.shared.play(audiobook)
+            } catch {
+                await MainActor.run {
+                    errorNotify.toggle()
+                }
+            }
+        }
+    }
+    @MainActor
+    func queue() {
+        AudioPlayer.shared.queue(audiobook)
+    }
+    
+    func resetProgress() {
+        Task {
+            do {
+                try await AudiobookshelfClient.shared.deleteProgress(itemId: audiobook.identifiers.itemID, episodeId: audiobook.identifiers.episodeID)
+                try await OfflineManager.shared.resetProgressEntity(id: progressEntity.id)
+            } catch {
+                await MainActor.run {
+                    errorNotify.toggle()
+                }
+            }
+        }
+    }
+}
+
+private extension AudiobookViewModel {
     private func loadAudiobook() async {
         if let (item, _, chapters) = try? await AudiobookshelfClient.shared.item(itemId: audiobook.id, episodeId: nil) {
             await MainActor.withAnimation {
