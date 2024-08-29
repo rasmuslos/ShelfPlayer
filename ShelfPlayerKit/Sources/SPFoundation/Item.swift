@@ -70,4 +70,12 @@ public extension Item {
             return sortName
         }
     }
+    
+    var identifiers: (itemID: String, episodeID: String?) {
+        if let episode = self as? Episode {
+            return (itemID: episode.podcastId, episodeID: episode.id)
+        }
+        
+        return (itemID: id, episodeID: nil)
+    }
 }

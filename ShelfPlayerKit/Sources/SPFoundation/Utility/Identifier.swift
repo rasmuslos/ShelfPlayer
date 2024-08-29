@@ -26,9 +26,5 @@ public func convertIdentifier(itemID: String, episodeID: String?) -> String {
     return itemID
 }
 public func convertIdentifier(item: Item) -> String {
-    if let episode = item as? Episode {
-        return convertIdentifier(itemID: episode.podcastId, episodeID: episode.id)
-    }
-    
-    return convertIdentifier(itemID: item.id, episodeID: nil)
+    convertIdentifier(itemID: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
 }

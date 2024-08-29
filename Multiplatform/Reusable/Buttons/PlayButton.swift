@@ -7,8 +7,7 @@
 
 import SwiftUI
 import RFKVisuals
-import SPFoundation
-import SPOffline
+import ShelfPlayerKit
 import SPPlayback
 
 struct PlayButton: View {
@@ -66,7 +65,28 @@ struct PlayButton: View {
                 }
             }
             
+            Divider()
+            
             ProgressButton(item: item)
+            
+            if progressEntity.startedAt != nil {
+                Button(role: .destructive) {
+                    Task {
+                        loading = true
+                        
+                        do {
+                            try await AudiobookshelfClient.shared.deleteProgress(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID)
+                            try OfflineManager.shared.resetProgressEntity(id: progressEntity.id)
+                        } catch {
+                            self.error.toggle()
+                        }
+                        
+                        loading = false
+                    }
+                } label: {
+                    Label("progress.reset", systemImage: "xmark")
+                }
+            }
         } label: {
             ZStack {
                 Label(String("FFS"), systemImage: "waveform")
@@ -96,6 +116,8 @@ struct PlayButton: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
             .contentShape(.rect)
+            .transition(.opacity)
+            .animation(.smooth, value: progressEntity.progress)
         } primaryAction: {
             if AudioPlayer.shared.item == item {
                 AudioPlayer.shared.playing.toggle()
