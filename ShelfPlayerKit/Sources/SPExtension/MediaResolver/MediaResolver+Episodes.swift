@@ -37,7 +37,7 @@ public extension MediaResolver {
     }
     
     func resolve(episodeId: String) async throws -> PlayableItem {
-        let (podcastId, episodeId) = MediaResolver.shared.convertIdentifier(identifier: episodeId)
+        let (podcastId, episodeId) = convertIdentifier(identifier: episodeId)
         
         #if canImport(SPOfflineExtended)
         if let episode = try? OfflineManager.shared.episode(episodeId: episodeId) {

@@ -28,7 +28,7 @@ struct EpisodeView: View {
         .userActivity("io.rfk.shelfplayer.episode") {
             $0.title = episode.name
             $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = MediaResolver.shared.convertIdentifier(item: episode)
+            $0.persistentIdentifier = convertIdentifier(item: episode)
             $0.targetContentIdentifier = "episode:\(episode.id)::\(episode.podcastId)"
             $0.userInfo = [
                 "episodeId": episode.id,

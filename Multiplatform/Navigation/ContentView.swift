@@ -75,7 +75,7 @@ struct ContentView: View {
                                 return
                             }
                             
-                            let (podcastId, episodeId) = MediaResolver.shared.convertIdentifier(identifier: identifier)
+                            let (podcastId, episodeId) = convertIdentifier(identifier: identifier)
                             Navigation.navigate(episodeId: episodeId, podcastId: podcastId)
                         }
                         .onAppear {

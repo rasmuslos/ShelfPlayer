@@ -45,6 +45,8 @@ public final class AudioPlayer {
             }
             
             updateNowPlayingWidget()
+            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
+            
             NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
         }
     }

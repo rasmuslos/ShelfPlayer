@@ -63,7 +63,7 @@ public extension AudioPlayer {
         }
         
         if itemDuration != 0 && to >= itemDuration {
-            playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration)
+            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
             stop()
             
             return
@@ -99,7 +99,7 @@ public extension AudioPlayer {
             playing = resume
         }
         
-        playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration)
+        playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
         
         updateChapterIndex()
         updateNowPlayingWidget()

@@ -177,7 +177,7 @@ internal extension AudioPlayer {
         let activity = NSUserActivity(activityType: "io.rfk.shelfplayer.\(activityType)")
         
         activity.title = item.name
-        activity.persistentIdentifier = MediaResolver.shared.convertIdentifier(item: item)
+        activity.persistentIdentifier = convertIdentifier(item: item)
         activity.targetContentIdentifier = "\(activityType):\(item.id)"
         
         activity.isEligibleForPrediction = true
