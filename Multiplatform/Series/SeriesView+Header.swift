@@ -8,32 +8,25 @@
 import SwiftUI
 import ShelfPlayerKit
 
-extension SeriesView {
+internal extension SeriesView {
     struct Header: View {
-        let series: Series
-        let audiobooks: [Audiobook]
-        
-        @State private var images = [Cover]()
-        
-        private var count: Int {
-            min(images.count, 5)
-        }
+        @Environment(SeriesViewModel.self) private var viewModel
         
         var body: some View {
-            if !images.isEmpty {
-                VStack {
+            if !viewModel.images.isEmpty {
+                VStack(spacing: 16) {
                     ZStack {
-                        ForEach(0..<count, id: \.hashValue) {
-                            let index = count - $0 - 1
+                        ForEach(0..<viewModel.headerImageCount, id: \.hashValue) {
+                            let index = viewModel.headerImageCount - $0 - 1
                             
-                            ItemImage(image: images[index])
+                            ItemImage(image: viewModel.images[index])
                                 .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 180 : 160)
                                 .offset(x: index == 0 ? 0 : index == 1 ? -40 : index == 2 ? 40 : index == 3 ? -80 : 80)
                                 .shadow(radius: 4)
                         }
                     }
                     
-                    Text(series.name)
+                    Text(viewModel.series.name)
                         .font(.title)
                         .modifier(SerifModifier())
                         .multilineTextAlignment(.center)
@@ -47,15 +40,6 @@ extension SeriesView {
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, 20)
             }
-            
-            EmptyView()
-                .onChange(of: audiobooks, initial: true) {
-                    if !series.covers.isEmpty {
-                        images = series.covers
-                    } else {
-                        images = audiobooks.compactMap { $0.cover }
-                    }
-                }
         }
     }
 }
