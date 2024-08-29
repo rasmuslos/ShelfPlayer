@@ -67,7 +67,7 @@ struct PlayButton: View {
                     Label {
                         Text(label)
                         + Text(verbatim: " • ")
-                        + Text("duration") // Text(String((entity.duration - entity.currentTime).timeLeft()))
+                        + Text((progressEntity.duration - progressEntity.currentTime).formatted(.duration(unitsStyle: .short)))
                     } icon: {
                         if loading {
                             ProgressIndicator()

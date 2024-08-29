@@ -17,14 +17,14 @@ public final class OfflineTrack {
     public let index: Int
     public let fileExtension: String
     
-    public let offset: Double
-    public let duration: Double
+    public let offset: TimeInterval
+    public let duration: TimeInterval
     
     public let type: ParentType
     public var downloadReference: Int?
     
     // this does not check for codec support... to bad (to be fair, i don't think the official ABS app does [https://github.com/advplyr/audiobookshelf-app/blob/master/ios/App/App/plugins/AbsDownloader.swift#L257])
-    public init(id: String, parentId: String, index: Int, fileExtension: String, offset: Double, duration: Double, type: ParentType) {
+    public init(id: String, parentId: String, index: Int, fileExtension: String, offset: TimeInterval, duration: TimeInterval, type: ParentType) {
         self.id = id
         self.parentId = parentId
         self.index = index

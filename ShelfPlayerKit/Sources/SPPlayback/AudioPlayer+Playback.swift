@@ -15,7 +15,7 @@ import SPExtension
 import SPOffline
 
 public extension AudioPlayer {
-    func play(_ item: PlayableItem, at seconds: Double? = nil) async throws {
+    func play(_ item: PlayableItem, at seconds: TimeInterval? = nil) async throws {
         stop()
         try await start(item, at: seconds)
     }
@@ -50,7 +50,7 @@ public extension AudioPlayer {
         audioPlayer.removeAllItems()
     }
     
-    func seek(to: Double, inCurrentChapter: Bool = false) async {
+    func seek(to: TimeInterval, inCurrentChapter: Bool = false) async {
         var to = to
         
         if to < 0 {
@@ -106,11 +106,29 @@ public extension AudioPlayer {
         
         NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
     }
+    
+    func skipForwards() {
+        Task {
+            await skipForwards()
+        }
+    }
+    func skipForwards() async {
+        await seek(to: itemCurrentTime + .init(skipForwardsInterval))
+    }
+    
+    func skipBackwards() {
+        Task {
+            await skipBackwards()
+        }
+    }
+    func skipBackwards() async {
+        await seek(to: itemCurrentTime - .init(skipBackwardsInterval))
+    }
 }
 
 internal extension AudioPlayer {
     func start(_ item: PlayableItem, at seconds: Double? = nil) async throws {
-        let startTime: Double
+        let startTime: TimeInterval
         self.item = item
         
         do {

@@ -7,9 +7,10 @@
 
 import Foundation
 import SwiftData
+import SPFoundation
 
 public extension OfflineManager {
-    func playbackSpeed(for itemID: String, episodeID: String?) -> Float {
+    func playbackSpeed(for itemID: String, episodeID: String?) -> Percentage {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         var descriptor = FetchDescriptor<PlaybackSpeedOverride>(predicate: #Predicate { $0.itemID == itemID && $0.episodeID == episodeID })
         descriptor.fetchLimit = 1
@@ -19,13 +20,13 @@ public extension OfflineManager {
                 return 1.0
             }
             
-            return UserDefaults.standard.float(forKey: "defaultPlaybackSpeed")
+            return UserDefaults.standard.double(forKey: "defaultPlaybackSpeed")
         }
         
         return override.speed
     }
     
-    func overrideDefaultPlaybackSpeed(_ speed: Float, for itemID: String, episodeID: String?) throws {
+    func overrideDefaultPlaybackSpeed(_ speed: Percentage, for itemID: String, episodeID: String?) throws {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
         if let override = try? context.fetch(.init(predicate: #Predicate<PlaybackSpeedOverride> { $0.itemID == itemID && $0.episodeID == episodeID })).first {

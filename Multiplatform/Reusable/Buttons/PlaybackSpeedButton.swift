@@ -13,7 +13,7 @@ import SPPlayback
 struct PlaybackSpeedButton: View {
     @Default(.playbackSpeedAdjustment) private var playbackSpeedAdjustment
     
-    let playbackRates: [Float] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+    let playbackRates: [Percentage] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
     
     var body: some View {
         Menu {
@@ -58,8 +58,8 @@ extension PlaybackSpeedButton {
     struct Options: View {
         @Default(.customPlaybackSpeed) private var customPlaybackSpeed
         
-        let callback: (Float) -> Void
-        let playbackRates: [Float] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+        let callback: (Percentage) -> Void
+        let playbackRates: [Percentage] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
         
         var body: some View {
             ForEach(playbackRates, id: \.hashValue) { rate in

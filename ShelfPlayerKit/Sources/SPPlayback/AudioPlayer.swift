@@ -59,9 +59,9 @@ public final class AudioPlayer {
         }
     }
     
-    public var itemCurrentTime: Double {
+    public var itemCurrentTime: TimeInterval {
         get {
-            var seconds: Double
+            var seconds: TimeInterval
             
             if tracks.count == 1 {
                 seconds = audioPlayer.currentTime().seconds
@@ -84,7 +84,7 @@ public final class AudioPlayer {
             }
         }
     }
-    public var itemDuration: Double {
+    public var itemDuration: TimeInterval {
         let duration = tracks.reduce(0, { $0 + $1.duration })
         
         guard duration.isFinite && !duration.isNaN else {
@@ -94,7 +94,7 @@ public final class AudioPlayer {
         return duration
     }
     
-    public var chapterCurrentTime: Double {
+    public var chapterCurrentTime: TimeInterval {
         get {
             if let chapter {
                 return itemCurrentTime - chapter.start
@@ -108,7 +108,7 @@ public final class AudioPlayer {
             }
         }
     }
-    public var chapterDuration: Double {
+    public var chapterDuration: TimeInterval {
         if let chapter {
             return chapter.end - chapter.start
         } else {
@@ -116,9 +116,9 @@ public final class AudioPlayer {
         }
     }
     
-    public var volume: Float {
+    public var volume: Percentage {
         get {
-            systemVolume
+            .init(systemVolume)
         }
         set {
             guard newValue != volume else {
@@ -126,7 +126,7 @@ public final class AudioPlayer {
             }
             
             Task { @MainActor in
-                MPVolumeView.setVolume(newValue)
+                MPVolumeView.setVolume(.init(newValue))
             }
             
             NotificationCenter.default.post(name: AudioPlayer.volumeDidChangeNotification, object: nil)
@@ -165,9 +165,9 @@ public final class AudioPlayer {
     }
     public internal(set) var chapters: [PlayableItem.Chapter]
     
-    public var playbackRate: Float {
+    public var playbackRate: Percentage {
         didSet {
-            audioPlayer.defaultRate = playbackRate
+            audioPlayer.defaultRate = .init(playbackRate)
             
             if let item {
                 if let episode = item as? Episode {
@@ -178,7 +178,7 @@ public final class AudioPlayer {
             }
             
             if playing {
-                audioPlayer.rate = playbackRate
+                audioPlayer.rate = .init(playbackRate)
             }
             
             NotificationCenter.default.post(name: AudioPlayer.speedDidChangeNotification, object: nil)
@@ -192,7 +192,7 @@ public final class AudioPlayer {
     internal var tracks: [PlayableItem.AudioTrack]
     internal var currentTrackIndex: Int?
     
-    internal var chapterTTL: Double
+    internal var chapterTTL: TimeInterval
     
     internal var lastPause: Date?
     internal var playbackReporter: PlaybackReporter?

@@ -106,14 +106,14 @@ extension NowPlaying {
                     Divider()
                     
                     Button {
-                        AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime - Double(skipBackwardsInterval)
+                        AudioPlayer.shared.skipBackwards()
                     } label: {
                         Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
                     }
                     
                     Button {
                         animateForwards.toggle()
-                        AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
+                        AudioPlayer.shared.skipForwards()
                     } label: {
                         Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
                     }

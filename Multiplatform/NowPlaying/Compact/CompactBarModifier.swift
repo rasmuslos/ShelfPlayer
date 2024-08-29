@@ -106,7 +106,7 @@ extension NowPlaying {
                                         
                                         Button {
                                             animateForwards.toggle()
-                                            AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
+                                            AudioPlayer.shared.skipForwards()
                                         } label: {
                                             Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
                                                 .labelStyle(.iconOnly)

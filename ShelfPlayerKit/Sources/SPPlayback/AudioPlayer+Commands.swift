@@ -34,7 +34,7 @@ internal extension AudioPlayer {
                 return .commandFailed
             }
             
-            playbackRate = changePlaybackPositionCommandEvent.playbackRate
+            playbackRate = .init(changePlaybackPositionCommandEvent.playbackRate)
             return .success
         }
         
@@ -105,20 +105,20 @@ internal extension AudioPlayer {
         }
         
         commandCenter.previousTrackCommand.addTarget { [unowned self] event in
-            itemCurrentTime = itemCurrentTime - Double(skipBackwardsInterval)
+            skipBackwards()
             return .success
         }
         commandCenter.nextTrackCommand.addTarget { [unowned self] event in
-            itemCurrentTime = itemCurrentTime + Double(skipBackwardsInterval)
+            skipForwards()
             return .success
         }
         
         commandCenter.seekBackwardCommand.addTarget { [unowned self] event in
-            itemCurrentTime = itemCurrentTime - Double(skipBackwardsInterval)
+            skipBackwards()
             return .success
         }
         commandCenter.seekForwardCommand.addTarget { [unowned self] event in
-            itemCurrentTime = itemCurrentTime + Double(skipBackwardsInterval)
+            skipForwards()
             return .success
         }
     }

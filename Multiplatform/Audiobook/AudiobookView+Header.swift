@@ -94,7 +94,7 @@ internal extension AudiobookView.Header {
                             Text(verbatim: " • ")
                         }
                         
-                        Text("duration") // Text(viewModel.audiobook.duration.numericDuration())
+                        Text(viewModel.audiobook.duration.formatted(.duration))
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
