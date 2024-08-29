@@ -7,15 +7,16 @@
 
 import Foundation
 import SwiftData
+import SPFoundation
 
 @Model
 public final class PlaybackSpeedOverride {
     public let itemID: String
     public let episodeID: String?
     
-    public var speed: Float
+    public var speed: Percentage
     
-    init (itemID: String, episodeID: String?, speed: Float) {
+    init (itemID: String, episodeID: String?, speed: Percentage) {
         self.itemID = itemID
         self.episodeID = episodeID
         self.speed = speed

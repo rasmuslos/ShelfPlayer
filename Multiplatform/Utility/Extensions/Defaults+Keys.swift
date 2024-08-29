@@ -23,13 +23,13 @@ internal extension Defaults.Keys {
     
     // MARK: Settings
     
-    static let sleepTimerAdjustment = Key<Double>("sleepTimerAdjustment", default: 60)
-    static let playbackSpeedAdjustment = Key<Float>("playbackSpeedAdjustment", default: 0.25)
+    static let sleepTimerAdjustment = Key<TimeInterval>("sleepTimerAdjustment", default: 60)
+    static let playbackSpeedAdjustment = Key<Percentage>("playbackSpeedAdjustment", default: 0.25)
     
     static let customSleepTimer = Key<Int>("customSleepTimer", default: 0)
-    static let customPlaybackSpeed = Key<Float>("customPlaybackSpeed", default: 1)
+    static let customPlaybackSpeed = Key<Percentage>("customPlaybackSpeed", default: 1)
     
-    static let defaultPlaybackSpeed = Key<Float>("defaultPlaybackSpeed", default: 1)
+    static let defaultPlaybackSpeed = Key<Percentage>("defaultPlaybackSpeed", default: 1)
     
     static let useSerifFont = Key("useSerifFont", default: true)
     static let tintColor = Key<TintPicker.TintColor>("tintColor", default: .shelfPlayer)

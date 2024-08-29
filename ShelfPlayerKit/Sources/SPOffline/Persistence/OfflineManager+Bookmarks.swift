@@ -48,7 +48,7 @@ internal extension OfflineManager {
 
 public extension OfflineManager {
     @MainActor
-    func createBookmark(itemId: String, position: Double, note: String) async {
+    func createBookmark(itemId: String, position: TimeInterval, note: String) async {
         let bookmark = try? await AudiobookshelfClient.shared.createBookmark(itemId: itemId, position: position, note: note)
         
         let context = ModelContext(PersistenceManager.shared.modelContainer)

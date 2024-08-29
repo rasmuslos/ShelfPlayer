@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import SPFoundation
 
 extension NowPlaying {
     struct Slider: View {
-        @Binding var percentage: Double
+        @Binding var value: Percentage
         @Binding var dragging: Bool
         
         var body: some View {
@@ -19,14 +20,14 @@ extension NowPlaying {
                         .foregroundStyle(.tertiary)
                     Rectangle()
                         .foregroundStyle(dragging ? Color.primary : Color.primary.opacity(0.8))
-                        .frame(width: geometry.size.width * CGFloat(max(0, min(1, self.percentage / 100))))
+                        .frame(width: geometry.size.width * CGFloat(max(0, min(1, self.value / 100))))
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 7))
                 .modifier(ButtonHoverEffectModifier())
                 .highPriorityGesture(DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         withAnimation(.spring) {
-                            percentage = min(max(0, Double(value.location.x / geometry.size.width * 100)), 100)
+                            self.value = min(max(0, Double(value.location.x / geometry.size.width * 100)), 100)
                             dragging = true
                         }
                     }
@@ -39,7 +40,7 @@ extension NowPlaying {
             }
             .frame(height: dragging ? 10 : 7)
             .accessibilityRepresentation {
-                SwiftUI.Slider(value: .init(get: { percentage * 100 }, set: { percentage = $0 / 100 }), in: 0...100)
+                SwiftUI.Slider(value: .init(get: { value * 100 }, set: { value = $0 / 100 }), in: 0...100)
             }
         }
     }
@@ -47,7 +48,7 @@ extension NowPlaying {
 
 #Preview {
     VStack {
-        NowPlaying.Slider(percentage: .constant(50), dragging: .constant(false))
+        NowPlaying.Slider(value: .constant(50), dragging: .constant(false))
             .padding(.horizontal, 20)
     }
 }

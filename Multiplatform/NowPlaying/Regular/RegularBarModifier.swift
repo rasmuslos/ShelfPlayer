@@ -70,7 +70,7 @@ extension NowPlaying {
                             
                             Button {
                                 animateBackwards.toggle()
-                                AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime - Double(skipBackwardsInterval)
+                                AudioPlayer.shared.skipBackwards()
                             } label: {
                                 Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
                                     .labelStyle(.iconOnly)
@@ -102,7 +102,7 @@ extension NowPlaying {
                             
                             Button {
                                 animateForwards.toggle()
-                                AudioPlayer.shared.itemCurrentTime = AudioPlayer.shared.itemCurrentTime + Double(skipForwardsInterval)
+                                AudioPlayer.shared.skipForwards()
                             } label: {
                                 Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
                                     .labelStyle(.iconOnly)

@@ -22,9 +22,9 @@ internal final class PlaybackReporter {
     private let playbackSessionId: String?
     private let listeningTimeTracker: OfflineListeningTimeTracker?
     
-    private var duration: Double
-    private var currentTime: Double
-    private var lastReportedTime: Double
+    private var duration: TimeInterval
+    private var currentTime: TimeInterval
+    private var lastReportedTime: TimeInterval
     
     internal init(itemId: String, episodeId: String?, playbackSessionId: String?) {
         self.itemId = itemId
@@ -58,7 +58,7 @@ internal final class PlaybackReporter {
 }
 
 internal extension PlaybackReporter {
-    func reportProgress(currentTime: Double, duration: Double) {
+    func reportProgress(currentTime: TimeInterval, duration: TimeInterval) {
         updateTime(currentTime: currentTime, duration: duration)
         
         // report every 30 seconds
@@ -66,7 +66,7 @@ internal extension PlaybackReporter {
             reportProgress()
         }
     }
-    func reportProgress(playing: Bool, currentTime: Double, duration: Double) {
+    func reportProgress(playing: Bool, currentTime: TimeInterval, duration: TimeInterval) {
         updateTime(currentTime: currentTime, duration: duration)
         
         if playing {
@@ -109,7 +109,7 @@ private extension PlaybackReporter {
         }
     }
     
-    func timeListened() -> Double {
+    func timeListened() -> TimeInterval {
         let timeListened = Date.timeIntervalSinceReferenceDate - lastReportedTime
         lastReportedTime = Date.timeIntervalSinceReferenceDate
         
@@ -120,7 +120,7 @@ private extension PlaybackReporter {
         return timeListened
     }
     
-    func updateTime(currentTime: Double, duration: Double) {
+    func updateTime(currentTime: TimeInterval, duration: TimeInterval) {
         if duration.isFinite && duration != 0 {
             self.duration = duration
         }
@@ -143,9 +143,9 @@ extension PlaybackReporter {
         playbackDurationTracker: OfflineListeningTimeTracker?,
         itemId: String,
         episodeId: String?,
-        currentTime: Double,
-        duration: Double,
-        timeListened: Double) {
+        currentTime: TimeInterval,
+        duration: TimeInterval,
+        timeListened: TimeInterval) {
             if currentTime.isNaN || duration.isNaN {
                 return
             }
@@ -177,7 +177,7 @@ extension PlaybackReporter {
             }
         }
     
-    private static func reportWithoutPlaybackSession(itemId: String, episodeId: String?, currentTime: Double, duration: Double) async throws {
+    private static func reportWithoutPlaybackSession(itemId: String, episodeId: String?, currentTime: TimeInterval, duration: TimeInterval) async throws {
         try await AudiobookshelfClient.shared.updateProgress(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
     }
 }

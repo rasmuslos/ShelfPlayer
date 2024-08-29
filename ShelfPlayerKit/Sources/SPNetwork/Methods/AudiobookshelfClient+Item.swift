@@ -52,14 +52,14 @@ public extension AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
-    func createBookmark(itemId: String, position: Double, note: String) async throws -> Bookmark {
+    func createBookmark(itemId: String, position: TimeInterval, note: String) async throws -> Bookmark {
         try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark", method: "POST", body: [
             "title": note,
             "time": Int(position),
         ]))
     }
     
-    func deleteBookmark(itemId: String, position: Double) async throws {
+    func deleteBookmark(itemId: String, position: TimeInterval) async throws {
         let _ = try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark/\(position)", method: "DELETE"))
     }
 }

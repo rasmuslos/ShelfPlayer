@@ -32,7 +32,7 @@ public extension AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
-    func startPlaybackSession(itemId: String, episodeId: String?) async throws -> ([PlayableItem.AudioTrack], [PlayableItem.Chapter], Double, String) {
+    func startPlaybackSession(itemId: String, episodeId: String?) async throws -> ([PlayableItem.AudioTrack], [PlayableItem.Chapter], TimeInterval, String) {
         var url = "api/items/\(itemId)/play"
         
         if let episodeId {
@@ -63,14 +63,14 @@ public extension AudiobookshelfClient {
         return (tracks.map(PlayableItem.AudioTrack.init), chapters.map(PlayableItem.Chapter.init), startTime, playbackSessionId)
     }
     
-    func reportUpdate(playbackSessionId: String, currentTime: Double, duration: Double, timeListened: Double) async throws {
+    func reportUpdate(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
         let _ = try await request(ClientRequest<EmptyResponse>(path: "api/session/\(playbackSessionId)/sync", method: "POST", body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
         ]))
     }
-    func reportClose(playbackSessionId: String, currentTime: Double, duration: Double, timeListened: Double) async throws {
+    func reportClose(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
         let _ = try await request(ClientRequest<EmptyResponse>(path: "api/session/\(playbackSessionId)/close", method: "POST", body: [
             "duration": duration,
             "currentTime": currentTime,
@@ -80,7 +80,7 @@ public extension AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
-    func updateProgress(itemId: String, episodeId: String?, currentTime: Double, duration: Double) async throws {
+    func updateProgress(itemId: String, episodeId: String?, currentTime: TimeInterval, duration: TimeInterval) async throws {
         var url = "api/me/progress/\(itemId)"
         
         if let episodeId {
@@ -95,7 +95,7 @@ public extension AudiobookshelfClient {
         ]))
     }
     
-    func createListeningSession(itemId: String, episodeId: String?, id: String, timeListened: Double, startTime: Double, currentTime: Double, started: Date, updated: Date) async throws {
+    func createListeningSession(itemId: String, episodeId: String?, id: String, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
         let (item, status, userId): (AudiobookshelfItem, StatusResponse, String) = try await (item(itemId: itemId), status(), me().0)
         
         let session = LocalSession(

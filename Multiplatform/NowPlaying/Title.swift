@@ -22,7 +22,7 @@ extension NowPlaying {
         
         @State private var bookmarkNote = ""
         @State private var createBookmarkFailed = false
-        @State private var bookmarkCapturedTime: Double? = nil
+        @State private var bookmarkCapturedTime: TimeInterval? = nil
         @State private var createBookmarkAlertPresented = false
         
         private var offline: Bool {
