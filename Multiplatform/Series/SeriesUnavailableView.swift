@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SeriesUnavailableView: View {
+internal struct SeriesUnavailableView: View {
     var body: some View {
         UnavailableWrapper {
             ContentUnavailableView("error.unavailable.series", systemImage: "text.justify.leading", description: Text("error.unavailable.text"))

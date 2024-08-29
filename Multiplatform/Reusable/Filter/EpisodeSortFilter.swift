@@ -17,48 +17,26 @@ struct EpisodeSortFilter: View {
     var body: some View {
         Menu {
             ForEach(EpisodeFilter.allCases, id: \.hashValue) { option in
-                Button {
-                    withAnimation {
+                Toggle(option.rawValue, isOn: .init(get: { filter == option }, set: {
+                    if $0 {
                         filter = option
                     }
-                } label: {
-                    if option == filter {
-                        Label(option.rawValue, systemImage: "checkmark")
-                    } else {
-                        Text(option.rawValue)
-                    }
-                }
+                }))
             }
             
             Divider()
             
             ForEach(EpisodeSortOrder.allCases, id: \.hashValue) { sortCase in
-                Button {
-                    withAnimation {
+                Toggle(sortCase.rawValue, isOn: .init(get: { sortOrder == sortCase }, set: {
+                    if $0 {
                         sortOrder = sortCase
                     }
-                } label: {
-                    if sortCase == sortOrder {
-                        Label(sortCase.rawValue, systemImage: "checkmark")
-                    } else {
-                        Text(sortCase.rawValue)
-                    }
-                }
+                }))
             }
             
             Divider()
             
-            Button {
-                withAnimation {
-                    ascending.toggle()
-                }
-            } label: {
-                if ascending {
-                    Label("sort.ascending", systemImage: "checkmark")
-                } else {
-                    Text("sort.ascending")
-                }
-            }
+            Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
         } label: {
             Label("filterSort", systemImage: "arrow.up.arrow.down.circle")
                 .symbolVariant(filter == .all ? .none : .fill)

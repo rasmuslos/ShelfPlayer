@@ -13,7 +13,7 @@ struct SeriesList: View {
     
     var body: some View {
         ForEach(series) { item in
-            NavigationLink(destination: SeriesView(series: item)) {
+            NavigationLink(destination: SeriesView(item)) {
                 SeriesRow(series: item)
             }
             .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
