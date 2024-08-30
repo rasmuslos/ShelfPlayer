@@ -13,6 +13,6 @@ public final class Series: Item {
     public init(id: String, libraryId: String, name: String, description: String?, addedAt: Date, covers: [Cover]) {
         self.covers = covers
         
-        super.init(id: id, libraryId: libraryId, name: name, author: nil, description: description, cover: nil, genres: [], addedAt: addedAt, released: nil)
+        super.init(id: id, libraryId: libraryId, type: .series, name: name, author: nil, description: description, cover: nil, genres: [], addedAt: addedAt, released: nil)
     }
 }

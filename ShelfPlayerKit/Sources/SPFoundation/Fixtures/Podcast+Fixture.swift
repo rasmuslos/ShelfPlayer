@@ -21,7 +21,7 @@ public extension Podcast {
         released: "2023-05-21T18:00:00Z",
         explicit: true,
         episodeCount: 7,
-        type: .episodic
+        publishingType: .episodic
     )
 }
 #endif

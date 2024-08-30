@@ -14,27 +14,35 @@ struct PodcastLoadView: View {
     let podcastId: String
     
     @State private var failed = false
-    @State private var podcast: Podcast?
+    @State private var podcast: (Podcast, [Episode])?
     
     var body: some View {
-        if failed {
+        if let podcast = podcast {
+            PodcastView(podcast.0, episodes: podcast.1)
+        } else if failed {
             PodcastUnavailableView()
-        } else if let podcast = podcast {
-            PodcastView(podcast: podcast)
+                .refreshable {
+                    await fetchPodcast()
+                }
         } else {
             LoadingView()
-                .task { await fetchPodcast() }
-                .refreshable { await fetchPodcast() }
+                .task {
+                    await fetchPodcast()
+                }
         }
     }
     
-    private func fetchPodcast() async {
-        failed = false
+    private nonisolated func fetchPodcast() async {
+        guard let podcast = try? await AudiobookshelfClient.shared.podcast(podcastId: podcastId) else {
+            await MainActor.run {
+                failed = true
+            }
+            
+            return
+        }
         
-        if let (podcast, _) = try? await AudiobookshelfClient.shared.podcast(podcastId: podcastId) {
+        await MainActor.run {
             self.podcast = podcast
-        } else {
-            failed = true
         }
     }
 }

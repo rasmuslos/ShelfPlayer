@@ -198,7 +198,7 @@ private extension NowPlaying {
                     VStack(alignment: .leading) {
                         Text(AudioPlayer.shared.item?.name ?? "-/-")
                             .font(.headline)
-                            .fontDesign(AudioPlayer.shared.item as? Audiobook != nil ? .serif : .default)
+                            .fontDesign(AudioPlayer.shared.item?.type == .audiobook ? .serif : .default)
                             .lineLimit(1)
                         
                         if let author = AudioPlayer.shared.item?.author {
@@ -228,7 +228,7 @@ private extension NowPlaying {
                     
                     Spacer()
                     
-                    if AudioPlayer.shared.item as? Audiobook != nil {
+                    if AudioPlayer.shared.item?.type == .audiobook {
                         Button {
                             bookmarksActive.toggle()
                         } label: {

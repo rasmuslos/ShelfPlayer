@@ -33,7 +33,7 @@ internal extension Podcast {
             released: item.media?.metadata.releaseDate, 
             explicit: item.media?.metadata.explicit ?? false,
             episodeCount: item.media?.episodes?.count ?? 0,
-            type: podcastType
+            publishingType: podcastType
         )
     }
 }

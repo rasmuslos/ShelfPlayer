@@ -13,7 +13,7 @@ struct PodcastList: View {
     
     var body: some View {
         ForEach(podcasts) { podcast in
-            NavigationLink(destination: PodcastView(podcast: podcast)) {
+            NavigationLink(destination: PodcastView(podcast)) {
                 PodcastRow(podcast: podcast)
             }
         }

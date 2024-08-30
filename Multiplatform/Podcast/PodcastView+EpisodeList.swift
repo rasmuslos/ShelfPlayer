@@ -9,55 +9,30 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-struct PodcastFullListView: View {
-    @Default private var episodesFilter: EpisodeFilter
-    
-    @Default private var episodesSort: EpisodeSortOrder
-    @Default private var episodesAscending: Bool
-    
-    let episodes: [Episode]
-    
-    init(episodes: [Episode], podcastId: String) {
-        self.episodes = episodes
-                
-        _episodesFilter = .init(.episodesFilter(podcastId: podcastId))
-        
-        _episodesSort = .init(.episodesSort(podcastId: podcastId))
-        _episodesAscending = .init(.episodesAscending(podcastId: podcastId))
-    }
-    
-    @State private var query = ""
-    
-    private var visibleEpisodes: [Episode] {
-        let episodes = Episode.filterSort(episodes: episodes, filter: episodesFilter, sortOrder: episodesSort, ascending: episodesAscending)
-        let query = query.lowercased()
-        
-        if query == "" {
-            return episodes
-        }
-        
-        return episodes.filter { $0.sortName.contains(query) || $0.name.lowercased().contains(query) || ($0.descriptionText?.lowercased() ?? "").contains(query) }
-    }
+struct PodcastEpisodesView: View {
+    @Binding var viewModel: PodcastViewModel
     
     var body: some View {
         List {
-            EpisodeSingleList(episodes: visibleEpisodes)
+            EpisodeSingleList(episodes: viewModel.filtered)
         }
         .listStyle(.plain)
         .navigationTitle("title.episodes")
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $query, placement: .toolbar)
+        .searchable(text: $viewModel.search, placement: .toolbar)
         .modifier(NowPlaying.SafeAreaModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                EpisodeSortFilter(filter: $episodesFilter, sortOrder: $episodesSort, ascending: $episodesAscending)
+                EpisodeSortFilter(filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
             }
         }
     }
 }
 
 #Preview {
+    @Previewable @State var viewModel: PodcastViewModel = .init(podcast: .fixture, episodes: .init(repeating: [.fixture], count: 7))
+    
     NavigationStack {
-        PodcastFullListView(episodes: .init(repeating: [.fixture], count: 7), podcastId: "fixture")
+        PodcastEpisodesView(viewModel: $viewModel)
     }
 }

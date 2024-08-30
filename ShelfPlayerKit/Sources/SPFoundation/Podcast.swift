@@ -11,14 +11,14 @@ public final class Podcast: Item {
     public let explicit: Bool
     public var episodeCount: Int
     
-    public let type: PodcastType?
+    public let publishingType: PodcastType?
     
-    public init(id: String, libraryId: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int, type: PodcastType?) {
+    public init(id: String, libraryId: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int, publishingType: PodcastType?) {
         self.explicit = explicit
         self.episodeCount = episodeCount
-        self.type = type
+        self.publishingType = publishingType
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)
+        super.init(id: id, libraryId: libraryId, type: .podcast, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)
     }
 }
 

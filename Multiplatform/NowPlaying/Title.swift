@@ -46,7 +46,7 @@ extension NowPlaying {
                     Group {
                         Text(item.name)
                             .font(.headline)
-                            .fontDesign(item as? Audiobook != nil && useSerifFont ? .serif : .default)
+                            .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
                             .foregroundStyle(.primary)
                             .matchedGeometryEffect(id: "title", in: namespace, properties: .frame, anchor: .top)
                         
@@ -127,7 +127,7 @@ extension NowPlaying {
                 
                 Spacer()
                 
-                if item as? Audiobook != nil {
+                if item.type == .audiobook {
                     Label("bookmark.create", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
                         .symbolEffect(.bounce.byLayer.up, value: bookmarkAnimation)

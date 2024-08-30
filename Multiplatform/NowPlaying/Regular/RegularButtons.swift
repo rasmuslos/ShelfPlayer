@@ -34,7 +34,7 @@ extension NowPlaying.RegularView {
                     .modifier(ButtonHoverEffectModifier())
                     .padding(.leading, 20)
                 
-                if AudioPlayer.shared.item as? Audiobook != nil {
+                if AudioPlayer.shared.item?.type == .audiobook {
                     Button {
                         notableMomentsToggled.toggle()
                     } label: {
