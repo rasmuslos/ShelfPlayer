@@ -67,15 +67,7 @@ extension AudiobookView {
                                 Label("queue.play", systemImage: "play.fill")
                             }
                             
-                            Button {
-                                viewModel.queue()
-                            } label: {
-                                Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
-                                
-                                if let last = AudioPlayer.shared.queue.last {
-                                    Text(last.name)
-                                }
-                            }
+                            QueueButton(item: viewModel.audiobook)
                             
                             Divider()
                             

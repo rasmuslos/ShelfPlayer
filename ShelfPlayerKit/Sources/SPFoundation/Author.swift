@@ -8,7 +8,7 @@
 import Foundation
 
 public final class Author: Item {
-    public convenience init(id: String, libraryId: String, name: String, description: String?, cover: Cover?, addedAt: Date) {
-        self.init(id: id, libraryId: libraryId, name: name, author: nil, description: description, cover: cover, genres: [], addedAt: addedAt, released: nil)
+    public init(id: String, libraryId: String, name: String, description: String?, cover: Cover?, addedAt: Date) {
+        super.init(id: id, libraryId: libraryId, type: .author, name: name, author: nil, description: description, cover: nil, genres: [], addedAt: addedAt, released: nil)
     }
 }

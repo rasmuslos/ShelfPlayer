@@ -11,32 +11,27 @@ import SPFoundation
 extension PodcastView {
     struct ToolbarModifier: ViewModifier {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        @Environment(PodcastViewModel.self) private var viewModel
         
-        let podcast: Podcast
-        let navigationBarVisible: Bool
-        let imageColors: ImageColors
-        
-        @State private var settingsSheetPresented = false
-        
-        private var regularPresentation: Bool {
+        private var isRegularPresentation: Bool {
             horizontalSizeClass == .regular
         }
         
         func body(content: Content) -> some View {
             content
-                .navigationTitle(podcast.name)
+                .navigationTitle(viewModel.podcast.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(regularPresentation ? .automatic : navigationBarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!navigationBarVisible && !regularPresentation)
+                .toolbarBackground(isRegularPresentation ? .automatic : viewModel.toolbarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!viewModel.toolbarVisible && !isRegularPresentation)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        if navigationBarVisible {
+                        if viewModel.toolbarVisible {
                             VStack {
-                                Text(podcast.name)
+                                Text(viewModel.podcast.name)
                                     .font(.headline)
                                     .lineLimit(1)
                                 
-                                Text("\(podcast.episodeCount) episodes")
+                                Text("\(viewModel.episodeCount) episodes")
                                     .font(.caption2)
                                     .lineLimit(1)
                             }
@@ -46,24 +41,28 @@ extension PodcastView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            settingsSheetPresented.toggle()
+                        @Bindable var viewModel = viewModel
+                        
+                        Menu {
+                            PodcastSettingsSheet.NotificationToggle(autoDownloadEnabled: viewModel.fetchConfiguration.autoDownload, notificationsEnabled: $viewModel.fetchConfiguration.notifications)
+                            PodcastSettingsSheet.DownloadSettings(maxEpisodes: $viewModel.fetchConfiguration.maxEpisodes, autoDownloadEnabled: $viewModel.fetchConfiguration.autoDownload)
                         } label: {
-                            Label("more", systemImage: "ellipsis")
+                            Image(systemName: "gear")
                                 .labelStyle(.iconOnly)
+                                .symbolVariant(.circle.fill)
+                                .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight(), navigationBarVisible: viewModel.toolbarVisible))
+                        } primaryAction: {
+                            viewModel.settingsSheetPresented.toggle()
                         }
-                        .modifier(FullscreenToolbarModifier(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible))
+                        .menuActionDismissBehavior(.disabled)
                     }
                 }
                 .toolbar {
-                    if !navigationBarVisible && !regularPresentation {
+                    if !viewModel.toolbarVisible && !isRegularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible)
+                            FullscreenBackButton(isLight: viewModel.dominantColor?.isLight(), navigationBarVisible: viewModel.toolbarVisible)
                         }
                     }
-                }
-                .sheet(isPresented: $settingsSheetPresented) {
-                    PodcastSettingsSheet(podcast: podcast)
                 }
         }
     }

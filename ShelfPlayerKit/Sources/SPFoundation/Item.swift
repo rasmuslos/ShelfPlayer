@@ -13,6 +13,8 @@ public class Item: Identifiable {
     public let id: String
     public let libraryId: String
     
+    public let type: ItemType
+    
     public let name: String
     public let author: String?
     
@@ -24,9 +26,10 @@ public class Item: Identifiable {
     public let addedAt: Date
     public let released: String?
     
-    init(id: String, libraryId: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?) {
+    init(id: String, libraryId: String, type: ItemType, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
         self.libraryId = libraryId
+        self.type = type
         self.name = name
         self.author = author
         self.description = description
@@ -34,6 +37,18 @@ public class Item: Identifiable {
         self.genres = genres
         self.addedAt = addedAt
         self.released = released
+    }
+    
+    public enum ItemType: Identifiable, Hashable, Codable {
+        case audiobook
+        case author
+        case series
+        case podcast
+        case episode
+        
+        public var id: Self {
+            self
+        }
     }
 }
 

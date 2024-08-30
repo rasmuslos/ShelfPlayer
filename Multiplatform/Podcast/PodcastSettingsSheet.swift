@@ -11,60 +11,85 @@ import SPFoundation
 import SPOffline
 import SPOfflineExtended
 
-struct PodcastSettingsSheet: View {
+internal struct PodcastSettingsSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    
     let podcast: Podcast
     let configuration: PodcastFetchConfiguration
     
-    @MainActor
-    init(podcast: Podcast) {
-        self.podcast = podcast
-        configuration = OfflineManager.shared.requireConfiguration(podcastId: podcast.id)
-    }
-    
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    Toggle("podcast.settings.autoDownload", isOn: .init(get: { configuration.autoDownload }, set: { configuration.autoDownload = $0 }))
-                    Stepper("podcast.settings.maxEpisodes") {
-                        if configuration.maxEpisodes <= 32 {
-                            configuration.maxEpisodes += 1
-                        }
-                    } onDecrement: {
-                        if configuration.maxEpisodes > 1 {
-                            configuration.maxEpisodes -= 1
-                        }
-                    }
-                    .disabled(!configuration.autoDownload)
-                } footer: {
-                    Text("podcast.settings.downloadFooter \(configuration.maxEpisodes)")
-                }
-                
-                Section {
-                    Toggle("podcast.settings.notifications", isOn: .init(get: { configuration.notifications }, set: { configuration.notifications = $0 }))
-                        .disabled(!configuration.autoDownload)
-                } footer: {
-                    Text("podcast.settings.notificationFooter")
-                }
+        @Bindable var configuration = configuration
+        
+        List {
+            Section {
+                DownloadSettings(maxEpisodes: $configuration.maxEpisodes, autoDownloadEnabled: $configuration.autoDownload)
+            } footer: {
+                Text("podcast.settings.downloadFooter \(configuration.maxEpisodes)")
             }
-            .navigationTitle(podcast.name)
-            .navigationBarTitleDisplayMode(.inline)
+            
+            Section {
+                NotificationToggle(autoDownloadEnabled: configuration.autoDownload, notificationsEnabled: $configuration.notifications)
+            } footer: {
+                Text("podcast.settings.notificationFooter")
+            }
         }
-        .presentationDragIndicator(.visible)
-        .presentationDetents([.medium, .large])
-        .onChange(of: configuration) {
-            if configuration.autoDownload {
-                Task {
-                    try? await BackgroundTaskHandler.updateDownloads(configuration: configuration)
+        .padding(.top, -40)
+        .safeAreaInset(edge: .top) {
+            HStack {
+                Text("podcast.settings.title")
+                    .font(.title3)
+                    .bold()
+                
+                Spacer()
+                
+                Button {
+                    dismiss()
+                } label: {
+                    Label("dismiss", systemImage: "xmark")
+                        .labelStyle(.iconOnly)
+                        .symbolVariant(.circle.fill)
+                        .foregroundStyle(.secondary)
                 }
+                .buttonStyle(.plain)
+            }
+            .padding(20)
+        }
+        .task(id: configuration) {
+            if configuration.autoDownload {
+                try? await BackgroundTaskHandler.updateDownloads(configuration: configuration)
             }
         }
     }
 }
 
-#Preview {
-    Text(verbatim: ":)")
-        .sheet(isPresented: .constant(true)) {
-            PodcastSettingsSheet(podcast: .fixture)
+internal extension PodcastSettingsSheet {
+    struct DownloadSettings: View {
+        @Binding var maxEpisodes: Int
+        @Binding var autoDownloadEnabled: Bool
+        
+        var body: some View {
+            Toggle("podcast.settings.autoDownload", isOn: $autoDownloadEnabled)
+            
+            Stepper("podcast.settings.maxEpisodes \(maxEpisodes)") {
+                if maxEpisodes <= 32 {
+                    maxEpisodes += 1
+                }
+            } onDecrement: {
+                if maxEpisodes > 1 {
+                    maxEpisodes -= 1
+                }
+            }
+            .disabled(!autoDownloadEnabled)
         }
+    }
+    
+    struct NotificationToggle: View {
+        var autoDownloadEnabled: Bool
+        @Binding var notificationsEnabled: Bool
+        
+        var body: some View {
+            Toggle("podcast.settings.notifications", isOn: $notificationsEnabled)
+                .disabled(!autoDownloadEnabled)
+        }
+    }
 }

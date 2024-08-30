@@ -20,7 +20,7 @@ struct PodcastVGrid: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 15)], spacing: 20) {
             ForEach(podcasts) { podcast in
-                NavigationLink(destination: PodcastView(podcast: podcast)) {
+                NavigationLink(destination: PodcastView(podcast)) {
                     PodcastGridItem(podcast: podcast)
                 }
                 .buttonStyle(.plain)

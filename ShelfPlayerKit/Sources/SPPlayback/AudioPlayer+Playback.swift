@@ -145,7 +145,7 @@ internal extension AudioPlayer {
         playbackRate = OfflineManager.shared.playbackSpeed(for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
         
         updateAudioSession(active: true)
-        updateBookmarkCommand(active: item as? Audiobook != nil)
+        updateBookmarkCommand(active: item.type == .audiobook)
         populateNowPlayingWidgetMetadata()
         
         await seek(to: startTime)
