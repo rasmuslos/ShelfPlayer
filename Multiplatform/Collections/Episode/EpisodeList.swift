@@ -13,7 +13,7 @@ struct EpisodeList: View {
     
     var body: some View {
             ForEach(episodes) { episode in
-                NavigationLink(destination: EpisodeView(episode: episode)) {
+                NavigationLink(destination: EpisodeView(episode)) {
                     EpisodeRow(episode: episode)
                 }
                 .modifier(SwipeActionsModifier(item: episode))

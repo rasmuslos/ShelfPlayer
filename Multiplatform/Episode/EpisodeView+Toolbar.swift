@@ -10,48 +10,62 @@ import SPFoundation
 import SPOffline
 import SPOfflineExtended
 
-extension EpisodeView {
+internal extension EpisodeView {
     struct ToolbarModifier: ViewModifier {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        @Environment(EpisodeViewModel.self) private var viewModel
         
-        let episode: Episode
-        
-        let navigationBarVisible: Bool
-        let imageColors: ImageColors
-        
-        private var regularPresentation: Bool {
+        private var isRegularPresentation: Bool {
             horizontalSizeClass == .regular
         }
         
         func body(content: Content) -> some View {
             content
-                .navigationTitle(episode.name)
+                .navigationTitle(viewModel.episode.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(regularPresentation ? .automatic : navigationBarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!navigationBarVisible && !regularPresentation)
+                .toolbarBackground(isRegularPresentation ? .automatic : viewModel.toolbarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!viewModel.toolbarVisible && !isRegularPresentation)
                 .toolbar {
-                    if !navigationBarVisible {
+                    if !viewModel.toolbarVisible {
                         ToolbarItem(placement: .principal) {
                             Text(verbatim: "")
                         }
                         
-                        if !regularPresentation {
+                        if !isRegularPresentation {
                             ToolbarItem(placement: .navigation) {
-                                FullscreenBackButton(isLight: imageColors.isLight, navigationBarVisible: false)
+                                FullscreenBackButton(isLight: viewModel.dominantColor?.isLight, navigationBarVisible: false)
                             }
                         }
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        DownloadButton(item: episode, downloadingLabel: false)
+                        DownloadButton(item: viewModel.episode, downloadingLabel: false)
                             .labelStyle(.iconOnly)
-                            .modifier(FullscreenToolbarModifier(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible))
+                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, navigationBarVisible: viewModel.toolbarVisible))
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        ProgressButton(item: episode)
+                        Menu {
+                            Divider()
+                            
+                            Button(role: .destructive) {
+                                viewModel.resetProgress()
+                            } label: {
+                                Label("progress.reset", systemImage: "xmark")
+                            }
+                        } label: {
+                            Group {
+                                if viewModel.progressEntity.progress >= 1 {
+                                    Image(systemName: "minus")
+                                } else {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
                             .symbolVariant(.circle)
-                            .modifier(FullscreenToolbarModifier(isLight: imageColors.isLight, navigationBarVisible: navigationBarVisible))
+                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, navigationBarVisible: viewModel.toolbarVisible))
+                        } primaryAction: {
+                            viewModel.toggleFinished()
+                        }
                     }
                 }
         }

@@ -5,7 +5,9 @@
 //  Created by Rasmus Krämer on 09.10.23.
 //
 
+import Foundation
 import SwiftUI
+import TipKit
 import RFKVisuals
 import ShelfPlayerKit
 import SPPlayback
@@ -49,19 +51,21 @@ struct PlayButton: View {
         let label = item as? Audiobook != nil ? String(localized: "listen") : String(localized: "play")
         
         Menu {
-            Button {
-                play()
-            } label: {
-                Label("queue.play", systemImage: "play.fill")
-            }
-            
-            Button {
-                AudioPlayer.shared.queue(item)
-            } label: {
-                Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
+            ControlGroup {
+                Button {
+                    play()
+                } label: {
+                    Label("queue.play", systemImage: "play.fill")
+                }
                 
-                if let last = AudioPlayer.shared.queue.last {
-                    Text(last.name)
+                Button {
+                    AudioPlayer.shared.queue(item)
+                } label: {
+                    Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
+                    
+                    if let last = AudioPlayer.shared.queue.last {
+                        Text(last.name)
+                    }
                 }
             }
             
@@ -75,8 +79,7 @@ struct PlayButton: View {
                         loading = true
                         
                         do {
-                            try await AudiobookshelfClient.shared.deleteProgress(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID)
-                            try OfflineManager.shared.resetProgressEntity(id: progressEntity.id)
+                            try await item.resetProgress()
                         } catch {
                             self.error.toggle()
                         }
@@ -96,7 +99,7 @@ struct PlayButton: View {
                     Label {
                         Text(label)
                         + Text(verbatim: " • ")
-                        + Text((progressEntity.duration - progressEntity.currentTime).formatted(.duration(unitsStyle: .short)))
+                        + Text((progressEntity.duration - progressEntity.currentTime), format: .duration(unitsStyle: .short))
                     } icon: {
                         if loading {
                             ProgressIndicator()
@@ -143,6 +146,7 @@ struct PlayButton: View {
         .animation(.smooth, value: color)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .modifier(ButtonHoverEffectModifier(cornerRadius: 8, hoverEffect: .lift))
+        .popoverTip(PlayButtonTip())
     }
     
     func play() {
@@ -163,6 +167,24 @@ struct PlayButton: View {
             loading = false
         }
     }
+}
+
+private struct PlayButtonTip: Tip {
+    var title: Text {
+        Text("queue.tip.title")
+    }
+    
+    var message: Text? {
+        Text("queue.tip.message")
+    }
+    
+    var icon: Image? {
+        Image(systemName: "text.line.last.and.arrowtriangle.forward")
+    }
+    
+    var options: [any TipOption] {[
+        MaxDisplayCount(3)
+    ]}
 }
 
 #Preview {

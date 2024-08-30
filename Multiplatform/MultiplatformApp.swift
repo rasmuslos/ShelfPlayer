@@ -22,9 +22,7 @@ struct MultiplatformApp: App {
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
         BackgroundTaskHandler.setup()
         
-        try? Tips.configure([
-            .displayFrequency(.daily)
-        ])
+        try? Tips.configure()
     }
     
     var body: some Scene {

@@ -1894,7 +1894,14 @@
       }
     },
     "duration" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
     },
     "episode.new.title %@" : {
       "localizations" : {
@@ -3438,7 +3445,14 @@
       }
     },
     "queue.last" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        }
+      }
     },
     "queue.nextUp: %@" : {
       "extractionState" : "stale",
@@ -3458,10 +3472,56 @@
       }
     },
     "queue.play" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        }
+      }
+    },
+    "queue.tip.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drücke und halte diesen Knopf um die Warteschlange zu befüllen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press and hold this button to add items to your queue"
+          }
+        }
+      }
+    },
+    "queue.tip.title" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        }
+      }
     },
     "readBy %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read by:"
+          }
+        }
+      }
     },
     "search.empty.description" : {
       "localizations" : {
@@ -3508,7 +3568,14 @@
       }
     },
     "search.placeholder" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search for audiobooks, series & authors"
+          }
+        }
+      }
     },
     "section.audiobooks" : {
       "localizations" : {
@@ -4412,52 +4479,6 @@
         }
       }
     },
-    "tip.bookmark.create" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lesezeichen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bookmark"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "书签"
-          }
-        }
-      }
-    },
-    "tip.bookmark.create.message" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erstelle ein Lesezeichen um an einen bestimmten Moment erinnert zu werden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a bookmark to remember a specific moment in this audiobook"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "创建一个书签来标记该书中特殊时刻"
-          }
-        }
-      }
-    },
     "tip.bookmark.view" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4522,29 +4543,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更换媒体库"
-          }
-        }
-      }
-    },
-    "tip.changeLibrary.message" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle hier eine andere Hörbücher / Podcast Bibliothek aus"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Switch to another audiobooks / podcasts library"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切换到另一个有声书/播客库"
           }
         }
       }

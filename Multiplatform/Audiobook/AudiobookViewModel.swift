@@ -85,8 +85,7 @@ internal extension AudiobookViewModel {
     func resetProgress() {
         Task {
             do {
-                try await AudiobookshelfClient.shared.deleteProgress(itemId: audiobook.identifiers.itemID, episodeId: audiobook.identifiers.episodeID)
-                try await OfflineManager.shared.resetProgressEntity(id: progressEntity.id)
+                try await audiobook.resetProgress()
             } catch {
                 await MainActor.run {
                     errorNotify.toggle()

@@ -43,7 +43,7 @@ struct EpisodeFeaturedGrid: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 0) {
                     ForEach(episodes) { episode in
-                        NavigationLink(destination: EpisodeView(episode: episode)) {
+                        NavigationLink(destination: EpisodeView(episode)) {
                             EpisodeGridItem(episode: episode)
                                 .frame(width: size)
                                 .padding(.leading, gap)

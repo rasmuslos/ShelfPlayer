@@ -11,128 +11,133 @@ import SPFoundation
 extension EpisodeView {
     struct Header: View {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        @Environment(EpisodeViewModel.self) private var viewModel
         
-        let episode: Episode
-        var imageColors: ImageColors
-        
-        @Binding var navigationBarVisible: Bool
+        private var isRegularPresentation: Bool {
+            horizontalSizeClass == .regular
+        }
         
         var body: some View {
+            @Bindable var viewModel = viewModel
+            
             ZStack {
-                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -100 : -280, backgroundColor: imageColors.background.opacity(0.9), navigationBarVisible: $navigationBarVisible)
+                FullscreenBackground(threshold: isRegularPresentation ? -100 : -280, backgroundColor: viewModel.dominantColor?.opacity(0.9), navigationBarVisible: $viewModel.toolbarVisible)
                 
                 Group {
                     ViewThatFits {
-                        RegularPresentation(episode: episode)
-                        CompactPresentation(episode: episode)
+                        RegularPresentation()
+                        CompactPresentation()
                     }
                 }
                 .background {
-                    LinearGradient(colors: [imageColors.background.opacity(0.9), .secondary.opacity(0.1)], startPoint: .top, endPoint: .bottom)
+                    if let dominantColor = viewModel.dominantColor {
+                        LinearGradient(colors: [dominantColor.opacity(0.9), .secondary.opacity(0.1)], startPoint: .top, endPoint: .bottom)
+                    }
                 }
             }
         }
     }
 }
 
-extension EpisodeView.Header {
-    struct Eyebrow: View {
-        let episode: Episode
-        
-        var body: some View {
-            HStack(spacing: 0) {
-                if let releaseDate = episode.releaseDate {
-                    Text(releaseDate, style: .date)
-                    Text(verbatim: " • ")
-                }
-                
-                Text(episode.duration.description)
-            }
-            .font(.caption.smallCaps())
-            .foregroundStyle(.secondary)
-        }
-    }
+
+private struct Eyebrow: View {
+    @Environment(EpisodeViewModel.self) private var viewModel
     
-    struct Title: View {
-        let episode: Episode
-        let alignment: HorizontalAlignment
-        
-        var body: some View {
-            VStack(alignment: alignment, spacing: 7) {
-                Text(episode.name)
-                    .font(.title3)
-                    .bold()
-                    .lineLimit(4)
-                    .multilineTextAlignment(alignment == .center ? .center : .leading)
-                
-                HStack {
-                    NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {
-                        Text(episode.podcastName)
-                        Label("author.view", systemImage: "chevron.right.circle")
-                            .labelStyle(.iconOnly)
-                    }
-                    .lineLimit(1)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .buttonStyle(.plain)
+    var body: some View {
+        HStack(spacing: 0) {
+            if let releaseDate = viewModel.episode.releaseDate {
+                Text(releaseDate, style: .date)
+                Text(verbatim: " • ")
+            }
+            
+            Text(viewModel.episode.duration, format: .duration)
+        }
+        .font(.caption.smallCaps())
+        .foregroundStyle(.secondary)
+    }
+}
+
+private struct Title: View {
+    @Environment(EpisodeViewModel.self) private var viewModel
+    
+    let alignment: HorizontalAlignment
+    
+    var body: some View {
+        VStack(alignment: alignment, spacing: 4) {
+            Text(viewModel.episode.name)
+                .font(.title3)
+                .bold()
+                .lineLimit(4)
+                .multilineTextAlignment(alignment.textAlignment)
+            
+            HStack {
+                NavigationLink(destination: PodcastLoadView(podcastId: viewModel.episode.podcastId)) {
+                    Text(viewModel.episode.podcastName)
                     
-                    if alignment == .leading {
-                        Spacer()
-                    }
+                    Label("author.view", systemImage: "chevron.right.circle")
+                        .labelStyle(.iconOnly)
+                }
+                .lineLimit(1)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .buttonStyle(.plain)
+                
+                if alignment == .leading {
+                    Spacer()
                 }
             }
         }
     }
 }
 
-extension EpisodeView.Header {
-    struct CompactPresentation: View {
-        let episode: Episode
-        
-        var body: some View {
-            VStack(spacing: 5) {
-                ItemImage(image: episode.cover)
-                    .frame(width: 175)
-                
-                Eyebrow(episode: episode)
-                    .padding(.top, 7)
-                Title(episode: episode, alignment: .center)
-                    .padding(.vertical, 15)
-                
-                PlayButton(item: episode, color: .accentColor)
-            }
-            .padding(.top, 125)
-            .padding(.bottom, 20)
-            .padding(.horizontal, 20)
-        }
-    }
+private struct CompactPresentation: View {
+    @Environment(EpisodeViewModel.self) private var viewModel
     
-    struct RegularPresentation: View {
-        let episode: Episode
-        
-        var body: some View {
-            HStack(spacing: 20) {
-                ItemImage(image: episode.cover)
-                    .frame(width: 225)
-                    .hoverEffect(.highlight)
-                
-                Color.clear
-                    .frame(minWidth: 350)
-                    .overlay {
-                        VStack(alignment: .leading) {
-                            Spacer()
-                            
-                            Eyebrow(episode: episode)
-                            Title(episode: episode, alignment: .leading)
-                            
-                            Spacer()
-                            
-                            PlayButton(item: episode, color: .accentColor)
-                        }
-                    }
-            }
-            .padding(20)
-            .padding(.top, 75)
+    var body: some View {
+        VStack(spacing: 0) {
+            ItemImage(image: viewModel.episode.cover)
+                .frame(width: 180)
+            
+            Eyebrow()
+                .padding(.top, 8)
+            
+            Title(alignment: .center)
+                .padding(.top, 12)
+                .padding(.bottom, 16)
+            
+            PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
         }
+        .padding(.top, 120)
+        .padding(.bottom, 20)
+        .padding(.horizontal, 20)
+    }
+}
+
+private struct RegularPresentation: View {
+    @Environment(EpisodeViewModel.self) private var viewModel
+    
+    var body: some View {
+        HStack(spacing: 20) {
+            ItemImage(image: viewModel.episode.cover)
+                .frame(width: 225)
+                .hoverEffect(.highlight)
+            
+            Color.clear
+                .frame(minWidth: 360)
+                .overlay {
+                    VStack(alignment: .leading) {
+                        Spacer()
+                        
+                        Eyebrow()
+                        Title(alignment: .leading)
+                        
+                        Spacer()
+                        
+                        PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
+                    }
+                }
+        }
+        .padding(20)
+        .padding(.top, 80)
     }
 }

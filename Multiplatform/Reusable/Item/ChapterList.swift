@@ -98,7 +98,7 @@ private struct Row: View {
                     ProgressIndicator()
                         .scaleEffect(0.5)
                 } else {
-                    Text((chapter.end - chapter.start).formatted(.duration(allowedUnits: [.minute, .second], maximumUnitCount: 1)))
+                    Text((chapter.end - chapter.start), format: .duration(allowedUnits: [.minute, .second], maximumUnitCount: 1))
                         .foregroundStyle(.secondary)
                         .font(.callout)
                 }
