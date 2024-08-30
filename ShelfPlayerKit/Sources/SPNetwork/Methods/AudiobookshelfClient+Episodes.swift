@@ -16,7 +16,7 @@ public extension AudiobookshelfClient {
             throw ClientError.invalidResponse
         }
         
-        return episodes.map(Episode.init)
+        return episodes.compactMap { Episode(episode: $0, item: item) }
     }
     
     func recentEpisodes(limit: Int, libraryId: String) async throws -> [Episode] {

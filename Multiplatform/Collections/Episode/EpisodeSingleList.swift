@@ -13,7 +13,7 @@ struct EpisodeSingleList: View {
     
     var body: some View {
         ForEach(episodes) { episode in
-            NavigationLink(destination: EpisodeView(episode: episode)) {
+            NavigationLink(destination: EpisodeView(episode)) {
                 EpisodeRow(episode: episode)
             }
             .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))

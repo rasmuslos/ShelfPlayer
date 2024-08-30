@@ -21,7 +21,7 @@ struct EpisodeLoadView: View {
         if failed {
             EpisodeUnavailableView()
         } else if let episode = episode {
-            EpisodeView(episode: episode)
+            EpisodeView(episode)
         } else {
             LoadingView()
                 .task { await fetchAudiobook() }

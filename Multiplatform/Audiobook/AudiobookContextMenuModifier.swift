@@ -17,23 +17,21 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
-                ControlGroup {
-                    Button {
-                        Task {
-                            try await AudioPlayer.shared.play(audiobook)
-                        }
-                    } label: {
-                        Label("play", systemImage: "play.fill")
+                Button {
+                    Task {
+                        try await AudioPlayer.shared.play(audiobook)
                     }
+                } label: {
+                    Label("play", systemImage: "play.fill")
+                }
+                
+                Button {
+                    AudioPlayer.shared.queue(audiobook)
+                } label: {
+                    Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
                     
-                    Button {
-                        AudioPlayer.shared.queue(audiobook)
-                    } label: {
-                        Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
-                        
-                        if let last = AudioPlayer.shared.queue.last {
-                            Text(last.name)
-                        }
+                    if let last = AudioPlayer.shared.queue.last {
+                        Text(last.name)
                     }
                 }
                 
