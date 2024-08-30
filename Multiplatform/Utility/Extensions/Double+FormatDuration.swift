@@ -45,9 +45,15 @@ internal struct DurationComponentsFormatter: FormatStyle {
         formatter.allowedUnits = allowedUnits
         formatter.maximumUnitCount = maximumUnitCount
         
-        formatter.collapsesLargestUnit = true
+        if unitsStyle == .positional {
+            formatter.collapsesLargestUnit = false
+            formatter.zeroFormattingBehavior = .pad
+        } else {
+            formatter.collapsesLargestUnit = true
+            formatter.zeroFormattingBehavior = .dropLeading
+        }
+        
         formatter.allowsFractionalUnits = false
-        formatter.zeroFormattingBehavior = .dropLeading
         
         return formatter.string(from: value)!
     }

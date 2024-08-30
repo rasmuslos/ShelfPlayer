@@ -30,9 +30,7 @@ extension EpisodeView {
                     }
                 }
                 .background {
-                    if let dominantColor = viewModel.dominantColor {
-                        LinearGradient(colors: [dominantColor.opacity(0.9), .secondary.opacity(0.1)], startPoint: .top, endPoint: .bottom)
-                    }
+                    LinearGradient(colors: [(viewModel.dominantColor ?? .clear).opacity(0.9), .secondary.opacity(0.1)], startPoint: .top, endPoint: .bottom)
                 }
             }
         }
