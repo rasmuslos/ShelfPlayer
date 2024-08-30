@@ -20,7 +20,7 @@ public final class Audiobook: PlayableItem {
         self.explicit = explicit
         self.abridged = abridged
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
+        super.init(id: id, libraryId: libraryId, type: .audiobook, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
     }
 }
 

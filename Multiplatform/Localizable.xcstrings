@@ -1723,6 +1723,9 @@
         }
       }
     },
+    "dismiss" : {
+
+    },
     "download" : {
       "localizations" : {
         "de" : {
@@ -2431,6 +2434,9 @@
         }
       }
     },
+    "listen.again" : {
+
+    },
     "loading" : {
       "localizations" : {
         "de" : {
@@ -3005,6 +3011,7 @@
       }
     },
     "more" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3291,6 +3298,7 @@
       }
     },
     "podcast.settings.maxEpisodes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3311,6 +3319,9 @@
           }
         }
       }
+    },
+    "podcast.settings.maxEpisodes %lld" : {
+
     },
     "podcast.settings.notificationFooter" : {
       "localizations" : {
@@ -3355,6 +3366,9 @@
           }
         }
       }
+    },
+    "podcast.settings.title" : {
+
     },
     "podcast.view" : {
       "localizations" : {
@@ -3522,6 +3536,9 @@
           }
         }
       }
+    },
+    "resume" : {
+
     },
     "search.empty.description" : {
       "localizations" : {

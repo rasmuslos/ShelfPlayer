@@ -8,155 +8,178 @@
 import SwiftUI
 import SPFoundation
 
-extension PodcastView {
+internal extension PodcastView {
     struct Header: View {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        @Environment(PodcastViewModel.self) private var viewModel
         
-        let podcast: Podcast
-        let imageColors: ImageColors
-        
-        @Binding var navigationBarVisible: Bool
-        
-        var body: some View {
-            ZStack {
-                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -150 : -280, backgroundColor: imageColors.background, navigationBarVisible: $navigationBarVisible)
-                
-                // Because both of these have approximately the same size `ViewThatFits` does not work here.
-                ViewThatFits {
-                    RegularPresentation(podcast: podcast)
-                    CompactPresentation(podcast: podcast)
-                }
-            }
-            .background(imageColors.background)
-            .foregroundStyle(imageColors.isLight ? .black : .white)
+        private var isLight: Bool? {
+            viewModel.dominantColor?.isLight()
         }
-    }
-}
-
-extension PodcastView.Header {
-    struct Title: View {
-        let podcast: Podcast
-        
-        let largeFont: Bool
-        let alignment: TextAlignment
+        private var isRegularPresentation: Bool {
+            horizontalSizeClass == .regular
+        }
         
         var body: some View {
-            Text(podcast.name)
-                .font(largeFont ? .title : .headline)
-                .lineLimit(4)
-                .multilineTextAlignment(alignment)
+            @Bindable var viewModel = viewModel
             
-            if let author = podcast.author {
-                Text(author)
-                    .font(largeFont ? .title2 : .subheadline)
-                    .lineLimit(2)
-                    .multilineTextAlignment(alignment)
+            ZStack {
+                FullscreenBackground(threshold: isRegularPresentation ? -160 : -280, backgroundColor: viewModel.dominantColor, navigationBarVisible: $viewModel.toolbarVisible)
+                
+                ViewThatFits {
+                    RegularPresentation()
+                    CompactPresentation()
+                }
             }
-        }
-    }
-    struct Description: View {
-        let podcast: Podcast
-        
-        var body: some View {
-            HStack {
-                if let description = podcast.description {
-                    Text(description)
-                        .font(.callout)
-                        .lineLimit(3)
+            .background {
+                if let dominantColor = viewModel.dominantColor {
+                    Rectangle()
+                        .fill(dominantColor)
+                        .transition(.opacity)
+                } else {
+                    Rectangle()
+                        .fill(.background.secondary)
+                        .transition(.opacity)
                 }
-                
-                Spacer()
             }
-        }
-    }
-    
-    struct Additional: View {
-        let podcast: Podcast
-        
-        var body: some View {
-            HStack {
-                HStack(spacing: 3) {
-                    Label("episodes.count", systemImage: "number")
-                        .labelStyle(.iconOnly)
-                    Text(String(podcast.episodeCount))
-                }
-                
-                if podcast.explicit {
-                    Text(verbatim: "•")
-                    Label("explicit", systemImage: "e.square.fill")
-                        .labelStyle(.iconOnly)
-                }
-                
-                if let type = podcast.type {
-                    Text(verbatim: "•")
-                    
-                    switch type {
-                        case .episodic:
-                            Text("podcast.episodic")
-                        case .serial:
-                            Text("podcast.serial")
-                    }
-                }
-                
-                if podcast.genres.count > 0 {
-                    Text(verbatim: "•")
-                    Text(podcast.genres.joined(separator: ", "))
-                        .lineLimit(1)
-                }
-                
-                Spacer()
-            }
-            .font(.footnote)
+            .foregroundStyle(isLight == nil ? .primary : isLight! ? Color.black : .white)
+            .animation(.smooth, value: viewModel.dominantColor)
         }
     }
 }
 
-extension PodcastView.Header {
-    struct CompactPresentation: View {
-        let podcast: Podcast
+
+private struct Title: View {
+    @Environment(PodcastViewModel.self) private var viewModel
+    
+    let largeFont: Bool
+    let alignment: TextAlignment
+    
+    var body: some View {
+        Text(viewModel.podcast.name)
+            .lineLimit(4)
+            .font(largeFont ? .title : .headline)
+            .multilineTextAlignment(alignment)
         
-        var body: some View {
-            VStack {
-                ItemImage(image: podcast.cover)
-                    .frame(width: 200)
-                
-                VStack(spacing: 10) {
-                    Title(podcast: podcast, largeFont: false, alignment: .center)
-                }
-                .padding(.top, 20)
-                
-                Description(podcast: podcast)
-                    .padding(.top, 20)
-                Additional(podcast: podcast)
-                    .padding(.top, 5)
-            }
-            .padding(20)
-            .padding(.top, 100)
+        if let author = viewModel.podcast.author {
+            Text(author)
+                .font(largeFont ? .title2 : .subheadline)
+                .lineLimit(2)
+                .multilineTextAlignment(alignment)
         }
     }
+}
+private struct PodcastDescription: View {
+    @Environment(PodcastViewModel.self) private var viewModel
     
-    struct RegularPresentation: View {
-        let podcast: Podcast
-        
-        var body: some View {
-            HStack(spacing: 40) {
-                ItemImage(image: podcast.cover)
-                    .frame(height: 300)
-                    .hoverEffect(.highlight)
+    var body: some View {
+        if let description = viewModel.podcast.description {
+            HStack {
+                Text(description)
+                    .font(.callout)
+                    .lineLimit(3)
                 
-                Color.clear
-                    .frame(minWidth: 250)
-                    .overlay {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Additional(podcast: podcast)
-                                .foregroundStyle(.secondary)
-                            Title(podcast: podcast, largeFont: true, alignment: .leading)
-                            Description(podcast: podcast)
-                        }
-                    }
+                Spacer()
             }
-            .padding(20)
-            .padding(.top, 60)
         }
+    }
+}
+
+private struct Additional: View {
+    @Environment(PodcastViewModel.self) private var viewModel
+    
+    var body: some View {
+        HStack {
+            HStack(spacing: 3) {
+                Label("episodes.count", systemImage: "number")
+                    .labelStyle(.iconOnly)
+                
+                Text(viewModel.episodeCount, format: .number)
+            }
+            
+            if viewModel.podcast.explicit {
+                Text(verbatim: "•")
+                
+                Label("explicit", systemImage: "e.square.fill")
+                    .labelStyle(.iconOnly)
+            }
+            
+            if let publishingType = viewModel.podcast.publishingType {
+                Text(verbatim: "•")
+                
+                switch publishingType {
+                    case .episodic:
+                        Text("podcast.episodic")
+                    case .serial:
+                        Text("podcast.serial")
+                }
+            }
+            
+            if viewModel.podcast.genres.count > 0 {
+                Text(verbatim: "•")
+                
+                Text(viewModel.podcast.genres, format: .list(type: .and, width: .narrow))
+                    .lineLimit(1)
+            }
+            
+            Spacer()
+        }
+        .font(.footnote)
+    }
+}
+
+private struct CompactPresentation: View {
+    @Environment(PodcastViewModel.self) private var viewModel
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            ItemImage(image: viewModel.podcast.cover)
+                .frame(width: 200)
+            
+            VStack(spacing: 4) {
+                Title(largeFont: false, alignment: .center)
+            }
+            .padding(.top, 16)
+            .padding(.bottom, 16)
+            
+            if let first = viewModel.visible.first {
+                PlayButton(item: first, color: nil)
+                    .playButtonStyle(.medium)
+                    .padding(.bottom, 16)
+            }
+            
+            PodcastDescription()
+            
+            Additional()
+                .padding(.top, 16)
+        }
+        .padding(.top, 140)
+        .padding(.bottom, 12)
+        .padding(.horizontal, 20)
+    }
+}
+
+private struct RegularPresentation: View {
+    @Environment(PodcastViewModel.self) private var viewModel
+    
+    var body: some View {
+        HStack(spacing: 40) {
+            ItemImage(image: viewModel.podcast.cover)
+                .frame(height: 300)
+                .hoverEffect(.highlight)
+            
+            Color.clear
+                .frame(minWidth: 250)
+                .overlay {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Additional()
+                            .foregroundStyle(.secondary)
+                        Title(largeFont: true, alignment: .leading)
+                        PodcastDescription()
+                    }
+                }
+        }
+        .padding(20)
+        .padding(.top, 60)
     }
 }

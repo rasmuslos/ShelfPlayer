@@ -10,58 +10,28 @@ import Defaults
 import ShelfPlayerKit
 
 struct PodcastView: View {
-    @Default private var episodesFilter: EpisodeFilter
+    @Environment(\.libraryId) private var libraryID
     
-    @Default private var episodesSort: EpisodeSortOrder
-    @Default private var episodesAscending: Bool
+    @State private var viewModel: PodcastViewModel
     
-    var podcast: Podcast
-    
-    init(podcast: Podcast) {
-        self.podcast = podcast
-        
-        _episodesFilter = .init(.episodesFilter(podcastId: podcast.id))
-        
-        _episodesSort = .init(.episodesSort(podcastId: podcast.id))
-        _episodesAscending = .init(.episodesAscending(podcastId: podcast.id))
-    }
-    
-    @State private var failed = false
-    @State private var navigationBarVisible = false
-    
-    @State private var episodes = [Episode]()
-    @State private var imageColors = ImageColors()
-    
-    private var visibleEpisodes: [Episode] {
-        let episodes = Episode.filterSort(episodes: episodes, filter: episodesFilter, sortOrder: episodesSort, ascending: episodesAscending)
-        return Array(episodes.prefix(15))
+    init(_ podcast: Podcast, episodes: [Episode] = []) {
+        _viewModel = .init(initialValue: .init(podcast: podcast, episodes: episodes))
     }
     
     var body: some View {
         List {
-            Header(podcast: podcast, imageColors: imageColors, navigationBarVisible: $navigationBarVisible)
+            Header()
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
-            if episodes.isEmpty {
-                if failed {
-                    ErrorView()
-                        .listRowSeparator(.hidden)
-                } else {
-                    HStack {
-                        Spacer()
-                        LoadingView()
-                        Spacer()
-                    }
-                    .listRowSeparator(.hidden)
-                    .padding(.top, 50)
-                }
+            if viewModel.episodes.isEmpty {
+                ProgressIndicator()
             } else {
                 HStack {
                     Text("episodes")
                         .bold()
                     
-                    NavigationLink(destination: PodcastFullListView(episodes: episodes, podcastId: podcast.id)) {
+                    NavigationLink(destination: PodcastEpisodesView(viewModel: $viewModel)) {
                         HStack {
                             Spacer()
                             Text("episodes.all")
@@ -71,45 +41,41 @@ struct PodcastView: View {
                 .padding(.horizontal, 20)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 
-                EpisodeSingleList(episodes: visibleEpisodes)
+                EpisodeSingleList(episodes: viewModel.episodes)
             }
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
+        .modifier(ToolbarModifier())
         .modifier(NowPlaying.SafeAreaModifier())
-        .task { await fetchEpisodes() }
-        .refreshable { await fetchEpisodes() }
-        .modifier(ToolbarModifier(podcast: podcast, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
-        .userActivity("io.rfk.shelfplayer.podcast") {
-            $0.title = podcast.name
-            $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = podcast.id
-            $0.targetContentIdentifier = "podcast:\(podcast.id)"
-            $0.userInfo = [
-                "podcastId": podcast.id,
-            ]
-            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: podcast.id)
+        .environment(viewModel)
+        .onAppear {
+            viewModel.libraryID = libraryID
         }
-    }
-}
-
-// MARK: Helper
-
-extension PodcastView {
-    func fetchEpisodes() async {
-        failed = false
-        
-        if let episodes = try? await AudiobookshelfClient.shared.episodes(podcastId: podcast.id) {
-            self.episodes = episodes
-            podcast.episodeCount = episodes.count
-        } else {
-            failed = true
+        .task {
+            await viewModel.load()
+        }
+        .refreshable {
+            await viewModel.load()
+        }
+        .sheet(isPresented: $viewModel.settingsSheetPresented) {
+            PodcastSettingsSheet(podcast: viewModel.podcast, configuration: viewModel.fetchConfiguration)
+        }
+        .userActivity("io.rfk.shelfplayer.podcast") {
+            $0.title = viewModel.podcast.name
+            $0.isEligibleForHandoff = true
+            $0.persistentIdentifier = viewModel.podcast.id
+            $0.targetContentIdentifier = "podcast:\(viewModel.podcast.id)"
+            $0.userInfo = [
+                "podcastId": viewModel.podcast.id,
+            ]
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.podcast.id)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        PodcastView(podcast: Podcast.fixture)
+        PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7))
     }
 }

@@ -12,8 +12,9 @@ import RFKVisuals
 import ShelfPlayerKit
 import SPPlayback
 
-struct PlayButton: View {
+internal struct PlayButton: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.playButtonStyle) private var playButtonStyle
     
     let item: PlayableItem
     let color: Color?
@@ -39,7 +40,23 @@ struct PlayButton: View {
         
         return colorScheme == .dark ? .white : .black
     }
-    private var labelImage: String {
+    
+    private var label: String {
+        if progressEntity.progress >= 1 {
+            return String(localized: "listen.again")
+        }
+        
+        if progressEntity.progress > 0 {
+            return String(localized: "resume")
+        }
+        
+        if item.type == .audiobook {
+            return String(localized: "listen")
+        }
+        
+        return String(localized: "play")
+    }
+    private var icon: String {
         if item == AudioPlayer.shared.item {
             return AudioPlayer.shared.playing ? "waveform" : "pause.fill"
         } else {
@@ -47,9 +64,48 @@ struct PlayButton: View {
         }
     }
     
-    var body: some View {
-        let label = item as? Audiobook != nil ? String(localized: "listen") : String(localized: "play")
-        
+    @ViewBuilder
+    var labelContent: some View {
+        ZStack {
+            Label(String("FFS"), systemImage: "waveform")
+                .hidden()
+            
+            if progressEntity.progress > 0 && progressEntity.progress < 1 {
+                Label {
+                    Text(label)
+                    + Text(verbatim: " • ")
+                    + Text((progressEntity.duration - progressEntity.currentTime), format: .duration(unitsStyle: .short))
+                } icon: {
+                    if loading {
+                        ProgressIndicator()
+                            .padding(.trailing, 4)
+                    } else {
+                        ZStack {
+                            Group {
+                                Image(systemName: "waveform")
+                                Image(systemName: "play.fill")
+                                Image(systemName: "pause.fill")
+                            }
+                            .hidden()
+                            
+                            Label("playing", systemImage: icon)
+                                .labelStyle(.iconOnly)
+                                .contentTransition(.symbolEffect(.replace.downUp.byLayer))
+                                .symbolEffect(.variableColor.iterative, isActive: icon == "waveform")
+                        }
+                    }
+                }
+            } else {
+                Label(label, systemImage: icon)
+            }
+        }
+        .contentShape(.rect)
+        .transition(.opacity)
+        .animation(.smooth, value: progressEntity.progress)
+    }
+    
+    @ViewBuilder
+    var menuContent: some View {
         Menu {
             ControlGroup {
                 Button {
@@ -58,15 +114,7 @@ struct PlayButton: View {
                     Label("queue.play", systemImage: "play.fill")
                 }
                 
-                Button {
-                    AudioPlayer.shared.queue(item)
-                } label: {
-                    Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
-                    
-                    if let last = AudioPlayer.shared.queue.last {
-                        Text(last.name)
-                    }
-                }
+                QueueButton(item: item)
             }
             
             Divider()
@@ -91,36 +139,7 @@ struct PlayButton: View {
                 }
             }
         } label: {
-            ZStack {
-                Label(String("FFS"), systemImage: "waveform")
-                    .hidden()
-                
-                if progressEntity.progress > 0 && progressEntity.progress < 1 {
-                    Label {
-                        Text(label)
-                        + Text(verbatim: " • ")
-                        + Text((progressEntity.duration - progressEntity.currentTime), format: .duration(unitsStyle: .short))
-                    } icon: {
-                        if loading {
-                            ProgressIndicator()
-                        } else {
-                            Label("playing", systemImage: labelImage)
-                                .labelStyle(.iconOnly)
-                                .frame(width: 25)
-                                .contentTransition(.symbolEffect(.replace.downUp.byLayer))
-                                .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform")
-                        }
-                    }
-                } else {
-                    Label(label, systemImage: labelImage)
-                }
-            }
-            .font(.headline)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .contentShape(.rect)
-            .transition(.opacity)
-            .animation(.smooth, value: progressEntity.progress)
+            playButtonStyle.makeLabel(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
             if AudioPlayer.shared.item == item {
                 AudioPlayer.shared.playing.toggle()
@@ -130,26 +149,22 @@ struct PlayButton: View {
             play()
         }
         .foregroundColor(background.isLight ? .black : .white)
-        .background {
-            ZStack {
-                RFKVisuals.adjust(background, saturation: 0, brightness: -0.8)
-                
-                GeometryReader { geometry in
-                    Rectangle()
-                        .fill(background.isLight ? .white : .black)
-                        .opacity(0.2)
-                        .frame(width: geometry.size.width * progressEntity.progress)
-                        .animation(.smooth, value: progressEntity.progress)
-                }
-            }
-        }
         .animation(.smooth, value: color)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-        .modifier(ButtonHoverEffectModifier(cornerRadius: 8, hoverEffect: .lift))
         .popoverTip(PlayButtonTip())
     }
     
-    func play() {
+    var body: some View {
+        playButtonStyle.makeMenu(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: menuContent)))
+            .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
+            .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
+    }
+    
+    public func playButtonStyle(_ playButtonStyle: any PlayButtonStyle) -> some View {
+        self
+            .environment(\.playButtonStyle, .init(style: playButtonStyle))
+    }
+    
+    private func play() {
         if loading {
             return
         }
@@ -167,6 +182,122 @@ struct PlayButton: View {
             loading = false
         }
     }
+}
+
+internal protocol PlayButtonStyle {
+    associatedtype MenuBody: View
+    associatedtype LabelBody: View
+    
+    typealias Configuration = PlayButtonConfiguration
+    
+    func makeMenu(configuration: Self.Configuration) -> Self.MenuBody
+    func makeLabel(configuration: Self.Configuration) -> Self.LabelBody
+    
+    var cornerRadius: CGFloat { get }
+}
+internal extension PlayButtonStyle where Self == LargePlayButtonStyle {
+    static var large: LargePlayButtonStyle { .init() }
+}
+internal extension PlayButtonStyle where Self == MediumPlayButtonStyle {
+    static var medium: MediumPlayButtonStyle { .init() }
+}
+
+internal struct AnyLargePlayButtonStyle: PlayButtonStyle {
+    private var _makeMenu: (Configuration) -> AnyView
+    private var _makeLabel: (Configuration) -> AnyView
+    
+    private var _cornerRadius: CGFloat
+    
+    init<S: PlayButtonStyle>(style: S) {
+        _makeMenu = { configuration in
+            AnyView(style.makeMenu(configuration: configuration))
+        }
+        _makeLabel = { configuration in
+            AnyView(style.makeLabel(configuration: configuration))
+        }
+        
+        _cornerRadius = style.cornerRadius
+    }
+    
+    func makeMenu(configuration: Configuration) -> some View {
+        _makeMenu(configuration)
+    }
+    func makeLabel(configuration: Configuration) -> some View {
+        _makeLabel(configuration)
+    }
+    
+    var cornerRadius: CGFloat {
+        _cornerRadius
+    }
+}
+
+internal struct LargePlayButtonStyle: PlayButtonStyle {
+    func makeMenu(configuration: Configuration) -> some View {
+        configuration.content
+            .background {
+                ZStack {
+                    RFKVisuals.adjust(configuration.background, saturation: 0, brightness: -0.8)
+                    
+                    GeometryReader { geometry in
+                        Rectangle()
+                            .fill(configuration.background.isLight ? .white : .black)
+                            .opacity(0.2)
+                            .frame(width: geometry.size.width * configuration.progress)
+                            .animation(.smooth, value: configuration.progress)
+                    }
+                }
+            }
+    }
+    
+    func makeLabel(configuration: Configuration) -> some View {
+        configuration.content
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+    }
+    
+    var cornerRadius: CGFloat {
+        8
+    }
+}
+internal struct MediumPlayButtonStyle: PlayButtonStyle {
+    func makeMenu(configuration: Configuration) -> some View {
+        configuration.content
+            .imageScale(.small)
+            .bold()
+            .font(.footnote)
+            .frame(maxWidth: 240)
+            .background(configuration.background.isLight ? .black : .white)
+    }
+    
+    func makeLabel(configuration: Configuration) -> some View {
+        configuration.content
+            .foregroundStyle(configuration.background.isLight ? .white : .black)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity)
+    }
+    
+    var cornerRadius: CGFloat {
+        12
+    }
+}
+
+internal struct PlayButtonConfiguration {
+    let progress: Percentage
+    let background: Color
+    
+    struct Content: View {
+        init<Content: View>(content: Content) {
+            body = AnyView(content)
+        }
+        
+        var body: AnyView
+    }
+    
+    let content: PlayButtonConfiguration.Content
+}
+private extension EnvironmentValues {
+    @Entry var playButtonStyle: AnyLargePlayButtonStyle = .init(style: LargePlayButtonStyle())
 }
 
 private struct PlayButtonTip: Tip {
@@ -188,5 +319,14 @@ private struct PlayButtonTip: Tip {
 }
 
 #Preview {
-    PlayButton(item: Audiobook.fixture, color: .yellow)
+    VStack {
+        PlayButton(item: Audiobook.fixture, color: .accent)
+            .playButtonStyle(.medium)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(.accent)
+}
+#Preview {
+    PlayButton(item: Audiobook.fixture, color: .accent)
+        .playButtonStyle(.large)
 }

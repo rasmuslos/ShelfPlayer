@@ -25,15 +25,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                     Label("play", systemImage: "play.fill")
                 }
                 
-                Button {
-                    AudioPlayer.shared.queue(audiobook)
-                } label: {
-                    Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
-                    
-                    if let last = AudioPlayer.shared.queue.last {
-                        Text(last.name)
-                    }
-                }
+                QueueButton(item: audiobook)
                 
                 Divider()
                 

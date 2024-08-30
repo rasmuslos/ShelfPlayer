@@ -14,7 +14,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
     
     let episode: Episode
     
-    private var offline: Bool {
+    private var isOffline: Bool {
         libraryId == "offline"
     }
     
@@ -29,28 +29,31 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     Label("play", systemImage: "play")
                 }
                 
+                QueueButton(item: episode)
+                
                 Divider()
                 
                 NavigationLink(destination: EpisodeView(episode)) {
                     Label("episode.view", systemImage: "waveform")
                 }
-                .disabled(offline)
+                .disabled(isOffline)
+                
                 NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {
                     Label("podcast.view", systemImage: "tray.full")
                 }
-                .disabled(offline)
+                .disabled(isOffline)
                 
                 Divider()
                 
                 ProgressButton(item: episode)
                 DownloadButton(item: episode)
             } preview: {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 8) {
                     ItemImage(image: episode.cover)
                         .frame(height: 50)
                     
                     Group {
-                        let durationText = Text("duration") // Text(episode.duration.timeLeft(spaceConstrained: false, includeText: false))
+                        let durationText = Text(episode.duration, format: .duration)
                         
                         if let releaseDate = episode.releaseDate {
                             Text(releaseDate, style: .date)
@@ -62,17 +65,16 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     }
                     .font(.caption.smallCaps())
                     .foregroundStyle(.secondary)
-                    .padding(.top, 5)
+                    .padding(.top, 4)
                     
                     Group {
                         Text(episode.name)
                             .font(.headline)
                         
                         Text(episode.podcastName)
+                            .lineLimit(1)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            .padding(.bottom, 5)
                         
                         Text(episode.descriptionText ?? "description.unavailable")
                     }
@@ -86,5 +88,5 @@ struct EpisodeContextMenuModifier: ViewModifier {
 
 #Preview {
     Text(":)")
-        .modifier(EpisodeContextMenuModifier(episode: Episode.fixture))
+        .modifier(EpisodeContextMenuModifier(episode: .fixture))
 }

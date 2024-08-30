@@ -19,7 +19,7 @@ public final class Episode: PlayableItem {
         self.podcastName = podcastName
         self.index = index
         
-        super.init(id: id, libraryId: libraryId, name: name, author: author, description: description, cover: cover, genres: [], addedAt: addedAt, released: released, size: size, duration: duration)
+        super.init(id: id, libraryId: libraryId, type: .episode, name: name, author: author, description: description, cover: cover, genres: [], addedAt: addedAt, released: released, size: size, duration: duration)
     }
 }
 

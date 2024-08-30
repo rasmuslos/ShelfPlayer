@@ -9,7 +9,9 @@ import SwiftUI
 
 struct PodcastUnavailableView: View {
     var body: some View {
-        ContentUnavailableView("error.unavailable.podcast", systemImage: "tray.full", description: Text("error.unavailable.text"))
+        UnavailableWrapper {
+            ContentUnavailableView("error.unavailable.podcast", systemImage: "tray.full", description: Text("error.unavailable.text"))
+        }
     }
 }
 

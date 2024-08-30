@@ -14,12 +14,11 @@ internal struct AuthorLoadView: View {
     let authorId: String
     
     @State private var failed = false
-    @State private var author: Author?
-    @State private var audiobooks = [Audiobook]()
+    @State private var author: (Author, [Audiobook])?
     
     var body: some View {
         if let author = author {
-            AuthorView(author, audiobooks: audiobooks)
+            AuthorView(author.0, audiobooks: author.1)
         } else if failed {
             AuthorUnavailableView()
                 .refreshable {
@@ -34,7 +33,7 @@ internal struct AuthorLoadView: View {
     }
     
     private nonisolated func loadAuthor() async {
-        guard let data = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryId: libraryId) else {
+        guard let author = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryId: libraryId) else {
             await MainActor.run {
                 failed = true
             }
@@ -43,8 +42,7 @@ internal struct AuthorLoadView: View {
         }
         
         await MainActor.withAnimation {
-            audiobooks = data.1
-            author = data.0
+            self.author = (author.0, author.1)
         }
     }
 }

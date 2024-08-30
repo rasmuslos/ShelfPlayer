@@ -77,10 +77,6 @@ internal extension AudiobookViewModel {
             }
         }
     }
-    @MainActor
-    func queue() {
-        AudioPlayer.shared.queue(audiobook)
-    }
     
     func resetProgress() {
         Task {
@@ -96,7 +92,7 @@ internal extension AudiobookViewModel {
 }
 
 private extension AudiobookViewModel {
-    private func loadAudiobook() async {
+    func loadAudiobook() async {
         if let (item, _, chapters) = try? await AudiobookshelfClient.shared.item(itemId: audiobook.id, episodeId: nil) {
             await MainActor.withAnimation {
                 self.audiobook = item as! Audiobook
@@ -105,7 +101,7 @@ private extension AudiobookViewModel {
         }
     }
     
-    private func loadAuthor() async {
+    func loadAuthor() async {
         guard let author = await audiobook.author, let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: libraryId) else {
             return
         }
@@ -123,7 +119,7 @@ private extension AudiobookViewModel {
         }
     }
     
-    private func loadSeries() async {
+    func loadSeries() async {
         let seriesId: String
         
         if let id = await audiobook.series.first?.id {
@@ -143,7 +139,7 @@ private extension AudiobookViewModel {
         }
     }
     
-    private func loadNarrator() async {
+    func loadNarrator() async {
         guard let narratorName = await audiobook.narrator else {
             return
         }
@@ -157,7 +153,7 @@ private extension AudiobookViewModel {
         }
     }
     
-    private func extractColor() async {
+    func extractColor() async {
         guard let url = await audiobook.cover?.url else {
             return
         }
