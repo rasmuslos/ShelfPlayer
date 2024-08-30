@@ -41,7 +41,7 @@ struct ChaptersList: View {
                 Text("\(chapters.count) chapters")
                     .font(.headline)
             }
-            .foregroundStyle(.primary)
+            .disclosureGroupStyle(ChapterDisclosureStyle())
         }
     }
 }
@@ -98,9 +98,10 @@ private struct Row: View {
                     ProgressIndicator()
                         .scaleEffect(0.5)
                 } else {
-                    Text((chapter.end - chapter.start), format: .duration(allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                    Text(chapter.start, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                        .font(.caption)
+                        .fontDesign(.monospaced)
                         .foregroundStyle(.secondary)
-                        .font(.callout)
                 }
             }
             .lineLimit(1)
@@ -112,7 +113,7 @@ private struct Row: View {
     
 }
 
-private struct DisclosureGroupStepHeaderStyle: DisclosureGroupStyle {
+private struct ChapterDisclosureStyle: DisclosureGroupStyle {
     func makeBody(configuration: Configuration) -> some View {
         VStack(spacing: 0) {
             Button {
@@ -144,12 +145,14 @@ private struct DisclosureGroupStepHeaderStyle: DisclosureGroupStyle {
 }
 
 #Preview {
-    ChaptersList(item: Audiobook.fixture, chapters: [
-        .init(id: 1, start: 0000, end: 1000, title: "Chapter 1 TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT"),
-        .init(id: 2, start: 1001, end: 2000, title: "Chapter 2"),
-        .init(id: 3, start: 2001, end: 3000, title: "Chapter 3"),
-        .init(id: 4, start: 3001, end: 4000, title: "Chapter 4"),
-        .init(id: 5, start: 4001, end: 5000, title: "Chapter 5"),
-    ])
-    .padding()
+    ScrollView {
+        ChaptersList(item: Audiobook.fixture, chapters: [
+            .init(id: 1, start: 0000, end: 1000, title: "Chapter 1 TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT"),
+            .init(id: 2, start: 1001, end: 2000, title: "Chapter 2"),
+            .init(id: 3, start: 2001, end: 3000, title: "Chapter 3"),
+            .init(id: 4, start: 3001, end: 4000, title: "Chapter 4"),
+            .init(id: 5, start: 4001, end: 5000, title: "Chapter 5"),
+        ])
+        .padding()
+    }
 }
