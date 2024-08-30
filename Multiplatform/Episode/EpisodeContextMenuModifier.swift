@@ -31,7 +31,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                NavigationLink(destination: EpisodeView(episode: episode)) {
+                NavigationLink(destination: EpisodeView(episode)) {
                     Label("episode.view", systemImage: "waveform")
                 }
                 .disabled(offline)

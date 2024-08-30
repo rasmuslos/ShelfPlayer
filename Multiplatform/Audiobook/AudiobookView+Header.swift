@@ -17,10 +17,8 @@ internal extension AudiobookView {
             @Bindable var viewModel = viewModel
             
             ZStack(alignment: .top) {
-                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -90 : -240,
-                                     backgroundColor: .clear,
-                                     navigationBarVisible: $viewModel.navigationBarVisible)
-                .frame(height: 0)
+                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -90 : -240, backgroundColor: .clear, navigationBarVisible: $viewModel.navigationBarVisible)
+                    .frame(height: 0)
                 
                 ViewThatFits {
                     RegularPresentation()
@@ -38,7 +36,7 @@ private struct Title: View {
     let alignment: HorizontalAlignment
     
     var body: some View {
-        VStack(alignment: alignment, spacing: 2) {
+        VStack(alignment: alignment, spacing: 4) {
             Text(viewModel.audiobook.name)
                 .font(largeFont ? .title : .headline)
                 .modifier(SerifModifier())
@@ -89,7 +87,7 @@ private struct Title: View {
                         Text(verbatim: " • ")
                     }
                     
-                    Text(viewModel.audiobook.duration.formatted(.duration))
+                    Text(viewModel.audiobook.duration, format: .duration)
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -175,7 +173,7 @@ private struct RegularPresentation: View {
                 Color.clear
                     .frame(minWidth: 280)
                     .overlay {
-                        VStack(alignment: .leading, spacing: 5) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Spacer()
                             
                             SeriesName()
@@ -190,19 +188,6 @@ private struct RegularPresentation: View {
             }
         }
         .padding(.top, 12)
-    }
-}
-
-private extension HorizontalAlignment {
-    var textAlignment: TextAlignment {
-        switch self {
-            case .leading:
-                    .leading
-            case .trailing:
-                    .trailing
-            default:
-                    .center
-        }
     }
 }
 

@@ -9,38 +9,44 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct EpisodeView: View {
-    let episode: Episode
+    @State private var viewModel: EpisodeViewModel
     
-    @State var navigationBarVisible = false
-    @State var imageColors = ImageColors()
+    init(_ episode: Episode) {
+        _viewModel = .init(initialValue: .init(episode: episode))
+    }
     
     var body: some View {
         ScrollView {
-            Header(episode: episode, imageColors: imageColors, navigationBarVisible: $navigationBarVisible)
+            Header()
             
-            Description(description: episode.description)
-                .padding(.vertical, 10)
+            Description(description: viewModel.episode.description)
+                .padding(.vertical, 12)
                 .padding(.horizontal, 20)
         }
         .ignoresSafeArea(edges: .top)
+        .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .modifier(NowPlaying.SafeAreaModifier())
-        .modifier(ToolbarModifier(episode: episode, navigationBarVisible: navigationBarVisible, imageColors: imageColors))
+        .modifier(ToolbarModifier())
+        .environment(viewModel)
+        .task {
+            await viewModel.load()
+        }
         .userActivity("io.rfk.shelfplayer.episode") {
-            $0.title = episode.name
+            $0.title = viewModel.episode.name
             $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = convertIdentifier(item: episode)
-            $0.targetContentIdentifier = "episode:\(episode.id)::\(episode.podcastId)"
+            $0.persistentIdentifier = convertIdentifier(item: viewModel.episode)
+            $0.targetContentIdentifier = "episode:\(viewModel.episode.id)::\(viewModel.episode.podcastId)"
             $0.userInfo = [
-                "episodeId": episode.id,
-                "podcastId": episode.podcastId,
+                "episodeId": viewModel.episode.id,
+                "podcastId": viewModel.episode.podcastId,
             ]
-            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: episode.podcastId)
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.episode.podcastId)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        EpisodeView(episode: Episode.fixture)
+        EpisodeView(.fixture)
     }
 }

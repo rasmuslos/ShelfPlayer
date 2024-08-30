@@ -38,7 +38,7 @@ public extension AudiobookshelfClient {
             throw ClientError.invalidResponse
         }
             
-        return (podcast, episodes.compactMap(Episode.init))
+        return (podcast, episodes.compactMap { Episode(episode: $0, item: item) })
         
     }
     

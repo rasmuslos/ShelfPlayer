@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import TipKit
 import Defaults
 import ShelfPlayerKit
 
