@@ -20,19 +20,20 @@ class IntentHandler: INExtension {
         }
         
         var results = [Item]()
+        let performOfflineSearch = mediaSearch.reference == .my
         
         if mediaSearch.mediaType != .unknown && !(mediaSearch.mediaType == .audioBook || mediaSearch.mediaType == .podcastShow || mediaSearch.mediaType == .podcastEpisode) {
             throw SearchError.unsupportedMediaType
         }
         
         if mediaSearch.mediaType == .audioBook || mediaSearch.mediaType == .unknown {
-            if let audiobooks = try? await MediaResolver.shared.search(audiobookName: primaryName, author: mediaSearch.artistName) {
+            if let audiobooks = try? await MediaResolver.shared.search(audiobookName: primaryName, author: mediaSearch.artistName, runOffline: performOfflineSearch) {
                 results += audiobooks
             }
         }
         
         if mediaSearch.mediaType == .podcastShow || mediaSearch.mediaType == .unknown {
-            if let podcasts = try? await MediaResolver.shared.search(podcastName: primaryName, author: mediaSearch.artistName) {
+            if let podcasts = try? await MediaResolver.shared.search(podcastName: primaryName, author: mediaSearch.artistName, runOffline: performOfflineSearch) {
                 results += podcasts
             }
         }
