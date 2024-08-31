@@ -18,7 +18,7 @@ struct AudiobookList: View {
             NavigationLink(destination: AudiobookView(audiobook)) {
                 Row(audiobook: audiobook)
             }
-            .modifier(SwipeActionsModifier(item: audiobook))
+            .modifier(SwipeActionsModifier(item: audiobook, loading: .constant(false)))
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         }
     }
