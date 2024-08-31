@@ -158,16 +158,6 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Continue with next episode</string>
-			<key>Key</key>
-			<string>podcastNextUp</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
 			<string>Smart rewind</string>
 			<key>Key</key>
 			<string>smartRewind</string>
@@ -229,24 +219,6 @@
 				<string>90</string>
 				<string>120</string>
 			</array>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Siri integration</string>
-			<key>FooterText</key>
-			<string>Enabling offline mode will prevent Siri from discovering items that are not downloaded. If you request an episode Siri will always use the offline mode due to Audiobookshelf API limitations</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Siri offline mode</string>
-			<key>Key</key>
-			<string>siriOfflineMode</string>
-			<key>DefaultValue</key>
-			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>

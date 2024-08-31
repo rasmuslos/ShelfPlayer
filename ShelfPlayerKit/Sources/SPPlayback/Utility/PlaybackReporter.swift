@@ -64,6 +64,10 @@ internal extension PlaybackReporter {
         // report every 30 seconds
         if Int(currentTime) % 30 == 0 || forceReport {
             reportProgress()
+        } else if currentTime.truncatingRemainder(dividingBy: 1) < 0.3 {
+            Task {
+                await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
+            }
         }
     }
     func reportProgress(playing: Bool, currentTime: TimeInterval, duration: TimeInterval) {
