@@ -83,6 +83,10 @@ struct ContentView: View {
                                 try? await OfflineManager.shared.attemptListeningTimeSync()
                             }
                             
+                            NetworkMonitor.shared.start() {
+                                state = .sessionImport
+                            }
+                            
                             #if ENABLE_ALL_FEATURES
                             INPreferences.requestSiriAuthorization { _ in }
                             #endif

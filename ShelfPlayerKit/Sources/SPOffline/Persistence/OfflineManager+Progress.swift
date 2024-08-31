@@ -144,6 +144,16 @@ internal extension OfflineManager {
 // MARK: Public (Higher order)
 
 public extension OfflineManager {
+    var hasCachedChanges: Bool {
+        let entities = try? progressEntities().filter { $0.progressType == .localCached }
+        
+        guard let count = entities?.count else {
+            return false
+        }
+        
+        return count > 0
+    }
+    
     func progressEntity(item: Item) -> ItemProgress {
         progressEntity(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID)
     }
