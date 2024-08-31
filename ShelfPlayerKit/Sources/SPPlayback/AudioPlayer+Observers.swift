@@ -9,6 +9,7 @@ import Foundation
 import Defaults
 import AVKit
 import UIKit
+import Defaults
 import SPFoundation
 
 internal extension AudioPlayer {
@@ -101,6 +102,24 @@ internal extension AudioPlayer {
             for await value in Defaults.updates(.enableChapterTrack) {
                 enableChapterTrack = value
                 updateChapterIndex()
+            }
+        }
+        
+        Timer.scheduledTimer(withTimeInterval: 60 * 10, repeats: true) { _ in
+            guard let lastPause = self.lastPause else {
+                return
+            }
+            
+            let timeout: Double = Defaults[.endPlaybackTimeout] - 10
+            
+            guard timeout > 0 else {
+                return
+            }
+            
+            let elapsed = Date().timeIntervalSince(lastPause)
+            
+            if elapsed > timeout {
+                self.stop()
             }
         }
     }

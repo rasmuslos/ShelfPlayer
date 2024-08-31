@@ -222,6 +222,31 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Stop inactive after</string>
+			<key>Key</key>
+			<string>endPlaybackTimeout</string>
+			<key>DefaultValue</key>
+			<string>10</string>
+			<key>Values</key>
+			<array>
+				<string>10</string>
+				<string>20</string>
+				<string>30</string>
+				<string>60</string>
+				<string>-1</string>
+			</array>
+			<key>Titles</key>
+			<array>
+				<string>10 minutes</string>
+				<string>20 minutes</string>
+				<string>30 minutes</string>
+				<string>Never</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string></string>
