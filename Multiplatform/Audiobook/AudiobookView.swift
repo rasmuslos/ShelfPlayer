@@ -87,8 +87,10 @@ internal struct AudiobookView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         AudiobookView(.fixture)
     }
 }
+#endif

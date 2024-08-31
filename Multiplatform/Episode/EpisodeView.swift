@@ -51,8 +51,10 @@ struct EpisodeView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         EpisodeView(.fixture)
     }
 }
+#endif

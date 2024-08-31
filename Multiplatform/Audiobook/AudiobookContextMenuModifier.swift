@@ -99,7 +99,9 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
     }
 }
 
+#if DEBUG
 #Preview {
     Text(verbatim: ":)")
         .modifier(AudiobookContextMenuModifier(audiobook: Audiobook.fixture))
 }
+#endif

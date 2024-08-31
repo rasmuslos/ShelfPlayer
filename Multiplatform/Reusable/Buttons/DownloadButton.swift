@@ -97,6 +97,7 @@ private struct TintModifier: ViewModifier {
     }
 }
 
+#if DEBUG
 #Preview {
     DownloadButton(item: Audiobook.fixture)
 }
@@ -127,3 +128,4 @@ private struct TintModifier: ViewModifier {
             }
     }
 }
+#endif

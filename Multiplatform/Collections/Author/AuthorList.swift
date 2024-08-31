@@ -37,6 +37,7 @@ extension AuthorList {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         List {
@@ -45,3 +46,4 @@ extension AuthorList {
         .listStyle(.plain)
     }
 }
+#endif

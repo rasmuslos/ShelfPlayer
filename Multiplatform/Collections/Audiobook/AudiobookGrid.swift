@@ -89,6 +89,7 @@ struct AudiobookHGrid: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         ScrollView {
@@ -126,4 +127,4 @@ struct AudiobookHGrid: View {
         }
     }
 }
-
+#endif

@@ -46,6 +46,7 @@ extension PodcastList {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         List {
@@ -60,3 +61,4 @@ extension PodcastList {
         }
     }
 }
+#endif

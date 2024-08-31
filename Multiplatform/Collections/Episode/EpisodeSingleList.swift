@@ -63,6 +63,7 @@ extension EpisodeSingleList {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         List {
@@ -71,3 +72,4 @@ extension EpisodeSingleList {
         .listStyle(.plain)
     }
 }
+#endif

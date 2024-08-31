@@ -59,6 +59,7 @@ struct EpisodeGrid: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         EpisodeGrid(episodes: [
@@ -73,3 +74,4 @@ struct EpisodeGrid: View {
         ])
     }
 }
+#endif

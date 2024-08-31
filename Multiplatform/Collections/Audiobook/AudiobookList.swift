@@ -105,6 +105,7 @@ private struct Row: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         List {
@@ -113,3 +114,4 @@ private struct Row: View {
         .listStyle(.plain)
     }
 }
+#endif

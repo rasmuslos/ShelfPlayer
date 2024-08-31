@@ -54,6 +54,7 @@ extension SeriesList {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         List {
@@ -62,3 +63,4 @@ extension SeriesList {
         .listStyle(.plain)
     }
 }
+#endif

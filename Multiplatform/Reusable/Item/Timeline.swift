@@ -171,6 +171,7 @@ private struct Position: View {
 
 extension Date.RelativeFormatStyle: @retroactive Then {}
 
+#if DEBUG
 #Preview {
     @Previewable @State var previewSessions: [ListeningSession] = []
     
@@ -185,3 +186,4 @@ extension Date.RelativeFormatStyle: @retroactive Then {}
         }
     }
 }
+#endif
