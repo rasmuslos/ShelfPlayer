@@ -12,9 +12,11 @@ import Defaults
 import ShelfPlayerKit
 
 struct ContentView: View {
+    @Namespace private var namespace
     @Default(.tintColor) private var tintColor
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
+    @State private var viewModel: NowPlaying.ViewModel = .init()
     @State private var state: Step = AudiobookshelfClient.shared.authorized ? .sessionImport : .login
     
     private var navigationController: some View {
@@ -42,6 +44,7 @@ struct ContentView: View {
                     }
                 case .library:
                     navigationController
+                        .environment(viewModel)
                         .onContinueUserActivity("io.rfk.shelfplayer.audiobook") { activity in
                             guard let identifier = activity.persistentIdentifier else {
                                 return
@@ -93,16 +96,20 @@ struct ContentView: View {
                         }
                 case .offline:
                     OfflineView()
+                        .environment(viewModel)
             }
         }
         .tint(tintColor.color)
-        .onReceive(NotificationCenter.default.publisher(for: Library.changeLibraryNotification), perform: { notification in
+        .onAppear {
+            viewModel.namespace = namespace
+        }
+        .onChange(of: AudiobookshelfClient.shared.authorized) {
+            state = AudiobookshelfClient.shared.authorized ? .sessionImport : .login
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Library.changeLibraryNotification)) { notification in
             if let offline = notification.userInfo?["offline"] as? Bool {
                 state = offline ? .offline : .sessionImport
             }
-        })
-        .onChange(of: AudiobookshelfClient.shared.authorized) {
-            state = AudiobookshelfClient.shared.authorized ? .sessionImport : .login
         }
     }
 }

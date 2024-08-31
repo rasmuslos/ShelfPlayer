@@ -48,6 +48,9 @@ public extension AudioPlayer {
         clearNowPlayingMetadata()
         
         audioPlayer.removeAllItems()
+        
+        NotificationCenter.default.post(name: Self.itemDidChangeNotification, object: nil)
+        NotificationCenter.default.post(name: Self.queueDidChangeNotification, object: nil)
     }
     
     func seek(to: TimeInterval, inCurrentChapter: Bool = false) async {

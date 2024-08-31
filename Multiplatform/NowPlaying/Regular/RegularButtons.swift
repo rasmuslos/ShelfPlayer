@@ -17,9 +17,6 @@ extension NowPlaying.RegularView {
         
         var body: some View {
             HStack {
-                NowPlaying.AirPlayPicker()
-                    .frame(width: 35)
-                
                 Spacer()
                 
                 PlaybackSpeedButton()
