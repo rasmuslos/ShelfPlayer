@@ -96,9 +96,11 @@ struct ItemImage: View {
     }
 }
 
+#if DEBUG
 #Preview {
     ItemImage(image: Audiobook.fixture.cover)
 }
 #Preview {
     ItemImage(image: nil)
 }
+#endif

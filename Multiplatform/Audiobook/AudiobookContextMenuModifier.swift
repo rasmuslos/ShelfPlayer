@@ -65,13 +65,13 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                         .modifier(SerifModifier())
                     
                     if let author = audiobook.author {
-                        Text("readBy \(author)")
+                        Text(author)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
                     
                     if let narrator = audiobook.narrator {
-                        Text(narrator)
+                        Text("readBy \(narrator)")
                             .font(.subheadline)
                             .foregroundStyle(.tertiary)
                     }

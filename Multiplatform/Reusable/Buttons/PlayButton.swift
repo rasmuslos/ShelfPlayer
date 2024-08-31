@@ -154,9 +154,11 @@ internal struct PlayButton: View {
     }
     
     var body: some View {
-        playButtonStyle.makeMenu(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: menuContent)))
-            .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
-            .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
+        Group {
+            playButtonStyle.makeMenu(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: menuContent)))
+                .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
+                .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
+        }
     }
     
     public func playButtonSize(_ playButtonStyle: any PlayButtonStyle) -> some View {
@@ -195,14 +197,14 @@ internal protocol PlayButtonStyle {
     
     var cornerRadius: CGFloat { get }
 }
-internal extension PlayButtonStyle where Self == LargePlayButtonStyle {
+extension PlayButtonStyle where Self == LargePlayButtonStyle {
     static var large: LargePlayButtonStyle { .init() }
 }
-internal extension PlayButtonStyle where Self == MediumPlayButtonStyle {
+extension PlayButtonStyle where Self == MediumPlayButtonStyle {
     static var medium: MediumPlayButtonStyle { .init() }
 }
 
-internal struct AnyLargePlayButtonStyle: PlayButtonStyle {
+private struct AnyLargePlayButtonStyle: PlayButtonStyle {
     private var _makeMenu: (Configuration) -> AnyView
     private var _makeLabel: (Configuration) -> AnyView
     
