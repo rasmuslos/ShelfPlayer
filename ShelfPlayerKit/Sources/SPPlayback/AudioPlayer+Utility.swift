@@ -75,48 +75,53 @@ internal extension AudioPlayer {
             throw AudioPlayerError.missing
         }
         
-        #if canImport(SPOfflineExtended)
-        if OfflineManager.shared.offlineStatus(parentId: item.id) == .downloaded {
-            tracks = try OfflineManager.shared.audioTracks(parentId: item.id)
-            chapters = try OfflineManager.shared.chapters(itemId: item.id)
+        var tracks = [PlayableItem.AudioTrack]()
+        var chapters = [PlayableItem.Chapter]()
+        
+        let startTime: TimeInterval
+        
+        // Try to start playback sessions
+        do {
+            let playbackSessionId: String
+            playbackReporter = nil
             
-            var startTime: TimeInterval = .zero
-            
+            (tracks, chapters, startTime, playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID)
+            playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID, playbackSessionId: playbackSessionId)
+        } catch {
             playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID, playbackSessionId: nil)
             
             let entity = OfflineManager.shared.progressEntity(item: item)
-            if entity.progress < 1 {
-                startTime = entity.currentTime
+            
+            if entity.progress >= 1 {
+                startTime = 0
+            } else {
+                var currentTime = entity.currentTime
                 
                 if entity.lastUpdate.timeIntervalSince(Date()) >= 10 * 60 {
-                    startTime -= 30
+                    currentTime -= 30
                 }
                 
-                startTime = max(startTime, 0)
+                startTime = max(currentTime, 0)
             }
-            
-            return startTime
+        }
+        
+        #if canImport(SPOfflineExtended)
+        if OfflineManager.shared.offlineStatus(parentId: item.id) == .downloaded {
+            // Overwrite remote URLs
+            tracks = try OfflineManager.shared.audioTracks(parentId: item.id)
+            chapters = try OfflineManager.shared.chapters(itemId: item.id)
         }
         #endif
         
-        let startTime: TimeInterval
-        let playbackSessionId: String
-        
-        if let episodeID = item.identifiers.episodeID {
-            (tracks,
-             chapters,
-             startTime,
-             playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: item.identifiers.itemID, episodeId: episodeID)
+        guard !tracks.isEmpty else {
+            // Could not receive playback session and item is not downloaded
             
-            playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: episodeID, playbackSessionId: playbackSessionId)
-        } else {
-            (tracks,
-             chapters,
-             startTime,
-             playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: item.identifiers.itemID, episodeId: nil)
-            
-            playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: nil, playbackSessionId: playbackSessionId)
+            playbackReporter = nil
+            throw AudioPlayerError.missing
         }
+        
+        self.tracks = tracks
+        self.chapters = chapters
         
         return startTime
     }

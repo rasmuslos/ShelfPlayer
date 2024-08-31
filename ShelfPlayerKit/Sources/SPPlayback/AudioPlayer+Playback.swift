@@ -132,8 +132,8 @@ internal extension AudioPlayer {
         self.item = item
         
         do {
-            var suggested = try await retrievePlaybackSession()
-            startTime = seconds ?? suggested
+            let suggestedStartTime = try await retrievePlaybackSession()
+            startTime = seconds ?? suggestedStartTime
         } catch {
             self.item = nil
             throw error
