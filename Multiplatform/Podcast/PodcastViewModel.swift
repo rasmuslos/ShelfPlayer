@@ -70,17 +70,18 @@ internal final class PodcastViewModel {
 internal extension PodcastViewModel {
     @MainActor
     var visible: [Episode] {
-        Array(Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending).prefix(15))
+        return Array(Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending).prefix(15))
     }
     @MainActor
     var filtered: [Episode] {
         let search = search.trimmingCharacters(in: .whitespacesAndNewlines)
+        let sorted = Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         if search.isEmpty {
-            return episodes
+            return sorted
         }
         
-        return episodes.filter { $0.sortName.localizedStandardContains(search) || $0.descriptionText?.localizedStandardContains(search) == true }
+        return sorted.filter { $0.sortName.localizedStandardContains(search) || $0.descriptionText?.localizedStandardContains(search) == true }
     }
     
     @MainActor
