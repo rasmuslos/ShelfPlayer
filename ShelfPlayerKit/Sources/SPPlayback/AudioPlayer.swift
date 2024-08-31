@@ -28,7 +28,7 @@ public final class AudioPlayer {
             
             if newValue {
                 Task {
-                    if let lastPause = lastPause, lastPause.timeIntervalSince(Date()) <= -10 * 60 {
+                    if Defaults[.smartRewind], let lastPause = lastPause, lastPause.timeIntervalSince(Date()) <= -10 * 60 {
                         await seek(to: itemCurrentTime - 30)
                     }
                     
@@ -37,11 +37,8 @@ public final class AudioPlayer {
                     updateAudioSession(active: true)
                 }
             } else {
+                lastPause = Date()
                 audioPlayer.pause()
-                
-                if Defaults[.smartRewind] {
-                    lastPause = Date()
-                }
             }
             
             updateNowPlayingWidget()

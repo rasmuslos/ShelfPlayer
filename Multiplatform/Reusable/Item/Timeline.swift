@@ -152,7 +152,7 @@ private struct Time: View {
     
     var body: some View {
         Text(date, format: .dateTime.hour().minute())
-            .font(.caption)
+            .font(.caption2)
             .fontDesign(.monospaced)
             .foregroundStyle(.secondary)
             .padding(.trailing, 8)
@@ -162,7 +162,9 @@ private struct Position: View {
     let current: TimeInterval
     
     var body: some View {
-        Text(current, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute]))
+        Text(current, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+            .font(.caption)
+            .fontDesign(.monospaced)
             .foregroundStyle(.secondary)
     }
 }
