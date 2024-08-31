@@ -75,8 +75,10 @@ extension OfflineAudiobookList {
     }
 }
 
+#if DEBUG
 #Preview {
     List {
         OfflineAudiobookList(audiobooks: .init(repeating: [.fixture], count: 7))
     }
 }
+#endif

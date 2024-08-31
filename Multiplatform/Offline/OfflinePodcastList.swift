@@ -60,6 +60,7 @@ extension OfflinePodcastList {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         List {
@@ -67,3 +68,4 @@ extension OfflinePodcastList {
         }
     }
 }
+#endif
