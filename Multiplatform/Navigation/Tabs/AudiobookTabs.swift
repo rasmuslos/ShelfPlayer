@@ -67,7 +67,7 @@ struct AudiobookTabs: View {
                     Label("tab.search", systemImage: "magnifyingglass")
                 }
             }
-            .modifier(NowPlaying.CompactBarModifier())
+            .modifier(NowPlaying.CompactTabBarBackgroundModifier())
         }
         .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateNotification)) { notification in
             audiobookTab = .library

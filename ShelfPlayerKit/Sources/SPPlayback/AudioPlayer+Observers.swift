@@ -78,10 +78,6 @@ internal extension AudioPlayer {
             }
         }
         
-        NotificationCenter.default.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: nil) { _ in
-            NotificationCenter.default.post(name: AudioPlayer.routeDidChangeNotification, object: nil)
-        }
-        
         #if os(iOS)
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { _ in
             self.playbackReporter = nil

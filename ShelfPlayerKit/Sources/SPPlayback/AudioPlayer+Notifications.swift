@@ -18,6 +18,5 @@ public extension AudioPlayer {
     static let speedDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.speed")
     static let queueDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.queue")
     
-    static let routeDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.route")
     static let volumeDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.volume")
 }
