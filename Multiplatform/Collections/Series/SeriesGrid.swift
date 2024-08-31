@@ -64,6 +64,7 @@ extension SeriesGrid {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         ScrollView {
@@ -79,3 +80,4 @@ extension SeriesGrid {
         }
     }
 }
+#endif

@@ -110,7 +110,8 @@ internal extension AudioPlayer {
                 return
             }
             
-            let timeout: Double = Defaults[.endPlaybackTimeout] - 10
+            // Config values are stored in minutes, we need seconds
+            let timeout: Double = Defaults[.endPlaybackTimeout] * 60 - 10
             
             guard timeout > 0 else {
                 return

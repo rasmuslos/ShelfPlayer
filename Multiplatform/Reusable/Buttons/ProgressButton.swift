@@ -39,6 +39,8 @@ struct ProgressButton: View {
     }
 }
 
+#if DEBUG
 #Preview {
     ProgressButton(item: Episode.fixture)
 }
+#endif

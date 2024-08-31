@@ -77,6 +77,7 @@ extension AuthorGrid {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         AuthorGrid(authors: [
@@ -89,3 +90,4 @@ extension AuthorGrid {
         ])
     }
 }
+#endif

@@ -74,8 +74,10 @@ struct PodcastView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7))
     }
 }
+#endif

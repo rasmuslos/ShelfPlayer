@@ -148,6 +148,7 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         ScrollView(.horizontal) {
@@ -167,3 +168,4 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
 #Preview {
     EpisodeFeaturedGrid.EpisodeGridItem(episode: .fixture)
 }
+#endif

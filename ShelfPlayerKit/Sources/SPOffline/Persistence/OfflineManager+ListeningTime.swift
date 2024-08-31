@@ -25,7 +25,7 @@ public extension OfflineManager {
     }
     
     func attemptListeningTimeSync(tracker: OfflineListeningTimeTracker) async throws {
-        if tracker.startTime.isNaN {
+        if tracker.startTime.isNaN || tracker.duration.isNaN || tracker.duration <= 5 {
             try remove(listeningTimeTracker: tracker)
             return
         }

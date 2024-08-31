@@ -80,7 +80,7 @@ internal extension AudioPlayer {
         
         let startTime: TimeInterval
         
-        // Try to start playback sessions
+        // Try to start playback session
         do {
             let playbackSessionId: String
             playbackReporter = nil

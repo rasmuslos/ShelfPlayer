@@ -318,6 +318,7 @@ private struct PlayButtonTip: Tip {
     ]}
 }
 
+#if DEBUG
 #Preview {
     VStack {
         PlayButton(item: Audiobook.fixture, color: .accent)
@@ -330,3 +331,4 @@ private struct PlayButtonTip: Tip {
     PlayButton(item: Audiobook.fixture, color: .accent)
         .playButtonSize(.large)
 }
+#endif

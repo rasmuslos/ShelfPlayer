@@ -35,11 +35,7 @@ internal final class PlaybackReporter {
         currentTime = .nan
         lastReportedTime = Date.timeIntervalSinceReferenceDate
         
-        if playbackSessionId == nil {
-            listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
-        } else {
-            listeningTimeTracker = nil
-        }
+        listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
     }
     
     deinit {
@@ -93,9 +89,6 @@ private extension PlaybackReporter {
         Task { [self] in
             var success = true
             
-            listeningTimeTracker?.duration += timeListened
-            listeningTimeTracker?.lastUpdate = Date()
-            
             do {
                 if let playbackSessionId {
                     try await AudiobookshelfClient.shared.reportUpdate(playbackSessionId: playbackSessionId,
@@ -106,6 +99,9 @@ private extension PlaybackReporter {
                     try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
                 }
             } catch {
+                listeningTimeTracker?.duration += timeListened
+                listeningTimeTracker?.lastUpdate = Date()
+                
                 success = false
             }
             

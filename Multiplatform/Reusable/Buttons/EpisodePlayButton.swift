@@ -108,6 +108,7 @@ final class EpisodePlayButtonViewModel {
     }
 }
 
+#if DEBUG
 #Preview {
     Rectangle()
         .foregroundStyle(.black)
@@ -123,3 +124,4 @@ final class EpisodePlayButtonViewModel {
             EpisodePlayButton(episode: Episode.fixture, highlighted: true)
         }
 }
+#endif
