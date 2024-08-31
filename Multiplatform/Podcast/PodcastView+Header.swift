@@ -135,6 +135,7 @@ private struct CompactPresentation: View {
         VStack(spacing: 0) {
             ItemImage(image: viewModel.podcast.cover)
                 .frame(width: 200)
+                .shadow(radius: 8)
             
             VStack(spacing: 4) {
                 Title(largeFont: false, alignment: .center)
@@ -142,11 +143,17 @@ private struct CompactPresentation: View {
             .padding(.top, 16)
             .padding(.bottom, 16)
             
-            if let first = viewModel.visible.first {
-                PlayButton(item: first, color: nil)
-                    .playButtonStyle(.medium)
-                    .padding(.bottom, 16)
+            Group {
+                if let first = viewModel.visible.first {
+                    PlayButton(item: first, color: nil)
+                        .playButtonSize(.medium)
+                } else if viewModel.episodes.isEmpty {
+                    PlayButton(item: Episode.fixture, color: nil)
+                        .playButtonSize(.medium)
+                        .disabled(true)
+                }
             }
+            .padding(.bottom, 16)
             
             PodcastDescription()
             
