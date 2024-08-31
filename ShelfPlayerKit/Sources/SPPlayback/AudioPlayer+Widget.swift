@@ -40,8 +40,8 @@ internal extension AudioPlayer {
             return
         }
         
-        if enableChapterTrack, chapters.count > 1 {
-            nowPlayingInfo[MPMediaItemPropertyTitle] = chapter?.title
+        if enableChapterTrack, let chapter {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = chapter.title
             nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = item.name
         } else {
             nowPlayingInfo[MPMediaItemPropertyTitle] = item.name
