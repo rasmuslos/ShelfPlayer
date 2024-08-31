@@ -41,7 +41,7 @@ struct PodcastView: View {
                 .padding(.horizontal, 20)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 
-                EpisodeSingleList(episodes: viewModel.episodes)
+                EpisodeSingleList(episodes: viewModel.visible)
             }
         }
         .listStyle(.plain)

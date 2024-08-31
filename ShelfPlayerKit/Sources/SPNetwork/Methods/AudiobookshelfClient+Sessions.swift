@@ -103,7 +103,6 @@ public extension AudiobookshelfClient {
         }
         
         let response = try await request(ClientRequest<ListeningSessionsResponse>(path: path, method: "GET"))
-        print(response)
         return response.sessions
     }
     

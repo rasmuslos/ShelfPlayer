@@ -159,7 +159,7 @@ internal struct PlayButton: View {
             .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
     }
     
-    public func playButtonStyle(_ playButtonStyle: any PlayButtonStyle) -> some View {
+    public func playButtonSize(_ playButtonStyle: any PlayButtonStyle) -> some View {
         self
             .environment(\.playButtonStyle, .init(style: playButtonStyle))
     }
@@ -321,12 +321,12 @@ private struct PlayButtonTip: Tip {
 #Preview {
     VStack {
         PlayButton(item: Audiobook.fixture, color: .accent)
-            .playButtonStyle(.medium)
+            .playButtonSize(.medium)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(.accent)
 }
 #Preview {
     PlayButton(item: Audiobook.fixture, color: .accent)
-        .playButtonStyle(.large)
+        .playButtonSize(.large)
 }
