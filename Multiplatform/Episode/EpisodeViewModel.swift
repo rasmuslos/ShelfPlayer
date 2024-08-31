@@ -13,20 +13,28 @@ import ShelfPlayerKit
 @Observable
 internal final class EpisodeViewModel {
     @MainActor let episode: Episode
-    @MainActor let progressEntity: ItemProgress
+    
+    @MainActor private(set) var dominantColor: Color?
     
     @MainActor var toolbarVisible: Bool
-    @MainActor private(set) var dominantColor: Color?
+    @MainActor var sessionsVisible: Bool
+    
+    @MainActor let progressEntity: ItemProgress
+    @MainActor private(set) var sessions: [ListeningSession]
     
     @MainActor private(set) var errorNotify: Bool
     
     @MainActor
     init(episode: Episode) {
         self.episode = episode
-        progressEntity = OfflineManager.shared.progressEntity(item: episode)
+        
+        dominantColor = nil
         
         toolbarVisible = false
-        dominantColor = nil
+        sessionsVisible = false
+        
+        sessions = []
+        progressEntity = OfflineManager.shared.progressEntity(item: episode)
         
         errorNotify = false
     }
@@ -38,7 +46,7 @@ internal extension EpisodeViewModel {
             return
         }
         
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineSaturated(colors.map { $0.color }) else {
+        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
             return
         }
         
@@ -67,6 +75,18 @@ internal extension EpisodeViewModel {
                     errorNotify.toggle()
                 }
             }
+        }
+    }
+}
+
+private extension EpisodeViewModel {
+    func loadSessions() async {
+        guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: episode.podcastId, episodeID: episode.id) else {
+            return
+        }
+        
+        await MainActor.run {
+            self.sessions = sessions
         }
     }
 }

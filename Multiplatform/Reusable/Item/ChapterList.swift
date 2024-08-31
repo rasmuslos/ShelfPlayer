@@ -28,21 +28,13 @@ struct ChaptersList: View {
     }
     
     var body: some View {
-        if chapters.count > 1 {
-            DisclosureGroup {
-                List {
-                    ForEach(chapters) {
-                        Row(item: item, chapter: $0, progressEntity: progressEntity)
-                    }
-                }
-                .listStyle(.plain)
-                .frame(height: minimumHeight * CGFloat(chapters.count))
-            } label: {
-                Text("\(chapters.count) chapters")
-                    .font(.headline)
+        List {
+            ForEach(chapters) {
+                Row(item: item, chapter: $0, progressEntity: progressEntity)
             }
-            .disclosureGroupStyle(ChapterDisclosureStyle())
         }
+        .listStyle(.plain)
+        .frame(height: minimumHeight * CGFloat(chapters.count))
     }
 }
 
@@ -111,37 +103,6 @@ private struct Row: View {
         .listRowInsets(.init(top: 8, leading: 0, bottom: 8, trailing: 0))
     }
     
-}
-
-private struct ChapterDisclosureStyle: DisclosureGroupStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        VStack(spacing: 0) {
-            Button {
-                withAnimation {
-                    configuration.isExpanded.toggle()
-                }
-            } label: {
-                HStack {
-                    configuration.label
-                        .font(.headline)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.down")
-                        .font(.subheadline)
-                        .rotationEffect(.degrees(configuration.isExpanded ? 0 : -90))
-                        .animation(.linear, value: configuration.isExpanded)
-                }
-                .contentShape(.rect)
-            }
-            .buttonStyle(.plain)
-            
-            configuration.content
-                .padding(.top, 8)
-                .frame(maxHeight: configuration.isExpanded ? .infinity : 0, alignment: .top)
-                .clipped()
-        }
-    }
 }
 
 #Preview {
