@@ -104,6 +104,7 @@ struct PodcastGridItem: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         ScrollView {
@@ -120,3 +121,4 @@ struct PodcastGridItem: View {
         }
     }
 }
+#endif

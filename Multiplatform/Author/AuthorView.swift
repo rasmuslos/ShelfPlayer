@@ -114,8 +114,10 @@ struct AuthorView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         AuthorView(.fixture)
     }
 }
+#endif

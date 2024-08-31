@@ -81,8 +81,10 @@ internal struct SeriesView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         SeriesView(.fixture)
     }
 }
+#endif

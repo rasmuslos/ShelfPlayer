@@ -105,6 +105,7 @@ private struct Row: View {
     
 }
 
+#if DEBUG
 #Preview {
     ScrollView {
         ChaptersList(item: Audiobook.fixture, chapters: [
@@ -117,3 +118,4 @@ private struct Row: View {
         .padding()
     }
 }
+#endif

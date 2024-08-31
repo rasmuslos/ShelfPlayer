@@ -102,6 +102,8 @@ struct ItemStatusImage: View {
     }
 }
 
+#if DEBUG
 #Preview {
     ItemStatusImage(item: Audiobook.fixture)
 }
+#endif

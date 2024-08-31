@@ -54,8 +54,10 @@ struct OfflinePodcastView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         OfflinePodcastView(podcast: .fixture, episodes: .init(repeating: [.fixture], count: 7))
     }
 }
+#endif
