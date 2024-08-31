@@ -10,10 +10,10 @@ import Defaults
 import ShelfPlayerKit
 
 struct OfflinePodcastView: View {
-    @State private var episodeFilter = EpisodeFilter.all
-    
-    @Default private var episodesSort: EpisodeSortOrder
     @Default private var episodesAscending: Bool
+    @Default private var episodesSortOrder: EpisodeSortOrder
+    
+    @Default private var episodeFilter: EpisodeFilter
     
     let podcast: Podcast
     @State var episodes: [Episode]
@@ -22,34 +22,46 @@ struct OfflinePodcastView: View {
         self.podcast = podcast
         _episodes = .init(initialValue: episodes)
         
-        _episodesSort = .init(.episodesSort(podcastId: podcast.id))
+        _episodesSortOrder = .init(.episodesSort(podcastId: podcast.id))
         _episodesAscending = .init(.episodesAscending(podcastId: podcast.id))
+        
+        _episodeFilter = .init(.episodesFilter(podcastId: podcast.id))
     }
     
     private var sorted: [Episode] {
-        Episode.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSort, ascending: episodesAscending)
+        Episode.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSortOrder, ascending: episodesAscending)
     }
     
     var body: some View {
         List {
             ForEach(sorted) {
                 EpisodeSingleList.EpisodeRow(episode: $0)
-                    .modifier(SwipeActionsModifier(item: $0))
+                    .modifier(SwipeActionsModifier(item: $0, loading: .constant(false)))
             }
         }
-        .contentMargins(5)
         .listStyle(.plain)
         .navigationTitle(podcast.name)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                EpisodeSortFilter(filter: $episodeFilter, sortOrder: $episodesSort, ascending: $episodesAscending)
+                EpisodeSortFilter(filter: $episodeFilter, sortOrder: $episodesSortOrder, ascending: $episodesAscending)
             }
         }
         .modifier(NowPlaying.SafeAreaModifier())
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
-            do {
-                episodes = try OfflineManager.shared.episodes(podcastId: podcast.id)
-            } catch {}
+            fetchEpisodes()
+        }
+    }
+    
+    private nonisolated func fetchEpisodes() {
+        Task {
+            guard let episodes = try? await OfflineManager.shared.episodes(podcastId: podcast.id) else {
+                return
+            }
+         
+            await MainActor.run {
+                self.episodes = episodes
+            }
         }
     }
 }

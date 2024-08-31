@@ -535,9 +535,11 @@
 		3A5210042B6D2A9F00F59101 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				3A0E42ED2C819FE80034873F /* QueueButton.swift */,
 				3ACD19B62ACB5A49007D01FE /* ErrorView.swift */,
 				3AF240E72ADA853A0065C0A4 /* SearchView.swift */,
 				3ACD19B42ACB58EB007D01FE /* LoadingView.swift */,
+				3A98246D2B6EAC7F0098C06A /* ProgressIndicator.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -682,7 +684,6 @@
 		3A98246A2B6EAB0A0098C06A /* Offline */ = {
 			isa = PBXGroup;
 			children = (
-				3A98246D2B6EAC7F0098C06A /* ProgressIndicator.swift */,
 				3ABC2E852AD88B3900734B41 /* OfflineView.swift */,
 				3A98246F2B6EAF520098C06A /* OfflinePodcastList.swift */,
 				3A9824712B6EB0DE0098C06A /* OfflinePodcastView.swift */,
@@ -706,7 +707,6 @@
 		3A9E5E042BC6CFBA00FF6F7A /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				3A0E42ED2C819FE80034873F /* QueueButton.swift */,
 				3A5B83822C83111D00BA031E /* NetworkMonitor.swift */,
 				3A6B93142C26BB2F00400802 /* UnavailableWrapper.swift */,
 				3AE73DB42B76137300058F70 /* BackgroundTaskHandler.swift */,

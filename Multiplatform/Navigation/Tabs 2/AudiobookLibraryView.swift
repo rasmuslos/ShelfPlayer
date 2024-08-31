@@ -114,5 +114,8 @@ extension AudiobookLibraryView {
 }
 
 #Preview {
-    AudiobookLibraryView()
+    NavigationStack {
+        AudiobookLibraryView()
+    }
+    .environment(\.libraryId, "cf50d37f-2bcb-45c9-abbd-455db93e4fc5")
 }
