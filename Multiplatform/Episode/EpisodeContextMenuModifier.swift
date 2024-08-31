@@ -86,7 +86,9 @@ struct EpisodeContextMenuModifier: ViewModifier {
     }
 }
 
+#if DEBUG
 #Preview {
     Text(":)")
         .modifier(EpisodeContextMenuModifier(episode: .fixture))
 }
+#endif

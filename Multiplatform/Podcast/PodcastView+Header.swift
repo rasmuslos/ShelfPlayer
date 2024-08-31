@@ -148,7 +148,7 @@ private struct CompactPresentation: View {
                     PlayButton(item: first, color: nil)
                         .playButtonSize(.medium)
                 } else if viewModel.episodes.isEmpty {
-                    PlayButton(item: Episode.fixture, color: nil)
+                    PlayButton(item: Episode.placeholder, color: nil)
                         .playButtonSize(.medium)
                         .disabled(true)
                 }
