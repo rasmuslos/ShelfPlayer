@@ -135,7 +135,7 @@ private extension PodcastViewModel {
             return
         }
         
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineSaturated(colors.map { $0.color }) else {
+        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
             return
         }
         

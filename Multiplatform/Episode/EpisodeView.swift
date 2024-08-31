@@ -22,6 +22,12 @@ struct EpisodeView: View {
             Description(description: viewModel.episode.description)
                 .padding(.vertical, 12)
                 .padding(.horizontal, 20)
+            
+            DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
+                Timeline(item: viewModel.episode, sessions: viewModel.sessions)
+                    .padding(.top, 8)
+            }
+            .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
         }
         .ignoresSafeArea(edges: .top)
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
