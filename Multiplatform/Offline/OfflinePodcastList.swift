@@ -10,7 +10,7 @@ import SPFoundation
 import SPOffline
 import SPOfflineExtended
 
-struct OfflinePodcastList: View {
+internal struct OfflinePodcastList: View {
     let podcasts: [Podcast: [Episode]]
     
     var body: some View {
@@ -20,6 +20,7 @@ struct OfflinePodcastList: View {
             NavigationLink(destination: OfflinePodcastView(podcast: podcast, episodes: episodes)) {
                 PodcastRow(podcast: podcast, episodes: episodes)
             }
+            .listRowInsets(.init(top: podcast == podcasts.keys.first ? 12 : 6, leading: 12, bottom: podcast == podcasts.keys.reversed().first ? 12 : 6, trailing: 12))
         }
         .onDelete { indexSet in
             indexSet.forEach { index in
@@ -29,15 +30,16 @@ struct OfflinePodcastList: View {
     }
 }
 
-extension OfflinePodcastList {
+internal extension OfflinePodcastList {
     struct PodcastRow: View {
         let podcast: Podcast
         let episodes: [Episode]
         
         var body: some View {
-            HStack {
+            HStack(spacing: 0) {
                 ItemImage(image: podcast.cover)
-                    .frame(height: 50)
+                    .frame(height: 60)
+                    .padding(.trailing, 12)
                 
                 VStack(alignment: .leading) {
                     Text(podcast.name)
@@ -51,7 +53,7 @@ extension OfflinePodcastList {
                     }
                 }
                 
-                Spacer()
+                Spacer(minLength: 12)
                 
                 Text(String(podcast.episodeCount))
                     .foregroundStyle(.secondary)

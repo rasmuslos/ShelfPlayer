@@ -17,7 +17,7 @@ struct EpisodeSingleList: View {
                 EpisodeRow(episode: episode)
             }
             .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
-            .modifier(SwipeActionsModifier(item: episode))
+            .modifier(SwipeActionsModifier(item: episode, loading: .constant(false)))
         }
     }
 }

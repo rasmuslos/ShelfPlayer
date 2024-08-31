@@ -20,55 +20,59 @@ struct OfflineView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("downloads.audiobooks") {
-                    if audiobooks.isEmpty {
-                        Text("downloads.empty")
-                            .font(.caption.smallCaps())
-                            .foregroundStyle(.secondary)
+                if !audiobooks.isEmpty {
+                    Section("downloads.audiobooks") {
+                        OfflineAudiobookList(audiobooks: audiobooks.sorted())
                     }
-                    
-                    OfflineAudiobookList(audiobooks: audiobooks)
                 }
                 
-                Section("downloads.podcasts") {
-                    if podcasts.isEmpty {
-                        Text("downloads.empty")
-                            .font(.caption.smallCaps())
-                            .foregroundStyle(.secondary)
+                if !podcasts.isEmpty {
+                    Section("downloads.podcasts") {
+                        OfflinePodcastList(podcasts: podcasts)
                     }
-                    
-                    OfflinePodcastList(podcasts: podcasts)
                 }
                 
-                Button {
-                    NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
-                        "offline": false,
-                    ])
-                } label: {
-                    Label("offline.disable", systemImage: "network")
+                Group {
+                    Button {
+                        NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
+                            "offline": false,
+                        ])
+                    } label: {
+                        Label("offline.disable", systemImage: "network")
+                    }
+                    Button {
+                        accountSheetPresented.toggle()
+                    } label: {
+                        Label("account.manage", systemImage: "server.rack")
+                    }
                 }
-                Button {
-                    accountSheetPresented.toggle()
-                } label: {
-                    Label("account.manage", systemImage: "server.rack")
-                }
+                .foregroundStyle(.primary)
             }
             .navigationTitle("title.offline")
-            .task { try? await loadItems() }
-            .refreshable { try? await loadItems() }
+            .navigationBarTitleDisplayMode(.inline)
             .modifier(NowPlaying.SafeAreaModifier())
-            .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in Task { try? await loadItems() }}
+            .task {
+                await loadItems()
+            }
+            .refreshable {
+                await loadItems()
+            }
         }
         .modifier(NowPlaying.CompactBarModifier(offset: 30))
         .modifier(NowPlaying.CompactViewModifier(offset: 39))
-        .sheet(isPresented: $accountSheetPresented) { AccountSheet() }
+        .sheet(isPresented: $accountSheetPresented) {
+            AccountSheet()
+        }
         .environment(\.libraryId, "offline")
+        .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
+            Task {
+                await loadItems()
+            }
+        }
     }
-}
-
-extension OfflineView {
-    nonisolated func loadItems() async throws {
-        guard let (audiobooks, podcasts) = try? await (OfflineManager.shared.audiobooks(), OfflineManager.shared.podcasts()) else {
+    
+    private nonisolated func loadItems() async {
+        guard let (audiobooks, podcasts) = try? (OfflineManager.shared.audiobooks(), OfflineManager.shared.podcasts()) else {
             return
         }
         
