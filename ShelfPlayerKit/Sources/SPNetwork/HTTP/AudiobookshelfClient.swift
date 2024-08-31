@@ -39,18 +39,10 @@ public final class AudiobookshelfClient {
             clientId = String(length: 100)
             Self.defaults.set(clientId, forKey: "clientId")
         }
-        
-        if UserDefaults.standard.object(forKey: "siriOfflineMode") != nil {
-            Self.defaults.set(UserDefaults.standard.bool(forKey: "siriOfflineMode"), forKey: "siriOfflineMode")
-        }
     }
 }
 
 public extension AudiobookshelfClient {
-    var siriOfflineMode: Bool {
-        Self.defaults.bool(forKey: "siriOfflineMode")
-    }
-    
     var authorized: Bool {
         _token != nil
     }

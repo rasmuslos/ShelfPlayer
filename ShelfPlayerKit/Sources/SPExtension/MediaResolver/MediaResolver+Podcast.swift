@@ -12,7 +12,7 @@ import SPOffline
 import SPOfflineExtended
 
 public extension MediaResolver {
-    func search(podcastName: String?, author: String?) async throws -> [Podcast] {
+    func search(podcastName: String?, author: String?, runOffline: Bool) async throws -> [Podcast] {
         guard let podcastName = podcastName else { throw ResolveError.missing }
         
         var result = [Podcast]()

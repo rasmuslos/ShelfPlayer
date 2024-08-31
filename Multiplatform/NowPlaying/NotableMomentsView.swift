@@ -13,8 +13,6 @@ import SPPlayback
 
 extension NowPlaying {
     struct NotableMomentsView: View {
-        @Default(.podcastNextUp) private var podcastNextUp
-        
         let includeHeader: Bool
         @Binding var bookmarksActive: Bool
         

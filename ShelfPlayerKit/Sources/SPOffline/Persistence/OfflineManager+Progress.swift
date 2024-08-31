@@ -213,7 +213,7 @@ public extension OfflineManager {
     }
     
     @MainActor
-    func updateProgressEntity(itemId: String, episodeId: String?, currentTime: TimeInterval, duration: TimeInterval, success: Bool) {
+    func updateProgressEntity(itemId: String, episodeId: String?, currentTime: TimeInterval, duration: TimeInterval, success: Bool? = nil) {
         let entity = OfflineManager.shared.progressEntity(itemId: itemId, episodeId: episodeId)
         
         entity.currentTime = currentTime
@@ -225,7 +225,9 @@ public extension OfflineManager {
         }
         entity.lastUpdate = .now
         
-        entity.progressType = success ? .localSynced : .localCached
+        if let success {
+            entity.progressType = success ? .localSynced : .localCached
+        }
         
         try? entity.modelContext?.save()
         NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemId, episodeID: entity.episodeId))
