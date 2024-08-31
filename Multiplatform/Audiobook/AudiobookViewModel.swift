@@ -17,7 +17,10 @@ final internal class AudiobookViewModel {
     @MainActor var libraryId: String!
     
     @MainActor private(set) var dominantColor: Color?
-    @MainActor var navigationBarVisible: Bool
+    
+    @MainActor var toolbarVisible: Bool
+    @MainActor var chaptersVisible: Bool
+    @MainActor var sessionsVisible: Bool
     
     @MainActor var chapters: [PlayableItem.Chapter]
     @MainActor var authorID: String?
@@ -26,8 +29,10 @@ final internal class AudiobookViewModel {
     @MainActor private(set) var sameSeries: [Audiobook]
     @MainActor private(set) var sameNarrator: [Audiobook]
     
-    @MainActor private(set) var errorNotify: Bool
+    @MainActor private(set) var sessions: [ListeningSession]
     @MainActor private(set) var progressEntity: ItemProgress
+    
+    @MainActor private(set) var errorNotify: Bool
     
     @MainActor
     init(audiobook: Audiobook) {
@@ -35,7 +40,10 @@ final internal class AudiobookViewModel {
         libraryId = audiobook.libraryId
         
         dominantColor = nil
-        navigationBarVisible = false
+        
+        toolbarVisible = false
+        chaptersVisible = false
+        sessionsVisible = false
         
         chapters = []
         authorID = nil
@@ -44,9 +52,10 @@ final internal class AudiobookViewModel {
         sameSeries = []
         sameNarrator = []
         
-        errorNotify = false
+        sessions = []
         progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
         
+        errorNotify = false
         progressEntity.beginReceivingUpdates()
     }
 }
@@ -60,6 +69,7 @@ internal extension AudiobookViewModel {
             $0.addTask { await self.loadSeries() }
             $0.addTask { await self.loadNarrator() }
             
+            $0.addTask { await self.loadSessions() }
             $0.addTask { await self.extractColor() }
             
             await $0.waitForAll()
@@ -93,11 +103,13 @@ internal extension AudiobookViewModel {
 
 private extension AudiobookViewModel {
     func loadAudiobook() async {
-        if let (item, _, chapters) = try? await AudiobookshelfClient.shared.item(itemId: audiobook.id, episodeId: nil) {
-            await MainActor.withAnimation {
-                self.audiobook = item as! Audiobook
-                self.chapters = chapters
-            }
+        guard let (item, _, chapters) = try? await AudiobookshelfClient.shared.item(itemId: audiobook.id, episodeId: nil) else {
+            return
+        }
+        
+        await MainActor.withAnimation {
+            self.audiobook = item as! Audiobook
+            self.chapters = chapters
         }
     }
     
@@ -158,12 +170,22 @@ private extension AudiobookViewModel {
             return
         }
         
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineSaturated(colors.map { $0.color }) else {
+        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
             return
         }
         
         await MainActor.withAnimation {
             self.dominantColor = result
+        }
+    }
+    
+    func loadSessions() async {
+        guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: audiobook.id, episodeID: nil) else {
+            return
+        }
+        
+        await MainActor.run {
+            self.sessions = sessions
         }
     }
 }

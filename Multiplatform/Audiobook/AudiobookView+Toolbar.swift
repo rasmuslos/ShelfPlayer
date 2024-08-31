@@ -22,11 +22,11 @@ extension AudiobookView {
             content
                 .navigationTitle(viewModel.audiobook.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(regularPresentation ? .automatic : viewModel.navigationBarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!viewModel.navigationBarVisible && !regularPresentation)
+                .toolbarBackground(regularPresentation ? .automatic : viewModel.toolbarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!viewModel.toolbarVisible && !regularPresentation)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        if viewModel.navigationBarVisible {
+                        if viewModel.toolbarVisible {
                             VStack {
                                 Text(viewModel.audiobook.name)
                                     .font(.headline)
@@ -46,9 +46,9 @@ extension AudiobookView {
                     }
                 }
                 .toolbar {
-                    if !viewModel.navigationBarVisible && !regularPresentation {
+                    if !viewModel.toolbarVisible && !regularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(navigationBarVisible: viewModel.navigationBarVisible)
+                            FullscreenBackButton(navigationBarVisible: viewModel.toolbarVisible)
                         }
                     }
                 }
@@ -56,7 +56,7 @@ extension AudiobookView {
                     ToolbarItem(placement: .primaryAction) {
                         DownloadButton(item: viewModel.audiobook, downloadingLabel: false)
                             .labelStyle(.iconOnly)
-                            .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))
+                            .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.toolbarVisible))
                     }
                     
                     ToolbarItem(placement: .primaryAction) {
@@ -105,7 +105,7 @@ extension AudiobookView {
                             DownloadButton(item: viewModel.audiobook)
                         } label: {
                             Image(systemName: "ellipsis")
-                                .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.navigationBarVisible))
+                                .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.toolbarVisible))
                         }
                     }
                 }

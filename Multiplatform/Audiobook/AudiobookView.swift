@@ -30,12 +30,22 @@ internal struct AudiobookView: View {
                 Description(description: viewModel.audiobook.description)
                     .padding(.horizontal, 20)
                 
+                divider
+                
                 if viewModel.chapters.count > 1 {
-                    divider
-                    
-                    ChaptersList(item: viewModel.audiobook, chapters: viewModel.chapters)
-                        .padding(.horizontal, 20)
+                    DisclosureGroup("\(viewModel.chapters.count) chapters", isExpanded: $viewModel.chaptersVisible) {
+                        ChaptersList(item: viewModel.audiobook, chapters: viewModel.chapters)
+                    }
+                    .disclosureGroupStyle(BetterDisclosureGroupStyle())
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
                 }
+                
+                DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
+                    Timeline(item: viewModel.audiobook, sessions: viewModel.sessions)
+                        .padding(.top, 8)
+                }
+                .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
                 
                 divider
                 
@@ -59,6 +69,9 @@ internal struct AudiobookView: View {
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .environment(viewModel)
         .task {
+            await viewModel.load()
+        }
+        .refreshable {
             await viewModel.load()
         }
         .userActivity("io.rfk.shelfplayer.audiobook") {

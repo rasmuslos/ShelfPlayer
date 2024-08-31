@@ -95,10 +95,22 @@ public extension AudiobookshelfClient {
         ]))
     }
     
+    func listeningSessions(for itemID: String, episodeID: String?) async throws -> [ListeningSession] {
+        var path = "api/me/item/listening-sessions/\(itemID)"
+        
+        if let episodeID {
+            path.append("/\(episodeID)")
+        }
+        
+        let response = try await request(ClientRequest<ListeningSessionsResponse>(path: path, method: "GET"))
+        print(response)
+        return response.sessions
+    }
+    
     func createListeningSession(itemId: String, episodeId: String?, id: String, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
         let (item, status, userId): (AudiobookshelfItem, StatusResponse, String) = try await (item(itemId: itemId), status(), me().0)
         
-        let session = LocalSession(
+        let session = ListeningSession(
             id: id,
             userId: userId,
             libraryId: item.libraryId,

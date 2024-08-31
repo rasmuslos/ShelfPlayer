@@ -33,7 +33,7 @@
       "location" : "https://github.com/rasmuslos/RFKit",
       "state" : {
         "branch" : "main",
-        "revision" : "583271d22661514b0c536895b4736781284ff81f"
+        "revision" : "d6fd0b66eab044f1a779d5dce2bc1a79afc17eb1"
       }
     },
     {
@@ -43,6 +43,15 @@
       "state" : {
         "revision" : "3c2c7e1e72b8abd96eafbae80323c5c1e5317437",
         "version" : "2.7.5"
+      }
+    },
+    {
+      "identity" : "then",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/devxoul/Then",
+      "state" : {
+        "revision" : "d41ef523faef0f911369f79c0b96815d9dbb6d7a",
+        "version" : "3.0.0"
       }
     }
   ],
