@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-extension NowPlaying.CompactViewModifier {
-    struct Buttons: View {
+internal extension NowPlaying {
+    struct CompactButtons: View {
         @State private var bookmarksActive = false
         @State private var notableMomentSheetPresented = false
         
@@ -28,9 +28,6 @@ extension NowPlaying.CompactViewModifier {
                     .foregroundStyle(.secondary)
                 
                 Spacer()
-                
-                NowPlaying.AirPlayPicker()
-                    .frame(width: 45)
                 
                 Spacer()
                 

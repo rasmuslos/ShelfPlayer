@@ -28,7 +28,7 @@ struct Tabs: View {
                         ErrorView()
                 }
             }
-            .modifier(NowPlaying.CompactViewModifier())
+            .modifier(NowPlaying.CompactModifier())
             .environment(\.libraryId, activeLibrary.id)
             .environment(\.libraries, libraries)
             .onReceive(NotificationCenter.default.publisher(for: Library.changeLibraryNotification), perform: { notification in

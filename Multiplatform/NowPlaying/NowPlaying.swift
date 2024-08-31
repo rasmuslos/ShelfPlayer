@@ -13,22 +13,7 @@ struct NowPlaying {
     private init() {}
 }
 
-extension NowPlaying {
-    static let widthChangeNotification = NSNotification.Name("io.rfk.shelfplayer.sidebar.width.changed")
-    static let offsetChangeNotification = NSNotification.Name("io.rfk.shelfplayer.sidebar.offset.changed")
-}
-
-extension NowPlaying {
-    struct AirPlayPicker: UIViewRepresentable {
-        func makeUIView(context: Context) -> UIView {
-            let routePickerView = AVRoutePickerView()
-            routePickerView.backgroundColor = UIColor.clear
-            routePickerView.activeTintColor = UIColor(Color.accentColor)
-            routePickerView.tintColor = UIColor(Color.secondary)
-            
-            return routePickerView
-        }
-        
-        func updateUIView(_ uiView: UIView, context: Context) {}
-    }
+internal extension NowPlaying {
+    static let widthChangeNotification = NSNotification.Name("io.rfk.ampfin.sidebar.width.changed")
+    static let offsetChangeNotification = NSNotification.Name("io.rfk.ampfin.sidebar.offset.changed")
 }

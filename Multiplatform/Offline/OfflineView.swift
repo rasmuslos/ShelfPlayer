@@ -58,8 +58,7 @@ struct OfflineView: View {
                 await loadItems()
             }
         }
-        .modifier(NowPlaying.CompactBarModifier(offset: 30))
-        .modifier(NowPlaying.CompactViewModifier(offset: 39))
+        .modifier(NowPlaying.CompactModifier())
         .sheet(isPresented: $accountSheetPresented) {
             AccountSheet()
         }

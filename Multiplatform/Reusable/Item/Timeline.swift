@@ -32,7 +32,7 @@ internal struct Timeline: View {
                     
                     if let timeListening = session.timeListening {
                         HStack {
-                            Text(timeListening, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute]))
+                            Text(timeListening, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute]))
                                 .font(.caption2)
                             
                             Spacer()

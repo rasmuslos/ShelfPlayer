@@ -13,13 +13,7 @@ import SPPlayback
 extension NowPlaying {
     struct ContextMenuModifier: ViewModifier {
         @Environment(\.libraryId) private var libraryId
-        
-        @Default(.skipBackwardsInterval) private var skipBackwardsInterval
-        @Default(.skipForwardsInterval) private var skipForwardsInterval
-        
-        let item: PlayableItem
-        
-        @Binding var animateForwards: Bool
+        @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         private var offline: Bool {
             libraryId == "offline"
@@ -29,7 +23,7 @@ extension NowPlaying {
             content
                 .contextMenu {
                     Group {
-                        if let episode = item as? Episode {
+                        if let episode = viewModel.item as? Episode {
                             Button {
                                 Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
                             } label: {
@@ -44,7 +38,7 @@ extension NowPlaying {
                             }
                         }
                         
-                        if let audiobook = item as? Audiobook {
+                        if let audiobook = viewModel.item as? Audiobook {
                             Button {
                                 Navigation.navigate(audiobookId: audiobook.id)
                             } label: {
@@ -52,32 +46,31 @@ extension NowPlaying {
                             }
                             
                             if let author = audiobook.author {
-                                Button(action: {
+                                Button {
                                     Task {
                                         if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) {
                                             Navigation.navigate(authorId: authorId)
                                         }
                                     }
-                                }) {
+                                } label: {
                                     Label("author.view", systemImage: "person")
-                                    Text(author)
                                 }
                             }
                             
                             if !audiobook.series.isEmpty {
                                 if audiobook.series.count == 1, let series = audiobook.series.first {
-                                    Button(action: {
+                                    Button {
                                         Navigation.navigate(seriesName: series.name)
-                                    }) {
+                                    } label: {
                                         Label("series.view", systemImage: "text.justify.leading")
                                         Text(series.name)
                                     }
                                 } else {
                                     Menu {
                                         ForEach(audiobook.series, id: \.name) { series in
-                                            Button(action: {
+                                            Button {
                                                 Navigation.navigate(seriesName: series.name)
-                                            }) {
+                                            } label: {
                                                 Text(series.name)
                                             }
                                         }
@@ -108,14 +101,13 @@ extension NowPlaying {
                     Button {
                         AudioPlayer.shared.skipBackwards()
                     } label: {
-                        Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
+                        Label("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
                     }
                     
                     Button {
-                        animateForwards.toggle()
                         AudioPlayer.shared.skipForwards()
                     } label: {
-                        Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
+                        Label("forwards", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
                     }
                     
                     Divider()
@@ -126,30 +118,38 @@ extension NowPlaying {
                         Label("playback.stop", systemImage: "xmark")
                     }
                 } preview: {
-                    VStack(alignment: .leading) {
-                        ItemImage(image: item.cover, aspectRatio: .none)
-                            .padding(.bottom, 10)
+                    VStack(alignment: .leading, spacing: 2) {
+                        ItemImage(image: viewModel.item?.cover, aspectRatio: .none)
+                            .padding(.bottom, 12)
                         
                         Group {
-                            if let episode = item as? Episode, let releaseDate = episode.releaseDate {
+                            if let episode = viewModel.item as? Episode, let releaseDate = episode.releaseDate {
                                 Text(releaseDate, style: .date)
-                            } else if let audiobook = item as? Audiobook, let seriesName = audiobook.seriesName {
+                            } else if let audiobook = viewModel.item as? Audiobook, let seriesName = audiobook.seriesName {
                                 Text(seriesName)
                             }
                         }
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         
-                        Text(item.name)
-                            .font(.headline)
+                        if let name = viewModel.item?.name {
+                            Text(name)
+                                .font(.headline)
+                        }
                         
-                        if let author = item.author {
+                        if let author = viewModel.item?.author {
                             Text(author)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
+                        
+                        if let audiobook = viewModel.item as? Audiobook, let narrator = audiobook.narrator {
+                            Text("readBy \(narrator)")
+                                .font(.subheadline)
+                                .foregroundStyle(.tertiary)
+                        }
                     }
-                    .frame(width: 250)
+                    .frame(width: 240)
                     .padding(20)
                 }
         }

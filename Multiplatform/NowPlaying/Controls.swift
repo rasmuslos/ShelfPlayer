@@ -120,7 +120,7 @@ extension NowPlaying {
                                 .labelStyle(.iconOnly)
                                 .font(.system(size: 47))
                                 .modifier(ButtonHoverEffectModifier())
-                                .frame(width: 50, height:50)
+                                .frame(width: 50, height: 50)
                                 .padding(.horizontal, 50)
                                 .contentTransition(.symbolEffect(.replace.downUp))
                         }
