@@ -38,6 +38,7 @@ struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
                 .padding(.top, 8)
                 .frame(maxHeight: configuration.isExpanded ? .infinity : 0, alignment: .top)
                 .clipped()
+                .allowsHitTesting(configuration.isExpanded)
         }
     }
 }

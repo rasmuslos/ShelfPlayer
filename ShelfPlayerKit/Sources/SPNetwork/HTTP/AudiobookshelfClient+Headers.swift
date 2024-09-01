@@ -30,6 +30,12 @@ public extension AudiobookshelfClient {
         }
     }
     
+    var customHTTPHeaderDictionary: [String: String] {
+        customHTTPHeaders.reduce(into: [:]) { result, header in
+            result[header.key] = header.value
+        }
+    }
+    
     struct CustomHTTPHeader: Codable {
         public var key: String
         public var value: String

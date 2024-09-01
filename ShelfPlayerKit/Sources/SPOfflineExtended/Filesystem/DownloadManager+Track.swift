@@ -12,11 +12,18 @@ import SPOffline
 
 extension DownloadManager {
     func download(track: PlayableItem.AudioTrack) -> URLSessionDownloadTask {
-        urlSession.downloadTask(with: URLRequest(url: AudiobookshelfClient.shared.serverUrl
+        let url = AudiobookshelfClient.shared.serverUrl
             .appending(path: track.contentUrl.removingPercentEncoding ?? "")
             .appending(queryItems: [
                 URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token)
-            ])))
+            ])
+        var request = URLRequest(url: url)
+        
+        for header in AudiobookshelfClient.shared.customHTTPHeaders {
+            request.addValue(header.value, forHTTPHeaderField: header.key)
+        }
+        
+        return urlSession.downloadTask(with: request)
     }
     
     func remove(track: OfflineTrack) {

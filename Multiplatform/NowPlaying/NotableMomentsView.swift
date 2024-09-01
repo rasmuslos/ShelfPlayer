@@ -191,7 +191,7 @@ private extension NowPlaying {
         var body: some View {
             if includeHeader {
                 HStack(spacing: 15) {
-                    ItemImage(image: AudioPlayer.shared.item?.cover)
+                    ItemImage(cover: AudioPlayer.shared.item?.cover)
                     
                     VStack(alignment: .leading) {
                         Text(AudioPlayer.shared.item?.name ?? "-/-")

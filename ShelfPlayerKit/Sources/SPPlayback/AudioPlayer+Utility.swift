@@ -133,11 +133,17 @@ internal extension AudioPlayer {
         }
         #endif
         
-        return AVPlayerItem(url: AudiobookshelfClient.shared.serverUrl
+        let url = AudiobookshelfClient.shared.serverUrl
             .appending(path: track.contentUrl.removingPercentEncoding ?? "")
             .appending(queryItems: [
                 URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token)
-            ]))
+            ])
+        
+        let asset = AVURLAsset(url: url, options: [
+            "AVURLAssetHTTPHeaderFieldsKey": AudiobookshelfClient.shared.customHTTPHeaderDictionary,
+        ])
+        
+        return AVPlayerItem(asset: asset)
     }
     
     func donateIntent() async throws {
