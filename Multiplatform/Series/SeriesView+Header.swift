@@ -19,7 +19,7 @@ internal extension SeriesView {
                         ForEach(0..<viewModel.headerImageCount, id: \.hashValue) {
                             let index = viewModel.headerImageCount - $0 - 1
                             
-                            ItemImage(image: viewModel.images[index])
+                            ItemImage(cover: viewModel.images[index])
                                 .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 180 : 160)
                                 .offset(x: index == 0 ? 0 : index == 1 ? -40 : index == 2 ? 40 : index == 3 ? -80 : 80)
                                 .shadow(radius: 4)

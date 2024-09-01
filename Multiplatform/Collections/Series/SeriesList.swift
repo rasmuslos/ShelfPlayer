@@ -32,7 +32,7 @@ extension SeriesList {
                     ForEach(0..<count, id: \.hashValue) {
                         let index = (count - 1) - $0
                         
-                        ItemImage(image: series.covers[$0])
+                        ItemImage(cover: series.covers[$0])
                             .frame(height: 50)
                             .offset(x: CGFloat(index) * 20)
                             .scaleEffect(index == 0 ? 1 : index == 1 ? 0.95 : index == 2 ? 0.9 : index == 3 ? 0.85 : index == 4 ? 0.8 : 0)

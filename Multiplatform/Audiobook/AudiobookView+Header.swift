@@ -132,7 +132,7 @@ private struct CompactPresentation: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ItemImage(image: viewModel.audiobook.cover, aspectRatio: .none)
+            ItemImage(cover: viewModel.audiobook.cover, aspectRatio: .none)
                 .padding(.horizontal, 40)
                 .shadow(radius: 40)
             
@@ -164,7 +164,7 @@ private struct RegularPresentation: View {
             .frame(height: 0)
             
             HStack(spacing: 40) {
-                ItemImage(image: viewModel.audiobook.cover, aspectRatio: .none)
+                ItemImage(cover: viewModel.audiobook.cover, aspectRatio: .none)
                     .shadow(radius: 40)
                     .frame(width: max(0, min(400, (availableWidth - 40) / 2)))
                     .hoverEffect(.highlight)

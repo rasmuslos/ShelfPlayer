@@ -14,7 +14,7 @@ internal extension AuthorView {
         
         var body: some View {
             VStack(spacing: 0) {
-                ItemImage(image: viewModel.author.cover)
+                ItemImage(cover: viewModel.author.cover)
                     .frame(width: 100, height: 100)
                     .clipShape(.rect(cornerRadius: .infinity))
                     .shadow(color: .black.opacity(0.4), radius: 20)

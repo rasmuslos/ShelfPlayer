@@ -119,7 +119,7 @@ extension NowPlaying {
                     }
                 } preview: {
                     VStack(alignment: .leading, spacing: 2) {
-                        ItemImage(image: viewModel.item?.cover, aspectRatio: .none)
+                        ItemImage(cover: viewModel.item?.cover, aspectRatio: .none)
                             .padding(.bottom, 12)
                         
                         Group {

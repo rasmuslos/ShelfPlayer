@@ -37,19 +37,19 @@ extension SeriesGrid {
             VStack {
                 Group {
                     if series.covers.isEmpty {
-                        ItemImage(image: nil)
+                        ItemImage(cover: nil)
                     } else if series.covers.count < 4 {
                         // TODO: more
-                        ItemImage(image: series.covers.randomElement()!)
+                        ItemImage(cover: series.covers.randomElement()!)
                     } else {
                         VStack(spacing: 10) {
                             HStack(spacing: 10) {
-                                ItemImage(image: series.covers[0])
-                                ItemImage(image: series.covers[1])
+                                ItemImage(cover: series.covers[0])
+                                ItemImage(cover: series.covers[1])
                             }
                             HStack(spacing: 10) {
-                                ItemImage(image: series.covers[2])
-                                ItemImage(image: series.covers[3])
+                                ItemImage(cover: series.covers[2])
+                                ItemImage(cover: series.covers[3])
                             }
                         }
                     }

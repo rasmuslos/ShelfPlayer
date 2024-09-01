@@ -133,11 +133,11 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
         var body: some View {
             GeometryReader { geometry in
                 ZStack(alignment: .topLeading) {
-                    ItemImage(image: image)
+                    ItemImage(cover: image)
                         .frame(width: geometry.size.height)
                         .blur(radius: 15)
                     
-                    ItemImage(image: image)
+                    ItemImage(cover: image)
                         .frame(height: geometry.size.width)
                         .mask {
                             LinearGradient(colors: [.black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)

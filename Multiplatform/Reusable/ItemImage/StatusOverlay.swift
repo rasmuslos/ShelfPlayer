@@ -93,7 +93,7 @@ struct ItemStatusImage: View {
     var aspectRatio = ItemImage.AspectRatioPolicy.square
     
     var body: some View {
-        ItemImage(image: item.cover, aspectRatio: aspectRatio)
+        ItemImage(cover: item.cover, aspectRatio: aspectRatio)
             .overlay {
                 StatusOverlay(item: item)
             }

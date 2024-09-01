@@ -8,14 +8,18 @@
 import SwiftUI
 import NukeUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
+
+// TODO: update asset loading to include Headers
 
 struct ItemImage: View {
     @Default(.forceAspectRatio) private var forceAspectRatio
     
-    let image: Cover?
+    let cover: Cover?
+    
     var cornerRadius: CGFloat = 7
     var aspectRatio = AspectRatioPolicy.square
+    var priority: ImageRequest.Priority = .normal
     
     private var placeholder: some View {
         ZStack {
@@ -33,6 +37,20 @@ struct ItemImage: View {
         .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: cornerRadius))
     }
     
+    private var request: ImageRequest? {
+        guard let url = cover?.url else {
+            return nil
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        
+        for header in AudiobookshelfClient.shared.customHTTPHeaders {
+            urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
+        }
+        
+        return .init(urlRequest: urlRequest, priority: priority)
+    }
+    
     private var aspectRatioPolicy: AspectRatioPolicy {
         if forceAspectRatio && aspectRatio == .none {
             return .squareFit
@@ -42,50 +60,46 @@ struct ItemImage: View {
     }
     
     var body: some View {
-        if let image = image {
-            if aspectRatioPolicy == .none {
-                LazyImage(url: image.url) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                    } else {
-                        placeholder
-                    }
+        if aspectRatioPolicy == .none {
+            LazyImage(request: request) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                } else {
+                    placeholder
                 }
-            } else {
-                Color.clear
-                    .overlay {
-                        LazyImage(url: image.url) { phase in
-                            if let image = phase.image {
-                                if aspectRatioPolicy == .square {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .clipped()
-                                } else if aspectRatioPolicy == .squareFit {
-                                    ZStack {
-                                        image
-                                            .resizable()
-                                            .blur(radius: 25)
-                                        
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                    }
-                                }
-                            } else {
-                                placeholder
-                            }
-                        }
-                    }
-                    .aspectRatio(1, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                    .padding(0)
             }
         } else {
-            placeholder
+            Color.clear
+                .overlay {
+                    LazyImage(request: request) { phase in
+                        if let image = phase.image {
+                            if aspectRatioPolicy == .square {
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .clipped()
+                            } else if aspectRatioPolicy == .squareFit {
+                                ZStack {
+                                    image
+                                        .resizable()
+                                        .blur(radius: 25)
+                                    
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                }
+                            }
+                        } else {
+                            placeholder
+                        }
+                    }
+                }
+                .aspectRatio(1, contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                .padding(0)
         }
     }
     
@@ -98,9 +112,9 @@ struct ItemImage: View {
 
 #if DEBUG
 #Preview {
-    ItemImage(image: Audiobook.fixture.cover)
+    ItemImage(cover: Audiobook.fixture.cover)
 }
 #Preview {
-    ItemImage(image: nil)
+    ItemImage(cover: nil)
 }
 #endif

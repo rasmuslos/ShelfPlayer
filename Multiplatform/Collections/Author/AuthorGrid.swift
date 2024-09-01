@@ -65,7 +65,7 @@ extension AuthorGrid {
         
         var body: some View {
             VStack(spacing: 0) {
-                ItemImage(image: author.cover, cornerRadius: 10000)
+                ItemImage(cover: author.cover, cornerRadius: 10000)
                     .padding(.bottom, 5)
                     .hoverEffect(.highlight)
                 
