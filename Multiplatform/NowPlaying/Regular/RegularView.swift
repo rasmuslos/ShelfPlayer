@@ -37,7 +37,7 @@ extension NowPlaying {
                             VStack {
                                 Spacer()
                                 
-                                ItemImage(image: item.cover, aspectRatio: .none)
+                                ItemImage(cover: item.cover, aspectRatio: .none)
                                     .shadow(radius: 15)
                                     .padding(.vertical, 10)
                                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)

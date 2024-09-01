@@ -141,7 +141,7 @@ private struct CollapsedForeground: View {
         } label: {
             HStack(spacing: 8) {
                 if !viewModel.expanded {
-                    ItemImage(image: item.cover, cornerRadius: 8)
+                    ItemImage(cover: item.cover, cornerRadius: 8)
                         .frame(width: 40, height: 40)
                         .matchedGeometryEffect(id: "image", in: viewModel.namespace, properties: .frame, anchor: .topLeading)
                 } else {

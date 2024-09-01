@@ -26,7 +26,7 @@ extension PodcastList {
         
         var body: some View {
             HStack {
-                ItemImage(image: podcast.cover)
+                ItemImage(cover: podcast.cover)
                     .frame(width: 50)
                 
                 VStack(alignment: .leading) {

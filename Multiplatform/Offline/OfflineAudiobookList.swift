@@ -59,7 +59,7 @@ internal extension OfflineAudiobookList {
                 }
             } label: {
                 HStack(spacing: 0) {
-                    ItemImage(image: audiobook.cover, aspectRatio: .none)
+                    ItemImage(cover: audiobook.cover, aspectRatio: .none)
                         .frame(width: 60)
                         .overlay {
                             if let overlay {

@@ -30,7 +30,7 @@ extension NowPlaying {
                 .safeAreaInset(edge: .bottom) {
                     if let item = AudioPlayer.shared.item {
                         HStack {
-                            ItemImage(image: item.cover, aspectRatio: .none)
+                            ItemImage(cover: item.cover, aspectRatio: .none)
                                 .frame(height: 50)
                                 .scaleEffect(bounce ? AudioPlayer.shared.playing ? 1.1 : 0.9 : 1)
                                 .animation(.spring(duration: 0.2, bounce: 0.7), value: bounce)

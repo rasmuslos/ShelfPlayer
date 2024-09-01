@@ -85,7 +85,7 @@ struct PodcastGridItem: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ItemImage(image: podcast.cover)
+            ItemImage(cover: podcast.cover)
                 .hoverEffect(.highlight)
             
             Text(podcast.name)

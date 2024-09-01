@@ -49,7 +49,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 DownloadButton(item: episode)
             } preview: {
                 VStack(alignment: .leading, spacing: 8) {
-                    ItemImage(image: episode.cover)
+                    ItemImage(cover: episode.cover)
                         .frame(height: 50)
                     
                     Group {

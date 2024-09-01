@@ -27,7 +27,7 @@ extension AuthorList {
         
         var body: some View {
             HStack {
-                ItemImage(image: author.cover)
+                ItemImage(cover: author.cover)
                     .clipShape(RoundedRectangle(cornerRadius: 10000))
                     .frame(width: 50)
                 
