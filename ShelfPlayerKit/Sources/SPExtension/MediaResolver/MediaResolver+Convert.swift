@@ -10,15 +10,15 @@ import Intents
 import SPFoundation
 
 extension MediaResolver {
-    public func convert(items: [Item]) -> [INMediaItem] {
-        items.map(convert)
+    public func convert(items: [Item]) async -> [INMediaItem] {
+        await items.parallelMap(convert)
     }
-    public func convert(item: Item) -> INMediaItem {
+    public func convert(item: Item) async -> INMediaItem {
         INMediaItem(
             identifier: item.id,
             title: item.name,
             type: convertType(item: item),
-            artwork: convertImage(cover: item.cover),
+            artwork: await convertImage(cover: item.cover),
             artist: item.author)
     }
     
@@ -39,14 +39,14 @@ extension MediaResolver {
         }
     }
     
-    private func convertImage(cover: Cover?) -> INImage? {
+    private func convertImage(cover: Cover?) async -> INImage? {
         guard let cover = cover else { return nil }
         
         if cover.type == .local {
             return INImage(url: cover.url)
         }
         
-        if let data = try? Data(contentsOf: cover.url) {
+        if let image = await cover.systemImage, let data = image.pngData() {
             return INImage(imageData: data)
         }
         

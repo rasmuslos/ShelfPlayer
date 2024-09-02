@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
+import MediaPlayer
 import SPPlayback
-import SPFoundation
 
 internal extension NowPlaying {
     struct VolumeSlider: View {
         @Binding var dragging: Bool
         
-        @State private var volume = Percentage(AudioPlayer.shared.volume)
+        @State private var volume = AudioPlayer.shared.volume
         
         var body: some View {
             HStack {
@@ -25,7 +25,7 @@ internal extension NowPlaying {
                 }
                 .buttonStyle(.plain)
                 
-                Slider(value: $volume, dragging: $dragging)
+                Slider(percentage: $volume, dragging: $dragging)
                 
                 Button {
                     AudioPlayer.shared.volume = 1
@@ -35,7 +35,7 @@ internal extension NowPlaying {
                 }
                 .buttonStyle(.plain)
             }
-            .foregroundStyle(.white.opacity(0.4))
+            .saturation(1.6)
             .dynamicTypeSize(dragging ? .xLarge : .medium)
             .frame(height: 0)
             .animation(.easeInOut, value: dragging)

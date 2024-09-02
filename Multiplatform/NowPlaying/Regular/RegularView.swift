@@ -45,8 +45,8 @@ extension NowPlaying {
                                 
                                 Spacer()
                                 
-                                Title(item: item, namespace: namespace)
-                                Controls(namespace: namespace, compact: true, controlsDragging: $controlsDragging)
+                                Title(item: item)
+                                Controls(compact: true)
                                     .padding(.bottom, 30)
                                 
                             }

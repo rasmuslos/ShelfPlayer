@@ -26,7 +26,7 @@ internal extension AudioPlayer {
         updateLastBookmarkTime()
         
         Task {
-            if let imageUrl = item.cover?.url, let data = try? Data(contentsOf: imageUrl), let image = UIImage(data: data) {
+            if let image = await item.cover?.systemImage {
                 let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
                 nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
                 
