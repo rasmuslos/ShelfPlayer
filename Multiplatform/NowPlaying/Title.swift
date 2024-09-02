@@ -10,20 +10,14 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-extension NowPlaying {
+internal extension NowPlaying {
     struct Title: View {
-        @Default(.useSerifFont) private var useSerifFont
         @Environment(\.libraryId) private var libraryId
+        @Environment(NowPlaying.ViewModel.self) private var viewModel
+        
+        @Default(.useSerifFont) private var useSerifFont
         
         let item: PlayableItem
-        let namespace: Namespace.ID
-        
-        @State private var bookmarkAnimation = false
-        
-        @State private var bookmarkNote = ""
-        @State private var createBookmarkFailed = false
-        @State private var bookmarkCapturedTime: TimeInterval? = nil
-        @State private var createBookmarkAlertPresented = false
         
         private var offline: Bool {
             libraryId == "offline"
@@ -35,151 +29,120 @@ extension NowPlaying {
                     Group {
                         if let episode = item as? Episode, let releaseDate = episode.releaseDate {
                             Text(releaseDate, style: .date)
-                                .matchedGeometryEffect(id: "releaseDate", in: namespace, properties: .frame, anchor: .top)
                         } else if let audiobook = item as? Audiobook, let seriesName = audiobook.seriesName {
-                            Text(seriesName)
+                            if audiobook.series.count == 0, let series = audiobook.series.first {
+                                NavigationLink(destination: SeriesLoadView(series: series)) {
+                                    Text(seriesName)
+                                        .lineLimit(1)
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                Menu {
+                                    ForEach(audiobook.series, id: \.name) { series in
+                                        NavigationLink(destination: SeriesLoadView(series: series)) {
+                                            Text(series.name)
+                                        }
+                                    }
+                                } label: {
+                                    Text(seriesName)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
                     }
                     .font(.caption.smallCaps())
                     .foregroundStyle(.secondary)
                     
-                    Group {
-                        Text(item.name)
-                            .font(.headline)
-                            .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
-                            .foregroundStyle(.primary)
-                            .matchedGeometryEffect(id: "title", in: namespace, properties: .frame, anchor: .top)
-                        
-                        if let author = item.author {
-                            Menu {
-                                Group {
-                                    if let episode = item as? Episode {
-                                        Button {
-                                            Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
-                                        } label: {
-                                            Label("episode.view", systemImage: "waveform")
-                                        }
-                                        
-                                        Button(action: {
-                                            Navigation.navigate(podcastId: episode.podcastId)
-                                        }) {
-                                            Label("podcast.view", systemImage: "tray.full")
-                                            Text(episode.podcastName)
-                                        }
-                                    }
-                                    
-                                    if let audiobook = item as? Audiobook {
-                                        Button {
-                                            Navigation.navigate(audiobookId: audiobook.id)
-                                        } label: {
-                                            Label("audiobook.view", systemImage: "book")
-                                        }
-                                        
-                                        if let author = audiobook.author {
-                                            Button(action: {
-                                                Task {
-                                                    if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) {
-                                                        Navigation.navigate(authorId: authorId)
-                                                    }
-                                                }
-                                            }) {
-                                                Label("author.view", systemImage: "person")
-                                                Text(author)
+                    Text(item.name)
+                        .font(.headline)
+                        .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
+                        .foregroundStyle(.primary)
+                    
+                    if let author = item.author {
+                        Menu {
+                            if let episode = item as? Episode {
+                                Button {
+                                    Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
+                                } label: {
+                                    Label("episode.view", systemImage: "waveform")
+                                }
+                                
+                                Button(action: {
+                                    Navigation.navigate(podcastId: episode.podcastId)
+                                }) {
+                                    Label("podcast.view", systemImage: "tray.full")
+                                    Text(episode.podcastName)
+                                }
+                            }
+                            
+                            if let audiobook = item as? Audiobook {
+                                Button {
+                                    Navigation.navigate(audiobookId: audiobook.id)
+                                } label: {
+                                    Label("audiobook.view", systemImage: "book")
+                                }
+                                
+                                if let author = audiobook.author {
+                                    Button(action: {
+                                        Task {
+                                            if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) {
+                                                Navigation.navigate(authorId: authorId)
                                             }
                                         }
-                                        
-                                        if !audiobook.series.isEmpty {
-                                            if audiobook.series.count == 1, let series = audiobook.series.first {
+                                    }) {
+                                        Label("author.view", systemImage: "person")
+                                        Text(author)
+                                    }
+                                }
+                                
+                                if !audiobook.series.isEmpty {
+                                    if audiobook.series.count == 1, let series = audiobook.series.first {
+                                        Button(action: {
+                                            Navigation.navigate(seriesName: series.name)
+                                        }) {
+                                            Label("series.view", systemImage: "text.justify.leading")
+                                            Text(series.name)
+                                        }
+                                    } else {
+                                        Menu {
+                                            ForEach(audiobook.series, id: \.name) { series in
                                                 Button(action: {
                                                     Navigation.navigate(seriesName: series.name)
                                                 }) {
-                                                    Label("series.view", systemImage: "text.justify.leading")
                                                     Text(series.name)
                                                 }
-                                            } else {
-                                                Menu {
-                                                    ForEach(audiobook.series, id: \.name) { series in
-                                                        Button(action: {
-                                                            Navigation.navigate(seriesName: series.name)
-                                                        }) {
-                                                            Text(series.name)
-                                                        }
-                                                    }
-                                                } label: {
-                                                    Label("series.view", systemImage: "text.justify.leading")
-                                                }
                                             }
+                                        } label: {
+                                            Label("series.view", systemImage: "text.justify.leading")
                                         }
                                     }
                                 }
-                                .disabled(offline)
-                            } label: {
-                                Text(author)
-                                    .font(.subheadline)
-                                    .lineLimit(1)
-                                    .foregroundStyle(.secondary)
                             }
-                            .buttonStyle(.plain)
+                        } label: {
+                            Text(author)
+                                .font(.subheadline)
+                                .lineLimit(1)
+                                .foregroundStyle(.secondary)
                         }
+                        .buttonStyle(.plain)
+                        .disabled(offline)
                     }
-                    .lineLimit(1)
                 }
                 
-                Spacer()
+                Spacer(minLength: 12)
                 
                 if item.type == .audiobook {
                     Label("bookmark.create", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
-                        .symbolEffect(.bounce.byLayer.up, value: bookmarkAnimation)
+                        .symbolEffect(.bounce.byLayer.up, value: viewModel.notifyBookmark)
                         .font(.system(size: 20))
-                        .foregroundStyle(createBookmarkFailed ? .red : .primary)
                         .modifier(ButtonHoverEffectModifier())
-                        .sensoryFeedback(.success, trigger: bookmarkAnimation)
                         .onTapGesture {
-                            createBookmarkFailed = false
-                            bookmarkCapturedTime = AudioPlayer.shared.itemCurrentTime
-                            createBookmarkAlertPresented = true
+                            viewModel.presentBookmarkAlert()
                         }
                         .onLongPressGesture {
-                            Task {
-                                await OfflineManager.shared.createBookmark(itemId: item.id, position: AudioPlayer.shared.itemCurrentTime, note: {
-                                    let dateFormatter = DateFormatter()
-                                    dateFormatter.locale = .autoupdatingCurrent
-                                    dateFormatter.timeZone = .current
-                                    
-                                    dateFormatter.dateStyle = .medium
-                                    dateFormatter.timeStyle = .medium
-                                    
-                                    return dateFormatter.string(from: .now)
-                                }())
-                                
-                                bookmarkAnimation.toggle()
-                            }
+                            viewModel.createBookmark()
                         }
-                        .alert("bookmark.create.alert", isPresented: $createBookmarkAlertPresented) {
-                            TextField("bookmark.create.title", text: $bookmarkNote)
-                            
-                            Button {
-                                createBookmark()
-                                bookmarkAnimation.toggle()
-                            } label: {
-                                Text("bookmark.create.action")
-                            }
-                            Button(role: .cancel) {
-                                createBookmarkAlertPresented = false
-                            } label: {
-                                Text("bookmark.create.cancel")
-                            }
-                        }
-                }
-            }
-            .padding(.bottom)
-        }
-        
-        private func createBookmark() {
-            Task {
-                if let bookmarkCapturedTime = bookmarkCapturedTime {
-                    await OfflineManager.shared.createBookmark(itemId: item.id, position: bookmarkCapturedTime, note: bookmarkNote)
                 }
             }
         }

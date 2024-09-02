@@ -18,19 +18,11 @@ struct FullscreenBackground: View {
             let offset = reader.frame(in: .global).minY
             
             if offset > 0 {
-                Group {
-                    if let backgroundColor = backgroundColor {
-                        Rectangle()
-                            .foregroundStyle(backgroundColor)
-                    } else {
-                        Rectangle()
-                            .foregroundStyle(.background.tertiary)
-                    }
-                    
-                }
-                .offset(y: -offset)
-                .frame(height: offset)
-                .transition(.opacity)
+                Rectangle()
+                    .fill(backgroundColor ?? Color(UIColor.tertiarySystemBackground))
+                    .animation(.smooth, value: backgroundColor)
+                    .offset(y: -offset)
+                    .frame(height: offset)
             }
             
             Color.clear

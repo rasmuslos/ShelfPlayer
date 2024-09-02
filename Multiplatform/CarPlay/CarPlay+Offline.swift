@@ -37,6 +37,7 @@ extension CarPlayDelegate {
                 var image: UIImage?
                 var detailText = ""
                 
+                // Port this to async code
                 if let imageUrl = $0.cover?.url, let data = try? Data(contentsOf: imageUrl) {
                     image = UIImage(data: data)
                 }

@@ -49,7 +49,7 @@ class IntentHandler: INExtension {
         
         results.sort { $0.name.levenshteinDistanceScore(to: primaryName) > $1.name.levenshteinDistanceScore(to: primaryName) }
         
-        return MediaResolver.shared.convert(items: results)
+        return await MediaResolver.shared.convert(items: results)
     }
     
     enum SearchError: Error {

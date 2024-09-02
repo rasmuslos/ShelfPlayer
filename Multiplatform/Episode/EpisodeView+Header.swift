@@ -31,6 +31,7 @@ extension EpisodeView {
                 }
                 .background {
                     LinearGradient(colors: [(viewModel.dominantColor ?? .clear).opacity(0.9), .secondary.opacity(0.1)], startPoint: .top, endPoint: .bottom)
+                        .animation(.smooth, value: viewModel.dominantColor)
                 }
             }
         }

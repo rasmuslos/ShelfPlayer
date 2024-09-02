@@ -52,9 +52,16 @@ internal extension NowPlaying {
         @MainActor private(set) var skipBackwardsInterval: Int
         @MainActor private(set) var buffering: Bool
         
+        // MARK: Chapter
+        
+        @MainActor var bookmarkNote: String
+        @MainActor var bookmarkCapturedTime: TimeInterval?
+        
         // MARK: Helper
         
         @MainActor private(set) var notifyPlaying: Int
+        @MainActor private(set) var notifyBookmark: Int
+        
         @MainActor private(set) var notifyForwards: Int
         @MainActor private(set) var notifyBackwards: Int
         
@@ -93,7 +100,12 @@ internal extension NowPlaying {
             skipBackwardsInterval = Defaults[.skipBackwardsInterval]
             buffering = false
             
+            bookmarkNote = ""
+            bookmarkCapturedTime = nil
+            
             notifyPlaying = 0
+            notifyBookmark = 0
+            
             notifyForwards = 0
             notifyBackwards = 0
             
@@ -169,6 +181,15 @@ internal extension NowPlaying.ViewModel {
     @MainActor
     var playedPercentage: Double {
         chapterCurrentTime / chapterDuration
+    }
+    
+    @MainActor
+    var remaining: TimeInterval {
+        (chapterDuration - chapterCurrentTime) * (1 / .init(playbackRate))
+    }
+    @MainActor
+    var played: Percentage {
+        .init((AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100)
     }
 }
 
@@ -263,5 +284,43 @@ internal extension NowPlaying.ViewModel {
         }
         
         AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration * percentage
+    }
+    
+    func dismissBookmarkAlert() {
+        Task { @MainActor in
+            bookmarkCapturedTime = nil
+        }
+    }
+    func presentBookmarkAlert() {
+        Task { @MainActor in
+            bookmarkCapturedTime = AudioPlayer.shared.itemCurrentTime
+        }
+    }
+    
+    func createBookmark() {
+        Task {
+            guard let item = await item else {
+                return
+            }
+            
+            await OfflineManager.shared.createBookmark(itemId: item.id, position: AudioPlayer.shared.itemCurrentTime, note: Date.now.formatted(date: .complete, time: .shortened))
+            await MainActor.run {
+                notifyBookmark += 1
+            }
+        }
+    }
+    func createBookmarkWithNote() {
+        Task {
+            guard let item = await item, let bookmarkCapturedTime = await bookmarkCapturedTime else {
+                return
+            }
+            
+            await OfflineManager.shared.createBookmark(itemId: item.identifiers.itemID, position: bookmarkCapturedTime, note: bookmarkNote)
+            
+            await MainActor.run {
+                self.bookmarkCapturedTime = nil
+                notifyBookmark += 1
+            }
+        }
     }
 }

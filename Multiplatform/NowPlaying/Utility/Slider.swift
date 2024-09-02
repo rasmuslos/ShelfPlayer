@@ -6,49 +6,86 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
-extension NowPlaying {
+internal extension NowPlaying {
     struct Slider: View {
-        @Binding var value: Percentage
+        @Binding var percentage: Percentage
         @Binding var dragging: Bool
+        
+        @State private var counter = 0
+        @State private var blocked = false
+        
+        @State private var lastLocation: CGPoint? = nil
         
         var body: some View {
             GeometryReader { geometry in
+                let width = geometry.size.width * min(1, max(0, CGFloat(self.percentage)))
+                
                 ZStack(alignment: .leading) {
                     Rectangle()
-                        .foregroundStyle(.tertiary)
+                        .fill(.background.secondary)
+                        .saturation(1.6)
+                    
                     Rectangle()
-                        .foregroundStyle(dragging ? Color.primary : Color.primary.opacity(0.8))
-                        .frame(width: geometry.size.width * CGFloat(max(0, min(1, self.value / 100))))
+                        .frame(width: width)
+                        .foregroundStyle(.primary)
+                        .animation(.smooth, value: width)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 7))
-                .modifier(ButtonHoverEffectModifier())
-                .highPriorityGesture(DragGesture(minimumDistance: 0)
+                .clipShape(.rect(cornerRadius: 8))
+                .gesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
                     .onChanged { value in
-                        withAnimation(.spring) {
-                            self.value = min(max(0, Double(value.location.x / geometry.size.width * 100)), 100)
-                            dragging = true
+                        if blocked {
+                            return
                         }
+                        
+                        counter += 1
+                        
+                        if counter < 7 {
+                            return
+                        }
+                        counter = 0
+                        
+                        dragging = true
+                        blocked = true
+                        
+                        guard let lastLocation else {
+                            lastLocation = value.location
+                            blocked = false
+                            
+                            return
+                        }
+                        
+                        let velocity = value.velocity.width
+                        let acceleration = velocity > 300 ? 1.5 : 1.2
+                        
+                        let delta = value.location.x - lastLocation.x
+                        let offset = (delta / geometry.size.width) * acceleration
+                        
+                        self.lastLocation = value.location
+                        
+                        percentage = min(1, max(0, percentage + offset))
+                        blocked = false
                     }
                     .onEnded { _ in
-                        withAnimation(.spring) {
-                            dragging = false
-                        }
+                        dragging = false
+                        lastLocation = nil
                     }
                 )
             }
-            .frame(height: dragging ? 10 : 7)
-            .accessibilityRepresentation {
-                SwiftUI.Slider(value: .init(get: { value * 100 }, set: { value = $0 / 100 }), in: 0...100)
-            }
+            .frame(height: dragging ? 12 : 8)
+            .padding(20)
+            .contentShape(.hoverMenuInteraction, .rect)
+            .padding(-20)
+            .animation(.spring, value: dragging)
         }
     }
 }
 
 #Preview {
-    VStack {
-        NowPlaying.Slider(value: .constant(50), dragging: .constant(false))
-            .padding(.horizontal, 20)
-    }
+    @Previewable @State var dragging = false
+    @Previewable @State var percentage = 0.5
+    
+    NowPlaying.Slider(percentage: $percentage, dragging: $dragging)
+        .padding(.horizontal)
 }

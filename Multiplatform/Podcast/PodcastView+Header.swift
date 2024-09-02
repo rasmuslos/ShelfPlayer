@@ -24,7 +24,7 @@ internal extension PodcastView {
             @Bindable var viewModel = viewModel
             
             ZStack {
-                FullscreenBackground(threshold: isRegularPresentation ? -160 : -280, backgroundColor: viewModel.dominantColor, navigationBarVisible: $viewModel.toolbarVisible)
+                FullscreenBackground(threshold: isRegularPresentation ? -160 : -280, backgroundColor: viewModel.dominantColor ?? Color(UIColor.secondarySystemBackground), navigationBarVisible: $viewModel.toolbarVisible)
                 
                 ViewThatFits {
                     RegularPresentation()
@@ -32,15 +32,9 @@ internal extension PodcastView {
                 }
             }
             .background {
-                if let dominantColor = viewModel.dominantColor {
-                    Rectangle()
-                        .fill(dominantColor)
-                        .transition(.opacity)
-                } else {
-                    Rectangle()
-                        .fill(.background.secondary)
-                        .transition(.opacity)
-                }
+                Rectangle()
+                    .fill(viewModel.dominantColor ?? Color(UIColor.tertiarySystemBackground))
+                    .animation(.smooth, value: viewModel.dominantColor)
             }
             .foregroundStyle(isLight == nil ? .primary : isLight! ? Color.black : .white)
             .animation(.smooth, value: viewModel.dominantColor)
