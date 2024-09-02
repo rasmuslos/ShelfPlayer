@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    ":)" : {
-
-    },
     "%@ chapter.remaining.in" : {
       "localizations" : {
         "de" : {
@@ -3149,6 +3146,12 @@
           }
         }
       }
+    },
+    "playback.back" : {
+
+    },
+    "playback.next" : {
+
     },
     "playback.stop" : {
       "localizations" : {

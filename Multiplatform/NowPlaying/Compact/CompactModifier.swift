@@ -105,9 +105,26 @@ private struct ExpandedForeground: View {
     let item: PlayableItem
     
     var body: some View {
+        @Bindable var viewModel = viewModel
+        
         VStack(spacing: 0) {
             if viewModel.expanded {
-                Text(":)")
+                Spacer()
+                
+                ItemImage(cover: item.cover, aspectRatio: .none)
+                    .shadow(radius: 20)
+                    .padding(.vertical, 12)
+                    .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
+                    .animation(.spring(duration: 0.3, bounce: 0.6), value: viewModel.playing)
+                    .matchedGeometryEffect(id: "image", in: viewModel.namespace, anchor: .topLeading)
+                
+                Spacer()
+                
+                NowPlaying.Title(item: item)
+                    .padding(.bottom, 12)
+                
+                NowPlaying.Controls(compact: false)
+                
                 Spacer()
             }
         }
@@ -117,7 +134,7 @@ private struct ExpandedForeground: View {
                     viewModel.expanded = false
                 } label: {
                     Rectangle()
-                        .foregroundStyle(.thinMaterial)
+                        .foregroundStyle(.secondary)
                         .frame(width: 32, height: 4)
                         .clipShape(.rect(cornerRadius: .infinity))
                 }
@@ -128,6 +145,25 @@ private struct ExpandedForeground: View {
             }
         }
         .padding(.horizontal, 28)
+        .sensoryFeedback(.success, trigger: viewModel.notifyBookmark)
+        .alert("bookmark.create.alert", isPresented: .init(get: { viewModel.bookmarkCapturedTime != nil }, set: {
+            if !$0 {
+                viewModel.dismissBookmarkAlert()
+            }
+        })) {
+            TextField("bookmark.create.title", text: $viewModel.bookmarkNote)
+            
+            Button {
+                viewModel.createBookmarkWithNote()
+            } label: {
+                Text("bookmark.create.action")
+            }
+            Button(role: .cancel) {
+                viewModel.dismissBookmarkAlert()
+            } label: {
+                Text("bookmark.create.cancel")
+            }
+        }
     }
 }
 private struct CollapsedForeground: View {
@@ -158,7 +194,7 @@ private struct CollapsedForeground: View {
                 Group {
                     Group {
                         if viewModel.buffering {
-                            ProgressView()
+                            ProgressIndicator()
                         } else {
                             Button {
                                 AudioPlayer.shared.playing.toggle()

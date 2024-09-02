@@ -105,7 +105,7 @@ private struct SeriesName: View {
         if !viewModel.audiobook.series.isEmpty, let seriesName = viewModel.audiobook.seriesName {
             Group {
                 if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
-                    NavigationLink(destination: SeriesLoadView(series: series)){
+                    NavigationLink(destination: SeriesLoadView(series: series)) {
                         seriesNameComponent(seriesName)
                     }
                     .buttonStyle(.plain)

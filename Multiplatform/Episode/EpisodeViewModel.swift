@@ -42,16 +42,11 @@ internal final class EpisodeViewModel {
 
 internal extension EpisodeViewModel {
     func load() async {
-        guard let url = await episode.cover?.url else {
-            return
-        }
-        
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.dominantColor = result
+        await withTaskGroup(of: Void.self) {
+            $0.addTask { await self.loadSessions() }
+            $0.addTask { await self.extractColor() }
+            
+            await $0.waitForAll()
         }
     }
     
@@ -81,6 +76,19 @@ internal extension EpisodeViewModel {
 
 private extension EpisodeViewModel {
     func loadSessions() async {
+        guard let image = await episode.cover?.systemImage else {
+            return
+        }
+        
+        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
+            return
+        }
+        
+        await MainActor.withAnimation {
+            self.dominantColor = result
+        }
+    }
+    func extractColor() async {
         guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: episode.podcastId, episodeID: episode.id) else {
             return
         }

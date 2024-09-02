@@ -166,11 +166,11 @@ private extension AudiobookViewModel {
     }
     
     func extractColor() async {
-        guard let url = await audiobook.cover?.url else {
+        guard let image = await audiobook.cover?.systemImage else {
             return
         }
         
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, url: url), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
+        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
             return
         }
         

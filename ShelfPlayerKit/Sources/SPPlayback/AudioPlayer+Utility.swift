@@ -18,13 +18,6 @@ import SPOfflineExtended
 #endif
 
 public extension AudioPlayer {
-    var remaining: TimeInterval {
-        (chapterDuration - chapterCurrentTime) * (1 / .init(playbackRate))
-    }
-    var played: Percentage {
-        .init((AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100)
-    }
-    
     var chapter: PlayableItem.Chapter? {
         if let currentChapterIndex {
             return chapters[currentChapterIndex]
@@ -152,7 +145,7 @@ internal extension AudioPlayer {
         }
         
         let intent = INPlayMediaIntent(
-            mediaItems: MediaResolver.shared.convert(items: [item]),
+            mediaItems: await MediaResolver.shared.convert(items: [item]),
             mediaContainer: nil,
             playShuffled: false,
             playbackRepeatMode: .none,

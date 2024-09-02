@@ -37,6 +37,9 @@ struct EpisodeView: View {
         .task {
             await viewModel.load()
         }
+        .refreshable {
+            await viewModel.load()
+        }
         .userActivity("io.rfk.shelfplayer.episode") {
             $0.title = viewModel.episode.name
             $0.isEligibleForHandoff = true
