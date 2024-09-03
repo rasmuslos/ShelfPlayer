@@ -11,11 +11,30 @@ import SPFoundation
 import SPOffline
 import SPPlayback
 
-struct Chapters: View {
+internal struct Chapters: View {
     let item: PlayableItem
     let chapters: [PlayableItem.Chapter]
     
     @State private var progressEntity: ItemProgress
+    
+    private var activeIndex: Int? {
+        guard progressEntity.currentTime > 0 else {
+            return nil
+        }
+        
+        return chapters.firstIndex { progressEntity.currentTime >= $0.start && progressEntity.currentTime < $0.end }
+    }
+    private var finished: [Int] {
+        var finished = [Int]()
+        
+        for chapter in chapters {
+            if progressEntity.currentTime >= chapter.end {
+                finished.append(chapters.firstIndex(of: chapter)!)
+            }
+        }
+        
+        return finished
+    }
     
     init(item: PlayableItem, chapters: [PlayableItem.Chapter]) {
         self.item = item
@@ -26,78 +45,74 @@ struct Chapters: View {
     }
     
     var body: some View {
-        ForEach(chapters) {
-            Row(item: item, chapter: $0, progressEntity: progressEntity)
+        ForEach(Array(chapters.enumerated()), id: \.element.id) { (offset, chapter) in
+            Row(id: "\(chapter.id)", title: chapter.title, time: chapter.start, active: activeIndex == offset, finished: finished.contains { $0 == offset }) {
+                if AudioPlayer.shared.item?.id == item.id {
+                    await AudioPlayer.shared.seek(to: chapter.start)
+                } else {
+                    try await AudioPlayer.shared.play(item, at: chapter.start)
+                }
+            }
         }
     }
 }
 
-
-private struct Row: View {
-    let item: PlayableItem
-    let chapter: PlayableItem.Chapter
-    let progressEntity: ItemProgress
-    
-    @State private var loading = false
-    @State private var errorNotify = false
-    
-    private var active: Bool {
-        guard progressEntity.currentTime > 0 else {
-            return false
-        }
+internal extension Chapters {
+    struct Row: View {
+        let id: String
+        let title: String
+        let time: TimeInterval
         
-        return progressEntity.currentTime >= chapter.start && progressEntity.currentTime < chapter.end
-    }
-    private var finished: Bool {
-        progressEntity.currentTime >= chapter.end
-    }
-    
-    var body: some View {
-        Button {
-            Task {
-                loading = true
-                
-                do {
-                    if AudioPlayer.shared.item?.id == item.id {
-                        await AudioPlayer.shared.seek(to: chapter.start)
-                    } else {
-                        try await AudioPlayer.shared.play(item, at: chapter.start)
+        let active: Bool
+        let finished: Bool
+        
+        let callback: () async throws -> Void
+        
+        @State private var loading = false
+        @State private var errorNotify = false
+        
+        var body: some View {
+            Button {
+                Task {
+                    loading = true
+                    
+                    do {
+                        try await callback()
+                        
+                        // :(
+                        try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+                    } catch {
+                        errorNotify.toggle()
                     }
                     
-                    // :(
-                    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
-                } catch {
-                    errorNotify.toggle()
+                    loading = false
                 }
-                
-                loading = false
-            }
-        } label: {
-            HStack {
-                Text(chapter.title)
-                    .bold(active)
-                    .foregroundStyle(finished ? .secondary : .primary)
-                
-                Spacer()
-                
-                if loading {
-                    ProgressIndicator()
-                        .scaleEffect(0.5)
-                } else {
-                    Text(chapter.start, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-                        .font(.caption)
-                        .fontDesign(.monospaced)
-                        .foregroundStyle(.secondary)
+            } label: {
+                HStack {
+                    Text(title)
+                        .bold(active)
+                        .foregroundStyle(finished ? .secondary : .primary)
+                    
+                    Spacer()
+                    
+                    if loading {
+                        ProgressIndicator()
+                            .scaleEffect(0.5)
+                    } else {
+                        Text(time, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                            .font(.caption)
+                            .fontDesign(.monospaced)
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .lineLimit(1)
+                .contentShape(.hoverMenuInteraction, .rect)
             }
-            .lineLimit(1)
-            .contentShape(.hoverMenuInteraction, .rect)
+            .sensoryFeedback(.error, trigger: errorNotify)
+            .listRowInsets(.init(top: 8, leading: 0, bottom: 8, trailing: 0))
+            .id(id)
         }
-        .sensoryFeedback(.error, trigger: errorNotify)
-        .listRowInsets(.init(top: 8, leading: 0, bottom: 8, trailing: 0))
-        .id(chapter.id)
     }
-    
 }
 
 #if DEBUG

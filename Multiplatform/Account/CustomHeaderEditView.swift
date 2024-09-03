@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import Defaults
 import ShelfPlayerKit
 
 struct CustomHeaderEditView: View {
     @State private var current = AudiobookshelfClient.shared.customHTTPHeaders
+    @State private var previous = AudiobookshelfClient.shared.customHTTPHeaders
     
     var callback: (() -> Void)? = nil
     
@@ -51,7 +51,7 @@ struct CustomHeaderEditView: View {
             
             if let callback = callback {
                 Button(role: .destructive) {
-                    AudiobookshelfClient.shared.customHTTPHeaders = current
+                    AudiobookshelfClient.shared.customHTTPHeaders = previous
                     callback()
                 } label: {
                     Label("login.customHTTPHeaders.discard", systemImage: "minus")
