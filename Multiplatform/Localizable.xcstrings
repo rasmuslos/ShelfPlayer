@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%@ chapter.remaining.in" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1352,6 +1353,7 @@
       }
     },
     "bookmarks.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1374,6 +1376,7 @@
       }
     },
     "bookmarks.toggle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1638,6 +1641,7 @@
       }
     },
     "chapters.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3081,6 +3085,18 @@
         }
       }
     },
+    "nowPlaying.sheet.bookmarks" : {
+
+    },
+    "nowPlaying.sheet.chapters" : {
+
+    },
+    "nowPlaying.sheet.icon" : {
+
+    },
+    "nowPlaying.sheet.queue" : {
+
+    },
     "offline.disable" : {
       "localizations" : {
         "de" : {
@@ -3124,6 +3140,9 @@
           }
         }
       }
+    },
+    "output" : {
+
     },
     "play" : {
       "localizations" : {

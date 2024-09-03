@@ -9,47 +9,56 @@ import SwiftUI
 
 internal extension NowPlaying {
     struct CompactButtons: View {
-        @State private var bookmarksActive = false
-        @State private var notableMomentSheetPresented = false
+        @Environment(NowPlaying.ViewModel.self) var viewModel
         
         var body: some View {
             HStack {
                 PlaybackSpeedButton()
-                    .frame(width: 45)
-                    .font(.system(size: 21))
-                    .foregroundStyle(.secondary)
+                    .modifier(NowPlayingButtonModifier())
                 
                 Spacer()
                 
-                Text("sleep") // SleepTimerButton()
-                    .frame(width: 45)
+                Label("sleep", systemImage: "moon.zzz.fill") // SleepTimerButton()
                     .labelStyle(.iconOnly)
-                    .font(.system(size: 19))
-                    .foregroundStyle(.secondary)
+                    .modifier(NowPlayingButtonModifier())
                 
                 Spacer()
+                
+                Button {
+                    NowPlaying.presentPicker()
+                } label: {
+                    Label("output", systemImage: "airplay.audio")
+                        .labelStyle(.iconOnly)
+                        .modifier(NowPlayingButtonModifier())
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
                 
                 Spacer()
                 
                 Menu {
                     NowPlaying.ChapterMenu()
                 } label: {
-                    Label("notableMoments", systemImage: "list.dash")
+                    Label("nowPlaying.sheet.icon", systemImage: viewModel.sheetLabelIcon)
                         .labelStyle(.iconOnly)
+                        .modifier(NowPlayingButtonModifier())
+                        .contentShape(.rect)
                 } primaryAction: {
-                    notableMomentSheetPresented.toggle()
+                    viewModel.sheetPresented.toggle()
                 }
-                .frame(width: 45)
-                .foregroundStyle(.secondary)
+                .buttonStyle(.plain)
             }
-            .bold()
-            .font(.system(size: 20))
-            .frame(height: 45)
-            .sheet(isPresented: $notableMomentSheetPresented, content: {
-                NowPlaying.NotableMomentsView(includeHeader: true, bookmarksActive: $bookmarksActive)
-                    .presentationDragIndicator(.visible)
-                    .presentationDetents([.large, .medium])
-            })
+            .frame(height: 48)
         }
+    }
+}
+
+private struct NowPlayingButtonModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .bold()
+            .font(.title3)
+            .foregroundStyle(.secondary)
+            .frame(width: 48)
     }
 }

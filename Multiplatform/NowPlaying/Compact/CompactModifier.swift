@@ -109,23 +109,26 @@ private struct ExpandedForeground: View {
         
         VStack(spacing: 0) {
             if viewModel.expanded {
-                Spacer()
+                Spacer(minLength: 12)
                 
                 ItemImage(cover: item.cover, aspectRatio: .none)
-                    .shadow(radius: 20)
-                    .padding(.vertical, 12)
+                    .shadow(color: .black.opacity(0.4), radius: 20)
                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                     .animation(.spring(duration: 0.3, bounce: 0.6), value: viewModel.playing)
-                    .matchedGeometryEffect(id: "image", in: viewModel.namespace, anchor: .topLeading)
+                    .matchedGeometryEffect(id: "image", in: viewModel.namespace, properties: .frame, anchor: .topLeading)
+                    .modifier(GestureModifier(active: true))
                 
-                Spacer()
+                Spacer(minLength: 12)
                 
                 NowPlaying.Title(item: item)
-                    .padding(.bottom, 12)
+                    .modifier(GestureModifier(active: true))
                 
                 NowPlaying.Controls(compact: false)
+                    .padding(.top, 16)
                 
-                Spacer()
+                NowPlaying.CompactButtons()
+                    .padding(.top, 28)
+                    .padding(.bottom, 28)
             }
         }
         .overlay(alignment: .top) {
@@ -138,6 +141,7 @@ private struct ExpandedForeground: View {
                         .frame(width: 32, height: 4)
                         .clipShape(.rect(cornerRadius: .infinity))
                 }
+                .buttonStyle(.plain)
                 .padding(40)
                 .modifier(GestureModifier(active: true))
                 .padding(-40)
@@ -146,6 +150,9 @@ private struct ExpandedForeground: View {
         }
         .padding(.horizontal, 28)
         .sensoryFeedback(.success, trigger: viewModel.notifyBookmark)
+        .sheet(isPresented: $viewModel.sheetPresented) {
+            NowPlaying.Sheet()
+        }
         .alert("bookmark.create.alert", isPresented: .init(get: { viewModel.bookmarkCapturedTime != nil }, set: {
             if !$0 {
                 viewModel.dismissBookmarkAlert()

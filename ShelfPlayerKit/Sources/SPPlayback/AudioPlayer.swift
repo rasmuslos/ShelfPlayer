@@ -162,10 +162,22 @@ public final class AudioPlayer {
             NotificationCenter.default.post(name: AudioPlayer.chapterDidChangeNotification, object: nil)
         }
     }
-    public internal(set) var chapters: [PlayableItem.Chapter]
+    public internal(set) var chapters: [PlayableItem.Chapter] {
+        didSet {
+            guard oldValue != chapters else {
+                return
+            }
+            
+            NotificationCenter.default.post(name: AudioPlayer.chaptersDidChangeNotification, object: nil)
+        }
+    }
     
     public var playbackRate: Percentage {
         didSet {
+            guard oldValue != playbackRate else {
+                return
+            }
+            
             audioPlayer.defaultRate = .init(playbackRate)
             
             if let item {

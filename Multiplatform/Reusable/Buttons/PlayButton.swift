@@ -239,6 +239,7 @@ internal struct LargePlayButtonStyle: PlayButtonStyle {
             .background {
                 ZStack {
                     RFKVisuals.adjust(configuration.background, saturation: 0, brightness: -0.8)
+                        .animation(.smooth, value: configuration.background)
                     
                     GeometryReader { geometry in
                         Rectangle()

@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct AudiobookView: View {
+    @Environment(\.defaultMinListRowHeight) private var minimumHeight
     @State private var viewModel: AudiobookViewModel
     
     internal init(_ audiobook: Audiobook) {
@@ -34,7 +35,11 @@ internal struct AudiobookView: View {
                 
                 if viewModel.chapters.count > 1 {
                     DisclosureGroup("\(viewModel.chapters.count) chapters", isExpanded: $viewModel.chaptersVisible) {
-                        ChaptersList(item: viewModel.audiobook, chapters: viewModel.chapters)
+                        List {
+                            Chapters(item: viewModel.audiobook, chapters: viewModel.chapters)
+                        }
+                        .listStyle(.plain)
+                        .frame(height: minimumHeight * CGFloat(viewModel.chapters.count))
                     }
                     .disclosureGroupStyle(BetterDisclosureGroupStyle())
                     .padding(.bottom, 16)

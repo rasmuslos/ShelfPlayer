@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-extension NowPlaying {
+internal extension NowPlaying {
     struct ContextMenuModifier: ViewModifier {
         @Environment(\.libraryId) private var libraryId
         @Environment(NowPlaying.ViewModel.self) private var viewModel
@@ -30,9 +30,9 @@ extension NowPlaying {
                                 Label("episode.view", systemImage: "waveform")
                             }
                             
-                            Button(action: {
+                            Button {
                                 Navigation.navigate(podcastId: episode.podcastId)
-                            }) {
+                            } label: {
                                 Label("podcast.view", systemImage: "tray.full")
                                 Text(episode.podcastName)
                             }
