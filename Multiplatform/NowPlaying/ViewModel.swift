@@ -52,6 +52,11 @@ internal extension NowPlaying {
         @MainActor private(set) var skipBackwardsInterval: Int
         @MainActor private(set) var buffering: Bool
         
+        // MARK: Sheet
+        
+        @MainActor var sheetTab: SheetTab
+        @MainActor var sheetPresented: Bool
+        
         // MARK: Chapter
         
         @MainActor var bookmarkNote: String
@@ -102,6 +107,9 @@ internal extension NowPlaying {
             
             bookmarkNote = ""
             bookmarkCapturedTime = nil
+            
+            sheetTab = .chapters
+            sheetPresented = false
             
             notifyPlaying = 0
             notifyBookmark = 0
@@ -191,6 +199,18 @@ internal extension NowPlaying.ViewModel {
     var played: Percentage {
         .init((AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100)
     }
+    
+    @MainActor
+    var sheetLabelIcon: String {
+        switch sheetTab {
+            case .queue:
+                "list.triangle"
+            case .chapters:
+                "list.number"
+            case .bookmarks:
+                "list.star"
+        }
+    }
 }
 
 // MARK: Observers
@@ -230,6 +250,11 @@ private extension NowPlaying.ViewModel {
         tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.chapterDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.chapter = AudioPlayer.shared.chapter
+            }
+        })
+        tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.chaptersDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.chapters = AudioPlayer.shared.chapters
             }
         })
         tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.bufferingDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
@@ -321,6 +346,18 @@ internal extension NowPlaying.ViewModel {
                 self.bookmarkCapturedTime = nil
                 notifyBookmark += 1
             }
+        }
+    }
+}
+
+internal extension NowPlaying.ViewModel {
+    enum SheetTab: Identifiable, Hashable, Equatable, CaseIterable {
+        case queue
+        case chapters
+        case bookmarks
+        
+        var id: Self {
+            self
         }
     }
 }

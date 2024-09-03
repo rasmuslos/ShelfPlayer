@@ -12,6 +12,7 @@ public extension AudioPlayer {
     static let playingDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.playing")
     
     static let chapterDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.chapter")
+    static let chaptersDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.chapters")
     static let bufferingDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.buffering")
     
     static let timeDidChangeNotification = Notification.Name("io.rfk.ampfin.audioPlayer.updates.time")

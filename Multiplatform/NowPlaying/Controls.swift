@@ -53,7 +53,7 @@ private struct ProgressSlider: View {
                     if viewModel.buffering {
                         ProgressView()
                             .scaleEffect(0.5)
-                            .tint(.white)
+                            .tint(.primary)
                     } else {
                         Text(viewModel.chapterCurrentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
                     }

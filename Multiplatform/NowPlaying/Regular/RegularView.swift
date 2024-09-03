@@ -52,7 +52,7 @@ extension NowPlaying {
                             }
                             .frame(width: min(availableWidth / 2.25, 450))
                             
-                            NotableMomentsView(includeHeader: false, bookmarksActive: $bookmarksActive)
+                            NowPlaying.Sheet()
                                 .frame(maxWidth: .infinity)
                         }
                         
