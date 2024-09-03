@@ -128,8 +128,8 @@ private struct CompactPresentation: View {
     var body: some View {
         VStack(spacing: 0) {
             ItemImage(cover: viewModel.podcast.cover)
-                .frame(width: 200)
-                .shadow(radius: 8)
+                .frame(width: 240)
+                .shadow(color: .black.opacity(0.4), radius: 12)
             
             VStack(spacing: 4) {
                 Title(largeFont: false, alignment: .center)
@@ -181,6 +181,6 @@ private struct RegularPresentation: View {
                 }
         }
         .padding(20)
-        .padding(.top, 60)
+        .padding(.top, 40)
     }
 }

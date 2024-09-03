@@ -9,19 +9,17 @@ import SwiftUI
 import SPFoundation
 import SPPlayback
 
-extension NowPlaying {
+internal extension NowPlaying {
     struct ChapterMenu: View {
+        @Environment(ViewModel.self) private var viewModel
+        
         var body: some View {
-            ForEach(AudioPlayer.shared.chapters) { chapter in
-                Button {
+            ForEach(viewModel.chapters) { chapter in
+                Toggle(chapter.title, isOn: .init(get: {
+                    chapter == viewModel.chapter
+                }, set: { _ in
                     AudioPlayer.shared.itemCurrentTime = chapter.start
-                } label: {
-                    if chapter == AudioPlayer.shared.chapter {
-                        Label(chapter.title, systemImage: "checkmark")
-                    } else {
-                        Text(chapter.title)
-                    }
-                }
+                }))
             }
         }
     }

@@ -11,9 +11,7 @@ import SPFoundation
 import SPOffline
 import SPPlayback
 
-struct ChaptersList: View {
-    @Environment(\.defaultMinListRowHeight) private var minimumHeight
-    
+struct Chapters: View {
     let item: PlayableItem
     let chapters: [PlayableItem.Chapter]
     
@@ -28,13 +26,9 @@ struct ChaptersList: View {
     }
     
     var body: some View {
-        List {
-            ForEach(chapters) {
-                Row(item: item, chapter: $0, progressEntity: progressEntity)
-            }
+        ForEach(chapters) {
+            Row(item: item, chapter: $0, progressEntity: progressEntity)
         }
-        .listStyle(.plain)
-        .frame(height: minimumHeight * CGFloat(chapters.count))
     }
 }
 
@@ -101,21 +95,21 @@ private struct Row: View {
         }
         .sensoryFeedback(.error, trigger: errorNotify)
         .listRowInsets(.init(top: 8, leading: 0, bottom: 8, trailing: 0))
+        .id(chapter.id)
     }
     
 }
 
 #if DEBUG
 #Preview {
-    ScrollView {
-        ChaptersList(item: Audiobook.fixture, chapters: [
+    List {
+        Chapters(item: Audiobook.fixture, chapters: [
             .init(id: 1, start: 0000, end: 1000, title: "Chapter 1 TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT"),
             .init(id: 2, start: 1001, end: 2000, title: "Chapter 2"),
             .init(id: 3, start: 2001, end: 3000, title: "Chapter 3"),
             .init(id: 4, start: 3001, end: 4000, title: "Chapter 4"),
             .init(id: 5, start: 4001, end: 5000, title: "Chapter 5"),
         ])
-        .padding()
     }
 }
 #endif
