@@ -25,15 +25,15 @@ internal extension NowPlaying {
                                         .frame(height: 50)
                                     
                                     Rectangle()
-                                        .frame(height: 250)
+                                        .frame(height: 150)
                                 }
                             }
-                            .foregroundStyle(.bar)
-                            .padding(.bottom, -225)
-                            .allowsHitTesting(false)
-                            .toolbarBackground(.hidden, for: .tabBar)
                             .ignoresSafeArea(.keyboard)
                             .ignoresSafeArea(edges: .all)
+                            .foregroundStyle(.bar)
+                            .padding(.bottom, -175)
+                            .allowsHitTesting(false)
+                            .toolbarBackground(.hidden, for: .tabBar)
                     }
                 }
         }
