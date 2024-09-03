@@ -60,7 +60,7 @@ internal extension NowPlaying {
                             }
                             .drawingGroup()
                         }
-                        .shadow(color: .black.opacity(0.4), radius: 20)
+                        .shadow(color: .black.opacity(0.2), radius: 8)
                         
                         // Drag gesture catcher
                         if viewModel.expanded {
@@ -77,7 +77,6 @@ internal extension NowPlaying {
                                 .allowsHitTesting(!viewModel.expanded)
                             
                             ExpandedForeground(item: item)
-                                .transition(.move(edge: .bottom))
                         }
                     }
                     .offset(x: 0, y: viewModel.dragOffset)
@@ -120,15 +119,18 @@ private struct ExpandedForeground: View {
                 
                 Spacer(minLength: 12)
                 
-                NowPlaying.Title(item: item)
-                    .modifier(GestureModifier(active: true))
-                
-                NowPlaying.Controls(compact: false)
-                    .padding(.top, 16)
-                
-                NowPlaying.CompactButtons()
-                    .padding(.top, 28)
-                    .padding(.bottom, 28)
+                VStack(spacing: 0) {
+                    NowPlaying.Title(item: item)
+                        .modifier(GestureModifier(active: true))
+                    
+                    NowPlaying.Controls(compact: false)
+                        .padding(.top, 16)
+                    
+                    NowPlaying.CompactButtons()
+                        .padding(.top, 28)
+                        .padding(.bottom, 28)
+                }
+                .transition(.move(edge: .bottom))
             }
         }
         .overlay(alignment: .top) {

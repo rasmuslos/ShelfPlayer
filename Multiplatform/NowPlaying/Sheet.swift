@@ -78,6 +78,7 @@ internal extension NowPlaying {
                             }
                             .menuStyle(.button)
                             .buttonStyle(.plain)
+                            .frame(height: 40)
                         }
                         .frame(height: 60)
                         .padding(20)
