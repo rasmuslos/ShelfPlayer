@@ -1353,7 +1353,6 @@
       }
     },
     "bookmarks.empty" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1641,7 +1640,6 @@
       }
     },
     "chapters.empty" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1913,6 +1911,9 @@
           }
         }
       }
+    },
+    "empty.other.queue %lld" : {
+
     },
     "episode.new.title %@" : {
       "localizations" : {
@@ -3486,6 +3487,9 @@
           }
         }
       }
+    },
+    "queue.empty" : {
+
     },
     "queue.last" : {
       "localizations" : {

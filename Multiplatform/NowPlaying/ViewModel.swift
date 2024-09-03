@@ -57,7 +57,9 @@ internal extension NowPlaying {
         @MainActor var sheetTab: SheetTab
         @MainActor var sheetPresented: Bool
         
-        // MARK: Chapter
+        // MARK: Bookmarks
+        
+        @MainActor var bookmarks: [Bookmark]
         
         @MainActor var bookmarkNote: String
         @MainActor var bookmarkCapturedTime: TimeInterval?
@@ -104,6 +106,8 @@ internal extension NowPlaying {
             skipForwardsInterval = Defaults[.skipForwardsInterval]
             skipBackwardsInterval = Defaults[.skipBackwardsInterval]
             buffering = false
+            
+            bookmarks = []
             
             bookmarkNote = ""
             bookmarkCapturedTime = nil
@@ -230,7 +234,14 @@ private extension NowPlaying.ViewModel {
                     let item = self?.item
                     
                     self?.item = AudioPlayer.shared.item
+                    
                     self?.chapters = AudioPlayer.shared.chapters
+                    
+                    if let item, item.type == .audiobook, let bookmark = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
+                        self?.bookmarks = bookmark
+                    } else {
+                        self?.bookmarks = []
+                    }
                     
                     if item == nil && self?.item != nil {
                         self?.expanded = true
@@ -318,13 +329,17 @@ internal extension NowPlaying.ViewModel {
     }
     func presentBookmarkAlert() {
         Task { @MainActor in
+            guard item?.type == .audiobook else {
+                return
+            }
+            
             bookmarkCapturedTime = AudioPlayer.shared.itemCurrentTime
         }
     }
     
     func createBookmark() {
         Task {
-            guard let item = await item else {
+            guard let item = await item, item.type == .audiobook else {
                 return
             }
             
@@ -336,7 +351,7 @@ internal extension NowPlaying.ViewModel {
     }
     func createBookmarkWithNote() {
         Task {
-            guard let item = await item, let bookmarkCapturedTime = await bookmarkCapturedTime else {
+            guard let item = await item, let bookmarkCapturedTime = await bookmarkCapturedTime, item.type == .audiobook else {
                 return
             }
             
@@ -346,6 +361,12 @@ internal extension NowPlaying.ViewModel {
                 self.bookmarkCapturedTime = nil
                 notifyBookmark += 1
             }
+        }
+    }
+    
+    func deleteBookmark(index: Int) {
+        Task {
+            await OfflineManager.shared.deleteBookmark(bookmarks[index])
         }
     }
 }
