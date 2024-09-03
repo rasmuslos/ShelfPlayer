@@ -96,7 +96,7 @@ private struct ControlButtons: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            Label("playback.back", systemImage: "backward.fill")
+            Label("playback.back", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
                 .labelStyle(.iconOnly)
                 .symbolEffect(.bounce.up, value: viewModel.notifyBackwards)
                 .font(.system(size: 32))
@@ -122,7 +122,7 @@ private struct ControlButtons: View {
             .modifier(ButtonHoverEffectModifier())
             .padding(.horizontal, 50)
             
-            Label("playback.next", systemImage: "forward.fill")
+            Label("playback.next", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
                 .labelStyle(.iconOnly)
                 .symbolEffect(.bounce.up, value: viewModel.notifyForwards)
                 .font(.system(size: 32))
