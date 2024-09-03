@@ -12,6 +12,7 @@ import SPPlayback
 
 struct PlaybackSpeedButton: View {
     @Default(.playbackSpeedAdjustment) private var playbackSpeedAdjustment
+    @Environment(NowPlaying.ViewModel.self) private var viewModel
     
     let playbackRates: [Percentage] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
     
@@ -54,7 +55,7 @@ struct PlaybackSpeedButton: View {
     }
 }
 
-extension PlaybackSpeedButton {
+internal extension PlaybackSpeedButton {
     struct Options: View {
         @Default(.customPlaybackSpeed) private var customPlaybackSpeed
         
