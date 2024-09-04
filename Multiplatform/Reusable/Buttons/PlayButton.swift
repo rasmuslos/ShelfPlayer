@@ -17,6 +17,8 @@ internal struct PlayButton: View {
     @Environment(\.playButtonStyle) private var playButtonStyle
     
     let item: PlayableItem
+    let queue: [PlayableItem]
+    
     let color: Color?
     
     @State private var error = false
@@ -25,8 +27,10 @@ internal struct PlayButton: View {
     @State private var progressEntity: ItemProgress
     
     @MainActor
-    init(item: PlayableItem, color: Color?) {
+    init(item: PlayableItem, queue: [PlayableItem], color: Color?) {
         self.item = item
+        self.queue = queue
+        
         self.color = color
         
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
@@ -74,7 +78,7 @@ internal struct PlayButton: View {
                 Label {
                     Text(label)
                     + Text(verbatim: " • ")
-                    + Text((progressEntity.duration - progressEntity.currentTime), format: .duration(unitsStyle: .short))
+                    + Text((progressEntity.duration - progressEntity.currentTime), format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                 } icon: {
                     if loading {
                         ProgressIndicator()
@@ -175,7 +179,7 @@ internal struct PlayButton: View {
             loading = true
             
             do {
-                try await AudioPlayer.shared.play(item)
+                try await AudioPlayer.shared.play(item, queue: queue)
             } catch {
                 self.error.toggle()
                 loading = false
@@ -324,14 +328,14 @@ private struct PlayButtonTip: Tip {
 #if DEBUG
 #Preview {
     VStack {
-        PlayButton(item: Audiobook.fixture, color: .accent)
+        PlayButton(item: Audiobook.fixture, queue: [], color: .accent)
             .playButtonSize(.medium)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(.accent)
 }
 #Preview {
-    PlayButton(item: Audiobook.fixture, color: .accent)
+    PlayButton(item: Audiobook.fixture, queue: [], color: .accent)
         .playButtonSize(.large)
 }
 #endif

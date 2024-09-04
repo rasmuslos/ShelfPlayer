@@ -54,7 +54,7 @@ internal extension NowPlaying {
         
         // MARK: Sheet
         
-        @MainActor var sheetTab: SheetTab
+        @MainActor var sheetTab: SheetTab?
         @MainActor var sheetPresented: Bool
         
         // MARK: Bookmarks
@@ -213,6 +213,8 @@ internal extension NowPlaying.ViewModel {
                 "list.number"
             case .bookmarks:
                 "list.star"
+            case .none:
+                "loading"
         }
     }
 }

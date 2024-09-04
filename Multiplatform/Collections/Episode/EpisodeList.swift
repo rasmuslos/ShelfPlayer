@@ -11,20 +11,29 @@ import SPFoundation
 struct EpisodeList: View {
     let episodes: [Episode]
     
+    private func queue(for episode: Episode) -> [Episode] {
+        guard let index = episodes.firstIndex(of: episode) else {
+            return []
+        }
+        
+        return Array(episodes[index..<episodes.endIndex])
+    }
+    
     var body: some View {
-            ForEach(episodes) { episode in
-                NavigationLink(destination: EpisodeView(episode)) {
-                    EpisodeRow(episode: episode)
-                }
-                .modifier(SwipeActionsModifier(item: episode, loading: .constant(false)))
-                .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
+        ForEach(episodes) { episode in
+            NavigationLink(destination: EpisodeView(episode)) {
+                EpisodeRow(episode: episode, queue: queue)
             }
+            .modifier(SwipeActionsModifier(item: episode, queue: queue(for: episode), loading: .constant(false)))
+            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
+        }
     }
 }
 
 extension EpisodeList {
     struct EpisodeRow: View {
         let episode: Episode
+        let queue: (Episode) -> [Episode]
         
         var body: some View {
             HStack {
@@ -64,7 +73,7 @@ extension EpisodeList {
                 Spacer()
             }
             .contentShape(.hoverMenuInteraction, Rectangle())
-            .modifier(EpisodeContextMenuModifier(episode: episode))
+            .modifier(EpisodeContextMenuModifier(episode: episode, queue: queue(episode)))
         }
     }
 }

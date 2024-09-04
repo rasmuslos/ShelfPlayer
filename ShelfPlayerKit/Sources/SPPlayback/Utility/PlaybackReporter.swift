@@ -24,7 +24,9 @@ internal final class PlaybackReporter {
     
     private var duration: TimeInterval
     private var currentTime: TimeInterval
-    private var lastReportedTime: TimeInterval
+    
+    private var lastUpdate: Date
+    private var lastReport: Date
     
     internal init(itemId: String, episodeId: String?, playbackSessionId: String?) {
         self.itemId = itemId
@@ -33,7 +35,9 @@ internal final class PlaybackReporter {
         
         duration = .nan
         currentTime = .nan
-        lastReportedTime = Date.timeIntervalSinceReferenceDate
+        
+        lastUpdate = .now
+        lastReport = .now
         
         listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
     }
@@ -60,10 +64,18 @@ internal extension PlaybackReporter {
         // report every 30 seconds
         if Int(currentTime) % 30 == 0 || forceReport {
             reportProgress()
-        } else if currentTime.truncatingRemainder(dividingBy: 1) < 0.3 {
-            Task {
-                await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
-            }
+            return
+        }
+        
+        let duration = DateInterval(start: lastUpdate, end: .now).duration
+        lastUpdate = .now
+        
+        guard duration > 0.5 else {
+            return
+        }
+        
+        Task {
+            await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
         }
     }
     func reportProgress(playing: Bool, currentTime: TimeInterval, duration: TimeInterval) {
@@ -110,14 +122,14 @@ private extension PlaybackReporter {
     }
     
     func timeListened() -> TimeInterval {
-        let timeListened = Date.timeIntervalSinceReferenceDate - lastReportedTime
-        lastReportedTime = Date.timeIntervalSinceReferenceDate
+        let duration = DateInterval(start: lastReport, end: .now).duration
+        lastReport = .now
         
-        if !timeListened.isFinite {
+        guard duration.isFinite else {
             return 0
         }
         
-        return timeListened
+        return duration
     }
     
     func updateTime(currentTime: TimeInterval, duration: TimeInterval) {

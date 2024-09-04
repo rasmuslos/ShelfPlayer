@@ -142,7 +142,7 @@ private struct CompactPresentation: View {
                 .padding(.top, 12)
                 .padding(.bottom, 16)
             
-            PlayButton(item: viewModel.audiobook, color: viewModel.dominantColor)
+            PlayButton(item: viewModel.audiobook, queue: [], color: viewModel.dominantColor)
         }
         .padding(.top, 32)
     }
@@ -169,7 +169,6 @@ private struct RegularPresentation: View {
                     .frame(width: max(0, min(400, (availableWidth - 40) / 2)))
                     .hoverEffect(.highlight)
                 
-                // this piece of shit is required for `ViewThatFits` to work properly
                 Color.clear
                     .frame(minWidth: 280)
                     .overlay {
@@ -182,7 +181,7 @@ private struct RegularPresentation: View {
                             
                             Spacer()
                             
-                            PlayButton(item: viewModel.audiobook, color: viewModel.dominantColor)
+                            PlayButton(item: viewModel.audiobook, queue: [], color: viewModel.dominantColor)
                         }
                     }
             }

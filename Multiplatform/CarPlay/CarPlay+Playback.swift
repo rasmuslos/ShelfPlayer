@@ -13,7 +13,7 @@ import SPPlayback
 internal extension CarPlayDelegate {
     static func startPlayback(item: CPSelectableListItem, completion: () -> Void) {
         Task {
-            try await AudioPlayer.shared.play((item.userInfo! as! PlayableItem))
+            try await AudioPlayer.shared.play((item.userInfo! as! PlayableItem), queue: [])
             NotificationCenter.default.post(name: Self.updateContentNotifications, object: nil)
         }
         

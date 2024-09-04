@@ -19,7 +19,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
             .contextMenu {
                 Button {
                     Task {
-                        try await AudioPlayer.shared.play(audiobook)
+                        try await AudioPlayer.shared.play(audiobook, queue: [])
                     }
                 } label: {
                     Label("play", systemImage: "play.fill")
