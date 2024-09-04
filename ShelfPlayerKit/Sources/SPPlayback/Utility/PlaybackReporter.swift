@@ -75,7 +75,7 @@ internal extension PlaybackReporter {
         }
         
         Task {
-            await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
+            await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: self.currentTime, duration: self.duration)
         }
     }
     func reportProgress(playing: Bool, currentTime: TimeInterval, duration: TimeInterval) {

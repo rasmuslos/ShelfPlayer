@@ -18,7 +18,7 @@ internal extension NowPlaying {
         
         @ViewBuilder
         func emptyText(_ text: LocalizedStringKey) -> some View {
-            if viewModel.sheetTab == .bookmarks {
+            if viewModel.sheetTab == .chapters {
                 TipView(QueueScrollTip()) {
                     if $0.id == "queue" {
                         viewModel.sheetTab = .queue
