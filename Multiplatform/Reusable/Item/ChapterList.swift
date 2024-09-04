@@ -50,7 +50,7 @@ internal struct Chapters: View {
                 if AudioPlayer.shared.item?.id == item.id {
                     await AudioPlayer.shared.seek(to: chapter.start)
                 } else {
-                    try await AudioPlayer.shared.play(item, at: chapter.start)
+                    try await AudioPlayer.shared.play(item, at: chapter.start, queue: [])
                 }
             }
         }
@@ -108,6 +108,7 @@ internal extension Chapters {
                 .lineLimit(1)
                 .contentShape(.hoverMenuInteraction, .rect)
             }
+            .buttonStyle(.plain)
             .sensoryFeedback(.error, trigger: errorNotify)
             .listRowInsets(.init(top: 8, leading: 0, bottom: 8, trailing: 0))
             .id(id)

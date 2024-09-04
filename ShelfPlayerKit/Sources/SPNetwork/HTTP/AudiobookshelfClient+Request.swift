@@ -18,6 +18,7 @@ internal extension AudiobookshelfClient {
         var request = URLRequest(url: url)
         request.httpMethod = clientRequest.method
         request.httpShouldHandleCookies = true
+        request.timeoutInterval = 15
         
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         

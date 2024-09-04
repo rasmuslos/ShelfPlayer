@@ -32,11 +32,19 @@ struct OfflinePodcastView: View {
         Episode.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSortOrder, ascending: episodesAscending)
     }
     
+    private func queue(for episode: Episode) -> [Episode] {
+        guard let index = episodes.firstIndex(of: episode) else {
+            return []
+        }
+        
+        return Array(episodes[index..<episodes.endIndex])
+    }
+    
     var body: some View {
         List {
             ForEach(sorted) {
-                EpisodeSingleList.EpisodeRow(episode: $0)
-                    .modifier(SwipeActionsModifier(item: $0, loading: .constant(false)))
+                EpisodeSingleList.EpisodeRow(episode: $0, queue: queue)
+                    .modifier(SwipeActionsModifier(item: $0, queue: queue(for: $0), loading: .constant(false)))
             }
         }
         .listStyle(.plain)

@@ -106,6 +106,15 @@ internal extension PodcastViewModel {
         return "gear.badge.checkmark"
     }
     
+    @MainActor
+    func queue(for episode: Episode) -> [Episode] {
+        guard let index = episodes.firstIndex(of: episode) else {
+            return []
+        }
+        
+        return Array(episodes[index..<episodes.endIndex])
+    }
+    
     func load() async {
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.fetchEpisodes() }

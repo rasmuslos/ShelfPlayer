@@ -80,7 +80,7 @@ extension EpisodeFeaturedGrid {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 10))
             .hoverEffect(.highlight)
-            .modifier(EpisodeContextMenuModifier(episode: episode))
+            .modifier(EpisodeContextMenuModifier(episode: episode, queue: []))
         }
     }
 }
