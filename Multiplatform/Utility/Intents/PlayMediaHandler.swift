@@ -22,23 +22,25 @@ final internal class PlayMediaHandler: NSObject, INPlayMediaIntentHandling {
             return .init(code: .failure, userActivity: nil)
         }
         
-        var item: PlayableItem? = nil
+        var items = [PlayableItem]()
         
         do {
             if mediaItem.type == .audioBook {
-                item = try await MediaResolver.shared.resolve(audiobookId: identifier)
+                items = [try await MediaResolver.shared.resolve(audiobookId: identifier)]
             } else if mediaItem.type == .podcastShow {
-                item = try await MediaResolver.shared.resolve(podcastId: identifier).first
+                items = try await MediaResolver.shared.resolve(podcastId: identifier)
             } else if mediaItem.type == .podcastEpisode {
-                item = try await MediaResolver.shared.resolve(episodeId: identifier)
+                items = [try await MediaResolver.shared.resolve(episodeId: identifier)]
             }
             
-            guard let item = item else {
+            guard !items.isEmpty else {
                 throw MediaResolver.ResolveError.empty
             }
             
+            let item = items.removeFirst()
+            
             if intent.playbackQueueLocation == .now {
-                try await AudioPlayer.shared.play(item)
+                try await AudioPlayer.shared.play(item, queue: items)
             } else {
                 AudioPlayer.shared.queue(item)
             }

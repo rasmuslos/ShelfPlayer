@@ -69,7 +69,7 @@ private struct ProgressSlider: View {
                         Text(chapter.title)
                             .animation(.easeInOut, value: chapter.title)
                     } else {
-                        Text(viewModel.remaining, format: .duration(unitsStyle: .abbreviated))
+                        Text(viewModel.remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                     }
                 }
                 .font(.caption2)

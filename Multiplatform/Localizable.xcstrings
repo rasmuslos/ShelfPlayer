@@ -1352,6 +1352,9 @@
         }
       }
     },
+    "Bookmarks" : {
+
+    },
     "bookmarks.empty" : {
       "localizations" : {
         "de" : {
@@ -1639,6 +1642,9 @@
         }
       }
     },
+    "Chapters" : {
+
+    },
     "chapters.empty" : {
       "localizations" : {
         "de" : {
@@ -1901,6 +1907,9 @@
           }
         }
       }
+    },
+    "drag" : {
+
     },
     "duration" : {
       "localizations" : {
@@ -3488,6 +3497,12 @@
         }
       }
     },
+    "Queue" : {
+
+    },
+    "queue.clear" : {
+
+    },
     "queue.empty" : {
 
     },
@@ -3527,6 +3542,12 @@
           }
         }
       }
+    },
+    "queue.scroll.tip.message" : {
+
+    },
+    "queue.scroll.tip.title" : {
+
     },
     "queue.tip.message" : {
       "localizations" : {

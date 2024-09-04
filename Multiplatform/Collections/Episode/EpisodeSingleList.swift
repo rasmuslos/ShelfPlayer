@@ -11,20 +11,29 @@ import SPFoundation
 struct EpisodeSingleList: View {
     let episodes: [Episode]
     
+    private func queue(for episode: Episode) -> [Episode] {
+        guard let index = episodes.firstIndex(of: episode) else {
+            return []
+        }
+        
+        return Array(episodes[index..<episodes.endIndex])
+    }
+    
     var body: some View {
         ForEach(episodes) { episode in
             NavigationLink(destination: EpisodeView(episode)) {
-                EpisodeRow(episode: episode)
+                EpisodeRow(episode: episode, queue: queue)
             }
             .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
-            .modifier(SwipeActionsModifier(item: episode, loading: .constant(false)))
+            .modifier(SwipeActionsModifier(item: episode, queue: queue(for: episode), loading: .constant(false)))
         }
     }
 }
 
-extension EpisodeSingleList {
+internal extension EpisodeSingleList {
     struct EpisodeRow: View {
         let episode: Episode
+        let queue: (_ episode: Episode) -> [Episode]
         
         var body: some View {
             VStack(alignment: .leading) {
@@ -58,7 +67,7 @@ extension EpisodeSingleList {
                 }
             }
             .contentShape([.contextMenuPreview, .hoverEffect, .interaction], Rectangle())
-            .modifier(EpisodeContextMenuModifier(episode: episode))
+            .modifier(EpisodeContextMenuModifier(episode: episode, queue: queue(episode)))
         }
     }
 }
