@@ -108,11 +108,11 @@ internal extension PodcastViewModel {
     
     @MainActor
     func queue(for episode: Episode) -> [Episode] {
-        guard let index = episodes.firstIndex(of: episode) else {
+        guard let index = visible.firstIndex(of: episode) else {
             return []
         }
         
-        return Array(episodes[index..<episodes.endIndex])
+        return Array(visible[index..<visible.endIndex])
     }
     
     func load() async {

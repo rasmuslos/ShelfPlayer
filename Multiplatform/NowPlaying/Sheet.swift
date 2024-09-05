@@ -44,91 +44,99 @@ internal extension NowPlaying {
         
         @ViewBuilder
         func section(_ tab: ViewModel.SheetTab) -> some View {
-                    switch tab {
-                        case .queue:
-                            List {
-                                if viewModel.queue.isEmpty {
-                                    emptyText("queue.empty")
-                                } else {
-                                    ForEach(viewModel.queue) { item in
-                                        HStack(spacing: 0) {
-                                            ItemImage(cover: item.cover)
-                                                .frame(width: 48)
-                                                .padding(.trailing, 8)
+            switch tab {
+                case .queue:
+                    ScrollViewReader { innerProxy in
+                        List {
+                            if viewModel.queue.isEmpty {
+                                emptyText("queue.empty")
+                            } else {
+                                ForEach(viewModel.queue) { item in
+                                    HStack(spacing: 0) {
+                                        ItemImage(cover: item.cover)
+                                            .frame(width: 48)
+                                            .padding(.trailing, 8)
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(item.name)
+                                                .lineLimit(1)
                                             
-                                            VStack(alignment: .leading, spacing: 2) {
-                                                Text(item.name)
+                                            if let author = item.author {
+                                                Text(author)
                                                     .lineLimit(1)
-                                                
-                                                if let author = item.author {
-                                                    Text(author)
-                                                        .lineLimit(1)
-                                                        .font(.subheadline)
-                                                        .foregroundStyle(.secondary)
-                                                }
+                                                    .font(.subheadline)
+                                                    .foregroundStyle(.secondary)
                                             }
-                                            
-                                            Spacer(minLength: 12)
-                                            
-                                            Label("drag", systemImage: "line.3.horizontal")
-                                                .labelStyle(.iconOnly)
-                                                .font(.title3)
-                                                .foregroundStyle(.secondary)
                                         }
-                                        .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
+                                        
+                                        Spacer(minLength: 12)
+                                        
+                                        Label("drag", systemImage: "line.3.horizontal")
+                                            .labelStyle(.iconOnly)
+                                            .font(.title3)
+                                            .foregroundStyle(.secondary)
                                     }
-                                    .onMove {
-                                        for index in $0 {
-                                            AudioPlayer.shared.move(from: index, to: $1)
-                                        }
+                                    .id(item)
+                                    .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
+                                }
+                                .onMove {
+                                    for index in $0 {
+                                        AudioPlayer.shared.move(from: index, to: $1)
                                     }
-                                    .onDelete {
-                                        for index in $0 {
-                                            AudioPlayer.shared.remove(at: index)
-                                        }
+                                }
+                                .onDelete {
+                                    for index in $0 {
+                                        AudioPlayer.shared.remove(at: index)
                                     }
                                 }
                             }
-                            .listStyle(.plain)
-                        case .chapters:
-                            ScrollViewReader { innerProxy in
-                                List {
-                                    if !viewModel.chapters.isEmpty, let item = viewModel.item {
-                                        Chapters(item: item, chapters: viewModel.chapters)
-                                            .padding(.horizontal, 20)
-                                    } else {
-                                        emptyText("chapters.empty")
-                                    }
-                                }
-                                .listStyle(.plain)
-                                .contentMargins(.vertical, 4)
-                                .onChange(of: viewModel.sheetTab, initial: true) {
-                                    if let id = viewModel.chapter?.id {
-                                        innerProxy.scrollTo("\(id)", anchor: .center)
-                                    }
-                                }
+                        }
+                        .listStyle(.plain)
+                        .onChange(of: viewModel.sheetTab, initial: true) {
+                            if let item = viewModel.queue.first {
+                                innerProxy.scrollTo(item, anchor: .top)
                             }
-                        case .bookmarks:
-                            List {
-                                if viewModel.bookmarks.isEmpty {
-                                    emptyText("bookmarks.empty")
-                                } else {
-                                    ForEach(viewModel.bookmarks) { bookmark in
-                                        Chapters.Row(id: "\(bookmark.position)", title: bookmark.note, time: bookmark.position, active: false, finished: false) {
-                                            AudioPlayer.shared.itemCurrentTime = bookmark.position
-                                        }
-                                        .padding(.horizontal, 20)
-                                    }
-                                    .onDelete {
-                                        for index in $0 {
-                                            viewModel.deleteBookmark(index: index)
-                                        }
-                                    }
-                                }
-                            }
-                            .listStyle(.plain)
-                            .contentMargins(.vertical, 4)
+                        }
                     }
+                case .chapters:
+                    ScrollViewReader { innerProxy in
+                        List {
+                            if !viewModel.chapters.isEmpty, let item = viewModel.item {
+                                Chapters(item: item, chapters: viewModel.chapters)
+                                    .padding(.horizontal, 20)
+                            } else {
+                                emptyText("chapters.empty")
+                            }
+                        }
+                        .listStyle(.plain)
+                        .contentMargins(.vertical, 4)
+                        .onChange(of: viewModel.sheetTab, initial: true) {
+                            if let id = viewModel.chapter?.id {
+                                innerProxy.scrollTo("\(id)", anchor: .center)
+                            }
+                        }
+                    }
+                case .bookmarks:
+                    List {
+                        if viewModel.bookmarks.isEmpty {
+                            emptyText("bookmarks.empty")
+                        } else {
+                            ForEach(viewModel.bookmarks) { bookmark in
+                                Chapters.Row(id: "\(bookmark.position)", title: bookmark.note, time: bookmark.position, active: false, finished: false) {
+                                    AudioPlayer.shared.itemCurrentTime = bookmark.position
+                                }
+                                .padding(.horizontal, 20)
+                            }
+                            .onDelete {
+                                for index in $0 {
+                                    viewModel.deleteBookmark(index: index)
+                                }
+                            }
+                        }
+                    }
+                    .listStyle(.plain)
+                    .contentMargins(.vertical, 4)
+            }
         }
         
         var body: some View {

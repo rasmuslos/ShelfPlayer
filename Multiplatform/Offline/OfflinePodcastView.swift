@@ -33,11 +33,11 @@ struct OfflinePodcastView: View {
     }
     
     private func queue(for episode: Episode) -> [Episode] {
-        guard let index = episodes.firstIndex(of: episode) else {
+        guard let index = sorted.firstIndex(of: episode) else {
             return []
         }
         
-        return Array(episodes[index..<episodes.endIndex])
+        return Array(sorted[index..<sorted.endIndex])
     }
     
     var body: some View {
