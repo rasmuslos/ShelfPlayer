@@ -193,7 +193,7 @@ internal extension AudioPlayer {
 internal extension AudioPlayer {
     func setupAudioSession() {
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio, policy: .longFormAudio)
         } catch {
             logger.fault("Failed to setup audio session")
         }
