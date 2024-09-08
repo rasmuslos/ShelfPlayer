@@ -64,7 +64,7 @@ extension EpisodeList {
                     }
                     
                     HStack {
-                        EpisodePlayButton(episode: episode)
+                        EpisodePlayButton(episode: episode, queue: queue(episode))
                         Spacer()
                         DownloadIndicator(item: episode)
                     }

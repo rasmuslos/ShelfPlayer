@@ -9,7 +9,7 @@ import SwiftUI
 import SPFoundation
 import SPOffline
 
-struct ProgressButton: View {
+internal struct ProgressButton: View {
     let item: PlayableItem
     let tint: Bool
     
@@ -20,6 +20,11 @@ struct ProgressButton: View {
         self.tint = tint
         
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
+        progressEntity.beginReceivingUpdates()
+    }
+    
+    private var finished: Bool {
+        progressEntity.progress >= 1
     }
     
     var body: some View {
@@ -28,13 +33,9 @@ struct ProgressButton: View {
                 try await item.finished(progressEntity.progress < 1)
             }
         } label: {
-            if progressEntity.progress >= 1 {
-                Label("progress.reset", systemImage: "minus")
-                    .tint(tint ? .red : .primary)
-            } else {
-                Label("progress.complete", systemImage: "checkmark")
-                    .tint(tint ? .accentColor : .primary)
-            }
+            Label(finished ? "progress.reset" : "progress.complete", systemImage: finished ? "minus" : "checkmark")
+                .contentTransition(.symbolEffect)
+                .tint(tint ? finished ? .red : .accentColor : .primary)
         }
     }
 }

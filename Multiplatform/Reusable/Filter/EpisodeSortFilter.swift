@@ -9,7 +9,7 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-struct EpisodeSortFilter: View {
+internal struct EpisodeSortFilter: View {
     @Binding var filter: EpisodeFilter
     @Binding var sortOrder: EpisodeSortOrder
     @Binding var ascending: Bool
@@ -38,21 +38,46 @@ struct EpisodeSortFilter: View {
             
             Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
         } label: {
-            Label("filterSort", systemImage: "arrow.up.arrow.down.circle")
-                .symbolVariant(filter == .all ? .none : .fill)
+            Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down")")
+                .contentTransition(.symbolEffect)
         }
     }
 }
 
-// MARK: Preview
+private extension EpisodeFilter {
+    var title: LocalizedStringKey {
+        switch self {
+            case .all:
+                "filter.all"
+            case .progress:
+                "filter.inProgress"
+            case .unfinished:
+                "filter.unfinished"
+            case .finished:
+                "filter.finished"
+        }
+    }
+}
+
+private extension EpisodeSortOrder {
+    var title: LocalizedStringKey {
+        switch self {
+            case .name:
+                "sort.name"
+            case .index:
+                "sort.index"
+            case .released:
+                "sort.released"
+            case .duration:
+                "sort.duration"
+        }
+    }
+}
 
 #Preview {
-    // these are here because swiftui does not like things in packages
-    let _ = String(localized: "sort.unfinished")
-    let _ = String(localized: "sort.progress")
-    let _ = String(localized: "sort.index")
-    let _ = String(localized: "sort.finished")
-    let _ = String(localized: "sort.all")
+    @Previewable @State var filter: EpisodeFilter = .all
+    @Previewable @State var sortOrder: EpisodeSortOrder = .released
+    @Previewable @State var ascending: Bool = false
     
-    return EpisodeSortFilter(filter: .constant(.all), sortOrder: .constant(.released), ascending: .constant(false))
+    EpisodeSortFilter(filter: $filter, sortOrder: $sortOrder, ascending: $ascending)
 }

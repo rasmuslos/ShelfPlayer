@@ -112,7 +112,7 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
                     }
                     
                     HStack {
-                        EpisodePlayButton(episode: episode, highlighted: true)
+                        EpisodePlayButton(episode: episode, queue: [], highlighted: true)
                             .bold()
                         
                         Spacer()

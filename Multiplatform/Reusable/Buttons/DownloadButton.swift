@@ -15,62 +15,69 @@ struct DownloadButton: View {
     let tint: Bool
     let downloadingLabel: Bool
     
-    let offlineTracker: ItemOfflineTracker
-    
-    @State private var hapticFeedback = false
+    @State private var notify = false
+    @State private var offlineTracker: ItemOfflineTracker
     
     init(item: PlayableItem, tint: Bool = false, downloadingLabel: Bool = true) {
         self.item = item
         self.tint = tint
         self.downloadingLabel = downloadingLabel
         
-        offlineTracker = ItemOfflineTracker(item)
+        _offlineTracker = .init(initialValue: .init(item))
+    }
+    
+    private var title: LocalizedStringKey {
+        switch offlineTracker.status {
+            case .none:
+                "download"
+            case .working:
+                "download.remove.force"
+            case .downloaded:
+                "download.remove"
+        }
+    }
+    private var icon: String {
+        switch offlineTracker.status {
+            case .none:
+                "arrow.down"
+            default:
+                "xmark"
+        }
     }
     
     var body: some View {
-        Group {
-            switch offlineTracker.status {
-                case .none:
-                    Button {
-                        Task {
-                            let identifiers = item.identifiers
-                            
-                            if let episodeID = identifiers.episodeID {
-                                try? await OfflineManager.shared.download(episodeId: episodeID, podcastId: identifiers.itemID)
-                            } else {
-                                try? await OfflineManager.shared.download(audiobookId: identifiers.itemID)
-                            }
-                            
-                            hapticFeedback.toggle()
-                        }
-                    } label: {
-                        Label("download", systemImage: "arrow.down")
-                    }
-                case .working:
-                    if downloadingLabel {
-                        Button(role: .destructive) {
-                            deleteDownload()
-                        } label: {
-                            Label("download.remove.force", systemImage: "xmark")
-                        }
-                    } else {
-                        DownloadProgressIndicator(itemId: item.id, small: false)
-                            .padding(.trailing, 15)
-                    }
-                case .downloaded:
-                    Button(role: .destructive) {
-                        deleteDownload()
-                    } label: {
-                        Label("download.remove", systemImage: "xmark")
-                    }
+        Button {
+            if offlineTracker.status == .none {
+                download()
+            } else {
+                remove()
+            }
+        } label: {
+            if offlineTracker.status == .working && !downloadingLabel {
+                ProgressIndicator()
+            } else {
+                Label(title, systemImage: icon)
             }
         }
-        .sensoryFeedback(.success, trigger: hapticFeedback)
+        .sensoryFeedback(.success, trigger: notify)
         .modifier(TintModifier(tint: tint, offlineStatus: offlineTracker.status))
     }
     
-    @MainActor
-    private func deleteDownload() {
+    private func download() {
+        Task {
+            let identifiers = item.identifiers
+            
+            if let episodeID = identifiers.episodeID {
+                try? await OfflineManager.shared.download(episodeId: episodeID, podcastId: identifiers.itemID)
+            } else {
+                try? await OfflineManager.shared.download(audiobookId: identifiers.itemID)
+            }
+            
+            notify.toggle()
+        }
+    }
+    
+    private func remove() {
         let identifiers = item.identifiers
         
         if let episodeID = identifiers.episodeID {
@@ -79,7 +86,7 @@ struct DownloadButton: View {
             OfflineManager.shared.remove(audiobookId: identifiers.itemID)
         }
         
-        hapticFeedback.toggle()
+        notify.toggle()
     }
 }
 
@@ -108,24 +115,5 @@ private struct TintModifier: ViewModifier {
 
 #Preview {
     DownloadButton(item: Audiobook.fixture, downloadingLabel: false)
-}
-
-#Preview {
-    NavigationStack {
-        Text(verbatim: ":)")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    DownloadButton(item: Audiobook.fixture, downloadingLabel: false)
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Image(systemName: "command.circle.fill")
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Image(systemName: "command.circle.fill")
-                }
-            }
-    }
 }
 #endif

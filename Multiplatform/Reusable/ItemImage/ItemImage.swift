@@ -10,14 +10,12 @@ import NukeUI
 import Defaults
 import ShelfPlayerKit
 
-// TODO: update asset loading to include Headers
-
-struct ItemImage: View {
+internal struct ItemImage: View {
     @Default(.forceAspectRatio) private var forceAspectRatio
     
     let cover: Cover?
     
-    var cornerRadius: CGFloat = 7
+    var cornerRadius: CGFloat = 8
     var aspectRatio = AspectRatioPolicy.square
     var priority: ImageRequest.Priority = .normal
     

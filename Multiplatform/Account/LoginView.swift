@@ -25,29 +25,21 @@ struct LoginView: View {
     @State private var openIDLoginURL: URL?
     
     var body: some View {
-        VStack {
+        VStack(spacing: 8) {
             Spacer()
             
             Image("Logo")
                 .resizable()
                 .aspectRatio(1, contentMode: .fit)
-                .frame(width: 100)
+                .frame(width: 108)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
-                .padding(.bottom, 50)
+                .padding(.bottom, 28)
             
             Text("login.welcome")
                 .font(.headline)
                 .fontDesign(.serif)
             Text("login.text")
                 .font(.subheadline)
-            
-            Button {
-                loginSheetPresented.toggle()
-            } label: {
-                Text("login.prompt")
-            }
-            .buttonStyle(LargeButtonStyle())
-            .padding()
             
             Spacer()
             
@@ -56,6 +48,20 @@ struct LoginView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             #endif
+        }
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                loginSheetPresented.toggle()
+            } label: {
+                Label("login.prompt", systemImage: "person.badge.plus")
+                    .contentShape(.rect)
+                    .padding(16)
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color.accentColor, in: .rect(cornerRadius: 12))
+            .foregroundStyle(.black)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 8)
         }
         .sheet(isPresented: $loginSheetPresented) {
             switch loginFlowState {
@@ -243,8 +249,8 @@ extension LoginView {
     }
 }
 
-extension LoginView {
-    private func fetchOpenIDLoginURL() async {
+private extension LoginView {
+    func fetchOpenIDLoginURL() async {
         do {
             openIDLoginURL = try await AudiobookshelfClient.shared.openIDLoginURL(verifier: verifier)
         } catch {
@@ -253,7 +259,7 @@ extension LoginView {
         }
     }
     
-    private func openIDCallback(url: URL?, error: Error?) {
+    func openIDCallback(url: URL?, error: Error?) {
         loginFlowState = .credentialsLoading
         
         if error == nil, let url = url {

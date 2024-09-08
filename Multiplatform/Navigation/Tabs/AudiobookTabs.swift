@@ -34,7 +34,7 @@ struct AudiobookTabs: View {
             Group {
                 NavigationStack {
                     AudiobookListenNowView()
-                        .modifier(LibrarySelectModifier())
+                        .modifier(SelectLibraryModifier())
                 }
                 .tag(Tab.listenNow)
                 .tabItem {

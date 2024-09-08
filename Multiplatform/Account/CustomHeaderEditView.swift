@@ -10,7 +10,6 @@ import ShelfPlayerKit
 
 struct CustomHeaderEditView: View {
     @State private var current = AudiobookshelfClient.shared.customHTTPHeaders
-    @State private var previous = AudiobookshelfClient.shared.customHTTPHeaders
     
     var callback: (() -> Void)? = nil
     
@@ -33,42 +32,37 @@ struct CustomHeaderEditView: View {
                     }
                 }
             }
-            
-            Group {
+        }
+        .navigationTitle("login.customHTTPHeaders")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 Button {
                     current.append(.init(key: "", value: ""))
                 } label: {
                     Label("login.customHTTPHeaders.add", systemImage: "plus")
+                        .labelStyle(.iconOnly)
                 }
+                
                 Button {
                     AudiobookshelfClient.shared.customHTTPHeaders = current
                     callback?()
                 } label: {
                     Label("login.customHTTPHeaders.save", systemImage: "checkmark")
+                        .labelStyle(.titleOnly)
                 }
-            }
-            .foregroundStyle(.primary)
-            
-            if let callback = callback {
-                Button(role: .destructive) {
-                    AudiobookshelfClient.shared.customHTTPHeaders = previous
-                    callback()
-                } label: {
-                    Label("login.customHTTPHeaders.discard", systemImage: "minus")
-                }
-                .foregroundStyle(.red)
             }
         }
-        .navigationTitle("login.customHTTPHeaders")
+        .onAppear {
+            if current.isEmpty {
+                current.append(.init(key: "", value: ""))
+            }
+        }
     }
 }
 
 #Preview {
-    CustomHeaderEditView()
-}
-
-#Preview {
-    CustomHeaderEditView() {
-        
+    NavigationStack {
+        CustomHeaderEditView() {}
     }
 }

@@ -13,8 +13,9 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct PlayButton: View {
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
     @Environment(\.playButtonStyle) private var playButtonStyle
+    @Environment(\.colorScheme) private var colorScheme
     
     let item: PlayableItem
     let queue: [PlayableItem]
@@ -61,8 +62,8 @@ internal struct PlayButton: View {
         return String(localized: "play")
     }
     private var icon: String {
-        if item == AudioPlayer.shared.item {
-            return AudioPlayer.shared.playing ? "waveform" : "pause.fill"
+        if item == nowPlayingViewModel.item {
+            return nowPlayingViewModel.playing ? "waveform" : "pause.fill"
         } else {
             return "play.fill"
         }
@@ -145,7 +146,7 @@ internal struct PlayButton: View {
         } label: {
             playButtonStyle.makeLabel(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
-            if AudioPlayer.shared.item == item {
+            if nowPlayingViewModel.item == item {
                 AudioPlayer.shared.playing.toggle()
                 return
             }

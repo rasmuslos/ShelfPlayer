@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Triangle: Shape {
+internal struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         

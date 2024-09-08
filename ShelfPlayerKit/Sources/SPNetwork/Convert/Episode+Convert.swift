@@ -10,7 +10,7 @@ import SPFoundation
 
 internal extension Episode {
     convenience init?(item: AudiobookshelfItem) {
-        guard let recentEpisode = item.recentEpisode, let media = item.media, let id = recentEpisode.id, let libraryId = item.libraryId, let title = recentEpisode.title else {
+        guard let recentEpisode = item.recentEpisode, let media = item.media, let id = recentEpisode.id, let libraryId = item.libraryId, let title = recentEpisode.title, let podcastTitle = media.metadata.title else {
             return nil
         }
         
@@ -27,7 +27,7 @@ internal extension Episode {
             released: recentEpisode.publishedAt == nil ? nil : String(recentEpisode.publishedAt!),
             size: recentEpisode.size ?? 0,
             duration: recentEpisode.audioFile?.duration ?? 0, podcastId: item.id,
-            podcastName: title,
+            podcastName: podcastTitle,
             index: recentEpisode.index ?? 0)
     }
     convenience init?(episode: AudiobookshelfPodcastEpisode, item: AudiobookshelfItem) {

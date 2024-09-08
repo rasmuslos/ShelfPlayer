@@ -19,10 +19,10 @@ internal final class EpisodeViewModel {
     @MainActor var toolbarVisible: Bool
     @MainActor var sessionsVisible: Bool
     
-    @MainActor let progressEntity: ItemProgress
     @MainActor private(set) var sessions: [ListeningSession]
-    
     @MainActor private(set) var errorNotify: Bool
+    
+    @MainActor let progressEntity: ItemProgress
     
     @MainActor
     init(episode: Episode) {
@@ -34,9 +34,10 @@ internal final class EpisodeViewModel {
         sessionsVisible = false
         
         sessions = []
-        progressEntity = OfflineManager.shared.progressEntity(item: episode)
-        
         errorNotify = false
+        
+        progressEntity = OfflineManager.shared.progressEntity(item: episode)
+        progressEntity.beginReceivingUpdates()
     }
 }
 

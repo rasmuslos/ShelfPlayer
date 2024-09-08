@@ -59,7 +59,7 @@ internal extension EpisodeSingleList {
                 }
                 
                 HStack(alignment: .firstTextBaseline) {
-                    EpisodePlayButton(episode: episode)
+                    EpisodePlayButton(episode: episode, queue: queue(episode))
                         .padding(.bottom, 10)
                     
                     Spacer()
