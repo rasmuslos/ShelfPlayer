@@ -58,6 +58,7 @@ internal struct AudiobookRow: View {
     }
 }
 
+#if DEBUG
 #Preview {
     RowTitle(title: "Title")
 }
@@ -69,3 +70,4 @@ internal struct AudiobookRow: View {
 #Preview {
     AudiobookRow(title: "Title", audiobooks: .init(repeating: [.fixture], count: 7))
 }
+#endif
