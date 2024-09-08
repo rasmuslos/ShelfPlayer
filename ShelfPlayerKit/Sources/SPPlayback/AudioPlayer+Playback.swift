@@ -25,6 +25,9 @@ public extension AudioPlayer {
     func stop() {
         buffering = true
         
+        item = nil
+        queue = []
+        
         chapters = []
         currentChapterIndex = nil
         

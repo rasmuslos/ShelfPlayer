@@ -7,10 +7,10 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 import SPPlayback
 
-struct PlaybackSpeedButton: View {
+internal struct PlaybackSpeedButton: View {
     @Default(.playbackSpeedAdjustment) private var playbackSpeedAdjustment
     @Environment(NowPlaying.ViewModel.self) private var viewModel
     
@@ -18,29 +18,11 @@ struct PlaybackSpeedButton: View {
     
     var body: some View {
         Menu {
-            Options {
-                AudioPlayer.shared.playbackRate = $0
-            }
+            Options(selected: .init(get: { viewModel.playbackRate }, set: { AudioPlayer.shared.playbackRate = $0 }))
         } label: {
-            if AudioPlayer.shared.playbackRate == 1 {
-                Text(verbatim: "1x")
-            } else if AudioPlayer.shared.playbackRate == 2 {
-                Text(verbatim: "2x")
-            } else {
-                Group {
-                    Text(NSNumber(value: AudioPlayer.shared.playbackRate), formatter: {
-                        let formatter = NumberFormatter()
-                        formatter.decimalSeparator = "."
-                        formatter.minimumFractionDigits = 0
-                        formatter.maximumFractionDigits = 2
-                        
-                        return formatter
-                    }())
-                    + Text(verbatim: "x")
-                }
+            Text(format(viewModel.playbackRate))
                 .fixedSize()
-                .contentTransition(.identity)
-            }
+                .contentTransition(.numericText())
         } primaryAction: {
             var rate = AudioPlayer.shared.playbackRate + playbackSpeedAdjustment
             
@@ -59,29 +41,45 @@ internal extension PlaybackSpeedButton {
     struct Options: View {
         @Default(.customPlaybackSpeed) private var customPlaybackSpeed
         
-        let callback: (Percentage) -> Void
+        @Binding var selected: Percentage
         let playbackRates: [Percentage] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
         
         var body: some View {
             ForEach(playbackRates, id: \.hashValue) { rate in
-                Button {
-                    callback(rate)
-                } label: {
-                    Text(verbatim: "\(rate)x")
-                }
+                Toggle(format(rate), isOn: .init(get: { selected == rate }, set: {
+                    if $0 {
+                        selected = rate
+                    }
+                }))
                 .tag(rate)
             }
             
             if customPlaybackSpeed != 1.0 {
                 Divider()
                 
-                Button {
-                    callback(customPlaybackSpeed)
-                } label: {
-                    Text(verbatim: "\(customPlaybackSpeed)x")
-                }
+                Toggle(format(customPlaybackSpeed), isOn: .init(get: { selected == customPlaybackSpeed }, set: {
+                    if $0 {
+                        selected = customPlaybackSpeed
+                    }
+                }))
                 .tag(customPlaybackSpeed)
             }
         }
+    }
+}
+
+private func format(_ percentage: Percentage) -> String {
+    if percentage == 1 {
+        return "1x"
+    } else if percentage == 2 {
+        return "2x"
+    } else {
+        let formatter = NumberFormatter()
+        formatter.decimalSeparator = "."
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        
+        let text = formatter.string(from: NSNumber(value: percentage)) ?? "?"
+        return "\(text)x"
     }
 }

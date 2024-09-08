@@ -29,7 +29,7 @@ struct PodcastTabs: View {
             Group {
                 NavigationStack {
                     PodcastListenNowView()
-                        .modifier(LibrarySelectModifier())
+                        .modifier(SelectLibraryModifier())
                 }
                 .tag(Tab.listenNow)
                 .tabItem {

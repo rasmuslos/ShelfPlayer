@@ -8,7 +8,7 @@
 import SwiftUI
 import Defaults
 
-struct TintPicker: View {
+internal struct TintPicker: View {
     @Default(.tintColor) private var tintColor
     
     var body: some View {
@@ -44,7 +44,7 @@ struct TintPicker: View {
     }
 }
 
-extension TintPicker {
+internal extension TintPicker {
     enum TintColor: CaseIterable, Codable, _DefaultsSerializable {
         case shelfPlayer
         
@@ -60,7 +60,7 @@ extension TintPicker {
     }
 }
 
-extension TintPicker.TintColor {
+internal extension TintPicker.TintColor {
     var title: LocalizedStringKey {
         switch self {
             case .shelfPlayer:

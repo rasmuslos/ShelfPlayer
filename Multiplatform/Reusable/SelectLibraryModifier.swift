@@ -8,8 +8,8 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct LibrarySelectModifier: ViewModifier {
-    @Environment(\.libraries) var libraries
+internal struct SelectLibraryModifier: ViewModifier {
+    @Environment(\.libraries) private var libraries
     
     func body(content: Content) -> some View {
         content

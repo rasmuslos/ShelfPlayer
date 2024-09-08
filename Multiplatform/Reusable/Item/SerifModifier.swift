@@ -8,7 +8,7 @@
 import SwiftUI
 import Defaults
 
-struct SerifModifier: ViewModifier {
+internal struct SerifModifier: ViewModifier {
     @Default(.useSerifFont) private var useSerifFont
     
     func body(content: Content) -> some View {

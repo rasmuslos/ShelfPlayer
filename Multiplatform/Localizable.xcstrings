@@ -253,6 +253,9 @@
         }
       }
     },
+    "account.defaults" : {
+
+    },
     "account.delete.cache" : {
       "localizations" : {
         "de" : {
@@ -606,6 +609,16 @@
         }
       }
     },
+    "account.server %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "account.server %1$@ %2$@"
+          }
+        }
+      }
+    },
     "account.settings" : {
       "localizations" : {
         "de" : {
@@ -937,6 +950,7 @@
       }
     },
     "account.version %@ (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -954,6 +968,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本: %1$@(%2$@)"
+          }
+        }
+      }
+    },
+    "account.version %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "account.version %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "account.version.database %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "account.version.database %1$@ %2$@"
           }
         }
       }
@@ -982,6 +1016,7 @@
       }
     },
     "active" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2299,6 +2334,7 @@
       }
     },
     "filter.genres" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2319,6 +2355,9 @@
           }
         }
       }
+    },
+    "filter.inProgress" : {
+
     },
     "filter.unfinished" : {
       "localizations" : {
@@ -2522,6 +2561,7 @@
       }
     },
     "login.customHTTPHeaders.discard" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2857,18 +2897,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mit ABS amelden"
+            "value" : "Mit Audiobookshelf anmelden"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login with ABS"
+            "value" : "Login with Audiobookshelf"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "登录 ABS"
           }
         }
@@ -3516,23 +3556,6 @@
         }
       }
     },
-    "queue.nextUp: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Als Nächstes: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next up: %@"
-          }
-        }
-      }
-    },
     "queue.play" : {
       "localizations" : {
         "en" : {
@@ -3968,6 +3991,9 @@
         }
       }
     },
+    "sessions.importing" : {
+
+    },
     "sleep" : {
 
     },
@@ -4243,7 +4269,6 @@
       }
     },
     "sort.index" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

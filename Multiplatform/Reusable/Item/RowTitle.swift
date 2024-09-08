@@ -9,7 +9,7 @@ import SwiftUI
 import Defaults
 import SPFoundation
 
-struct RowTitle: View {
+internal struct RowTitle: View {
     @Default(.useSerifFont) private var useSerifFont
     
     let title: String
@@ -22,7 +22,7 @@ struct RowTitle: View {
     }
 }
 
-struct AudiobookRow: View {
+internal struct AudiobookRow: View {
     let title: String
     let audiobooks: [Audiobook]
     
@@ -64,4 +64,8 @@ struct AudiobookRow: View {
 
 #Preview {
     RowTitle(title: "Title", fontDesign: .serif)
+}
+
+#Preview {
+    AudiobookRow(title: "Title", audiobooks: .init(repeating: [.fixture], count: 7))
 }

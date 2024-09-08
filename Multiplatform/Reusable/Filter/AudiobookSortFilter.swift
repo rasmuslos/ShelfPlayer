@@ -10,11 +10,11 @@ import Defaults
 import SPFoundation
 import SPOffline
 
-struct AudiobookSortFilter: View {
-    @Binding var display: DisplayType
+internal struct AudiobookSortFilter: View {
+    @Binding var displayType: DisplayType
     @Binding var filter: Filter
     
-    @Binding var sort: SortOrder
+    @Binding var sortOrder: SortOrder
     @Binding var ascending: Bool
     
     var body: some View {
@@ -23,7 +23,7 @@ struct AudiobookSortFilter: View {
                 ControlGroup {
                     Button {
                         withAnimation {
-                            display = .list
+                            displayType = .list
                         }
                     } label: {
                         Label("sort.list", systemImage: "list.bullet")
@@ -31,7 +31,7 @@ struct AudiobookSortFilter: View {
                     
                     Button {
                         withAnimation {
-                            display = .grid
+                            displayType = .grid
                         }
                     } label: {
                         Label("sort.grid", systemImage: "square.grid.2x2")
@@ -51,22 +51,20 @@ struct AudiobookSortFilter: View {
             
             Section("section.order") {
                 ForEach(SortOrder.allCases, id: \.hashValue) { order in
-                    Toggle(order.rawValue, isOn: .init(get: { sort == order }, set: {
+                    Toggle(order.rawValue, isOn: .init(get: { sortOrder == order }, set: {
                         if $0 {
-                            sort = order
+                            sortOrder = order
                         }
                     }))
                 }
                 
                 Divider()
                 
-                
                 Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
             }
         } label: {
-            Label("filterSort", systemImage: "arrow.up.arrow.down.circle")
-                .labelStyle(.iconOnly)
-                .symbolVariant(filter == .all ? .none : .fill)
+            Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down")")
+                .contentTransition(.symbolEffect)
         }
     }
 }
@@ -178,5 +176,5 @@ extension Defaults.Keys {
 }
 
 #Preview {
-    AudiobookSortFilter(display: .constant(.list), filter: .constant(.all), sort: .constant(.added), ascending: .constant(true))
+    AudiobookSortFilter(displayType: .constant(.list), filter: .constant(.all), sortOrder: .constant(.added), ascending: .constant(true))
 }
