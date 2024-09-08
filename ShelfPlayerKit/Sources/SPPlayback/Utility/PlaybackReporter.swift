@@ -68,11 +68,12 @@ internal extension PlaybackReporter {
         }
         
         let duration = DateInterval(start: lastUpdate, end: .now).duration
-        lastUpdate = .now
         
-        guard duration > 0.5 else {
+        guard duration > 0.2 else {
             return
         }
+        
+        lastUpdate = .now
         
         Task {
             await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: self.currentTime, duration: self.duration)
