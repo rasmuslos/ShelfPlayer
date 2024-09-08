@@ -56,6 +56,7 @@ private struct ProgressSlider: View {
                             .tint(.primary)
                     } else {
                         Text(viewModel.chapterCurrentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                            .contentTransition(.numericText())
                     }
                 }
                 .frame(width: 64, alignment: .leading)
@@ -65,11 +66,13 @@ private struct ProgressSlider: View {
                 Group {
                     if viewModel.seekDragging {
                         Text(viewModel.played, format: .duration(unitsStyle: .abbreviated))
+                            .contentTransition(.numericText())
                     } else if let chapter = AudioPlayer.shared.chapter {
                         Text(chapter.title)
                             .animation(.easeInOut, value: chapter.title)
                     } else {
                         Text(viewModel.remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                            .contentTransition(.numericText())
                     }
                 }
                 .font(.caption2)
@@ -81,6 +84,7 @@ private struct ProgressSlider: View {
                 Spacer()
                 
                 Text(viewModel.chapterDuration, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                    .contentTransition(.numericText())
                     .frame(width: 64, alignment: .trailing)
             }
             .font(.footnote.smallCaps())
