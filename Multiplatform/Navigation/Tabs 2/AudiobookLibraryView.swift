@@ -88,7 +88,7 @@ struct AudiobookLibraryView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        AudiobookSortFilter(display: $audiobookDisplay, filter: $audiobooksFilter, sort: $audiobooksSortOrder, ascending: $audiobooksAscending)
+                        AudiobookSortFilter(displayType: $audiobookDisplay, filter: $audiobooksFilter, sortOrder: $audiobooksSortOrder, ascending: $audiobooksAscending)
                     }
                 }
             }
@@ -96,7 +96,6 @@ struct AudiobookLibraryView: View {
         .navigationTitle("title.library")
         .navigationBarTitleDisplayMode(.large)
         .modifier(NowPlaying.SafeAreaModifier())
-        .modifier(AudiobookGenreFilterModifier(genres: genres, selected: $filteredGenres))
         .refreshable { await fetchItems() }
     }
 }

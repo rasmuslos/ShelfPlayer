@@ -53,7 +53,7 @@ internal struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobookSortFilter(display: $viewModel.displayMode, filter: $viewModel.filter, sort: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                AudiobookSortFilter(displayType: $viewModel.displayMode, filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
             }
         }
         .environment(viewModel)

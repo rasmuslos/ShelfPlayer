@@ -16,6 +16,8 @@ struct AccountSheet: View {
     @Default(.defaultPlaybackSpeed) private var defaultPlaybackSpeed
     
     @State private var username: String?
+    @State private var serverVersion: String?
+    
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
     private var playbackSpeedText: String {
@@ -35,9 +37,6 @@ struct AccountSheet: View {
                         Text(username)
                     } else {
                         ProgressIndicator()
-                            .task {
-                                username = try? await AudiobookshelfClient.shared.me().1
-                            }
                     }
                     
                     Button(role: .destructive) {
@@ -98,14 +97,14 @@ struct AccountSheet: View {
                     Text("account.notifications.footer")
                 }
                 
-                Section {
+                Section("account.defaults") {
                     Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
-                        PlaybackSpeedButton.Options {
-                            defaultPlaybackSpeed = $0
-                        }
+                        PlaybackSpeedButton.Options(selected: $defaultPlaybackSpeed)
                     }
                     .tint(.primary)
-                    
+                }
+                
+                Section {
                     Stepper("account.playbackSpeed \(playbackSpeedText)", value: $customPlaybackSpeed, in: 0.25...4, step: 0.05)
                     
                     let hours = customSleepTimer / 60
@@ -136,21 +135,6 @@ struct AccountSheet: View {
                 .foregroundStyle(.primary)
                 
                 Section {
-                    Button {
-                        UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/ShelfPlayer")!)
-                    } label: {
-                        Label("account.github", systemImage: "chevron.left.forwardslash.chevron.right")
-                    }
-                    
-                    Button {
-                        UIApplication.shared.open(URL(string: "https://rfk.io/support.htm")!)
-                    } label: {
-                        Label("account.support", systemImage: "lifepreserver")
-                    }
-                }
-                .foregroundStyle(.primary)
-                
-                Section {
                     Group {
                         Button(role: .destructive) {
                             OfflineManager.shared.removeAllDownloads()
@@ -174,26 +158,49 @@ struct AccountSheet: View {
                     Text("account.delete.footer")
                 }
                 
+                Section {
+                    Button {
+                        UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/ShelfPlayer")!)
+                    } label: {
+                        Label("account.github", systemImage: "chevron.left.forwardslash.chevron.right")
+                    }
+                    
+                    Button {
+                        UIApplication.shared.open(URL(string: "https://rfk.io/support.htm")!)
+                    } label: {
+                        Label("account.support", systemImage: "lifepreserver")
+                    }
+                }
+                .foregroundStyle(.primary)
+                
                 Group {
                     Section("account.server") {
-                        Text(AudiobookshelfClient.shared.serverUrl.absoluteString)
-                        Text(AudiobookshelfClient.shared.clientId)
+                        Group {
+                            Text("account.server \(AudiobookshelfClient.shared.serverUrl.absoluteString) \(serverVersion ?? "?")")
+                            Text(AudiobookshelfClient.shared.clientId)
+                        }
+                        .fontDesign(.monospaced)
                     }
-                    .fontDesign(.monospaced)
                     
                     Section {
-                        Text("account.version \(AudiobookshelfClient.shared.clientVersion) (\(AudiobookshelfClient.shared.clientBuild))")
+                        Text("account.version \(AudiobookshelfClient.shared.clientVersion) \(AudiobookshelfClient.shared.clientBuild)")
+                        Text("account.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
                     }
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
             }
             .navigationTitle("account.manage")
+            .navigationBarTitleDisplayMode(.inline)
+            .task {
+                username = try? await AudiobookshelfClient.shared.me().1
+                serverVersion = try? await AudiobookshelfClient.shared.status().serverVersion
+            }
         }
     }
 }
 
-struct AccountSheetToolbarModifier: ViewModifier {
+internal struct AccountSheetToolbarModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @State private var accountSheetPresented = false

@@ -8,7 +8,7 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct DownloadIndicator: View {
+internal struct DownloadIndicator: View {
     let itemId: String
     let offlineTracker: ItemOfflineTracker
     
@@ -29,7 +29,7 @@ struct DownloadIndicator: View {
     }
 }
 
-struct DownloadProgressIndicator: View {
+internal struct DownloadProgressIndicator: View {
     let itemId: String
     let small: Bool
     

@@ -12,20 +12,22 @@ import SPFoundation
 import SPOffline
 import SPOfflineExtended
 
-struct StatusOverlay: View {
+internal struct StatusOverlay: View {
     @Default(.itemImageStatusPercentageText) private var itemImageStatusPercentageText
     @Default(.tintColor) private var tintColor
     
     let item: Item
-    let entity: ItemProgress
-    let offlineTracker: ItemOfflineTracker?
+    @State private var entity: ItemProgress
+    @State private var offlineTracker: ItemOfflineTracker?
     
     @MainActor
     init(item: PlayableItem) {
         self.item = item
         
-        entity = OfflineManager.shared.progressEntity(item: item)
-        offlineTracker = ItemOfflineTracker(item)
+        _entity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
+        _offlineTracker = .init(initialValue: ItemOfflineTracker(item))
+        
+        entity.beginReceivingUpdates()
     }
     
     var body: some View {
@@ -33,7 +35,7 @@ struct StatusOverlay: View {
             let size = geometry.size.width / 2.5
             let fontSize = size * 0.23
             
-            HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: 0) {
                 Spacer()
                 
                 if entity.progress > 0 {
@@ -88,7 +90,7 @@ struct StatusOverlay: View {
 
 // MARK: Progress image
 
-struct ItemStatusImage: View {
+internal struct ItemStatusImage: View {
     let item: PlayableItem
     var aspectRatio = ItemImage.AspectRatioPolicy.square
     
@@ -97,8 +99,8 @@ struct ItemStatusImage: View {
             .overlay {
                 StatusOverlay(item: item)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 7))
-            .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 7))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 8))
     }
 }
 

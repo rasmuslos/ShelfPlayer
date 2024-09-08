@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-struct Description: View {
+internal struct Description: View {
     let description: String?
     
     @State var height = CGFloat.zero
-    
     @State var availableWidth: CGFloat = .zero
     
     var body: some View {
@@ -25,11 +24,11 @@ struct Description: View {
             .frame(height: 0)
             
             HStack {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text("description")
                         .bold()
                         .underline()
-                        .padding(.bottom, 2)
+                        .padding(.bottom, 8)
                     
                     if let description = description {
                         HTMLTextView(height: $height, html: description, width: availableWidth)
@@ -48,7 +47,7 @@ struct Description: View {
     }
 }
 
-struct HTMLTextView: UIViewRepresentable {
+private struct HTMLTextView: UIViewRepresentable {
     @Binding var height: CGFloat
     
     let html: String

@@ -10,17 +10,17 @@ import SPFoundation
 import SPOffline
 import SPPlayback
 
-struct EpisodePlayButton: View {
-    let viewModel: EpisodePlayButtonViewModel
+internal struct EpisodePlayButton: View {
+    private let viewModel: EpisodePlayButtonViewModel
     
     @MainActor
-    init(episode: Episode, highlighted: Bool = false) {
-        viewModel = .init(episode: episode, highlighted: highlighted)
+    init(episode: Episode, queue: [Episode], highlighted: Bool = false) {
+        viewModel = .init(episode: episode, queue: queue, highlighted: highlighted)
     }
     
     var body: some View {
         Button {
-            
+            viewModel.play()
         } label: {
             ButtonText()
                 .opacity(viewModel.highlighted ? 0 : 1)
@@ -35,93 +35,121 @@ struct EpisodePlayButton: View {
                 }
         }
         .buttonStyle(.plain)
-        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+        .clipShape(.rect(cornerRadius: .infinity))
         .modifier(ButtonHoverEffectModifier(cornerRadius: .infinity, hoverEffect: .lift))
         .id(viewModel.episode.id)
         .environment(viewModel)
     }
 }
 
-extension EpisodePlayButton {
-    struct ButtonText: View {
-        @Environment(\.colorScheme) var colorScheme
-        @Environment(EpisodePlayButtonViewModel.self) var viewModel
-        
-        private var labelImage: String {
-            if AudioPlayer.shared.item == viewModel.episode {
-                return AudioPlayer.shared.playing ? "waveform" : "pause.fill"
-            } else {
-                return "play.fill"
-            }
+private struct ButtonText: View {
+    @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
+    @Environment(EpisodePlayButtonViewModel.self) private var viewModel
+    @Environment(\.colorScheme) private var colorScheme
+    
+    private var label: String {
+        if viewModel.progressEntity.progress >= 1 {
+            return String(localized: "listen.again")
+        } else if viewModel.progressEntity.progress <= 0 {
+            return viewModel.episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
+        } else {
+            return (viewModel.progressEntity.duration - viewModel.progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
         }
-        
-        var body: some View {
-            HStack(spacing: 6) {
-                Label("playing", systemImage: labelImage)
-                    .labelStyle(.iconOnly)
-                    .contentTransition(.symbolEffect(.replace.downUp.byLayer))
-                    .symbolEffect(.variableColor.iterative, isActive: labelImage == "waveform" && AudioPlayer.shared.playing)
-                    .frame(width: 20, height: 15)
+    }
+    private var icon: String {
+        if viewModel.episode == nowPlayingViewModel.item {
+            return nowPlayingViewModel.playing ? "waveform" : "pause.fill"
+        } else {
+            return "play.fill"
+        }
+    }
+    
+    private var progressVisible: Bool {
+        viewModel.progressEntity.progress > 0 && viewModel.progressEntity.progress < 1
+    }
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            ZStack {
+                Group {
+                    Image(systemName: "waveform")
+                    Image(systemName: "play.fill")
+                    Image(systemName: "pause.fill")
+                }
+                .hidden()
                 
-                if viewModel.entity.progress > 0 {
-                    if viewModel.entity.progress >= 1 {
-                        Text("progress.completed")
-                            .font(.caption.smallCaps())
-                            .bold()
-                    } else {
-                        if viewModel.entity.progress > 0 {
-                            Rectangle()
-                                .foregroundStyle(.gray.opacity(0.25))
-                                .overlay(alignment: .leading) {
-                                    Rectangle()
-                                        .frame(width: max(40 * viewModel.entity.progress, 5))
-                                        .foregroundStyle(viewModel.highlighted ? .black : colorScheme == .light ? .black : .white)
-                                }
-                                .frame(width: 40, height: 5)
-                                .clipShape(RoundedRectangle(cornerRadius: 10000))
-                        }
-                        
-                        Text("duration") // Text((viewModel.entity.duration - viewModel.entity.currentTime).numericTimeLeft())
-                    }
+                if viewModel.loading {
+                    ProgressIndicator()
                 } else {
-                    Text("duration") // Text(viewModel.episode.duration.numericTimeLeft())
+                    Image(systemName: icon)
+                        .contentTransition(.symbolEffect(.replace.downUp.byLayer))
+                        .symbolEffect(.variableColor.iterative, isActive: icon == "waveform" && nowPlayingViewModel.playing)
                 }
             }
-            .font(.caption)
+            .controlSize(.small)
+            
+            Rectangle()
+                .fill(.gray.opacity(0.25))
+                .overlay(alignment: .leading) {
+                    Rectangle()
+                        .frame(width: max(40 * viewModel.progressEntity.progress, 5))
+                }
+                .frame(width: progressVisible ? 40 : 0, height: 5)
+                .clipShape(.rect(cornerRadius: .infinity))
+                .padding(.leading, progressVisible ? 4 : 0)
+            
+            Text(label)
+                .padding(.leading, 4)
+                .contentTransition(.numericText(countsDown: true))
         }
+        .font(.caption2)
+        .animation(.smooth, value: viewModel.progressEntity.progress)
     }
 }
 
 @Observable
-final class EpisodePlayButtonViewModel {
+private final class EpisodePlayButtonViewModel {
     let episode: Episode
+    let queue: [Episode]
+    
     let highlighted: Bool
     
-    var entity: ItemProgress
+    var loading: Bool
+    var progressEntity: ItemProgress
     
     @MainActor
-    init(episode: Episode, highlighted: Bool) {
+    init(episode: Episode, queue: [Episode], highlighted: Bool) {
         self.episode = episode
+        self.queue = queue
+        
         self.highlighted = highlighted
         
-        entity = OfflineManager.shared.progressEntity(item: episode)
+        loading = false
+        
+        progressEntity = OfflineManager.shared.progressEntity(item: episode)
+        progressEntity.beginReceivingUpdates()
+    }
+    
+    func play() {
+        Task {
+            loading = true
+            try? await AudioPlayer.shared.play(episode, queue: queue)
+            loading = false
+        }
     }
 }
 
 #if DEBUG
 #Preview {
-    Rectangle()
-        .foregroundStyle(.black)
-        .overlay {
-            EpisodePlayButton(episode: Episode.fixture)
-        }
+    EpisodePlayButton(episode: Episode.fixture, queue: [])
 }
 
 #Preview {
-    Rectangle()
-        .foregroundStyle(.black)
-        .overlay {
-            EpisodePlayButton(episode: Episode.fixture, highlighted: true)
-        }
+    ZStack {
+        Rectangle()
+            .fill(.black)
+        
+        EpisodePlayButton(episode: Episode.fixture, queue: [], highlighted: true)
+    }
 }
 #endif
