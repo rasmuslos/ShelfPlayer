@@ -12,7 +12,12 @@ public struct MediaProgress: Codable {
     public let libraryItemId: String
     public let episodeId: String?
     
-    public let duration: Double
+    // This has to be optional because plappa is programmed by someone that apparently cannot program
+    // I wasted an hour looking at ABS api changes to find this bug
+    // What a fucking waste of time
+    // BuT WHy caN'T It bE NulL?
+    // Because the ABS api docs state that it is either the duration or `0` (https://api.audiobookshelf.org/#media-progress)
+    public let duration: Double?
     public let progress: Double
     public let currentTime: Double
     
