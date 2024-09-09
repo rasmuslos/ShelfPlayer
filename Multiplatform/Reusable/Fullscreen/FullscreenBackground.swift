@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct FullscreenBackground: View {
+internal struct FullscreenBackground: View {
     let threshold: CGFloat
     let backgroundColor: Color?
     
-    @Binding var navigationBarVisible: Bool
+    @Binding var isToolbarVisible: Bool
     
     var body: some View {
         GeometryReader { reader in
@@ -29,7 +29,7 @@ struct FullscreenBackground: View {
                 .frame(width: 0, height: 0)
                 .onChange(of: offset) {
                     withAnimation(.spring) {
-                        navigationBarVisible = offset < threshold
+                        isToolbarVisible = offset < threshold
                     }
                 }
         }

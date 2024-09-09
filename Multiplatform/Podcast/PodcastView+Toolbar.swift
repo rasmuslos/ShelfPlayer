@@ -50,7 +50,7 @@ extension PodcastView {
                             Image(systemName: "gear")
                                 .labelStyle(.iconOnly)
                                 .symbolVariant(.circle.fill)
-                                .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight(), navigationBarVisible: viewModel.toolbarVisible))
+                                .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight(), isToolbarVisible: viewModel.toolbarVisible))
                         } primaryAction: {
                             viewModel.settingsSheetPresented.toggle()
                         }
@@ -60,7 +60,7 @@ extension PodcastView {
                 .toolbar {
                     if !viewModel.toolbarVisible && !isRegularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(isLight: viewModel.dominantColor?.isLight(), navigationBarVisible: viewModel.toolbarVisible)
+                            FullscreenBackButton(isLight: viewModel.dominantColor?.isLight(), isToolbarVisible: viewModel.toolbarVisible)
                         }
                     }
                 }

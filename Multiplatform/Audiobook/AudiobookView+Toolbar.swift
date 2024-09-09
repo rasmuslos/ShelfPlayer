@@ -48,7 +48,7 @@ extension AudiobookView {
                 .toolbar {
                     if !viewModel.toolbarVisible && !regularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(navigationBarVisible: viewModel.toolbarVisible)
+                            FullscreenBackButton(isToolbarVisible: viewModel.toolbarVisible)
                         }
                     }
                 }
@@ -56,7 +56,7 @@ extension AudiobookView {
                     ToolbarItem(placement: .primaryAction) {
                         DownloadButton(item: viewModel.audiobook, downloadingLabel: false)
                             .labelStyle(.iconOnly)
-                            .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.toolbarVisible))
+                            .modifier(FullscreenToolbarModifier(isToolbarVisible: viewModel.toolbarVisible))
                     }
                     
                     ToolbarItem(placement: .primaryAction) {
@@ -105,7 +105,7 @@ extension AudiobookView {
                             DownloadButton(item: viewModel.audiobook)
                         } label: {
                             Image(systemName: "ellipsis")
-                                .modifier(FullscreenToolbarModifier(navigationBarVisible: viewModel.toolbarVisible))
+                                .modifier(FullscreenToolbarModifier(isToolbarVisible: viewModel.toolbarVisible))
                         }
                     }
                 }
