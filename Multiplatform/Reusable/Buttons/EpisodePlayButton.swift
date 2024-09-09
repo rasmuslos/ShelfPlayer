@@ -93,7 +93,7 @@ private struct ButtonText: View {
                 .fill(.gray.opacity(0.25))
                 .overlay(alignment: .leading) {
                     Rectangle()
-                        .frame(width: max(40 * viewModel.progressEntity.progress, 5))
+                        .frame(width: progressVisible ? max(40 * viewModel.progressEntity.progress, 5) : 0)
                 }
                 .frame(width: progressVisible ? 40 : 0, height: 5)
                 .clipShape(.rect(cornerRadius: .infinity))
