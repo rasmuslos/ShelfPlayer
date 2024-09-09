@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct FullscreenBackButton: View {
-    @Environment(\.presentationMode) var presentationMode
+internal struct FullscreenBackButton: View {
+    @Environment(\.presentationMode) private var presentationMode
     
     var isLight: Bool? = nil
-    let navigationBarVisible: Bool
+    let isToolbarVisible: Bool
     
     var body: some View {
         if presentationMode.wrappedValue.isPresented {
@@ -20,7 +20,7 @@ struct FullscreenBackButton: View {
             } label: {
                 Label("back", systemImage: "chevron.left")
                     .labelStyle(.iconOnly)
-                    .modifier(FullscreenToolbarModifier(isLight: isLight, navigationBarVisible: navigationBarVisible))
+                    .modifier(FullscreenToolbarModifier(isLight: isLight, isToolbarVisible: isToolbarVisible))
             }
         }
     }

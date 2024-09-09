@@ -45,7 +45,7 @@ internal extension EpisodeViewModel {
     func load() async {
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.loadSessions() }
-            $0.addTask { await self.extractColor() }
+            $0.addTask { await self.extractDominantColor() }
             
             await $0.waitForAll()
         }
@@ -76,7 +76,7 @@ internal extension EpisodeViewModel {
 }
 
 private extension EpisodeViewModel {
-    func loadSessions() async {
+    func extractDominantColor() async {
         guard let image = await episode.cover?.systemImage else {
             return
         }
@@ -89,7 +89,7 @@ private extension EpisodeViewModel {
             self.dominantColor = result
         }
     }
-    func extractColor() async {
+    func loadSessions() async {
         guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: episode.podcastId, episodeID: episode.id) else {
             return
         }

@@ -33,7 +33,7 @@ internal extension EpisodeView {
                         
                         if !isRegularPresentation {
                             ToolbarItem(placement: .navigation) {
-                                FullscreenBackButton(isLight: viewModel.dominantColor?.isLight, navigationBarVisible: false)
+                                FullscreenBackButton(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: false)
                             }
                         }
                     }
@@ -41,7 +41,7 @@ internal extension EpisodeView {
                     ToolbarItem(placement: .topBarTrailing) {
                         DownloadButton(item: viewModel.episode, downloadingLabel: false)
                             .labelStyle(.iconOnly)
-                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, navigationBarVisible: viewModel.toolbarVisible))
+                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.toolbarVisible))
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
@@ -62,7 +62,7 @@ internal extension EpisodeView {
                                 }
                             }
                             .symbolVariant(.circle)
-                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, navigationBarVisible: viewModel.toolbarVisible))
+                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.toolbarVisible))
                         } primaryAction: {
                             viewModel.toggleFinished()
                         }

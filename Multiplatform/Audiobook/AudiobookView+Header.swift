@@ -17,7 +17,7 @@ internal extension AudiobookView {
             @Bindable var viewModel = viewModel
             
             ZStack(alignment: .top) {
-                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -90 : -240, backgroundColor: .clear, navigationBarVisible: $viewModel.toolbarVisible)
+                FullscreenBackground(threshold: horizontalSizeClass == .regular ? -90 : -240, backgroundColor: .clear, isToolbarVisible: $viewModel.toolbarVisible)
                     .frame(height: 0)
                 
                 ViewThatFits {

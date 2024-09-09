@@ -21,7 +21,7 @@ extension EpisodeView {
             @Bindable var viewModel = viewModel
             
             ZStack {
-                FullscreenBackground(threshold: isRegularPresentation ? -100 : -280, backgroundColor: viewModel.dominantColor?.opacity(0.9), navigationBarVisible: $viewModel.toolbarVisible)
+                FullscreenBackground(threshold: isRegularPresentation ? -100 : -280, backgroundColor: viewModel.dominantColor?.opacity(0.9), isToolbarVisible: $viewModel.toolbarVisible)
                 
                 Group {
                     ViewThatFits {
