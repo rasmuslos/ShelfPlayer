@@ -85,12 +85,13 @@ internal extension OfflineManager {
                 }
                 
                 let existing = progressEntity(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId, context: context)
+                let duration = mediaProgress.duration ?? 0
                 
                 if let existing = existing {
                     if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
                         logger.info("Updating progress: \(existing.id)")
                         
-                        existing.duration = mediaProgress.duration
+                        existing.duration = duration
                         existing.currentTime = mediaProgress.currentTime
                         existing.progress = mediaProgress.progress
                         
@@ -104,7 +105,7 @@ internal extension OfflineManager {
                         id: mediaProgress.id,
                         itemId: mediaProgress.libraryItemId,
                         episodeId: mediaProgress.episodeId,
-                        duration: mediaProgress.duration,
+                        duration: duration,
                         currentTime: mediaProgress.currentTime,
                         progress: mediaProgress.progress,
                         startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),
