@@ -242,6 +242,7 @@
 				<string>10 minutes</string>
 				<string>20 minutes</string>
 				<string>30 minutes</string>
+				<string>60 minutes</string>
 				<string>Never</string>
 			</array>
 		</dict>
