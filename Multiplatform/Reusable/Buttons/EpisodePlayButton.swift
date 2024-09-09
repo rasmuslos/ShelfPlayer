@@ -87,6 +87,7 @@ private struct ButtonText: View {
                 }
             }
             .controlSize(.small)
+            .padding(.trailing, 4)
             
             Rectangle()
                 .fill(.gray.opacity(0.25))
@@ -97,9 +98,9 @@ private struct ButtonText: View {
                 .frame(width: progressVisible ? 40 : 0, height: 5)
                 .clipShape(.rect(cornerRadius: .infinity))
                 .padding(.leading, progressVisible ? 4 : 0)
+                .padding(.trailing, progressVisible ? 8 : 0)
             
             Text(label)
-                .padding(.leading, 4)
                 .contentTransition(.numericText(countsDown: true))
         }
         .font(.caption2)

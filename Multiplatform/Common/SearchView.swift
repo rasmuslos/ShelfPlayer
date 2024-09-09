@@ -50,7 +50,6 @@ internal struct SearchView: View {
         .searchable(text: $viewModel.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.placeholder")
         .modifier(SearchModifier())
         .modifier(NowPlaying.SafeAreaModifier())
-        .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
         .environment(viewModel)
         .refreshable {
             viewModel.load()
@@ -58,6 +57,7 @@ internal struct SearchView: View {
         .onAppear {
             viewModel.libraryId = libraryId
         }
+        .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
     }
 }
 
