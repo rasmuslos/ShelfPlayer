@@ -236,14 +236,9 @@ private extension NowPlaying.ViewModel {
                     let item = self?.item
                     
                     self?.item = AudioPlayer.shared.item
-                    
                     self?.chapters = AudioPlayer.shared.chapters
                     
-                    if let item, item.type == .audiobook, let bookmark = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
-                        self?.bookmarks = bookmark
-                    } else {
-                        self?.bookmarks = []
-                    }
+                    self?.updateBookmarks()
                     
                     if item == nil && item?.type == .audiobook {
                         self?.expanded = true
@@ -313,6 +308,15 @@ private extension NowPlaying.ViewModel {
             }
         }
     }
+    
+    @MainActor
+    func updateBookmarks() {
+        if let item, item.type == .audiobook, let bookmark = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
+            self.bookmarks = bookmark
+        } else {
+            bookmarks = []
+        }
+    }
 }
 
 internal extension NowPlaying.ViewModel {
@@ -349,6 +353,8 @@ internal extension NowPlaying.ViewModel {
             await MainActor.run {
                 notifyBookmark += 1
             }
+            
+            await updateBookmarks()
         }
     }
     func createBookmarkWithNote() {
@@ -363,6 +369,8 @@ internal extension NowPlaying.ViewModel {
                 self.bookmarkCapturedTime = nil
                 notifyBookmark += 1
             }
+            
+            await updateBookmarks()
         }
     }
     
