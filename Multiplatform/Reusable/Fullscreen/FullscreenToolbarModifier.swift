@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct FullscreenToolbarModifier: ViewModifier {
+internal struct FullscreenToolbarModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
     var isLight: Bool? = nil
-    let navigationBarVisible: Bool
+    let isToolbarVisible: Bool
     
     private var appearance: ColorScheme {
         if isLight == true {
@@ -28,16 +28,16 @@ struct FullscreenToolbarModifier: ViewModifier {
         if horizontalSizeClass == .regular {
             content
                 .symbolVariant(.circle)
-        } else if navigationBarVisible {
+        } else if isToolbarVisible {
             content
                 .symbolVariant(.circle)
-                .animation(.easeInOut, value: navigationBarVisible)
+                .animation(.easeInOut, value: isToolbarVisible)
         } else {
             content
                 .symbolVariant(.circle.fill)
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(appearance == .light ? .black : .white, .gray.opacity(0.3))
-                .animation(.easeInOut, value: navigationBarVisible)
+                .animation(.easeInOut, value: isToolbarVisible)
         }
     }
 }

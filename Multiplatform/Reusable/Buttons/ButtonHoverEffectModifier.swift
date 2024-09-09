@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct ButtonHoverEffectModifier: ViewModifier {
-    var padding: CGFloat = 7
-    var cornerRadius: CGFloat = 7
+internal struct ButtonHoverEffectModifier: ViewModifier {
+    var padding: CGFloat = 8
+    var cornerRadius: CGFloat = 8
     
     var hoverEffect = HoverEffect.highlight
     
