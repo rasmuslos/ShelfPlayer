@@ -95,7 +95,7 @@ extension OfflineManager {
                         if Int64(existing.lastUpdate.timeIntervalSince1970 * 1000) < mediaProgress.lastUpdate {
                             logger.info("Updating progress: \(existing.id)")
                             
-                            existing.duration = mediaProgress.duration
+                            existing.duration = mediaProgress.duration ?? 0
                             existing.currentTime = mediaProgress.currentTime
                             existing.progress = mediaProgress.progress
                             
@@ -109,7 +109,7 @@ extension OfflineManager {
                             id: mediaProgress.id,
                             itemId: mediaProgress.libraryItemId,
                             episodeId: mediaProgress.episodeId,
-                            duration: mediaProgress.duration,
+                            duration: mediaProgress.duration ?? 0,
                             currentTime: mediaProgress.currentTime,
                             progress: mediaProgress.progress,
                             startedAt: Date(timeIntervalSince1970: Double(mediaProgress.startedAt) / 1000),

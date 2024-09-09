@@ -13,7 +13,7 @@ extension AudiobookshelfClient {
         public let libraryItemId: String
         public let episodeId: String?
         
-        public let duration: Double
+        public let duration: Double?
         public let progress: Double
         public let currentTime: Double
         
