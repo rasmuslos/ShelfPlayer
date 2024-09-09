@@ -39,7 +39,11 @@ internal final class PlaybackReporter {
         lastUpdate = .now
         lastReport = .now
         
-        listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
+        if playbackSessionId == nil {
+            listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
+        } else {
+            listeningTimeTracker = nil
+        }
     }
     
     deinit {
@@ -112,8 +116,12 @@ private extension PlaybackReporter {
                     try await Self.reportWithoutPlaybackSession(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration)
                 }
             } catch {
-                listeningTimeTracker?.duration += timeListened
-                listeningTimeTracker?.lastUpdate = Date()
+                if listeningTimeTracker != nil {
+                    listeningTimeTracker?.duration += timeListened
+                    listeningTimeTracker?.lastUpdate = Date()
+                } else {
+                    lastReport = .now - timeListened
+                }
                 
                 success = false
             }

@@ -9,7 +9,7 @@ import SwiftUI
 
 internal extension NowPlaying {
     struct CompactButtons: View {
-        @Environment(NowPlaying.ViewModel.self) var viewModel
+        @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         var body: some View {
             HStack {
