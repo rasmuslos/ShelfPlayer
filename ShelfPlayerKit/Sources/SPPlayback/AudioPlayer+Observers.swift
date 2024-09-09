@@ -82,6 +82,10 @@ internal extension AudioPlayer {
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { _ in
             self.playbackReporter = nil
         }
+        
+        NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+            self.checkPlayerTimeout()
+        }
         #endif
         
         Task {
@@ -102,22 +106,26 @@ internal extension AudioPlayer {
         }
         
         Timer.scheduledTimer(withTimeInterval: 60 * 10, repeats: true) { _ in
-            guard let lastPause = self.lastPause else {
-                return
-            }
-            
-            // Config values are stored in minutes, we need seconds
-            let timeout: Double = Defaults[.endPlaybackTimeout] * 60 - 10
-            
-            guard timeout > 0 else {
-                return
-            }
-            
-            let elapsed = Date().timeIntervalSince(lastPause)
-            
-            if elapsed > timeout {
-                self.stop()
-            }
+            self.checkPlayerTimeout()
+        }
+    }
+    
+    private func checkPlayerTimeout() {
+        guard let lastPause = self.lastPause else {
+            return
+        }
+        
+        // Config values are stored in minutes, we need seconds
+        let timeout: Double = Defaults[.endPlaybackTimeout] * 60 - 10
+        
+        guard timeout > 0 else {
+            return
+        }
+        
+        let elapsed = Date().timeIntervalSince(lastPause)
+        
+        if elapsed > timeout {
+            self.stop()
         }
     }
 }
