@@ -217,6 +217,10 @@ public final class AudioPlayer {
     internal var skipForwardsInterval: Int
     internal var skipBackwardsInterval: Int
     
+    public var isUsingExternalRoute: Bool {
+        AVAudioSession.sharedInstance().currentRoute.outputs.first?.portType != .builtInSpeaker
+    }
+    
     internal let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "AudioPlayer")
     
     private init() {

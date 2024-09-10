@@ -30,6 +30,7 @@ internal extension NowPlaying {
                     Label("output", systemImage: "airplay.audio")
                         .labelStyle(.iconOnly)
                         .modifier(NowPlayingButtonModifier())
+                        .foregroundStyle(viewModel.isUsingExternalRoute ? Color.accentColor : .secondary)
                         .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
