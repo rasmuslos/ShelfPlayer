@@ -50,7 +50,9 @@ internal extension NowPlaying {
         
         @MainActor private(set) var skipForwardsInterval: Int
         @MainActor private(set) var skipBackwardsInterval: Int
+        
         @MainActor private(set) var buffering: Bool
+        @MainActor private(set) var isUsingExternalRoute: Bool
         
         // MARK: Sheet
         
@@ -105,7 +107,9 @@ internal extension NowPlaying {
             
             skipForwardsInterval = Defaults[.skipForwardsInterval]
             skipBackwardsInterval = Defaults[.skipBackwardsInterval]
+            
             buffering = false
+            isUsingExternalRoute = false
             
             bookmarks = []
             
@@ -265,9 +269,15 @@ private extension NowPlaying.ViewModel {
                 self?.chapters = AudioPlayer.shared.chapters
             }
         })
+        
         tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.bufferingDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.buffering = AudioPlayer.shared.buffering
+            }
+        })
+        tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.routeDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.isUsingExternalRoute = AudioPlayer.shared.isUsingExternalRoute
             }
         })
         
