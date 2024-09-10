@@ -143,7 +143,7 @@ internal extension NowPlaying {
             if let item = viewModel.item {
                 @Bindable var viewModel = viewModel
                 
-                VStack(spacing: 8) {
+                VStack(spacing: 0) {
                     Header(item: item)
                     
                     GeometryReader { geometryProxy  in
@@ -179,8 +179,8 @@ internal extension NowPlaying {
                         }
                     }
                 }
-                .presentationDetents([.medium])
                 .ignoresSafeArea(edges: .bottom)
+                .presentationDetents([.fraction(0.7)])
             }
         }
     }
@@ -248,8 +248,9 @@ private struct Header: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(.top, 12)
+        .padding(.vertical, 12)
         .padding(.horizontal, 20)
+        .background(.bar)
     }
 }
 

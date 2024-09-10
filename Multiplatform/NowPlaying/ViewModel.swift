@@ -244,7 +244,7 @@ private extension NowPlaying.ViewModel {
                     
                     self?.updateBookmarks()
                     
-                    if item == nil && item?.type == .audiobook {
+                    if item == nil && self?.item?.type == .audiobook {
                         self?.expanded = true
                     } else if self?.item == nil {
                         self?.expanded = false
