@@ -104,7 +104,7 @@ private struct CompactPresentation: View {
                 .padding(.top, 12)
                 .padding(.bottom, 16)
             
-            PlayButton(item: viewModel.episode, queue: [], color: viewModel.dominantColor)
+            PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
         }
         .padding(.top, 120)
         .padding(.bottom, 20)
@@ -132,7 +132,7 @@ private struct RegularPresentation: View {
                         
                         Spacer()
                         
-                        PlayButton(item: viewModel.episode, queue: [], color: viewModel.dominantColor)
+                        PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
                     }
                 }
         }

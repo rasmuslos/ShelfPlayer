@@ -21,4 +21,7 @@ public extension Defaults.Keys {
     
     static let smartRewind = Key<Bool>("smartRewind", default: false)
     static let deleteFinishedDownloads = Key<Bool>("deleteFinishedDownloads", default: false)
+    
+    static let queueNextEpisodes = Key<Bool>("queueNextEpisodes", default: true)
+    static let queueNextAudiobooksInSeries = Key<Bool>("queueNextAudiobooksInSeries", default: false)
 }

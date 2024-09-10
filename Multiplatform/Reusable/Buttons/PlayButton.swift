@@ -18,7 +18,6 @@ internal struct PlayButton: View {
     @Environment(\.colorScheme) private var colorScheme
     
     let item: PlayableItem
-    let queue: [PlayableItem]
     
     let color: Color?
     
@@ -28,10 +27,8 @@ internal struct PlayButton: View {
     @State private var progressEntity: ItemProgress
     
     @MainActor
-    init(item: PlayableItem, queue: [PlayableItem], color: Color?) {
+    init(item: PlayableItem, color: Color?) {
         self.item = item
-        self.queue = queue
-        
         self.color = color
         
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
@@ -180,7 +177,7 @@ internal struct PlayButton: View {
             loading = true
             
             do {
-                try await AudioPlayer.shared.play(item, queue: queue)
+                try await AudioPlayer.shared.play(item)
             } catch {
                 self.error.toggle()
                 loading = false
@@ -329,14 +326,14 @@ private struct PlayButtonTip: Tip {
 #if DEBUG
 #Preview {
     VStack {
-        PlayButton(item: Audiobook.fixture, queue: [], color: .accent)
+        PlayButton(item: Audiobook.fixture, color: .accent)
             .playButtonSize(.medium)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(.accent)
 }
 #Preview {
-    PlayButton(item: Audiobook.fixture, queue: [], color: .accent)
+    PlayButton(item: Audiobook.fixture, color: .accent)
         .playButtonSize(.large)
 }
 #endif

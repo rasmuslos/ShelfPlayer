@@ -11,7 +11,6 @@ import SPPlayback
 
 struct SwipeActionsModifier: ViewModifier {
     let item: PlayableItem
-    let queue: [PlayableItem]
     
     @Binding var loading: Bool
     
@@ -27,7 +26,7 @@ struct SwipeActionsModifier: ViewModifier {
                 Button {
                     Task {
                         loading = true
-                        try await AudioPlayer.shared.play(item, queue: queue)
+                        try await AudioPlayer.shared.play(item)
                         loading = false
                     }
                 } label: {

@@ -40,7 +40,7 @@ final internal class PlayMediaHandler: NSObject, INPlayMediaIntentHandling {
             let item = items.removeFirst()
             
             if intent.playbackQueueLocation == .now {
-                try await AudioPlayer.shared.play(item, queue: items)
+                try await AudioPlayer.shared.play(item)
             } else {
                 AudioPlayer.shared.queue(item)
             }

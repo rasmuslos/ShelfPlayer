@@ -36,10 +36,10 @@ struct LoginView: View {
                 .padding(.bottom, 28)
             
             Text("login.welcome")
-                .font(.headline)
+                .bold()
+                .font(.title)
                 .fontDesign(.serif)
             Text("login.text")
-                .font(.subheadline)
             
             Spacer()
             
@@ -54,12 +54,13 @@ struct LoginView: View {
                 loginSheetPresented.toggle()
             } label: {
                 Label("login.prompt", systemImage: "person.badge.plus")
+                    .labelStyle(.titleOnly)
                     .contentShape(.rect)
-                    .padding(16)
+                    .padding(.vertical, 16)
+                    .padding(.horizontal, 60)
             }
-            .frame(maxWidth: .infinity)
             .background(Color.accentColor, in: .rect(cornerRadius: 12))
-            .foregroundStyle(.black)
+            .foregroundStyle(.background)
             .padding(.horizontal, 20)
             .padding(.bottom, 8)
         }
@@ -120,7 +121,7 @@ struct LoginView: View {
                     }
                     .onSubmit(flowStep)
                 case .customHTTPHeaders:
-                    CustomHeaderEditView() {
+                    CustomHeaderEditView(backButtonVisible: true) {
                         loginFlowState = .server
                     }
                 case .credentialsOpenID:

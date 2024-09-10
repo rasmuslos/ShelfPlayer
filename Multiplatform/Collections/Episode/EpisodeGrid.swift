@@ -43,7 +43,7 @@ struct EpisodeGrid: View {
                 LazyHGrid(rows: [GridItem(.flexible(), spacing: 15)].repeated(count: amount), spacing: 0) {
                     ForEach(episodes) { episode in
                         NavigationLink(destination: EpisodeView(episode)) {
-                            EpisodeList.EpisodeRow(episode: episode, queue: { _ in [] })
+                            EpisodeList.EpisodeRow(episode: episode)
                                 .padding(.leading, gap)
                                 .frame(width: size)
                         }
