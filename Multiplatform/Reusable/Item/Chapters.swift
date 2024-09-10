@@ -50,7 +50,7 @@ internal struct Chapters: View {
                 if AudioPlayer.shared.item?.id == item.id {
                     await AudioPlayer.shared.seek(to: chapter.start)
                 } else {
-                    try await AudioPlayer.shared.play(item, at: chapter.start, queue: [])
+                    try await AudioPlayer.shared.play(item, at: chapter.start)
                 }
             }
         }

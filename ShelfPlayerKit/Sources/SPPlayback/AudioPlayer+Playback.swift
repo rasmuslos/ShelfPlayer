@@ -15,11 +15,22 @@ import SPExtension
 import SPOffline
 
 public extension AudioPlayer {
-    func play(_ item: PlayableItem, at seconds: TimeInterval? = nil, queue: [PlayableItem]) async throws {
+    func play(_ item: PlayableItem, at seconds: TimeInterval? = nil) async throws {
         stop()
         
         try await start(item, at: seconds)
-        self.queue = queue
+        
+        Task {
+            guard queue.isEmpty else {
+                return
+            }
+            
+            if item.type == .episode && Defaults[.queueNextEpisodes] {
+                await queueNextEpisodes()
+            } else if item.type == .audiobook && Defaults[.queueNextAudiobooksInSeries] {
+                await queueNextAudiobooksInSeries()
+            }
+        }
     }
     
     func stop() {

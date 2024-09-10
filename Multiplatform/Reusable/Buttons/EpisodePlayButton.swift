@@ -14,8 +14,8 @@ internal struct EpisodePlayButton: View {
     private let viewModel: EpisodePlayButtonViewModel
     
     @MainActor
-    init(episode: Episode, queue: [Episode], highlighted: Bool = false) {
-        viewModel = .init(episode: episode, queue: queue, highlighted: highlighted)
+    init(episode: Episode, highlighted: Bool = false) {
+        viewModel = .init(episode: episode, highlighted: highlighted)
     }
     
     var body: some View {
@@ -111,7 +111,6 @@ private struct ButtonText: View {
 @Observable
 private final class EpisodePlayButtonViewModel {
     let episode: Episode
-    let queue: [Episode]
     
     let highlighted: Bool
     
@@ -119,10 +118,8 @@ private final class EpisodePlayButtonViewModel {
     var progressEntity: ItemProgress
     
     @MainActor
-    init(episode: Episode, queue: [Episode], highlighted: Bool) {
+    init(episode: Episode, highlighted: Bool) {
         self.episode = episode
-        self.queue = queue
-        
         self.highlighted = highlighted
         
         loading = false
@@ -134,7 +131,7 @@ private final class EpisodePlayButtonViewModel {
     func play() {
         Task {
             loading = true
-            try? await AudioPlayer.shared.play(episode, queue: queue)
+            try? await AudioPlayer.shared.play(episode)
             loading = false
         }
     }
@@ -142,7 +139,7 @@ private final class EpisodePlayButtonViewModel {
 
 #if DEBUG
 #Preview {
-    EpisodePlayButton(episode: Episode.fixture, queue: [])
+    EpisodePlayButton(episode: Episode.fixture)
 }
 
 #Preview {
@@ -150,7 +147,7 @@ private final class EpisodePlayButtonViewModel {
         Rectangle()
             .fill(.black)
         
-        EpisodePlayButton(episode: Episode.fixture, queue: [], highlighted: true)
+        EpisodePlayButton(episode: Episode.fixture, highlighted: true)
     }
 }
 #endif

@@ -34,12 +34,13 @@ internal struct SessionsImportView: View {
                 callback(false)
             } label: {
                 Label("offline.enable", systemImage: "network.slash")
+                    .labelStyle(.titleOnly)
                     .contentShape(.rect)
-                    .padding(16)
+                    .padding(.vertical, 16)
+                    .padding(.horizontal, 60)
             }
-            .frame(maxWidth: .infinity)
             .background(Color.accentColor, in: .rect(cornerRadius: 12))
-            .foregroundStyle(.black)
+            .foregroundStyle(.background)
             .padding(.horizontal, 20)
             .padding(.bottom, 8)
         }

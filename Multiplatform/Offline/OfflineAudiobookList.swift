@@ -55,7 +55,7 @@ internal extension OfflineAudiobookList {
         var body: some View {
             Button {
                 Task {
-                    try await AudioPlayer.shared.play(audiobook, queue: [])
+                    try await AudioPlayer.shared.play(audiobook)
                 }
             } label: {
                 HStack(spacing: 0) {
@@ -102,7 +102,7 @@ internal extension OfflineAudiobookList {
                 }
             }
             .buttonStyle(.plain)
-            .modifier(SwipeActionsModifier(item: audiobook, queue: [], loading: $loading))
+            .modifier(SwipeActionsModifier(item: audiobook, loading: $loading))
         }
     }
 }

@@ -18,7 +18,7 @@ struct AudiobookList: View {
             NavigationLink(destination: AudiobookView(audiobook)) {
                 Row(audiobook: audiobook)
             }
-            .modifier(SwipeActionsModifier(item: audiobook, queue: [], loading: .constant(false)))
+            .modifier(SwipeActionsModifier(item: audiobook, loading: .constant(false)))
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         }
     }
@@ -74,7 +74,7 @@ private struct Row: View {
                 
                 Button {
                     Task {
-                        try await AudioPlayer.shared.play(audiobook, queue: [])
+                        try await AudioPlayer.shared.play(audiobook)
                     }
                 } label: {
                     HStack {
