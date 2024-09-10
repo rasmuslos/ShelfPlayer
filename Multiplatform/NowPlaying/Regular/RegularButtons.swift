@@ -13,8 +13,6 @@ extension NowPlaying.RegularView {
     struct Buttons: View {
         @Binding var notableMomentsToggled: Bool
         
-        @State private var notableMomentSheetPresented = false
-        
         var body: some View {
             HStack {
                 Spacer()

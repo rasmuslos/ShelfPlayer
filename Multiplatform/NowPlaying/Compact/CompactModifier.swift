@@ -13,6 +13,8 @@ internal extension NowPlaying {
     struct CompactModifier: ViewModifier {
         @Environment(NowPlaying.ViewModel.self) private var viewModel
         
+        var bottomOffset: CGFloat = 88
+        
         func body(content: Content) -> some View {
             ZStack(alignment: .bottom) {
                 content
@@ -85,7 +87,7 @@ internal extension NowPlaying {
                     .toolbarBackground(.hidden, for: .tabBar)
                     .frame(height: viewModel.expanded ? nil : 56)
                     .padding(.horizontal, viewModel.expanded ? 0 : 12)
-                    .padding(.bottom, viewModel.expanded ? 0 : 88)
+                    .padding(.bottom, viewModel.expanded ? 0 : bottomOffset)
                     .animation(.snappy(duration: 0.8), value: viewModel.expanded)
                 }
                 
