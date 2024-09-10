@@ -79,7 +79,7 @@ internal extension AudiobookViewModel {
     func play() {
         Task {
             do {
-                try await AudioPlayer.shared.play(audiobook, queue: [])
+                try await AudioPlayer.shared.play(audiobook)
             } catch {
                 await MainActor.run {
                     errorNotify.toggle()

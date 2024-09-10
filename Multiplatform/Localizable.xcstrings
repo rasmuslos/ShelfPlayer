@@ -1772,6 +1772,9 @@
     "dismiss" : {
 
     },
+    "done" : {
+
+    },
     "download" : {
       "localizations" : {
         "de" : {

@@ -7,12 +7,15 @@
 
 import Foundation
 import SPFoundation
+import SPNetwork
+import SPOffline
+import SPOfflineExtended
 
 public extension AudioPlayer {
     func queue(_ item: PlayableItem) {
         if self.item == nil && queue.isEmpty {
             Task {
-                try await play(item, queue: [])
+                try await play(item)
             }
             
             return
@@ -47,5 +50,76 @@ public extension AudioPlayer {
     
     func clear() {
         queue = []
+    }
+}
+
+internal extension AudioPlayer {
+    func queueNextEpisodes() async {
+        guard let episode = item as? Episode else {
+            return
+        }
+        
+        if let episodes = try? await AudiobookshelfClient.shared.episodes(podcastId: episode.podcastId) {
+            handleNextEpisodes(episodes, episode: episode)
+            return
+        }
+        
+        #if canImport(SPOfflineExtended)
+        if let episodes = try? OfflineManager.shared.episodes(podcastId: episode.podcastId) {
+            handleNextEpisodes(episodes, episode: episode)
+            return
+        }
+        #endif
+    }
+    private func handleNextEpisodes(_ episodes: [Episode], episode: Episode) {
+        let episodes = episodes.sorted { $0.index < $1.index }
+        
+        guard let index = episodes.firstIndex(of: episode) else {
+            return
+        }
+        
+        guard index < episodes.endIndex else {
+            return
+        }
+        
+        queue = Array(episodes[(index + 1)..<episodes.endIndex])
+    }
+    
+    func queueNextAudiobooksInSeries() async {
+        guard let audiobook = item as? Audiobook else {
+            return
+        }
+        
+        for series in audiobook.series {
+            let seriesID: String
+            
+            if let id = series.id {
+                seriesID = id
+            } else {
+                do {
+                    seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryId: audiobook.libraryId)
+                } catch {
+                    continue
+                }
+            }
+            
+            if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryId: audiobook.libraryId) {
+                handleNextAudiobooksInSeries(audiobooks, audiobook: audiobook)
+                break
+            }
+            
+            // Looking for offline series is not supported (yet)
+        }
+    }
+    func handleNextAudiobooksInSeries(_ audiobooks: [Audiobook], audiobook: Audiobook) {
+        guard let index = audiobooks.firstIndex(of: audiobook) else {
+            return
+        }
+        
+        guard index < audiobooks.endIndex else {
+            return
+        }
+        
+        queue = Array(audiobooks[(index + 1)..<audiobooks.endIndex])
     }
 }

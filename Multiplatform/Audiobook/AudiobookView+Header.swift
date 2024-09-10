@@ -142,7 +142,7 @@ private struct CompactPresentation: View {
                 .padding(.top, 12)
                 .padding(.bottom, 16)
             
-            PlayButton(item: viewModel.audiobook, queue: [], color: viewModel.dominantColor)
+            PlayButton(item: viewModel.audiobook, color: viewModel.dominantColor)
         }
         .padding(.top, 32)
     }
@@ -181,7 +181,7 @@ private struct RegularPresentation: View {
                             
                             Spacer()
                             
-                            PlayButton(item: viewModel.audiobook, queue: [], color: viewModel.dominantColor)
+                            PlayButton(item: viewModel.audiobook, color: viewModel.dominantColor)
                         }
                     }
             }

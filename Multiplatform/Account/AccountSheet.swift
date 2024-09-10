@@ -18,6 +18,7 @@ struct AccountSheet: View {
     @State private var username: String?
     @State private var serverVersion: String?
     
+    @State private var navigationPath = NavigationPath()
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
     private var playbackSpeedText: String {
@@ -30,7 +31,7 @@ struct AccountSheet: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             List {
                 Section {
                     if let username = username {
@@ -128,7 +129,7 @@ struct AccountSheet: View {
                 Section {
                     TintPicker()
                     
-                    NavigationLink(destination: CustomHeaderEditView()) {
+                    NavigationLink(value: "") {
                         Label("login.customHTTPHeaders", systemImage: "network.badge.shield.half.filled")
                     }
                 }
@@ -192,6 +193,11 @@ struct AccountSheet: View {
             }
             .navigationTitle("account.manage")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: String.self) { _ in
+                CustomHeaderEditView(backButtonVisible: false) {
+                    navigationPath.removeLast()
+                }
+            }
             .task {
                 username = try? await AudiobookshelfClient.shared.me().1
                 serverVersion = try? await AudiobookshelfClient.shared.status().serverVersion

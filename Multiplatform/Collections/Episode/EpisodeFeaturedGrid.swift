@@ -80,7 +80,7 @@ extension EpisodeFeaturedGrid {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 10))
             .hoverEffect(.highlight)
-            .modifier(EpisodeContextMenuModifier(episode: episode, queue: []))
+            .modifier(EpisodeContextMenuModifier(episode: episode))
         }
     }
 }
@@ -112,7 +112,7 @@ extension EpisodeFeaturedGrid.EpisodeGridItem {
                     }
                     
                     HStack {
-                        EpisodePlayButton(episode: episode, queue: [], highlighted: true)
+                        EpisodePlayButton(episode: episode, highlighted: true)
                             .bold()
                         
                         Spacer()

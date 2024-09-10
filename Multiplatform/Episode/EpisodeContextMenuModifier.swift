@@ -13,7 +13,6 @@ struct EpisodeContextMenuModifier: ViewModifier {
     @Environment(\.libraryId) private var libraryId
     
     let episode: Episode
-    let queue: [Episode]
     
     private var isOffline: Bool {
         libraryId == "offline"
@@ -24,7 +23,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
             .contextMenu {
                 Button {
                     Task {
-                        try await AudioPlayer.shared.play(episode, queue: queue)
+                        try await AudioPlayer.shared.play(episode)
                     }
                 } label: {
                     Label("play", systemImage: "play")
@@ -90,6 +89,6 @@ struct EpisodeContextMenuModifier: ViewModifier {
 #if DEBUG
 #Preview {
     Text(":)")
-        .modifier(EpisodeContextMenuModifier(episode: .fixture, queue: []))
+        .modifier(EpisodeContextMenuModifier(episode: .fixture))
 }
 #endif
