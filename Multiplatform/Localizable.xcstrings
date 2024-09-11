@@ -4001,7 +4001,6 @@
 
     },
     "sleep.chapter" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4047,7 +4046,6 @@
       }
     },
     "sleep.decrease" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4070,7 +4068,6 @@
       }
     },
     "sleep.increase" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4093,7 +4090,6 @@
       }
     },
     "sleepTimer" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
