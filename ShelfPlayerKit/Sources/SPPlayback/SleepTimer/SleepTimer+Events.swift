@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 
 internal extension SleepTimer {
     func didPlay(pausedFor: TimeInterval) {
@@ -50,6 +51,10 @@ internal extension SleepTimer {
 private extension SleepTimer {
     var volume: Float? {
         guard let expiresAt else {
+            return nil
+        }
+        
+        guard Defaults[.sleepTimerFadeOut] else {
             return nil
         }
         
