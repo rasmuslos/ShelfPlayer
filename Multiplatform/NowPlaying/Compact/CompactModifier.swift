@@ -55,7 +55,7 @@ internal extension NowPlaying {
                                 // The padding prevents the mask from cutting lines in the background
                                 // during the transformation. They are caused by the `spring` animation.
                                 Rectangle()
-                                    .padding(.vertical, -8)
+                                    .padding(.vertical, -2)
                                 
                                 UnevenRoundedRectangle(bottomLeadingRadius: viewModel.backgroundCornerRadius, bottomTrailingRadius: viewModel.backgroundCornerRadius, style: .continuous)
                                     .frame(maxHeight: 60)

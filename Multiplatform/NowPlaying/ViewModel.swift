@@ -248,8 +248,10 @@ private extension NowPlaying.ViewModel {
                     let item = self?.item
                     
                     self?.item = AudioPlayer.shared.item
-                    self?.chapters = AudioPlayer.shared.chapters
                     
+                    self?.isUsingExternalRoute = AudioPlayer.shared.isUsingExternalRoute
+                    
+                    self?.chapters = AudioPlayer.shared.chapters
                     self?.updateBookmarks()
                     
                     if item == nil && self?.item?.type == .audiobook {

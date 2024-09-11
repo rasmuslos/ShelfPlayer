@@ -102,7 +102,7 @@ private struct EventRow: View {
                 case .start:
                         .accentColor
                 case .end:
-                        .black
+                        .primary
             }
         }
     }
