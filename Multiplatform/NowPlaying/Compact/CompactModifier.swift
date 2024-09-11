@@ -259,7 +259,7 @@ private struct GestureModifier: ViewModifier {
                         if $0.velocity.height > 3500 {
                             viewModel.expanded = false
                         } else {
-                            viewModel.dragOffset = min(500, max(0, $0.translation.height))
+                            viewModel.dragOffset = min(1000, max(0, $0.translation.height))
                         }
                     }
                     .onEnded {

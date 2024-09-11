@@ -52,6 +52,8 @@ private struct ButtonText: View {
             return String(localized: "listen.again")
         } else if viewModel.progressEntity.progress <= 0 {
             return viewModel.episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
+        } else if nowPlayingViewModel.item == viewModel.episode {
+            return (nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
         } else {
             return (viewModel.progressEntity.duration - viewModel.progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
         }

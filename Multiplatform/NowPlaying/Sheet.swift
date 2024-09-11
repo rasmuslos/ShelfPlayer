@@ -181,6 +181,7 @@ internal extension NowPlaying {
                 }
                 .ignoresSafeArea(edges: .bottom)
                 .presentationDetents([.fraction(0.7)])
+                .sensoryFeedback(.selection, trigger: viewModel.sheetTab)
             }
         }
     }
