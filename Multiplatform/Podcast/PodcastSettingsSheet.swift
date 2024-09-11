@@ -53,6 +53,7 @@ internal struct PodcastSettingsSheet: View {
                 .buttonStyle(.plain)
             }
             .padding(20)
+            .background(.bar)
         }
         .task(id: configuration) {
             if configuration.autoDownload {

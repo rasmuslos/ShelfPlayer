@@ -14,7 +14,7 @@ import SPFoundation
 
 internal extension AudioPlayer {
     func setupObservers() {
-        audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.25, preferredTimescale: 1000), queue: nil) { [unowned self] _ in
+        timeSubscription = audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.25, preferredTimescale: 1000), queue: dispatchQueue) { [unowned self] _ in
             if chapterTTL < itemCurrentTime {
                 updateChapterIndex()
             }
@@ -38,12 +38,12 @@ internal extension AudioPlayer {
         rateSubscription = audioPlayer.observe(\.rate) { _, _ in
             NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
         }
-        volumeSubscription = AVAudioSession.sharedInstance().publisher(for: \.outputVolume).sink { volume in
+        volumeSubscription = AVAudioSession.sharedInstance().publisher(for: \.outputVolume).sink { [unowned self] volume in
             self.systemVolume = volume
             NotificationCenter.default.post(name: AudioPlayer.volumeDidChangeNotification, object: nil)
         }
         
-        NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { _ in
+        NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { [unowned self] _ in
             guard let currentTrackIndex = self.currentTrackIndex, currentTrackIndex + 1 < self.tracks.count else {
                 if let item = self.item {
                     self.itemDidFinish(item)
@@ -59,7 +59,7 @@ internal extension AudioPlayer {
             self.currentTrackIndex? += 1
         }
         
-        NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { notification in
+        NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { [unowned self] notification in
             guard let userInfo = notification.userInfo, let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt, let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
                 return
             }
@@ -83,11 +83,11 @@ internal extension AudioPlayer {
         }
         
         #if os(iOS)
-        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { _ in
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [unowned self] _ in
             self.playbackReporter = nil
         }
         
-        NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+        NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { [unowned self] _ in
             self.checkPlayerTimeout()
         }
         #endif
@@ -109,9 +109,15 @@ internal extension AudioPlayer {
             }
         }
         
-        Timer.scheduledTimer(withTimeInterval: 60 * 10, repeats: true) { _ in
+        timeoutDispatchSource = DispatchSource.makeTimerSource(flags: .strict, queue: dispatchQueue)
+        
+        // Run the timer every (n / 2) minutes
+        timeoutDispatchSource?.schedule(deadline: .now().advanced(by: .seconds(Int(Defaults[.endPlaybackTimeout]) * 30)))
+        timeoutDispatchSource?.setEventHandler { [unowned self] in
             self.checkPlayerTimeout()
         }
+        
+        timeoutDispatchSource?.activate()
     }
     
     private func checkPlayerTimeout() {

@@ -57,7 +57,7 @@ internal extension AudioPlayer {
         currentChapterIndex = chapters.firstIndex { $0.start <= itemCurrentTime && $0.end > itemCurrentTime }
         
         if let chapter {
-            chapterTTL = chapter.start + chapter.end
+            chapterTTL = chapter.end
         }
     }
 }
