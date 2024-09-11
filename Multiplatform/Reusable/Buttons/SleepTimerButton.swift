@@ -7,96 +7,82 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 import SPPlayback
 
-/*
-struct SleepTimerButton: View {
+internal struct SleepTimerButton: View {
+    @Environment(NowPlaying.ViewModel.self) private var viewModel
+    
     @Default(.customSleepTimer) private var customSleepTimer
-    @Default(.sleepTimerAdjustment) var sleepTimerAdjustment
+    @Default(.sleepTimerAdjustment) private var sleepTimerAdjustment
     
     var body: some View {
-        Group {
-            if let remainingSleepTimerTime = AudioPlayer.shared.remainingSleepTimerTime {
-                Menu {
+        if let remainingSleepTime = viewModel.remainingSleepTime {
+            Menu {
+                ControlGroup {
                     Button {
-                        AudioPlayer.shared.setSleepTimer(duration: remainingSleepTimerTime + sleepTimerAdjustment)
-                    } label: {
-                        Label("sleep.increase", systemImage: "plus")
-                    }
-                    
-                    Button {
-                        let decreasedTime = remainingSleepTimerTime - sleepTimerAdjustment
-                        if decreasedTime <= 0 {
-                            AudioPlayer.shared.setSleepTimer(duration: nil)
-                        } else {
-                            AudioPlayer.shared.setSleepTimer(duration: decreasedTime)
-                        }
+                        SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(-sleepTimerAdjustment)))
                     } label: {
                         Label("sleep.decrease", systemImage: "minus")
+                            .labelStyle(.iconOnly)
                     }
+                    Button {
+                        SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(sleepTimerAdjustment)))
+                    } label: {
+                        Label("sleep.increase", systemImage: "plus")
+                            .labelStyle(.iconOnly)
+                    }
+                }
+            } label: {
+                Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                    .fixedSize()
+                    .fontDesign(.rounded)
+                    .contentTransition(.numericText(countsDown: true))
+            } primaryAction: {
+                SleepTimer.shared.expiresAt = nil
+            }
+            .menuActionDismissBehavior(.disabled)
+        } else if viewModel.sleepTimerExpiresAtChapterEnd {
+            Button {
+                SleepTimer.shared.expiresAtChapterEnd = false
+            } label: {
+                Label("sleep.chapter", systemImage: "book.pages.fill")
+                    .labelStyle(.iconOnly)
+            }
+        } else {
+            Menu {
+                ForEach([120, 90, 60, 45, 30, 15, 5].map { $0 * 60 }, id: \.self) { duration in
+                    Button {
+                        SleepTimer.shared.expiresAt = .now().advanced(by: .seconds(duration))
+                    } label: {
+                        Text(TimeInterval(duration), format: .duration(unitsStyle: .full, allowedUnits: [.minute]))
+                    }
+                }
+                
+                if customSleepTimer > 0 {
+                    let duration = customSleepTimer * 60
                     
                     Divider()
                     
                     Button {
-                        AudioPlayer.shared.setSleepTimer(duration: nil)
+                        SleepTimer.shared.expiresAt = .now().advanced(by: .seconds(duration))
                     } label: {
-                        Label("sleep.clear", systemImage: "moon.stars")
+                        Text(TimeInterval(duration), format: .duration(unitsStyle: .full, allowedUnits: [.minute]))
                     }
-                } label: {
-                    Text(remainingSleepTimerTime.numericTimeLeft())
-                        .fontDesign(.rounded)
                 }
-                .menuActionDismissBehavior(.disabled)
-            } else if AudioPlayer.shared.pauseAtEndOfChapter {
-                Button {
-                    AudioPlayer.shared.setSleepTimer(duration: nil)
-                } label: {
-                    Label("sleep.chapter", systemImage: "book.pages.fill")
-                        .labelStyle(.iconOnly)
+                
+                if viewModel.chapter != nil {
+                    Divider()
+                    
+                    Button {
+                        SleepTimer.shared.expiresAtChapterEnd = true
+                    } label: {
+                        Text("sleep.chapter")
+                    }
                 }
-            } else {
-                Menu {
-                    let durations = [120, 90, 60, 45, 30, 15, 5]
-                    
-                    ForEach(durations, id: \.self) { duration in
-                        Button {
-                            AudioPlayer.shared.setSleepTimer(duration: Double(duration) * 60)
-                        } label: {
-                            Text("\(duration) sleep.minutes")
-                        }
-                    }
-                    
-                    if customSleepTimer > 0 {
-                        Divider()
-                        
-                        let value = Double(customSleepTimer) * 60
-                        
-                        Button {
-                            AudioPlayer.shared.setSleepTimer(duration: value)
-                        } label: {
-                            Text(Date.now.addingTimeInterval(-value), style: .offset)
-                        }
-                    }
-                    
-                    if AudioPlayer.shared.chapter != nil {
-                        Divider()
-                        
-                        Button {
-                            AudioPlayer.shared.setSleepTimer(endOfChapter: true)
-                        } label: {
-                            Text("sleep.chapter")
-                        }
-                    }
-                } label: {
-                    Label("sleepTimer", systemImage: "moon.zzz")
-                }
+            } label: {
+                Label("sleepTimer", systemImage: "moon.zzz")
             }
         }
     }
 }
-
-#Preview {
-    SleepTimerButton()
-}
-*/

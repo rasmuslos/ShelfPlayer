@@ -27,6 +27,8 @@ public final class AudioPlayer {
             }
             
             if newValue {
+                SleepTimer.shared.didPlay(pausedFor: lastPause?.distance(to: .now) ?? 0)
+                
                 Task {
                     if Defaults[.smartRewind], let lastPause = lastPause, lastPause.timeIntervalSince(Date()) <= -10 * 60 {
                         await seek(to: itemCurrentTime - 30)
@@ -39,6 +41,8 @@ public final class AudioPlayer {
             } else {
                 lastPause = Date()
                 audioPlayer.pause()
+                
+                SleepTimer.shared.didPause()
             }
             
             updateNowPlayingWidget()
@@ -207,7 +211,10 @@ public final class AudioPlayer {
     internal var systemVolume: Float
     internal var volumeSubscription: AnyCancellable?
     
+    internal var timeSubscription: Any?
     internal var rateSubscription: NSKeyValueObservation?
+    
+    internal var timeoutDispatchSource: DispatchSourceTimer?
     
     internal var enableChapterTrack: Bool {
         didSet {
@@ -222,6 +229,7 @@ public final class AudioPlayer {
     }
     
     internal let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "AudioPlayer")
+    internal let dispatchQueue = DispatchQueue(label: "io.rfk.shelfplayer.queue", attributes: .concurrent)
     
     private init() {
         audioPlayer = AVQueuePlayer()
@@ -240,7 +248,7 @@ public final class AudioPlayer {
         tracks = []
         currentTrackIndex = nil
         
-        chapterTTL = 0
+        chapterTTL = .infinity
         
         lastPause = nil
         playbackReporter = nil

@@ -54,6 +54,11 @@ internal extension NowPlaying {
         @MainActor private(set) var buffering: Bool
         @MainActor private(set) var isUsingExternalRoute: Bool
         
+        // MARK: Sleep timer
+        
+        @MainActor private(set) var remainingSleepTime: TimeInterval?
+        @MainActor private(set) var sleepTimerExpiresAtChapterEnd: Bool
+        
         // MARK: Sheet
         
         @MainActor var sheetTab: SheetTab?
@@ -110,6 +115,9 @@ internal extension NowPlaying {
             
             buffering = false
             isUsingExternalRoute = false
+            
+            remainingSleepTime = nil
+            sleepTimerExpiresAtChapterEnd = false
             
             bookmarks = []
             
@@ -288,6 +296,14 @@ private extension NowPlaying.ViewModel {
                 
                 self?.itemDuration = AudioPlayer.shared.itemDuration
                 self?.itemCurrentTime = AudioPlayer.shared.itemCurrentTime
+                
+                if let expiresAt = SleepTimer.shared.expiresAt {
+                    self?.remainingSleepTime = DispatchTime.now().distance(to: expiresAt).timeInterval
+                } else {
+                    self?.remainingSleepTime = nil
+                }
+                
+                self?.sleepTimerExpiresAtChapterEnd = SleepTimer.shared.expiresAtChapterEnd
             }
         })
         tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.speedDidChangeNotification, object: nil, queue: nil) { [weak self] _ in

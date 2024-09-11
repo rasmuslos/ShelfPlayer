@@ -18,7 +18,7 @@ internal extension NowPlaying {
                 
                 Spacer()
                 
-                Label("sleep", systemImage: "moon.zzz.fill") // SleepTimerButton()
+                SleepTimerButton()
                     .labelStyle(.iconOnly)
                     .modifier(NowPlayingButtonModifier())
                 
@@ -60,6 +60,6 @@ private struct NowPlayingButtonModifier: ViewModifier {
             .bold()
             .font(.title3)
             .foregroundStyle(.secondary)
-            .frame(width: 48)
+            .frame(width: 60)
     }
 }
