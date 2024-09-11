@@ -73,7 +73,7 @@ public final class ItemProgress: Identifiable {
 }
 
 public extension ItemProgress {
-    static let progressUpdatedNotification = NSNotification.Name("io.rfk.shelfPlayer.progressUpdatedNotification")
+    static let progressUpdatedNotification = Notification.Name("io.rfk.shelfPlayer.progressUpdatedNotification")
     
     enum ProgressType: Int, Codable, Equatable, Identifiable {
         case receivedFromServer = 0

@@ -25,7 +25,6 @@ internal final class PlaybackReporter {
     private var duration: TimeInterval
     private var currentTime: TimeInterval
     
-    private var lastUpdate: Date
     private var lastReport: Date
     
     internal init(itemId: String, episodeId: String?, playbackSessionId: String?) {
@@ -36,7 +35,6 @@ internal final class PlaybackReporter {
         duration = .nan
         currentTime = .nan
         
-        lastUpdate = .now
         lastReport = .now
         
         if playbackSessionId == nil {
@@ -69,18 +67,6 @@ internal extension PlaybackReporter {
         if Int(currentTime) % 30 == 0 || forceReport {
             reportProgress()
             return
-        }
-        
-        let duration = DateInterval(start: lastUpdate, end: .now).duration
-        
-        guard duration > 0.2 else {
-            return
-        }
-        
-        lastUpdate = .now
-        
-        Task {
-            await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: self.currentTime, duration: self.duration)
         }
     }
     func reportProgress(playing: Bool, currentTime: TimeInterval, duration: TimeInterval) {
