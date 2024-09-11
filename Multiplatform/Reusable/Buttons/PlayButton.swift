@@ -43,6 +43,14 @@ internal struct PlayButton: View {
         return colorScheme == .dark ? .white : .black
     }
     
+    private var remaining: TimeInterval {
+        if nowPlayingViewModel.item == item {
+            return nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime
+        }
+        
+        return progressEntity.duration - progressEntity.currentTime
+    }
+    
     private var label: String {
         if progressEntity.progress >= 1 {
             return String(localized: "listen.again")
@@ -76,7 +84,7 @@ internal struct PlayButton: View {
                 Label {
                     Text(label)
                     + Text(verbatim: " • ")
-                    + Text((progressEntity.duration - progressEntity.currentTime), format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
+                    + Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                 } icon: {
                     if loading {
                         ProgressIndicator()
