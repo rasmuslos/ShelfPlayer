@@ -30,7 +30,12 @@ public extension AudiobookshelfClient {
         return (audiobooks, authors)
     }
     
-    func audiobooks(libraryId: String) async throws -> [Audiobook] {
-        try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET")).results.compactMap(Audiobook.init)
+    func audiobooks(libraryId: String, limit: Int, page: Int) async throws -> ([Audiobook], Int) {
+        let result = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET", query: [
+            .init(name: "page", value: "\(page)"),
+            .init(name: "limit", value: "\(limit)"),
+        ]))
+        
+        return (result.results.compactMap(Audiobook.init), result.total)
     }
 }

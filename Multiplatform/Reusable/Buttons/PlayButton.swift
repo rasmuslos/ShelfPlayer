@@ -44,7 +44,7 @@ internal struct PlayButton: View {
     }
     
     private var remaining: TimeInterval {
-        if nowPlayingViewModel.item == item {
+        if nowPlayingViewModel.item == item && nowPlayingViewModel.itemDuration > 0 {
             return nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime
         }
         

@@ -23,15 +23,8 @@ public extension MediaResolver {
             result += offlineAudiobooks
         }
             
-        if !UserDefaults.standard.bool(forKey: "siriOfflineMode"), let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) {
-            let fetched = await libraries.parallelMap {
-                let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(libraryId: $0.id)
-                return audiobooks ?? []
-            }
-            
-            for audiobooks in fetched {
-                result += audiobooks.filter { !result.contains($0) }
-            }
+        if !runOffline, let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) {
+            result += await libraries.parallelMap { (try? await AudiobookshelfClient.shared.items(search: audiobookName, libraryId: $0.id).0) ?? [] }.reduce([], +)
         }
         
         result = result.filter {

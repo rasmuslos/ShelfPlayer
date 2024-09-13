@@ -73,6 +73,7 @@ struct SearchResponse: Codable {
 }
 
 struct ResultResponse: Codable {
+    let total: Int
     let results: [AudiobookshelfItem]
 }
 
