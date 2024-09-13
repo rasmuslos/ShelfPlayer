@@ -10,17 +10,17 @@ import SPFoundation
 import SPOffline
 import SPPlayback
 
-struct AudiobookVGrid: View {
+internal struct AudiobookVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let audiobooks: [Audiobook]
     
     private var minimumWidth: CGFloat {
-        horizontalSizeClass == .compact ? 160.0 : 200.0
+        horizontalSizeClass == .compact ? 100.0 : 200.0
     }
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 15)], spacing: 20) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
             ForEach(audiobooks) { audiobook in
                 NavigationLink {
                     AudiobookView(audiobook)
@@ -35,7 +35,7 @@ struct AudiobookVGrid: View {
     }
 }
 
-struct AudiobookHGrid: View {
+internal struct AudiobookHGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let audiobooks: [Audiobook]
@@ -43,11 +43,11 @@ struct AudiobookHGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 10
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimum = horizontalSizeClass == .compact ? small ? 90.0 : 120.0 : small ? 120.0 : 150.0
+        let minimum = horizontalSizeClass == .compact ? small ? 90.0 : 120.0 : small ? 120.0 : 160.0
         
         let usable = width - padding * 2
         let amount = CGFloat(Int(usable / minimum))
@@ -71,16 +71,16 @@ struct AudiobookHGrid: View {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook)) {
                             ItemStatusImage(item: audiobook, aspectRatio: .none)
-                                .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
-                                .hoverEffect(.highlight)
                                 .frame(width: size)
                                 .padding(.leading, gap)
+                                .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+                                .hoverEffect(.highlight)
                         }
                         .buttonStyle(.plain)
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, gap)
+                .padding(.leading, 20 - gap)
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
@@ -93,37 +93,16 @@ struct AudiobookHGrid: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookVGrid(audiobooks: [
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-            ])
+            AudiobookVGrid(audiobooks: .init(repeating: [.fixture], count: 7))
         }
+        .padding(.horizontal, 20)
     }
 }
 
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookHGrid(audiobooks: [
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-                Audiobook.fixture,
-            ])
+            AudiobookHGrid(audiobooks: .init(repeating: [.fixture], count: 7))
         }
     }
 }

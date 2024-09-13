@@ -18,7 +18,7 @@ struct SeriesGrid: View {
     }
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 15)], spacing: 20) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
             ForEach(series) { item in
                 NavigationLink(destination: SeriesView(item)) {
                     SeriesGridItem(series: item)
@@ -29,37 +29,54 @@ struct SeriesGrid: View {
     }
 }
 
-extension SeriesGrid {
-    struct SeriesGridItem: View {
-        let series: Series
-        
-        var body: some View {
-            VStack {
-                Group {
-                    if series.covers.isEmpty {
-                        ItemImage(cover: nil)
-                    } else if series.covers.count < 4 {
-                        // TODO: more
-                        ItemImage(cover: series.covers.randomElement()!)
-                    } else {
-                        VStack(spacing: 10) {
-                            HStack(spacing: 10) {
+private struct SeriesGridItem: View {
+    let series: Series
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            Group {
+                if series.covers.isEmpty {
+                    ItemImage(cover: nil)
+                } else if series.covers.count == 1 {
+                    ItemImage(cover: series.covers.first)
+                } else if series.covers.count < 4 {
+                    GeometryReader { proxy in
+                        let width = proxy.size.width / 1.6
+                        
+                        ZStack(alignment: .topLeading) {
+                            Rectangle()
+                                .fill(.clear)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            
+                            Group {
                                 ItemImage(cover: series.covers[0])
                                 ItemImage(cover: series.covers[1])
+                                    .offset(x: proxy.size.width - width, y: proxy.size.height - width)
+                                    .shadow(radius: 4)
                             }
-                            HStack(spacing: 10) {
-                                ItemImage(cover: series.covers[2])
-                                ItemImage(cover: series.covers[3])
-                            }
+                            .frame(width: width)
+                        }
+                    }
+                    .aspectRatio(1, contentMode: .fill)
+                    .border(.red)
+                } else {
+                    VStack(spacing: 8) {
+                        HStack(spacing: 8) {
+                            ItemImage(cover: series.covers[0])
+                            ItemImage(cover: series.covers[1])
+                        }
+                        HStack(spacing: 8) {
+                            ItemImage(cover: series.covers[2])
+                            ItemImage(cover: series.covers[3])
                         }
                     }
                 }
-                .hoverEffect(.highlight)
-                
-                Text(series.name)
-                    .modifier(SerifModifier())
-                    .lineLimit(1)
             }
+            .hoverEffect(.highlight)
+            
+            Text(series.name)
+                .modifier(SerifModifier())
+                .lineLimit(1)
         }
     }
 }
@@ -68,15 +85,8 @@ extension SeriesGrid {
 #Preview {
     NavigationStack {
         ScrollView {
-            SeriesGrid(series: [
-                Series.fixture,
-                Series.fixture,
-                Series.fixture,
-                Series.fixture,
-                Series.fixture,
-                Series.fixture,
-            ])
-            .padding(20)
+            SeriesGrid(series: .init(repeating: [.fixture], count: 7))
+                .padding(20)
         }
     }
 }

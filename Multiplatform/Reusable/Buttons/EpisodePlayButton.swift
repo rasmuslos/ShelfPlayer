@@ -51,11 +51,11 @@ private struct ButtonText: View {
         if viewModel.progressEntity.progress >= 1 {
             return String(localized: "listen.again")
         } else if viewModel.progressEntity.progress <= 0 {
-            return viewModel.episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
-        } else if nowPlayingViewModel.item == viewModel.episode {
-            return (nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
+            return viewModel.episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute], maximumUnitCount: 1))
+        } else if nowPlayingViewModel.item == viewModel.episode, nowPlayingViewModel.itemDuration > 0 {
+            return (nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
         } else {
-            return (viewModel.progressEntity.duration - viewModel.progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute]))
+            return (viewModel.progressEntity.duration - viewModel.progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
         }
     }
     private var icon: String {

@@ -117,6 +117,7 @@
 		3AB4529B2ACF4B4B005D5DBA /* SeriesLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529A2ACF4B4B005D5DBA /* SeriesLoadView.swift */; };
 		3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */; };
 		3AB4CBCE2BB3467000C2F898 /* CustomHeaderEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4CBCD2BB3467000C2F898 /* CustomHeaderEditView.swift */; };
+		3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */; };
 		3AB695342ACF39F000823049 /* Array+Repeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695332ACF39F000823049 /* Array+Repeat.swift */; };
 		3AB695362ACF3BAF00823049 /* AuthorLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695352ACF3BAF00823049 /* AuthorLoadView.swift */; };
 		3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695372ACF3D1200823049 /* AuthorView.swift */; };
@@ -315,6 +316,7 @@
 		3AB4529A2ACF4B4B005D5DBA /* SeriesLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesLoadView.swift; sourceTree = "<group>"; };
 		3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesView.swift; sourceTree = "<group>"; };
 		3AB4CBCD2BB3467000C2F898 /* CustomHeaderEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeaderEditView.swift; sourceTree = "<group>"; };
+		3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyLoadHelper.swift; sourceTree = "<group>"; };
 		3AB695332ACF39F000823049 /* Array+Repeat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Repeat.swift"; sourceTree = "<group>"; };
 		3AB695352ACF3BAF00823049 /* AuthorLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorLoadView.swift; sourceTree = "<group>"; };
 		3AB695372ACF3D1200823049 /* AuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorView.swift; sourceTree = "<group>"; };
@@ -696,6 +698,7 @@
 		3A9874212B5995CE00B2704F /* Collections */ = {
 			isa = PBXGroup;
 			children = (
+				3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */,
 				3AA0D9CC2BD6BF4900498546 /* Audiobook */,
 				3AA0D9C92BD6BF2B00498546 /* Author */,
 				3AA0D9C82BD6BF2100498546 /* Series */,
@@ -1062,6 +1065,7 @@
 				3A333B772C836516006F158B /* ViewModel.swift in Sources */,
 				3ABCC7E42AD46655004AEADF /* FullscreenBackground.swift in Sources */,
 				3A0E42E52C80CFD60034873F /* SeriesViewModel.swift in Sources */,
+				3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */,
 				3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */,
 				3A792B952B6F9CAC002A48E6 /* ChapterMenu.swift in Sources */,
 				3AA19BA82AD6EE3F00C468EA /* Sheet.swift in Sources */,

@@ -8,31 +8,26 @@
 import SwiftUI
 import SPFoundation
 
-struct AuthorList: View {
+internal struct AuthorList: View {
     let authors: [Author]
     
     var body: some View {
         ForEach(authors) { author in
             NavigationLink(destination: AuthorView(author)) {
-                AuthorRow(author: author)
+                HStack(spacing: 12) {
+                    ItemImage(cover: author.cover, cornerRadius: .infinity)
+                        .frame(width: 60)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(author.name)
+                        
+                        Text("books \(author.bookCount)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
-            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
-        }
-    }
-}
-
-extension AuthorList {
-    struct AuthorRow: View {
-        let author: Author
-        
-        var body: some View {
-            HStack {
-                ItemImage(cover: author.cover)
-                    .clipShape(RoundedRectangle(cornerRadius: 10000))
-                    .frame(width: 50)
-                
-                Text(author.name)
-            }
+            .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
         }
     }
 }
