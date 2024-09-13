@@ -15,7 +15,7 @@ struct AuthorGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 10
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -42,15 +42,23 @@ struct AuthorGrid: View {
                 HStack(spacing: 0) {
                     ForEach(authors) { author in
                         NavigationLink(destination: AuthorView(author)) {
-                            AuthorGridItem(author: author)
-                                .frame(width: size)
-                                .padding(.leading, gap)
+                            VStack(spacing: 0) {
+                                ItemImage(cover: author.cover, cornerRadius: .infinity)
+                                    .padding(.bottom, 4)
+                                    .hoverEffect(.highlight)
+                                
+                                Text(author.name)
+                                    .font(.caption)
+                                    .lineLimit(1)
+                            }
+                            .frame(width: size)
+                            .padding(.leading, gap)
                         }
                         .buttonStyle(.plain)
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, gap)
+                .padding(.leading, 20 - gap)
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
@@ -59,35 +67,10 @@ struct AuthorGrid: View {
     }
 }
 
-extension AuthorGrid {
-    struct AuthorGridItem: View {
-        let author: Author
-        
-        var body: some View {
-            VStack(spacing: 0) {
-                ItemImage(cover: author.cover, cornerRadius: 10000)
-                    .padding(.bottom, 5)
-                    .hoverEffect(.highlight)
-                
-                Text(author.name)
-                    .font(.caption)
-                    .lineLimit(1)
-            }
-        }
-    }
-}
-
 #if DEBUG
 #Preview {
     NavigationStack {
-        AuthorGrid(authors: [
-            Author.fixture,
-            Author.fixture,
-            Author.fixture,
-            Author.fixture,
-            Author.fixture,
-            Author.fixture,
-        ])
+        AuthorGrid(authors: .init(repeating: [.fixture], count: 7))
     }
 }
 #endif

@@ -59,7 +59,6 @@ struct AudiobookLibraryView: View {
                     ErrorView()
                 } else {
                     LoadingView()
-                        .task { await fetchItems() }
                 }
             } else {
                 Group {
@@ -96,19 +95,6 @@ struct AudiobookLibraryView: View {
         .navigationTitle("title.library")
         .navigationBarTitleDisplayMode(.large)
         .modifier(NowPlaying.SafeAreaModifier())
-        .refreshable { await fetchItems() }
-    }
-}
-
-extension AudiobookLibraryView {
-    func fetchItems() async {
-        failed = false
-        
-        if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(libraryId: libraryId) {
-            self.audiobooks = audiobooks
-        } else {
-            failed = true
-        }
     }
 }
 

@@ -18,6 +18,7 @@ internal extension Author {
             name: item.name!,
             description: item.description,
             cover: Cover(item: item),
-            addedAt: Date(timeIntervalSince1970: addedAt / 1000))
+            addedAt: Date(timeIntervalSince1970: addedAt / 1000),
+            bookCount: item.numBooks ?? 0)
     }
 }

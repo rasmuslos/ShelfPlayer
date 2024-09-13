@@ -8,48 +8,63 @@
 import SwiftUI
 import SPFoundation
 
-struct SeriesList: View {
+internal struct SeriesList: View {
     let series: [Series]
     
     var body: some View {
         ForEach(series) { item in
             NavigationLink(destination: SeriesView(item)) {
-                SeriesRow(series: item)
+                GridItem(series: item)
             }
-            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
+            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         }
     }
 }
 
-extension SeriesList {
-    struct SeriesRow: View {
-        let series: Series
+private struct GridItem: View {
+    let series: Series
+    
+    private var coverCount: Int {
+        min(series.covers.count, 4)
+    }
+    private var leadingPadding: CGFloat {
+        if coverCount > 3 {
+            return 54
+        } else if coverCount > 2 {
+            return 42
+        } else if coverCount > 1 {
+            return 28
+        }
         
-        var body: some View {
-            HStack {
-                let count = min(series.covers.count, 5)
-                ZStack {
-                    ForEach(0..<count, id: \.hashValue) {
-                        let index = (count - 1) - $0
-                        
-                        ItemImage(cover: series.covers[$0])
-                            .frame(height: 50)
-                            .offset(x: CGFloat(index) * 20)
-                            .scaleEffect(index == 0 ? 1 : index == 1 ? 0.95 : index == 2 ? 0.9 : index == 3 ? 0.85 : index == 4 ? 0.8 : 0)
-                            .shadow(radius: 2)
-                    }
+        return 12
+    }
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            ZStack {
+                ForEach(0..<coverCount, id: \.hashValue) {
+                    let index = (coverCount - 1) - $0
+                    let factor: CGFloat = index == 0 ? 1 : index == 1 ? 0.9 : index == 2 ? 0.8 : index == 3 ? 0.75 : 0
+                    let offset: CGFloat = index == 0 ? 0 : index == 1 ? 16  : index == 2 ? 30  : index == 3 ? 42   : 0
+                    
+                    ItemImage(cover: series.covers[$0])
+                        .frame(height: 60)
+                        .scaleEffect(factor)
+                        .offset(x: offset)
+                        .shadow(radius: 2)
                 }
-                .frame(height: 70)
-                
-                VStack(alignment: .leading) {
-                    Text(series.name)
-                        .modifier(SerifModifier())
-                    Text("series.count \(series.covers.count)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.leading, CGFloat(count - 1) * 20)
             }
+            .frame(height: 60)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(series.name)
+                    .modifier(SerifModifier())
+                
+                Text("series.count \(series.covers.count)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.leading, leadingPadding)
         }
     }
 }
