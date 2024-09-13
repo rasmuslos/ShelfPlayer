@@ -12,21 +12,12 @@ import SPFoundation
 
 internal extension DownloadManager {
     func download(cover: Cover?, itemId: String) async throws {
-        if let cover = cover {
-            let request = URLRequest(url: cover.url)
-            
-            let (location, _) = try await URLSession.shared.download(for: request)
-            var destination = imageURL(identifiedBy: itemId)
-            
-            try? destination.setResourceValues({
-                var values = URLResourceValues()
-                values.isExcludedFromBackup = true
-                
-                return values
-            }())
+        if let image = await cover?.systemImage {
+            let data = image.pngData()
+            let destination = imageURL(identifiedBy: itemId)
             
             try? FileManager.default.removeItem(at: destination)
-            try FileManager.default.moveItem(at: location, to: destination)
+            FileManager.default.createFile(atPath: destination.path, contents: data)
         }
     }
     
