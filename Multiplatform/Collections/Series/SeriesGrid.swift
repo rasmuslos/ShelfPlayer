@@ -32,6 +32,10 @@ struct SeriesGrid: View {
 private struct SeriesGridItem: View {
     let series: Series
     
+    private var flipped: Bool {
+        series.covers.count == 3
+    }
+    
     var body: some View {
         VStack(spacing: 4) {
             Group {
@@ -43,7 +47,7 @@ private struct SeriesGridItem: View {
                     GeometryReader { proxy in
                         let width = proxy.size.width / 1.6
                         
-                        ZStack(alignment: .topLeading) {
+                        ZStack(alignment: flipped ? .bottomLeading : .topLeading) {
                             Rectangle()
                                 .fill(.clear)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -51,8 +55,7 @@ private struct SeriesGridItem: View {
                             Group {
                                 ItemImage(cover: series.covers[0])
                                 ItemImage(cover: series.covers[1])
-                                    .offset(x: proxy.size.width - width, y: proxy.size.height - width)
-                                    .shadow(radius: 4)
+                                    .offset(x: proxy.size.width - width, y: (proxy.size.height - width) * (flipped ? -1 : 1))
                             }
                             .frame(width: width)
                         }

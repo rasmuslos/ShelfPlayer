@@ -323,6 +323,12 @@ private extension NowPlaying.ViewModel {
             }
         })
         
+        tokens.append(NotificationCenter.default.addObserver(forName: OfflineManager.bookmarksUpdatedNotification, object: nil, queue: nil) { [weak self] _ in
+            Task { @MainActor in
+                self?.updateBookmarks()
+            }
+        })
+        
         Task {
             for await skipForwardsInterval in Defaults.updates(.skipForwardsInterval) {
                 await MainActor.run {
