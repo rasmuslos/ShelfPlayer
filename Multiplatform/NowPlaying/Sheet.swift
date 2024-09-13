@@ -283,11 +283,11 @@ private extension NowPlaying.ViewModel.SheetTab {
     var label: LocalizedStringKey {
         switch self {
             case .queue:
-                "Queue"
+                "sheet.queue"
             case .chapters:
-                "Chapters"
+                "sheet.chapters"
             case .bookmarks:
-                "Bookmarks"
+                "sheet.bookmarks"
         }
     }
 }

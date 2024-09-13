@@ -10,12 +10,7 @@ import SPFoundation
 
 internal extension Series {
     convenience init(item: AudiobookshelfItem) {
-        let audiobooks = item.books ?? []
-        let covers: [Cover] = audiobooks.reduce([], {
-            if $1.imagePath == nil {
-                return $0
-            }
-            
+        let covers: [Cover] = (item.books ?? []).reduce([], {
             return $0 + [Cover(item: $1)]
         })
         

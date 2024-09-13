@@ -94,7 +94,7 @@ public extension OfflineManager {
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
     }
     
-    func remove(episodeId: String) {
+    func remove(episodeId: String, allowPodcastDeletion: Bool = true) {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
         let podcastId: String?
@@ -106,7 +106,7 @@ public extension OfflineManager {
             podcastId = nil
         }
         
-        if let podcastId, let episodes = try? offlineEpisodes(podcastId: podcastId, context: context), episodes.isEmpty {
+        if allowPodcastDeletion, let podcastId, let episodes = try? offlineEpisodes(podcastId: podcastId, context: context), episodes.isEmpty {
             remove(podcastId: podcastId)
         }
         

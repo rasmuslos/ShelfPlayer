@@ -96,7 +96,7 @@ public extension OfflineManager {
         
         if let episodes = try? offlineEpisodes(podcastId: podcastId, context: context) {
             for episode in episodes {
-                remove(episodeId: episode.id)
+                remove(episodeId: episode.id, allowPodcastDeletion: false)
             }
         }
         
