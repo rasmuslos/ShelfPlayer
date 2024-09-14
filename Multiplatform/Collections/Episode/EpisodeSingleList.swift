@@ -8,58 +8,58 @@
 import SwiftUI
 import SPFoundation
 
-struct EpisodeSingleList: View {
+internal struct EpisodeSingleList: View {
     let episodes: [Episode]
     
     var body: some View {
-        ForEach(episodes) { episode in
-            NavigationLink(destination: EpisodeView(episode)) {
-                EpisodeRow(episode: episode)
-            }
-            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
-            .modifier(SwipeActionsModifier(item: episode, loading: .constant(false)))
+        ForEach(episodes) {
+            EpisodeRow(episode: $0)
         }
     }
 }
 
-internal extension EpisodeSingleList {
-    struct EpisodeRow: View {
-        let episode: Episode
-        
-        var body: some View {
-            VStack(alignment: .leading) {
-                Group {
-                    if let releaseDate = episode.releaseDate {
-                        Text(releaseDate, style: .date)
-                    } else {
-                        Text(verbatim: "")
-                    }
-                }
-                .font(.subheadline.smallCaps())
-                .foregroundStyle(.secondary)
-                
+private struct EpisodeRow: View {
+    let episode: Episode
+    
+    @State private var loading = false
+    
+    var body: some View {
+        NavigationLink(destination: EpisodeView(episode)) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text(episode.name)
+                    .lineLimit(2)
                     .font(.headline)
-                    .lineLimit(1)
                 
                 if let description = episode.descriptionText {
                     Text(description)
                         .lineLimit(2)
                         .font(.callout)
                         .foregroundStyle(.secondary)
+                        .padding(.top, 4)
                 }
                 
-                HStack(alignment: .firstTextBaseline) {
-                    EpisodePlayButton(episode: episode)
-                        .padding(.bottom, 10)
+                HStack(spacing: 0) {
+                    EpisodePlayButton(episode: episode, loading: $loading)
                     
-                    Spacer()
+                    if let releaseDate = episode.releaseDate {
+                        Text(releaseDate, style: .date)
+                            .font(.caption.smallCaps())
+                            .foregroundStyle(.secondary)
+                            .padding(.leading, 8)
+                    }
+                    
+                    Spacer(minLength: 12)
+                    
                     DownloadIndicator(item: episode)
                 }
+                .padding(.top, 8)
             }
-            .contentShape([.contextMenuPreview, .hoverEffect, .interaction], Rectangle())
-            .modifier(EpisodeContextMenuModifier(episode: episode))
+            .contentShape(.hoverMenuInteraction, .rect)
         }
+        .buttonStyle(.plain)
+        .modifier(EpisodeContextMenuModifier(episode: episode))
+        .modifier(SwipeActionsModifier(item: episode, loading: $loading))
+        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }
 
@@ -71,5 +71,6 @@ internal extension EpisodeSingleList {
         }
         .listStyle(.plain)
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

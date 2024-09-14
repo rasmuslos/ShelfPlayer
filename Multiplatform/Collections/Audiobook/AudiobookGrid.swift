@@ -43,7 +43,7 @@ internal struct AudiobookHGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 12
+    private var gap: CGFloat { small ? 8 : 12 }
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -97,13 +97,15 @@ internal struct AudiobookHGrid: View {
         }
         .padding(.horizontal, 20)
     }
+    .environment(NowPlaying.ViewModel())
 }
 
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookHGrid(audiobooks: .init(repeating: [.fixture], count: 7))
+            AudiobookHGrid(audiobooks: .init(repeating: [.fixture], count: 7), small: true)
         }
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

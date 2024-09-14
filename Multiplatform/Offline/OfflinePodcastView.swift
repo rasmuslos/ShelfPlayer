@@ -34,10 +34,7 @@ struct OfflinePodcastView: View {
     
     var body: some View {
         List {
-            ForEach(sorted) {
-                EpisodeSingleList.EpisodeRow(episode: $0)
-                    .modifier(SwipeActionsModifier(item: $0, loading: .constant(false)))
-            }
+            EpisodeSingleList(episodes: sorted)
         }
         .listStyle(.plain)
         .navigationTitle(podcast.name)
