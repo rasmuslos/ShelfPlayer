@@ -14,8 +14,8 @@ internal struct EpisodePlayButton: View {
     private let viewModel: EpisodePlayButtonViewModel
     
     @MainActor
-    init(episode: Episode, highlighted: Bool = false) {
-        viewModel = .init(episode: episode, highlighted: highlighted)
+    init(episode: Episode, loading: Binding<Bool>, highlighted: Bool = false) {
+        viewModel = .init(episode: episode, loading: loading, highlighted: highlighted)
     }
     
     var body: some View {
@@ -80,7 +80,7 @@ private struct ButtonText: View {
                 }
                 .hidden()
                 
-                if viewModel.loading {
+                if viewModel.loading.wrappedValue {
                     ProgressIndicator()
                 } else {
                     Image(systemName: icon)
@@ -116,15 +116,14 @@ private final class EpisodePlayButtonViewModel {
     
     let highlighted: Bool
     
-    var loading: Bool
+    var loading: Binding<Bool>
     var progressEntity: ItemProgress
     
     @MainActor
-    init(episode: Episode, highlighted: Bool) {
+    init(episode: Episode, loading: Binding<Bool>, highlighted: Bool) {
         self.episode = episode
+        self.loading = loading
         self.highlighted = highlighted
-        
-        loading = false
         
         progressEntity = OfflineManager.shared.progressEntity(item: episode)
         progressEntity.beginReceivingUpdates()
@@ -132,16 +131,16 @@ private final class EpisodePlayButtonViewModel {
     
     func play() {
         Task {
-            loading = true
+            loading.wrappedValue = true
             try? await AudioPlayer.shared.play(episode)
-            loading = false
+            loading.wrappedValue = false
         }
     }
 }
 
 #if DEBUG
 #Preview {
-    EpisodePlayButton(episode: Episode.fixture)
+    EpisodePlayButton(episode: Episode.fixture, loading: .constant(false))
 }
 
 #Preview {
@@ -149,7 +148,7 @@ private final class EpisodePlayButtonViewModel {
         Rectangle()
             .fill(.black)
         
-        EpisodePlayButton(episode: Episode.fixture, highlighted: true)
+        EpisodePlayButton(episode: Episode.fixture, loading: .constant(false), highlighted: true)
     }
 }
 #endif
