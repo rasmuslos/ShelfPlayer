@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-struct PodcastVGrid: View {
+internal struct PodcastVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let podcasts: [Podcast]
@@ -18,25 +18,22 @@ struct PodcastVGrid: View {
     }
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 15)], spacing: 20) {
-            ForEach(podcasts) { podcast in
-                NavigationLink(destination: PodcastView(podcast)) {
-                    PodcastGridItem(podcast: podcast)
-                }
-                .buttonStyle(.plain)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
+            ForEach(podcasts) {
+                PodcastGridItem(podcast: $0)
             }
         }
     }
 }
 
-struct PodcastHGrid: View {
+internal struct PodcastHGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let podcasts: [Podcast]
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 10
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -61,17 +58,14 @@ struct PodcastHGrid: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 0) {
-                    ForEach(podcasts) { podcast in
-                        NavigationLink(destination: PodcastLoadView(podcastId: podcast.id)) {
-                            PodcastGridItem(podcast: podcast)
-                                .frame(width: size)
-                                .padding(.leading, gap)
-                        }
-                        .buttonStyle(.plain)
+                    ForEach(podcasts) {
+                        PodcastGridItem(podcast: $0)
+                            .frame(width: size)
+                            .padding(.leading, gap)
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, gap)
+                .padding(.leading, 20 - gap)
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
@@ -80,27 +74,30 @@ struct PodcastHGrid: View {
     }
 }
 
-struct PodcastGridItem: View {
+private struct PodcastGridItem: View {
     let podcast: Podcast
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ItemImage(cover: podcast.cover)
-                .hoverEffect(.highlight)
-            
-            Text(podcast.name)
-                .lineLimit(1)
-                .padding(.top, 7)
-                .padding(.bottom, 3)
-            
-            if let author = podcast.author {
-                Text(author)
-                    .font(.caption)
+        NavigationLink(destination: PodcastLoadView(podcastId: podcast.id)) {
+            VStack(alignment: .leading, spacing: 0) {
+                ItemImage(cover: podcast.cover)
+                    .hoverEffect(.highlight)
+                
+                Text(podcast.name)
                     .lineLimit(1)
-                    .foregroundStyle(.secondary)
+                    .padding(.top, 8)
+                    .padding(.bottom, 4)
+                
+                if let author = podcast.author {
+                    Text(author)
+                        .lineLimit(1)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
+            .contentShape(.hoverMenuInteraction, Rectangle())
         }
-        .contentShape(.hoverMenuInteraction, Rectangle())
+        .buttonStyle(.plain)
     }
 }
 
@@ -108,17 +105,15 @@ struct PodcastGridItem: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            PodcastVGrid(podcasts: [
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-            ])
-            .padding(.horizontal, 20)
+            PodcastVGrid(podcasts: .init(repeating: [.fixture], count: 7))
+                .padding(.horizontal, 20)
         }
+    }
+}
+
+#Preview {
+    NavigationStack {
+        PodcastHGrid(podcasts: .init(repeating: [.fixture], count: 7))
     }
 }
 #endif

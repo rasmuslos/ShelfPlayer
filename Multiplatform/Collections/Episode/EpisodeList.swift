@@ -6,66 +6,70 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
-struct EpisodeList: View {
+internal struct EpisodeList: View {
     let episodes: [Episode]
     
     var body: some View {
-        ForEach(episodes) { episode in
-            NavigationLink(destination: EpisodeView(episode)) {
-                EpisodeRow(episode: episode)
-            }
-            .modifier(SwipeActionsModifier(item: episode, loading: .constant(false)))
-            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
+        ForEach(episodes) {
+            Row(episode: $0)
         }
     }
 }
 
-extension EpisodeList {
-    struct EpisodeRow: View {
-        let episode: Episode
-        
-        var body: some View {
-            HStack {
+
+private struct Row: View {
+    let episode: Episode
+    
+    @State private var loading = false
+    
+    var body: some View {
+        NavigationLink(destination: EpisodeView(episode)) {
+            HStack(spacing: 0) {
                 ItemImage(cover: episode.cover)
-                    .frame(width: 90)
+                    .frame(width: 92)
+                    .padding(.trailing, 12)
                     .hoverEffect(.highlight)
                 
-                VStack(alignment: .leading) {
-                    Group {
-                        if let releaseDate = episode.releaseDate {
-                            Text(releaseDate, style: .date)
-                        } else {
-                            Text(verbatim: "")
-                        }
-                    }
-                    .font(.caption.smallCaps())
-                    .foregroundStyle(.secondary)
-                    
+                VStack(alignment: .leading, spacing: 0) {
                     Text(episode.name)
                         .font(.headline)
-                        .lineLimit(1)
+                        .lineLimit(2)
                     
                     if let description = episode.descriptionText {
                         Text(description)
-                            .lineLimit(1)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            .padding(.top, 4)
                     }
                     
-                    HStack {
-                        EpisodePlayButton(episode: episode)
-                        Spacer()
+                    HStack(spacing: 0) {
+                        EpisodePlayButton(episode: episode, loading: $loading)
+                        
+                        if let releaseDate = episode.releaseDate {
+                            Text(releaseDate, style: .date)
+                                .font(.caption.smallCaps())
+                                .foregroundStyle(.secondary)
+                                .padding(.leading, 8)
+                        }
+                        
+                        Spacer(minLength: 12)
+                        
                         DownloadIndicator(item: episode)
                     }
+                    .padding(.top, 8)
                 }
                 
                 Spacer()
             }
-            .contentShape(.hoverMenuInteraction, Rectangle())
-            .modifier(EpisodeContextMenuModifier(episode: episode))
+            .contentShape(.hoverMenuInteraction, .rect())
         }
+        .modifier(SwipeActionsModifier(item: episode, loading: $loading))
+        .modifier(EpisodeContextMenuModifier(episode: episode))
+        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }
 
@@ -73,18 +77,10 @@ extension EpisodeList {
 #Preview {
     NavigationStack {
         List {
-            EpisodeList(episodes: [
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-            ])
+            EpisodeList(episodes: .init(repeating: [.fixture], count: 7))
         }
         .listStyle(.plain)
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

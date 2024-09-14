@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-struct EpisodeGrid: View {
+internal struct EpisodeGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let episodes: [Episode]
@@ -16,7 +16,7 @@ struct EpisodeGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 10
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -40,18 +40,13 @@ struct EpisodeGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: [GridItem(.flexible(), spacing: 15)].repeated(count: amount), spacing: 0) {
-                    ForEach(episodes) { episode in
-                        NavigationLink(destination: EpisodeView(episode)) {
-                            EpisodeList.EpisodeRow(episode: episode)
-                                .padding(.leading, gap)
-                                .frame(width: size)
-                        }
-                        .buttonStyle(.plain)
-                    }
+                LazyHGrid(rows: [GridItem(.flexible(), spacing: 16)].repeated(count: amount), spacing: 0) {
+                    EpisodeList(episodes: episodes)
+                        .padding(.leading, gap)
+                        .frame(width: size)
                 }
                 .scrollTargetLayout()
-                .padding(.leading, gap)
+                .padding(.leading, 20 - gap)
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
@@ -62,16 +57,8 @@ struct EpisodeGrid: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        EpisodeGrid(episodes: [
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-            Episode.fixture,
-        ])
+        EpisodeGrid(episodes: .init(repeating: [.fixture], count: 7))
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

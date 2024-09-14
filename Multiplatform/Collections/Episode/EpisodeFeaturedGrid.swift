@@ -15,7 +15,7 @@ struct EpisodeFeaturedGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 10
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -47,13 +47,13 @@ struct EpisodeFeaturedGrid: View {
                             EpisodeGridItem(episode: episode)
                                 .frame(width: size)
                                 .padding(.leading, gap)
-                                .shadow(radius: 5)
+                                .shadow(radius: 4)
                         }
                         .buttonStyle(.plain)
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, gap)
+                .padding(.leading, 20 - gap)
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
@@ -62,110 +62,104 @@ struct EpisodeFeaturedGrid: View {
     }
 }
 
-extension EpisodeFeaturedGrid {
-    struct EpisodeGridItem: View {
-        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-        
-        let episode: Episode
-        
-        var body: some View {
-            ZStack(alignment: .bottom) {
-                LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
-                    .aspectRatio(0.72, contentMode: .fill)
-                
-                Title(episode: episode)
-            }
-            .foregroundStyle(.white)
-            .background(Background(image: episode.cover))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 10))
-            .hoverEffect(.highlight)
-            .modifier(EpisodeContextMenuModifier(episode: episode))
+private struct EpisodeGridItem: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    let episode: Episode
+    
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
+                .aspectRatio(0.72, contentMode: .fill)
+            
+            Title(episode: episode)
         }
+        .foregroundStyle(.white)
+        .colorScheme(.light)
+        .background(Background(cover: episode.cover))
+        .clipShape(.rect(cornerRadius: 16))
+        .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16))
+        .hoverEffect(.highlight)
+        .modifier(EpisodeContextMenuModifier(episode: episode))
     }
 }
 
-extension EpisodeFeaturedGrid.EpisodeGridItem {
-    struct Title: View {
-        let episode: Episode
-        
-        var body: some View {
-            HStack {
-                VStack(alignment: .leading) {
-                    if let releaseDate = episode.releaseDate {
-                        Text(releaseDate, style: .date)
-                            .font(.caption.smallCaps())
-                            .fontWeight(.bold)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Text(episode.name)
-                        .font(.headline)
-                        .lineLimit(2)
-                    
-                    if let descriptionText = episode.descriptionText {
-                        Text(descriptionText)
-                            .font(.subheadline)
-                            .foregroundStyle(.thickMaterial)
-                            .environment(\.colorScheme, .light)
-                            .lineLimit(3)
-                    }
-                    
-                    HStack {
-                        EpisodePlayButton(episode: episode, highlighted: true)
-                            .bold()
-                        
-                        Spacer()
-                        
-                        DownloadIndicator(item: episode)
-                    }
+private struct Title: View {
+    let episode: Episode
+    
+    @State private var loading = false
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(episode.name)
+                    .font(.headline)
+                    .lineLimit(2)
+                
+                if let descriptionText = episode.descriptionText {
+                    Text(descriptionText)
+                        .font(.subheadline)
+                        .foregroundStyle(.thickMaterial)
+                        .lineLimit(3)
+                        .padding(.top, 4)
                 }
                 
-                Spacer()
+                HStack(spacing: 0) {
+                    EpisodePlayButton(episode: episode, loading: $loading, highlighted: true)
+                    
+                    if let releaseDate = episode.releaseDate {
+                        Text(releaseDate, format: .dateTime.day().month(.abbreviated).year())
+                            .font(.caption.smallCaps())
+                            .foregroundStyle(.secondary)
+                            .padding(.leading, 8)
+                    }
+                    
+                    Spacer(minLength: 12)
+                    
+                    DownloadIndicator(item: episode)
+                }
+                .padding(.top, 8)
             }
-            .padding(15)
+            
+            Spacer()
+        }
+        .padding(16)
+    }
+}
+
+private struct Background: View {
+    let cover: Cover?
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .topLeading) {
+                ItemImage(cover: cover)
+                    .frame(width: geometry.size.height)
+                    .blur(radius: 15)
+                
+                ItemImage(cover: cover)
+                    .frame(height: geometry.size.width)
+                    .mask {
+                        LinearGradient(colors: [.black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
+                    }
+            }
         }
     }
     
-    struct Background: View {
-        let image: Cover?
-        
-        var body: some View {
-            GeometryReader { geometry in
-                ZStack(alignment: .topLeading) {
-                    ItemImage(cover: image)
-                        .frame(width: geometry.size.height)
-                        .blur(radius: 15)
-                    
-                    ItemImage(cover: image)
-                        .frame(height: geometry.size.width)
-                        .mask {
-                            LinearGradient(colors: [.black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
-                        }
-                }
-            }
-        }
-    }
 }
 
 #if DEBUG
 #Preview {
     NavigationStack {
-        ScrollView(.horizontal) {
-            EpisodeFeaturedGrid(episodes: [
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-                Episode.fixture,
-            ])
+        ScrollView {
+            EpisodeFeaturedGrid(episodes: .init(repeating: [.fixture], count: 7))
         }
     }
+    .environment(NowPlaying.ViewModel())
 }
 
 #Preview {
-    EpisodeFeaturedGrid.EpisodeGridItem(episode: .fixture)
+    EpisodeGridItem(episode: .fixture)
+        .environment(NowPlaying.ViewModel())
 }
 #endif

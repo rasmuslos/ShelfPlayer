@@ -8,28 +8,27 @@
 import SwiftUI
 import SPFoundation
 
-struct PodcastList: View {
+internal struct PodcastList: View {
     let podcasts: [Podcast]
     
     var body: some View {
         ForEach(podcasts) { podcast in
-            NavigationLink(destination: PodcastView(podcast)) {
-                PodcastRow(podcast: podcast)
-            }
+            PodcastRow(podcast: podcast)
         }
     }
 }
 
-extension PodcastList {
-    struct PodcastRow: View {
-        let podcast: Podcast
-        
-        var body: some View {
-            HStack {
+
+private struct PodcastRow: View {
+    let podcast: Podcast
+    
+    var body: some View {
+        NavigationLink(destination: PodcastView(podcast)) {
+            HStack(spacing: 0) {
                 ItemImage(cover: podcast.cover)
-                    .frame(width: 50)
+                    .frame(width: 60)
                 
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(podcast.name)
                         .lineLimit(1)
                     
@@ -40,25 +39,22 @@ extension PodcastList {
                             .lineLimit(1)
                     }
                 }
+                .padding(.leading, 12)
             }
             .contentShape(.hoverMenuInteraction, Rectangle())
         }
+        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }
+
 
 #if DEBUG
 #Preview {
     NavigationStack {
         List {
-            PodcastList(podcasts: [
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-                Podcast.fixture,
-            ])
+            PodcastList(podcasts: .init(repeating: [.fixture], count: 7))
         }
+        .listStyle(.plain)
     }
 }
 #endif

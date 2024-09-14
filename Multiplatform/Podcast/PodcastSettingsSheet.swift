@@ -7,9 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import ShelfPlayerKit
 
 internal struct PodcastSettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -33,20 +31,20 @@ internal struct PodcastSettingsSheet: View {
                 Text("podcast.settings.notificationFooter")
             }
         }
-        .padding(.top, -40)
         .safeAreaInset(edge: .top) {
-            HStack {
+            HStack(spacing: 0) {
                 Text("podcast.settings.title")
                     .font(.title3)
                     .bold()
                 
-                Spacer()
+                Spacer(minLength: 12)
                 
                 Button {
                     dismiss()
                 } label: {
                     Label("dismiss", systemImage: "xmark")
                         .labelStyle(.iconOnly)
+                        .font(.title3)
                         .symbolVariant(.circle.fill)
                         .foregroundStyle(.secondary)
                 }
@@ -93,4 +91,11 @@ internal extension PodcastSettingsSheet {
                 .disabled(!autoDownloadEnabled)
         }
     }
+}
+
+#Preview {
+    Text(verbatim: ":)")
+        .sheet(isPresented: .constant(true)) {
+            PodcastSettingsSheet(podcast: .fixture, configuration: OfflineManager.shared.requireConfiguration(podcastId: "fixture"))
+        }
 }
