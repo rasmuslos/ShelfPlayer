@@ -61,7 +61,6 @@ private struct SeriesGridItem: View {
                         }
                     }
                     .aspectRatio(1, contentMode: .fill)
-                    .border(.red)
                 } else {
                     VStack(spacing: 8) {
                         HStack(spacing: 8) {

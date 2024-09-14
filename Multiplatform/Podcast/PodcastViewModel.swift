@@ -19,9 +19,10 @@ internal final class PodcastViewModel {
     @MainActor var libraryID: String!
     
     @MainActor var dominantColor: Color?
-    
     @MainActor var toolbarVisible: Bool
+    
     @MainActor var settingsSheetPresented: Bool
+    @MainActor var descriptionSheetPresented: Bool
     
     @MainActor var filter: EpisodeFilter {
         didSet {
@@ -51,9 +52,10 @@ internal final class PodcastViewModel {
         self.episodes = episodes
         
         dominantColor = nil
-        
         toolbarVisible = false
+        
         settingsSheetPresented = false
+        descriptionSheetPresented = false
         
         filter = Defaults[.episodesFilter(podcastId: podcast.id)]
         
