@@ -48,10 +48,6 @@ private struct Row: View {
     private var additional: [String] {
         var parts = [String]()
         
-        if let released = audiobook.released {
-            parts.append(released)
-        }
-        
         if audiobook.explicit && audiobook.abridged {
             parts.append("🅴🅰")
         } else if audiobook.explicit {
@@ -60,16 +56,19 @@ private struct Row: View {
             parts.append("🅰")
         }
         
+        if let released = audiobook.released {
+            parts.append(released)
+        }
+        
         if progressEntity.progress >= 1 {
             parts.append(String(localized: "listen.again"))
         } else if progressEntity.progress <= 0 {
-            parts.append("12%")
             parts.append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         } else if nowPlayingViewModel.item == audiobook, nowPlayingViewModel.itemDuration > 0 {
-            parts.append(progressEntity.progress.formatted(.percent))
+            parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
             parts.append((nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         } else {
-            parts.append(progressEntity.progress.formatted(.percent))
+            parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
             parts.append((progressEntity.duration - progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         }
         
@@ -112,6 +111,7 @@ private struct Row: View {
                     
                     if let author = audiobook.author {
                         Text(author)
+                            .lineLimit(2)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }

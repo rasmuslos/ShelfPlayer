@@ -58,6 +58,26 @@ struct PodcastView: View {
         .refreshable {
             await viewModel.load()
         }
+        .sheet(isPresented: $viewModel.descriptionSheetPresented) {
+            NavigationStack {
+                HStack(spacing: 0) {
+                    VStack(alignment: .leading) {
+                        if let description = viewModel.podcast.description {
+                            Text(description)
+                        } else {
+                            Text("description.unavailable")
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+                .navigationTitle(viewModel.podcast.name)
+                .presentationDragIndicator(.visible)
+            }
+        }
         .sheet(isPresented: $viewModel.settingsSheetPresented) {
             PodcastSettingsSheet(podcast: viewModel.podcast, configuration: viewModel.fetchConfiguration)
         }
@@ -79,5 +99,6 @@ struct PodcastView: View {
     NavigationStack {
         PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7))
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

@@ -72,7 +72,14 @@ public extension AudioPlayer {
         
         if itemDuration != 0 && to >= itemDuration {
             playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
-            stop()
+            
+            Task {
+                do {
+                    try await advance()
+                } catch {
+                    stop()
+                }
+            }
             
             return
         }
@@ -136,6 +143,8 @@ public extension AudioPlayer {
 
 internal extension AudioPlayer {
     func start(_ item: PlayableItem, at seconds: Double? = nil) async throws {
+        buffering = true
+        
         let startTime: TimeInterval
         self.item = item
         

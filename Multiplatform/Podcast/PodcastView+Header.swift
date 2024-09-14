@@ -68,13 +68,18 @@ private struct PodcastDescription: View {
     
     var body: some View {
         if let description = viewModel.podcast.description {
-            HStack {
-                Text(description)
-                    .font(.callout)
-                    .lineLimit(3)
-                
-                Spacer()
+            Button {
+                viewModel.descriptionSheetPresented.toggle()
+            } label: {
+                HStack {
+                    Text(description)
+                        .font(.callout)
+                        .lineLimit(3)
+                    
+                    Spacer()
+                }
             }
+            .buttonStyle(.plain)
         }
     }
 }
