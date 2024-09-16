@@ -18,6 +18,6 @@ public extension PlayableItem {
     
     func resetProgress() async throws {
         try await AudiobookshelfClient.shared.deleteProgress(itemId: identifiers.itemID, episodeId: identifiers.episodeID)
-        try OfflineManager.shared.resetProgressEntity(id: OfflineManager.shared.progressEntity(item: self).id)
+        try OfflineManager.shared.resetProgressEntity(itemID: identifiers.itemID, episodeID: identifiers.episodeID)
     }
 }

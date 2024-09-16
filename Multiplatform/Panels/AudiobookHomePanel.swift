@@ -69,8 +69,6 @@ internal struct AudiobookHomePanel: View {
                                 }
                             }
                             
-                            let _ = print(row.label, entities)
-                            
                             AudiobookRow(title: row.label, small: false, audiobooks: entities)
                         }
                         
@@ -112,8 +110,6 @@ internal struct AudiobookHomePanel: View {
         Task {
             do {
                 let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
-                
-                print(home.0)
                 
                 await MainActor.withAnimation {
                     _authors = home.1

@@ -83,6 +83,7 @@ public extension OfflineManager {
             abridged: audiobook.abridged)
         
         context.insert(offlineAudiobook)
+        
         storeChapters(chapters, itemId: audiobook.id, context: context)
         download(tracks: tracks, for: audiobook.id, type: .audiobook, context: context)
         

@@ -10,18 +10,20 @@ import SPFoundation
 import SPOffline
 import SPOfflineExtended
 
-struct DownloadButton: View {
+internal struct DownloadButton: View {
     let item: PlayableItem
     let tint: Bool
     let downloadingLabel: Bool
+    let progressIndicator: Bool
     
     @State private var notify = false
     @State private var offlineTracker: ItemOfflineTracker
     
-    init(item: PlayableItem, tint: Bool = false, downloadingLabel: Bool = true) {
+    init(item: PlayableItem, tint: Bool = false, downloadingLabel: Bool = true, progressIndicator: Bool = false) {
         self.item = item
         self.tint = tint
         self.downloadingLabel = downloadingLabel
+        self.progressIndicator = progressIndicator
         
         _offlineTracker = .init(initialValue: .init(item))
     }
@@ -53,7 +55,9 @@ struct DownloadButton: View {
                 remove()
             }
         } label: {
-            if offlineTracker.status == .working && !downloadingLabel {
+            if offlineTracker.status == .working && progressIndicator {
+                DownloadProgressIndicator(itemId: item.id, small: false)
+            } else if offlineTracker.status == .working && !downloadingLabel {
                 ProgressIndicator()
             } else {
                 Label(title, systemImage: icon)
