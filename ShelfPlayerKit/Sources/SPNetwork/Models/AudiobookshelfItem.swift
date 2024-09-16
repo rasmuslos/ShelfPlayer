@@ -20,7 +20,10 @@ internal struct AudiobookshelfItem: Codable {
     
     let size: Int64?
     
+    // Both are have exactly the same use case, wtf?
     var books: [AudiobookshelfItem]?
+    var items: [AudiobookshelfItem]?
+    
     let series: [AudiobookshelfItem]?
     let libraryItems: [AudiobookshelfItem]?
     

@@ -28,12 +28,13 @@ private struct EpisodeRow: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text(episode.name)
                     .lineLimit(2)
-                    .font(.headline)
+                    .bold()
+                    .font(.callout)
                 
                 if let description = episode.descriptionText {
                     Text(description)
-                        .lineLimit(2)
-                        .font(.callout)
+                        .lineLimit(3)
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.top, 4)
                 }
@@ -51,15 +52,16 @@ private struct EpisodeRow: View {
                     Spacer(minLength: 12)
                     
                     DownloadIndicator(item: episode)
+                        .font(.caption)
                 }
-                .padding(.top, 8)
+                .padding(.top, 12)
             }
             .contentShape(.hoverMenuInteraction, .rect)
         }
         .buttonStyle(.plain)
         .modifier(EpisodeContextMenuModifier(episode: episode))
         .modifier(SwipeActionsModifier(item: episode, loading: $loading))
-        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .listRowInsets(.init(top: 12, leading: 20, bottom: 12, trailing: 20))
     }
 }
 

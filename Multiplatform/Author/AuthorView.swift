@@ -14,12 +14,12 @@ struct AuthorView: View {
     
     @State private var viewModel: AuthorViewModel
     
-    init(_ author: Author, audiobooks: [Audiobook] = []) {
-        viewModel = .init(author: author, audiobooks: audiobooks)
+    init(_ author: Author, series: [Series] = [], audiobooks: [Audiobook] = []) {
+        viewModel = .init(author: author, series: series, audiobooks: audiobooks)
     }
     
     var loadingPresentation: some View {
-        VStack {
+        VStack(spacing: 0) {
             Header()
             
             Spacer()
@@ -40,7 +40,17 @@ struct AuthorView: View {
             .padding(.horizontal, 20)
             
             AudiobookVGrid(audiobooks: viewModel.visible)
-                .padding(20)
+                .padding(.horizontal, 20)
+            
+            HStack(spacing: 0) {
+                RowTitle(title: String(localized: "series"), fontDesign: .serif)
+                Spacer()
+            }
+            .padding(.top, 16)
+            .padding(.horizontal, 20)
+            
+            SeriesGrid(series: viewModel.series)
+                .padding(.horizontal, 20)
         }
     }
     var listPresentation: some View {
@@ -50,9 +60,16 @@ struct AuthorView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
             RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                .listRowSeparator(.hidden, edges: .top)
                 .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
             
             AudiobookList(audiobooks: viewModel.visible)
+            
+            RowTitle(title: String(localized: "series"), fontDesign: .serif)
+                .listRowSeparator(.hidden, edges: .top)
+                .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+            
+            SeriesList(series: viewModel.series)
         }
         .listStyle(.plain)
     }

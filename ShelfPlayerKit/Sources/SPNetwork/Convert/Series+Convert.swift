@@ -10,7 +10,7 @@ import SPFoundation
 
 internal extension Series {
     convenience init(item: AudiobookshelfItem) {
-        let covers: [Cover] = (item.books ?? []).reduce([], {
+        let covers: [Cover] = (item.books ?? item.items ?? []).reduce([], {
             return $0 + [Cover(item: $1)]
         })
         
