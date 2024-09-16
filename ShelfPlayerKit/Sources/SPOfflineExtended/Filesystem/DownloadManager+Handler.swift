@@ -48,11 +48,6 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
         do {
             try? FileManager.default.removeItem(at: destination)
             try FileManager.default.moveItem(at: tmpLocation, to: destination)
-            
-            track.downloadReference = nil
-            NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: track.parentId)
-            
-            logger.info("Download track finished: \(track.id)")
         } catch {
             try? FileManager.default.removeItem(at: tmpLocation)
             OfflineManager.shared.remove(track: track, context: context)
@@ -60,11 +55,16 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
             logger.fault("Error while moving track \(track.id): \(error.localizedDescription)")
         }
         
+        track.downloadReference = nil
+        
         do {
             try context.save()
         } catch {
             logger.fault("Failed to save context after download finished: \(error.localizedDescription)")
         }
+        
+        NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: track.parentId)
+        logger.info("Download track finished: \(track.id)")
     }
     
     // Progress tracking
