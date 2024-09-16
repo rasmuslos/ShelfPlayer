@@ -1190,6 +1190,7 @@
       }
     },
     "authors" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4116,6 +4117,9 @@
           }
         }
       }
+    },
+    "sort.%@" : {
+
     },
     "sort.added" : {
       "localizations" : {

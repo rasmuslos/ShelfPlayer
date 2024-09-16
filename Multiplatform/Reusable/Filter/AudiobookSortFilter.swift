@@ -17,6 +17,8 @@ internal struct AudiobookSortFilter: View {
     @Binding var sortOrder: SortOrder
     @Binding var ascending: Bool
     
+    var didSelect: (() async -> Void)? = nil
+    
     var body: some View {
         Menu {
             Section("section.display") {
@@ -53,7 +55,14 @@ internal struct AudiobookSortFilter: View {
                 ForEach(SortOrder.allCases, id: \.hashValue) { order in
                     Toggle(order.rawValue, isOn: .init(get: { sortOrder == order }, set: {
                         if $0 {
-                            sortOrder = order
+                            if let didSelect {
+                                Task {
+                                    await didSelect()
+                                    sortOrder = order
+                                }
+                            } else {
+                                sortOrder = order
+                            }
                         }
                     }))
                 }
@@ -145,7 +154,7 @@ extension AudiobookSortFilter {
 
 // MARK: Types
 
-extension AudiobookSortFilter {
+internal extension AudiobookSortFilter {
     enum DisplayType: String, Defaults.Serializable {
         case grid = "grid"
         case list = "list"
@@ -167,12 +176,23 @@ extension AudiobookSortFilter {
     }
 }
 
-extension Defaults.Keys {
-    static let audiobooksDisplay = Key<AudiobookSortFilter.DisplayType>("audiobooksDisplay", default: .list)
-    static let audiobooksSortOrder = Key<AudiobookSortFilter.SortOrder>("audiobooksSortOrder", default: .added)
-    
-    static let audiobooksFilter = Key<AudiobookSortFilter.Filter>("audiobooksFilter", default: .all)
-    static let audiobooksAscending = Key<Bool>("audiobooksFilterAscending", default: true)
+extension AudiobookSortFilter.SortOrder {
+    var apiValue: String {
+        switch self {
+            case .name:
+                "media.metadata.title"
+            case .series:
+                "item.media.metadata.seriesName"
+            case .author:
+                "media.metadata.authorName"
+            case .released:
+                "media.metadata.publishedYear"
+            case .added:
+                "addedAt"
+            case .duration:
+                "media.duration"
+        }
+    }
 }
 
 #Preview {

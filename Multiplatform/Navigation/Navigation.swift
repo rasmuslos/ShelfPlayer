@@ -8,7 +8,7 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct Navigation {
+internal struct Navigation {
     static let navigateNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation")
     
     static let navigateAudiobookNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation.audiobook")

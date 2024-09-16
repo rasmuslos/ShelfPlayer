@@ -20,7 +20,7 @@ internal struct AudiobookVGrid: View {
     }
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 16) {
             ForEach(audiobooks) { audiobook in
                 NavigationLink {
                     AudiobookView(audiobook)
