@@ -159,22 +159,15 @@ public extension OfflineManager {
         progressEntity(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID)
     }
     
-    func resetProgressEntity(id: String) throws {
+    func resetProgressEntity(itemID: String, episodeID: String?) throws {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
-        guard let entity = try context.fetch(.init(predicate: #Predicate<ItemProgress> { $0.id == id })).first else {
-            throw OfflineError.missing
-        }
-        
-        entity.duration = 0
-        entity.currentTime = 0
-        entity.progress = 0
-        
-        entity.startedAt = nil
-        entity.lastUpdate = .now
-        
+        try context.delete(model: ItemProgress.self, where: #Predicate {
+            $0.itemId == itemID && $0.episodeId == episodeID
+        })
         try context.save()
-        NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemId, episodeID: entity.episodeId))
+        
+        NotificationCenter.default.post(name: ItemProgress.progressUpdatedNotification, object: convertIdentifier(itemID: itemID, episodeID: episodeID))
     }
     
     func deleteProgressEntities() throws {

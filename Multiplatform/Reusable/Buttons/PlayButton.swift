@@ -102,9 +102,13 @@ internal struct PlayButton: View {
                     }
                 }
                 
-                Text(label)
-                + Text(verbatim: " • ")
-                + Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
+                if progressEntity.progress < 1 {
+                    Text(label)
+                    + Text(verbatim: " • ")
+                    + Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
+                } else {
+                    Text(label)
+                }
             }
         }
         .contentShape(.rect)
