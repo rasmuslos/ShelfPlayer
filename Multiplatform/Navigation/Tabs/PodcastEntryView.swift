@@ -28,7 +28,7 @@ struct PodcastTabs: View {
         TabView(selection: $podcastTab) {
             Group {
                 NavigationStack {
-                    PodcastListenNowView()
+                    PodcastHomePanel()
                         .modifier(SelectLibraryModifier())
                 }
                 .tag(Tab.listenNow)

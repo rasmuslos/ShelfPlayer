@@ -9,31 +9,36 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-struct PodcastListenNowView: View {
+internal struct PodcastHomePanel: View {
     @Environment(\.libraryId) private var libraryId: String
     @Default(.hideFromContinueListening) private var hideFromContinueListening
     
-    @State var episodeRows = [HomeRow<Episode>]()
-    @State var podcastRows = [HomeRow<Podcast>]()
+    @State private var episodes = [HomeRow<Episode>]()
+    @State private var podcasts = [HomeRow<Podcast>]()
     
-    @State var failed = false
+    @State private var failed = false
     
     var body: some View {
         Group {
-            if episodeRows.isEmpty && podcastRows.isEmpty {
+            if episodes.isEmpty && podcasts.isEmpty {
                 if failed {
                     ErrorView()
+                        .refreshable {
+                            await fetchItems()
+                        }
                 } else {
                     LoadingView()
-                        .padding(.top, 50)
-                        .task{ await fetchItems() }
+                        .task{
+                            await fetchItems()
+                        }
                 }
             } else {
                 ScrollView {
-                    VStack {
-                        ForEach(episodeRows) { row in
-                            VStack(alignment: .leading) {
+                    LazyVStack(spacing: 12) {
+                        ForEach(episodes) { row in
+                            VStack(alignment: .leading, spacing: 0) {
                                 RowTitle(title: row.label)
+                                    .padding(.bottom, 8)
                                     .padding(.horizontal, 20)
                                 
                                 if row.id == "continue-listening" {
@@ -46,9 +51,10 @@ struct PodcastListenNowView: View {
                             }
                         }
                         
-                        ForEach(podcastRows) { row in
-                            VStack(alignment: .leading) {
+                        ForEach(podcasts) { row in
+                            VStack(alignment: .leading, spacing: 0) {
                                 RowTitle(title: row.label)
+                                    .padding(.bottom, 8)
                                     .padding(.horizontal, 20)
                                 
                                 PodcastHGrid(podcasts: row.entities)
@@ -56,27 +62,39 @@ struct PodcastListenNowView: View {
                         }
                     }
                 }
+                .refreshable {
+                    await fetchItems()
+                }
             }
         }
         .navigationTitle("title.listenNow")
         .modifier(NowPlaying.SafeAreaModifier())
-        .refreshable { await fetchItems() }
     }
-}
-
-extension PodcastListenNowView {
-    func fetchItems() async {
-        failed = false
+    
+    private nonisolated func fetchItems() async {
+        await MainActor.run {
+            failed = false
+        }
         
         do {
-            // (episodeRows, podcastRows) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
+            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
+            
+            await MainActor.run {
+                self.episodes = home.1
+                self.podcasts = home.0
+            }
         } catch {
-            failed = true
+            await MainActor.run {
+                failed = true
+            }
         }
     }
 }
 
-
 #Preview {
-    PodcastListenNowView()
+    NavigationStack {
+        PodcastHomePanel()
+            .environment(\.libraryId, "95258240-9194-4c8a-954b-693b605872a5")
+            .environment(NowPlaying.ViewModel())
+    }
 }

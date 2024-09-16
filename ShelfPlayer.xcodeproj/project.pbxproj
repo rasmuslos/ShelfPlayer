@@ -124,7 +124,7 @@
 		3AB8BBB72BD7B5EF0012023A /* AudiobookHomePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */; };
 		3AB8BBB92BD7B66E0012023A /* AudiobookSeriesPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */; };
 		3AB8BBBB2BD7B6AF0012023A /* AudiobookLibraryPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */; };
-		3AB8BBBD2BD7B7290012023A /* PodcastListenNowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBC2BD7B7290012023A /* PodcastListenNowView.swift */; };
+		3AB8BBBD2BD7B7290012023A /* PodcastHomePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBC2BD7B7290012023A /* PodcastHomePanel.swift */; };
 		3AB8BBBF2BD7B76B0012023A /* PodcastLatestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBE2BD7B76B0012023A /* PodcastLatestView.swift */; };
 		3AB8BBC12BD7B7B30012023A /* PodcastLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBC02BD7B7B30012023A /* PodcastLibraryView.swift */; };
 		3AB8BBC42BD7B8390012023A /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBC32BD7B8390012023A /* Sidebar.swift */; };
@@ -323,7 +323,7 @@
 		3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookHomePanel.swift; sourceTree = "<group>"; };
 		3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookSeriesPanel.swift; sourceTree = "<group>"; };
 		3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookLibraryPanel.swift; sourceTree = "<group>"; };
-		3AB8BBBC2BD7B7290012023A /* PodcastListenNowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastListenNowView.swift; sourceTree = "<group>"; };
+		3AB8BBBC2BD7B7290012023A /* PodcastHomePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastHomePanel.swift; sourceTree = "<group>"; };
 		3AB8BBBE2BD7B76B0012023A /* PodcastLatestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLatestView.swift; sourceTree = "<group>"; };
 		3AB8BBC02BD7B7B30012023A /* PodcastLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLibraryView.swift; sourceTree = "<group>"; };
 		3AB8BBC32BD7B8390012023A /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
@@ -541,6 +541,7 @@
 				3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */,
 				3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */,
 				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */,
+				3AB8BBBC2BD7B7290012023A /* PodcastHomePanel.swift */,
 			);
 			path = Panels;
 			sourceTree = "<group>";
@@ -817,7 +818,6 @@
 		3AB8BBB52BD7B4D00012023A /* Tabs 2 */ = {
 			isa = PBXGroup;
 			children = (
-				3AB8BBBC2BD7B7290012023A /* PodcastListenNowView.swift */,
 				3AB8BBBE2BD7B76B0012023A /* PodcastLatestView.swift */,
 				3AB8BBC02BD7B7B30012023A /* PodcastLibraryView.swift */,
 			);
@@ -1050,7 +1050,7 @@
 				3A9824722B6EB0DE0098C06A /* OfflinePodcastView.swift in Sources */,
 				3A48D2512AD0661500991139 /* SelectLibraryModifier.swift in Sources */,
 				3A98246E2B6EAC7F0098C06A /* ProgressIndicator.swift in Sources */,
-				3AB8BBBD2BD7B7290012023A /* PodcastListenNowView.swift in Sources */,
+				3AB8BBBD2BD7B7290012023A /* PodcastHomePanel.swift in Sources */,
 				3AB8BBC62BD7B8D30012023A /* Sidebar+Links.swift in Sources */,
 				3A0E42F02C81A1B10034873F /* PodcastViewModel.swift in Sources */,
 				3A5210082B6D30C900F59101 /* EpisodeSingleList.swift in Sources */,

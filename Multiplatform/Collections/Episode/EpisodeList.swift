@@ -69,6 +69,7 @@ private struct Row: View {
             }
             .contentShape(.hoverMenuInteraction, .rect())
         }
+        .buttonStyle(.plain)
         .modifier(SwipeActionsModifier(item: episode, loading: $loading))
         .modifier(EpisodeContextMenuModifier(episode: episode))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
