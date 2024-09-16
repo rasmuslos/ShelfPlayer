@@ -13,12 +13,16 @@ struct EpisodeFeaturedGrid: View {
     
     let episodes: [Episode]
     
-    @State private var width: CGFloat = .zero
+    @State private var width: CGFloat? = nil
     
     private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
+        guard let width else {
+            return 250
+        }
+        
         if horizontalSizeClass == .compact {
             return (width - (gap + padding * 2)) / 1.5
         }
@@ -106,9 +110,10 @@ private struct Title: View {
                 
                 HStack(spacing: 0) {
                     EpisodePlayButton(episode: episode, loading: $loading, highlighted: true)
+                        .fixedSize()
                     
                     if let releaseDate = episode.releaseDate {
-                        Text(releaseDate, format: .dateTime.day().month(.abbreviated).year())
+                        Text(releaseDate, format: .dateTime.day(.twoDigits).month(.twoDigits))
                             .font(.caption.smallCaps())
                             .foregroundStyle(.secondary)
                             .padding(.leading, 8)
