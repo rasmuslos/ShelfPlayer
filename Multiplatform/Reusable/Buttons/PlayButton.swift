@@ -46,6 +46,8 @@ internal struct PlayButton: View {
     private var remaining: TimeInterval {
         if nowPlayingViewModel.item == item && nowPlayingViewModel.itemDuration > 0 {
             return nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime
+        } else if progressEntity.duration <= 0 {
+            return item.duration
         }
         
         return progressEntity.duration - progressEntity.currentTime
@@ -80,33 +82,29 @@ internal struct PlayButton: View {
             Label(String("FFS"), systemImage: "waveform")
                 .hidden()
             
-            if progressEntity.progress > 0 && progressEntity.progress < 1 {
-                Label {
-                    Text(label)
-                    + Text(verbatim: " • ")
-                    + Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
-                } icon: {
-                    if loading {
-                        ProgressIndicator()
-                            .padding(.trailing, 4)
-                    } else {
-                        ZStack {
-                            Group {
-                                Image(systemName: "waveform")
-                                Image(systemName: "play.fill")
-                                Image(systemName: "pause.fill")
-                            }
-                            .hidden()
-                            
-                            Label("playing", systemImage: icon)
-                                .labelStyle(.iconOnly)
-                                .contentTransition(.symbolEffect(.replace.downUp.byLayer))
-                                .symbolEffect(.variableColor.iterative, isActive: icon == "waveform")
+            HStack(spacing: 8) {
+                if loading {
+                    ProgressIndicator()
+                        .padding(.trailing, 4)
+                } else {
+                    ZStack {
+                        Group {
+                            Image(systemName: "waveform")
+                            Image(systemName: "play.fill")
+                            Image(systemName: "pause.fill")
                         }
+                        .hidden()
+                        
+                        Label("playing", systemImage: icon)
+                            .labelStyle(.iconOnly)
+                            .contentTransition(.symbolEffect(.replace.downUp.byLayer))
+                            .symbolEffect(.variableColor.iterative, isActive: icon == "waveform")
                     }
                 }
-            } else {
-                Label(label, systemImage: icon)
+                
+                Text(label)
+                + Text(verbatim: " • ")
+                + Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
             }
         }
         .contentShape(.rect)
