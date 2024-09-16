@@ -86,5 +86,6 @@ internal struct SeriesView: View {
     NavigationStack {
         SeriesView(.fixture)
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

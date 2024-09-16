@@ -93,7 +93,7 @@ extension Sidebar.Panel {
                     AudiobookLibraryPanel()
                     
                 case .podcastListenNow:
-                    PodcastListenNowView()
+                    PodcastHomePanel()
                 case .latest:
                     PodcastLatestView()
                 case .podcastLibrary:
