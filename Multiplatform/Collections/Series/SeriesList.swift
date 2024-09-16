@@ -34,9 +34,11 @@ private struct GridItem: View {
             return 42
         } else if coverCount > 1 {
             return 28
+        } else if coverCount > 0 {
+            return 12
         }
         
-        return 12
+        return 0
     }
     
     var body: some View {

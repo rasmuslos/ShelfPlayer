@@ -12,10 +12,11 @@ import ShelfPlayerKit
 
 @Observable
 internal final class AuthorViewModel {
-    @MainActor let author: Author
+    @MainActor private(set) var author: Author
     @MainActor var libraryID: String!
     
-    @MainActor var audiobooks = [Audiobook]()
+    @MainActor private(set) var series = [Series]()
+    @MainActor private(set) var audiobooks = [Audiobook]()
     
     @MainActor internal var filter: AudiobookSortFilter.Filter {
         didSet {
@@ -31,12 +32,13 @@ internal final class AuthorViewModel {
     @MainActor var ascending: Bool
     @MainActor var sortOrder: AudiobookSortFilter.SortOrder
     
-    @MainActor var errorNotify: Bool
+    @MainActor private(set) var errorNotify: Bool
     @MainActor var descriptionSheetVisible: Bool
     
     @MainActor
-    init(author: Author, audiobooks: [Audiobook]) {
+    init(author: Author, series: [Series], audiobooks: [Audiobook]) {
         self.author = author
+        self.series = series
         self.audiobooks = audiobooks
         
         ascending = false
@@ -57,7 +59,7 @@ internal extension AuthorViewModel {
     }
     
     func load() async {
-        guard let audiobooks = try? await AudiobookshelfClient.shared.author(authorId: author.id, libraryId: libraryID).1 else {
+        guard let (author, audiobooks, series) = try? await AudiobookshelfClient.shared.author(authorId: author.id, libraryId: libraryID) else {
             await MainActor.run {
                 errorNotify.toggle()
             }
@@ -66,6 +68,8 @@ internal extension AuthorViewModel {
         }
         
         await MainActor.withAnimation {
+            self.author = author
+            self.series = series
             self.audiobooks = audiobooks
         }
     }

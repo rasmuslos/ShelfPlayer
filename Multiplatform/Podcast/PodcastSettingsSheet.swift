@@ -93,9 +93,11 @@ internal extension PodcastSettingsSheet {
     }
 }
 
+#if DEBUG
 #Preview {
     Text(verbatim: ":)")
         .sheet(isPresented: .constant(true)) {
             PodcastSettingsSheet(podcast: .fixture, configuration: OfflineManager.shared.requireConfiguration(podcastId: "fixture"))
         }
 }
+#endif

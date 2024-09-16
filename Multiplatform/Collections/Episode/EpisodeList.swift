@@ -28,20 +28,21 @@ private struct Row: View {
         NavigationLink(destination: EpisodeView(episode)) {
             HStack(spacing: 0) {
                 ItemImage(cover: episode.cover)
-                    .frame(width: 92)
+                    .frame(width: 104)
                     .padding(.trailing, 12)
                     .hoverEffect(.highlight)
                 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(episode.name)
-                        .font(.headline)
-                        .lineLimit(2)
+                        .lineLimit(1)
+                        .bold()
+                        .font(.callout)
                     
                     if let description = episode.descriptionText {
                         Text(description)
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
-                            .font(.caption)
+                            .font(.footnote)
                             .foregroundStyle(.secondary)
                             .padding(.top, 4)
                     }
@@ -59,6 +60,7 @@ private struct Row: View {
                         Spacer(minLength: 12)
                         
                         DownloadIndicator(item: episode)
+                            .font(.caption)
                     }
                     .padding(.top, 8)
                 }

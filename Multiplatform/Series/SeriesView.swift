@@ -42,7 +42,7 @@ internal struct SeriesView: View {
                         
                         RowTitle(title: String(localized: "books"), fontDesign: .serif)
                             .listRowSeparator(.hidden, edges: .top)
-                            .listRowInsets(.init(top: 0, leading: 20, bottom: 0, trailing: 20))
+                            .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
                         
                         AudiobookList(audiobooks: viewModel.visible)
                     }

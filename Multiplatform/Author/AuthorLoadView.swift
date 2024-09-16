@@ -14,11 +14,11 @@ internal struct AuthorLoadView: View {
     let authorId: String
     
     @State private var failed = false
-    @State private var author: (Author, [Audiobook])?
+    @State private var author: (Author, [Audiobook], [Series])?
     
     var body: some View {
         if let author = author {
-            AuthorView(author.0, audiobooks: author.1)
+            AuthorView(author.0, series: author.2, audiobooks: author.1)
         } else if failed {
             AuthorUnavailableView()
                 .refreshable {
@@ -42,7 +42,7 @@ internal struct AuthorLoadView: View {
         }
         
         await MainActor.withAnimation {
-            self.author = (author.0, author.1)
+            self.author = author
         }
     }
 }
