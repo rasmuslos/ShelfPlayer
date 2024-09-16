@@ -54,7 +54,7 @@ extension AudiobookView {
                 }
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
-                        DownloadButton(item: viewModel.audiobook, downloadingLabel: false)
+                        DownloadButton(item: viewModel.audiobook, downloadingLabel: false, progressIndicator: true)
                             .labelStyle(.iconOnly)
                             .modifier(FullscreenToolbarModifier(isToolbarVisible: viewModel.toolbarVisible))
                     }
