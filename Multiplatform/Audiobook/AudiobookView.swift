@@ -55,15 +55,15 @@ internal struct AudiobookView: View {
                 divider
                 
                 if viewModel.sameSeries.count > 1 {
-                    AudiobookRow(title: String(localized: "audiobook.similar.series"), audiobooks: viewModel.sameSeries)
+                    AudiobookRow(title: String(localized: "audiobook.similar.series"), small: true, audiobooks: viewModel.sameSeries)
                         .padding(.bottom, 20)
                 }
                 if viewModel.sameAuthor.count > 1, let author = viewModel.audiobook.author {
-                    AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), audiobooks: viewModel.sameAuthor)
+                    AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), small: true, audiobooks: viewModel.sameAuthor)
                         .padding(.bottom, 20)
                 }
                 if viewModel.sameNarrator.count > 1, let narrator = viewModel.audiobook.narrator {
-                    AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), audiobooks: viewModel.sameNarrator)
+                    AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator)
                 }
                 
                 Spacer()

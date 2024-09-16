@@ -11,10 +11,16 @@ import SPPlayback
 
 internal struct AudiobookList: View {
     let audiobooks: [Audiobook]
+    var onAppear: ((_ audiobook: Audiobook) -> Void)? = nil
     
     var body: some View {
-        ForEach(audiobooks) {
-            Row(audiobook: $0)
+        ForEach(audiobooks) { audiobook in
+            if let onAppear {
+                Row(audiobook: audiobook)
+                    .onAppear { onAppear(audiobook) }
+            } else {
+                Row(audiobook: audiobook)
+            }
         }
     }
 }

@@ -84,13 +84,13 @@ extension Sidebar.Panel {
         Group {
             switch self {
                 case .audiobookListenNow:
-                    AudiobookListenNowView()
+                    AudiobookHomePanel()
                 case .series:
-                    AudiobookSeriesView()
+                    AudiobookSeriesPanel()
                 case .authors:
                     AuthorsView()
                 case .audiobookLibrary:
-                    AudiobookLibraryView()
+                    AudiobookLibraryPanel()
                     
                 case .podcastListenNow:
                     PodcastListenNowView()

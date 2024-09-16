@@ -33,7 +33,7 @@ struct AudiobookTabs: View {
         TabView(selection: $audiobookTab) {
             Group {
                 NavigationStack {
-                    AudiobookListenNowView()
+                    AudiobookHomePanel()
                         .modifier(SelectLibraryModifier())
                 }
                 .tag(Tab.listenNow)
@@ -42,7 +42,7 @@ struct AudiobookTabs: View {
                 }
                 
                 NavigationStack {
-                    AudiobookSeriesView()
+                    AudiobookSeriesPanel()
                 }
                 .tag(Tab.series)
                 .tabItem {
@@ -51,7 +51,7 @@ struct AudiobookTabs: View {
                 
                 
                 NavigationStack(path: $navigationPath) {
-                    AudiobookLibraryView()
+                    AudiobookLibraryPanel()
                         .modifier(Navigation.DestinationModifier())
                 }
                 .tag(Tab.library)

@@ -7,10 +7,11 @@
 
 import Foundation
 import SwiftUI
+import Defaults
 import ShelfPlayerKit
 
 @Observable
-internal class LazyLoadHelper<T: Item> {
+internal class LazyLoadHelper<T: Item, O: Any> {
     private static var PAGE_SIZE: Int {
         100
     }
@@ -18,19 +19,25 @@ internal class LazyLoadHelper<T: Item> {
     @MainActor private(set) internal var items: [T]
     @MainActor private(set) internal var count: Int
     
+    @MainActor internal var sortOrder: O
+    
     @MainActor private(set) internal var failed: Bool
     @MainActor private(set) internal var working: Bool
     @MainActor private(set) internal var finished: Bool
     
-    private let loadMore: (_ offset: Int) async throws -> ([T], Int)
+    @MainActor internal var libraryID: String!
+    
+    private let loadMore: (_ : Int, _ : O, _ : String) async throws -> ([T], Int)
     
     @MainActor
-    init(loadMore: @escaping (_: Int) async throws -> ([T], Int)) {
+    init(sortOrder: O, loadMore: @escaping (_: Int, _ : O, _ : String) async throws -> ([T], Int)) {
+        self.sortOrder = sortOrder
+        
         items = []
         count = 0
         
         failed = false
-        working = true
+        working = false
         finished = false
         
         self.loadMore = loadMore
@@ -39,9 +46,22 @@ internal class LazyLoadHelper<T: Item> {
     func initialLoad() {
         didReachEndOfLoadedContent()
     }
-    func didReachEndOfLoadedContent() {
+    func refresh() async {
+        await MainActor.run {
+            items = []
+            count = 0
+            
+            failed = false
+            working = true
+            finished = false
+        }
+        
+        didReachEndOfLoadedContent(bypassWorking: true)
+    }
+    
+    func didReachEndOfLoadedContent(bypassWorking: Bool = false) {
         Task {
-            guard await !working, await !finished else {
+            guard await !working || bypassWorking, await !finished else {
                 return
             }
             
@@ -60,16 +80,10 @@ internal class LazyLoadHelper<T: Item> {
                 return
             }
             
-            let page: Int
-            
-            if itemCount == 0 {
-                page = 0
-            } else {
-                page = itemCount / Self.PAGE_SIZE
-            }
+            let page = itemCount / Self.PAGE_SIZE
             
             do {
-                let (received, totalCount) = try await loadMore(page)
+                let (received, totalCount) = try await loadMore(page, sortOrder, libraryID)
                 
                 await MainActor.run {
                     items += received
@@ -88,7 +102,9 @@ internal class LazyLoadHelper<T: Item> {
 
 internal extension LazyLoadHelper {
     @MainActor
-    static func audiobooks(libraryID: String) -> LazyLoadHelper<Audiobook> {
-        .init(loadMore: { try await AudiobookshelfClient.shared.audiobooks(libraryId: libraryID, limit: PAGE_SIZE, page: $0) })
+    static var audiobooks: LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder> {
+        .init(sortOrder: Defaults[.audiobooksSortOrder], loadMore: {
+            try await AudiobookshelfClient.shared.audiobooks(libraryId: $2, sortOrder: $1.apiValue, limit: PAGE_SIZE, page: $0)
+        })
     }
 }
