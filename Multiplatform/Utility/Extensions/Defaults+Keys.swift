@@ -54,4 +54,14 @@ internal extension Defaults.Keys {
     static func episodesAscending(podcastId: String) -> Defaults.Key<Bool> {
         .init("episodesFilterAscending-\(podcastId)", default: false)
     }
+    
+    // MARK: Filter & sort utility
+    
+    static let audiobooksDisplay = Key<AudiobookSortFilter.DisplayType>("audiobooksDisplay", default: .list)
+    static let audiobooksSortOrder = Key<AudiobookSortFilter.SortOrder>("audiobooksSortOrder", default: .added)
+    
+    static let audiobooksFilter = Key<AudiobookSortFilter.Filter>("audiobooksFilter", default: .all)
+    static let audiobooksAscending = Key<Bool>("audiobooksFilterAscending", default: true)
+    
+    static let seriesDisplay = Key<AudiobookSortFilter.DisplayType>("seriesDisplay", default: .grid)
 }

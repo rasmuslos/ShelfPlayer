@@ -24,6 +24,7 @@ internal struct RowTitle: View {
 
 internal struct AudiobookRow: View {
     let title: String
+    let small: Bool
     let audiobooks: [Audiobook]
     
     var body: some View {
@@ -53,7 +54,7 @@ internal struct AudiobookRow: View {
             .padding(.bottom, 8)
             .padding(.horizontal, 20)
             
-            AudiobookHGrid(audiobooks: audiobooks, small: true)
+            AudiobookHGrid(audiobooks: audiobooks, small: small)
         }
     }
 }
@@ -68,6 +69,6 @@ internal struct AudiobookRow: View {
 }
 
 #Preview {
-    AudiobookRow(title: "Title", audiobooks: .init(repeating: [.fixture], count: 7))
+    AudiobookRow(title: "Title", small: true, audiobooks: .init(repeating: [.fixture], count: 7))
 }
 #endif

@@ -121,9 +121,9 @@
 		3AB695342ACF39F000823049 /* Array+Repeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695332ACF39F000823049 /* Array+Repeat.swift */; };
 		3AB695362ACF3BAF00823049 /* AuthorLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695352ACF3BAF00823049 /* AuthorLoadView.swift */; };
 		3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695372ACF3D1200823049 /* AuthorView.swift */; };
-		3AB8BBB72BD7B5EF0012023A /* AudiobookListenNowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBB62BD7B5EF0012023A /* AudiobookListenNowView.swift */; };
-		3AB8BBB92BD7B66E0012023A /* AudiobookSeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBB82BD7B66E0012023A /* AudiobookSeriesView.swift */; };
-		3AB8BBBB2BD7B6AF0012023A /* AudiobookLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryView.swift */; };
+		3AB8BBB72BD7B5EF0012023A /* AudiobookHomePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */; };
+		3AB8BBB92BD7B66E0012023A /* AudiobookSeriesPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */; };
+		3AB8BBBB2BD7B6AF0012023A /* AudiobookLibraryPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */; };
 		3AB8BBBD2BD7B7290012023A /* PodcastListenNowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBC2BD7B7290012023A /* PodcastListenNowView.swift */; };
 		3AB8BBBF2BD7B76B0012023A /* PodcastLatestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBBE2BD7B76B0012023A /* PodcastLatestView.swift */; };
 		3AB8BBC12BD7B7B30012023A /* PodcastLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8BBC02BD7B7B30012023A /* PodcastLibraryView.swift */; };
@@ -320,9 +320,9 @@
 		3AB695332ACF39F000823049 /* Array+Repeat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Repeat.swift"; sourceTree = "<group>"; };
 		3AB695352ACF3BAF00823049 /* AuthorLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorLoadView.swift; sourceTree = "<group>"; };
 		3AB695372ACF3D1200823049 /* AuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorView.swift; sourceTree = "<group>"; };
-		3AB8BBB62BD7B5EF0012023A /* AudiobookListenNowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookListenNowView.swift; sourceTree = "<group>"; };
-		3AB8BBB82BD7B66E0012023A /* AudiobookSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookSeriesView.swift; sourceTree = "<group>"; };
-		3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookLibraryView.swift; sourceTree = "<group>"; };
+		3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookHomePanel.swift; sourceTree = "<group>"; };
+		3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookSeriesPanel.swift; sourceTree = "<group>"; };
+		3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookLibraryPanel.swift; sourceTree = "<group>"; };
 		3AB8BBBC2BD7B7290012023A /* PodcastListenNowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastListenNowView.swift; sourceTree = "<group>"; };
 		3AB8BBBE2BD7B76B0012023A /* PodcastLatestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLatestView.swift; sourceTree = "<group>"; };
 		3AB8BBC02BD7B7B30012023A /* PodcastLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastLibraryView.swift; sourceTree = "<group>"; };
@@ -423,6 +423,7 @@
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
 				3A9874212B5995CE00B2704F /* Collections */,
+				3A2BE47A2C98205100259001 /* Panels */,
 				3AADC0352B6D0D3D00C4088D /* Navigation */,
 				3A7118EB2AD5ACA4005F7E08 /* NowPlaying */,
 				3A83B8712B88933500A05957 /* CarPlay */,
@@ -532,6 +533,16 @@
 				3ACD59712BE29B8E0060A841 /* Siri Extension.appex */,
 			);
 			path = Products;
+			sourceTree = "<group>";
+		};
+		3A2BE47A2C98205100259001 /* Panels */ = {
+			isa = PBXGroup;
+			children = (
+				3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */,
+				3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */,
+				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */,
+			);
+			path = Panels;
 			sourceTree = "<group>";
 		};
 		3A5210042B6D2A9F00F59101 /* Common */ = {
@@ -806,9 +817,6 @@
 		3AB8BBB52BD7B4D00012023A /* Tabs 2 */ = {
 			isa = PBXGroup;
 			children = (
-				3AB8BBB62BD7B5EF0012023A /* AudiobookListenNowView.swift */,
-				3AB8BBB82BD7B66E0012023A /* AudiobookSeriesView.swift */,
-				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryView.swift */,
 				3AB8BBBC2BD7B7290012023A /* PodcastListenNowView.swift */,
 				3AB8BBBE2BD7B76B0012023A /* PodcastLatestView.swift */,
 				3AB8BBC02BD7B7B30012023A /* PodcastLibraryView.swift */,
@@ -1080,7 +1088,7 @@
 				3AA089372B6E43FA00773414 /* Defaults+Keys.swift in Sources */,
 				3AE73DB52B76137300058F70 /* BackgroundTaskHandler.swift in Sources */,
 				3AA9542B2AD2A87E0031C20D /* EpisodeFeaturedGrid.swift in Sources */,
-				3AB8BBB92BD7B66E0012023A /* AudiobookSeriesView.swift in Sources */,
+				3AB8BBB92BD7B66E0012023A /* AudiobookSeriesPanel.swift in Sources */,
 				3AA0B0892AD322470009FBB4 /* EpisodeView.swift in Sources */,
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
 				3A012E272C806B680073A619 /* Double+Format.swift in Sources */,
@@ -1115,7 +1123,7 @@
 				3A1011872AD69DDA00AAE220 /* PlaybackSpeedButton.swift in Sources */,
 				3A79A9692AE53555006B61FC /* DownloadIndicator.swift in Sources */,
 				3A5A5B842BE62A1900481888 /* EpisodeUnavailableView.swift in Sources */,
-				3AB8BBBB2BD7B6AF0012023A /* AudiobookLibraryView.swift in Sources */,
+				3AB8BBBB2BD7B6AF0012023A /* AudiobookLibraryPanel.swift in Sources */,
 				3A5A5B822BE629C700481888 /* EpisodeLoadView.swift in Sources */,
 				3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */,
 				3A93AE422C7CB19B00D2AE43 /* Color+IsLight.swift in Sources */,
@@ -1152,7 +1160,7 @@
 				3A5B83832C83112100BA031E /* NetworkMonitor.swift in Sources */,
 				3AA9541B2AD290380031C20D /* PodcastList.swift in Sources */,
 				3AA0B08B2AD32D4E0009FBB4 /* EpisodeView+Header.swift in Sources */,
-				3AB8BBB72BD7B5EF0012023A /* AudiobookListenNowView.swift in Sources */,
+				3AB8BBB72BD7B5EF0012023A /* AudiobookHomePanel.swift in Sources */,
 				3A5A4DAB2B5EF6A400E72E8B /* PlayMediaHandler.swift in Sources */,
 				3ABCC7E02AD4647D004AEADF /* EpisodeView+Toolbar.swift in Sources */,
 				3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */,
