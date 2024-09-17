@@ -45,7 +45,7 @@ struct TintPicker: View {
 }
 
 extension TintPicker {
-    enum TintColor: CaseIterable, Codable, _DefaultsSerializable {
+    enum TintColor: CaseIterable, Codable, Defaults.Serializable {
         case shelfPlayer
         
         case yellow

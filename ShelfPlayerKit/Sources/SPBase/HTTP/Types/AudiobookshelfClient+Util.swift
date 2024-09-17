@@ -27,8 +27,6 @@ extension AudiobookshelfClient {
         let authors: [AudiobookshelfItem]?
         
         struct SearchLibraryItem: Codable {
-            let matchKey: String
-            let matchText: String
             let libraryItem: AudiobookshelfItem
         }
         struct SearchSeries: Codable {

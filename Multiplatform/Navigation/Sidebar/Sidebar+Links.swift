@@ -11,12 +11,12 @@ import SwiftUI
 import SPBase
 
 extension Sidebar {
-    struct Selection: Codable, Hashable, _DefaultsSerializable {
+    struct Selection: Codable, Hashable, Defaults.Serializable {
         let libraryId: String
         let panel: Panel
     }
     
-    enum Panel: Codable, Hashable, _DefaultsSerializable {
+    enum Panel: Codable, Hashable, Defaults.Serializable {
         case audiobookListenNow
         case series
         case authors
