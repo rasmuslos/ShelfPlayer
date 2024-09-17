@@ -37,7 +37,7 @@ struct PodcastTabs: View {
                 }
                 
                 NavigationStack {
-                    PodcastLatestView()
+                    PodcastLatestPanel()
                 }
                 .tag(Tab.latest)
                 .tabItem {
