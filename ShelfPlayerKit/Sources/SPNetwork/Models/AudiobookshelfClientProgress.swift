@@ -25,4 +25,5 @@ public struct MediaProgress: Codable {
     
     public let lastUpdate: Int64
     public let startedAt: Int64
+    public let finishedAt: Int64?
 }

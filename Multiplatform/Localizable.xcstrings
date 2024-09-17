@@ -2448,6 +2448,9 @@
         }
       }
     },
+    "genres" : {
+
+    },
     "item.media.metadata.seriesName" : {
       "localizations" : {
         "de" : {
