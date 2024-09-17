@@ -17,7 +17,7 @@ internal struct StatusOverlay: View {
     @Default(.tintColor) private var tintColor
     
     let item: Item
-    @State private var entity: ItemProgress
+    @State private var entity: ProgressEntity
     @State private var offlineTracker: ItemOfflineTracker?
     
     @MainActor

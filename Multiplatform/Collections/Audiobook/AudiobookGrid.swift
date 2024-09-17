@@ -14,6 +14,7 @@ internal struct AudiobookVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let audiobooks: [Audiobook]
+    var onAppear: ((_ audiobook: Audiobook) -> Void)? = nil
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 100.0 : 200.0
@@ -30,6 +31,9 @@ internal struct AudiobookVGrid: View {
                         .hoverEffect(.highlight)
                 }
                 .buttonStyle(.plain)
+                .onAppear {
+                    onAppear?(audiobook)
+                }
             }
         }
     }

@@ -22,7 +22,7 @@ internal final class EpisodeViewModel {
     @MainActor private(set) var sessions: [ListeningSession]
     @MainActor private(set) var errorNotify: Bool
     
-    @MainActor let progressEntity: ItemProgress
+    @MainActor let progressEntity: ProgressEntity
     
     @MainActor
     init(episode: Episode) {
@@ -37,12 +37,13 @@ internal final class EpisodeViewModel {
         errorNotify = false
         
         progressEntity = OfflineManager.shared.progressEntity(item: episode)
-        progressEntity.beginReceivingUpdates()
     }
 }
 
 internal extension EpisodeViewModel {
     func load() async {
+        await progressEntity.beginReceivingUpdates()
+        
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.loadSessions() }
             $0.addTask { await self.extractDominantColor() }

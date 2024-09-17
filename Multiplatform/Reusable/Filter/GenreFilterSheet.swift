@@ -9,9 +9,9 @@ import SwiftUI
 
 internal struct GenreFilterSheet: ViewModifier {
     let genres: [String]
-    @Binding var selected: [String]
     
-    @State private var isPresented = false
+    @Binding var selected: [String]
+    @Binding var isPresented: Bool
     
     func body(content: Content) -> some View {
         content
@@ -25,6 +25,8 @@ internal struct GenreFilterSheet: ViewModifier {
                                 selected.removeAll { $0 == genre }
                             }
                         }))
+                        .toggleStyle(.button)
+                        .buttonStyle(.plain)
                     }
                 }
                 .presentationDetents([.medium, .large])

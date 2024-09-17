@@ -20,6 +20,7 @@ internal struct AudiobookLibraryPanel: View {
     @Default(.audiobooksAscending) private var ascending
     
     @State private var selected = [String]()
+    @State private var genreFilterPresented = false
     @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder>.audiobooks
     
     private var genres: [String] {
@@ -68,8 +69,12 @@ internal struct AudiobookLibraryPanel: View {
                     switch display {
                         case .grid:
                             ScrollView {
-                                AudiobookVGrid(audiobooks: visible)
-                                    .padding(.horizontal, 20)
+                                AudiobookVGrid(audiobooks: visible) {
+                                    if $0 == visible.last {
+                                        lazyLoader.didReachEndOfLoadedContent()
+                                    }
+                                }
+                                .padding(.horizontal, 20)
                             }
                         case .list:
                             List {
@@ -83,7 +88,14 @@ internal struct AudiobookLibraryPanel: View {
                     }
                 }
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button {
+                            genreFilterPresented.toggle()
+                        } label: {
+                            Label("genres", systemImage: "tag")
+                                .labelStyle(.iconOnly)
+                        }
+                        
                         AudiobookSortFilter(displayType: $display, filter: $filter, sortOrder: $sortOrder, ascending: $ascending) {
                             lazyLoader.sortOrder = sortOrder
                             await lazyLoader.refresh()
@@ -97,6 +109,7 @@ internal struct AudiobookLibraryPanel: View {
         }
         .navigationTitle("title.library")
         .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
         .onAppear {
             lazyLoader.libraryID = libraryID
         }
