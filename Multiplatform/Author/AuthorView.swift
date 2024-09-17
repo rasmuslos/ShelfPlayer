@@ -32,25 +32,29 @@ struct AuthorView: View {
         ScrollView {
             Header()
             
-            HStack(spacing: 0) {
-                RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                Spacer()
-            }
-            .padding(.top, 16)
-            .padding(.horizontal, 20)
-            
-            AudiobookVGrid(audiobooks: viewModel.visible)
+            if !viewModel.audiobooks.isEmpty {
+                HStack(spacing: 0) {
+                    RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                    Spacer()
+                }
+                .padding(.top, 16)
                 .padding(.horizontal, 20)
-            
-            HStack(spacing: 0) {
-                RowTitle(title: String(localized: "series"), fontDesign: .serif)
-                Spacer()
+                
+                AudiobookVGrid(audiobooks: viewModel.visible)
+                    .padding(.horizontal, 20)
             }
-            .padding(.top, 16)
-            .padding(.horizontal, 20)
             
-            SeriesGrid(series: viewModel.series)
+            if !viewModel.series.isEmpty {
+                HStack(spacing: 0) {
+                    RowTitle(title: String(localized: "series"), fontDesign: .serif)
+                    Spacer()
+                }
+                .padding(.top, 16)
                 .padding(.horizontal, 20)
+                
+                SeriesGrid(series: viewModel.series)
+                    .padding(.horizontal, 20)
+            }
         }
     }
     var listPresentation: some View {

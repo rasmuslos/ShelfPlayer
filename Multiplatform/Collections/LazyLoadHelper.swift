@@ -107,4 +107,18 @@ internal extension LazyLoadHelper {
             try await AudiobookshelfClient.shared.audiobooks(libraryId: $2, sortOrder: $1.apiValue, limit: PAGE_SIZE, page: $0)
         })
     }
+    
+    @MainActor
+    static func audiobooks(seriesID: String) -> LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder> {
+        .init(sortOrder: Defaults[.audiobooksSortOrder], loadMore: {
+            try await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryId: $2, sortOrder: $1.apiValue, limit: PAGE_SIZE, page: $0)
+        })
+    }
+    
+    @MainActor
+    static var series: LazyLoadHelper<Series, Void?> {
+        .init(sortOrder: nil, loadMore: { page, _, libraryID in
+            try await AudiobookshelfClient.shared.series(libraryId: libraryID, limit: PAGE_SIZE, page: page)
+        })
+    }
 }

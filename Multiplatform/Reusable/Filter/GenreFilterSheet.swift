@@ -25,8 +25,6 @@ internal struct GenreFilterSheet: ViewModifier {
                                 selected.removeAll { $0 == genre }
                             }
                         }))
-                        .toggleStyle(.button)
-                        .buttonStyle(.plain)
                     }
                 }
                 .presentationDetents([.medium, .large])
