@@ -13,9 +13,14 @@ import ShelfPlayerKit
 @Observable
 internal class SeriesViewModel {
     @MainActor internal let series: Series
-    @MainActor private(set) var audiobooks: [Audiobook]
     
-    @MainActor internal var libraryID: String!
+    @MainActor private(set) var lazyLoader: LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder>
+    
+    @MainActor internal var libraryID: String! {
+        didSet {
+            lazyLoader.libraryID = libraryID
+        }
+    }
     
     @MainActor internal var filter: AudiobookSortFilter.Filter {
         didSet {
@@ -35,7 +40,7 @@ internal class SeriesViewModel {
     init(series: Series) {
         self.series = series
         
-        audiobooks = []
+        lazyLoader = .audiobooks(seriesID: series.id)
         
         filter = Defaults[.audiobooksFilter]
         displayMode = Defaults[.audiobooksDisplay]
@@ -46,24 +51,12 @@ internal class SeriesViewModel {
 }
 
 internal extension SeriesViewModel {
-    func load() async {
-        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: series.id, libraryId: libraryID) else {
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.audiobooks = audiobooks
-        }
-    }
-}
-
-internal extension SeriesViewModel {
     @MainActor
     var visible: [Audiobook] {
-        let filtered = AudiobookSortFilter.filterSort(audiobooks: audiobooks, filter: filter, order: sortOrder, ascending: ascending)
+        let filtered = AudiobookSortFilter.filterSort(audiobooks: lazyLoader.items, filter: filter, order: sortOrder, ascending: ascending)
         
         if filtered.isEmpty {
-            return AudiobookSortFilter.sort(audiobooks: audiobooks, order: sortOrder, ascending: ascending)
+            return AudiobookSortFilter.sort(audiobooks: lazyLoader.items, order: sortOrder, ascending: ascending)
         }
         
         return filtered

@@ -13,21 +13,20 @@ internal struct AudiobookSeriesPanel: View {
     @Environment(\.libraryId) private var libraryId
     @Default(.seriesDisplay) private var seriesDisplay
     
-    @State private var failed = false
-    @State private var series = [Series]()
+    @State private var lazyLoader = LazyLoadHelper<Series, Void>.series
     
     var body: some View {
         Group {
-            if series.isEmpty {
-                if failed {
+            if lazyLoader.items.isEmpty {
+                if lazyLoader.failed {
                     ErrorView()
                         .refreshable {
-                            await fetchItems()
+                            await lazyLoader.refresh()
                         }
                 } else {
                     LoadingView()
-                        .task {
-                            await fetchItems()
+                        .onAppear {
+                            lazyLoader.initialLoad()
                         }
                 }
             } else {
@@ -35,12 +34,20 @@ internal struct AudiobookSeriesPanel: View {
                     switch seriesDisplay {
                         case .grid:
                             ScrollView {
-                                SeriesGrid(series: series)
-                                    .padding(20)
+                                SeriesGrid(series: lazyLoader.items) {
+                                    if $0 == lazyLoader.items.last {
+                                        lazyLoader.didReachEndOfLoadedContent()
+                                    }
+                                }
+                                .padding(20)
                             }
                         case .list:
                             List {
-                                SeriesList(series: series)
+                                SeriesList(series: lazyLoader.items) {
+                                    if $0 == lazyLoader.items[max(0, lazyLoader.items.endIndex - 4)] {
+                                        lazyLoader.didReachEndOfLoadedContent()
+                                    }
+                                }
                             }
                             .listStyle(.plain)
                     }
@@ -57,29 +64,14 @@ internal struct AudiobookSeriesPanel: View {
                     }
                 }
                 .refreshable {
-                    await fetchItems()
+                    await lazyLoader.refresh()
                 }
             }
         }
         .navigationTitle("title.series")
         .modifier(NowPlaying.SafeAreaModifier())
-    }
-    
-    private nonisolated func fetchItems() async {
-        await MainActor.run {
-            failed = false
-        }
-        
-        guard let series = try? await AudiobookshelfClient.shared.series(libraryId: libraryId) else {
-            await MainActor.run {
-                failed = true
-            }
-            
-            return
-        }
-        
-        await MainActor.run {
-            self.series = series
+        .onAppear {
+            lazyLoader.libraryID = libraryId
         }
     }
 }

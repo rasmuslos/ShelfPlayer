@@ -31,8 +31,12 @@ internal struct SeriesView: View {
                         }
                         .padding(.horizontal, 20)
                         
-                        AudiobookVGrid(audiobooks: viewModel.visible)
-                            .padding(.horizontal, 20)
+                        AudiobookVGrid(audiobooks: viewModel.visible) {
+                            if $0 == viewModel.visible.last {
+                                viewModel.lazyLoader.didReachEndOfLoadedContent()
+                            }
+                        }
+                        .padding(.horizontal, 20)
                     }
                 case .list:
                     List {
@@ -44,7 +48,11 @@ internal struct SeriesView: View {
                             .listRowSeparator(.hidden, edges: .top)
                             .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
                         
-                        AudiobookList(audiobooks: viewModel.visible)
+                        AudiobookList(audiobooks: viewModel.visible) {
+                            if $0 == viewModel.visible[max(0, viewModel.visible.endIndex - 4)] {
+                                viewModel.lazyLoader.didReachEndOfLoadedContent()
+                            }
+                        }
                     }
                     .listStyle(.plain)
             }
@@ -53,19 +61,22 @@ internal struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobookSortFilter(displayType: $viewModel.displayMode, filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                AudiobookSortFilter(displayType: $viewModel.displayMode, filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending) {
+                    Task {
+                        viewModel.lazyLoader.sortOrder = viewModel.sortOrder
+                        await viewModel.lazyLoader.refresh()
+                    }
+                }
             }
         }
         .environment(viewModel)
         .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
             viewModel.libraryID = libraryId
-        }
-        .task {
-            await viewModel.load()
+            viewModel.lazyLoader.initialLoad()
         }
         .refreshable {
-            await viewModel.load()
+            await viewModel.lazyLoader.refresh()
         }
         .userActivity("io.rfk.shelfplayer.series") {
             $0.title = viewModel.series.name

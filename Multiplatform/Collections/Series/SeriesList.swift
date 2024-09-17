@@ -10,6 +10,7 @@ import SPFoundation
 
 internal struct SeriesList: View {
     let series: [Series]
+    var onAppear: ((_ audiobook: Series) -> Void)? = nil
     
     var body: some View {
         ForEach(series) { item in
@@ -17,6 +18,9 @@ internal struct SeriesList: View {
                 GridItem(series: item)
             }
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+            .onAppear {
+                onAppear?(item)
+            }
         }
     }
 }
