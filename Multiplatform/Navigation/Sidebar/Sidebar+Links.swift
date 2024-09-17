@@ -95,7 +95,7 @@ extension Sidebar.Panel {
                 case .podcastListenNow:
                     PodcastHomePanel()
                 case .latest:
-                    PodcastLatestView()
+                    PodcastLatestPanel()
                 case .podcastLibrary:
                     PodcastLibraryView()
                     
