@@ -33,21 +33,26 @@ public extension AudiobookshelfClient {
         Series(item: try await request(ClientRequest<AudiobookshelfItem>(path: "api/libraries/\(libraryId)/series/\(seriesId)", method: "GET")))
     }
     
-    func series(libraryId: String) async throws -> [Series] {
-        try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/series", method: "GET", query: [
+    func series(libraryId: String, limit: Int, page: Int) async throws -> ([Series], Int) {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/series", method: "GET", query: [
             URLQueryItem(name: "sort", value: "name"),
             URLQueryItem(name: "desc", value: "0"),
             URLQueryItem(name: "filter", value: "all"),
-            URLQueryItem(name: "page", value: "0"),
-            URLQueryItem(name: "limit", value: "10000"),
-        ])).results.map(Series.init)
+            URLQueryItem(name: "page", value: "\(page)"),
+            URLQueryItem(name: "limit", value: "\(limit)"),
+        ]))
+        
+        return (response.results.map(Series.init), response.total)
     }
     
-    func audiobooks(seriesId: String, libraryId: String) async throws -> [Audiobook] {
-        try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET", query: [
+    func audiobooks(seriesId: String, libraryId: String, sortOrder: String, limit: Int, page: Int) async throws -> ([Audiobook], Int) {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET", query: [
             URLQueryItem(name: "filter", value: "series.\(seriesId.base64)"),
-            URLQueryItem(name: "limit", value: "100"),
-            URLQueryItem(name: "page", value: "0"),
-        ])).results.compactMap(Audiobook.init)
+            URLQueryItem(name: "sort", value: "\(sortOrder)"),
+            URLQueryItem(name: "limit", value: "\(limit)"),
+            URLQueryItem(name: "page", value: "\(page)"),
+        ]))
+        
+        return (response.results.compactMap(Audiobook.init), response.total)
     }
 }

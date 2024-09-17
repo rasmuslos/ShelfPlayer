@@ -70,7 +70,7 @@ extension Navigation {
                         Task {
                             guard let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) else { return }
                             let fetched = await libraries.parallelMap {
-                                let series = try? await AudiobookshelfClient.shared.series(libraryId: $0.id).filter { $0.name == name }
+                                let series = try? await AudiobookshelfClient.shared.series(libraryId: $0.id, limit: 10_000, page: 0).0.filter { $0.name == name }
                                 return series ?? []
                             }
                             

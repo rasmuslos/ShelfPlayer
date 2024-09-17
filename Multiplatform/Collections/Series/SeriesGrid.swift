@@ -12,6 +12,7 @@ struct SeriesGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let series: [Series]
+    var onAppear: ((_ audiobook: Series) -> Void)? = nil
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 160.0 : 200.0
@@ -24,6 +25,9 @@ struct SeriesGrid: View {
                     SeriesGridItem(series: item)
                 }
                 .buttonStyle(.plain)
+                .onAppear {
+                    onAppear?(item)
+                }
             }
         }
     }
