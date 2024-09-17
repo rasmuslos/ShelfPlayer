@@ -30,7 +30,7 @@ final internal class AudiobookViewModel {
     @MainActor private(set) var sameNarrator: [Audiobook]
     
     @MainActor private(set) var sessions: [ListeningSession]
-    @MainActor private(set) var progressEntity: ItemProgress
+    @MainActor private(set) var progressEntity: ProgressEntity
     
     @MainActor private(set) var errorNotify: Bool
     
@@ -56,12 +56,13 @@ final internal class AudiobookViewModel {
         progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
         
         errorNotify = false
-        progressEntity.beginReceivingUpdates()
     }
 }
 
 internal extension AudiobookViewModel {
     func load() async {
+        await progressEntity.beginReceivingUpdates()
+        
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.loadAudiobook() }
             

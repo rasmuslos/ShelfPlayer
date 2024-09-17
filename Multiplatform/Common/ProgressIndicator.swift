@@ -12,7 +12,7 @@ import SPOffline
 struct CircularProgressIndicator: View {
     @Default(.tintColor) private var tintColor
     
-    let entity: ItemProgress
+    let entity: ProgressEntity
     
     var body: some View {
         if entity.progress < 0 {

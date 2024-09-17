@@ -32,12 +32,13 @@ internal struct OfflineAudiobookList: View {
 internal extension OfflineAudiobookList {
     struct AudiobookRow: View {
         let audiobook: Audiobook
-        let entity: ItemProgress
+        let entity: ProgressEntity
         
         @MainActor
         init(audiobook: Audiobook) {
             self.audiobook = audiobook
             entity = OfflineManager.shared.progressEntity(item: audiobook)
+            entity.beginReceivingUpdates()
         }
         
         @State private var loading = false

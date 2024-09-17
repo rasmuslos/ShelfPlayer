@@ -112,7 +112,7 @@ private extension PlaybackReporter {
                 success = false
             }
             
-            await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
+            OfflineManager.shared.updateProgressEntity(itemID: itemId, episodeID: episodeId, currentTime: currentTime, duration: duration, success: success)
         }
     }
     
@@ -170,7 +170,7 @@ extension PlaybackReporter {
                     success = false
                 }
                 
-                await OfflineManager.shared.updateProgressEntity(itemId: itemId, episodeId: episodeId, currentTime: currentTime, duration: duration, success: success)
+                OfflineManager.shared.updateProgressEntity(itemID: itemId, episodeID: episodeId, currentTime: currentTime, duration: duration, success: success)
             }
             
             playbackDurationTracker?.duration += timeListened

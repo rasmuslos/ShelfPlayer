@@ -24,7 +24,7 @@ internal struct PlayButton: View {
     @State private var error = false
     @State private var loading = false
     
-    @State private var progressEntity: ItemProgress
+    @State private var progressEntity: ProgressEntity
     
     @MainActor
     init(item: PlayableItem, color: Color?) {

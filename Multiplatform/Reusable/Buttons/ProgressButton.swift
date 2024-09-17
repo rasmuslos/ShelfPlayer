@@ -13,7 +13,7 @@ internal struct ProgressButton: View {
     let item: PlayableItem
     let tint: Bool
     
-    @State private var progressEntity: ItemProgress
+    @State private var progressEntity: ProgressEntity
     
     init(item: PlayableItem, tint: Bool = false) {
         self.item = item

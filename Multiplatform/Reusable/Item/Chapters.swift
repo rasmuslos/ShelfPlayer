@@ -15,7 +15,7 @@ internal struct Chapters: View {
     let item: PlayableItem
     let chapters: [PlayableItem.Chapter]
     
-    @State private var progressEntity: ItemProgress
+    @State private var progressEntity: ProgressEntity
     
     private var activeIndex: Int? {
         guard progressEntity.currentTime > 0 else {

@@ -117,7 +117,7 @@ private final class EpisodePlayButtonViewModel {
     let highlighted: Bool
     
     var loading: Binding<Bool>
-    var progressEntity: ItemProgress
+    var progressEntity: ProgressEntity
     
     @MainActor
     init(episode: Episode, loading: Binding<Bool>, highlighted: Bool) {

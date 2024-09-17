@@ -32,11 +32,12 @@ private struct Row: View {
     let audiobook: Audiobook
     
     @State private var loading = false
-    @State private var progressEntity: ItemProgress
+    @State private var progressEntity: ProgressEntity
     
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: audiobook))
+        progressEntity.beginReceivingUpdates()
     }
     
     private var icon: String {
@@ -67,7 +68,7 @@ private struct Row: View {
         }
         
         if progressEntity.progress >= 1 {
-            parts.append(String(localized: "listen.again"))
+            parts.append(String(localized: "finished"))
         } else if progressEntity.progress <= 0 {
             parts.append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         } else if nowPlayingViewModel.item == audiobook, nowPlayingViewModel.itemDuration > 0 {
