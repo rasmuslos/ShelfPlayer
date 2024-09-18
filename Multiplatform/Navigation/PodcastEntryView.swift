@@ -45,7 +45,7 @@ struct PodcastTabs: View {
                 }
                 
                 NavigationStack(path: $navigationPath) {
-                    PodcastLibraryView()
+                    PodcastLibraryPanel()
                         .modifier(Navigation.DestinationModifier())
                 }
                 .tag(Tab.library)

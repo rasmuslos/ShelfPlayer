@@ -88,7 +88,7 @@ extension Sidebar.Panel {
                 case .series:
                     AudiobookSeriesPanel()
                 case .authors:
-                    AuthorsView()
+                    AudiobookAuthorsPanel()
                 case .audiobookLibrary:
                     AudiobookLibraryPanel()
                     
@@ -97,7 +97,7 @@ extension Sidebar.Panel {
                 case .latest:
                     PodcastLatestPanel()
                 case .podcastLibrary:
-                    PodcastLibraryView()
+                    PodcastLibraryPanel()
                     
                 case .search:
                     SearchView()

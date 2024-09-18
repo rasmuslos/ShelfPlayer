@@ -39,7 +39,6 @@ internal extension Defaults.Keys {
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
     
     static let showAuthorsRow = Key("showAuthorsRow", default: false)
-    static let authorsAscending = Key("authorsAscending", default: true)
     static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
     
     // MARK: Podcast filter & sort
@@ -64,4 +63,7 @@ internal extension Defaults.Keys {
     static let audiobooksAscending = Key<Bool>("audiobooksFilterAscending", default: true)
     
     static let seriesDisplay = Key<AudiobookSortFilter.DisplayType>("seriesDisplay", default: .grid)
+    
+    static let authorsAscending = Key("authorsAscending", default: true)
+    static let podcastsAscending = Key("podcastsAscending", default: true)
 }
