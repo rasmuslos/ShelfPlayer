@@ -12,6 +12,7 @@ internal struct PodcastVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let podcasts: [Podcast]
+    var onAppear: ((_ audiobook: Podcast) -> Void)? = nil
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 160.0 : 200.0
@@ -19,8 +20,15 @@ internal struct PodcastVGrid: View {
     
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
-            ForEach(podcasts) {
-                PodcastGridItem(podcast: $0)
+            ForEach(podcasts) { podcast in
+                if let onAppear {
+                    PodcastGridItem(podcast: podcast)
+                        .onAppear {
+                            onAppear(podcast)
+                        }
+                } else {
+                    PodcastGridItem(podcast: podcast)
+                }
             }
         }
     }
