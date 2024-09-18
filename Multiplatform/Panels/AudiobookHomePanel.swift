@@ -97,13 +97,13 @@ internal struct AudiobookHomePanel: View {
     }
     
     private nonisolated func fetchItems() async {
-        await MainActor.run {
+        await MainActor.withAnimation {
             failed = false
         }
         
         Task {
             let downloaded = try OfflineManager.shared.audiobooks()
-            await MainActor.run {
+            await MainActor.withAnimation {
                 self.downloaded = downloaded
             }
         }
@@ -116,7 +116,7 @@ internal struct AudiobookHomePanel: View {
                     _audiobooks = home.0
                 }
             } catch {
-                await MainActor.run {
+                await MainActor.withAnimation {
                     failed = false
                 }
             }

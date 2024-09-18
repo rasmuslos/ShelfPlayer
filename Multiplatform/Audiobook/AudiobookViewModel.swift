@@ -143,7 +143,7 @@ private extension AudiobookViewModel {
             return
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryId: libraryId, sortOrder: "item.media.metadata.seriesName", limit: 10_000, page: 0).0 else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryId: libraryId, sortOrder: "item.media.metadata.seriesName", ascending: true, limit: 10_000, page: 0).0 else {
             return
         }
         
@@ -185,7 +185,7 @@ private extension AudiobookViewModel {
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.sessions = sessions
         }
     }

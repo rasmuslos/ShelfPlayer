@@ -103,7 +103,7 @@ internal extension AudioPlayer {
                 }
             }
             
-            if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryId: audiobook.libraryId, sortOrder: "item.media.metadata.seriesName", limit: 10_000, page: 0).0 {
+            if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryId: audiobook.libraryId, sortOrder: "item.media.metadata.seriesName", ascending: true, limit: 10_000, page: 0).0 {
                 handleNextAudiobooksInSeries(audiobooks, audiobook: audiobook)
                 break
             }

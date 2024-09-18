@@ -56,7 +56,7 @@ struct OfflinePodcastView: View {
                 return
             }
          
-            await MainActor.run {
+            await MainActor.withAnimation {
                 self.episodes = episodes
             }
         }

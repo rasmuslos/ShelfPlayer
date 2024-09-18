@@ -93,7 +93,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.authorId = authorId
         }
     }

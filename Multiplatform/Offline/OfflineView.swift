@@ -75,7 +75,7 @@ struct OfflineView: View {
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.audiobooks = audiobooks
             self.podcasts = podcasts
         }
