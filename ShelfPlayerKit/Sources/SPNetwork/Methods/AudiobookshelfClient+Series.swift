@@ -45,12 +45,13 @@ public extension AudiobookshelfClient {
         return (response.results.map(Series.init), response.total)
     }
     
-    func audiobooks(seriesId: String, libraryId: String, sortOrder: String, limit: Int, page: Int) async throws -> ([Audiobook], Int) {
+    func audiobooks(seriesId: String, libraryId: String, sortOrder: String, ascending: Bool, limit: Int, page: Int) async throws -> ([Audiobook], Int) {
         let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET", query: [
-            URLQueryItem(name: "filter", value: "series.\(seriesId.base64)"),
-            URLQueryItem(name: "sort", value: "\(sortOrder)"),
-            URLQueryItem(name: "limit", value: "\(limit)"),
-            URLQueryItem(name: "page", value: "\(page)"),
+            .init(name: "page", value: "\(page)"),
+            .init(name: "limit", value: "\(limit)"),
+            .init(name: "sort", value: "\(sortOrder)"),
+            .init(name: "desc", value: ascending ? "0" : "1"),
+            .init(name: "filter", value: "series.\(seriesId.base64)"),
         ]))
         
         return (response.results.compactMap(Audiobook.init), response.total)

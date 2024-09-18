@@ -34,14 +34,14 @@ internal struct AudiobookLoadView: View {
     
     private nonisolated func loadAudiobook() async {
         guard let audiobook = try? await AudiobookshelfClient.shared.item(itemId: audiobookId, episodeId: nil).0 as? Audiobook else {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 failed = true
             }
             
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.audiobook = audiobook
         }
     }

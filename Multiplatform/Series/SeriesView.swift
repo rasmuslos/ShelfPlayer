@@ -64,6 +64,8 @@ internal struct SeriesView: View {
                 AudiobookSortFilter(displayType: $viewModel.displayMode, filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending) {
                     Task {
                         viewModel.lazyLoader.sortOrder = viewModel.sortOrder
+                        viewModel.lazyLoader.ascending = viewModel.ascending
+                        
                         await viewModel.lazyLoader.refresh()
                     }
                 }

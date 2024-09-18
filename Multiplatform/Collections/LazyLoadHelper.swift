@@ -20,6 +20,7 @@ internal class LazyLoadHelper<T: Item, O: Any> {
     @MainActor private(set) internal var count: Int
     
     @MainActor internal var sortOrder: O
+    @MainActor internal var ascending: Bool
     
     @MainActor private(set) internal var failed: Bool
     @MainActor private(set) internal var working: Bool
@@ -27,11 +28,12 @@ internal class LazyLoadHelper<T: Item, O: Any> {
     
     @MainActor internal var libraryID: String!
     
-    private let loadMore: (_ : Int, _ : O, _ : String) async throws -> ([T], Int)
+    private let loadMore: (_ : Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)
     
     @MainActor
-    init(sortOrder: O, loadMore: @escaping (_: Int, _ : O, _ : String) async throws -> ([T], Int)) {
+    init(sortOrder: O, ascending: Bool, loadMore: @escaping (_: Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)) {
         self.sortOrder = sortOrder
+        self.ascending = ascending
         
         items = []
         count = 0
@@ -47,7 +49,7 @@ internal class LazyLoadHelper<T: Item, O: Any> {
         didReachEndOfLoadedContent()
     }
     func refresh() async {
-        await MainActor.run {
+        await MainActor.withAnimation { [self] in
             items = []
             count = 0
             
@@ -65,7 +67,7 @@ internal class LazyLoadHelper<T: Item, O: Any> {
                 return
             }
             
-            await MainActor.run {
+            await MainActor.withAnimation { [self] in
                 failed = false
                 working = true
             }
@@ -73,7 +75,7 @@ internal class LazyLoadHelper<T: Item, O: Any> {
             let itemCount = await items.count
             
             guard itemCount % Self.PAGE_SIZE == 0 else {
-                await MainActor.run {
+                await MainActor.withAnimation { [self] in
                     finished = true
                 }
                 
@@ -83,16 +85,16 @@ internal class LazyLoadHelper<T: Item, O: Any> {
             let page = itemCount / Self.PAGE_SIZE
             
             do {
-                let (received, totalCount) = try await loadMore(page, sortOrder, libraryID)
+                let (received, totalCount) = try await loadMore(page, sortOrder, ascending, libraryID)
                 
-                await MainActor.run {
+                await MainActor.withAnimation { [self] in
                     items += received
                     count = totalCount
                     
                     working = false
                 }
             } catch {
-                await MainActor.run {
+                await MainActor.withAnimation { [self] in
                     failed = true
                 }
             }
@@ -103,21 +105,21 @@ internal class LazyLoadHelper<T: Item, O: Any> {
 internal extension LazyLoadHelper {
     @MainActor
     static var audiobooks: LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder> {
-        .init(sortOrder: Defaults[.audiobooksSortOrder], loadMore: {
-            try await AudiobookshelfClient.shared.audiobooks(libraryId: $2, sortOrder: $1.apiValue, limit: PAGE_SIZE, page: $0)
+        .init(sortOrder: Defaults[.audiobooksSortOrder], ascending: Defaults[.audiobooksAscending], loadMore: {
+            try await AudiobookshelfClient.shared.audiobooks(libraryId: $3, sortOrder: $1.apiValue, ascending: $2, limit: PAGE_SIZE, page: $0)
         })
     }
     
     @MainActor
     static func audiobooks(seriesID: String) -> LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder> {
-        .init(sortOrder: Defaults[.audiobooksSortOrder], loadMore: {
-            try await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryId: $2, sortOrder: $1.apiValue, limit: PAGE_SIZE, page: $0)
+        .init(sortOrder: .series, ascending: true, loadMore: {
+            try await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryId: $3, sortOrder: $1.apiValue, ascending: $2, limit: PAGE_SIZE, page: $0)
         })
     }
     
     @MainActor
     static var series: LazyLoadHelper<Series, Void?> {
-        .init(sortOrder: nil, loadMore: { page, _, libraryID in
+        .init(sortOrder: nil, ascending: false, loadMore: { page, _, _, libraryID in
             try await AudiobookshelfClient.shared.series(libraryId: libraryID, limit: PAGE_SIZE, page: page)
         })
     }

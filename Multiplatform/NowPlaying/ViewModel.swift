@@ -331,12 +331,12 @@ private extension NowPlaying.ViewModel {
         
         Task {
             for await skipForwardsInterval in Defaults.updates(.skipForwardsInterval) {
-                await MainActor.run {
+                await MainActor.withAnimation {
                     self.skipForwardsInterval = skipForwardsInterval
                 }
             }
             for await skipBackwardsInterval in Defaults.updates(.skipBackwardsInterval) {
-                await MainActor.run {
+                await MainActor.withAnimation {
                     self.skipBackwardsInterval = skipBackwardsInterval
                 }
             }
