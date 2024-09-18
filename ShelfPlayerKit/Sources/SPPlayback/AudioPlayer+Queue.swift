@@ -36,9 +36,9 @@ public extension AudioPlayer {
         let track = copy.remove(at: from)
         
         if from > to {
-            queue.insert(track, at: to)
+            copy.insert(track, at: to)
         } else {
-            queue.insert(track, at: to - 1)
+            copy.insert(track, at: to - 1)
         }
         
         queue = copy
