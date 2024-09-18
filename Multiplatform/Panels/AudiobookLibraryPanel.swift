@@ -98,6 +98,8 @@ internal struct AudiobookLibraryPanel: View {
                         
                         AudiobookSortFilter(displayType: $display, filter: $filter, sortOrder: $sortOrder, ascending: $ascending) {
                             lazyLoader.sortOrder = sortOrder
+                            lazyLoader.ascending = ascending
+                            
                             await lazyLoader.refresh()
                         }
                     }

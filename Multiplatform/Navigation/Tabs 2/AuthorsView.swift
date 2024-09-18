@@ -58,7 +58,7 @@ internal struct AuthorsView: View {
     
     private nonisolated func loadAuthors() async {
         guard let authors = try? await AudiobookshelfClient.shared.authors(libraryId: libraryId) else {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 failed = true
             }
             

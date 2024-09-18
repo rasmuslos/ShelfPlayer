@@ -72,19 +72,19 @@ internal struct PodcastHomePanel: View {
     }
     
     private nonisolated func fetchItems() async {
-        await MainActor.run {
+        await MainActor.withAnimation {
             failed = false
         }
         
         do {
             let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
             
-            await MainActor.run {
+            await MainActor.withAnimation {
                 self.episodes = home.1
                 self.podcasts = home.0
             }
         } catch {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 failed = true
             }
         }

@@ -34,14 +34,14 @@ struct PodcastLoadView: View {
     
     private nonisolated func fetchPodcast() async {
         guard let podcast = try? await AudiobookshelfClient.shared.podcast(podcastId: podcastId) else {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 failed = true
             }
             
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.podcast = podcast
         }
     }

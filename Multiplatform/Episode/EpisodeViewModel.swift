@@ -95,7 +95,7 @@ private extension EpisodeViewModel {
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.sessions = sessions
         }
     }

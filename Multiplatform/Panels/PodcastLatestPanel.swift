@@ -41,19 +41,19 @@ internal struct PodcastLatestPanel: View {
     }
 
     private nonisolated func fetchItems() async {
-        await MainActor.run {
+        await MainActor.withAnimation {
             failed = false
         }
         
         guard let episodes = try? await AudiobookshelfClient.shared.recentEpisodes(limit: 20, libraryId: libraryID) else {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 failed = true
             }
             
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.episodes = episodes
         }
     }

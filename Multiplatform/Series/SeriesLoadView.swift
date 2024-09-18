@@ -44,14 +44,14 @@ internal struct SeriesLoadView: View {
         }
         
         guard let series = try? await AudiobookshelfClient.shared.series(seriesId: id, libraryId: libraryId) else {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 failed = true
             }
             
             return
         }
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.resolved = series
         }
     }
