@@ -58,6 +58,10 @@ internal extension AudioPlayer {
     }
     
     func updateNowPlayingWidget() {
+        guard !audioPlayer.items().isEmpty, item != nil else {
+            return
+        }
+        
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
         nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = playbackRate
         
