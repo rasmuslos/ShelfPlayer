@@ -791,7 +791,6 @@
 				3ACD19AD2ACB57CD007D01FE /* Tabs.swift */,
 				3A50AAA42ACC42B400BF5438 /* AudiobookTabs.swift */,
 				3A48D2532AD074DC00991139 /* PodcastEntryView.swift */,
-				3AB8BBB52BD7B4D00012023A /* Tabs 2 */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -808,13 +807,6 @@
 				3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */,
 			);
 			path = Buttons;
-			sourceTree = "<group>";
-		};
-		3AB8BBB52BD7B4D00012023A /* Tabs 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Tabs 2";
 			sourceTree = "<group>";
 		};
 		3ACD59742BE29B8F0060A841 /* Siri Extension */ = {
