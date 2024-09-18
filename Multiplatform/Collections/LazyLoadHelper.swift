@@ -123,4 +123,11 @@ internal extension LazyLoadHelper {
             try await AudiobookshelfClient.shared.series(libraryId: libraryID, limit: PAGE_SIZE, page: page)
         })
     }
+    
+    @MainActor
+    static var podcasts: LazyLoadHelper<Podcast, String> {
+        .init(sortOrder: "media.metadata.title", ascending: Defaults[.podcastsAscending], loadMore: {
+            try await AudiobookshelfClient.shared.podcasts(libraryId: $3, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
+        })
+    }
 }

@@ -32,7 +32,7 @@ internal extension Podcast {
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             released: item.media?.metadata.releaseDate, 
             explicit: item.media?.metadata.explicit ?? false,
-            episodeCount: item.media?.episodes?.count ?? 0,
+            episodeCount: item.media?.episodes?.count ?? item.numEpisodes ?? 0,
             publishingType: podcastType
         )
     }

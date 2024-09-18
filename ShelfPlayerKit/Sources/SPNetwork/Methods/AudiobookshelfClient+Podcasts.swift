@@ -42,7 +42,14 @@ public extension AudiobookshelfClient {
         
     }
     
-    func podcasts(libraryId: String) async throws -> [Podcast] {
-        try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET")).results.map(Podcast.init)
+    func podcasts(libraryId: String, sortOrder: String, ascending: Bool, limit: Int, page: Int) async throws -> ([Podcast], Int) {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET", query: [
+            .init(name: "page", value: "\(page)"),
+            .init(name: "limit", value: "\(limit)"),
+            .init(name: "sort", value: "\(sortOrder)"),
+            .init(name: "desc", value: ascending ? "0" : "1"),
+        ]))
+        
+        return (response.results.map(Podcast.init), response.total)
     }
 }

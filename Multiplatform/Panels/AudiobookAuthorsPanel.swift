@@ -9,7 +9,7 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct AuthorsView: View {
+internal struct AudiobookAuthorsPanel: View {
     @Environment(\.libraryId) private var libraryId
     @Default(.authorsAscending) private var authorsAscending
     
@@ -72,5 +72,5 @@ internal struct AuthorsView: View {
 }
 
 #Preview {
-    AuthorsView()
+    AudiobookAuthorsPanel()
 }

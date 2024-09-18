@@ -17,6 +17,10 @@ internal struct GenreFilterSheet: ViewModifier {
         content
             .sheet(isPresented: $isPresented) {
                 List {
+                    if genres.isEmpty {
+                        Text("genres.empty")
+                    }
+                    
                     ForEach(genres.sorted(by: <), id: \.hashValue) { genre in
                         Toggle(genre, isOn: .init(get: { selected.contains(where: { $0 == genre }) }, set: {
                             if $0 && !selected.contains(where: { $0 == genre }) {
