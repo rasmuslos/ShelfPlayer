@@ -48,7 +48,7 @@ struct OfflineView: View {
                 }
                 .foregroundStyle(.primary)
             }
-            .navigationTitle("title.offline")
+            .navigationTitle("offline.title")
             .navigationBarTitleDisplayMode(.inline)
             .modifier(NowPlaying.SafeAreaModifier())
             .task {

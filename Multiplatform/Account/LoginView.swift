@@ -42,12 +42,6 @@ struct LoginView: View {
             Text("login.text")
             
             Spacer()
-            
-            #if !ENABLE_ALL_FEATURES
-            Text("developedBy")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            #endif
         }
         .safeAreaInset(edge: .bottom) {
             Button {

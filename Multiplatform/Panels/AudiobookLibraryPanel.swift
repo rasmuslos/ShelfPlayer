@@ -109,7 +109,7 @@ internal struct AudiobookLibraryPanel: View {
                 }
             }
         }
-        .navigationTitle("title.library")
+        .navigationTitle("panel.library")
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
         .onAppear {

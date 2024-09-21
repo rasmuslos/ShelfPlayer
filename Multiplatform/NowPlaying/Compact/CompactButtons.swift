@@ -27,7 +27,7 @@ internal extension NowPlaying {
                 Button {
                     NowPlaying.presentPicker()
                 } label: {
-                    Label("output", systemImage: "airplay.audio")
+                    Label("route", systemImage: "airplay.audio")
                         .labelStyle(.iconOnly)
                         .modifier(NowPlayingButtonModifier())
                         .foregroundStyle(viewModel.isUsingExternalRoute ? Color.accentColor : .secondary)
@@ -40,7 +40,7 @@ internal extension NowPlaying {
                 Menu {
                     NowPlaying.ChapterMenu()
                 } label: {
-                    Label("nowPlaying.sheet.icon", systemImage: viewModel.sheetLabelIcon)
+                    Label("nowPlaying.sheet", systemImage: viewModel.sheetLabelIcon)
                         .labelStyle(.iconOnly)
                         .modifier(NowPlayingButtonModifier())
                         .contentShape(.rect)

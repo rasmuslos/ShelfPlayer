@@ -92,7 +92,7 @@ internal struct AudiobookHomePanel: View {
                 }
             }
         }
-        .navigationTitle("title.listenNow")
+        .navigationTitle("panel.home")
         .modifier(NowPlaying.SafeAreaModifier())
     }
     

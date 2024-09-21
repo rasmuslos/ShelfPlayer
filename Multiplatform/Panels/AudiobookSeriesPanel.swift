@@ -59,7 +59,7 @@ internal struct AudiobookSeriesPanel: View {
                                 seriesDisplay = seriesDisplay == .list ? .grid : .list
                             }
                         } label: {
-                            Label("sort.\(seriesDisplay == .list ? "list" : "grid")", systemImage: seriesDisplay == .list ? "list.bullet" : "square.grid.2x2")
+                            Label(seriesDisplay == .list ? "sort.list" : "sort.grid", systemImage: seriesDisplay == .list ? "list.bullet" : "square.grid.2x2")
                         }
                     }
                 }
@@ -68,7 +68,7 @@ internal struct AudiobookSeriesPanel: View {
                 }
             }
         }
-        .navigationTitle("title.series")
+        .navigationTitle("panel.series")
         .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
             lazyLoader.libraryID = libraryId

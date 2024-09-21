@@ -15,47 +15,71 @@ internal struct PodcastSettingsSheet: View {
     let podcast: Podcast
     let configuration: PodcastFetchConfiguration
     
+    @State private var notificationPermission: UNAuthorizationStatus? = nil
+    
     var body: some View {
         @Bindable var configuration = configuration
         
-        List {
-            Section {
-                DownloadSettings(maxEpisodes: $configuration.maxEpisodes, autoDownloadEnabled: $configuration.autoDownload)
-            } footer: {
-                Text("podcast.settings.downloadFooter \(configuration.maxEpisodes)")
-            }
-            
-            Section {
-                NotificationToggle(autoDownloadEnabled: configuration.autoDownload, notificationsEnabled: $configuration.notifications)
-            } footer: {
-                Text("podcast.settings.notificationFooter")
-            }
-        }
-        .safeAreaInset(edge: .top) {
-            HStack(spacing: 0) {
-                Text("podcast.settings.title")
-                    .font(.title3)
-                    .bold()
+        NavigationStack {
+            List {
+                Section {
+                    DownloadSettings(maxEpisodes: $configuration.maxEpisodes, autoDownloadEnabled: $configuration.autoDownload)
+                } footer: {
+                    Text("podcast.settings.downloadFooter \(configuration.maxEpisodes)")
+                }
                 
-                Spacer(minLength: 12)
+                Section {
+                    NotificationToggle(autoDownloadEnabled: configuration.autoDownload, notificationsEnabled: $configuration.notifications)
+                        .disabled(notificationPermission != .authorized)
+                } footer: {
+                    Text("podcast.settings.notificationFooter")
+                }
                 
+                if let notificationPermission {
+                    if notificationPermission == .notDetermined {
+                        Button {
+                            Task {
+                                try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+                                self.notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                            }
+                        } label: {
+                            Label("account.notifications.request", systemImage: "bell.badge.waveform.fill")
+                        }
+                    } else if notificationPermission != .authorized {
+                        Label("account.notifications.denied", systemImage: "bell.slash.fill")
+                            .foregroundStyle(.red)
+                        
+                        Button {
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                        } label: {
+                            Label("account.settings", systemImage: "gear")
+                        }
+                        .tint(.primary)
+                    }
+                } else {
+                    ProgressIndicator()
+                        .task {
+                            notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                        }
+                }
+            }
+            .navigationTitle("podcast.settings.title")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
                 Button {
                     dismiss()
+                    
+                    Task {
+                        guard configuration.autoDownload else {
+                            return
+                        }
+                        
+                        try await BackgroundTaskHandler.updateDownloads(configuration: configuration)
+                    }
                 } label: {
-                    Label("dismiss", systemImage: "xmark")
-                        .labelStyle(.iconOnly)
-                        .font(.title3)
-                        .symbolVariant(.circle.fill)
-                        .foregroundStyle(.secondary)
+                    Label("done", systemImage: "checkmark")
+                        .labelStyle(.titleOnly)
                 }
-                .buttonStyle(.plain)
-            }
-            .padding(20)
-            .background(.bar)
-        }
-        .task(id: configuration) {
-            if configuration.autoDownload {
-                try? await BackgroundTaskHandler.updateDownloads(configuration: configuration)
             }
         }
     }
