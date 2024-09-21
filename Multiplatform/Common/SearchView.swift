@@ -46,7 +46,7 @@ internal struct SearchView: View {
                 .listStyle(.plain)
             }
         }
-        .navigationTitle("title.search")
+        .navigationTitle("panel.search")
         .searchable(text: $viewModel.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.placeholder")
         .modifier(SearchModifier())
         .modifier(NowPlaying.SafeAreaModifier())

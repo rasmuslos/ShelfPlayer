@@ -58,7 +58,6 @@ extension NowPlaying {
                                     } else {
                                         Text("duration") // Text(AudioPlayer.shared.adjustedTimeLeft.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
                                         + Text(verbatim: " ")
-                                        + Text("time.left")
                                     }
                                 }
                                 .lineLimit(1)

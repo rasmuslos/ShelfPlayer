@@ -46,7 +46,12 @@ internal struct PodcastLibraryPanel: View {
                             lazyLoader.didReachEndOfLoadedContent()
                         } label: {
                             Text("podcasts.loadMore")
+                            
+                            if lazyLoader.working {
+                                ProgressIndicator()
+                            }
                         }
+                        .disabled(lazyLoader.working)
                         .padding(.top, 40)
                     }
                     
@@ -59,7 +64,7 @@ internal struct PodcastLibraryPanel: View {
                 }
             }
         }
-        .navigationTitle("title.library")
+        .navigationTitle("panel.library")
         .searchable(text: $search, prompt: "search.podcasts")
         .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
@@ -70,4 +75,6 @@ internal struct PodcastLibraryPanel: View {
 
 #Preview {
     PodcastLibraryPanel()
+        .environment(NowPlaying.ViewModel())
+        .environment(\.libraryId, "c5952562-1be6-4663-b352-8ee67a8981df")
 }

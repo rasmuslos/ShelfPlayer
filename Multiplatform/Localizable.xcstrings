@@ -1,119 +1,59 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@ chapter.remaining.in" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "verbleibend in %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "remaining in %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 剩余"
-          }
-        }
-      }
-    },
     "%lld account.sleepTimer.hours" : {
       "localizations" : {
         "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Stunden"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stunde"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stunden"
+                }
+              }
+            }
           }
         },
         "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld hours"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hour"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hours"
+                }
+              }
+            }
           }
         },
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld小时"
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld小时"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld account.sleepTimer.minutes" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Minuten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld minutes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld分钟"
-          }
-        }
-      }
-    },
-    "%lld chapters" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Kapitel"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Chapters"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld章节"
-          }
-        }
-      }
-    },
-    "%lld episodes" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Folgen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Episodes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld集"
-          }
-        }
-      }
-    },
-    "%lld sleep.minutes" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "variations" : {
@@ -158,6 +98,110 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld分钟"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld chapters" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Kapitel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Kapitel"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Chapter"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Chapters"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld章节"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld episodes" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Folge"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Folgen"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Episode"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Episodes"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld集"
                 }
               }
             }
@@ -214,19 +258,35 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eigene Optionen"
+            "value" : "Eigene Werte"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom options"
+            "value" : "Custom values"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "自定义选项"
+          }
+        }
+      }
+    },
+    "account.custom.text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier definierte Werte tauchen, zusammen mit den vor-definierten, in den entsprechenden Menüs auf."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Here you can define custom values that will show up next to their pre-defined options in the relevant pickers."
           }
         }
       }
@@ -236,43 +296,72 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Standardrate"
+            "value" : "Standard Geschwindigkeit"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Default rate"
+            "value" : "Default playback speed"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "默认播放速度"
           }
         }
       }
     },
     "account.defaults" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standardwerte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default values"
+          }
+        }
+      }
+    },
+    "account.defaults.text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Werten werden standardmäßig bei der Wiedergabe verwendet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "These values will be used when starting a new item"
+          }
+        }
+      }
     },
     "account.delete.cache" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zwischenspeicher löschen"
+            "value" : "Zwischenspeicher leeren"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete cache"
+            "value" : "Pruge cache"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "删除缓存"
           }
         }
@@ -294,7 +383,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "删除所有下载"
           }
         }
@@ -311,36 +400,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deleting the cache will remove all local progress entities and flush the image cache"
+            "value" : "Purging the cache will clear the local progress database and remove all caches images"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "删除缓存将清除所有本地收听进度并清空图片缓存"
-          }
-        }
-      }
-    },
-    "account.downloads" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Downloads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Downloads"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已下载"
           }
         }
       }
@@ -385,28 +451,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出"
-          }
-        }
-      }
-    },
-    "account.logout.disclaimer" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beim abmelden werden geladene Inhale nicht entfernt "
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logging out will not delete any downloads"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "退出不会删除已下载内容"
           }
         }
       }
@@ -477,28 +521,6 @@
         }
       }
     },
-    "account.notifications.footer" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erteile die Berechtigung um eine Mitteilung bei neuen Episoden zu erhalten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grant notification permissions to receive updates about new episodes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "授予 Shelfplayer 通知权限以接收新节目推送"
-          }
-        }
-      }
-    },
     "account.notifications.granted" : {
       "localizations" : {
         "de" : {
@@ -532,13 +554,23 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request Notification permissions"
+            "value" : "Request notification permission"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "申请通知权限"
+          }
+        }
+      }
+    },
+    "account.notifications.text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you grant ShelfPlayer permission to send notifications and enable the option to receive them in the podcast settings sheet, you will be informed when new episodes are downloaded in the background."
           }
         }
       }
@@ -554,12 +586,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notification authorization unknown"
+            "value" : "Notification permission unknown"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "通知授权未知"
           }
         }
@@ -570,18 +602,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wiedergaberate: %@"
+            "value" : "Geschwindigkeit: %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Playback rate: %@"
+            "value" : "Playback-speed: %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "播放速度: %@"
           }
         }
@@ -613,11 +645,12 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "account.server %1$@ %2$@"
+            "state" : "translated",
+            "value" : "%1$@ (%2$@)"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "account.settings" : {
       "localizations" : {
@@ -637,28 +670,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设置"
-          }
-        }
-      }
-    },
-    "account.sleepTimer.text" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Setzte eine eigene Länge für den \"Sleep-Timer\", welche im Auswahlmenü auftaucht"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set a custom sleep timer duration that will show up in the selection menu"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "配置一个默认睡眠定时关闭时长，它将展示在选项中。"
           }
         }
       }
@@ -927,7 +938,7 @@
         }
       }
     },
-    "account.user" : {
+    "account.title" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -938,36 +949,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "User"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用户"
-          }
-        }
-      }
-    },
-    "account.version %@ (%@)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version: %1$@ (%2$@)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version: %1$@ (%2$@)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "版本: %1$@(%2$@)"
+            "value" : "Account"
           }
         }
       }
@@ -976,70 +958,39 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "account.version %1$@ %2$@"
+            "state" : "translated",
+            "value" : "ShelfPlayer %1$@ (%2$@)"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "account.version.database %@ %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "account.version.database %1$@ %2$@"
+            "state" : "translated",
+            "value" : "Datenbank: %1$@ (%2$@)"
           }
         }
-      }
-    },
-    "accounts.downloads.empty" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Downloads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No downloads"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无下载内容"
-          }
-        }
-      }
-    },
-    "active" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktiv"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "活动"
-          }
-        }
-      }
+      },
+      "shouldTranslate" : false
     },
     "added %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinzugefügt: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added: %@"
+          }
+        }
+      }
     },
     "ascending" : {
       "localizations" : {
@@ -1185,51 +1136,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看作者详情"
-          }
-        }
-      }
-    },
-    "authors" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoren"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Authors"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作者"
-          }
-        }
-      }
-    },
-    "authors.title" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoren"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Authors"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作者"
           }
         }
       }
@@ -1410,29 +1316,6 @@
         }
       }
     },
-    "bookmarks.toggle" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lesezeichen umschalten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toggle bookmarks"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "展示书签"
-          }
-        }
-      }
-    },
     "books" : {
       "localizations" : {
         "de" : {
@@ -1456,7 +1339,44 @@
       }
     },
     "books %lld" : {
-
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "EIn Buch"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Bücher"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "One book"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld books"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "carPlay.chapters" : {
       "localizations" : {
@@ -1744,34 +1664,37 @@
         }
       }
     },
-    "developedBy" : {
-      "extractionState" : "manual",
+    "dismiss" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwickelt von Rasmus Krämer"
+            "value" : "Verstanden"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Developed by Rasmus Krämer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "由 Rasmus Krämer 开发"
+            "value" : "Dismiss"
           }
         }
       }
     },
-    "dismiss" : {
-
-    },
     "done" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fertig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
     },
     "download" : {
       "localizations" : {
@@ -1822,13 +1745,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entfernen erzwingen"
+            "value" : "Download beseitigen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Force remove"
+            "value" : "Force remove download"
           }
         }
       }
@@ -1899,29 +1822,6 @@
         }
       }
     },
-    "downloads.empty" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Downloads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No downloads"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无已下载内容"
-          }
-        }
-      }
-    },
     "downloads.podcasts" : {
       "localizations" : {
         "de" : {
@@ -1945,10 +1845,29 @@
       }
     },
     "drag" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewegen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drag"
+          }
+        }
+      }
     },
     "duration" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Länge"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1958,7 +1877,20 @@
       }
     },
     "empty.other.queue %lld" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld in der Warteschlange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld items in queue"
+          }
+        }
+      }
     },
     "episode.new.title %@" : {
       "localizations" : {
@@ -2229,18 +2161,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bitte stelle sicher, dass du mit dem Internet verbunden bist"
+            "value" : "Bitte stelle sicher, dass dein Gerät mit dem Internet verbunden ist und die Audiobookshelf-Instanz erreichen kann."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please ensure that you are connected to the internet"
+            "value" : "Please ensure your device is connected to the internet and can reach your Audiobookshelf instance."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "请确认您已连接互联网"
           }
         }
@@ -2334,31 +2266,21 @@
         }
       }
     },
-    "filter.genres" : {
-      "extractionState" : "stale",
+    "filter.inProgress" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Genre Filter"
+            "value" : "Begonnen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Genre filter"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "类型过滤"
+            "value" : "Started"
           }
         }
       }
-    },
-    "filter.inProgress" : {
-
     },
     "filter.unfinished" : {
       "localizations" : {
@@ -2449,10 +2371,36 @@
       }
     },
     "genres" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genres"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genres"
+          }
+        }
+      }
     },
     "genres.empty" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Genres"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No genres"
+          }
+        }
+      }
     },
     "item.media.metadata.seriesName" : {
       "localizations" : {
@@ -2499,7 +2447,20 @@
       }
     },
     "listen.again" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erneut hören"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen again"
+          }
+        }
+      }
     },
     "loading" : {
       "localizations" : {
@@ -2563,29 +2524,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加"
-          }
-        }
-      }
-    },
-    "login.customHTTPHeaders.discard" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verwerfen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Discard"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消"
           }
         }
       }
@@ -2674,29 +2612,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "值"
-          }
-        }
-      }
-    },
-    "login.disclaimer" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer stellt keinerlei Inhalte bereit. Um Auf Hörbücher oder Podcasts zuzugreifen melde dich bei deinen eigenen Audiobookshelf-Server an."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer does not provide any audiobooks or podcasts. You have to login to your own Audiobookshelf instance to access your personal library"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shelfplayer 不提供任何有声书或者播客，您需要登录访问自己的 Audiobookshelf 实例来访问自己的媒体库"
           }
         }
       }
@@ -2794,7 +2709,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mit einem lokalen Benutzer anmelden"
+            "value" : "Mit lokalen Benutzer anmelden"
           }
         },
         "en" : {
@@ -2844,12 +2759,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use OpenID Connect to login"
+            "value" : "Login with OpenID-Connect"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "使用 OpenID 登录"
           }
         }
@@ -2860,18 +2775,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bitte stelle sicher, dass ShelfPlayers URL-Scheme (shelfplayer://callabck) in Audiobookshelf zugelassen ist"
+            "value" : "Stelle sicher, dass shelfplayer:// eine in den Audiobookshelf-Einstellungen eingetragene „Allowed Mobile Redirect URIs“ ist."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please make sure the ShelfPlayer url scheme (shelfplayer://callback) is allowed in the Audiobookshelf server settings"
+            "value" : "Make sure shelfplayer://callback is part of the allowed mobile callbacks in the Audiobookshelf settings."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "请确认 ShelfPlayer的url scheme (shelfplayer://callback) 在Audiobookshelf 服务器中已配置"
           }
         }
@@ -2948,18 +2863,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bitte richte erst deinen Audiobookshelf-Server ein"
+            "value" : "Bitte richte zuerst deinen Audiobookshelf-Server ein"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please setup your Audiobookshelf server first"
+            "value" : "Please configure your Audiobookshelf server first"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "请先架设好您的Audiobooshelf 服务"
           }
         }
@@ -3075,29 +2990,6 @@
         }
       }
     },
-    "more" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mehr"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "More"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多"
-          }
-        }
-      }
-    },
     "mute" : {
       "localizations" : {
         "de" : {
@@ -3142,17 +3034,69 @@
         }
       }
     },
+    "nowPlaying.sheet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        }
+      }
+    },
     "nowPlaying.sheet.bookmarks" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bookmarks"
+          }
+        }
+      }
     },
     "nowPlaying.sheet.chapters" : {
-
-    },
-    "nowPlaying.sheet.icon" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapitel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapters"
+          }
+        }
+      }
     },
     "nowPlaying.sheet.queue" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        }
+      }
     },
     "offline.disable" : {
       "localizations" : {
@@ -3198,8 +3142,117 @@
         }
       }
     },
-    "output" : {
-
+    "offline.title" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloads"
+          }
+        }
+      }
+    },
+    "panel.authors" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authoren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authors"
+          }
+        }
+      }
+    },
+    "panel.home" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt hören"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen now"
+          }
+        }
+      }
+    },
+    "panel.latest" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest"
+          }
+        }
+      }
+    },
+    "panel.library" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliothek"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Library"
+          }
+        }
+      }
+    },
+    "panel.search" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
+    "panel.series" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serien"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series"
+          }
+        }
+      }
     },
     "play" : {
       "localizations" : {
@@ -3222,12 +3275,6 @@
           }
         }
       }
-    },
-    "playback.back" : {
-
-    },
-    "playback.next" : {
-
     },
     "playback.stop" : {
       "localizations" : {
@@ -3364,68 +3411,88 @@
     "podcast.settings.downloadFooter %lld" : {
       "localizations" : {
         "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer wird %lld Episoden dieses Podcasts herunterladen. Bitte beachte, dass nicht die neusten Episoden heruntergeladen werden, sondern die ersten Episoden welchen den gesetzten Filter & der Reihenfolge entsprechen"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ShelfPlayer wird eine Episode dieses Podcasts herunterladen. Diese ist durch die Filter- & Sortierungseinstellungen des Podcasts festgelegt."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ShelfPlayer wird %lld Episoden dieses Podcasts herunterladen. Diese sind durch die Filter- & Sortierungseinstellungen des Podcasts festgelegt."
+                }
+              }
+            }
           }
         },
         "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer will download %lld episodes of this podcast. Please note that not the latest episodes are downloaded, rather the first episodes matching the filter & sort settings of this podcast "
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ShelfPlayer will download one episode of this podcast. The episodes are selected based on the podcast's filter & sort settings."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ShelfPlayer will download %lld episodes of this podcast. The episode is selected based on the podcast's filter & sort settings."
+                }
+              }
+            }
           }
         },
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer 将会下载该播客中 %lld 集内容，请注意不是最新的几集，而是该播客的排序设置的前几集"
-          }
-        }
-      }
-    },
-    "podcast.settings.maxEpisodes" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maximal heruntergelade Episoden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Max episodes to download"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最多下载集数"
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "ShelfPlayer 将会下载该播客中 %lld 集内容，请注意不是最新的几集，而是该播客的排序设置的前几集"
+                }
+              }
+            }
           }
         }
       }
     },
     "podcast.settings.maxEpisodes %lld" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzahl: %lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amount: %lld"
+          }
+        }
+      }
     },
     "podcast.settings.notificationFooter" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ShelfPlayer sendet Push-Mitteilungen wenn neue Episoden verfügbar sind"
+            "value" : "Wenn diese Option aktiviert ist, wird ShelfPlayer Mittelungen bei neuen Downloads versenden."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ShelfPlayer will send a push notification, informing you that a new episode is available"
+            "value" : "Enabling this will allow ShelfPlayer to send you a notification when a new download becomes available."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "在新节目可用时，ShelfPlayer 将会推送通知提醒您"
           }
         }
@@ -3454,7 +3521,20 @@
       }
     },
     "podcast.settings.title" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatische Downloads"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic downloads"
+          }
+        }
+      }
     },
     "podcast.view" : {
       "localizations" : {
@@ -3479,7 +3559,20 @@
       }
     },
     "podcasts.loadMore" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr laden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load more"
+          }
+        }
+      }
     },
     "progress.complete" : {
       "localizations" : {
@@ -3548,13 +3641,45 @@
       }
     },
     "queue.clear" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leeren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        }
+      }
     },
     "queue.empty" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Warteschlange ist leer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue is empty"
+          }
+        }
+      }
     },
     "queue.last" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als letztes"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3565,6 +3690,12 @@
     },
     "queue.play" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3574,23 +3705,49 @@
       }
     },
     "queue.scroll.tip.message" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Streiche nach unten um die Warteschlange zu sehen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe down to view the queue"
+          }
+        }
+      }
     },
     "queue.scroll.tip.title" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        }
+      }
     },
     "queue.tip.message" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drücke und halte diesen Knopf um die Warteschlange zu befüllen"
+            "value" : "Drücke und halte diese Schaltfläche um die Warteschlange zu befüllen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Press and hold this button to add items to your queue"
+            "value" : "Press and hold this button to add items to the queue"
           }
         }
       }
@@ -3613,19 +3770,67 @@
     },
     "readBy %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelesen von: %@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Read by:"
+            "value" : "Read by: %@"
           }
         }
       }
     },
     "released %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veröffentlicht: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Released: %@"
+          }
+        }
+      }
     },
     "resume" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiterspielen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume"
+          }
+        }
+      }
+    },
+    "route" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio-Ausgang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio-route"
+          }
+        }
+      }
     },
     "search.empty.description" : {
       "localizations" : {
@@ -3673,6 +3878,12 @@
     },
     "search.placeholder" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nach Hörbüchern, Serien & Autoren"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3682,7 +3893,20 @@
       }
     },
     "search.podcasts" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nach Podcasts"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search for podcasts"
+          }
+        }
+      }
     },
     "section.audiobooks" : {
       "localizations" : {
@@ -3772,72 +3996,6 @@
         }
       }
     },
-    "section.latest" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kürzlich"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Latest"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最新"
-          }
-        }
-      }
-    },
-    "section.library" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliothek"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Library"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "媒体库"
-          }
-        }
-      }
-    },
-    "section.listenNow" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt hören"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listen Now"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "现在收听"
-          }
-        }
-      }
-    },
     "section.order" : {
       "localizations" : {
         "de" : {
@@ -3856,51 +4014,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排序"
-          }
-        }
-      }
-    },
-    "section.podcasts" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcasts"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcasts"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "播客"
-          }
-        }
-      }
-    },
-    "section.search" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suchen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索"
           }
         }
       }
@@ -3928,7 +4041,20 @@
       }
     },
     "series" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serien"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series"
+          }
+        }
+      }
     },
     "series.count %lld" : {
       "localizations" : {
@@ -4005,16 +4131,68 @@
       }
     },
     "sessions.importing" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisiere Fortschritt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syncing progress"
+          }
+        }
+      }
     },
     "sheet.bookmarks" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bookmarks"
+          }
+        }
+      }
     },
     "sheet.chapters" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapitel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapters"
+          }
+        }
+      }
     },
     "sheet.queue" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        }
+      }
     },
     "sleep" : {
 
@@ -4037,29 +4215,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "章节结尾"
-          }
-        }
-      }
-    },
-    "sleep.clear" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schlaftimer entfernen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear sleep timer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清除定时关闭"
           }
         }
       }
@@ -4130,9 +4285,6 @@
         }
       }
     },
-    "sort.%@" : {
-
-    },
     "sort.added" : {
       "localizations" : {
         "de" : {
@@ -4151,29 +4303,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加于"
-          }
-        }
-      }
-    },
-    "sort.all" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全部"
           }
         }
       }
@@ -4240,29 +4369,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "时长"
-          }
-        }
-      }
-    },
-    "sort.finished" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abgeschlossen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finished"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已播完"
           }
         }
       }
@@ -4355,29 +4461,6 @@
         }
       }
     },
-    "sort.progress" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktuell"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In progress"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最近收听"
-          }
-        }
-      }
-    },
     "sort.released" : {
       "localizations" : {
         "de" : {
@@ -4396,29 +4479,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "发布日期"
-          }
-        }
-      }
-    },
-    "sort.unfinished" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht abgeschlossen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unfinished"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未完成"
           }
         }
       }
@@ -4456,12 +4516,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select something from the Sidebar to get started!"
+            "value" : "Select a panel from the sidebar to get started."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "请从侧边栏中选择一项"
           }
         }
@@ -4577,73 +4637,18 @@
         }
       }
     },
-    "time.left" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "übrig"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "left"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "剩余"
-          }
-        }
-      }
-    },
     "timeline" : {
-
-    },
-    "tip.bookmark.view" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lesezeichen"
+            "value" : "Verlauf"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View bookmarks"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查看书签"
-          }
-        }
-      }
-    },
-    "tip.bookmark.view.message" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sehe alle Lesezeichen für dieses Hörbuch hier ein"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "View all bookmarks you created for this book here"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查看您在本书中创建的所有书签"
+            "value" : "Timeline"
           }
         }
       }
@@ -4659,259 +4664,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change libraries"
+            "value" : "Change library"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "更换媒体库"
-          }
-        }
-      }
-    },
-    "tip.episodePreview" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Episoden-Vorschau"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Episodes preview"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "节目预览"
-          }
-        }
-      }
-    },
-    "tip.episodePreview.message" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hier werden die neusten (bestimmt von den Filter- & Sortierungseinstellungen) Episoden angezeigt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You can see the latest episodes (determined by your podcast filter & sort settings) here"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "您能在这里看到最新的节目（取决于你的排序和过滤选项）"
-          }
-        }
-      }
-    },
-    "tip.player.longPress" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nächstes Kapitel"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skip to the next chapter"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切换到下一章"
-          }
-        }
-      }
-    },
-    "tip.player.longPress.message" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drücke diese Schnittfläche lange um zum nächsten Kapitel zu gelangen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Long press this control to skip to the next chapter"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "长按该按钮跳到下一章"
-          }
-        }
-      }
-    },
-    "title.episodes" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Episoden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Episodes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "节目"
-          }
-        }
-      }
-    },
-    "title.latest" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neue Episoden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Latest episodes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最新节目"
-          }
-        }
-      }
-    },
-    "title.library" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliothek"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Library"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "媒体库"
-          }
-        }
-      }
-    },
-    "title.listenNow" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt hören"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listen Now"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "现在收听"
-          }
-        }
-      }
-    },
-    "title.offline" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heruntergeladen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Downloaded"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已下载"
-          }
-        }
-      }
-    },
-    "title.search" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suche"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索"
-          }
-        }
-      }
-    },
-    "title.series" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serien"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Series"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "系列"
           }
         }
       }
@@ -4921,18 +4680,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max. Lautstärke"
+            "value" : "Maximale Lautstärke"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max. volume"
+            "value" : "Maximum volume"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "最大音量"
           }
         }

@@ -42,15 +42,13 @@ struct AccountSheet: View {
                     
                     Button(role: .destructive) {
                         try? OfflineManager.shared.deleteProgressEntities()
+                        OfflineManager.shared.removeAllDownloads()
+                        
                         AudiobookshelfClient.shared.store(token: nil)
                     } label: {
                         Label("account.logout", systemImage: "person.crop.circle.badge.minus")
                             .foregroundStyle(.red)
                     }
-                } header: {
-                    Text("account.user")
-                } footer: {
-                    Text("account.logout.disclaimer")
                 }
                 
                 Section {
@@ -95,14 +93,18 @@ struct AccountSheet: View {
                     }
                     .foregroundStyle(.primary)
                 } footer: {
-                    Text("account.notifications.footer")
+                    Text("account.notifications.text")
                 }
                 
-                Section("account.defaults") {
+                Section {
                     Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
                         PlaybackSpeedButton.Options(selected: $defaultPlaybackSpeed)
                     }
                     .tint(.primary)
+                } header: {
+                    Text("account.defaults")
+                } footer: {
+                    Text("account.defaults.text")
                 }
                 
                 Section {
@@ -123,7 +125,7 @@ struct AccountSheet: View {
                 } header: {
                     Text("account.custom")
                 } footer: {
-                    Text("account.sleepTimer.text")
+                    Text("account.custom.text")
                 }
                 
                 Section {
@@ -191,7 +193,7 @@ struct AccountSheet: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             }
-            .navigationTitle("account.manage")
+            .navigationTitle("account.title")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: String.self) { _ in
                 CustomHeaderEditView(backButtonVisible: false) {
