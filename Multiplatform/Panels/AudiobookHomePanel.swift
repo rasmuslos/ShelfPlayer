@@ -43,7 +43,7 @@ internal struct AudiobookHomePanel: View {
     
     var body: some View {
         Group {
-            if audiobooks.isEmpty && downloaded.isEmpty && authors.isEmpty {
+            if audiobooks.isEmpty && authors.isEmpty {
                 if failed {
                     ErrorView()
                         .refreshable {
