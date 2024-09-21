@@ -50,7 +50,9 @@ public extension AudioPlayer {
         lastPause = nil
         playbackReporter = nil
         
-        clearNowPlayingMetadata()
+        Task {
+            await clearNowPlayingMetadata()
+        }
         
         audioPlayer.removeAllItems()
         
@@ -117,7 +119,7 @@ public extension AudioPlayer {
         playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
         
         updateChapterIndex()
-        updateNowPlayingWidget()
+        await updateNowPlayingWidget()
         
         NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
     }
@@ -163,7 +165,7 @@ internal extension AudioPlayer {
         
         updateAudioSession(active: true)
         updateBookmarkCommand(active: item.type == .audiobook)
-        populateNowPlayingWidgetMetadata()
+        await populateNowPlayingWidgetMetadata()
         
         await seek(to: startTime)
         playing = true
@@ -194,7 +196,7 @@ internal extension AudioPlayer {
         lastPause = nil
         playbackReporter = nil
         
-        clearNowPlayingMetadata()
+        await clearNowPlayingMetadata()
         audioPlayer.removeAllItems()
         
         try await start(queue.removeFirst())

@@ -11,69 +11,78 @@ import SPFoundation
 import SPOffline
 
 internal extension AudioPlayer {
-    func populateNowPlayingWidgetMetadata() {
+    func populateNowPlayingWidgetMetadata() async {
         guard let item else {
             return
         }
         
-        nowPlayingInfo = [:]
+        var update = [String: Any]()
         
-        nowPlayingInfo[MPMediaItemPropertyArtist] = item.author
-        nowPlayingInfo[MPMediaItemPropertyReleaseDate] = item.released
-        nowPlayingInfo[MPNowPlayingInfoPropertyChapterCount] = chapters.count
+        update[MPMediaItemPropertyArtist] = item.author
+        update[MPMediaItemPropertyReleaseDate] = item.released
+        update[MPNowPlayingInfoPropertyChapterCount] = chapters.count
         
-        updateNowPlayingTitle()
-        updateLastBookmarkTime()
+        await nowPlayingInfo.clear()
+        await self.nowPlayingInfo.append(update)
+        
+        await updateNowPlayingTitle()
+        await updateLastBookmarkTime()
         
         Task {
             if let image = await item.cover?.systemImage {
                 let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
-                nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+                await nowPlayingInfo.set(MPMediaItemPropertyArtwork, value: artwork)
                 
-                updateNowPlayingInfo()
+                await updateNowPlayingInfo()
             }
         }
     }
     
-    func updateNowPlayingTitle() {
+    func updateNowPlayingTitle() async {
         guard let item else {
             return
         }
         
+        var update = [String: Any]()
+        
         if enableChapterTrack, let chapter {
-            nowPlayingInfo[MPMediaItemPropertyTitle] = chapter.title
-            nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = item.name
+            update[MPMediaItemPropertyTitle] = chapter.title
+            update[MPMediaItemPropertyAlbumTitle] = item.name
         } else {
-            nowPlayingInfo[MPMediaItemPropertyTitle] = item.name
-            nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = nil
+            update[MPMediaItemPropertyTitle] = item.name
+            update[MPMediaItemPropertyAlbumTitle] = nil
         }
         
-        updateNowPlayingInfo()
+        await nowPlayingInfo.append(update)
+        await updateNowPlayingInfo()
     }
     
-    func updateLastBookmarkTime() {
+    func updateLastBookmarkTime() async {
         if let audiobook = item as? Audiobook, let bookmarks = try? OfflineManager.shared.bookmarks(itemId: audiobook.id) {
-            nowPlayingInfo[MPMediaItemPropertyBookmarkTime] = bookmarks.last?.position
+            await nowPlayingInfo.set(MPMediaItemPropertyBookmarkTime, value: bookmarks.last?.position as Any)
         }
     }
     
-    func updateNowPlayingWidget() {
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
-        nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = playbackRate
+    func updateNowPlayingWidget() async {
+        var update = [String: Any]()
         
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = chapterDuration
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = chapterCurrentTime
-        nowPlayingInfo[MPNowPlayingInfoPropertyChapterNumber] = currentChapterIndex
+        update[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
+        update[MPNowPlayingInfoPropertyDefaultPlaybackRate] = playbackRate
         
-        updateNowPlayingInfo()
+        update[MPMediaItemPropertyPlaybackDuration] = chapterDuration
+        update[MPNowPlayingInfoPropertyElapsedPlaybackTime] = chapterCurrentTime
+        update[MPNowPlayingInfoPropertyChapterNumber] = currentChapterIndex
+        
+        await nowPlayingInfo.append(update)
+        await updateNowPlayingInfo()
     }
     
-    func clearNowPlayingMetadata() {
-        nowPlayingInfo = [:]
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    func clearNowPlayingMetadata() async {
+        await nowPlayingInfo.clear()
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = await nowPlayingInfo.disctory
     }
     
-    private func updateNowPlayingInfo() {
+    private func updateNowPlayingInfo() async {
         if let lastWidgetUpdate {
             guard lastWidgetUpdate.timeIntervalSinceNow < -0.2 else {
                 return
@@ -83,6 +92,6 @@ internal extension AudioPlayer {
         lastWidgetUpdate = .now
         
         MPNowPlayingInfoCenter.default().playbackState = playing ? .playing : .paused
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = await nowPlayingInfo.disctory
     }
 }
