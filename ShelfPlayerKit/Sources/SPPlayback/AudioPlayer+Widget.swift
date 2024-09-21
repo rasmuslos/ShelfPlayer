@@ -75,7 +75,7 @@ internal extension AudioPlayer {
     
     private func updateNowPlayingInfo() {
         if let lastWidgetUpdate {
-            guard lastWidgetUpdate.timeIntervalSinceNow > -0.2 else {
+            guard lastWidgetUpdate.timeIntervalSinceNow < -0.2 else {
                 return
             }
         }
