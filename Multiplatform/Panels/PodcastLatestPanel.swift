@@ -36,7 +36,7 @@ internal struct PodcastLatestPanel: View {
                 .listStyle(.plain)
             }
         }
-        .navigationTitle("title.latest")
+        .navigationTitle("panel.latest")
         .modifier(NowPlaying.SafeAreaModifier())
     }
 

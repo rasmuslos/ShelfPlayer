@@ -17,7 +17,7 @@ struct PodcastEpisodesView: View {
             EpisodeSingleList(episodes: viewModel.filtered)
         }
         .listStyle(.plain)
-        .navigationTitle("title.episodes")
+        .navigationTitle("episodes")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $viewModel.search, placement: .toolbar)
         .modifier(NowPlaying.SafeAreaModifier())

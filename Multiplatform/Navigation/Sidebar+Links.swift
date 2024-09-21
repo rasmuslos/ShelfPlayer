@@ -41,17 +41,17 @@ extension Sidebar.Panel {
     var label: LocalizedStringKey? {
         switch self {
             case .audiobookListenNow, .podcastListenNow:
-                "section.listenNow"
+                "panel.home"
             case .latest:
-                "section.latest"
+                "panel.latest"
             case .series:
-                "section.series"
+                "panel.series"
             case .audiobookLibrary, .podcastLibrary:
-                "section.library"
+                "panel.library"
             case .authors:
-                "section.authors"
+                "panel.authors"
             case .search:
-                "section.search"
+                "panel.search"
             default:
                 nil
         }

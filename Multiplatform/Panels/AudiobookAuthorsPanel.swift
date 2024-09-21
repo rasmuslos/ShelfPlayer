@@ -40,7 +40,7 @@ internal struct AudiobookAuthorsPanel: View {
                 AuthorList(authors: sorted)
             }
             .listStyle(.plain)
-            .navigationTitle("authors.title")
+            .navigationTitle("panel.authors")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Toggle("ascending", systemImage: authorsAscending ? "arrowshape.up.circle.fill" : "arrowshape.down.circle.fill", isOn: $authorsAscending)

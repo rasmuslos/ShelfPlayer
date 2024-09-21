@@ -5,37 +5,27 @@
       "comment" : "Bundle display name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "ShelfPlayer"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "CFBundleName" : {
       "comment" : "Bundle name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "ShelfPlayer"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "NSHumanReadableCopyright" : {
       "comment" : "Copyright (human-readable)",
@@ -47,7 +37,8 @@
             "value" : "Rasmus Krämer"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "NSSiriUsageDescription" : {
       "comment" : "Privacy - Siri Usage Description",
@@ -68,10 +59,10 @@
       }
     },
     "Shelf Player" : {
-
+      "shouldTranslate" : false
     },
     "shelfplayer" : {
-
+      "shouldTranslate" : false
     }
   },
   "version" : "1.0"
