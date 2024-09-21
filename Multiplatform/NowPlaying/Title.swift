@@ -12,7 +12,7 @@ import SPPlayback
 
 internal extension NowPlaying {
     struct Title: View {
-        @Environment(\.libraryId) private var libraryId
+        @Environment(\.libraryID) private var libraryId
         @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         @Default(.useSerifFont) private var useSerifFont

@@ -12,7 +12,7 @@ import SPPlayback
 
 internal extension NowPlaying {
     struct ContextMenuModifier: ViewModifier {
-        @Environment(\.libraryId) private var libraryId
+        @Environment(\.libraryID) private var libraryId
         @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         private var offline: Bool {

@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct AudiobookLibraryPanel: View {
-    @Environment(\.libraryId) private var libraryID
+    @Environment(\.libraryID) private var libraryID
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.audiobooksFilter) private var filter

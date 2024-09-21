@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 struct AuthorView: View {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     
     @State private var viewModel: AuthorViewModel
     

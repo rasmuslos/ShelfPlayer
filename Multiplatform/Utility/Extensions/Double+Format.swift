@@ -40,6 +40,10 @@ internal struct DurationComponentsFormatter: FormatStyle {
     }
     
     func format(_ value: TimeInterval) -> String {
+        guard value.isFinite && !value.isNaN else {
+            return "?"
+        }
+        
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = unitsStyle
         formatter.allowedUnits = allowedUnits
@@ -55,7 +59,7 @@ internal struct DurationComponentsFormatter: FormatStyle {
         
         formatter.allowsFractionalUnits = false
         
-        return formatter.string(from: value)!
+        return formatter.string(from: value) ?? "?"
     }
 }
 

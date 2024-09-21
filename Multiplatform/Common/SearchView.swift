@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct SearchView: View {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     
     @State private var viewModel: SearchViewModel = .init()
     

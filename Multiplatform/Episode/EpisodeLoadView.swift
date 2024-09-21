@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct EpisodeLoadView: View {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     
     let id: String
     let podcastId: String

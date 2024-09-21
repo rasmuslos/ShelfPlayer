@@ -10,7 +10,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 struct EpisodeContextMenuModifier: ViewModifier {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     
     let episode: Episode
     

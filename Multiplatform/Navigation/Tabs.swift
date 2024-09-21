@@ -29,7 +29,7 @@ struct Tabs: View {
                 }
             }
             .modifier(NowPlaying.CompactModifier())
-            .environment(\.libraryId, activeLibrary.id)
+            .environment(\.libraryID, activeLibrary.id)
             .environment(\.libraries, libraries)
             .onReceive(NotificationCenter.default.publisher(for: Library.changeLibraryNotification), perform: { notification in
                 if let libraryId = notification.userInfo?["libraryId"] as? String, let library = libraries.first(where: { $0.id == libraryId }) {

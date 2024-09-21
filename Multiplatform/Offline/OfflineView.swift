@@ -62,7 +62,7 @@ struct OfflineView: View {
         .sheet(isPresented: $accountSheetPresented) {
             AccountSheet()
         }
-        .environment(\.libraryId, "offline")
+        .environment(\.libraryID, "offline")
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             Task {
                 await loadItems()
