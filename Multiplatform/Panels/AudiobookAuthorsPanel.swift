@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct AudiobookAuthorsPanel: View {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     @Default(.authorsAscending) private var authorsAscending
     
     @State private var failed = false

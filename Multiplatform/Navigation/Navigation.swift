@@ -9,19 +9,19 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct Navigation {
-    static let navigateNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation")
+    static let navigateNotification = Notification.Name("io.rfk.shelfPlayer.navigation")
     
-    static let navigateAudiobookNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation.audiobook")
-    static let navigateAuthorNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation.author")
-    static let navigateSeriesNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation.series")
-    static let navigatePodcastNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation.podcast")
-    static let navigateEpisodeNotification = NSNotification.Name("io.rfk.shelfPlayer.navigation.episode")
+    static let navigateAudiobookNotification = Notification.Name("io.rfk.shelfPlayer.navigation.audiobook")
+    static let navigateAuthorNotification = Notification.Name("io.rfk.shelfPlayer.navigation.author")
+    static let navigateSeriesNotification = Notification.Name("io.rfk.shelfPlayer.navigation.series")
+    static let navigatePodcastNotification = Notification.Name("io.rfk.shelfPlayer.navigation.podcast")
+    static let navigateEpisodeNotification = Notification.Name("io.rfk.shelfPlayer.navigation.episode")
     
-    static let widthChangeNotification = NSNotification.Name("io.rfk.shelfPlayer.sidebar.width.changed")
-    static let offsetChangeNotification = NSNotification.Name("io.rfk.shelfPlayer.sidebar.offset.changed")
+    static let widthChangeNotification = Notification.Name("io.rfk.shelfPlayer.sidebar.width.changed")
+    static let offsetChangeNotification = Notification.Name("io.rfk.shelfPlayer.sidebar.offset.changed")
 }
 
-extension Navigation {
+internal extension Navigation {
     static func navigate(audiobookId: String) {
         NotificationCenter.default.post(name: Self.navigateAudiobookNotification, object: audiobookId)
     }
@@ -39,7 +39,7 @@ extension Navigation {
     }
 }
 
-extension Navigation {
+internal extension Navigation {
     struct NotificationModifier: ViewModifier {
         let navigateAudiobook: (String, String) -> Void
         let navigateAuthor: (String, String) -> Void
@@ -68,13 +68,11 @@ extension Navigation {
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateSeriesNotification)) { notification in
                     if let name = notification.object as? String {
                         Task {
-                            guard let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) else { return }
-                            let fetched = await libraries.parallelMap {
-                                let series = try? await AudiobookshelfClient.shared.series(libraryId: $0.id, limit: 10_000, page: 0).0.filter { $0.name == name }
-                                return series ?? []
-                            }
-                            
                             // this is certainly something
+                            
+                            guard let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) else { return }
+                            let fetched = await libraries.parallelMap { (try? await AudiobookshelfClient.shared.series(libraryId: $0.id, limit: 10_000, page: 0).0.filter { $0.name == name }) ?? [] }
+                            
                             guard let libraryId = fetched.flatMap({ $0 }).first?.libraryId else { return }
                             navigateSeries(name, libraryId)
                         }
@@ -143,7 +141,7 @@ extension Navigation {
     }
 }
 
-extension Navigation {
+internal extension Navigation {
     struct AudiobookLoadDestination: Hashable {
         let audiobookId: String
     }
@@ -166,12 +164,6 @@ extension Navigation {
     }
 }
 
-struct LibraryIdDefault: EnvironmentKey {
-    static var defaultValue: String = ""
-}
-extension EnvironmentValues {
-    var libraryId: String {
-        get { self[LibraryIdDefault.self] }
-        set { self[LibraryIdDefault.self] = newValue }
-    }
+internal extension EnvironmentValues {
+    @Entry var libraryID: String = "offline"
 }

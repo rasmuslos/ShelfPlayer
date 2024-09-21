@@ -11,7 +11,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct AudiobookHomePanel: View {
-    @Environment(\.libraryId) private var libraryId: String
+    @Environment(\.libraryID) private var libraryId: String
     
     @Default(.showAuthorsRow) private var showAuthorsRow
     @Default(.disableDiscoverRow) private var disableDiscoverRow

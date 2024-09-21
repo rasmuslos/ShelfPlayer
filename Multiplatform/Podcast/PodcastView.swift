@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 struct PodcastView: View {
-    @Environment(\.libraryId) private var libraryID
+    @Environment(\.libraryID) private var libraryID
     
     @State private var viewModel: PodcastViewModel
     

@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct SeriesView: View {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     
     @State private var viewModel: SeriesViewModel
     

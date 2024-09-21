@@ -64,8 +64,8 @@ private struct ProgressSlider: View {
                 Spacer()
                 
                 Group {
-                    if viewModel.seekDragging {
-                        Text(viewModel.played, format: .duration(unitsStyle: .abbreviated))
+                    if viewModel.seekDragging && viewModel.chapter != nil {
+                        Text(viewModel.itemCurrentTime, format: .duration(unitsStyle: .abbreviated))
                             .contentTransition(.numericText())
                     } else if let chapter = AudioPlayer.shared.chapter {
                         Text(chapter.title)

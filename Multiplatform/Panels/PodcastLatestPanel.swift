@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct PodcastLatestPanel: View {
-    @Environment(\.libraryId) private var libraryID
+    @Environment(\.libraryID) private var libraryID
     
     @State private var failed = false
     @State private var episodes = [Episode]()
