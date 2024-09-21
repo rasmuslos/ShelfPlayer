@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct PodcastLibraryPanel: View {
-    @Environment(\.libraryId) private var libraryID
+    @Environment(\.libraryID) private var libraryID
     
     @State private var search = ""
     @State private var lazyLoader = LazyLoadHelper<Podcast, String>.podcasts
@@ -76,5 +76,5 @@ internal struct PodcastLibraryPanel: View {
 #Preview {
     PodcastLibraryPanel()
         .environment(NowPlaying.ViewModel())
-        .environment(\.libraryId, "c5952562-1be6-4663-b352-8ee67a8981df")
+        .environment(\.libraryID, "c5952562-1be6-4663-b352-8ee67a8981df")
 }

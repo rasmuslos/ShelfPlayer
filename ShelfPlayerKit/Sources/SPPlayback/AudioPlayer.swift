@@ -204,6 +204,7 @@ public final class AudioPlayer {
     internal var currentTrackIndex: Int?
     
     internal var chapterTTL: TimeInterval
+    internal var lastWidgetUpdate: Date?
     
     internal var lastPause: Date?
     internal var playbackReporter: PlaybackReporter?

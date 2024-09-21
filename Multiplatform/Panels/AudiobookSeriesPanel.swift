@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct AudiobookSeriesPanel: View {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     @Default(.seriesDisplay) private var seriesDisplay
     
     @State private var lazyLoader = LazyLoadHelper<Series, Void>.series

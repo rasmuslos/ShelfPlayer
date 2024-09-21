@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct PodcastHomePanel: View {
-    @Environment(\.libraryId) private var libraryId: String
+    @Environment(\.libraryID) private var libraryId: String
     @Default(.hideFromContinueListening) private var hideFromContinueListening
     
     @State private var episodes = [HomeRow<Episode>]()
@@ -94,7 +94,7 @@ internal struct PodcastHomePanel: View {
 #Preview {
     NavigationStack {
         PodcastHomePanel()
-            .environment(\.libraryId, "95258240-9194-4c8a-954b-693b605872a5")
+            .environment(\.libraryID, "95258240-9194-4c8a-954b-693b605872a5")
             .environment(NowPlaying.ViewModel())
     }
 }

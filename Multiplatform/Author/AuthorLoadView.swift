@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct AuthorLoadView: View {
-    @Environment(\.libraryId) private var libraryId
+    @Environment(\.libraryID) private var libraryId
     
     let authorId: String
     

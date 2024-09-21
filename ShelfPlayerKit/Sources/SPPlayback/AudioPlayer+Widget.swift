@@ -30,7 +30,7 @@ internal extension AudioPlayer {
                 let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
                 nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
                 
-                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+                updateNowPlayingInfo()
             }
         }
     }
@@ -48,7 +48,7 @@ internal extension AudioPlayer {
             nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = nil
         }
         
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        updateNowPlayingInfo()
     }
     
     func updateLastBookmarkTime() {
@@ -58,10 +58,6 @@ internal extension AudioPlayer {
     }
     
     func updateNowPlayingWidget() {
-        guard !audioPlayer.items().isEmpty, item != nil else {
-            return
-        }
-        
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
         nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = playbackRate
         
@@ -69,12 +65,24 @@ internal extension AudioPlayer {
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = chapterCurrentTime
         nowPlayingInfo[MPNowPlayingInfoPropertyChapterNumber] = currentChapterIndex
         
-        MPNowPlayingInfoCenter.default().playbackState = playing ? .playing : .paused
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        updateNowPlayingInfo()
     }
     
     func clearNowPlayingMetadata() {
         nowPlayingInfo = [:]
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
+    
+    private func updateNowPlayingInfo() {
+        if let lastWidgetUpdate {
+            guard lastWidgetUpdate.timeIntervalSinceNow > -0.2 else {
+                return
+            }
+        }
+        
+        lastWidgetUpdate = .now
+        
+        MPNowPlayingInfoCenter.default().playbackState = playing ? .playing : .paused
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 }

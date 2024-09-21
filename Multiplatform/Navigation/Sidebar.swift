@@ -59,7 +59,7 @@ struct Sidebar: View {
         }
         .modifier(NowPlaying.RegularBarModifier())
         .environment(\.libraries, libraries)
-        .environment(\.libraryId, selection?.libraryId ?? "")
+        .environment(\.libraryID, selection?.libraryId ?? "")
         .modifier(Navigation.NotificationModifier(
             navigateAudiobook: {
                 selection = .init(libraryId: $1, panel: .audiobook(id: $0))
