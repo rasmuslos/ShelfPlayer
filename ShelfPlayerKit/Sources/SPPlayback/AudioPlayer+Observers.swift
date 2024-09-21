@@ -19,7 +19,9 @@ internal extension AudioPlayer {
                 updateChapterIndex()
             }
             
-            updateNowPlayingWidget()
+            Task {
+                await updateNowPlayingWidget()
+            }
             playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration)
             
             if let playItem = audioPlayer.currentItem, playing {

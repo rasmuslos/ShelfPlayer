@@ -45,7 +45,9 @@ public final class AudioPlayer {
                 SleepTimer.shared.didPause()
             }
             
-            updateNowPlayingWidget()
+            Task {
+                await updateNowPlayingWidget()
+            }
             playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
             
             NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
@@ -142,7 +144,9 @@ public final class AudioPlayer {
                 return
             }
             
-            populateNowPlayingWidgetMetadata()
+            Task {
+                await populateNowPlayingWidgetMetadata()
+            }
             NotificationCenter.default.post(name: AudioPlayer.itemDidChangeNotification, object: nil)
         }
     }
@@ -162,7 +166,9 @@ public final class AudioPlayer {
                 return
             }
             
-            updateNowPlayingTitle()
+            Task {
+                await updateNowPlayingTitle()
+            }
             NotificationCenter.default.post(name: AudioPlayer.chapterDidChangeNotification, object: nil)
         }
     }
@@ -198,7 +204,7 @@ public final class AudioPlayer {
     
     // MARK: Utility
     
-    internal var nowPlayingInfo: [String: Any]
+    internal var nowPlayingInfo: SyncDictionary<String, Any>
     
     internal var tracks: [PlayableItem.AudioTrack]
     internal var currentTrackIndex: Int?
@@ -244,7 +250,7 @@ public final class AudioPlayer {
         
         playbackRate = 0
         
-        nowPlayingInfo = [:]
+        nowPlayingInfo = .init([:])
         
         tracks = []
         currentTrackIndex = nil

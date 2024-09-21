@@ -3709,13 +3709,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Streiche nach unten um die Warteschlange zu sehen"
+            "value" : "Streiche nach unten um die Warteschlange zu sehen, nach oben um zu den Lesezeichen zu gelangen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Swipe down to view the queue"
+            "value" : "Swipe down to view the queue, up to get to the bookmarks"
           }
         }
       }
