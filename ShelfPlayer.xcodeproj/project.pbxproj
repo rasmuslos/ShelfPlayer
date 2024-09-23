@@ -116,6 +116,9 @@
 		3AB4529B2ACF4B4B005D5DBA /* SeriesLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529A2ACF4B4B005D5DBA /* SeriesLoadView.swift */; };
 		3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */; };
 		3AB4CBCE2BB3467000C2F898 /* CustomHeaderEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4CBCD2BB3467000C2F898 /* CustomHeaderEditView.swift */; };
+		3AB4D6652CA19D2900876C8E /* LegacyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4D6642CA19D1F00876C8E /* LegacyRouter.swift */; };
+		3AB4D6672CA19D6300876C8E /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4D6662CA19D6000876C8E /* Tabs.swift */; };
+		3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4D6682CA19DE600876C8E /* TabValue.swift */; };
 		3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */; };
 		3AB695342ACF39F000823049 /* Array+Repeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695332ACF39F000823049 /* Array+Repeat.swift */; };
 		3AB695362ACF3BAF00823049 /* AuthorLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB695352ACF3BAF00823049 /* AuthorLoadView.swift */; };
@@ -311,6 +314,9 @@
 		3AB4529A2ACF4B4B005D5DBA /* SeriesLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesLoadView.swift; sourceTree = "<group>"; };
 		3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesView.swift; sourceTree = "<group>"; };
 		3AB4CBCD2BB3467000C2F898 /* CustomHeaderEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeaderEditView.swift; sourceTree = "<group>"; };
+		3AB4D6642CA19D1F00876C8E /* LegacyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyRouter.swift; sourceTree = "<group>"; };
+		3AB4D6662CA19D6000876C8E /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
+		3AB4D6682CA19DE600876C8E /* TabValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabValue.swift; sourceTree = "<group>"; };
 		3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyLoadHelper.swift; sourceTree = "<group>"; };
 		3AB695332ACF39F000823049 /* Array+Repeat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Repeat.swift"; sourceTree = "<group>"; };
 		3AB695352ACF3BAF00823049 /* AuthorLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorLoadView.swift; sourceTree = "<group>"; };
@@ -530,6 +536,8 @@
 		3A27F0EE2CA15DF7005DE87D /* iOS 17 */ = {
 			isa = PBXGroup;
 			children = (
+				3AB4D6662CA19D6000876C8E /* Tabs.swift */,
+				3AB4D6642CA19D1F00876C8E /* LegacyRouter.swift */,
 			);
 			path = "iOS 17";
 			sourceTree = "<group>";
@@ -783,6 +791,7 @@
 		3AADC0352B6D0D3D00C4088D /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
+				3AB4D6682CA19DE600876C8E /* TabValue.swift */,
 				3A27F0F02CA15E08005DE87D /* TabRouter.swift */,
 				3A7A9C962BE613E200701D58 /* Navigation.swift */,
 				3A0AE6A52AB623F400ACCD68 /* ContentView.swift */,
@@ -1030,6 +1039,7 @@
 				3A8810F02AD2C0E4009696D1 /* PodcastUnavailableView.swift in Sources */,
 				3AA19BA22AD6C80000C468EA /* EpisodeList.swift in Sources */,
 				3AA9541F2AD2925C0031C20D /* RowTitle.swift in Sources */,
+				3AB4D6652CA19D2900876C8E /* LegacyRouter.swift in Sources */,
 				3A1A670D2BD81C0200528DA6 /* SafeAreaModifier.swift in Sources */,
 				3AA954302AD2AE520031C20D /* EpisodePlayButton.swift in Sources */,
 				3AB695342ACF39F000823049 /* Array+Repeat.swift in Sources */,
@@ -1100,12 +1110,14 @@
 				3A1A67142BD827D200528DA6 /* RegularButtons.swift in Sources */,
 				3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */,
 				3A1A67102BD81DDC00528DA6 /* RegularBarModifier.swift in Sources */,
+				3AB4D6672CA19D6300876C8E /* Tabs.swift in Sources */,
 				3A91B4F42C83003C008D444C /* BetterDisclosureGroupStyle.swift in Sources */,
 				3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */,
 				3A9874272B599BA600B2704F /* Chapters.swift in Sources */,
 				3A77B7022ACDF01C00F22C7F /* SeriesUnavailableView.swift in Sources */,
 				3ACD59862BE29DD30060A841 /* Intents.intentdefinition in Sources */,
 				3A337E3A2B0E13CE009C932A /* EpisodeContextMenuModifier.swift in Sources */,
+				3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */,
 				3A1011842AD697B600AAE220 /* CompactButtons.swift in Sources */,
 				3AD6BE852B89060F00EEA347 /* CarPlay+NowPlaying.swift in Sources */,
 				3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */,
