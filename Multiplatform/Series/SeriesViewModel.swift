@@ -16,9 +16,9 @@ internal class SeriesViewModel {
     
     @MainActor private(set) var lazyLoader: LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder>
     
-    @MainActor internal var libraryID: String! {
+    @MainActor internal var library: Library! {
         didSet {
-            lazyLoader.libraryID = libraryID
+            lazyLoader.library = library
         }
     }
     

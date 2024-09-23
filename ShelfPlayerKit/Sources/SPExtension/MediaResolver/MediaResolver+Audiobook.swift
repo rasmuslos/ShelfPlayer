@@ -24,7 +24,7 @@ public extension MediaResolver {
         }
             
         if !runOffline, let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) {
-            result += await libraries.parallelMap { (try? await AudiobookshelfClient.shared.items(search: audiobookName, libraryId: $0.id).0) ?? [] }.reduce([], +)
+            result += await libraries.parallelMap { (try? await AudiobookshelfClient.shared.items(search: audiobookName, libraryID: $0.id).0) ?? [] }.reduce([], +)
         }
         
         result = result.filter {

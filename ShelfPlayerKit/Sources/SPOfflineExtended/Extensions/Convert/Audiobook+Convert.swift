@@ -13,7 +13,7 @@ internal extension Audiobook {
     convenience init(audiobook: OfflineAudiobook) {
         self.init(
             id: audiobook.id,
-            libraryId: audiobook.libraryId,
+            libraryID: audiobook.libraryId,
             name: audiobook.name,
             author: audiobook.author,
             description: audiobook.overview,

@@ -89,7 +89,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
             return
         }
         
-        guard let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) else {
+        guard let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) else {
             return
         }
         

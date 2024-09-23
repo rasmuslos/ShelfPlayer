@@ -13,7 +13,7 @@ internal extension Podcast {
     convenience init(_ podcast: OfflinePodcast) {
         self.init(
             id: podcast.id,
-            libraryId: podcast.libraryId,
+            libraryID: podcast.libraryId,
             name: podcast.name,
             author: podcast.author,
             description: podcast.overview,

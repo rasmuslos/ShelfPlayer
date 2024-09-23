@@ -9,11 +9,13 @@ import SwiftUI
 
 internal struct LoadingView: View {    
     var body: some View {
-        VStack(spacing: 4) {
-            ProgressIndicator()
-            Text("loading")
+        UnavailableWrapper {
+            VStack(spacing: 4) {
+                ProgressIndicator()
+                Text("loading")
+            }
+            .foregroundStyle(.gray)
         }
-        .foregroundStyle(.gray)
     }
 }
 

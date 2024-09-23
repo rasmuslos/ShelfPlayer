@@ -48,7 +48,7 @@ internal extension Audiobook {
         
         self.init(
             id: item.id,
-            libraryId: item.libraryId!,
+            libraryID: item.libraryId!,
             name: media.metadata.title!,
             author: media.metadata.authorName?.trimmingCharacters(in: .whitespacesAndNewlines),
             description: media.metadata.description?.trimmingCharacters(in: .whitespacesAndNewlines),

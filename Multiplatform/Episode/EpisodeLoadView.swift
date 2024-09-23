@@ -8,9 +8,7 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct EpisodeLoadView: View {
-    @Environment(\.libraryID) private var libraryId
-    
+internal struct EpisodeLoadView: View {
     let id: String
     let podcastId: String
     
@@ -18,24 +16,39 @@ struct EpisodeLoadView: View {
     @State private var episode: Episode?
     
     var body: some View {
-        if failed {
-            EpisodeUnavailableView()
-        } else if let episode = episode {
+        if let episode {
             EpisodeView(episode)
+        } else if failed {
+            EpisodeUnavailableView()
+                .refreshable {
+                    await fetchAudiobook()
+                }
         } else {
             LoadingView()
-                .task { await fetchAudiobook() }
-                .refreshable { await fetchAudiobook() }
+                .task {
+                    await fetchAudiobook()
+                }
+                .refreshable {
+                    await fetchAudiobook()
+                }
         }
     }
     
-    private func fetchAudiobook() async {
-        failed = false
+    private nonisolated func fetchAudiobook() async {
+        await MainActor.withAnimation {
+            failed = false
+        }
         
-        if let episode = try? await AudiobookshelfClient.shared.item(itemId: podcastId, episodeId: id).0 as? Episode {
+        guard let episode = try? await AudiobookshelfClient.shared.item(itemId: podcastId, episodeId: id).0 as? Episode else {
+            await MainActor.withAnimation {
+                failed = true
+            }
+            
+            return
+        }
+        
+        await MainActor.withAnimation {
             self.episode = episode
-        } else {
-            failed = true
         }
     }
 }

@@ -13,7 +13,7 @@ import ShelfPlayerKit
 @Observable
 internal final class AuthorViewModel {
     @MainActor private(set) var author: Author
-    @MainActor var libraryID: String!
+    @MainActor var library: Library!
     
     @MainActor private(set) var series = [Series]()
     @MainActor private(set) var audiobooks = [Audiobook]()
@@ -59,7 +59,7 @@ internal extension AuthorViewModel {
     }
     
     func load() async {
-        guard let (author, audiobooks, series) = try? await AudiobookshelfClient.shared.author(authorId: author.id, libraryId: libraryID) else {
+        guard let (author, audiobooks, series) = try? await AudiobookshelfClient.shared.author(authorId: author.id, libraryID: library.id) else {
             await MainActor.run {
                 errorNotify.toggle()
             }

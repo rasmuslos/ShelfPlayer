@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct AudiobookLibraryPanel: View {
-    @Environment(\.libraryID) private var libraryID
+    @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.audiobooksFilter) private var filter
@@ -56,12 +56,15 @@ internal struct AudiobookLibraryPanel: View {
                 if lazyLoader.failed {
                     ErrorView()
                         .refreshable {
-                            lazyLoader.initialLoad()
+                            await lazyLoader.refresh()
                         }
                 } else {
                     LoadingView()
                         .task {
                             lazyLoader.initialLoad()
+                        }
+                        .refreshable {
+                            await lazyLoader.refresh()
                         }
                 }
             } else {
@@ -113,7 +116,7 @@ internal struct AudiobookLibraryPanel: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
         .onAppear {
-            lazyLoader.libraryID = libraryID
+            lazyLoader.library = library
         }
     }
 }

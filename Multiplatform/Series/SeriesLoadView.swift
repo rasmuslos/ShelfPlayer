@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct SeriesLoadView: View {
-    @Environment(\.libraryID) private var libraryId
+    @Environment(\.library) private var library
     
     let series: Audiobook.ReducedSeries
     
@@ -29,6 +29,9 @@ internal struct SeriesLoadView: View {
                 .task {
                     await loadSeries()
                 }
+                .refreshable {
+                    await loadSeries()
+                }
         }
     }
     
@@ -36,14 +39,14 @@ internal struct SeriesLoadView: View {
         var id = await series.id
         
         if id == nil {
-            id = try? await AudiobookshelfClient.shared.seriesID(name: series.name, libraryId: libraryId)
+            id = try? await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: library.id)
         }
         
         guard let id else {
             return
         }
         
-        guard let series = try? await AudiobookshelfClient.shared.series(seriesId: id, libraryId: libraryId) else {
+        guard let series = try? await AudiobookshelfClient.shared.series(seriesId: id, libraryID: library.id) else {
             await MainActor.withAnimation {
                 failed = true
             }

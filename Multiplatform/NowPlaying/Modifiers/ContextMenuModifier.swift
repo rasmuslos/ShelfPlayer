@@ -12,11 +12,11 @@ import SPPlayback
 
 internal extension NowPlaying {
     struct ContextMenuModifier: ViewModifier {
-        @Environment(\.libraryID) private var libraryId
+        @Environment(\.library) private var library
         @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         private var offline: Bool {
-            libraryId == "offline"
+            library.type == .offline
         }
         
         func body(content: Content) -> some View {
@@ -48,7 +48,7 @@ internal extension NowPlaying {
                             if let author = audiobook.author {
                                 Button {
                                     Task {
-                                        if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) {
+                                        if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) {
                                             Navigation.navigate(authorId: authorId)
                                         }
                                     }

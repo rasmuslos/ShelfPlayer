@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 struct AuthorView: View {
-    @Environment(\.libraryID) private var libraryId
+    @Environment(\.library) private var library
     
     @State private var viewModel: AuthorViewModel
     
@@ -21,10 +21,7 @@ struct AuthorView: View {
     var loadingPresentation: some View {
         VStack(spacing: 0) {
             Header()
-            
-            Spacer()
             LoadingView()
-            Spacer()
         }
     }
     
@@ -102,7 +99,7 @@ struct AuthorView: View {
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .environment(viewModel)
         .onAppear {
-            viewModel.libraryID = libraryId
+            viewModel.library = library
         }
         .task {
             await viewModel.load()
@@ -140,5 +137,6 @@ struct AuthorView: View {
     NavigationStack {
         AuthorView(.fixture)
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

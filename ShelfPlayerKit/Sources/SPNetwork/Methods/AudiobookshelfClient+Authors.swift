@@ -13,12 +13,12 @@ public extension AudiobookshelfClient {
         Author(item: try await request(ClientRequest<AudiobookshelfItem>(path: "api/authors/\(authorId)", method: "GET")))
     }
     
-    func authors(libraryId: String) async throws -> [Author] {
-        try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryId)/authors", method: "GET")).authors.map(Author.init)
+    func authors(libraryID: String) async throws -> [Author] {
+        try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: "GET")).authors.map(Author.init)
     }
     
-    func authorID(name: String, libraryId: String) async throws -> String {
-        let response = try? await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
+    func authorID(name: String, libraryID: String) async throws -> String {
+        let response = try? await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "1"),
         ]))
@@ -30,9 +30,9 @@ public extension AudiobookshelfClient {
         throw ClientError.missing
     }
     
-    func author(authorId: String, libraryId: String) async throws -> (Author, [Audiobook], [Series]) {
+    func author(authorId: String, libraryID: String) async throws -> (Author, [Audiobook], [Series]) {
         let response = try await request(ClientRequest<AudiobookshelfItem>(path: "api/authors/\(authorId)", method: "GET", query: [
-            URLQueryItem(name: "library", value: libraryId),
+            URLQueryItem(name: "library", value: libraryID),
             URLQueryItem(name: "include", value: "items,series"),
         ]))
         

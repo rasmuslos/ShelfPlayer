@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct SearchView: View {
-    @Environment(\.libraryID) private var libraryId
+    @Environment(\.library) private var library
     
     @State private var viewModel: SearchViewModel = .init()
     
@@ -55,7 +55,7 @@ internal struct SearchView: View {
             viewModel.load()
         }
         .onAppear {
-            viewModel.libraryId = libraryId
+            viewModel.library = library
         }
         .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
     }
@@ -63,7 +63,7 @@ internal struct SearchView: View {
 
 @Observable
 private class SearchViewModel {
-    @MainActor var libraryId: String!
+    @MainActor var library: Library!
     
     @MainActor private var _search: String
     private var searchTask: Task<Void, Error>?
@@ -133,7 +133,7 @@ private extension SearchViewModel {
                 self.loading = true
             }
             
-            let (audiobooks, _, authors, series) = try await AudiobookshelfClient.shared.items(search: search, libraryId: libraryId)
+            let (audiobooks, _, authors, series) = try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id)
             
             try Task.checkCancellation()
             

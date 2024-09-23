@@ -14,7 +14,7 @@ import SPPlayback
 @Observable
 final internal class AudiobookViewModel {
     @MainActor var audiobook: Audiobook
-    @MainActor var libraryId: String!
+    @MainActor var library: Library!
     
     @MainActor private(set) var dominantColor: Color?
     
@@ -37,7 +37,6 @@ final internal class AudiobookViewModel {
     @MainActor
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
-        libraryId = audiobook.libraryId
         
         dominantColor = nil
         
@@ -115,7 +114,7 @@ private extension AudiobookViewModel {
     }
     
     func loadAuthor() async {
-        guard let author = await audiobook.author, let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: libraryId) else {
+        guard let author = await audiobook.author, let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: library.id) else {
             return
         }
         
@@ -123,7 +122,7 @@ private extension AudiobookViewModel {
             self.authorID = authorId
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryId: libraryId).1 else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryID: library.id).1 else {
             return
         }
         
@@ -137,13 +136,13 @@ private extension AudiobookViewModel {
         
         if let id = await audiobook.series.first?.id {
             seriesId = id
-        } else if let name = await audiobook.series.first?.name, let id = try? await AudiobookshelfClient.shared.seriesID(name: name, libraryId: libraryId) {
+        } else if let name = await audiobook.series.first?.name, let id = try? await AudiobookshelfClient.shared.seriesID(name: name, libraryID: library.id) {
             seriesId = id
         } else {
             return
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryId: libraryId, sortOrder: "item.media.metadata.seriesName", ascending: true, limit: 10_000, page: 0).0 else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryID: library.id, sortOrder: "item.media.metadata.seriesName", ascending: true, limit: 10_000, page: 0).0 else {
             return
         }
         
@@ -157,7 +156,7 @@ private extension AudiobookViewModel {
             return
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(narratorName: narratorName, libraryId: libraryId) else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(narratorName: narratorName, libraryID: library.id) else {
             return
         }
         

@@ -162,7 +162,6 @@ internal struct PlayButton: View {
         }
         .foregroundColor(background.isLight ? .black : .white)
         .animation(.smooth, value: color)
-        .popoverTip(PlayButtonTip())
     }
     
     var body: some View {

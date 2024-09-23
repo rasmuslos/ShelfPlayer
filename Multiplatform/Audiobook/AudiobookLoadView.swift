@@ -9,8 +9,6 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct AudiobookLoadView: View {
-    @Environment(\.libraryID) private var libraryId
-    
     let audiobookId: String
     
     @State private var failed = false
@@ -27,6 +25,9 @@ internal struct AudiobookLoadView: View {
         } else {
             LoadingView()
                 .task {
+                    await loadAudiobook()
+                }
+                .refreshable {
                     await loadAudiobook()
                 }
         }

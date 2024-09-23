@@ -11,11 +11,11 @@ public class PlayableItem: Item {
     public let size: Int64
     public let duration: TimeInterval
     
-    init(id: String, libraryId: String, type: ItemType, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: TimeInterval) {
+    init(id: String, libraryID: String, type: ItemType, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: TimeInterval) {
         self.size = size
         self.duration = duration
         
-        super.init(id: id, libraryId: libraryId, type: type, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)
+        super.init(id: id, libraryID: libraryID, type: type, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)
     }
 }
 

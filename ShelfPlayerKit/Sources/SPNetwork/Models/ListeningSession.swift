@@ -12,7 +12,7 @@ import UIKit
 public struct ListeningSession: Identifiable, Codable {
     public let id: String
     public let userId: String
-    public let libraryId: String?
+    public let libraryID: String?
     
     public let libraryItemId: String
     public let episodeId: String?

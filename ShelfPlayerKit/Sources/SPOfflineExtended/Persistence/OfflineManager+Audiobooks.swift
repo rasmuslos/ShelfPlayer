@@ -68,7 +68,7 @@ public extension OfflineManager {
         
         let offlineAudiobook = OfflineAudiobook(
             id: audiobook.id,
-            libraryId: audiobook.libraryId,
+            libraryId: audiobook.libraryID,
             name: audiobook.name,
             author: audiobook.author,
             overview: audiobook.description,
