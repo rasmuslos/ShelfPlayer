@@ -70,6 +70,7 @@ internal struct PodcastLibraryPanel: View {
         .navigationTitle("panel.library")
         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.podcasts")
         .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
         .onAppear {
             lazyLoader.library = library
         }
