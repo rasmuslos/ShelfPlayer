@@ -51,7 +51,7 @@ private struct Row: View {
                         EpisodePlayButton(episode: episode, loading: $loading)
                         
                         if let releaseDate = episode.releaseDate {
-                            Text(releaseDate, style: .date)
+                            Text(releaseDate, format: .dateTime.day(.twoDigits).month(.twoDigits))
                                 .font(.caption.smallCaps())
                                 .foregroundStyle(.secondary)
                                 .padding(.leading, 8)
