@@ -22,9 +22,10 @@ internal struct ContentView: View {
     @ViewBuilder
     private var onlineContent: some View {
         Group {
-            if #available(iOS 18, *) {
+            if #available(iOS 18, *), false {
                 TabRouter()
             } else {
+                LegacyRouter()
             }
         }
         .onAppear {

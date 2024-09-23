@@ -103,6 +103,7 @@ private struct ButtonText: View {
                 .padding(.trailing, progressVisible ? 8 : 0)
             
             Text(label)
+                .lineLimit(1)
                 .contentTransition(.numericText(countsDown: true))
         }
         .font(.caption2)
