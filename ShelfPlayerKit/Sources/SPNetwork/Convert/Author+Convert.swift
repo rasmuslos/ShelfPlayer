@@ -14,7 +14,7 @@ internal extension Author {
         
         self.init(
             id: item.id,
-            libraryId: item.libraryId!,
+            libraryID: item.libraryId!,
             name: item.name!,
             description: item.description,
             cover: Cover(item: item),

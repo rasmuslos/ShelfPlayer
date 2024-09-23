@@ -12,7 +12,7 @@ import SPPlayback
 
 internal extension NowPlaying {
     struct Title: View {
-        @Environment(\.libraryID) private var libraryId
+        @Environment(\.library) private var library
         @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         @Default(.useSerifFont) private var useSerifFont
@@ -20,7 +20,7 @@ internal extension NowPlaying {
         let item: PlayableItem
         
         private var offline: Bool {
-            libraryId == "offline"
+            library.type == .offline
         }
         
         var body: some View {
@@ -85,7 +85,7 @@ internal extension NowPlaying {
                                 if let author = audiobook.author {
                                     Button(action: {
                                         Task {
-                                            if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryId: audiobook.libraryId) {
+                                            if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) {
                                                 Navigation.navigate(authorId: authorId)
                                             }
                                         }

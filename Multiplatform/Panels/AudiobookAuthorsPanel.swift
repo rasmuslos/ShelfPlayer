@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct AudiobookAuthorsPanel: View {
-    @Environment(\.libraryID) private var libraryId
+    @Environment(\.library) private var library
     @Default(.authorsAscending) private var authorsAscending
     
     @State private var failed = false
@@ -32,6 +32,9 @@ internal struct AudiobookAuthorsPanel: View {
             } else {
                 LoadingView()
                     .task {
+                        await loadAuthors()
+                    }
+                    .refreshable {
                         await loadAuthors()
                     }
             }
@@ -57,7 +60,7 @@ internal struct AudiobookAuthorsPanel: View {
     }
     
     private nonisolated func loadAuthors() async {
-        guard let authors = try? await AudiobookshelfClient.shared.authors(libraryId: libraryId) else {
+        guard let authors = try? await AudiobookshelfClient.shared.authors(libraryID: library.id) else {
             await MainActor.withAnimation {
                 failed = true
             }

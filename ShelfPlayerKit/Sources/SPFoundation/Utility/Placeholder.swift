@@ -10,7 +10,7 @@ import Foundation
 public extension Episode {
     static let placeholder: Episode = .init(
         id: "placeholder",
-        libraryId: "placeholder",
+        libraryID: "placeholder",
         name: "Placeholder",
         author: nil,
         description: nil,

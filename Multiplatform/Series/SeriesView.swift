@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct SeriesView: View {
-    @Environment(\.libraryID) private var libraryId
+    @Environment(\.library) private var library
     
     @State private var viewModel: SeriesViewModel
     
@@ -74,7 +74,7 @@ internal struct SeriesView: View {
         .environment(viewModel)
         .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
-            viewModel.libraryID = libraryId
+            viewModel.library = library
             viewModel.lazyLoader.initialLoad()
         }
         .refreshable {
@@ -89,7 +89,7 @@ internal struct SeriesView: View {
                 "seriesId": viewModel.series.id,
                 "seriesName": viewModel.series.name,
             ]
-            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: libraryId).appending(path: "series").appending(path: viewModel.series.id)
+            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: library.id).appending(path: "series").appending(path: viewModel.series.id)
         }
     }
 }

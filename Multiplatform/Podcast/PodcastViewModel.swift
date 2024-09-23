@@ -16,7 +16,7 @@ internal final class PodcastViewModel {
     @MainActor let podcast: Podcast
     @MainActor private(set) var episodes: [Episode]
     
-    @MainActor var libraryID: String!
+    @MainActor var library: Library!
     
     @MainActor var dominantColor: Color?
     @MainActor var toolbarVisible: Bool

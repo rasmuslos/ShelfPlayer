@@ -74,7 +74,7 @@ public extension OfflineManager {
         
         let offlineEpisode = OfflineEpisode(
             id: episode.id,
-            libraryId: episode.libraryId,
+            libraryId: episode.libraryID,
             name: episode.name,
             author: episode.author,
             overview: episode.description,

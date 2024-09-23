@@ -13,7 +13,7 @@ internal extension Episode {
     convenience init(_ episode: OfflineEpisode) {
         self.init(
             id: episode.id,
-            libraryId: episode.libraryId,
+            libraryID: episode.libraryId,
             name: episode.name,
             author: episode.author,
             description: episode.overview,

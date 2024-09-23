@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct AudiobookSeriesPanel: View {
-    @Environment(\.libraryID) private var libraryId
+    @Environment(\.library) private var library
     @Default(.seriesDisplay) private var seriesDisplay
     
     @State private var lazyLoader = LazyLoadHelper<Series, Void>.series
@@ -27,6 +27,9 @@ internal struct AudiobookSeriesPanel: View {
                     LoadingView()
                         .onAppear {
                             lazyLoader.initialLoad()
+                        }
+                        .refreshable {
+                            await lazyLoader.refresh()
                         }
                 }
             } else {
@@ -71,7 +74,7 @@ internal struct AudiobookSeriesPanel: View {
         .navigationTitle("panel.series")
         .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
-            lazyLoader.libraryID = libraryId
+            lazyLoader.library = library
         }
     }
 }

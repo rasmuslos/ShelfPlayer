@@ -20,7 +20,7 @@ internal extension OfflineManager {
         
         let offlinePodcast = OfflinePodcast(
             id: podcast.id,
-            libraryId: podcast.libraryId,
+            libraryId: podcast.libraryID,
             name: podcast.name,
             author: podcast.author,
             overview: podcast.description,

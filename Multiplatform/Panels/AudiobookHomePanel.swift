@@ -11,7 +11,8 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct AudiobookHomePanel: View {
-    @Environment(\.libraryID) private var libraryId: String
+    @Environment(\.library) private var library
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.showAuthorsRow) private var showAuthorsRow
     @Default(.disableDiscoverRow) private var disableDiscoverRow
@@ -54,6 +55,9 @@ internal struct AudiobookHomePanel: View {
                         .task {
                             await fetchItems()
                         }
+                        .refreshable {
+                            await fetchItems()
+                        }
                 }
             } else {
                 ScrollView {
@@ -92,7 +96,8 @@ internal struct AudiobookHomePanel: View {
                 }
             }
         }
-        .navigationTitle("panel.home")
+        .navigationTitle(library.name)
+        .modifier(SelectLibraryModifier(isCompact: horizontalSizeClass == .compact))
         .modifier(NowPlaying.SafeAreaModifier())
     }
     
@@ -109,7 +114,7 @@ internal struct AudiobookHomePanel: View {
         }
         Task {
             do {
-                let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
+                let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await AudiobookshelfClient.shared.home(libraryID: library.id)
                 
                 await MainActor.withAnimation {
                     _authors = home.1
