@@ -52,16 +52,16 @@ internal extension Navigation {
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAudiobookNotification)) { notification in
                     if let id = notification.object as? String {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.item(itemId: id, episodeId: nil).0.libraryId
-                            navigateAudiobook(id, libraryId)
+                            let libraryID = try await AudiobookshelfClient.shared.item(itemId: id, episodeId: nil).0.libraryID
+                            navigateAudiobook(id, libraryID)
                         }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAuthorNotification)) { notification in
                     if let id = notification.object as? String {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.author(authorId: id).libraryId
-                            navigateAuthor(id, libraryId)
+                            let libraryID = try await AudiobookshelfClient.shared.author(authorId: id).libraryID
+                            navigateAuthor(id, libraryID)
                         }
                     }
                 }
@@ -71,26 +71,26 @@ internal extension Navigation {
                             // this is certainly something
                             
                             guard let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) else { return }
-                            let fetched = await libraries.parallelMap { (try? await AudiobookshelfClient.shared.series(libraryId: $0.id, limit: 10_000, page: 0).0.filter { $0.name == name }) ?? [] }
+                            let fetched = await libraries.parallelMap { (try? await AudiobookshelfClient.shared.series(libraryID: $0.id, limit: 10_000, page: 0).0.filter { $0.name == name }) ?? [] }
                             
-                            guard let libraryId = fetched.flatMap({ $0 }).first?.libraryId else { return }
-                            navigateSeries(name, libraryId)
+                            guard let libraryID = fetched.flatMap({ $0 }).first?.libraryID else { return }
+                            navigateSeries(name, libraryID)
                         }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigatePodcastNotification)) { notification in
                     if let id = notification.object as? String {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.podcast(podcastId: id).0.libraryId
-                            navigatePodcast(id, libraryId)
+                            let libraryID = try await AudiobookshelfClient.shared.podcast(podcastId: id).0.libraryID
+                            navigatePodcast(id, libraryID)
                         }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateEpisodeNotification)) { notification in
                     if let (episodeId, podcastId) = notification.object as? (String, String) {
                         Task {
-                            let libraryId = try await AudiobookshelfClient.shared.podcast(podcastId: podcastId).0.libraryId
-                            navigateEpisode(episodeId, podcastId, libraryId)
+                            let libraryID = try await AudiobookshelfClient.shared.podcast(podcastId: podcastId).0.libraryID
+                            navigateEpisode(episodeId, podcastId, libraryID)
                         }
                     }
                 }
@@ -165,5 +165,5 @@ internal extension Navigation {
 }
 
 internal extension EnvironmentValues {
-    @Entry var libraryID: String = "offline"
+    @Entry var library: Library = .init(id: "offine", name: "ShelfPlayer", type: .offline, displayOrder: -1)
 }

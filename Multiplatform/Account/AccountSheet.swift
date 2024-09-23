@@ -149,7 +149,7 @@ struct AccountSheet: View {
                             ImagePipeline.shared.cache.removeAll()
                             try? OfflineManager.shared.deleteProgressEntities()
                             
-                            NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
+                            NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
                                 "offline": false,
                             ])
                         } label: {

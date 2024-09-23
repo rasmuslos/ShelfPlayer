@@ -9,8 +9,8 @@ import Foundation
 import SPFoundation
 
 public extension AudiobookshelfClient {
-    func seriesID(name: String, libraryId: String) async throws -> String {
-        let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryId)/search", method: "GET", query: [
+    func seriesID(name: String, libraryID: String) async throws -> String {
+        let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "10"),
         ]))
@@ -29,12 +29,12 @@ public extension AudiobookshelfClient {
         return series.id
     }
     
-    func series(seriesId: String, libraryId: String) async throws -> Series {
-        Series(item: try await request(ClientRequest<AudiobookshelfItem>(path: "api/libraries/\(libraryId)/series/\(seriesId)", method: "GET")))
+    func series(seriesId: String, libraryID: String) async throws -> Series {
+        Series(item: try await request(ClientRequest<AudiobookshelfItem>(path: "api/libraries/\(libraryID)/series/\(seriesId)", method: "GET")))
     }
     
-    func series(libraryId: String, limit: Int, page: Int) async throws -> ([Series], Int) {
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/series", method: "GET", query: [
+    func series(libraryID: String, limit: Int, page: Int) async throws -> ([Series], Int) {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: "GET", query: [
             URLQueryItem(name: "sort", value: "name"),
             URLQueryItem(name: "desc", value: "0"),
             URLQueryItem(name: "filter", value: "all"),
@@ -45,8 +45,8 @@ public extension AudiobookshelfClient {
         return (response.results.map(Series.init), response.total)
     }
     
-    func audiobooks(seriesId: String, libraryId: String, sortOrder: String, ascending: Bool, limit: Int, page: Int) async throws -> ([Audiobook], Int) {
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryId)/items", method: "GET", query: [
+    func audiobooks(seriesId: String, libraryID: String, sortOrder: String, ascending: Bool, limit: Int, page: Int) async throws -> ([Audiobook], Int) {
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: "GET", query: [
             .init(name: "page", value: "\(page)"),
             .init(name: "limit", value: "\(limit)"),
             .init(name: "sort", value: "\(sortOrder)"),

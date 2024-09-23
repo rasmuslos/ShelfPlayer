@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 struct PodcastView: View {
-    @Environment(\.libraryID) private var libraryID
+    @Environment(\.library) private var library
     
     @State private var viewModel: PodcastViewModel
     
@@ -50,7 +50,7 @@ struct PodcastView: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)
         .onAppear {
-            viewModel.libraryID = libraryID
+            viewModel.library = library
         }
         .task {
             await viewModel.load()

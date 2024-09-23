@@ -97,13 +97,13 @@ internal extension AudioPlayer {
                 seriesID = id
             } else {
                 do {
-                    seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryId: audiobook.libraryId)
+                    seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: audiobook.libraryID)
                 } catch {
                     continue
                 }
             }
             
-            if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryId: audiobook.libraryId, sortOrder: "item.media.metadata.seriesName", ascending: true, limit: 10_000, page: 0).0 {
+            if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryID: audiobook.libraryID, sortOrder: "item.media.metadata.seriesName", ascending: true, limit: 10_000, page: 0).0 {
                 handleNextAudiobooksInSeries(audiobooks, audiobook: audiobook)
                 break
             }

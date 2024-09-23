@@ -9,7 +9,9 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct AudiobookView: View {
+    @Environment(\.library) private var library
     @Environment(\.defaultMinListRowHeight) private var minimumHeight
+    
     @State private var viewModel: AudiobookViewModel
     
     internal init(_ audiobook: Audiobook) {
@@ -73,6 +75,9 @@ internal struct AudiobookView: View {
         .modifier(ToolbarModifier())
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .environment(viewModel)
+        .onAppear {
+            viewModel.library = library
+        }
         .task {
             await viewModel.load()
         }

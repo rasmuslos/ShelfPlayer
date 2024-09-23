@@ -643,14 +643,19 @@
     },
     "account.server %@ %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@)"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ (%2$@)"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "account.settings" : {
       "localizations" : {
@@ -956,25 +961,35 @@
     },
     "account.version %@ %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer %1$@ (%2$@)"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer %1$@ (%2$@)"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "account.version.database %@ %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenbank: %1$@ (%2$@)"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Datenbank: %1$@ (%2$@)"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "added %@" : {
       "localizations" : {
@@ -4484,6 +4499,7 @@
       }
     },
     "splitView.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4506,6 +4522,7 @@
       }
     },
     "splitView.empty.description" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4528,6 +4545,7 @@
       }
     },
     "tab.home" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4550,6 +4568,7 @@
       }
     },
     "tab.latest" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4572,6 +4591,7 @@
       }
     },
     "tab.library" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4594,6 +4614,7 @@
       }
     },
     "tab.search" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4616,6 +4637,7 @@
       }
     },
     "tab.series" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

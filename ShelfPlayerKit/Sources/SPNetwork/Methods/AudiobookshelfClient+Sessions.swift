@@ -112,7 +112,7 @@ public extension AudiobookshelfClient {
         let session = ListeningSession(
             id: id,
             userId: userId,
-            libraryId: item.libraryId,
+            libraryID: item.libraryId,
             libraryItemId: itemId,
             episodeId: episodeId,
             mediaType: item.mediaType,

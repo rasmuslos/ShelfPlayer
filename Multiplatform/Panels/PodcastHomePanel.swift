@@ -10,7 +10,9 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct PodcastHomePanel: View {
-    @Environment(\.libraryID) private var libraryId: String
+    @Environment(\.library) private var library
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
     @Default(.hideFromContinueListening) private var hideFromContinueListening
     
     @State private var episodes = [HomeRow<Episode>]()
@@ -28,7 +30,10 @@ internal struct PodcastHomePanel: View {
                         }
                 } else {
                     LoadingView()
-                        .task{
+                        .task {
+                            await fetchItems()
+                        }
+                        .refreshable {
                             await fetchItems()
                         }
                 }
@@ -68,6 +73,7 @@ internal struct PodcastHomePanel: View {
             }
         }
         .navigationTitle("panel.home")
+        .modifier(SelectLibraryModifier(isCompact: horizontalSizeClass == .compact))
         .modifier(NowPlaying.SafeAreaModifier())
     }
     
@@ -77,7 +83,7 @@ internal struct PodcastHomePanel: View {
         }
         
         do {
-            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await AudiobookshelfClient.shared.home(libraryId: libraryId)
+            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await AudiobookshelfClient.shared.home(libraryID: library.id)
             
             await MainActor.withAnimation {
                 self.episodes = home.1
@@ -94,7 +100,6 @@ internal struct PodcastHomePanel: View {
 #Preview {
     NavigationStack {
         PodcastHomePanel()
-            .environment(\.libraryID, "95258240-9194-4c8a-954b-693b605872a5")
             .environment(NowPlaying.ViewModel())
     }
 }

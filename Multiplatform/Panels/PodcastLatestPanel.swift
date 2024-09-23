@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct PodcastLatestPanel: View {
-    @Environment(\.libraryID) private var libraryID
+    @Environment(\.library) private var library
     
     @State private var failed = false
     @State private var episodes = [Episode]()
@@ -26,6 +26,9 @@ internal struct PodcastLatestPanel: View {
                 } else {
                     LoadingView()
                         .task {
+                            await fetchItems()
+                        }
+                        .refreshable {
                             await fetchItems()
                         }
                 }
@@ -45,7 +48,7 @@ internal struct PodcastLatestPanel: View {
             failed = false
         }
         
-        guard let episodes = try? await AudiobookshelfClient.shared.recentEpisodes(limit: 20, libraryId: libraryID) else {
+        guard let episodes = try? await AudiobookshelfClient.shared.recentEpisodes(limit: 20, libraryID: library.id) else {
             await MainActor.withAnimation {
                 failed = true
             }

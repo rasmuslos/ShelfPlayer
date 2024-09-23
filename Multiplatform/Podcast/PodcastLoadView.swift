@@ -8,8 +8,8 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct PodcastLoadView: View {
-    @Environment(\.libraryID) private var libraryId
+internal struct PodcastLoadView: View {
+    @Environment(\.library) private var library
     
     let podcastId: String
     
@@ -27,6 +27,9 @@ struct PodcastLoadView: View {
         } else {
             LoadingView()
                 .task {
+                    await fetchPodcast()
+                }
+                .refreshable {
                     await fetchPodcast()
                 }
         }

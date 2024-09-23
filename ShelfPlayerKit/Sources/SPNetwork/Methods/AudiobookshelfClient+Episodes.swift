@@ -19,8 +19,8 @@ public extension AudiobookshelfClient {
         return episodes.compactMap { Episode(episode: $0, item: item) }
     }
     
-    func recentEpisodes(limit: Int, libraryId: String) async throws -> [Episode] {
-        try await request(ClientRequest<EpisodesResponse>(path: "api/libraries/\(libraryId)/recent-episodes", method: "GET", query: [
+    func recentEpisodes(limit: Int, libraryID: String) async throws -> [Episode] {
+        try await request(ClientRequest<EpisodesResponse>(path: "api/libraries/\(libraryID)/recent-episodes", method: "GET", query: [
             URLQueryItem(name: "page", value: "0"),
             URLQueryItem(name: "limit", value: String(limit)),
         ])).episodes.map(Episode.init)

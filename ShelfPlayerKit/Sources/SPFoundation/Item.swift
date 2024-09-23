@@ -11,7 +11,7 @@ import SwiftUI
 @Observable
 public class Item: Identifiable {
     public let id: String
-    public let libraryId: String
+    public let libraryID: String
     
     public let type: ItemType
     
@@ -26,9 +26,9 @@ public class Item: Identifiable {
     public let addedAt: Date
     public let released: String?
     
-    init(id: String, libraryId: String, type: ItemType, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?) {
+    init(id: String, libraryID: String, type: ItemType, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
-        self.libraryId = libraryId
+        self.libraryID = libraryID
         self.type = type
         self.name = name
         self.author = author

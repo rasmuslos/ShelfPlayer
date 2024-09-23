@@ -16,7 +16,7 @@ internal extension Series {
         
         self.init(
             id: item.id,
-            libraryId: item.libraryId ?? "",
+            libraryID: item.libraryId ?? "",
             name: item.name!,
             description: item.description,
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),

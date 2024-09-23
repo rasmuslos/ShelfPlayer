@@ -10,12 +10,12 @@ import ShelfPlayerKit
 import SPPlayback
 
 struct EpisodeContextMenuModifier: ViewModifier {
-    @Environment(\.libraryID) private var libraryId
+    @Environment(\.library) private var library
     
     let episode: Episode
     
     private var isOffline: Bool {
-        libraryId == "offline"
+        library.type == .offline
     }
     
     func body(content: Content) -> some View {

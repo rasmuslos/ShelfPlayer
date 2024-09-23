@@ -23,7 +23,7 @@ internal extension Podcast {
         
         self.init(
             id: item.id,
-            libraryId: item.libraryId!,
+            libraryID: item.libraryId!,
             name: item.media!.metadata.title!,
             author: item.media?.metadata.author,
             description: item.media?.metadata.description,

@@ -34,7 +34,7 @@ struct OfflineView: View {
                 
                 Group {
                     Button {
-                        NotificationCenter.default.post(name: Library.changeLibraryNotification, object: nil, userInfo: [
+                        NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
                             "offline": false,
                         ])
                     } label: {
@@ -62,7 +62,6 @@ struct OfflineView: View {
         .sheet(isPresented: $accountSheetPresented) {
             AccountSheet()
         }
-        .environment(\.libraryID, "offline")
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             Task {
                 await loadItems()

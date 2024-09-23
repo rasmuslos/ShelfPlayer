@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct PodcastLibraryPanel: View {
-    @Environment(\.libraryID) private var libraryID
+    @Environment(\.library) private var library
     
     @State private var search = ""
     @State private var lazyLoader = LazyLoadHelper<Podcast, String>.podcasts
@@ -38,6 +38,9 @@ internal struct PodcastLibraryPanel: View {
                         .onAppear {
                             lazyLoader.initialLoad()
                         }
+                        .refreshable {
+                            await lazyLoader.refresh()
+                        }
                 }
             } else {
                 ScrollView {
@@ -65,10 +68,10 @@ internal struct PodcastLibraryPanel: View {
             }
         }
         .navigationTitle("panel.library")
-        .searchable(text: $search, prompt: "search.podcasts")
+        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.podcasts")
         .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
-            lazyLoader.libraryID = libraryID
+            lazyLoader.library = library
         }
     }
 }
@@ -76,5 +79,4 @@ internal struct PodcastLibraryPanel: View {
 #Preview {
     PodcastLibraryPanel()
         .environment(NowPlaying.ViewModel())
-        .environment(\.libraryID, "c5952562-1be6-4663-b352-8ee67a8981df")
 }
