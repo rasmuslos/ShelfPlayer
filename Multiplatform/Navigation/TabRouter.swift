@@ -46,7 +46,7 @@ internal struct TabRouter: View {
         if !libraries.isEmpty {
             TabView(selection: $selection) {
                 if let current {
-                    ForEach(tabs(for: current)) { tab in
+                    ForEach(TabValue.tabs(for: current)) { tab in
                         Tab(tab.label, systemImage: tab.image, value: tab) {
                             tab.content
                         }
@@ -56,7 +56,7 @@ internal struct TabRouter: View {
                 
                 ForEach(libraries) { library in
                     TabSection(library.name) {
-                        ForEach(tabs(for: library)) { tab in
+                        ForEach(TabValue.tabs(for: library)) { tab in
                             Tab(tab.label, systemImage: tab.image, value: tab) {
                                 tab.content
                             }
@@ -107,17 +107,6 @@ internal struct TabRouter: View {
         }
     }
     
-    private func tabs(for library: Library) -> [TabValue] {
-        switch library.type {
-        case .audiobooks:
-            [.audiobookHome(library), .audiobookSeries(library), .audiobookAuthors(library), .audiobookLibrary(library), .search(library)]
-        case .podcasts:
-            [.podcastHome(library), .podcastLatest(library), .podcastLibrary(library)]
-        default:
-            []
-        }
-    }
-    
     private nonisolated func fetchLibraries() async {
         guard let libraries = try? await AudiobookshelfClient.shared.libraries() else {
             return
@@ -126,118 +115,6 @@ internal struct TabRouter: View {
         await MainActor.withAnimation {
             current = lastActiveLibrary ?? libraries.first
             self.libraries = libraries
-        }
-    }
-    
-    enum TabValue: Identifiable, Hashable {
-        case audiobookHome(Library)
-        case audiobookSeries(Library)
-        case audiobookAuthors(Library)
-        case audiobookLibrary(Library)
-        
-        case podcastHome(Library)
-        case podcastLatest(Library)
-        case podcastLibrary(Library)
-        
-        case search(Library)
-        
-        var id: Self {
-            self
-        }
-        
-        var library: Library {
-            switch self {
-            case .audiobookHome(let library):
-                library
-            case .audiobookSeries(let library):
-                library
-            case .audiobookAuthors(let library):
-                library
-            case .audiobookLibrary(let library):
-                library
-            case .podcastHome(let library):
-                library
-            case .podcastLatest(let library):
-                library
-            case .podcastLibrary(let library):
-                library
-            case .search(let library):
-                library
-            }
-        }
-        
-        var label: LocalizedStringKey {
-            switch self {
-            case .audiobookHome:
-                "panel.home"
-            case .audiobookSeries:
-                "panel.series"
-            case .audiobookAuthors:
-                "panel.authors"
-            case .audiobookLibrary:
-                "panel.library"
-                
-            case .podcastHome:
-                "panel.home"
-            case .podcastLatest:
-                "panel.latest"
-            case .podcastLibrary:
-                "panel.library"
-                
-            case .search:
-                "panel.search"
-            }
-        }
-        
-        var image: String {
-            switch self {
-            case .audiobookHome:
-                "play.house.fill"
-            case .audiobookSeries:
-                "rectangle.grid.3x2.fill"
-            case .audiobookAuthors:
-                "person.2.fill"
-            case .audiobookLibrary:
-                "books.vertical.fill"
-                
-            case .podcastHome:
-                "music.note.house.fill"
-            case .podcastLatest:
-                "calendar.badge.clock"
-            case .podcastLibrary:
-                "square.split.2x2.fill"
-                
-            case .search:
-                "magnifyingglass"
-            }
-        }
-        
-        @ViewBuilder
-        var content: some View {
-            NavigationStack {
-                switch self {
-                case .audiobookHome:
-                    AudiobookHomePanel()
-                case .audiobookSeries:
-                    AudiobookSeriesPanel()
-                case .audiobookAuthors:
-                    AudiobookAuthorsPanel()
-                case .audiobookLibrary:
-                    AudiobookLibraryPanel()
-                    
-                case .podcastHome:
-                    PodcastHomePanel()
-                case .podcastLatest:
-                    PodcastLatestPanel()
-                case .podcastLibrary:
-                    PodcastLibraryPanel()
-                    
-                case .search:
-                    SearchView()
-                }
-            }
-            .environment(\.library, library)
-            .modifier(NowPlaying.CompactTabBarBackgroundModifier())
         }
     }
 }
