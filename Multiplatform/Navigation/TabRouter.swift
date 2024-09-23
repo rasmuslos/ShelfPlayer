@@ -34,6 +34,10 @@ internal struct TabRouter: View {
     
     @State private var selection: TabValue?
     
+    private var lastActiveLibrary: Library? {
+        let lastActiveLibraryID = Defaults[.lastActiveLibraryID]
+        return libraries.first { $0.id == lastActiveLibraryID }
+    }
     private var isCompact: Bool {
         horizontalSizeClass == .compact
     }
@@ -74,7 +78,13 @@ internal struct TabRouter: View {
             .id(current)
             .environment(\.libraries, libraries)
             .modifier(NowPlaying.CompactModifier())
-            .modifier(NowPlaying.CompactTabBarBackgroundModifier())
+            .onChange(of: isCompact) {
+                if isCompact {
+                    current = selection?.library ?? lastActiveLibrary
+                } else {
+                    current = nil
+                }
+            }
             .onReceive(NotificationCenter.default.publisher(for: SelectLibraryModifier.changeLibraryNotification)) {
                 guard let userInfo = $0.userInfo as? [String: String], let libraryID = userInfo["libraryID"] else {
                     return
@@ -113,11 +123,8 @@ internal struct TabRouter: View {
             return
         }
         
-        let lastActiveLibraryID = Defaults[.lastActiveLibraryID]
-        let library = libraries.first { $0.id == lastActiveLibraryID }
-        
         await MainActor.withAnimation {
-            current = library ?? libraries.first
+            current = lastActiveLibrary ?? libraries.first
             self.libraries = libraries
         }
     }
@@ -230,6 +237,7 @@ internal struct TabRouter: View {
                 }
             }
             .environment(\.library, library)
+            .modifier(NowPlaying.CompactTabBarBackgroundModifier())
         }
     }
 }
