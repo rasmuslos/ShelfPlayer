@@ -25,7 +25,7 @@ internal struct SelectLibraryModifier: ViewModifier {
                                         "libraryID": library.id,
                                     ])
                                 } label: {
-                                    Label(library.name, systemImage: library.type == .audiobooks ? "book" : "waveform")
+                                    Label(library.name, systemImage: library.type == .audiobooks ? "headphones" : "antenna.radiowaves.left.and.right")
                                 }
                             }
                             
@@ -39,7 +39,7 @@ internal struct SelectLibraryModifier: ViewModifier {
                                 Label("offline.enable", systemImage: "network.slash")
                             }
                         } label: {
-                            Label("tip.changeLibrary", systemImage: "books.vertical.fill")
+                            Label("library.change", systemImage: "books.vertical.fill")
                                 .labelStyle(.iconOnly)
                         }
                     }

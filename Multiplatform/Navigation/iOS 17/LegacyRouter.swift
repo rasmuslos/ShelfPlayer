@@ -14,15 +14,11 @@ import ShelfPlayerKit
 internal struct LegacyRouter: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
+    @Default(.lastTabValue) private var selection
     @State private var current: Library?
-    @State private var selection: TabValue?
     
     @State private var libraries: [Library] = []
     
-    private var lastActiveLibrary: Library? {
-        let lastActiveLibraryID = Defaults[.lastActiveLibraryID]
-        return libraries.first { $0.id == lastActiveLibraryID }
-    }
     private var isCompact: Bool {
         horizontalSizeClass == .compact
     }
@@ -43,20 +39,21 @@ internal struct LegacyRouter: View {
             Group {
                 if isCompact {
                     if let current {
-                        Tabs(current: current)
+                        Tabs(current: current, selection: $selection)
                     } else {
                         loadingPresentation
                     }
                 } else {
-                    
+                    Sidebar(libraries: libraries, selection: $selection)
                 }
             }
             .id(current)
-            .environment(\.libraries, libraries)
             .modifier(NowPlaying.CompactModifier())
+            .environment(\.libraries, libraries)
+            .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
             .onChange(of: isCompact) {
                 if isCompact {
-                    current = selection?.library ?? lastActiveLibrary
+                    current = selection?.library ?? libraries.first
                 } else {
                     current = nil
                 }
@@ -70,7 +67,15 @@ internal struct LegacyRouter: View {
                     return
                 }
                 
-                current = library
+                if isCompact {
+                    current = library
+                }
+                
+                if library.type == .audiobooks {
+                    selection = .audiobookHome(library)
+                } else if library.type == .podcasts {
+                    selection = .podcastHome(library)
+                }
             }
         } else {
             loadingPresentation
@@ -83,7 +88,7 @@ internal struct LegacyRouter: View {
         }
         
         await MainActor.withAnimation {
-            current = lastActiveLibrary ?? libraries.first
+            current = selection?.library ?? libraries.first
             self.libraries = libraries
         }
     }

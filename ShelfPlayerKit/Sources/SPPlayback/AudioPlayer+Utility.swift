@@ -85,7 +85,7 @@ internal extension AudioPlayer {
             
             let entity = OfflineManager.shared.progressEntity(item: item)
             
-            if entity.progress >= 1 {
+            if entity.isFinished {
                 startTime = 0
             } else {
                 var currentTime = entity.currentTime

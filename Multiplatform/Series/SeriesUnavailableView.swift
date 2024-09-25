@@ -10,7 +10,7 @@ import SwiftUI
 internal struct SeriesUnavailableView: View {
     var body: some View {
         UnavailableWrapper {
-            ContentUnavailableView("error.unavailable.series", systemImage: "text.justify.leading", description: Text("error.unavailable.text"))
+            ContentUnavailableView("error.unavailable.series", systemImage: "rectangle.grid.2x2.fill", description: Text("error.unavailable.text"))
         }
     }
 }

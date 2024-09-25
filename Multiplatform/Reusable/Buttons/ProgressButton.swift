@@ -23,19 +23,16 @@ internal struct ProgressButton: View {
         progressEntity.beginReceivingUpdates()
     }
     
-    private var finished: Bool {
-        progressEntity.progress >= 1
-    }
-    
     var body: some View {
-        Button {
+        Button(role: progressEntity.isFinished ? .destructive : nil) {
             Task {
-                try await item.finished(progressEntity.progress < 1)
+                try await item.finished(!progressEntity.isFinished)
             }
         } label: {
-            Label(finished ? "progress.reset" : "progress.complete", systemImage: finished ? "minus" : "checkmark")
+            Label(progressEntity.isFinished ? "progress.finished.unset" : "progress.finished.set", systemImage: progressEntity.isFinished ? "minus" : "checkmark")
                 .contentTransition(.symbolEffect)
-                .tint(tint ? finished ? .red : .accentColor : .primary)
+                .symbolVariant(tint ? .none : .circle)
+                .tint(tint ? progressEntity.isFinished ? .red : .accentColor : .primary)
         }
     }
 }

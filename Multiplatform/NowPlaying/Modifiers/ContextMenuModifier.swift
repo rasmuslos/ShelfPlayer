@@ -27,13 +27,13 @@ internal extension NowPlaying {
                             Button {
                                 Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
                             } label: {
-                                Label("episode.view", systemImage: "waveform")
+                                Label("episode.view", systemImage: "play.square.stack")
                             }
                             
                             Button {
                                 Navigation.navigate(podcastId: episode.podcastId)
                             } label: {
-                                Label("podcast.view", systemImage: "tray.full")
+                                Label("podcast.view", systemImage: "rectangle.stack")
                                 Text(episode.podcastName)
                             }
                         }
@@ -62,7 +62,7 @@ internal extension NowPlaying {
                                     Button {
                                         Navigation.navigate(seriesName: series.name)
                                     } label: {
-                                        Label("series.view", systemImage: "text.justify.leading")
+                                        Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                         Text(series.name)
                                     }
                                 } else {
@@ -75,7 +75,7 @@ internal extension NowPlaying {
                                             }
                                         }
                                     } label: {
-                                        Label("series.view", systemImage: "text.justify.leading")
+                                        Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                     }
                                 }
                             }
@@ -115,7 +115,7 @@ internal extension NowPlaying {
                     Button {
                         AudioPlayer.shared.stop()
                     } label: {
-                        Label("playback.stop", systemImage: "xmark")
+                        Label("playback.stop", systemImage: "stop.fill")
                     }
                 } preview: {
                     VStack(alignment: .leading, spacing: 2) {

@@ -83,26 +83,38 @@ extension AudiobookView {
                             
                             ForEach(viewModel.audiobook.series, id: \.name) { series in
                                 NavigationLink(destination: SeriesLoadView(series: series)) {
-                                    Label("series.view", systemImage: "text.justify.leading")
+                                    Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                     Text(series.name)
                                 }
                             }
                             
                             Divider()
                             
-                            ProgressButton(item: viewModel.audiobook)
-                            
-                            if viewModel.progressEntity.startedAt != nil {
-                                Button(role: .destructive) {
-                                    viewModel.resetProgress()
+                            if viewModel.offlineTracker.status == .none {
+                                
+                            } else {
+                                if !viewModel.progressEntity.isFinished {
+                                    ProgressButton(item: viewModel.audiobook)
+                                }
+                                
+                                Menu {
+                                    if !viewModel.progressEntity.isFinished {
+                                        ProgressButton(item: viewModel.audiobook)
+                                    }
+                                    
+                                    if viewModel.progressEntity.startedAt != nil {
+                                        Button(role: .destructive) {
+                                            viewModel.resetProgress()
+                                        } label: {
+                                            Label("progress.reset", systemImage: "slash.circle")
+                                        }
+                                    }
+                                    
+                                    DownloadButton(item: viewModel.audiobook)
                                 } label: {
-                                    Label("progress.reset", systemImage: "xmark")
+                                    Text("toolbar.remove")
                                 }
                             }
-                            
-                            Divider()
-                            
-                            DownloadButton(item: viewModel.audiobook)
                         } label: {
                             Image(systemName: "ellipsis")
                                 .modifier(FullscreenToolbarModifier(isToolbarVisible: viewModel.toolbarVisible))

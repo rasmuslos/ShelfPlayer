@@ -12,6 +12,7 @@ import SPPlayback
 
 internal struct QueueButton: View {
     let item: PlayableItem
+    var hideLast: Bool = false
     
     var body: some View {
         Button {
@@ -19,7 +20,7 @@ internal struct QueueButton: View {
         } label: {
             Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
             
-            if let last = AudioPlayer.shared.queue.last {
+            if !hideLast, let last = AudioPlayer.shared.queue.last {
                 Text(last.name)
             }
         }

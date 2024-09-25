@@ -48,7 +48,7 @@ private struct ButtonText: View {
     @Environment(\.colorScheme) private var colorScheme
     
     private var label: String {
-        if viewModel.progressEntity.progress >= 1 {
+        if viewModel.progressEntity.isFinished {
             return String(localized: "listen.again")
         } else if viewModel.progressEntity.progress <= 0 {
             return viewModel.episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute], maximumUnitCount: 1))
