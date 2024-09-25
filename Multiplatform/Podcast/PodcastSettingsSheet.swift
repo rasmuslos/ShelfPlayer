@@ -24,6 +24,17 @@ internal struct PodcastSettingsSheet: View {
             List {
                 Section {
                     DownloadSettings(maxEpisodes: $configuration.maxEpisodes, autoDownloadEnabled: $configuration.autoDownload)
+                    
+                    Stepper("configuration.maxEpisodes.settings.maxEpisodes \($configuration.maxEpisodes)") {
+                        if configuration.maxEpisodes <= 32 {
+                            configuration.maxEpisodes += 1
+                        }
+                    } onDecrement: {
+                        if configuration.maxEpisodes > 1 {
+                            configuration.maxEpisodes -= 1
+                        }
+                    }
+                    .disabled(!configuration.autoDownload)
                 } footer: {
                     Text("podcast.settings.downloadFooter \(configuration.maxEpisodes)")
                 }
@@ -92,17 +103,6 @@ internal extension PodcastSettingsSheet {
         
         var body: some View {
             Toggle("podcast.settings.autoDownload", isOn: $autoDownloadEnabled)
-            
-            Stepper("podcast.settings.maxEpisodes \(maxEpisodes)") {
-                if maxEpisodes <= 32 {
-                    maxEpisodes += 1
-                }
-            } onDecrement: {
-                if maxEpisodes > 1 {
-                    maxEpisodes -= 1
-                }
-            }
-            .disabled(!autoDownloadEnabled)
         }
     }
     

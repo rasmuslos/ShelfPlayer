@@ -46,22 +46,21 @@ internal extension EpisodeView {
                     
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Divider()
+                            ProgressButton(item: viewModel.episode)
                             
                             Button(role: .destructive) {
                                 viewModel.resetProgress()
                             } label: {
-                                Label("progress.reset", systemImage: "xmark")
+                                Label("progress.reset", systemImage: "slash.circle")
                             }
                         } label: {
                             Group {
-                                if viewModel.progressEntity.progress >= 1 {
-                                    Image(systemName: "minus")
+                                if viewModel.progressEntity.isFinished {
+                                    Image(systemName: "slash")
                                 } else {
-                                    Image(systemName: "checkmark")
+                                    Image(systemName: "minus")
                                 }
                             }
-                            .symbolVariant(.circle)
                             .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.toolbarVisible))
                         } primaryAction: {
                             viewModel.toggleFinished()

@@ -29,9 +29,10 @@ final internal class AudiobookViewModel {
     @MainActor private(set) var sameSeries: [Audiobook]
     @MainActor private(set) var sameNarrator: [Audiobook]
     
-    @MainActor private(set) var sessions: [ListeningSession]
-    @MainActor private(set) var progressEntity: ProgressEntity
+    @MainActor let progressEntity: ProgressEntity
+    @MainActor let offlineTracker: ItemOfflineTracker
     
+    @MainActor private(set) var sessions: [ListeningSession]
     @MainActor private(set) var errorNotify: Bool
     
     @MainActor
@@ -51,10 +52,13 @@ final internal class AudiobookViewModel {
         sameSeries = []
         sameNarrator = []
         
-        sessions = []
         progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
+        offlineTracker = .init(audiobook)
         
+        sessions = []
         errorNotify = false
+        
+        progressEntity.beginReceivingUpdates()
     }
 }
 

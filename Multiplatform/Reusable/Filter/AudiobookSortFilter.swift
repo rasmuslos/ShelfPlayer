@@ -69,10 +69,10 @@ internal struct AudiobookSortFilter: View {
                 
                 Divider()
                 
-                Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
+                Toggle("sort.ascending", systemImage: "arrow.up", isOn: $ascending)
             }
         } label: {
-            Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down")")
+            Label("filterSort", systemImage: "arrow.\(ascending ? "up" : "down").circle")
                 .contentTransition(.symbolEffect)
         }
     }
@@ -90,7 +90,7 @@ extension AudiobookSortFilter {
             
             let entity = OfflineManager.shared.progressEntity(item: audiobook)
             
-            if filter == .finished && entity.progress >= 1 {
+            if filter == .finished && entity.isFinished {
                 return true
             } else if filter == .unfinished && entity.progress < 1 {
                 return true

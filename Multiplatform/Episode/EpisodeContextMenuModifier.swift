@@ -34,12 +34,13 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 Divider()
                 
                 NavigationLink(destination: EpisodeView(episode)) {
-                    Label("episode.view", systemImage: "waveform")
+                    Label("episode.view", systemImage: "play.square.stack")
                 }
                 .disabled(isOffline)
                 
                 NavigationLink(destination: PodcastLoadView(podcastId: episode.podcastId)) {
-                    Label("podcast.view", systemImage: "tray.full")
+                    Label("podcast.view", systemImage: "rectangle.stack")
+                    Text(episode.podcastName)
                 }
                 .disabled(isOffline)
                 

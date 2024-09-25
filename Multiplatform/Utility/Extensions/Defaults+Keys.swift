@@ -14,7 +14,7 @@ internal extension Defaults.Keys {
     
     // MARK: Navigation
     
-    static let lastActiveLibraryID = Key<String?>("lastActiveLibraryID")
+    static let lastTabValue = Key<TabValue?>("lastTabValue")
     
     // MARK: Settings
     

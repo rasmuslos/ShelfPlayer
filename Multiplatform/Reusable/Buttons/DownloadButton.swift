@@ -41,9 +41,9 @@ internal struct DownloadButton: View {
     private var icon: String {
         switch offlineTracker.status {
             case .none:
-                "arrow.down"
+                "square.and.arrow.down.fill"
             default:
-                "xmark"
+                "trash"
         }
     }
     
@@ -64,6 +64,7 @@ internal struct DownloadButton: View {
             }
         }
         .sensoryFeedback(.success, trigger: notify)
+        .symbolVariant(tint ? .none : .circle)
         .modifier(TintModifier(tint: tint, offlineStatus: offlineTracker.status))
     }
     

@@ -567,6 +567,12 @@
     },
     "account.notifications.text" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn ShelfPlayer die Berechtigung erteilt wird Mitteilungen zu versenden und die Option in den Podcast-Einstellungen aktiviert ist, wird ShelfPlayer Mitteilungen bei neuen Downloads versenden."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3194,13 +3200,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jetzt hören"
+            "value" : "Startseite"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Listen now"
+            "value" : "Home"
           }
         }
       }
@@ -3589,28 +3595,6 @@
         }
       }
     },
-    "progress.complete" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abgeschlossen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mark as finished"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标为已播放"
-          }
-        }
-      }
-    },
     "progress.completed" : {
       "localizations" : {
         "de" : {
@@ -3633,23 +3617,55 @@
         }
       }
     },
-    "progress.reset" : {
+    "progress.finished.set" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fortschritt zurücksetzten"
+            "value" : "Als „Abgeschlossen“ markieren"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reset progress"
+            "value" : "Mark as \"finished\""
+          }
+        }
+      }
+    },
+    "progress.finished.unset" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als „Wird gehört“ markieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark as \"unfinished\""
+          }
+        }
+      }
+    },
+    "progress.reset" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortschritt löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete progress"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "重置进度"
           }
         }
@@ -4499,7 +4515,6 @@
       }
     },
     "splitView.empty" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4522,7 +4537,6 @@
       }
     },
     "splitView.empty.description" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4540,121 +4554,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "请从侧边栏中选择一项"
-          }
-        }
-      }
-    },
-    "tab.home" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt hören"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listen now"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "现在收听"
-          }
-        }
-      }
-    },
-    "tab.latest" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kürzlich"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Latest"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最新节目"
-          }
-        }
-      }
-    },
-    "tab.library" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliothek"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Library"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "媒体库"
-          }
-        }
-      }
-    },
-    "tab.search" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suche"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索"
-          }
-        }
-      }
-    },
-    "tab.series" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serien"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Series"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "系列"
           }
         }
       }

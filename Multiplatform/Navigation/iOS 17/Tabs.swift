@@ -12,9 +12,10 @@ import ShelfPlayerKit
 @available(iOS, deprecated: 18.0, message: "Use `TabRouter` instead.")
 internal struct Tabs: View {
     let current: Library
+    @Binding var selection: TabValue?
     
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             ForEach(TabValue.tabs(for: current)) { tab in
                 tab.content
                     .tag(tab)

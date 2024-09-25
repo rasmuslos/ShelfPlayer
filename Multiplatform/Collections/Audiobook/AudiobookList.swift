@@ -67,7 +67,7 @@ private struct Row: View {
             parts.append(released)
         }
         
-        if progressEntity.progress >= 1 {
+        if progressEntity.isFinished {
             parts.append(String(localized: "finished"))
         } else if progressEntity.progress <= 0 {
             parts.append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))

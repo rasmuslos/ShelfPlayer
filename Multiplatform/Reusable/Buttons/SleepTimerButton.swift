@@ -23,13 +23,13 @@ internal struct SleepTimerButton: View {
                     Button {
                         SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(-sleepTimerAdjustment)))
                     } label: {
-                        Label("sleep.decrease", systemImage: "minus")
+                        Label("decrease", systemImage: "minus")
                             .labelStyle(.iconOnly)
                     }
                     Button {
                         SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(sleepTimerAdjustment)))
                     } label: {
-                        Label("sleep.increase", systemImage: "plus")
+                        Label("increase", systemImage: "plus")
                             .labelStyle(.iconOnly)
                     }
                 }

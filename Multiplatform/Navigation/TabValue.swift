@@ -7,9 +7,10 @@
 
 import Foundation
 import SwiftUI
+import Defaults
 import ShelfPlayerKit
 
-internal enum TabValue: Identifiable, Hashable {
+internal enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     case audiobookHome(Library)
     case audiobookSeries(Library)
     case audiobookAuthors(Library)
@@ -72,16 +73,16 @@ internal enum TabValue: Identifiable, Hashable {
     var image: String {
         switch self {
         case .audiobookHome:
-            "play.house.fill"
+            "house.fill"
         case .audiobookSeries:
-            "rectangle.grid.3x2.fill"
+            "rectangle.grid.2x2.fill"
         case .audiobookAuthors:
             "person.2.fill"
         case .audiobookLibrary:
             "books.vertical.fill"
             
         case .podcastHome:
-            "music.note.house.fill"
+            "house.fill"
         case .podcastLatest:
             "calendar.badge.clock"
         case .podcastLibrary:
@@ -94,7 +95,7 @@ internal enum TabValue: Identifiable, Hashable {
     
     @ViewBuilder
     var content: some View {
-        NavigationStack {
+        NavigationStack(path: .init(get: { NavigationState.shared[self] }, set: { NavigationState.shared[self] = $0 })) {
             switch self {
             case .audiobookHome:
                 AudiobookHomePanel()
