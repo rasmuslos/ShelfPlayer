@@ -85,9 +85,6 @@ internal struct TabRouter: View {
                     
                     let value = TabValue.audiobookLibrary(library)
                     selection = value
-                    NavigationState.shared[value].append(Navigation.AudiobookLoadDestination(audiobookId: $0))
-                    
-                    print(library)
                 }, navigateAuthor: {
                     guard let library = library(for: $1) else {
                         return
@@ -95,7 +92,6 @@ internal struct TabRouter: View {
                     
                     let value = TabValue.audiobookLibrary(library)
                     selection = value
-                    NavigationState.shared[value].append(Navigation.AuthorLoadDestination(authorId: $0))
                 }, navigateSeries: {
                     guard let library = library(for: $1) else {
                         return
@@ -103,7 +99,6 @@ internal struct TabRouter: View {
                     
                     let value = TabValue.audiobookLibrary(library)
                     selection = value
-                    NavigationState.shared[value].append(Navigation.SeriesLoadDestination(seriesName: $0))
                 }, navigatePodcast: {
                     guard let library = library(for: $1) else {
                         return
@@ -111,7 +106,6 @@ internal struct TabRouter: View {
                     
                     let value = TabValue.podcastLibrary(library)
                     selection = value
-                    NavigationState.shared[value].append(Navigation.PodcastLoadDestination(podcastId: $0))
                 }, navigateEpisode: {
                     guard let library = library(for: $2) else {
                         return
@@ -119,7 +113,6 @@ internal struct TabRouter: View {
                     
                     let value = TabValue.podcastLibrary(library)
                     selection = value
-                    NavigationState.shared[value].append(Navigation.EpisodeLoadDestination(episodeId: $0, podcastId: $1))
                 }))
             .environment(\.libraries, libraries)
             .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))

@@ -1641,6 +1641,22 @@
         }
       }
     },
+    "decrease" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verringern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease"
+          }
+        }
+      }
+    },
     "description" : {
       "localizations" : {
         "de" : {
@@ -2423,6 +2439,22 @@
         }
       }
     },
+    "increase" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erhöhen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase"
+          }
+        }
+      }
+    },
     "item.media.metadata.seriesName" : {
       "localizations" : {
         "de" : {
@@ -2441,6 +2473,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系列"
+          }
+        }
+      }
+    },
+    "library.change" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotek ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change library"
           }
         }
       }
@@ -3481,22 +3529,6 @@
         }
       }
     },
-    "podcast.settings.maxEpisodes %lld" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anzahl: %lld"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amount: %lld"
-          }
-        }
-      }
-    },
     "podcast.settings.notificationFooter" : {
       "localizations" : {
         "de" : {
@@ -4250,50 +4282,6 @@
         }
       }
     },
-    "sleep.decrease" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verkürzen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Decrease"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "减少"
-          }
-        }
-      }
-    },
-    "sleep.increase" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verlängern"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Increase"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "增加"
-          }
-        }
-      }
-    },
     "sleepTimer" : {
       "localizations" : {
         "de" : {
@@ -4574,24 +4562,18 @@
         }
       }
     },
-    "tip.changeLibrary" : {
+    "toolbar.remove" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bibliothek wechseln"
+            "value" : "Entfernen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change library"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "更换媒体库"
+            "value" : "Remove"
           }
         }
       }

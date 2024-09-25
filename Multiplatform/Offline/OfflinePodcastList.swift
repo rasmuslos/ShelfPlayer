@@ -20,9 +20,7 @@ internal struct OfflinePodcastList: View {
             NavigationLink(destination: OfflinePodcastView(podcast: podcast, episodes: episodes)) {
                 PodcastRow(podcast: podcast, episodes: episodes)
             }
-            .listRowInsets(.init(top: 6, leading: 12, bottom: 6, trailing: 12))
-            .padding(.top, podcast == podcasts.keys.first ? 6 : 0)
-            .padding(.bottom, podcast == podcasts.keys.reversed().first ? 6 : 0)
+            .listRowInsets(.init(top: podcast == podcasts.keys.first ? 12 : 6, leading: 12, bottom: podcast == podcasts.keys.reversed().first ? 12 : 6, trailing: 12))
         }
         .onDelete { indexSet in
             indexSet.forEach { index in
