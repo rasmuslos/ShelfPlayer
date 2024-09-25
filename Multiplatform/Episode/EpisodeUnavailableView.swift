@@ -10,7 +10,7 @@ import SwiftUI
 struct EpisodeUnavailableView: View {
     var body: some View {
         UnavailableWrapper {
-            ContentUnavailableView("error.unavailable.episode", systemImage: "waveform", description: Text("error.unavailable.text"))
+            ContentUnavailableView("error.unavailable.episode", systemImage: "play.square.stack", description: Text("error.unavailable.text"))
         }
     }
 }

@@ -43,7 +43,8 @@ internal struct AudiobookRow: View {
                         HStack(alignment: .firstTextBaseline) {
                             RowTitle(title: title, fontDesign: .serif)
                             
-                            Image(systemName: "chevron.right.circle.fill")
+                            Image(systemName: "chevron.right")
+                                .symbolVariant(.circle.fill)
                                 .imageScale(.small)
                         }
                     }

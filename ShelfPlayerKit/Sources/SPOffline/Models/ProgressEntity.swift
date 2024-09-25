@@ -80,5 +80,9 @@ public class ProgressEntity {
         }
     }
     
+    public var isFinished: Bool {
+        progress >= 1
+    }
+    
     static let progressUpdatedNotification = Notification.Name("io.rfk.shelfPlayer.progressUpdatedNotification")
 }

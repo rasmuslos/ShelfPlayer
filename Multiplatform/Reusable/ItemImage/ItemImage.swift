@@ -11,6 +11,7 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct ItemImage: View {
+    @Environment(\.library) private var library
     @Default(.forceAspectRatio) private var forceAspectRatio
     
     let cover: Cover?
@@ -19,9 +20,19 @@ internal struct ItemImage: View {
     var aspectRatio = AspectRatioPolicy.square
     var priority: ImageRequest.Priority = .normal
     
+    private var fallbackIcon: String {
+        switch library.type {
+        case .audiobooks:
+            "book"
+        case .podcasts:
+            "play.square.stack.fill"
+        default:
+            "bookmark"
+        }
+    }
     private var placeholder: some View {
         ZStack {
-            Image(systemName: "book")
+            Image(systemName: fallbackIcon)
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: 100)

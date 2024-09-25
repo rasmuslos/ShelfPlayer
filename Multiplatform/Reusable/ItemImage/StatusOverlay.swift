@@ -74,14 +74,12 @@ internal struct StatusOverlay: View {
                             }
                     }
                     .frame(width: size, height: size)
-                } else {
-                    if offlineTracker?.status == .downloaded {
-                        Label("downloaded", systemImage: "arrow.down.circle.fill")
-                            .labelStyle(.iconOnly)
-                            .font(.caption)
-                            .foregroundStyle(.ultraThickMaterial)
-                            .padding(4)
-                    }
+                } else if offlineTracker?.status == .downloaded {
+                    Label("downloaded", systemImage: "arrow.down.circle.fill")
+                        .labelStyle(.iconOnly)
+                        .font(.caption)
+                        .foregroundStyle(.ultraThickMaterial)
+                        .padding(4)
                 }
             }
         }

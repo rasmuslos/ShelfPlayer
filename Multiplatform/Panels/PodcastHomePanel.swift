@@ -72,7 +72,7 @@ internal struct PodcastHomePanel: View {
                 }
             }
         }
-        .navigationTitle("panel.home")
+        .navigationTitle(library.name)
         .modifier(SelectLibraryModifier(isCompact: horizontalSizeClass == .compact))
         .modifier(NowPlaying.SafeAreaModifier())
     }

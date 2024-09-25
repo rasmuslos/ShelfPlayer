@@ -19,7 +19,7 @@ struct CircularProgressIndicator: View {
             EmptyView()
         } else {
             ZStack {
-                if entity.progress >= 1 {
+                if entity.isFinished {
                     Circle()
                         .fill(Color.accentColor.quaternary)
                     

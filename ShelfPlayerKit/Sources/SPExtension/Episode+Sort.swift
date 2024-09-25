@@ -25,7 +25,7 @@ public extension Episode {
                     if entity.progress < 1 && filter == .finished {
                         return false
                     }
-                    if entity.progress >= 1 && filter == .progress {
+                    if entity.isFinished && filter == .progress {
                         return false
                     }
                     

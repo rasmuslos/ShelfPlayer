@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Defaults
 
-public struct Library: Identifiable, Hashable {
+public struct Library: Identifiable, Hashable, Codable, Defaults.Serializable {
     public let id: String
     public let name: String
     
@@ -28,11 +29,11 @@ public struct Library: Identifiable, Hashable {
         self.displayOrder = displayOrder
     }
     
-    public enum MediaType: Hashable {
-        case audiobooks
-        case podcasts
+    public enum MediaType: Int, Hashable, Codable, Defaults.Serializable {
+        case audiobooks = 1
+        case podcasts = 2
         
-        case offline
+        case offline = 0
     }
 }
 

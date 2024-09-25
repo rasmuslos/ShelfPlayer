@@ -14,6 +14,7 @@ import ShelfPlayerKit
 internal struct TabRouter: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
+    @Default(.lastTabValue) private var selection
     @State private var current: Library? {
         didSet {
             let appearance = UINavigationBarAppearance()
@@ -30,13 +31,11 @@ internal struct TabRouter: View {
             UINavigationBar.appearance().compactAppearance = appearance
         }
     }
+    
     @State private var libraries: [Library] = []
     
-    @State private var selection: TabValue?
-    
-    private var lastActiveLibrary: Library? {
-        let lastActiveLibraryID = Defaults[.lastActiveLibraryID]
-        return libraries.first { $0.id == lastActiveLibraryID }
+    private func library(for id: String) -> Library? {
+        libraries.first(where: { $0.id == id })
     }
     private var isCompact: Bool {
         horizontalSizeClass == .compact
@@ -76,11 +75,57 @@ internal struct TabRouter: View {
                 }
             }
             .id(current)
-            .environment(\.libraries, libraries)
             .modifier(NowPlaying.CompactModifier())
+            .modifier(Navigation.DestinationModifier())
+            .modifier(Navigation.NotificationModifier(
+                navigateAudiobook: {
+                    guard let library = library(for: $1) else {
+                        return
+                    }
+                    
+                    let value = TabValue.audiobookLibrary(library)
+                    selection = value
+                    NavigationState.shared[value].append(Navigation.AudiobookLoadDestination(audiobookId: $0))
+                    
+                    print(library)
+                }, navigateAuthor: {
+                    guard let library = library(for: $1) else {
+                        return
+                    }
+                    
+                    let value = TabValue.audiobookLibrary(library)
+                    selection = value
+                    NavigationState.shared[value].append(Navigation.AuthorLoadDestination(authorId: $0))
+                }, navigateSeries: {
+                    guard let library = library(for: $1) else {
+                        return
+                    }
+                    
+                    let value = TabValue.audiobookLibrary(library)
+                    selection = value
+                    NavigationState.shared[value].append(Navigation.SeriesLoadDestination(seriesName: $0))
+                }, navigatePodcast: {
+                    guard let library = library(for: $1) else {
+                        return
+                    }
+                    
+                    let value = TabValue.podcastLibrary(library)
+                    selection = value
+                    NavigationState.shared[value].append(Navigation.PodcastLoadDestination(podcastId: $0))
+                }, navigateEpisode: {
+                    guard let library = library(for: $2) else {
+                        return
+                    }
+                    
+                    let value = TabValue.podcastLibrary(library)
+                    selection = value
+                    NavigationState.shared[value].append(Navigation.EpisodeLoadDestination(episodeId: $0, podcastId: $1))
+                }))
+            .environment(\.libraries, libraries)
+            .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
             .onChange(of: isCompact) {
                 if isCompact {
-                    current = selection?.library ?? lastActiveLibrary
+                    current = selection?.library
                 } else {
                     current = nil
                 }
@@ -94,7 +139,14 @@ internal struct TabRouter: View {
                     return
                 }
                 
-                current = library
+                if isCompact {
+                    current = library
+                }
+                if library.type == .audiobooks {
+                    selection = .audiobookHome(library)
+                } else if library.type == .podcasts {
+                    selection = .podcastHome(library)
+                }
             }
         } else {
             LoadingView()
@@ -113,8 +165,11 @@ internal struct TabRouter: View {
         }
         
         await MainActor.withAnimation {
-            current = lastActiveLibrary ?? libraries.first
             self.libraries = libraries
+            
+            if isCompact {
+                current = selection?.library ?? libraries.first
+            }
         }
     }
 }

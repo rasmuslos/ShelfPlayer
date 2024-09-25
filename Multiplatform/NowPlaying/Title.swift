@@ -64,13 +64,13 @@ internal extension NowPlaying {
                                 Button {
                                     Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
                                 } label: {
-                                    Label("episode.view", systemImage: "waveform")
+                                    Label("episode.view", systemImage: "play.square.stack")
                                 }
                                 
                                 Button(action: {
                                     Navigation.navigate(podcastId: episode.podcastId)
                                 }) {
-                                    Label("podcast.view", systemImage: "tray.full")
+                                    Label("podcast.view", systemImage: "rectangle.stack")
                                     Text(episode.podcastName)
                                 }
                             }
@@ -100,7 +100,7 @@ internal extension NowPlaying {
                                         Button(action: {
                                             Navigation.navigate(seriesName: series.name)
                                         }) {
-                                            Label("series.view", systemImage: "text.justify.leading")
+                                            Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                             Text(series.name)
                                         }
                                     } else {
@@ -113,7 +113,7 @@ internal extension NowPlaying {
                                                 }
                                             }
                                         } label: {
-                                            Label("series.view", systemImage: "text.justify.leading")
+                                            Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                         }
                                     }
                                 }

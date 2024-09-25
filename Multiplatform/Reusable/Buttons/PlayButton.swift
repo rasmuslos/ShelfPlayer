@@ -54,7 +54,7 @@ internal struct PlayButton: View {
     }
     
     private var label: String {
-        if progressEntity.progress >= 1 {
+        if progressEntity.isFinished {
             return String(localized: "listen.again")
         }
         
@@ -147,7 +147,7 @@ internal struct PlayButton: View {
                         loading = false
                     }
                 } label: {
-                    Label("progress.reset", systemImage: "xmark")
+                    Label("progress.reset", systemImage: "slash.circle")
                 }
             }
         } label: {

@@ -46,8 +46,26 @@ extension PodcastView {
                         Menu {
                             PodcastSettingsSheet.NotificationToggle(autoDownloadEnabled: viewModel.fetchConfiguration.autoDownload, notificationsEnabled: $viewModel.fetchConfiguration.notifications)
                             PodcastSettingsSheet.DownloadSettings(maxEpisodes: $viewModel.fetchConfiguration.maxEpisodes, autoDownloadEnabled: $viewModel.fetchConfiguration.autoDownload)
+                            
+                            Divider()
+                            
+                            ControlGroup {
+                                Button {
+                                    viewModel.fetchConfiguration.maxEpisodes -= 1
+                                } label: {
+                                    Label("decrement", systemImage: "minus")
+                                }
+                                
+                                Text(String(viewModel.fetchConfiguration.maxEpisodes))
+                                
+                                Button {
+                                    viewModel.fetchConfiguration.maxEpisodes -= 1
+                                } label: {
+                                    Label("increment", systemImage: "plus")
+                                }
+                            }
                         } label: {
-                            Image(systemName: "gear")
+                            Image(systemName: "antenna.radiowaves.left.and.right")
                                 .labelStyle(.iconOnly)
                                 .symbolVariant(.circle.fill)
                                 .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight(), isToolbarVisible: viewModel.toolbarVisible))

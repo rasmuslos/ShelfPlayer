@@ -45,7 +45,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 
                 ForEach(audiobook.series, id: \.name) { series in
                     NavigationLink(destination: SeriesLoadView(series: series)) {
-                        Label("series.view", systemImage: "text.justify.leading")
+                        Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                         Text(series.name)
                     }
                 }
