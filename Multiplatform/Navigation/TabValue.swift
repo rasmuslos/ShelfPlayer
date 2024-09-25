@@ -95,7 +95,7 @@ internal enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     
     @ViewBuilder
     var content: some View {
-        NavigationStack(path: .init(get: { NavigationState.shared[self] }, set: { NavigationState.shared[self] = $0 })) {
+        NavigationStack() {
             switch self {
             case .audiobookHome:
                 AudiobookHomePanel()

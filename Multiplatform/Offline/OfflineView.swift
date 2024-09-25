@@ -51,6 +51,7 @@ struct OfflineView: View {
             .navigationTitle("offline.title")
             .navigationBarTitleDisplayMode(.inline)
             .modifier(NowPlaying.SafeAreaModifier())
+            .modifier(NowPlaying.CompactTabBarBackgroundModifier(bottomOffset: -40))
             .task {
                 await loadItems()
             }

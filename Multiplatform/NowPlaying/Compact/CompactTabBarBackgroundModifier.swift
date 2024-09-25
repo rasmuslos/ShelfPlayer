@@ -12,6 +12,8 @@ internal extension NowPlaying {
     struct CompactTabBarBackgroundModifier: ViewModifier {
         @Environment(ViewModel.self) private var viewModel
         
+        var bottomOffset: CGFloat = 0
+        
         func body(content: Content) -> some View {
             content
                 .safeAreaInset(edge: .bottom) {
@@ -31,7 +33,7 @@ internal extension NowPlaying {
                             .ignoresSafeArea(.keyboard)
                             .ignoresSafeArea(edges: .all)
                             .foregroundStyle(.bar)
-                            .padding(.bottom, -175)
+                            .padding(.bottom, -175 + bottomOffset)
                             .allowsHitTesting(false)
                             .toolbarBackground(.hidden, for: .tabBar)
                     }
