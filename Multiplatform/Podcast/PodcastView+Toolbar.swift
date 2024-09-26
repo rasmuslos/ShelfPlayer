@@ -54,6 +54,7 @@ extension PodcastView {
                                     viewModel.fetchConfiguration.maxEpisodes -= 1
                                 } label: {
                                     Label("decrease", systemImage: "minus")
+                                        .labelStyle(.iconOnly)
                                 }
                                 
                                 Text(String(viewModel.fetchConfiguration.maxEpisodes))
@@ -62,6 +63,7 @@ extension PodcastView {
                                     viewModel.fetchConfiguration.maxEpisodes -= 1
                                 } label: {
                                     Label("increase", systemImage: "plus")
+                                        .labelStyle(.iconOnly)
                                 }
                             }
                         } label: {
