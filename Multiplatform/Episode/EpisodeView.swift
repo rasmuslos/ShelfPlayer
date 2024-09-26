@@ -46,8 +46,9 @@ struct EpisodeView: View {
             $0.persistentIdentifier = convertIdentifier(item: viewModel.episode)
             $0.targetContentIdentifier = "episode:\(viewModel.episode.id)::\(viewModel.episode.podcastId)"
             $0.userInfo = [
-                "episodeId": viewModel.episode.id,
-                "podcastId": viewModel.episode.podcastId,
+                "libraryID": viewModel.episode.libraryID,
+                "episodeID": viewModel.episode.id,
+                "podcastID": viewModel.episode.podcastId,
             ]
             $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.episode.podcastId)
         }

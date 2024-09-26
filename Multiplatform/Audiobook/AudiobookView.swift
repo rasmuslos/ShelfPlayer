@@ -90,7 +90,8 @@ internal struct AudiobookView: View {
             $0.persistentIdentifier = viewModel.audiobook.id
             $0.targetContentIdentifier = "audiobook:\(viewModel.audiobook.id)"
             $0.userInfo = [
-                "audiobookId": viewModel.audiobook.id,
+                "libraryID": viewModel.audiobook.libraryID,
+                "audiobookID": viewModel.audiobook.id,
             ]
             $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.audiobook.id)
         }

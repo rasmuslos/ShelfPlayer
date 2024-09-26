@@ -18,8 +18,11 @@ internal struct LegacyRouter: View {
     @State private var current: Library?
     
     @State private var libraries: [Library] = []
-    @State private var controller: NavigationController = .init()
+    @State private var libraryPath = NavigationPath()
     
+    private func library(for id: String) -> Library? {
+        libraries.first(where: { $0.id == id })
+    }
     private var isCompact: Bool {
         horizontalSizeClass == .compact
     }
@@ -40,16 +43,39 @@ internal struct LegacyRouter: View {
             Group {
                 if isCompact {
                     if let current {
-                        Tabs(current: current, selection: $selection, controller: $controller)
+                        Tabs(current: current, selection: $selection, libraryPath: $libraryPath)
                     } else {
                         loadingPresentation
                     }
                 } else {
-                    Sidebar(libraries: libraries, selection: $selection, controller: $controller)
+                    Sidebar(libraries: libraries, selection: $selection, libraryPath: $libraryPath)
                 }
             }
             .id(current)
             .modifier(NowPlaying.CompactModifier())
+            .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorID, seriesID, podcastID, episodeData in
+                guard let library = library(for: libraryID) else {
+                    return
+                }
+                
+                let previousLibrary = selection?.library
+                
+                if isCompact {
+                    current = library
+                }
+                
+                selection = .audiobookLibrary(library)
+                
+                Task {
+                    if previousLibrary != library {
+                        try await Task.sleep(nanoseconds: NSEC_PER_SEC / 2)
+                    }
+                    
+                    if let audiobookID {
+                        libraryPath.append(Navigation.AudiobookLoadDestination(audiobookId: audiobookID))
+                    }
+                }
+            })
             .environment(\.libraries, libraries)
             .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
             .onChange(of: isCompact) {
@@ -57,6 +83,11 @@ internal struct LegacyRouter: View {
                     current = selection?.library ?? libraries.first
                 } else {
                     current = nil
+                }
+            }
+            .onChange(of: selection?.library) {
+                while !libraryPath.isEmpty {
+                    libraryPath.removeLast()
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: SelectLibraryModifier.changeLibraryNotification)) {

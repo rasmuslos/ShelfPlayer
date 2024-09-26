@@ -33,7 +33,7 @@ internal struct TabRouter: View {
     }
     
     @State private var libraries: [Library] = []
-    @State private var controller: NavigationController = .init()
+    @State private var libraryPath = NavigationPath()
     
     private func library(for id: String) -> Library? {
         libraries.first(where: { $0.id == id })
@@ -48,7 +48,7 @@ internal struct TabRouter: View {
                 if let current {
                     ForEach(TabValue.tabs(for: current)) { tab in
                         Tab(tab.label, systemImage: tab.image, value: tab) {
-                            tab.content(path: $controller[tab])
+                            tab.content(libraryPath: $libraryPath)
                         }
                         .hidden(!isCompact)
                     }
@@ -58,7 +58,7 @@ internal struct TabRouter: View {
                     TabSection(library.name) {
                         ForEach(TabValue.tabs(for: library)) { tab in
                             Tab(tab.label, systemImage: tab.image, value: tab) {
-                                tab.content(path: $controller[tab])
+                                tab.content(libraryPath: $libraryPath)
                             }
                         }
                     }
@@ -77,51 +77,29 @@ internal struct TabRouter: View {
             }
             .id(current)
             .modifier(NowPlaying.CompactModifier())
-            .modifier(Navigation.DestinationModifier())
-            .modifier(Navigation.NotificationModifier(
-                navigateAudiobook: {
-                    guard let library = library(for: $1) else {
-                        return
+            .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorID, seriesID, podcastID, episodeData in
+                guard let library = library(for: libraryID) else {
+                    return
+                }
+                
+                let previousLibrary = selection?.library
+                
+                if isCompact {
+                    current = library
+                }
+                
+                selection = .audiobookLibrary(library)
+                
+                Task {
+                    if previousLibrary != library {
+                        try await Task.sleep(nanoseconds: NSEC_PER_SEC / 2)
                     }
                     
-                    current = library
-                    let value = TabValue.audiobookLibrary(library)
-                    selection = value
-                    
-                    controller[value].append(Navigation.AudiobookLoadDestination(audiobookId: $0))
-                }, navigateAuthor: {
-                    guard let library = library(for: $1) else {
-                        return
+                    if let audiobookID {
+                        libraryPath.append(Navigation.AudiobookLoadDestination(audiobookId: audiobookID))
                     }
-                    
-                    current = library
-                    let value = TabValue.audiobookLibrary(library)
-                    selection = value
-                }, navigateSeries: {
-                    guard let library = library(for: $1) else {
-                        return
-                    }
-                    
-                    current = library
-                    let value = TabValue.audiobookLibrary(library)
-                    selection = value
-                }, navigatePodcast: {
-                    guard let library = library(for: $1) else {
-                        return
-                    }
-                    
-                    current = library
-                    let value = TabValue.podcastLibrary(library)
-                    selection = value
-                }, navigateEpisode: {
-                    guard let library = library(for: $2) else {
-                        return
-                    }
-                    
-                    current = library
-                    let value = TabValue.podcastLibrary(library)
-                    selection = value
-                }))
+                }
+            })
             .environment(\.libraries, libraries)
             .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
             .onChange(of: isCompact) {
@@ -129,6 +107,11 @@ internal struct TabRouter: View {
                     current = selection?.library
                 } else {
                     current = nil
+                }
+            }
+            .onChange(of: selection?.library) {
+                while !libraryPath.isEmpty {
+                    libraryPath.removeLast()
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: SelectLibraryModifier.changeLibraryNotification)) {

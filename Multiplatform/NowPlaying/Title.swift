@@ -62,13 +62,13 @@ internal extension NowPlaying {
                         Menu {
                             if let episode = item as? Episode {
                                 Button {
-                                    Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
+                                    Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
                                 } label: {
                                     Label("episode.view", systemImage: "play.square.stack")
                                 }
                                 
                                 Button(action: {
-                                    Navigation.navigate(podcastId: episode.podcastId)
+                                    Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
                                 }) {
                                     Label("podcast.view", systemImage: "rectangle.stack")
                                     Text(episode.podcastName)
@@ -77,38 +77,37 @@ internal extension NowPlaying {
                             
                             if let audiobook = item as? Audiobook {
                                 Button {
-                                    Navigation.navigate(audiobookId: audiobook.id)
+                                    Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
                                 } label: {
                                     Label("audiobook.view", systemImage: "book")
                                 }
-                                
+                                 
                                 if let author = audiobook.author {
-                                    Button(action: {
+                                    Button {
                                         Task {
-                                            if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) {
-                                                Navigation.navigate(authorId: authorId)
+                                            if let authorID = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) {
+                                                Navigation.navigate(authorID: authorID, libraryID: audiobook.libraryID)
                                             }
                                         }
-                                    }) {
+                                    } label: {
                                         Label("author.view", systemImage: "person")
-                                        Text(author)
                                     }
                                 }
                                 
                                 if !audiobook.series.isEmpty {
                                     if audiobook.series.count == 1, let series = audiobook.series.first {
-                                        Button(action: {
-                                            Navigation.navigate(seriesName: series.name)
-                                        }) {
+                                        Button {
+                                            Navigation.navigate(seriesName: series.name, libraryID: audiobook.libraryID)
+                                        } label: {
                                             Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                             Text(series.name)
                                         }
                                     } else {
                                         Menu {
                                             ForEach(audiobook.series, id: \.name) { series in
-                                                Button(action: {
-                                                    Navigation.navigate(seriesName: series.name)
-                                                }) {
+                                                Button {
+                                                    Navigation.navigate(seriesName: series.name, libraryID: audiobook.libraryID)
+                                                } label: {
                                                     Text(series.name)
                                                 }
                                             }

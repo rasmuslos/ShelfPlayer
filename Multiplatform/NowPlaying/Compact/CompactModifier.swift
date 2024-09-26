@@ -95,7 +95,7 @@ internal extension NowPlaying {
                     
                 }
                 .ignoresSafeArea(edges: .all)
-                .modifier(Navigation.NavigationModifier() {
+                .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _ in
                     viewModel.expanded = false
                 })
             } else {

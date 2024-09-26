@@ -86,7 +86,8 @@ internal struct SeriesView: View {
             $0.persistentIdentifier = viewModel.series.name
             $0.targetContentIdentifier = "series:\(viewModel.series.name)"
             $0.userInfo = [
-                "seriesId": viewModel.series.id,
+                "libraryID": viewModel.series.libraryID,
+                "seriesID": viewModel.series.id,
                 "seriesName": viewModel.series.name,
             ]
             $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: library.id).appending(path: "series").appending(path: viewModel.series.id)
