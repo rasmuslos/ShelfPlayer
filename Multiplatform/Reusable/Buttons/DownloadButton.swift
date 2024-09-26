@@ -41,7 +41,7 @@ internal struct DownloadButton: View {
     private var icon: String {
         switch offlineTracker.status {
             case .none:
-                "square.and.arrow.down.fill"
+                "arrow.down"
             default:
                 "trash"
         }

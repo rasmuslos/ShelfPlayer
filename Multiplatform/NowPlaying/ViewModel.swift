@@ -424,5 +424,37 @@ internal extension NowPlaying.ViewModel {
         var id: Self {
             self
         }
+        
+        var label: LocalizedStringKey {
+            switch self {
+            case .queue:
+                "nowPlaying.sheet.queue"
+            case .chapters:
+                "nowPlaying.sheet.chapters"
+            case .bookmarks:
+                "nowPlaying.sheet.bookmarks"
+            }
+        }
+        var icon: String {
+            switch self {
+            case .queue:
+                "number"
+            case .chapters:
+                "book.pages"
+            case .bookmarks:
+                "star.fill"
+            }
+        }
+        
+        var next: Self {
+            switch self {
+                case .queue:
+                    .chapters
+            case .chapters:
+                    .bookmarks
+            case .bookmarks:
+                    .queue
+            }
+        }
     }
 }

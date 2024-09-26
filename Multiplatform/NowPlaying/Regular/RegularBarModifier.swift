@@ -7,133 +7,105 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
+import ShelfPlayerKit
 import SPPlayback
 
-extension NowPlaying {
+internal extension NowPlaying {
     struct RegularBarModifier: ViewModifier {
         @Default(.skipBackwardsInterval) private var skipBackwardsInterval
         @Default(.skipForwardsInterval) private var skipForwardsInterval
         
-        var offset: CGFloat? = nil
-        
-        @State private var bounce = false
-        @State private var animateBackwards = false
-        @State private var animateForwards = false
+        @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         @State private var width: CGFloat = .zero
         @State private var adjust: CGFloat = .zero
-        @State private var sheetPresented = false
         
         func body(content: Content) -> some View {
+            @Bindable var viewModel = viewModel
+            
             content
                 .safeAreaInset(edge: .bottom) {
-                    if let item = AudioPlayer.shared.item {
-                        HStack {
-                            ItemImage(cover: item.cover, aspectRatio: .none)
-                                .frame(height: 50)
-                                .scaleEffect(bounce ? AudioPlayer.shared.playing ? 1.1 : 0.9 : 1)
-                                .animation(.spring(duration: 0.2, bounce: 0.7), value: bounce)
-                                .onChange(of: AudioPlayer.shared.playing) {
-                                    withAnimation {
-                                        bounce = true
-                                    } completion: {
-                                        bounce = false
-                                    }
-                                }
+                    if let item = viewModel.item {
+                        HStack(spacing: 12) {
+                            ItemImage(cover: item.cover)
+                                .frame(width: 48, height: 48)
                             
-                            VStack(alignment: .leading) {
-                                Group {
-                                    if let chapterTitle = AudioPlayer.shared.chapter?.title {
-                                        Text(chapterTitle)
-                                    } else {
-                                        Text(item.name)
-                                    }
+                            Group {
+                                if let chapterTitle = AudioPlayer.shared.chapter?.title {
+                                    Text(chapterTitle)
+                                } else {
+                                    Text(item.name)
                                 }
-                                .lineLimit(1)
-                                
-                                Group {
-                                    if let episode = item as? Episode, let releaseDate = episode.releaseDate {
-                                        Text(releaseDate, style: .date)
-                                    } else {
-                                        Text("duration") // Text(AudioPlayer.shared.adjustedTimeLeft.hoursMinutesSecondsString(includeSeconds: false, includeLabels: true))
-                                        + Text(verbatim: " ")
-                                    }
-                                }
-                                .lineLimit(1)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
                             }
+                            .lineLimit(1)
                             
                             Spacer()
                             
+                            PlaybackSpeedButton()
+                                .font(.footnote)
+                                .fontWeight(.heavy)
+                                .foregroundStyle(.secondary)
+                                .modifier(ButtonHoverEffectModifier())
+                            
                             Button {
-                                animateBackwards.toggle()
                                 AudioPlayer.shared.skipBackwards()
                             } label: {
                                 Label("backwards", systemImage: "gobackward.\(skipBackwardsInterval)")
                                     .labelStyle(.iconOnly)
-                                    .symbolEffect(.bounce, value: animateForwards)
+                                    .symbolEffect(.bounce, value: viewModel.notifyBackwards)
                             }
                             .font(.title3)
                             .modifier(ButtonHoverEffectModifier())
-                            .padding(.horizontal, 7)
-                            .sensoryFeedback(.decrease, trigger: animateBackwards)
                             
                             Group {
-                                if AudioPlayer.shared.buffering {
-                                    ProgressIndicator()
+                                if viewModel.buffering {
+                                    ProgressView()
                                 } else {
                                     Button {
-                                        AudioPlayer.shared.playing = !AudioPlayer.shared.playing
+                                        AudioPlayer.shared.playing.toggle()
                                     } label: {
-                                        Label("playback.toggle", systemImage: AudioPlayer.shared.playing ?  "pause.fill" : "play.fill")
+                                        Label("playback.toggle", systemImage: viewModel.playing ? "pause.fill" : "play.fill")
                                             .labelStyle(.iconOnly)
                                             .contentTransition(.symbolEffect(.replace.byLayer.downUp))
                                     }
                                 }
                             }
-                            .transition(.blurReplace)
-                            .font(.largeTitle)
+                            .frame(width: 32)
+                            .font(.title)
                             .modifier(ButtonHoverEffectModifier())
-                            .frame(width: 30)
-                            .sensoryFeedback(.selection, trigger: AudioPlayer.shared.playing)
+                            .transition(.blurReplace)
                             
                             Button {
-                                animateForwards.toggle()
                                 AudioPlayer.shared.skipForwards()
                             } label: {
-                                Label("forwards", systemImage: "goforward.\(skipForwardsInterval)")
+                                Label("forwards", systemImage: "goforward.\(skipBackwardsInterval)")
                                     .labelStyle(.iconOnly)
-                                    .symbolEffect(.bounce, value: animateForwards)
+                                    .symbolEffect(.bounce, value: viewModel.notifyBackwards)
                             }
                             .font(.title3)
                             .modifier(ButtonHoverEffectModifier())
-                            .padding(.horizontal, 7)
-                            .sensoryFeedback(.increase, trigger: animateForwards)
                         }
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, 10)
                         .frame(height: 66)
                         .frame(maxWidth: width)
-                        .foregroundStyle(.primary)
                         .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 15, style: .continuous))
-                        .modifier(ContextMenuModifier())
+                        .foregroundStyle(.primary)
                         .background {
                             Rectangle()
-                                .foregroundStyle(.regularMaterial)
+                                .foregroundStyle(.bar)
                         }
-                        .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-                        .hoverEffect(.highlight)
+                        .modifier(NowPlaying.ContextMenuModifier())
+                        .clipShape(.rect(cornerRadius: 16, style: .continuous))
                         .shadow(color: .black.opacity(0.25), radius: 20)
                         .padding(.bottom, 10)
-                        .padding(.horizontal, 25)
+                        .padding(.horizontal, 10)
                         .padding(.leading, adjust)
                         .animation(.spring, value: width)
                         .animation(.spring, value: adjust)
                         .onTapGesture {
-                            sheetPresented.toggle()
+                            viewModel.expanded = true
                         }
-                        .fullScreenCover(isPresented: $sheetPresented) {
+                        .fullScreenCover(isPresented: $viewModel.expanded) {
                             RegularView()
                                 .ignoresSafeArea(edges: .all)
                         }
@@ -149,6 +121,7 @@ extension NowPlaying {
                         adjust = offset
                     }
                 }
+                .environment(viewModel)
         }
     }
 }

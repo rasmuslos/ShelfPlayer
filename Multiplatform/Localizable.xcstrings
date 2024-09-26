@@ -1367,7 +1367,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "EIn Buch"
+                  "value" : "Ein Buch"
                 }
               },
               "other" : {
@@ -1898,6 +1898,7 @@
       }
     },
     "duration" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3082,6 +3083,7 @@
       }
     },
     "notableMoments" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4210,6 +4212,7 @@
       }
     },
     "sheet.bookmarks" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4226,6 +4229,7 @@
       }
     },
     "sheet.chapters" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4242,6 +4246,7 @@
       }
     },
     "sheet.queue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4256,9 +4261,6 @@
           }
         }
       }
-    },
-    "sleep" : {
-
     },
     "sleep.chapter" : {
       "localizations" : {
