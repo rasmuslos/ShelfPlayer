@@ -26,6 +26,18 @@ internal extension NowPlaying {
             break
         }
     }
+    
+    struct NowPlayingButtonModifier: ViewModifier {
+        var fixedWidth: Bool = true
+        
+        func body(content: Content) -> some View {
+            content
+                .bold()
+                .font(.title3)
+                .foregroundStyle(.secondary)
+                .frame(width: fixedWidth ? 60 : nil)
+        }
+    }
 }
 
 

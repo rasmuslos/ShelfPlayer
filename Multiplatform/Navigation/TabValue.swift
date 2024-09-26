@@ -10,7 +10,7 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
+internal enum TabValue: Identifiable, Hashable, Codable, Comparable, Defaults.Serializable {
     case audiobookHome(Library)
     case audiobookSeries(Library)
     case audiobookAuthors(Library)
@@ -94,8 +94,8 @@ internal enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     }
     
     @ViewBuilder
-    var content: some View {
-        NavigationStack() {
+    func content(path: Binding<NavigationPath>) -> some View {
+        NavigationStack(path: path) {
             switch self {
             case .audiobookHome:
                 AudiobookHomePanel()
@@ -118,7 +118,8 @@ internal enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             }
         }
         .environment(\.library, library)
-        .modifier(NowPlaying.CompactTabBarBackgroundModifier())
+        .modifier(NowPlaying.RegularModifier())
+        .modifier(NowPlaying.BackgroundModifier())
     }
 }
 

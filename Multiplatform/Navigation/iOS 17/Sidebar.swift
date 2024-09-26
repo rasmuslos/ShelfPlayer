@@ -12,6 +12,7 @@ import ShelfPlayerKit
 internal struct Sidebar: View {
     let libraries: [Library]
     @Binding var selection: TabValue?
+    @Binding var controller: NavigationController
     
     var body: some View {
         NavigationSplitView {
@@ -28,7 +29,7 @@ internal struct Sidebar: View {
             }
         } detail: {
             if let selection {
-                selection.content
+                selection.content(path: $controller[selection])
                     .id(selection.library)
             } else {
                 ContentUnavailableView("splitView.empty", systemImage: "bookmark.square.fill", description: Text("splitView.empty.description"))

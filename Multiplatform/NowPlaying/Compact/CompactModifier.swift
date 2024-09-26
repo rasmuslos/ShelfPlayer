@@ -11,91 +11,96 @@ import SPPlayback
 
 internal extension NowPlaying {
     struct CompactModifier: ViewModifier {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         var bottomOffset: CGFloat = 88
         
         func body(content: Content) -> some View {
-            ZStack(alignment: .bottom) {
-                content
-                    .allowsHitTesting(!viewModel.expanded)
-                
-                if let item = viewModel.item {
-                    ZStack {
-                        // Background
+            if horizontalSizeClass == .compact {
+                ZStack(alignment: .bottom) {
+                    content
+                        .allowsHitTesting(!viewModel.expanded)
+                    
+                    if let item = viewModel.item {
                         ZStack {
-                            // Prevent content from shining through
-                            if viewModel.expanded {
+                            // Background
+                            ZStack {
+                                // Prevent content from shining through
+                                if viewModel.expanded {
+                                    Rectangle()
+                                        .foregroundStyle(.background)
+                                        .transition(.opacity)
+                                        .transaction {
+                                            if !viewModel.expanded {
+                                                $0.animation = .smooth.delay(0.6)
+                                            }
+                                        }
+                                }
+                                
+                                // Now playing bar background
+                                Rectangle()
+                                    .foregroundStyle(.regularMaterial)
+                                    .opacity(viewModel.expanded ? 0 : 1)
+                                
+                                // Now playing view background
                                 Rectangle()
                                     .foregroundStyle(.background)
-                                    .transition(.opacity)
-                                    .transaction {
-                                        if !viewModel.expanded {
-                                            $0.animation = .smooth.delay(0.6)
-                                        }
-                                    }
+                                    .opacity(viewModel.expanded ? 1 : 0)
                             }
+                            .allowsHitTesting(false)
+                            .mask {
+                                VStack(spacing: 0) {
+                                    UnevenRoundedRectangle(topLeadingRadius: viewModel.backgroundCornerRadius, topTrailingRadius: viewModel.backgroundCornerRadius, style: .continuous)
+                                        .frame(maxHeight: 60)
+                                    
+                                    // The padding prevents the mask from cutting lines in the background
+                                    // during the transformation. They are caused by the `spring` animation.
+                                    Rectangle()
+                                        .padding(.vertical, -2)
+                                    
+                                    UnevenRoundedRectangle(bottomLeadingRadius: viewModel.backgroundCornerRadius, bottomTrailingRadius: viewModel.backgroundCornerRadius, style: .continuous)
+                                        .frame(maxHeight: 60)
+                                }
+                                .drawingGroup()
+                            }
+                            .shadow(color: .black.opacity(0.2), radius: 8)
                             
-                            // Now playing bar background
-                            Rectangle()
-                                .foregroundStyle(.regularMaterial)
-                                .opacity(viewModel.expanded ? 0 : 1)
-                            
-                            // Now playing view background
-                            Rectangle()
-                                .foregroundStyle(.background)
-                                .opacity(viewModel.expanded ? 1 : 0)
-                        }
-                        .allowsHitTesting(false)
-                        .mask {
-                            VStack(spacing: 0) {
-                                UnevenRoundedRectangle(topLeadingRadius: viewModel.backgroundCornerRadius, topTrailingRadius: viewModel.backgroundCornerRadius, style: .continuous)
-                                    .frame(maxHeight: 60)
-                                
-                                // The padding prevents the mask from cutting lines in the background
-                                // during the transformation. They are caused by the `spring` animation.
+                            // Drag gesture catcher
+                            if viewModel.expanded {
                                 Rectangle()
-                                    .padding(.vertical, -2)
-                                
-                                UnevenRoundedRectangle(bottomLeadingRadius: viewModel.backgroundCornerRadius, bottomTrailingRadius: viewModel.backgroundCornerRadius, style: .continuous)
-                                    .frame(maxHeight: 60)
+                                    .foregroundStyle(.clear)
+                                    .contentShape(.rect)
+                                    .modifier(GestureModifier(active: true))
                             }
-                            .drawingGroup()
-                        }
-                        .shadow(color: .black.opacity(0.2), radius: 8)
-                        
-                        // Drag gesture catcher
-                        if viewModel.expanded {
-                            Rectangle()
-                                .foregroundStyle(.clear)
-                                .contentShape(.rect)
-                                .modifier(GestureModifier(active: true))
-                        }
-                        
-                        // Foreground
-                        VStack(spacing: 0) {
-                            CollapsedForeground(item: item)
-                                .opacity(viewModel.expanded ? 0 : 1)
-                                .allowsHitTesting(!viewModel.expanded)
                             
-                            ExpandedForeground(item: item)
+                            // Foreground
+                            VStack(spacing: 0) {
+                                CollapsedForeground(item: item)
+                                    .opacity(viewModel.expanded ? 0 : 1)
+                                    .allowsHitTesting(!viewModel.expanded)
+                                
+                                ExpandedForeground(item: item)
+                            }
                         }
+                        .offset(x: 0, y: viewModel.dragOffset)
+                        .ignoresSafeArea(.keyboard)
+                        .ignoresSafeArea(edges: .all)
+                        .toolbarBackground(.hidden, for: .tabBar)
+                        .frame(height: viewModel.expanded ? nil : 56)
+                        .padding(.horizontal, viewModel.expanded ? 0 : 12)
+                        .padding(.bottom, viewModel.expanded ? 0 : bottomOffset)
+                        .animation(.snappy(duration: 0.8), value: viewModel.expanded)
                     }
-                    .offset(x: 0, y: viewModel.dragOffset)
-                    .ignoresSafeArea(.keyboard)
-                    .ignoresSafeArea(edges: .all)
-                    .toolbarBackground(.hidden, for: .tabBar)
-                    .frame(height: viewModel.expanded ? nil : 56)
-                    .padding(.horizontal, viewModel.expanded ? 0 : 12)
-                    .padding(.bottom, viewModel.expanded ? 0 : bottomOffset)
-                    .animation(.snappy(duration: 0.8), value: viewModel.expanded)
+                    
                 }
-                
+                .ignoresSafeArea(edges: .all)
+                .modifier(Navigation.NavigationModifier() {
+                    viewModel.expanded = false
+                })
+            } else {
+                content
             }
-            .ignoresSafeArea(edges: .all)
-            .modifier(Navigation.NavigationModifier() {
-                viewModel.expanded = false
-            })
         }
     }
 }
@@ -117,13 +122,13 @@ private struct ExpandedForeground: View {
                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                     .animation(.spring(duration: 0.3, bounce: 0.6), value: viewModel.playing)
                     .matchedGeometryEffect(id: "image", in: viewModel.namespace, properties: .frame, anchor: .topLeading)
-                    .modifier(GestureModifier(active: true))
+                    .modifier(NowPlaying.GestureModifier(active: true))
                 
                 Spacer(minLength: 12)
                 
                 VStack(spacing: 0) {
                     NowPlaying.Title(item: item)
-                        .modifier(GestureModifier(active: true))
+                        .modifier(NowPlaying.GestureModifier(active: true))
                     
                     NowPlaying.Controls(compact: false)
                         .padding(.top, 16)
@@ -147,7 +152,7 @@ private struct ExpandedForeground: View {
                 }
                 .buttonStyle(.plain)
                 .padding(40)
-                .modifier(GestureModifier(active: true))
+                .modifier(NowPlaying.GestureModifier(active: true))
                 .padding(-40)
                 .transition(.opacity)
             }
@@ -239,38 +244,5 @@ private struct CollapsedForeground: View {
         .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16, style: .continuous))
         .modifier(NowPlaying.ContextMenuModifier())
         .padding(.horizontal, 8)
-    }
-}
-
-private struct GestureModifier: ViewModifier {
-    @Environment(NowPlaying.ViewModel.self) private var viewModel
-    
-    let active: Bool
-    
-    func body(content: Content) -> some View {
-        content
-            .simultaneousGesture(
-                DragGesture(minimumDistance: active ? 0 : 1000, coordinateSpace: .global)
-                    .onChanged {
-                        guard !viewModel.controlsDragging else {
-                            return
-                        }
-                        
-                        if $0.velocity.height > 3500 {
-                            viewModel.expanded = false
-                        } else {
-                            viewModel.dragOffset = min(1000, max(0, $0.translation.height))
-                        }
-                    }
-                    .onEnded {
-                        if $0.translation.height > 200 {
-                            viewModel.expanded = false
-                        } else {
-                            withAnimation {
-                                viewModel.dragOffset = 0
-                            }
-                        }
-                    }
-            )
     }
 }

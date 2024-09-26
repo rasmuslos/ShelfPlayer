@@ -9,13 +9,11 @@ import SwiftUI
 import SPFoundation
 import SPPlayback
 
-extension NowPlaying {
+internal extension NowPlaying {
     struct RegularView: View {
-        @Namespace private var namespace
-        @Environment(\.dismiss) var dismiss
+        @Environment(ViewModel.self) private var viewModel
+        @Environment(\.dismiss) private var dismiss
         
-        @State private var bookmarksActive = false
-        @State private var controlsDragging = false
         @State private var availableWidth: CGFloat = .zero
         
         var body: some View {
@@ -28,17 +26,18 @@ extension NowPlaying {
                 }
                 .frame(height: 0)
                 
-                if let item = AudioPlayer.shared.item {
+                if let item = viewModel.item {
                     Rectangle()
-                        .foregroundStyle(.background)
+                        .fill(.background)
+                        .modifier(NowPlaying.GestureModifier(active: true))
                     
-                    VStack {
-                        HStack(spacing: availableWidth < 1000 ? 20 : 80) {
-                            VStack {
+                    VStack(spacing: 0) {
+                        HStack(spacing: 40) {
+                            VStack(spacing: 0) {
                                 Spacer()
                                 
                                 ItemImage(cover: item.cover, aspectRatio: .none)
-                                    .shadow(radius: 15)
+                                    .shadow(radius: 16)
                                     .padding(.vertical, 10)
                                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                                     .animation(.spring(duration: 0.3, bounce: 0.6), value: AudioPlayer.shared.playing)
@@ -47,40 +46,35 @@ extension NowPlaying {
                                 
                                 Title(item: item)
                                 Controls(compact: true)
-                                    .padding(.bottom, 30)
-                                
+                                    .padding(.top, 12)
+                                    .padding(.bottom, 32)
                             }
-                            .frame(width: min(availableWidth / 2.25, 450))
+                            .frame(maxWidth: 475)
+                            .modifier(NowPlaying.GestureModifier(active: true))
                             
-                            NowPlaying.Sheet()
-                                .frame(maxWidth: .infinity)
+                            Sheet()
+                                .padding(.top, 40)
                         }
                         
-                        Buttons(notableMomentsToggled: $bookmarksActive)
+                        RegularButtons()
+                            .modifier(NowPlaying.GestureModifier(active: true))
                     }
-                    .simultaneousGesture(
-                        DragGesture(minimumDistance: 25, coordinateSpace: .global)
-                            .onEnded {
-                                if $0.translation.height > 200 {
-                                    dismiss()
-                                }
-                            }
-                    )
                     .padding(.bottom, 20)
                     .padding(.horizontal, 40)
-                    .padding(.top, 60)
+                    .padding(.top, 40)
+                    // this has to be here!
                     .ignoresSafeArea(edges: .all)
                     .overlay(alignment: .top) {
                         Button {
                             dismiss()
                         } label: {
                             Rectangle()
-                                .foregroundStyle(.gray.opacity(0.75))
-                                .frame(width: 50, height: 7)
-                                .clipShape(RoundedRectangle(cornerRadius: 10000))
+                                .foregroundStyle(.white.opacity(0.4))
+                                .frame(width: 52, height: 8)
+                                .clipShape(.rect(cornerRadius: .infinity))
                         }
                         .modifier(ButtonHoverEffectModifier(hoverEffect: .lift))
-                        .padding(.top, 35)
+                        .padding(.top, 36)
                     }
                     .modifier(Navigation.NavigationModifier() {
                         dismiss()

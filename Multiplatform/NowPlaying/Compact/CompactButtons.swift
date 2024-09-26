@@ -53,13 +53,3 @@ internal extension NowPlaying {
         }
     }
 }
-
-private struct NowPlayingButtonModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .bold()
-            .font(.title3)
-            .foregroundStyle(.secondary)
-            .frame(width: 60)
-    }
-}

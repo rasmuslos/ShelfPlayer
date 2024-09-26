@@ -9,43 +9,78 @@ import SwiftUI
 import SPFoundation
 import SPPlayback
 
-extension NowPlaying.RegularView {
-    struct Buttons: View {
-        @Binding var notableMomentsToggled: Bool
+extension NowPlaying {
+    internal struct RegularButtons: View {
+        @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         var body: some View {
-            HStack {
+            HStack(spacing: 0) {
+                PlaybackSpeedButton()
+                    .modifier(NowPlayingButtonModifier())
+                
+                SleepTimerButton()
+                    .labelStyle(.iconOnly)
+                    .modifier(NowPlayingButtonModifier())
+                
+                Button {
+                    NowPlaying.presentPicker()
+                } label: {
+                    Label("route", systemImage: "airplay.audio")
+                        .labelStyle(.iconOnly)
+                        .modifier(NowPlayingButtonModifier())
+                        .foregroundStyle(viewModel.isUsingExternalRoute ? Color.accentColor : .secondary)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                
                 Spacer()
                 
-                PlaybackSpeedButton()
-                    .font(.system(size: 21))
-                    .foregroundStyle(.secondary)
-                    .modifier(ButtonHoverEffectModifier())
-                
-                Text("sleep") // SleepTimerButton()
-                    .labelStyle(.iconOnly)
-                    .font(.system(size: 17))
-                    .foregroundStyle(.secondary)
-                    .modifier(ButtonHoverEffectModifier())
-                    .padding(.leading, 20)
-                
-                if AudioPlayer.shared.item?.type == .audiobook {
-                    Button {
-                        notableMomentsToggled.toggle()
-                    } label: {
-                        Label("notableMoments", systemImage: "bookmark.square")
-                            .labelStyle(.iconOnly)
-                            .symbolVariant(notableMomentsToggled ? .fill : .none)
+                Button {
+                    withAnimation {
+                        viewModel.sheetTab = viewModel.sheetTab?.next
                     }
-                    .font(.system(size: 23))
-                    .foregroundStyle(.secondary)
-                    .modifier(ButtonHoverEffectModifier())
-                    .padding(.leading, 20)
+                } label: {
+                    Text(viewModel.sheetTab?.label ?? "loading")
+                        .foregroundStyle(.secondary)
                 }
+                .buttonStyle(.plain)
+                .padding(.trailing, 8)
+                .modifier(NowPlayingButtonModifier(fixedWidth: false))
+                
+                if viewModel.sheetTab == .queue {
+                    Button {
+                        AudioPlayer.shared.clear()
+                    } label: {
+                        Label("queue.clear", systemImage: "xmark.square.fill")
+                            .labelStyle(.iconOnly)
+                    }
+                    .modifier(NowPlayingButtonModifier(fixedWidth: false))
+                    .padding(.trailing, 8)
+                }
+                
+                Menu {
+                    ForEach(NowPlaying.ViewModel.SheetTab.allCases) { tab in
+                        Button {
+                            withAnimation {
+                                viewModel.sheetTab = tab
+                            }
+                        } label: {
+                            Label(tab.label, systemImage: tab.icon)
+                        }
+                    }
+                } label: {
+                    Label(viewModel.sheetTab?.label ?? "loading", systemImage: viewModel.sheetTab?.icon ?? "command")
+                        .labelStyle(.iconOnly)
+                } primaryAction: {
+                    withAnimation {
+                        viewModel.sheetTab = viewModel.sheetTab?.next
+                    }
+                }
+                .menuStyle(.button)
+                .buttonStyle(.plain)
+                .modifier(NowPlayingButtonModifier(fixedWidth: false))
             }
-            .bold()
-            .font(.system(size: 20))
-            .frame(height: 45)
+            .frame(height: 48)
         }
     }
 }
