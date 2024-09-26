@@ -52,9 +52,8 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                DownloadButton(item: audiobook)
-                
                 ProgressButton(item: audiobook)
+                DownloadButton(item: audiobook)
             } preview: {
                 VStack(alignment: .leading, spacing: 2) {
                     ItemStatusImage(item: audiobook, aspectRatio: .none)
