@@ -1897,23 +1897,6 @@
         }
       }
     },
-    "duration" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Länge"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duration"
-          }
-        }
-      }
-    },
     "empty.other.queue %lld" : {
       "localizations" : {
         "de" : {
@@ -3082,29 +3065,6 @@
         }
       }
     },
-    "notableMoments" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wichtige Momente"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notable moments"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "值得关注的时刻"
-          }
-        }
-      }
-    },
     "nowPlaying.sheet" : {
       "localizations" : {
         "de" : {
@@ -3527,6 +3487,22 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "podcast.settings.maxEpisodes %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzahl: %$lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amount: %$lld"
           }
         }
       }
@@ -4207,57 +4183,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Syncing progress"
-          }
-        }
-      }
-    },
-    "sheet.bookmarks" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lesezeichen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bookmarks"
-          }
-        }
-      }
-    },
-    "sheet.chapters" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kapitel"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chapters"
-          }
-        }
-      }
-    },
-    "sheet.queue" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Warteschlange"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Queue"
           }
         }
       }

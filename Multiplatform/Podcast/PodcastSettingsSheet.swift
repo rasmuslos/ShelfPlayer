@@ -25,7 +25,7 @@ internal struct PodcastSettingsSheet: View {
                 Section {
                     DownloadSettings(maxEpisodes: $configuration.maxEpisodes, autoDownloadEnabled: $configuration.autoDownload)
                     
-                    Stepper("podcast.settings.maxEpisodes \($configuration.maxEpisodes)") {
+                    Stepper("podcast.settings.maxEpisodes \(configuration.maxEpisodes)") {
                         if configuration.maxEpisodes <= 32 {
                             configuration.maxEpisodes += 1
                         }
