@@ -91,7 +91,8 @@ extension AudiobookView {
                             Divider()
                             
                             if viewModel.offlineTracker.status == .none {
-                                
+                                ProgressButton(item: viewModel.audiobook)
+                                DownloadButton(item: viewModel.audiobook)
                             } else {
                                 if !viewModel.progressEntity.isFinished {
                                     ProgressButton(item: viewModel.audiobook)
