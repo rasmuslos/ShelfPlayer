@@ -98,7 +98,7 @@ extension AudiobookView {
                                 }
                                 
                                 Menu {
-                                    if !viewModel.progressEntity.isFinished {
+                                    if viewModel.progressEntity.isFinished {
                                         ProgressButton(item: viewModel.audiobook)
                                     }
                                     
@@ -113,6 +113,7 @@ extension AudiobookView {
                                     DownloadButton(item: viewModel.audiobook)
                                 } label: {
                                     Text("toolbar.remove")
+                                        .tint(.red)
                                 }
                             }
                         } label: {
