@@ -84,6 +84,7 @@ internal struct TabRouter: View {
                         return
                     }
                     
+                    current = library
                     let value = TabValue.audiobookLibrary(library)
                     selection = value
                     
@@ -93,6 +94,7 @@ internal struct TabRouter: View {
                         return
                     }
                     
+                    current = library
                     let value = TabValue.audiobookLibrary(library)
                     selection = value
                 }, navigateSeries: {
@@ -100,6 +102,7 @@ internal struct TabRouter: View {
                         return
                     }
                     
+                    current = library
                     let value = TabValue.audiobookLibrary(library)
                     selection = value
                 }, navigatePodcast: {
@@ -107,6 +110,7 @@ internal struct TabRouter: View {
                         return
                     }
                     
+                    current = library
                     let value = TabValue.podcastLibrary(library)
                     selection = value
                 }, navigateEpisode: {
@@ -114,6 +118,7 @@ internal struct TabRouter: View {
                         return
                     }
                     
+                    current = library
                     let value = TabValue.podcastLibrary(library)
                     selection = value
                 }))
