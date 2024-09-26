@@ -22,100 +22,74 @@ internal struct Navigation {
 }
 
 internal extension Navigation {
-    static func navigate(audiobookId: String) {
-        NotificationCenter.default.post(name: Self.navigateAudiobookNotification, object: audiobookId)
+    static func navigate(audiobookID: String, libraryID: String) {
+        NotificationCenter.default.post(name: Self.navigateAudiobookNotification, object: nil, userInfo: [
+            "libraryID": libraryID,
+            "audiobookID": audiobookID,
+        ])
     }
-    static func navigate(authorId: String) {
-        NotificationCenter.default.post(name: Self.navigateAuthorNotification, object: authorId)
+    static func navigate(authorID: String, libraryID: String) {
+        NotificationCenter.default.post(name: Self.navigateAuthorNotification, object: nil, userInfo: [
+            "libraryID": libraryID,
+            "authorID": authorID,
+        ])
     }
-    static func navigate(seriesName: String) {
-        NotificationCenter.default.post(name: Self.navigateSeriesNotification, object: seriesName)
+    static func navigate(seriesName: String, libraryID: String) {
+        NotificationCenter.default.post(name: Self.navigateSeriesNotification, object: nil, userInfo: [
+            "libraryID": libraryID,
+            "seriesName": seriesName,
+        ])
     }
-    static func navigate(podcastId: String) {
-        NotificationCenter.default.post(name: Self.navigatePodcastNotification, object: podcastId)
+    static func navigate(podcastID: String, libraryID: String) {
+        NotificationCenter.default.post(name: Self.navigateAuthorNotification, object: nil, userInfo: [
+            "libraryID": libraryID,
+            "podcastID": podcastID,
+        ])
     }
-    static func navigate(episodeId: String, podcastId: String) {
-        NotificationCenter.default.post(name: Self.navigateEpisodeNotification, object: (episodeId, podcastId))
+    static func navigate(episodeID: String, podcastID: String, libraryID: String) {
+        NotificationCenter.default.post(name: Self.navigateAuthorNotification, object: nil, userInfo: [
+            "libraryID": libraryID,
+            "episodeID": episodeID,
+            "podcastID": podcastID,
+        ])
     }
 }
 
 internal extension Navigation {
     struct NotificationModifier: ViewModifier {
-        let navigateAudiobook: (String, String) -> Void
-        let navigateAuthor: (String, String) -> Void
-        let navigateSeries: (String, String) -> Void
-        let navigatePodcast: (String, String) -> Void
-        let navigateEpisode: (String, String, String) -> Void
+        typealias Callback = (_ libraryID: String, _ audiobookID: String?, _ authorID: String?, _ seriesName: String?, _ podcastID: String?, (podcastID: String?, episodeID: String?)) -> Void
+        
+        let didNavigate: Callback
         
         func body(content: Content) -> some View {
             content
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAudiobookNotification)) { notification in
-                    if let id = notification.object as? String {
-                        Task {
-                            let libraryID = try await AudiobookshelfClient.shared.item(itemId: id, episodeId: nil).0.libraryID
-                            navigateAudiobook(id, libraryID)
-                        }
-                    }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAudiobookNotification)) {
+                    handle(notification: $0)
                 }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAuthorNotification)) { notification in
-                    if let id = notification.object as? String {
-                        Task {
-                            let libraryID = try await AudiobookshelfClient.shared.author(authorId: id).libraryID
-                            navigateAuthor(id, libraryID)
-                        }
-                    }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAuthorNotification)) {
+                    handle(notification: $0)
                 }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateSeriesNotification)) { notification in
-                    if let name = notification.object as? String {
-                        Task {
-                            // this is certainly something
-                            
-                            guard let libraries = try? await AudiobookshelfClient.shared.libraries().filter({ $0.type == .audiobooks }) else { return }
-                            let fetched = await libraries.parallelMap { (try? await AudiobookshelfClient.shared.series(libraryID: $0.id, limit: 10_000, page: 0).0.filter { $0.name == name }) ?? [] }
-                            
-                            guard let libraryID = fetched.flatMap({ $0 }).first?.libraryID else { return }
-                            navigateSeries(name, libraryID)
-                        }
-                    }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateSeriesNotification)) {
+                    handle(notification: $0)
                 }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigatePodcastNotification)) { notification in
-                    if let id = notification.object as? String {
-                        Task {
-                            let libraryID = try await AudiobookshelfClient.shared.podcast(podcastId: id).0.libraryID
-                            navigatePodcast(id, libraryID)
-                        }
-                    }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigatePodcastNotification)) {
+                    handle(notification: $0)
                 }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateEpisodeNotification)) { notification in
-                    if let (episodeId, podcastId) = notification.object as? (String, String) {
-                        Task {
-                            let libraryID = try await AudiobookshelfClient.shared.podcast(podcastId: podcastId).0.libraryID
-                            navigateEpisode(episodeId, podcastId, libraryID)
-                        }
-                    }
+                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateEpisodeNotification)) {
+                    handle(notification: $0)
                 }
         }
-    }
-    struct NavigationModifier: ViewModifier {
-        let didNavigate: () -> Void
         
-        func body(content: Content) -> some View {
-            content
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAudiobookNotification)) { notification in
-                    didNavigate()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateAuthorNotification)) { notification in
-                    didNavigate()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateSeriesNotification)) { notification in
-                    didNavigate()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigatePodcastNotification)) { notification in
-                    didNavigate()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: Navigation.navigateEpisodeNotification)) { notification in
-                    didNavigate()
-                }
+        private func handle(notification: Notification) {
+            guard let userInfo = notification.userInfo as? [String: String] else {
+                return
+            }
+            
+            guard let libraryID = userInfo["libraryID"] else {
+                return
+            }
+            
+            didNavigate(libraryID, userInfo["audiobookID"], userInfo["authorID"], userInfo["seriesName"], userInfo["podcastID"], (userInfo["podcastID"], userInfo["episodeID"]))
         }
     }
     

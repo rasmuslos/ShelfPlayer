@@ -87,7 +87,8 @@ struct PodcastView: View {
             $0.persistentIdentifier = viewModel.podcast.id
             $0.targetContentIdentifier = "podcast:\(viewModel.podcast.id)"
             $0.userInfo = [
-                "podcastId": viewModel.podcast.id,
+                "libraryID": viewModel.podcast.libraryID,
+                "podcastID": viewModel.podcast.id,
             ]
             $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.podcast.id)
         }

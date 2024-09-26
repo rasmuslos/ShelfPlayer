@@ -13,12 +13,12 @@ import ShelfPlayerKit
 internal struct Tabs: View {
     let current: Library
     @Binding var selection: TabValue?
-    @Binding var controller: NavigationController
+    @Binding var libraryPath: NavigationPath
     
     var body: some View {
         TabView(selection: $selection) {
             ForEach(TabValue.tabs(for: current)) { tab in
-                tab.content(path: $controller[tab])
+                tab.content(libraryPath: $libraryPath)
                     .tag(tab)
                     .tabItem {
                         Label(tab.label, systemImage: tab.image)

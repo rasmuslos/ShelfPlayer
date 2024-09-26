@@ -42,40 +42,40 @@ internal struct ContentView: View {
             #endif
         }
         .onContinueUserActivity("io.rfk.shelfplayer.audiobook") { activity in
-            guard let identifier = activity.persistentIdentifier else {
+            guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
                 return
             }
             
-            Navigation.navigate(audiobookId: identifier)
+            Navigation.navigate(audiobookID: identifier, libraryID: libraryID)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.author") { activity in
-            guard let identifier = activity.persistentIdentifier else {
+            guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
                 return
             }
             
-            Navigation.navigate(authorId: identifier)
+            Navigation.navigate(authorID: identifier, libraryID: libraryID)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.series") { activity in
-            guard let name = activity.persistentIdentifier else {
+            guard let name = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
                 return
             }
             
-            Navigation.navigate(seriesName: name)
+            Navigation.navigate(seriesName: name, libraryID: libraryID)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.podcast") { activity in
-            guard let identifier = activity.persistentIdentifier else {
+            guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
                 return
             }
             
-            Navigation.navigate(podcastId: identifier)
+            Navigation.navigate(podcastID: identifier, libraryID: libraryID)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.episode") { activity in
-            guard let identifier = activity.persistentIdentifier else {
+            guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
                 return
             }
             
-            let (podcastId, episodeId) = convertIdentifier(identifier: identifier)
-            Navigation.navigate(episodeId: episodeId, podcastId: podcastId)
+            let (podcastID, episodeID) = convertIdentifier(identifier: identifier)
+            Navigation.navigate(episodeID: episodeID, podcastID: podcastID, libraryID: libraryID)
         }
     }
     

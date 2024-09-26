@@ -94,7 +94,6 @@
 		3A9874272B599BA600B2704F /* Chapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9874262B599BA600B2704F /* Chapters.swift */; };
 		3A9AB5382AD941DC0089231A /* SwipeActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9AB5372AD941DC0089231A /* SwipeActionsModifier.swift */; };
 		3A9BC7252CA44CEE00D085C4 /* RegularModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9BC7242CA44CEC00D085C4 /* RegularModifier.swift */; };
-		3A9BC7292CA54DAD00D085C4 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9BC7282CA54DA900D085C4 /* NavigationController.swift */; };
 		3A9BC72B2CA5C08E00D085C4 /* GestureModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9BC72A2CA5C08B00D085C4 /* GestureModifier.swift */; };
 		3A9E5DFF2BC6C7D400FF6F7A /* ContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9E5DFE2BC6C7D400FF6F7A /* ContextMenuModifier.swift */; };
 		3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */; };
@@ -296,7 +295,6 @@
 		3A9874262B599BA600B2704F /* Chapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chapters.swift; sourceTree = "<group>"; };
 		3A9AB5372AD941DC0089231A /* SwipeActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionsModifier.swift; sourceTree = "<group>"; };
 		3A9BC7242CA44CEC00D085C4 /* RegularModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularModifier.swift; sourceTree = "<group>"; };
-		3A9BC7282CA54DA900D085C4 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		3A9BC72A2CA5C08B00D085C4 /* GestureModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureModifier.swift; sourceTree = "<group>"; };
 		3A9E5DFE2BC6C7D400FF6F7A /* ContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuModifier.swift; sourceTree = "<group>"; };
 		3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -805,7 +803,6 @@
 				3AB4D6682CA19DE600876C8E /* TabValue.swift */,
 				3A27F0F02CA15E08005DE87D /* TabRouter.swift */,
 				3A7A9C962BE613E200701D58 /* Navigation.swift */,
-				3A9BC7282CA54DA900D085C4 /* NavigationController.swift */,
 				3A0AE6A52AB623F400ACCD68 /* ContentView.swift */,
 				3A27F0EE2CA15DF7005DE87D /* iOS 17 */,
 			);
@@ -1045,7 +1042,6 @@
 				3A98246E2B6EAC7F0098C06A /* ProgressIndicator.swift in Sources */,
 				3A9BC7252CA44CEE00D085C4 /* RegularModifier.swift in Sources */,
 				3AB8BBBD2BD7B7290012023A /* PodcastHomePanel.swift in Sources */,
-				3A9BC7292CA54DAD00D085C4 /* NavigationController.swift in Sources */,
 				3A0E42F02C81A1B10034873F /* PodcastViewModel.swift in Sources */,
 				3A5210082B6D30C900F59101 /* EpisodeSingleList.swift in Sources */,
 				3A77B7072ACDF89500F22C7F /* FullscreenToolbarModifier.swift in Sources */,
