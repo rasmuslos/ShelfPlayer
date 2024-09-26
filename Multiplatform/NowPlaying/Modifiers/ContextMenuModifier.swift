@@ -25,13 +25,13 @@ internal extension NowPlaying {
                     Group {
                         if let episode = viewModel.item as? Episode {
                             Button {
-                                Navigation.navigate(episodeId: episode.id, podcastId: episode.podcastId)
+                                Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
                             } label: {
                                 Label("episode.view", systemImage: "play.square.stack")
                             }
                             
                             Button {
-                                Navigation.navigate(podcastId: episode.podcastId)
+                                Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
                             } label: {
                                 Label("podcast.view", systemImage: "rectangle.stack")
                                 Text(episode.podcastName)
@@ -40,7 +40,7 @@ internal extension NowPlaying {
                         
                         if let audiobook = viewModel.item as? Audiobook {
                             Button {
-                                Navigation.navigate(audiobookId: audiobook.id)
+                                Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
                             } label: {
                                 Label("audiobook.view", systemImage: "book")
                             }
@@ -48,8 +48,8 @@ internal extension NowPlaying {
                             if let author = audiobook.author {
                                 Button {
                                     Task {
-                                        if let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) {
-                                            Navigation.navigate(authorId: authorId)
+                                        if let authorID = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) {
+                                            Navigation.navigate(authorID: authorID, libraryID: audiobook.libraryID)
                                         }
                                     }
                                 } label: {
@@ -60,7 +60,7 @@ internal extension NowPlaying {
                             if !audiobook.series.isEmpty {
                                 if audiobook.series.count == 1, let series = audiobook.series.first {
                                     Button {
-                                        Navigation.navigate(seriesName: series.name)
+                                        Navigation.navigate(seriesName: series.name, libraryID: audiobook.libraryID)
                                     } label: {
                                         Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                         Text(series.name)
@@ -69,7 +69,7 @@ internal extension NowPlaying {
                                     Menu {
                                         ForEach(audiobook.series, id: \.name) { series in
                                             Button {
-                                                Navigation.navigate(seriesName: series.name)
+                                                Navigation.navigate(seriesName: series.name, libraryID: audiobook.libraryID)
                                             } label: {
                                                 Text(series.name)
                                             }

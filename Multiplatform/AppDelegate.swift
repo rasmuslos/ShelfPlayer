@@ -47,12 +47,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
-        guard let podcastId = userInfo["podcastId"] as? String else { return }
+        guard let libraryID = userInfo["libraryID"] as? String, let podcastID = userInfo["podcastID"] as? String else {
+            return
+        }
         
-        if let episodeId = userInfo["episodeId"] as? String {
-            Navigation.navigate(episodeId: episodeId, podcastId: podcastId)
+        if let episodeID = userInfo["episodeID"] as? String {
+            Navigation.navigate(episodeID: episodeID, podcastID: podcastID, libraryID: libraryID)
         } else {
-            Navigation.navigate(podcastId: podcastId)
+            Navigation.navigate(podcastID: podcastID, libraryID: libraryID)
         }
     }
 }

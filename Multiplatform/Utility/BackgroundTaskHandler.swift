@@ -52,16 +52,18 @@ internal extension BackgroundTaskHandler {
         }
     }
     static func updateDownloads(configuration: PodcastFetchConfiguration) async throws {
-        let podcastId = configuration.id
-        logger.info("Auto downloading podcast \(podcastId)")
+        let podcastID = configuration.id
+        var libraryID: String? = nil
         
-        let filter = Defaults[.episodesFilter(podcastId: podcastId)]
-        let sortOrder = Defaults[.episodesSort(podcastId: podcastId)]
-        let ascending = Defaults[.episodesAscending(podcastId: podcastId)]
+        logger.info("Auto downloading podcast \(podcastID)")
+        
+        let filter = Defaults[.episodesFilter(podcastId: podcastID)]
+        let sortOrder = Defaults[.episodesSort(podcastId: podcastID)]
+        let ascending = Defaults[.episodesAscending(podcastId: podcastID)]
         
         // Remove existing episodes
         
-        let preDownloaded = try OfflineManager.shared.episodes(podcastId: podcastId)
+        let preDownloaded = try OfflineManager.shared.episodes(podcastId: podcastID)
         let valid = await Episode.filterSort(episodes: preDownloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
         let invalid = preDownloaded.filter { episode in !valid.contains { $0.id == episode.id } }
         
@@ -86,11 +88,17 @@ internal extension BackgroundTaskHandler {
         
         // Remove additional episodes
         
-        let downloaded = try OfflineManager.shared.episodes(podcastId: podcastId)
+        let downloaded = try OfflineManager.shared.episodes(podcastId: podcastID)
         var reversed = await Episode.filterSort(episodes: downloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         while reversed.count > configuration.maxEpisodes {
             OfflineManager.shared.remove(episodeId: reversed.removeLast().id)
+        }
+        
+        // Get library ID
+        
+        if let episode = preDownloaded.first ?? episodes.first {
+            libraryID = episode.libraryID
         }
         
         // Send notifications
@@ -108,8 +116,9 @@ internal extension BackgroundTaskHandler {
             
             content.threadIdentifier = episode.podcastId
             content.userInfo = [
-                "episodeId": episode.id,
-                "podcastId": podcastId,
+                "libraryID": libraryID as Any,
+                "episodeID": episode.id,
+                "podcastID": podcastID,
             ]
         } else if !submitted.isEmpty {
             content.title = String(localized: "episodes.new.title \(submitted.count)")
@@ -118,7 +127,8 @@ internal extension BackgroundTaskHandler {
             
             content.threadIdentifier = episodes.first!.podcastId
             content.userInfo = [
-                "podcastId": podcastId,
+                "libraryID": libraryID as Any,
+                "podcastID": podcastID,
             ]
         } else {
             return
