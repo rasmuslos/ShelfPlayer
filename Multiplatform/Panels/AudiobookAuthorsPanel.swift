@@ -46,7 +46,7 @@ internal struct AudiobookAuthorsPanel: View {
             .navigationTitle("panel.authors")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Toggle("ascending", systemImage: authorsAscending ? "arrow.up.circle" : "arrow.down.circle", isOn: $authorsAscending)
+                    Toggle("ascending", systemImage: authorsAscending ? "arrowshape.up.circle" : "arrowshape.down.circle", isOn: $authorsAscending)
                         .foregroundStyle(Color.accentColor)
                         .contentTransition(.symbolEffect(.replace))
                         .toggleStyle(.button)

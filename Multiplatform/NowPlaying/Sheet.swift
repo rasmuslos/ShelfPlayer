@@ -14,6 +14,7 @@ import SPPlayback
 
 internal extension NowPlaying {
     struct Sheet: View {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(ViewModel.self) private var viewModel
         
         @ViewBuilder
@@ -144,7 +145,9 @@ internal extension NowPlaying {
                 @Bindable var viewModel = viewModel
                 
                 VStack(spacing: 0) {
-                    Header(item: item)
+                    if horizontalSizeClass == .compact {
+                        CompactHeader(item: item)
+                    }
                     
                     GeometryReader { geometryProxy  in
                         ScrollViewReader { scrollProxy in
@@ -187,7 +190,7 @@ internal extension NowPlaying {
     }
 }
 
-private struct Header: View {
+private struct CompactHeader: View {
     @Environment(NowPlaying.ViewModel.self) private var viewModel
     @Environment(\.dismiss) private var dismiss
     
@@ -221,20 +224,14 @@ private struct Header: View {
                 }
                 
                 Menu {
-                    Button {
-                        viewModel.sheetTab = .queue
-                    } label: {
-                        Label("nowPlaying.sheet.queue", systemImage: "number")
-                    }
-                    Button {
-                        viewModel.sheetTab = .chapters
-                    } label: {
-                        Label("nowPlaying.sheet.chapters", systemImage: "book.pages")
-                    }
-                    Button {
-                        viewModel.sheetTab = .bookmarks
-                    } label: {
-                        Label("nowPlaying.sheet.bookmarks", systemImage: "star.fill")
+                    ForEach(NowPlaying.ViewModel.SheetTab.allCases) { tab in
+                        Button {
+                            withAnimation {
+                                viewModel.sheetTab = tab
+                            }
+                        } label: {
+                            Label(tab.label, systemImage: tab.icon)
+                        }
                     }
                 } label: {
                     Label("dismiss", systemImage: "xmark")
@@ -266,28 +263,4 @@ private struct QueueScrollTip: Tip {
     var actions: [Action] {[
         .init(id: "queue", title: "queue.view")
     ]}
-}
-
-private extension NowPlaying.ViewModel.SheetTab {
-    var next: Self {
-        switch self {
-            case .queue:
-                    .chapters
-            case .chapters:
-                    .bookmarks
-            case .bookmarks:
-                    .queue
-        }
-    }
-    
-    var label: LocalizedStringKey {
-        switch self {
-            case .queue:
-                "sheet.queue"
-            case .chapters:
-                "sheet.chapters"
-            case .bookmarks:
-                "sheet.bookmarks"
-        }
-    }
 }

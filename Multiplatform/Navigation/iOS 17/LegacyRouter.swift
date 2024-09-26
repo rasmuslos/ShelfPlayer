@@ -18,6 +18,7 @@ internal struct LegacyRouter: View {
     @State private var current: Library?
     
     @State private var libraries: [Library] = []
+    @State private var controller: NavigationController = .init()
     
     private var isCompact: Bool {
         horizontalSizeClass == .compact
@@ -39,12 +40,12 @@ internal struct LegacyRouter: View {
             Group {
                 if isCompact {
                     if let current {
-                        Tabs(current: current, selection: $selection)
+                        Tabs(current: current, selection: $selection, controller: $controller)
                     } else {
                         loadingPresentation
                     }
                 } else {
-                    Sidebar(libraries: libraries, selection: $selection)
+                    Sidebar(libraries: libraries, selection: $selection, controller: $controller)
                 }
             }
             .id(current)

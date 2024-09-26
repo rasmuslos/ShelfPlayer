@@ -33,6 +33,7 @@ internal struct TabRouter: View {
     }
     
     @State private var libraries: [Library] = []
+    @State private var controller: NavigationController = .init()
     
     private func library(for id: String) -> Library? {
         libraries.first(where: { $0.id == id })
@@ -47,7 +48,7 @@ internal struct TabRouter: View {
                 if let current {
                     ForEach(TabValue.tabs(for: current)) { tab in
                         Tab(tab.label, systemImage: tab.image, value: tab) {
-                            tab.content
+                            tab.content(path: $controller[tab])
                         }
                         .hidden(!isCompact)
                     }
@@ -57,7 +58,7 @@ internal struct TabRouter: View {
                     TabSection(library.name) {
                         ForEach(TabValue.tabs(for: library)) { tab in
                             Tab(tab.label, systemImage: tab.image, value: tab) {
-                                tab.content
+                                tab.content(path: $controller[tab])
                             }
                         }
                     }
@@ -85,6 +86,8 @@ internal struct TabRouter: View {
                     
                     let value = TabValue.audiobookLibrary(library)
                     selection = value
+                    
+                    controller[value].append(Navigation.AudiobookLoadDestination(audiobookId: $0))
                 }, navigateAuthor: {
                     guard let library = library(for: $1) else {
                         return

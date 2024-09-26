@@ -69,10 +69,10 @@ internal struct AudiobookSortFilter: View {
                 
                 Divider()
                 
-                Toggle("sort.ascending", systemImage: "arrow.up", isOn: $ascending)
+                Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
             }
         } label: {
-            Label("filterSort", systemImage: "arrow.\(ascending ? "up" : "down").circle")
+            Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down").circle")
                 .contentTransition(.symbolEffect)
         }
     }
