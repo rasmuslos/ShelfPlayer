@@ -48,7 +48,7 @@ internal struct DownloadButton: View {
     }
     
     var body: some View {
-        Button {
+        Button(role: offlineTracker.status == .none ? nil : .destructive) {
             if offlineTracker.status == .none {
                 download()
             } else {
@@ -65,7 +65,7 @@ internal struct DownloadButton: View {
         }
         .sensoryFeedback(.success, trigger: notify)
         .symbolVariant(tint ? .none : .circle)
-        .modifier(TintModifier(tint: tint, offlineStatus: offlineTracker.status))
+        .tint(tint ? offlineTracker.status == .downloaded ? .red : .green : nil)
     }
     
     private func download() {
@@ -92,20 +92,6 @@ internal struct DownloadButton: View {
         }
         
         notify.toggle()
-    }
-}
-
-private struct TintModifier: ViewModifier {
-    let tint: Bool
-    let offlineStatus: OfflineManager.OfflineStatus
-    
-    func body(content: Content) -> some View {
-        if tint {
-            content
-                .tint(offlineStatus == .downloaded ? .red : .green)
-        } else {
-            content
-        }
     }
 }
 
