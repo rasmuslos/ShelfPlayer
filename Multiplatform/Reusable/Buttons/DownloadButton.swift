@@ -43,7 +43,7 @@ internal struct DownloadButton: View {
             case .none:
                 "arrow.down"
             default:
-                "trash"
+                "xmark"
         }
     }
     

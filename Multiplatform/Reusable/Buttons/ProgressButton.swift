@@ -32,7 +32,7 @@ internal struct ProgressButton: View {
             Label(progressEntity.isFinished ? "progress.finished.unset" : "progress.finished.set", systemImage: progressEntity.isFinished ? "minus" : "checkmark")
                 .contentTransition(.symbolEffect)
                 .symbolVariant(tint ? .none : .circle)
-                .tint(tint ? progressEntity.isFinished ? .red : .accentColor : .primary)
+                .tint(tint ? progressEntity.isFinished ? .red : .accentColor : nil)
         }
     }
 }

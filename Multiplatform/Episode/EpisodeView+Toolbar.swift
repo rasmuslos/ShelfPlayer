@@ -56,9 +56,9 @@ internal extension EpisodeView {
                         } label: {
                             Group {
                                 if viewModel.progressEntity.isFinished {
-                                    Image(systemName: "slash")
-                                } else {
                                     Image(systemName: "minus")
+                                } else {
+                                    Image(systemName: "checkmark")
                                 }
                             }
                             .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.toolbarVisible))
