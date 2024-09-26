@@ -24,7 +24,7 @@ internal struct ProgressButton: View {
     }
     
     var body: some View {
-        Button(role: progressEntity.isFinished ? .destructive : nil) {
+        Button {
             Task {
                 try await item.finished(!progressEntity.isFinished)
             }

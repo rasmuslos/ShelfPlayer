@@ -17,7 +17,7 @@ internal struct EpisodeSortFilter: View {
     var body: some View {
         Menu {
             ForEach(EpisodeFilter.allCases, id: \.hashValue) { option in
-                Toggle(option.rawValue, isOn: .init(get: { filter == option }, set: {
+                Toggle(option.label, isOn: .init(get: { filter == option }, set: {
                     if $0 {
                         filter = option
                     }
@@ -27,7 +27,7 @@ internal struct EpisodeSortFilter: View {
             Divider()
             
             ForEach(EpisodeSortOrder.allCases, id: \.hashValue) { sortCase in
-                Toggle(sortCase.rawValue, isOn: .init(get: { sortOrder == sortCase }, set: {
+                Toggle(sortCase.label, isOn: .init(get: { sortOrder == sortCase }, set: {
                     if $0 {
                         sortOrder = sortCase
                     }
@@ -45,7 +45,7 @@ internal struct EpisodeSortFilter: View {
 }
 
 private extension EpisodeFilter {
-    var title: LocalizedStringKey {
+    var label: LocalizedStringKey {
         switch self {
             case .all:
                 "filter.all"
@@ -60,7 +60,7 @@ private extension EpisodeFilter {
 }
 
 private extension EpisodeSortOrder {
-    var title: LocalizedStringKey {
+    var label: LocalizedStringKey {
         switch self {
             case .name:
                 "sort.name"

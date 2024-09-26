@@ -114,7 +114,6 @@ extension AudiobookView {
                                     DownloadButton(item: viewModel.audiobook)
                                 } label: {
                                     Text("toolbar.remove")
-                                        .tint(.red)
                                 }
                             }
                         } label: {
