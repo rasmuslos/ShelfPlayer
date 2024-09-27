@@ -82,7 +82,6 @@
 		3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F12AD2C2C3009696D1 /* PodcastView.swift */; };
 		3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F62AD2CDE9009696D1 /* PodcastView+Header.swift */; };
 		3A8810FB2AD2CEE7009696D1 /* PodcastView+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810FA2AD2CEE7009696D1 /* PodcastView+Toolbar.swift */; };
-		3A91B4F22C824825008D444C /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 3A91B4F12C824825008D444C /* Then */; };
 		3A91B4F42C83003C008D444C /* BetterDisclosureGroupStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */; };
 		3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9206FE2B6CD86400A5CAB0 /* Defaults */; };
 		3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9207042B6D018100A5CAB0 /* AudiobookViewModel.swift */; };
@@ -381,7 +380,6 @@
 				3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */,
 				3AE700522C7A12BA00D93BA8 /* ShelfPlayerKit in Frameworks */,
 				3AEFA9562B8BB51A00220CA3 /* BetterSafariView in Frameworks */,
-				3A91B4F22C824825008D444C /* Then in Frameworks */,
 				3A3A36FD2C7CAF84001A29FD /* RFKit in Frameworks */,
 				3AE700542C7A12BA00D93BA8 /* SPPlayback in Frameworks */,
 				3A1EAB932ACC80690064C80C /* NukeUI in Frameworks */,
@@ -891,7 +889,6 @@
 				3AE700512C7A12BA00D93BA8 /* ShelfPlayerKit */,
 				3AE700532C7A12BA00D93BA8 /* SPPlayback */,
 				3A3A36FC2C7CAF84001A29FD /* RFKit */,
-				3A91B4F12C824825008D444C /* Then */,
 			);
 			productName = Audiobooks;
 			productReference = 3AA36E502B0A97FD0036038D /* ShelfPlayer.app */;
@@ -952,7 +949,6 @@
 				3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */,
 				3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */,
 				3A3A36FB2C7CAF03001A29FD /* XCRemoteSwiftPackageReference "RFKit" */,
-				3A91B4F02C824825008D444C /* XCRemoteSwiftPackageReference "Then" */,
 			);
 			productRefGroup = 3A21CC542B0A1CBB002D5D55 /* Products */;
 			projectDirPath = "";
@@ -1528,14 +1524,6 @@
 				kind = branch;
 			};
 		};
-		3A91B4F02C824825008D444C /* XCRemoteSwiftPackageReference "Then" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/devxoul/Then";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
 		3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Defaults";
@@ -1564,11 +1552,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3A3A36FB2C7CAF03001A29FD /* XCRemoteSwiftPackageReference "RFKit" */;
 			productName = RFKit;
-		};
-		3A91B4F12C824825008D444C /* Then */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3A91B4F02C824825008D444C /* XCRemoteSwiftPackageReference "Then" */;
-			productName = Then;
 		};
 		3A9206FE2B6CD86400A5CAB0 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;

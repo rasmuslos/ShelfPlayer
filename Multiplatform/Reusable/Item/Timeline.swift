@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Then
 import ShelfPlayerKit
 
 internal struct Timeline: View {
@@ -135,9 +134,12 @@ private struct Row<Content: View>: View {
             if let text = text {
                 text
             } else {
-                Text(date, format: .relative(presentation: .named).with {
-                    $0.capitalizationContext = .listItem
-                })
+                Text(date, format: {
+                    var formatStyle = Date.RelativeFormatStyle.relative(presentation: .named)
+                    formatStyle.capitalizationContext = .listItem
+                    
+                    return formatStyle
+                }())
             }
             
             Spacer(minLength: 8)
@@ -168,8 +170,6 @@ private struct Position: View {
             .foregroundStyle(.secondary)
     }
 }
-
-extension Date.RelativeFormatStyle: @retroactive Then {}
 
 #if DEBUG
 #Preview {
