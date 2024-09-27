@@ -16,7 +16,8 @@ let package = Package(
         .library(name: "SPPlayback", targets: ["SPPlayback"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/scinfu/SwiftSoup.git", from: .init(2, 6, 0)),
+        .package(url: "https://github.com/kean/Nuke", from: .init(12, 1, 6)),
+        .package(url: "https://github.com/scinfu/SwiftSoup", from: .init(2, 6, 0)),
         .package(url: "https://github.com/sindresorhus/Defaults", from: .init(8, 2, 0)),
     ],
     targets: [
@@ -47,6 +48,8 @@ let package = Package(
         // Network
         .target(name: "SPNetwork", dependencies: [
             .targetItem(name: "SPFoundation", condition: .none),
+            
+            .byName(name: "Nuke"),
         ]),
         
         // Offline
