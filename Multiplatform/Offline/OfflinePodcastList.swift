@@ -13,14 +13,18 @@ import SPOfflineExtended
 internal struct OfflinePodcastList: View {
     let podcasts: [Podcast: [Episode]]
     
+    private var keys: [Podcast] {
+        Array(podcasts.keys).sorted()
+    }
+    
     var body: some View {
-        ForEach(Array(podcasts.keys).sorted()) { podcast in
+        ForEach(keys) { podcast in
             let episodes = podcasts[podcast]!
             
             NavigationLink(destination: OfflinePodcastView(podcast: podcast, episodes: episodes)) {
                 PodcastRow(podcast: podcast, episodes: episodes)
             }
-            .listRowInsets(.init(top: podcast == podcasts.keys.first ? 12 : 6, leading: 12, bottom: podcast == podcasts.keys.reversed().first ? 12 : 6, trailing: 12))
+            .listRowInsets(.init(top: podcast == keys.first ? 12 : 6, leading: 12, bottom: podcast == keys.last ? 12 : 6, trailing: 12))
         }
         .onDelete { indexSet in
             indexSet.forEach { index in

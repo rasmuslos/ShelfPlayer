@@ -170,7 +170,7 @@ private extension AudiobookViewModel {
     }
     
     func extractColor() async {
-        guard let image = await audiobook.cover?.systemImage else {
+        guard let image = await audiobook.cover?.platformImage else {
             return
         }
         
