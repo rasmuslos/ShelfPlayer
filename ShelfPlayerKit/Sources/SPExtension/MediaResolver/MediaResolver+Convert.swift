@@ -46,7 +46,7 @@ extension MediaResolver {
             return INImage(url: cover.url)
         }
         
-        if let image = await cover.systemImage, let data = image.pngData() {
+        if let data = await cover.data {
             return INImage(imageData: data)
         }
         
