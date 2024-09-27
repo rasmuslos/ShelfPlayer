@@ -10,7 +10,7 @@ import SPFoundation
 import SPNetwork
 import SPOffline
 
-extension DownloadManager {
+internal extension DownloadManager {
     func download(track: PlayableItem.AudioTrack) -> URLSessionDownloadTask {
         let url = AudiobookshelfClient.shared.serverUrl
             .appending(path: track.contentUrl.removingPercentEncoding ?? "")

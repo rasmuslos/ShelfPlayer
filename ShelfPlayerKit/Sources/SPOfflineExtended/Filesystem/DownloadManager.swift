@@ -8,7 +8,7 @@
 import Foundation
 import OSLog
 
-internal final class DownloadManager: NSObject {
+public final class DownloadManager: NSObject {
     private(set) var documentsURL: URL!
     private(set) var urlSession: URLSession!
     
@@ -51,6 +51,6 @@ internal extension DownloadManager {
     }
 }
 
-internal extension DownloadManager {
+public extension DownloadManager {
     static let shared = DownloadManager()
 }

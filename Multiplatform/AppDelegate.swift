@@ -8,7 +8,7 @@
 import UIKit
 import Intents
 
-final class AppDelegate: NSObject, UIApplicationDelegate {
+internal final class AppDelegate: NSObject, UIApplicationDelegate {
     private var backgroundCompletionHandler: (() -> Void)? = nil
     
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
@@ -21,13 +21,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        Task { @MainActor in
-            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate, let backgroundCompletionHandler = appDelegate.backgroundCompletionHandler else {
-                return
-            }
-            
-            backgroundCompletionHandler()
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate, let backgroundCompletionHandler = appDelegate.backgroundCompletionHandler else {
+            return
         }
+        
+        backgroundCompletionHandler()
     }
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
@@ -41,11 +39,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+    internal func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.banner]
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    internal func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
         guard let libraryID = userInfo["libraryID"] as? String, let podcastID = userInfo["podcastID"] as? String else {
             return

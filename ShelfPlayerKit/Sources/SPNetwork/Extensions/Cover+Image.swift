@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Nuke
 import SPFoundation
 
 #if canImport(UIKit)
@@ -13,15 +14,29 @@ import UIKit
 #endif
 
 public extension Cover {
-    var systemImage: PlatformImage? {
+    var data: Data? {
         get async {
             var request = URLRequest(url: url)
             
-            for header in AudiobookshelfClient.shared.customHTTPHeaders {
-                request.setValue(header.value, forHTTPHeaderField: header.key)
+            if type == .remote {
+                for header in AudiobookshelfClient.shared.customHTTPHeaders {
+                    request.setValue(header.value, forHTTPHeaderField: header.key)
+                }
             }
             
-            guard let (data, _) = try? await URLSession.shared.data(for: request) else {
+            let imageRequest = ImageRequest(urlRequest: request)
+            
+            guard let (data, _) = try? await ImagePipeline.shared.data(for: imageRequest) else {
+                return nil
+            }
+            
+            return data
+        }
+    }
+    
+    var platformImage: PlatformImage? {
+        get async {
+            guard let data = await data else {
                 return nil
             }
             

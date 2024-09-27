@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import SPFoundation
 import Nuke
 import TipKit
+import ShelfPlayerKit
 
 @main
 struct MultiplatformApp: App {

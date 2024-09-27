@@ -11,7 +11,7 @@ import SPFoundation
 import SPOffline
 
 extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let tmpLocation = documentsURL.appending(path: String(downloadTask.taskIdentifier))
         
         do {
@@ -68,7 +68,7 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
     }
     
     // Progress tracking
-    func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten _: Int64, totalBytesExpectedToWrite _: Int64) {
+    public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten _: Int64, totalBytesExpectedToWrite _: Int64) {
         guard let track = try? OfflineManager.shared.offlineTrack(downloadIdentifier: downloadTask.taskIdentifier, context: ModelContext(PersistenceManager.shared.modelContainer)) else {
             abortProgressTracking(taskIdentifier: downloadTask.taskIdentifier)
             return
@@ -78,7 +78,7 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
     }
     
     // Error handling
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error {
             guard let track = try? OfflineManager.shared.offlineTrack(downloadIdentifier: task.taskIdentifier, context: ModelContext(PersistenceManager.shared.modelContainer)) else {
                 logger.fault("Error while downloading unknown track: \(error.localizedDescription)")
