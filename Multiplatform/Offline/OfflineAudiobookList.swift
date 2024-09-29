@@ -101,6 +101,7 @@ internal extension OfflineAudiobookList {
                     CircularProgressIndicator(entity: entity)
                         .frame(width: 20)
                 }
+                .contentShape(.hoverMenuInteraction, .rect)
             }
             .buttonStyle(.plain)
             .modifier(SwipeActionsModifier(item: audiobook, loading: $loading))

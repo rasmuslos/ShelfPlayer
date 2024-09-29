@@ -261,6 +261,6 @@ private struct QueueScrollTip: Tip {
     }
     
     var actions: [Action] {[
-        .init(id: "queue", title: "queue.view")
+        .init(id: "queue", title: String(localized: "queue.view")),
     ]}
 }

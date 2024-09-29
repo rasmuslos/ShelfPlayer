@@ -37,6 +37,9 @@ internal struct PodcastLatestPanel: View {
                     EpisodeList(episodes: episodes)
                 }
                 .listStyle(.plain)
+                .refreshable {
+                    await fetchItems()
+                }
             }
         }
         .navigationTitle("panel.latest")
