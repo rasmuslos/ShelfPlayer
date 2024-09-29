@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%lld" : {
-
-    },
     "%lld account.sleepTimer.hours" : {
       "localizations" : {
         "de" : {
@@ -3808,6 +3805,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Queue"
+          }
+        }
+      }
+    },
+    "queue.view" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Warteschlange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Queue"
           }
         }
       }

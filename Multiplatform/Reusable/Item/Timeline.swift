@@ -25,6 +25,8 @@ internal struct Timeline: View {
     
     var body: some View {
         LazyVStack(spacing: 52) {
+            EventRow(date: .now, currentTime: 10, type: .end)
+            
             ForEach(sessions) { session in
                 VStack(spacing: 8) {
                     EventRow(date: session.endDate, currentTime: session.currentTime, type: .end)
@@ -107,6 +109,8 @@ private struct EventRow: View {
     }
 }
 private struct Row<Content: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let date: Date
     let icon: String
     let color: Color
@@ -115,6 +119,14 @@ private struct Row<Content: View>: View {
     var text: Text? = nil
     
     @ViewBuilder var content: Content
+    
+    private var foreground: Color {
+        if color == .primary && colorScheme == .dark {
+            return .black
+        }
+        
+        return color.isLight ? .black : .white
+    }
     
     var body: some View {
         HStack(spacing: 0) {
@@ -127,7 +139,7 @@ private struct Row<Content: View>: View {
                 .overlay {
                     Image(systemName: icon)
                         .font(.caption)
-                        .foregroundStyle(color.isLight ? .black : .white)
+                        .foregroundStyle(foreground)
                 }
                 .padding(.trailing, 12)
             

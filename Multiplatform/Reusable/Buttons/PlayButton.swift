@@ -126,7 +126,7 @@ internal struct PlayButton: View {
                     Label("queue.play", systemImage: "play.fill")
                 }
                 
-                QueueButton(item: item)
+                QueueButton(item: item, hideLast: true)
             }
             
             Divider()
