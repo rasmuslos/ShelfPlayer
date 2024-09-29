@@ -23,6 +23,7 @@ internal extension Podcast {
             released: podcast.released,
             explicit: podcast.explicit,
             episodeCount: 0,
+            incompleteEpisodeCount: nil,
             publishingType: nil)
     }
 }
