@@ -62,6 +62,7 @@ internal extension OfflinePodcastList {
                 Text(String(podcast.episodeCount))
                     .foregroundStyle(.secondary)
             }
+            .contentShape(.hoverMenuInteraction, .rect)
         }
     }
 }
