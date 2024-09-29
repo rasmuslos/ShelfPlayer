@@ -9,13 +9,18 @@ import Foundation
 
 public final class Podcast: Item {
     public let explicit: Bool
+    
     public var episodeCount: Int
+    public var incompleteEpisodeCount: Int?
     
     public let publishingType: PodcastType?
     
-    public init(id: String, libraryID: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int, publishingType: PodcastType?) {
+    public init(id: String, libraryID: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int, incompleteEpisodeCount: Int?, publishingType: PodcastType?) {
         self.explicit = explicit
+        
         self.episodeCount = episodeCount
+        self.incompleteEpisodeCount = incompleteEpisodeCount
+        
         self.publishingType = publishingType
         
         super.init(id: id, libraryID: libraryID, type: .podcast, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)

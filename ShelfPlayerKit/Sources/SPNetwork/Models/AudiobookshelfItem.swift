@@ -28,6 +28,8 @@ internal struct AudiobookshelfItem: Codable {
     let libraryItems: [AudiobookshelfItem]?
     
     let numEpisodes: Int?
+    let numEpisodesIncomplete: Int?
+    
     var recentEpisode: AudiobookshelfPodcastEpisode?
     
     let isLocal: Bool?

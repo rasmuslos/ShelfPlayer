@@ -85,22 +85,22 @@ internal struct PodcastHGrid: View {
 private struct PodcastGridItem: View {
     let podcast: Podcast
     
+    private var episodeCount: Int {
+        podcast.incompleteEpisodeCount ?? podcast.episodeCount
+    }
+    
     var body: some View {
         NavigationLink(destination: PodcastLoadView(podcastId: podcast.id)) {
-            VStack(alignment: .leading, spacing: 0) {
+            ZStack(alignment: .topTrailing) {
                 ItemImage(cover: podcast.cover)
                     .hoverEffect(.highlight)
                 
-                Text(podcast.name)
-                    .lineLimit(1)
-                    .padding(.top, 8)
-                    .padding(.bottom, 4)
-                
-                if let author = podcast.author {
-                    Text(author)
-                        .lineLimit(1)
+                if episodeCount > 0 {
+                    Text(String(episodeCount))
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .padding(8)
+                        .background(Color.accentColor, in: .circle)
+                        .padding(8)
                 }
             }
             .contentShape(.hoverMenuInteraction, Rectangle())
