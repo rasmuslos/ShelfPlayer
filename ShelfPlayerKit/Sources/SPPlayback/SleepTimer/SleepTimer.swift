@@ -17,7 +17,13 @@ public final class SleepTimer {
             } else {
                 expiresAtChapterEnd = false
                 setupTimer()
+                
+                if let timeInterval = expiresAt?.distance(to: .now()).timeInterval {
+                    lastSetting = .time(interval: -timeInterval)
+                }
             }
+            
+            NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
         }
     }
     public var expiresAtChapterEnd: Bool {
@@ -25,9 +31,16 @@ public final class SleepTimer {
             if expiresAtChapterEnd {
                 expiresAt = nil
                 suspend()
+                
+                lastSetting = .chapterEnd
             }
+            
+            NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
         }
     }
+    
+    var expiredAt: Date?
+    var lastSetting: SleepTimerSetting?
     
     var isSuspended: Bool
     var timer: DispatchSourceTimer
@@ -36,10 +49,31 @@ public final class SleepTimer {
         expiresAt = nil
         expiresAtChapterEnd = false
         
+        expiredAt = nil
+        lastSetting = nil
+        
         isSuspended = true
         timer = DispatchSource.makeTimerSource(flags: .strict, queue: AudioPlayer.shared.dispatchQueue)
         
         setupObservers()
+    }
+    
+    public func extend() {
+        guard let lastSetting else {
+            return
+        }
+        
+        switch lastSetting {
+        case .time(let interval):
+            expiresAt = .now().advanced(by: .seconds(Int(interval)))
+        case .chapterEnd:
+            expiresAtChapterEnd = true
+        }
+    }
+    
+    enum SleepTimerSetting {
+        case time(interval: TimeInterval)
+        case chapterEnd
     }
 }
 

@@ -12,6 +12,14 @@ internal extension SleepTimer {
     func didPlay(pausedFor: TimeInterval) {
         expiresAt = expiresAt?.advanced(by: .milliseconds(Int(pausedFor * 1000)))
         setupTimer()
+        
+        if let expiredAt {
+            let intervalSinceExpire = expiredAt.distance(to: .now)
+            
+            if Defaults[.extendSleepTimerOnPlay] && intervalSinceExpire < 10 {
+                extend()
+            }
+        }
     }
     
     func didPause() {
@@ -24,6 +32,8 @@ internal extension SleepTimer {
         
         AudioPlayer.shared.playing = false
         AudioPlayer.shared.audioPlayer.volume = 1
+        
+        expiredAt = .now
     }
     
     func setupObservers() {
