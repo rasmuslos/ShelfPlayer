@@ -67,21 +67,40 @@ internal extension AudioPlayer {
             }
             
             switch type {
-                case .began:
-                    self.playing = false
-                case .ended:
-                    guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-                    let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
-                    
-                    if options.contains(.shouldResume) {
-                        self.playing = true
-                    }
-                default: ()
+            case .began:
+                self.playing = false
+            case .ended:
+                guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+                let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                
+                if options.contains(.shouldResume) {
+                    self.playing = true
+                }
+            default: ()
             }
         }
         
         NotificationCenter.default.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: nil) { _ in
             NotificationCenter.default.post(name: AudioPlayer.routeDidChangeNotification, object: nil)
+        }
+        
+        NotificationCenter.default.addObserver(forName: PlayableItem.finishedNotification, object: nil, queue: nil) { [unowned self] in
+            guard let userInfo = $0.userInfo, let itemID = userInfo["itemID"] as? String, let finished = userInfo["finished"] as? Bool else {
+                return
+            }
+            
+            let episodeID = userInfo["episodeID"] as? String
+            
+            if finished && item?.identifiers.itemID == itemID && item?.identifiers.episodeID == episodeID {
+                Task {
+                    do {
+                        playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration, forceReport: true)
+                        try await advance()
+                    } catch {
+                        stop()
+                    }
+                }
+            }
         }
         
         #if os(iOS)
