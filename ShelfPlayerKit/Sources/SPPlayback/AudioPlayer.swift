@@ -213,6 +213,8 @@ public final class AudioPlayer {
     internal var lastWidgetUpdate: Date?
     
     internal var lastPause: Date?
+    internal var sleepTimerExpiredAt: Date?
+    
     internal var playbackReporter: PlaybackReporter?
     
     internal var systemVolume: Float
@@ -258,6 +260,7 @@ public final class AudioPlayer {
         chapterTTL = .infinity
         
         lastPause = nil
+        
         playbackReporter = nil
         
         systemVolume = 0.5

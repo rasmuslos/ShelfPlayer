@@ -26,4 +26,5 @@ public extension Defaults.Keys {
     static let queueNextAudiobooksInSeries = Key<Bool>("queueNextAudiobooksInSeries", default: false)
     
     static let sleepTimerFadeOut = Key<Bool>("sleepTimerFadeOut", default: true)
+    static let extendSleepTimerOnPlay = Key<Bool>("extendSleepTimerOnPlay", default: true)
 }
