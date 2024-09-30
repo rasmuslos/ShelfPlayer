@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Intents
+import CoreSpotlight
 import SwiftData
 import Defaults
 import ShelfPlayerKit
@@ -33,14 +34,41 @@ internal struct ContentView: View {
                 step = .sessionImport
             }
             
-            #if ENABLE_ALL_FEATURES
-            INPreferences.requestSiriAuthorization { _ in }
-            #endif
-            
-            Task.detached {
+            Task {
                 try? await OfflineManager.shared.attemptListeningTimeSync()
-                try? await UserContext.update()
+                try await UserContext.run()
             }
+        }
+        .onContinueUserActivity(CSSearchableItemActionType) {
+            guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
+                return
+            }
+            
+            let data = convertIdentifier(identifier: identifier)
+            
+            guard let libraryID = data.libraryID else {
+                return
+            }
+            
+            switch data.type {
+            case .audiobook:
+                Navigation.navigate(audiobookID: data.itemID, libraryID: libraryID)
+            case .author:
+                Navigation.navigate(authorID: data.itemID, libraryID: libraryID)
+            case .series:
+                Navigation.navigate(seriesName: "", seriesID: data.itemID, libraryID: libraryID)
+            case .podcast:
+                Navigation.navigate(podcastID: data.itemID, libraryID: libraryID)
+            case .episode:
+                guard let episodeID = data.episodeID else {
+                    return
+                }
+                
+                Navigation.navigate(episodeID: episodeID, podcastID: data.itemID, libraryID: libraryID)
+            }
+        }
+        .onContinueUserActivity(CSQueryContinuationActionType) {
+            print($0)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.audiobook") { activity in
             guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
@@ -57,11 +85,11 @@ internal struct ContentView: View {
             Navigation.navigate(authorID: identifier, libraryID: libraryID)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.series") { activity in
-            guard let name = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
+            guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
                 return
             }
             
-            Navigation.navigate(seriesName: name, libraryID: libraryID)
+            Navigation.navigate(seriesName: "", seriesID: identifier, libraryID: libraryID)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.podcast") { activity in
             guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
@@ -75,7 +103,12 @@ internal struct ContentView: View {
                 return
             }
             
-            let (podcastID, episodeID) = convertIdentifier(identifier: identifier)
+            let (podcastID, episodeID, _, _) = convertIdentifier(identifier: identifier)
+            
+            guard let episodeID else {
+                return
+            }
+            
             Navigation.navigate(episodeID: episodeID, podcastID: podcastID, libraryID: libraryID)
         }
     }

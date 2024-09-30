@@ -33,15 +33,21 @@ public extension AudiobookshelfClient {
         Series(item: try await request(ClientRequest<AudiobookshelfItem>(path: "api/libraries/\(libraryID)/series/\(seriesId)", method: "GET")))
     }
     
-    func series(libraryID: String, limit: Int, page: Int) async throws -> ([Series], Int) {
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: "GET", query: [
-            URLQueryItem(name: "sort", value: "name"),
-            URLQueryItem(name: "desc", value: "0"),
-            URLQueryItem(name: "filter", value: "all"),
-            URLQueryItem(name: "page", value: "\(page)"),
-            URLQueryItem(name: "limit", value: "\(limit)"),
-        ]))
+    func series(libraryID: String, limit: Int?, page: Int?) async throws -> ([Series], Int) {
+        var query: [URLQueryItem] = [
+            .init(name: "sort", value: "name"),
+            .init(name: "desc", value: "0"),
+            .init(name: "filter", value: "all"),
+        ]
         
+        if let page {
+            query.append(.init(name: "page", value: String(page)))
+        }
+        if let limit {
+            query.append(.init(name: "limit", value: String(limit)))
+        }
+        
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: "GET", query: query))
         return (response.results.map(Series.init), response.total)
     }
     

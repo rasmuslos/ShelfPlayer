@@ -138,56 +138,6 @@ internal extension AudioPlayer {
         
         return AVPlayerItem(asset: asset)
     }
-    
-    func donateIntent() async throws {
-        guard let item else {
-            return
-        }
-        
-        let intent = INPlayMediaIntent(
-            mediaItems: await MediaResolver.shared.convert(items: [item]),
-            mediaContainer: nil,
-            playShuffled: false,
-            playbackRepeatMode: .none,
-            resumePlayback: true,
-            playbackQueueLocation: .now,
-            playbackSpeed: Double(playbackRate),
-            mediaSearch: nil)
-        
-        let activityType: String
-        let userInfo: [String: Any]
-        
-        switch item {
-            case is Audiobook:
-                activityType = "audiobook"
-                userInfo = [
-                    "audiobookId": item.id,
-                ]
-            case is Episode:
-                activityType = "episode"
-                userInfo = [
-                    "episodeId": item.id,
-                    "podcastId": (item as! Episode).podcastId,
-                ]
-            default:
-                activityType = "unknown"
-                userInfo = [:]
-        }
-        
-        let activity = NSUserActivity(activityType: "io.rfk.shelfplayer.\(activityType)")
-        
-        activity.title = item.name
-        activity.persistentIdentifier = convertIdentifier(item: item)
-        activity.targetContentIdentifier = "\(activityType):\(item.id)"
-        
-        activity.isEligibleForPrediction = true
-        activity.userInfo = userInfo
-        
-        activity.isEligibleForHandoff = true
-        
-        let interaction = INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: activity))
-        try await interaction.donate()
-    }
 }
 
 internal extension AudioPlayer {

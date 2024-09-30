@@ -63,4 +63,5 @@ internal extension Defaults.Keys {
     // MARK: Intents
     
     static let lastSpotlightIndex = Key<Date?>("lastSpotlightIndex", default: nil)
+    static let indexedIdentifiers = Key<[String]>("indexedIdentifiers", default: [])
 }

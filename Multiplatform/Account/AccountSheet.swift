@@ -42,7 +42,9 @@ struct AccountSheet: View {
                     
                     Button(role: .destructive) {
                         try? OfflineManager.shared.deleteProgressEntities()
+                        
                         OfflineManager.shared.removeAllDownloads()
+                        SpotlightIndexer.deleteIndex()
                         
                         AudiobookshelfClient.shared.store(token: nil)
                     } label: {
@@ -154,6 +156,12 @@ struct AccountSheet: View {
                             ])
                         } label: {
                             Label("account.delete.cache", systemImage: "square.stack.3d.up.slash")
+                        }
+                        
+                        Button(role: .destructive) {
+                            SpotlightIndexer.deleteIndex()
+                        } label: {
+                            Label("account.delete.spotlight", systemImage: "minus.magnifyingglass")
                         }
                     }
                     .foregroundStyle(.red)

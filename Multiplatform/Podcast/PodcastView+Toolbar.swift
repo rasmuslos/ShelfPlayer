@@ -75,6 +75,9 @@ extension PodcastView {
                             viewModel.settingsSheetPresented.toggle()
                         }
                         .menuActionDismissBehavior(.disabled)
+                        .onChange(of: viewModel.fetchConfiguration) {
+                            try? viewModel.fetchConfiguration.modelContext?.save()
+                        }
                     }
                 }
                 .toolbar {

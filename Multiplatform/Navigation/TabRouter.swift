@@ -45,6 +45,25 @@ internal struct TabRouter: View {
     var body: some View {
         if !libraries.isEmpty {
             TabView(selection: $selection) {
+                if let current {
+                    ForEach(TabValue.tabs(for: current)) { tab in
+                        Tab(tab.label, systemImage: tab.image, value: tab) {
+                            tab.content(libraryPath: $libraryPath)
+                        }
+                        .hidden(!isCompact)
+                    }
+                }
+                
+                ForEach(libraries) { library in
+                    TabSection(library.name) {
+                        ForEach(TabValue.tabs(for: library)) { tab in
+                            Tab(tab.label, systemImage: tab.image, value: tab) {
+                                tab.content(libraryPath: $libraryPath)
+                            }
+                        }
+                    }
+                    .hidden(isCompact)
+                }
             }
             .tabViewStyle(.sidebarAdaptable)
             .tabViewSidebarBottomBar {
@@ -58,7 +77,7 @@ internal struct TabRouter: View {
             }
             .id(current)
             .modifier(NowPlaying.CompactModifier())
-            .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorID, seriesID, podcastID, episodeID in
+            .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorID, seriesName, seriesID, podcastID, episodeID in
                 guard let library = library(for: libraryID) else {
                     return
                 }
@@ -82,8 +101,11 @@ internal struct TabRouter: View {
                     if let authorID {
                         libraryPath.append(Navigation.AuthorLoadDestination(authorId: authorID))
                     }
+                    if let seriesName {
+                        libraryPath.append(Navigation.SeriesLoadDestination(seriesId: nil, seriesName: seriesName))
+                    }
                     if let seriesID {
-                        libraryPath.append(Navigation.SeriesLoadDestination(seriesName: seriesID))
+                        libraryPath.append(Navigation.SeriesLoadDestination(seriesId: seriesID, seriesName: ""))
                     }
                     
                     if let podcastID {

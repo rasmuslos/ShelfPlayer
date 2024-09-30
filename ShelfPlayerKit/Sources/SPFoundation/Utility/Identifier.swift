@@ -5,26 +5,42 @@
 //  Created by Rasmus Krämer on 29.08.24.
 //
 
-public func convertIdentifier(identifier: String) -> (String, String) {
-    var parts = identifier.split(separator: "::")
+public func convertIdentifier(identifier: String) -> (itemID: String, episodeID: String?, libraryID: String?, type: Item.ItemType) {
+    let parts = identifier.split(separator: "::")
     
-    if parts.count == 2 {
-        let podcastId = String(parts.removeFirst())
-        let episodeId = String(parts.removeFirst())
-        
-        return (podcastId, episodeId)
+    let type = Item.ItemType.parse(String(parts[0]))!
+    var libraryID: String? = String(parts[1])
+    
+    if libraryID == "_" {
+        libraryID = nil
     }
     
-    return ("", "")
+    let itemID = String(parts[2])
+    
+    let episodeID: String?
+    
+    if parts.count == 4 {
+        episodeID = String(parts[3])
+    } else {
+        episodeID = nil
+    }
+    
+    return (itemID, episodeID, libraryID, type)
 }
 
-public func convertIdentifier(itemID: String, episodeID: String?) -> String {
+public func convertIdentifier(itemID: String, episodeID: String?, libraryID: String?, type: Item.ItemType) -> String {
+    var identifier = "\(type.id)::\(libraryID ?? "_")::\(itemID)"
+    
     if let episodeID {
-        return "\(itemID)::\(episodeID)"
+        identifier += "::\(episodeID)"
     }
     
-    return itemID
+    return identifier
 }
+public func convertIdentifier(itemID: String, episodeID: String?) -> String {
+    convertIdentifier(itemID: itemID, episodeID: episodeID, libraryID: nil, type: episodeID == nil ? .audiobook : .episode)
+}
+
 public func convertIdentifier(item: Item) -> String {
-    convertIdentifier(itemID: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
+    convertIdentifier(itemID: item.identifiers.itemID, episodeID: item.identifiers.episodeID, libraryID: item.libraryID, type: item.type)
 }

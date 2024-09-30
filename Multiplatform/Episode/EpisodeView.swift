@@ -44,13 +44,13 @@ struct EpisodeView: View {
             $0.title = viewModel.episode.name
             $0.isEligibleForHandoff = true
             $0.persistentIdentifier = convertIdentifier(item: viewModel.episode)
-            $0.targetContentIdentifier = "episode:\(viewModel.episode.id)::\(viewModel.episode.podcastId)"
+            $0.targetContentIdentifier = convertIdentifier(item: viewModel.episode)
             $0.userInfo = [
                 "libraryID": viewModel.episode.libraryID,
                 "episodeID": viewModel.episode.id,
                 "podcastID": viewModel.episode.podcastId,
             ]
-            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.episode.podcastId)
+            $0.webpageURL = viewModel.episode.url
         }
     }
 }

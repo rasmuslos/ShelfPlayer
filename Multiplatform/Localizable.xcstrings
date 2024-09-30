@@ -411,6 +411,9 @@
         }
       }
     },
+    "account.delete.spotlight" : {
+
+    },
     "account.github" : {
       "localizations" : {
         "de" : {

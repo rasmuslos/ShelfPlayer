@@ -118,7 +118,7 @@ private extension AudiobookViewModel {
     }
     
     func loadAuthor() async {
-        guard let author = await audiobook.author, let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: library.id) else {
+        guard let author = await audiobook.authors?.first, let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: library.id) else {
             return
         }
         

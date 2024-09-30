@@ -34,9 +34,10 @@ internal extension Navigation {
             "authorID": authorID,
         ])
     }
-    static func navigate(seriesName: String, libraryID: String) {
+    static func navigate(seriesName: String, seriesID: String?, libraryID: String) {
         NotificationCenter.default.post(name: Self.navigateSeriesNotification, object: nil, userInfo: [
             "libraryID": libraryID,
+            "seriesID": seriesID as Any,
             "seriesName": seriesName,
         ])
     }
@@ -57,7 +58,7 @@ internal extension Navigation {
 
 internal extension Navigation {
     struct NotificationModifier: ViewModifier {
-        typealias Callback = (_ libraryID: String, _ audiobookID: String?, _ authorID: String?, _ seriesName: String?, _ podcastID: String?, _ episodeID: String?) -> Void
+        typealias Callback = (_ libraryID: String, _ audiobookID: String?, _ authorID: String?, _ seriesName: String?, _ seriesID: String?, _ podcastID: String?, _ episodeID: String?) -> Void
         
         let didNavigate: Callback
         
@@ -89,7 +90,7 @@ internal extension Navigation {
                 return
             }
             
-            didNavigate(libraryID, userInfo["audiobookID"], userInfo["authorID"], userInfo["seriesName"], userInfo["podcastID"], userInfo["episodeID"])
+            didNavigate(libraryID, userInfo["audiobookID"], userInfo["authorID"], userInfo["seriesName"], userInfo["ID"], userInfo["podcastID"], userInfo["episodeID"])
         }
     }
     
@@ -103,7 +104,7 @@ internal extension Navigation {
                     AuthorLoadView(authorId: data.authorId)
                 }
                 .navigationDestination(for: Navigation.SeriesLoadDestination.self) { data in
-                    SeriesLoadView(series: .init(id: nil, name: data.seriesName, sequence: nil))
+                    SeriesLoadView(series: .init(id: data.seriesId, name: data.seriesName, sequence: nil))
                 }
                 .navigationDestination(for: Navigation.PodcastLoadDestination.self) { data in
                     PodcastLoadView(podcastId: data.podcastId)
@@ -125,6 +126,7 @@ internal extension Navigation {
     }
     
     struct SeriesLoadDestination: Hashable {
+        let seriesId: String?
         let seriesName: String
     }
     
