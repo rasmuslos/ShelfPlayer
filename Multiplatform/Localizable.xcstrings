@@ -412,7 +412,20 @@
       }
     },
     "account.delete.spotlight" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight Index löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Spotlight Index"
+          }
+        }
+      }
     },
     "account.github" : {
       "localizations" : {
@@ -1644,22 +1657,6 @@
         }
       }
     },
-    "chapters.now" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Now"
-          }
-        }
-      }
-    },
     "decrease" : {
       "localizations" : {
         "de" : {
@@ -1737,10 +1734,36 @@
       }
     },
     "display.grid" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grid"
+          }
+        }
+      }
     },
     "display.list" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List"
+          }
+        }
+      }
     },
     "done" : {
       "localizations" : {
@@ -2460,29 +2483,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Increase"
-          }
-        }
-      }
-    },
-    "item.media.metadata.seriesName" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serie"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Series"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "系列"
           }
         }
       }
@@ -3987,13 +3987,12 @@
         }
       }
     },
-    "section.display" : {
-      "extractionState" : "stale",
+    "section.displayType" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Darstellung"
+            "value" : "Anzeige"
           }
         },
         "en" : {
@@ -4001,17 +4000,8 @@
             "state" : "translated",
             "value" : "Display"
           }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "展示"
-          }
         }
       }
-    },
-    "section.displayType" : {
-
     },
     "section.filter" : {
       "localizations" : {
@@ -4031,29 +4021,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "过滤"
-          }
-        }
-      }
-    },
-    "section.order" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sortieren"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sort order"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "排序"
           }
         }
       }
@@ -4081,7 +4048,20 @@
       }
     },
     "section.sortOrder" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sortieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort-Order"
+          }
+        }
+      }
     },
     "series" : {
       "localizations" : {
@@ -4321,28 +4301,6 @@
         }
       }
     },
-    "sort.grid" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raster"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grid"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "网格"
-          }
-        }
-      }
-    },
     "sort.index" : {
       "localizations" : {
         "de" : {
@@ -4361,28 +4319,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "序号"
-          }
-        }
-      }
-    },
-    "sort.list" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liste"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "List"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "列表"
           }
         }
       }
@@ -4432,7 +4368,20 @@
       }
     },
     "sort.series" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series"
+          }
+        }
+      }
     },
     "splitView.empty" : {
       "localizations" : {
