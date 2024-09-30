@@ -16,13 +16,11 @@ struct SwipeActionsModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                DownloadButton(item: item, tint: true)
-            }
-            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                ProgressButton(item: item, tint: true)
-            }
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                QueueButton(item: item, hideLast: true)
+                    .tint(.orange)
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
                 Button {
                     Task {
                         loading = true
@@ -34,13 +32,11 @@ struct SwipeActionsModifier: ViewModifier {
                 }
                 .tint(.accentColor)
             }
-            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                Button {
-                    AudioPlayer.shared.queue(item)
-                } label: {
-                    Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
-                }
-                .tint(.orange)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                DownloadButton(item: item, tint: true)
+            }
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                ProgressButton(item: item, tint: true)
             }
     }
 }

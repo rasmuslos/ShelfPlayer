@@ -1641,6 +1641,9 @@
         }
       }
     },
+    "chapters.now" : {
+
+    },
     "decrease" : {
       "localizations" : {
         "de" : {
@@ -3746,6 +3749,7 @@
       }
     },
     "queue.scroll.tip.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3762,6 +3766,7 @@
       }
     },
     "queue.scroll.tip.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3810,6 +3815,7 @@
       }
     },
     "queue.view" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
