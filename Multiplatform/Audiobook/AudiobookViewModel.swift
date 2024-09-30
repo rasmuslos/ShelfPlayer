@@ -146,7 +146,7 @@ private extension AudiobookViewModel {
             return
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryID: library.id, sortOrder: "item.media.metadata.seriesName", ascending: true, limit: 10_000, page: 0).0 else {
+        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryID: library.id, sortOrder: .series, ascending: true, limit: nil, page: nil).0 else {
             return
         }
         

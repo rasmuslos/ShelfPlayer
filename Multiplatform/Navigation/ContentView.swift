@@ -33,13 +33,14 @@ internal struct ContentView: View {
                 step = .sessionImport
             }
             
-            Task {
-                try await OfflineManager.shared.attemptListeningTimeSync()
-            }
-            
             #if ENABLE_ALL_FEATURES
             INPreferences.requestSiriAuthorization { _ in }
             #endif
+            
+            Task.detached {
+                try? await OfflineManager.shared.attemptListeningTimeSync()
+                try? await UserContext.update()
+            }
         }
         .onContinueUserActivity("io.rfk.shelfplayer.audiobook") { activity in
             guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {

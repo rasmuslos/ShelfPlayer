@@ -47,5 +47,9 @@ internal class NetworkMonitor {
         pathMonitor.start(queue: DispatchQueue.global(qos: .userInitiated))
     }
     
+    var isRouteLimited: Bool {
+        pathMonitor.currentPath.isExpensive || pathMonitor.currentPath.isConstrained
+    }
+    
     static let shared = NetworkMonitor()
 }

@@ -57,7 +57,7 @@ internal extension Navigation {
 
 internal extension Navigation {
     struct NotificationModifier: ViewModifier {
-        typealias Callback = (_ libraryID: String, _ audiobookID: String?, _ authorID: String?, _ seriesName: String?, _ podcastID: String?, (podcastID: String?, episodeID: String?)) -> Void
+        typealias Callback = (_ libraryID: String, _ audiobookID: String?, _ authorID: String?, _ seriesName: String?, _ podcastID: String?, _ episodeID: String?) -> Void
         
         let didNavigate: Callback
         
@@ -89,7 +89,7 @@ internal extension Navigation {
                 return
             }
             
-            didNavigate(libraryID, userInfo["audiobookID"], userInfo["authorID"], userInfo["seriesName"], userInfo["podcastID"], (userInfo["podcastID"], userInfo["episodeID"]))
+            didNavigate(libraryID, userInfo["audiobookID"], userInfo["authorID"], userInfo["seriesName"], userInfo["podcastID"], userInfo["episodeID"])
         }
     }
     

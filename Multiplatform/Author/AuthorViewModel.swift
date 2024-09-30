@@ -18,19 +18,19 @@ internal final class AuthorViewModel {
     @MainActor private(set) var series = [Series]()
     @MainActor private(set) var audiobooks = [Audiobook]()
     
-    @MainActor internal var filter: AudiobookSortFilter.Filter {
+    @MainActor internal var filter: ItemFilter {
         didSet {
             Defaults[.audiobooksFilter] = filter
         }
     }
-    @MainActor internal var displayMode: AudiobookSortFilter.DisplayType {
+    @MainActor internal var displayMode: ItemDisplayType {
         didSet {
             Defaults[.audiobooksDisplay] = displayMode
         }
     }
     
     @MainActor var ascending: Bool
-    @MainActor var sortOrder: AudiobookSortFilter.SortOrder
+    @MainActor var sortOrder: AudiobookSortOrder
     
     @MainActor private(set) var errorNotify: Bool
     @MainActor var descriptionSheetVisible: Bool

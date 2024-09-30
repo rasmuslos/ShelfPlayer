@@ -21,7 +21,7 @@ internal struct AudiobookLibraryPanel: View {
     
     @State private var selected = [String]()
     @State private var genreFilterPresented = false
-    @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortFilter.SortOrder>.audiobooks
+    @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortOrder>.audiobooks
     
     private var genres: [String] {
         var genres = Set<String>()
@@ -99,7 +99,7 @@ internal struct AudiobookLibraryPanel: View {
                                 .labelStyle(.iconOnly)
                         }
                         
-                        AudiobookSortFilter(displayType: $display, filter: $filter, sortOrder: $sortOrder, ascending: $ascending) {
+                        AudiobookSortFilter(filter: $filter, displayType: $display, sortOrder: $sortOrder, ascending: $ascending) {
                             lazyLoader.sortOrder = sortOrder
                             lazyLoader.ascending = ascending
                             
