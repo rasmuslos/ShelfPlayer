@@ -62,7 +62,7 @@ internal struct AudiobookSeriesPanel: View {
                                 seriesDisplayType = seriesDisplayType == .list ? .grid : .list
                             }
                         } label: {
-                            Label(seriesDisplayType == .list ? "sort.list" : "sort.grid", systemImage: seriesDisplayType == .list ? "list.bullet" : "square.grid.2x2")
+                            Label(seriesDisplayType == .list ? "display.list" : "display.grid", systemImage: seriesDisplayType == .list ? "list.bullet" : "square.grid.2x2")
                         }
                     }
                 }
