@@ -17,8 +17,6 @@ internal extension NowPlaying {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(ViewModel.self) private var viewModel
         
-        @State private var chaptersPosition: String? = nil
-        
         @ViewBuilder
         func emptyText(_ text: LocalizedStringKey) -> some View {
             VStack(spacing: 2) {
@@ -40,54 +38,52 @@ internal extension NowPlaying {
         func section(_ tab: ViewModel.SheetTab) -> some View {
             switch tab {
             case .queue:
-                ScrollViewReader { innerProxy in
-                    List {
-                        if viewModel.queue.isEmpty {
-                            emptyText("queue.empty")
-                        } else {
-                            ForEach(viewModel.queue) { item in
-                                HStack(spacing: 0) {
-                                    ItemImage(cover: item.cover)
-                                        .frame(width: 48)
-                                        .padding(.trailing, 8)
+                List {
+                    if viewModel.queue.isEmpty {
+                        emptyText("queue.empty")
+                    } else {
+                        ForEach(viewModel.queue) { item in
+                            HStack(spacing: 0) {
+                                ItemImage(cover: item.cover)
+                                    .frame(width: 48)
+                                    .padding(.trailing, 8)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(item.name)
+                                        .lineLimit(1)
                                     
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(item.name)
+                                    if let author = item.author {
+                                        Text(author)
                                             .lineLimit(1)
-                                        
-                                        if let author = item.author {
-                                            Text(author)
-                                                .lineLimit(1)
-                                                .font(.subheadline)
-                                                .foregroundStyle(.secondary)
-                                        }
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
                                     }
-                                    
-                                    Spacer(minLength: 12)
-                                    
-                                    Label("drag", systemImage: "line.3.horizontal")
-                                        .labelStyle(.iconOnly)
-                                        .font(.title3)
-                                        .foregroundStyle(.secondary)
                                 }
-                                .id(item)
-                                .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
+                                
+                                Spacer(minLength: 12)
+                                
+                                Label("drag", systemImage: "line.3.horizontal")
+                                    .labelStyle(.iconOnly)
+                                    .font(.title3)
+                                    .foregroundStyle(.secondary)
                             }
-                            .onMove {
-                                for index in $0 {
-                                    AudioPlayer.shared.move(from: index, to: $1)
-                                }
+                            .id(item)
+                            .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
+                        }
+                        .onMove {
+                            for index in $0 {
+                                AudioPlayer.shared.move(from: index, to: $1)
                             }
-                            .onDelete {
-                                for index in $0 {
-                                    AudioPlayer.shared.remove(at: index)
-                                }
+                        }
+                        .onDelete {
+                            for index in $0 {
+                                AudioPlayer.shared.remove(at: index)
                             }
                         }
                     }
-                    .listStyle(.plain)
-                    .contentMargins(.vertical, 8)
                 }
+                .listStyle(.plain)
+                .contentMargins(.vertical, 8)
             case .chapters:
                 ScrollViewReader { innerProxy in
                     List {
@@ -100,11 +96,8 @@ internal extension NowPlaying {
                     }
                     .listStyle(.plain)
                     .contentMargins(.vertical, 4)
-                    .scrollPosition(id: $chaptersPosition, anchor: .center)
-                    .onAppear {
-                        if let chapter = AudioPlayer.shared.chapter {
-                            chaptersPosition = String(chapter.id)
-                        }
+                    .onChange(of: viewModel.sheetPresented, initial: true) {
+                        innerProxy.scrollTo("\(viewModel.chapter?.id ?? -1)", anchor: .center)
                     }
                 }
             case .bookmarks:
@@ -136,7 +129,7 @@ internal extension NowPlaying {
                 
                 VStack(spacing: 0) {
                     if horizontalSizeClass == .compact {
-                        CompactHeader(item: item, chapterPosition: $chaptersPosition)
+                        CompactHeader(item: item)
                     }
                     
                     TabView(selection: $viewModel.sheetTab) {
@@ -180,7 +173,11 @@ internal extension NowPlaying {
                                 }
                             }
                         }
+                        .padding(12)
+                        .padding(.bottom, 20)
+                        .background(.background)
                     }
+                    .ignoresSafeArea(edges: .bottom)
                 }
                 .presentationDetents([.fraction(0.7)])
                 .sensoryFeedback(.selection, trigger: viewModel.sheetTab)
@@ -194,24 +191,13 @@ private struct CompactHeader: View {
     @Environment(\.dismiss) private var dismiss
     
     let item: PlayableItem
-    @Binding var chapterPosition: String?
     
     @ViewBuilder var button: some View {
         Button {
-            if viewModel.sheetTab == .queue {
-                AudioPlayer.shared.clear()
-            } else if viewModel.sheetTab == .chapters, let chapter = AudioPlayer.shared.chapter {
-                chapterPosition = String(chapter.id)
-            }
+            AudioPlayer.shared.clear()
         } label: {
-            Group {
-                if viewModel.sheetTab == .queue {
-                    Text("queue.clear")
-                } else {
-                    Text("chapters.now")
-                }
-            }
-            .font(.caption.smallCaps())
+            Text("queue.clear")
+                .font(.caption.smallCaps())
         }
         .buttonStyle(.bordered)
     }
@@ -233,15 +219,11 @@ private struct CompactHeader: View {
                 
                 Spacer(minLength: 4)
                 
-                Group {
-                    if viewModel.sheetTab == .queue {
-                        button
-                    } else if viewModel.sheetTab == .chapters, let chapter = viewModel.chapter, chapterPosition != String(chapter.id) {
-                        button
-                    }
+                if viewModel.sheetTab == .queue && !viewModel.queue.isEmpty {
+                    button
+                        .transition(.opacity)
+                        .animation(.smooth, value: viewModel.sheetTab)
                 }
-                .transition(.opacity)
-                .animation(.smooth, value: viewModel.sheetTab)
                 
                 Menu {
                     ForEach(NowPlaying.ViewModel.SheetTab.allCases) { tab in
