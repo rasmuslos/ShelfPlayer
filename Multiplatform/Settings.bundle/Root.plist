@@ -8,35 +8,15 @@
 	<array>
 		<dict>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Show current time in chapter</string>
-			<key>Key</key>
-			<string>enableChapterTrack</string>
-			<key>DefaultValue</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Delete finished downloads</string>
-			<key>Key</key>
-			<string>deleteFinishedDownloads</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Listen now settings</string>
+			<string>Home</string>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Enable row &quot;authors&quot;</string>
+			<string>Show &quot;authors&quot;</string>
 			<key>Key</key>
 			<string>showAuthorsRow</string>
 			<key>DefaultValue</key>
@@ -46,7 +26,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Disable row &quot;discover&quot;</string>
+			<string>Hide &quot;discover&quot;</string>
 			<key>Key</key>
 			<string>disableDiscoverRow</string>
 			<key>DefaultValue</key>
@@ -62,7 +42,17 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Enable serif font</string>
+			<string>Delete finished downloads</string>
+			<key>Key</key>
+			<string>deleteFinishedDownloads</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enable serif titles</string>
 			<key>Key</key>
 			<string>useSerifFont</string>
 			<key>DefaultValue</key>
@@ -72,7 +62,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Show % instead of circular progress bar</string>
+			<string>Show progress in %</string>
 			<key>Key</key>
 			<string>itemImageStatusPercentageText</string>
 			<key>DefaultValue</key>
@@ -94,37 +84,59 @@
 			<key>Title</key>
 			<string>Playback</string>
 			<key>FooterText</key>
-			<string>This will rewind by 10 seconds if you have not listened to the item in the past 10 minutes or the sleep timer has ended</string>
+			<string>Smart rewind will skip back ten seconds when playback was inactive for longer than ten minutes.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
+			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Skip forwards amount</string>
+			<string>Show progress in chapter</string>
 			<key>Key</key>
-			<string>skipForwardsInterval</string>
+			<string>enableChapterTrack</string>
 			<key>DefaultValue</key>
-			<string>30</string>
-			<key>Titles</key>
-			<array>
-				<string>15 seconds</string>
-				<string>30 seconds</string>
-				<string>45 seconds</string>
-				<string>60 seconds</string>
-			</array>
-			<key>Values</key>
-			<array>
-				<string>15</string>
-				<string>30</string>
-				<string>45</string>
-				<string>60</string>
-			</array>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Lock seek bar</string>
+			<key>Key</key>
+			<string>lockSeekBar</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Fade sleep timer out</string>
+			<key>Key</key>
+			<string>sleepTimerFadeOut</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Smart rewind</string>
+			<key>Key</key>
+			<string>smartRewind</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string></string>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Skip backwards amount</string>
+			<string>Skip backwards interval </string>
 			<key>Key</key>
 			<string>skipBackwardsInterval</string>
 			<key>DefaultValue</key>
@@ -146,31 +158,33 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
+			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Lock seek bar</string>
+			<string>Skip forwards interval</string>
 			<key>Key</key>
-			<string>lockSeekBar</string>
+			<string>skipForwardsInterval</string>
 			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Smart rewind</string>
-			<key>Key</key>
-			<string>smartRewind</string>
-			<key>DefaultValue</key>
-			<false/>
+			<string>30</string>
+			<key>Titles</key>
+			<array>
+				<string>15 seconds</string>
+				<string>30 seconds</string>
+				<string>45 seconds</string>
+				<string>60 seconds</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>15</string>
+				<string>30</string>
+				<string>45</string>
+				<string>60</string>
+			</array>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Playback-speed &amp; Sleep timer</string>
-			<key>FooterText</key>
-			<string>You can set a custom sleep timer duration in the account menu.</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -200,7 +214,7 @@
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Sleep timer adjustment</string>
+			<string>Sleep-Timer adjustment</string>
 			<key>Key</key>
 			<string>sleepTimerAdjustment</string>
 			<key>DefaultValue</key>
@@ -222,19 +236,9 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Sleep timer fade out</string>
-			<key>Key</key>
-			<string>sleepTimerFadeOut</string>
-			<key>DefaultValue</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Stop inactive after</string>
+			<string>Stop playback after</string>
 			<key>Key</key>
 			<string>endPlaybackTimeout</string>
 			<key>DefaultValue</key>
