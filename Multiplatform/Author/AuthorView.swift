@@ -123,12 +123,12 @@ struct AuthorView: View {
             $0.title = viewModel.author.name
             $0.isEligibleForHandoff = true
             $0.persistentIdentifier = viewModel.author.id
-            $0.targetContentIdentifier = "author:\(viewModel.author.id)"
+            $0.targetContentIdentifier = convertIdentifier(item: viewModel.author)
             $0.userInfo = [
                 "libraryID": viewModel.author.libraryID,
                 "authorID": viewModel.author.id,
             ]
-            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: viewModel.author.id)
+            $0.webpageURL = viewModel.author.url
         }
     }
 }

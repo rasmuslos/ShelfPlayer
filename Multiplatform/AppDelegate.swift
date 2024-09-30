@@ -30,8 +30,6 @@ internal final class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         switch intent {
-        case is INPlayMediaIntent:
-            return PlayMediaHandler()
         default:
             return nil
         }

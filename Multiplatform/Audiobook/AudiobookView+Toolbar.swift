@@ -75,7 +75,7 @@ extension AudiobookView {
                                 NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
                                     Label("author.view", systemImage: "person")
                                     
-                                    if let author = viewModel.audiobook.author {
+                                    if let author = viewModel.audiobook.authors?.first {
                                         Text(author)
                                     }
                                 }

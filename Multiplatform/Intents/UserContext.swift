@@ -10,7 +10,20 @@ import Intents
 import ShelfPlayerKit
 
 internal struct UserContext {
-    static func update() async throws {
+    static func run() async throws {
+        #if ENABLE_ALL_FEATURES
+        INPreferences.requestSiriAuthorization { _ in }
+        #endif
+
+        Task.detached {
+            try? await UserContext.update()
+            try? await UserContext.donateNextUpSuggestions()
+        }
+
+        SpotlightIndexer.index()
+    }
+    
+    private static func update() async throws {
         let context = INMediaUserContext()
         var totalCount = 0
         
@@ -26,11 +39,39 @@ internal struct UserContext {
             }
         }
         
-        print(totalCount)
-        
         context.subscriptionStatus = .subscribed
         context.numberOfLibraryItems = totalCount
         
         context.becomeCurrent()
+    }
+    
+    private static func donateNextUpSuggestions() async throws {
+        var items: [Item] = []
+        
+        for libarary in try await AudiobookshelfClient.shared.libraries() {
+            switch libarary.type {
+            case .audiobooks:
+                let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await AudiobookshelfClient.shared.home(libraryID: libarary.id)
+                if let audiobooks = home.0.filter({ $0.id == "continue-listening" }).first?.entities {
+                    items += audiobooks
+                }
+            case .podcasts:
+                let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await AudiobookshelfClient.shared.home(libraryID: libarary.id)
+                if let episodes = home.1.filter({ $0.id == "continue-listening" }).first?.entities {
+                    items += episodes
+                }
+            default:
+                break
+            }
+        }
+        
+        INUpcomingMediaManager.shared.setPredictionMode(.default, for: .audioBook)
+        INUpcomingMediaManager.shared.setPredictionMode(.default, for: .podcastShow)
+        
+        INUpcomingMediaManager.shared.setPredictionMode(.onlyPredictSuggestedIntents, for: .podcastEpisode)
+        
+        // MARK: TODO
+        
+        // INUpcomingMediaManager.shared.setSuggestedMediaIntents(<#T##intents: NSOrderedSet##NSOrderedSet#>)
     }
 }
