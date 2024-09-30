@@ -13,7 +13,7 @@ struct OfflinePodcastView: View {
     @Default private var episodesAscending: Bool
     @Default private var episodesSortOrder: EpisodeSortOrder
     
-    @Default private var episodeFilter: EpisodeFilter
+    @Default private var episodeFilter: ItemFilter
     
     let podcast: Podcast
     @State var episodes: [Episode]
@@ -22,7 +22,7 @@ struct OfflinePodcastView: View {
         self.podcast = podcast
         _episodes = .init(initialValue: episodes)
         
-        _episodesSortOrder = .init(.episodesSort(podcastId: podcast.id))
+        _episodesSortOrder = .init(.episodesSortOrder(podcastId: podcast.id))
         _episodesAscending = .init(.episodesAscending(podcastId: podcast.id))
         
         _episodeFilter = .init(.episodesFilter(podcastId: podcast.id))

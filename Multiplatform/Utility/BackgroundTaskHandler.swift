@@ -58,7 +58,7 @@ internal extension BackgroundTaskHandler {
         logger.info("Auto downloading podcast \(podcastID)")
         
         let filter = Defaults[.episodesFilter(podcastId: podcastID)]
-        let sortOrder = Defaults[.episodesSort(podcastId: podcastID)]
+        let sortOrder = Defaults[.episodesSortOrder(podcastId: podcastID)]
         let ascending = Defaults[.episodesAscending(podcastId: podcastID)]
         
         // Remove existing episodes

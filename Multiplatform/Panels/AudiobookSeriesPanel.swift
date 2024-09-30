@@ -11,7 +11,7 @@ import ShelfPlayerKit
 
 internal struct AudiobookSeriesPanel: View {
     @Environment(\.library) private var library
-    @Default(.seriesDisplay) private var seriesDisplay
+    @Default(.seriesDisplayType) private var seriesDisplayType
     
     @State private var lazyLoader = LazyLoadHelper<Series, Void>.series
     
@@ -34,7 +34,7 @@ internal struct AudiobookSeriesPanel: View {
                 }
             } else {
                 Group {
-                    switch seriesDisplay {
+                    switch seriesDisplayType {
                         case .grid:
                             ScrollView {
                                 SeriesGrid(series: lazyLoader.items) {
@@ -59,10 +59,10 @@ internal struct AudiobookSeriesPanel: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             withAnimation {
-                                seriesDisplay = seriesDisplay == .list ? .grid : .list
+                                seriesDisplayType = seriesDisplayType == .list ? .grid : .list
                             }
                         } label: {
-                            Label(seriesDisplay == .list ? "sort.list" : "sort.grid", systemImage: seriesDisplay == .list ? "list.bullet" : "square.grid.2x2")
+                            Label(seriesDisplayType == .list ? "sort.list" : "sort.grid", systemImage: seriesDisplayType == .list ? "list.bullet" : "square.grid.2x2")
                         }
                     }
                 }

@@ -1642,7 +1642,20 @@
       }
     },
     "chapters.now" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now"
+          }
+        }
+      }
     },
     "decrease" : {
       "localizations" : {
@@ -1719,6 +1732,12 @@
           }
         }
       }
+    },
+    "display.grid" : {
+
+    },
+    "display.list" : {
+
     },
     "done" : {
       "localizations" : {
@@ -2443,6 +2462,7 @@
       }
     },
     "item.media.metadata.seriesName" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3748,40 +3768,6 @@
         }
       }
     },
-    "queue.scroll.tip.message" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Streiche nach unten um die Warteschlange zu sehen, nach oben um zu den Lesezeichen zu gelangen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe down to view the queue, up to get to the bookmarks"
-          }
-        }
-      }
-    },
-    "queue.scroll.tip.title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Warteschlange"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Queue"
-          }
-        }
-      }
-    },
     "queue.tip.message" : {
       "localizations" : {
         "de" : {
@@ -3810,23 +3796,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Queue"
-          }
-        }
-      }
-    },
-    "queue.view" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zur Warteschlange"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "View Queue"
           }
         }
       }
@@ -4016,6 +3985,7 @@
       }
     },
     "section.display" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4036,6 +4006,9 @@
           }
         }
       }
+    },
+    "section.displayType" : {
+
     },
     "section.filter" : {
       "localizations" : {
@@ -4060,6 +4033,7 @@
       }
     },
     "section.order" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4102,6 +4076,9 @@
           }
         }
       }
+    },
+    "section.sortOrder" : {
+
     },
     "series" : {
       "localizations" : {
@@ -4450,6 +4427,9 @@
           }
         }
       }
+    },
+    "sort.series" : {
+
     },
     "splitView.empty" : {
       "localizations" : {

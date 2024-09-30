@@ -24,7 +24,7 @@ internal final class PodcastViewModel {
     @MainActor var settingsSheetPresented: Bool
     @MainActor var descriptionSheetPresented: Bool
     
-    @MainActor var filter: EpisodeFilter {
+    @MainActor var filter: ItemFilter {
         didSet {
             Defaults[.episodesFilter(podcastId: podcast.id)] = filter
         }
@@ -37,7 +37,7 @@ internal final class PodcastViewModel {
     }
     @MainActor var sortOrder: EpisodeSortOrder {
         didSet {
-            Defaults[.episodesSort(podcastId: podcast.id)] = sortOrder
+            Defaults[.episodesSortOrder(podcastId: podcast.id)] = sortOrder
         }
     }
     
@@ -60,7 +60,7 @@ internal final class PodcastViewModel {
         filter = Defaults[.episodesFilter(podcastId: podcast.id)]
         
         ascending = Defaults[.episodesAscending(podcastId: podcast.id)]
-        sortOrder = Defaults[.episodesSort(podcastId: podcast.id)]
+        sortOrder = Defaults[.episodesSortOrder(podcastId: podcast.id)]
         
         search = ""
         fetchConfiguration = OfflineManager.shared.requireConfiguration(podcastId: podcast.id)

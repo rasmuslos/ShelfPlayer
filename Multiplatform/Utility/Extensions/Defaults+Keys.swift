@@ -36,29 +36,31 @@ internal extension Defaults.Keys {
     static let showAuthorsRow = Key("showAuthorsRow", default: false)
     static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
     
-    // MARK: Podcast filter & sort
+    // MARK: Filter & sort utility
     
-    static func episodesFilter(podcastId: String) -> Defaults.Key<EpisodeFilter> {
+    static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobooksSortOrder", default: .added)
+    static let audiobooksAscending = Key<Bool>("audiobooksFilterAscending", default: true)
+    
+    static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .all)
+    static let audiobooksDisplay = Key<ItemDisplayType>("audiobooksDisplay", default: .list)
+    
+    static let seriesDisplayType = Key<ItemDisplayType>("seriesDisplay", default: .grid)
+    
+    static let authorsAscending = Key("authorsAscending", default: true)
+    static let podcastsAscending = Key("podcastsAscending", default: true)
+    
+    static func episodesFilter(podcastId: String) -> Defaults.Key<ItemFilter> {
         .init("episodesFilter-\(podcastId)", default: .unfinished)
     }
     
-    static func episodesSort(podcastId: String) -> Defaults.Key<EpisodeSortOrder> {
+    static func episodesSortOrder(podcastId: String) -> Defaults.Key<EpisodeSortOrder> {
         .init("episodesSort-\(podcastId)", default: .released)
     }
     static func episodesAscending(podcastId: String) -> Defaults.Key<Bool> {
         .init("episodesFilterAscending-\(podcastId)", default: false)
     }
     
-    // MARK: Filter & sort utility
+    // MARK: Intents
     
-    static let audiobooksDisplay = Key<AudiobookSortFilter.DisplayType>("audiobooksDisplay", default: .list)
-    static let audiobooksSortOrder = Key<AudiobookSortFilter.SortOrder>("audiobooksSortOrder", default: .added)
-    
-    static let audiobooksFilter = Key<AudiobookSortFilter.Filter>("audiobooksFilter", default: .all)
-    static let audiobooksAscending = Key<Bool>("audiobooksFilterAscending", default: true)
-    
-    static let seriesDisplay = Key<AudiobookSortFilter.DisplayType>("seriesDisplay", default: .grid)
-    
-    static let authorsAscending = Key("authorsAscending", default: true)
-    static let podcastsAscending = Key("podcastsAscending", default: true)
+    static let lastSpotlightIndex = Key<Date?>("lastSpotlightIndex", default: nil)
 }
