@@ -76,7 +76,7 @@ internal extension NowPlaying {
                         .modifier(ButtonHoverEffectModifier(hoverEffect: .lift))
                         .padding(.top, 36)
                     }
-                    .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _ in
+                    .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _, _ in
                         dismiss()
                     })
                 }

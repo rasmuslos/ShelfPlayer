@@ -60,7 +60,7 @@ internal struct AudiobookView: View {
                     AudiobookRow(title: String(localized: "audiobook.similar.series"), small: true, audiobooks: viewModel.sameSeries)
                         .padding(.bottom, 20)
                 }
-                if viewModel.sameAuthor.count > 1, let author = viewModel.audiobook.author {
+                if viewModel.sameAuthor.count > 1, let author = viewModel.audiobook.authors?.first {
                     AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), small: true, audiobooks: viewModel.sameAuthor)
                         .padding(.bottom, 20)
                 }
@@ -88,12 +88,12 @@ internal struct AudiobookView: View {
             $0.title = viewModel.audiobook.name
             $0.isEligibleForHandoff = true
             $0.persistentIdentifier = viewModel.audiobook.id
-            $0.targetContentIdentifier = "audiobook:\(viewModel.audiobook.id)"
+            $0.targetContentIdentifier = convertIdentifier(item: viewModel.audiobook)
             $0.userInfo = [
                 "libraryID": viewModel.audiobook.libraryID,
                 "audiobookID": viewModel.audiobook.id,
             ]
-            $0.webpageURL = AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: viewModel.audiobook.id)
+            $0.webpageURL = viewModel.audiobook.url
         }
     }
 }

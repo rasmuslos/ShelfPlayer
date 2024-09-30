@@ -97,7 +97,7 @@ internal extension NowPlaying {
                                 if !audiobook.series.isEmpty {
                                     if audiobook.series.count == 1, let series = audiobook.series.first {
                                         Button {
-                                            Navigation.navigate(seriesName: series.name, libraryID: audiobook.libraryID)
+                                            Navigation.navigate(seriesName: series.name, seriesID: series.id, libraryID: audiobook.libraryID)
                                         } label: {
                                             Label("series.view", systemImage: "rectangle.grid.2x2.fill")
                                             Text(series.name)
@@ -106,7 +106,7 @@ internal extension NowPlaying {
                                         Menu {
                                             ForEach(audiobook.series, id: \.name) { series in
                                                 Button {
-                                                    Navigation.navigate(seriesName: series.name, libraryID: audiobook.libraryID)
+                                                    Navigation.navigate(seriesName: series.name, seriesID: series.id, libraryID: audiobook.libraryID)
                                                 } label: {
                                                     Text(series.name)
                                                 }

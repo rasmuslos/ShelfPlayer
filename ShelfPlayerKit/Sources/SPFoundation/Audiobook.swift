@@ -42,6 +42,14 @@ public extension Audiobook {
             return $0.name
         }.joined(separator: ", ")
     }
+    
+    var narrators: [String]? {
+        guard let narrator else {
+            return nil
+        }
+        
+        return narrator.components(separatedBy: ", ").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+    }
 }
 
 public extension Audiobook {

@@ -46,8 +46,39 @@ public class Item: Identifiable {
         case podcast
         case episode
         
+        public static func parse(_ value: String) -> Self? {
+            if value == "audiobook" {
+                return .audiobook
+            } else if value == "author" {
+                return .author
+            } else if value == "series" {
+                return .series
+            } else if value == "podcast" {
+                return .podcast
+            } else if value == "episode" {
+                return .episode
+            }
+            
+            return nil
+        }
+        
         public var id: Self {
             self
+        }
+        
+        public var value: String {
+            switch self {
+            case .audiobook:
+                "audiobook"
+            case .author:
+                "author"
+            case .series:
+                "series"
+            case .podcast:
+                "podcast"
+            case .episode:
+                "episode"
+            }
         }
     }
 }
@@ -84,6 +115,14 @@ public extension Item {
             
             return sortName
         }
+    }
+    
+    var authors: [String]? {
+        guard let author else {
+            return nil
+        }
+        
+        return author.components(separatedBy: ", ").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
     }
     
     var identifiers: (itemID: String, episodeID: String?) {

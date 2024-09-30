@@ -171,10 +171,6 @@ internal extension AudioPlayer {
         playing = true
         
         updateChapterIndex()
-        
-        Task {
-            try await donateIntent()
-        }
     }
     
     func advance() async throws {
