@@ -7,61 +7,55 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
-import SPOffline
+import ShelfPlayerKit
 
 internal struct AudiobookSortFilter: View {
-    @Binding var displayType: DisplayType
-    @Binding var filter: Filter
+    @Binding var filter: ItemFilter
+    @Binding var displayType: ItemDisplayType
     
-    @Binding var sortOrder: SortOrder
+    @Binding var sortOrder: AudiobookSortOrder
     @Binding var ascending: Bool
     
     var didSelect: (() async -> Void)? = nil
     
     var body: some View {
         Menu {
-            Section("section.display") {
+            Section("section.displayType") {
                 ControlGroup {
-                    Button {
-                        withAnimation {
-                            displayType = .list
+                    ForEach(ItemDisplayType.allCases) { displayType in
+                        Button {
+                            withAnimation {
+                                self.displayType = displayType
+                            }
+                        } label: {
+                            Label(displayType.label, systemImage: displayType.icon)
                         }
-                    } label: {
-                        Label("sort.list", systemImage: "list.bullet")
-                    }
-                    
-                    Button {
-                        withAnimation {
-                            displayType = .grid
-                        }
-                    } label: {
-                        Label("sort.grid", systemImage: "square.grid.2x2")
                     }
                 }
             }
             
             Section("section.filter") {
-                ForEach(Filter.allCases, id: \.hashValue) { option in
-                    Toggle(option.rawValue, isOn: .init(get: { filter == option }, set: {
+                ForEach(ItemFilter.allCases, id: \.hashValue) { filter in
+                    Toggle(filter.label, isOn: .init(get: { self.filter == filter }, set: {
                         if $0 {
-                            filter = option
+                            withAnimation {
+                                self.filter = filter
+                            }
                         }
                     }))
                 }
             }
             
-            Section("section.order") {
-                ForEach(SortOrder.allCases, id: \.hashValue) { order in
-                    Toggle(order.rawValue, isOn: .init(get: { sortOrder == order }, set: {
+            Section("section.sortOrder") {
+                ForEach(AudiobookSortOrder.allCases) { sortOrder in
+                    Toggle(sortOrder.label, isOn: .init(get: { self.sortOrder == sortOrder }, set: {
                         if $0 {
-                            if let didSelect {
-                                Task {
+                            Task {
+                                if let didSelect {
                                     await didSelect()
-                                    sortOrder = order
                                 }
-                            } else {
-                                sortOrder = order
+                                
+                                self.sortOrder = sortOrder
                             }
                         }
                     }))
@@ -82,7 +76,7 @@ internal struct AudiobookSortFilter: View {
 
 extension AudiobookSortFilter {
     @MainActor
-    static func filterSort(audiobooks: [Audiobook], filter: Filter, order: SortOrder, ascending: Bool) -> [Audiobook] {
+    static func filterSort(audiobooks: [Audiobook], filter: ItemFilter, order: AudiobookSortOrder, ascending: Bool) -> [Audiobook] {
         let audiobooks = audiobooks.filter { audiobook in
             if filter == .all {
                 return true
@@ -102,7 +96,7 @@ extension AudiobookSortFilter {
         return sort(audiobooks: audiobooks, order: order, ascending: ascending)
     }
     
-    static func sort(audiobooks: [Audiobook], order: SortOrder, ascending: Bool) -> [Audiobook] {
+    static func sort(audiobooks: [Audiobook], order: AudiobookSortOrder, ascending: Bool) -> [Audiobook] {
         let audiobooks = audiobooks.sorted {
             switch order {
                 case .name:
@@ -152,49 +146,6 @@ extension AudiobookSortFilter {
     }
 }
 
-// MARK: Types
-
-internal extension AudiobookSortFilter {
-    enum DisplayType: String, Defaults.Serializable {
-        case grid = "grid"
-        case list = "list"
-    }
-    
-    enum Filter: LocalizedStringKey, CaseIterable, Codable, Defaults.Serializable {
-        case all = "filter.all"
-        case finished = "filter.finished"
-        case unfinished = "filter.unfinished"
-    }
-    
-    enum SortOrder: LocalizedStringKey, CaseIterable, Codable, Defaults.Serializable {
-        case name = "sort.name"
-        case series = "item.media.metadata.seriesName"
-        case author = "sort.author"
-        case released = "sort.released"
-        case added = "sort.added"
-        case duration = "sort.duration"
-    }
-}
-
-extension AudiobookSortFilter.SortOrder {
-    var apiValue: String {
-        switch self {
-            case .name:
-                "media.metadata.title"
-            case .series:
-                "item.media.metadata.seriesName"
-            case .author:
-                "media.metadata.authorName"
-            case .released:
-                "media.metadata.publishedYear"
-            case .added:
-                "addedAt"
-            case .duration:
-                "media.duration"
-        }
-    }
-}
-
 #Preview {
-    AudiobookSortFilter(displayType: .constant(.list), filter: .constant(.all), sortOrder: .constant(.added), ascending: .constant(true))
+    AudiobookSortFilter(filter: .constant(.all), displayType: .constant(.list), sortOrder: .constant(.added), ascending: .constant(true))
 }

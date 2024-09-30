@@ -10,13 +10,13 @@ import Defaults
 import ShelfPlayerKit
 
 internal struct EpisodeSortFilter: View {
-    @Binding var filter: EpisodeFilter
+    @Binding var filter: ItemFilter
     @Binding var sortOrder: EpisodeSortOrder
     @Binding var ascending: Bool
     
     var body: some View {
         Menu {
-            ForEach(EpisodeFilter.allCases, id: \.hashValue) { option in
+            ForEach(ItemFilter.allCases, id: \.hashValue) { option in
                 Toggle(option.label, isOn: .init(get: { filter == option }, set: {
                     if $0 {
                         filter = option
@@ -44,38 +44,9 @@ internal struct EpisodeSortFilter: View {
     }
 }
 
-private extension EpisodeFilter {
-    var label: LocalizedStringKey {
-        switch self {
-            case .all:
-                "filter.all"
-            case .progress:
-                "filter.inProgress"
-            case .unfinished:
-                "filter.unfinished"
-            case .finished:
-                "filter.finished"
-        }
-    }
-}
-
-private extension EpisodeSortOrder {
-    var label: LocalizedStringKey {
-        switch self {
-            case .name:
-                "sort.name"
-            case .index:
-                "sort.index"
-            case .released:
-                "sort.released"
-            case .duration:
-                "sort.duration"
-        }
-    }
-}
-
 #Preview {
-    @Previewable @State var filter: EpisodeFilter = .all
+    @Previewable @State var filter: ItemFilter = .all
+    
     @Previewable @State var sortOrder: EpisodeSortOrder = .released
     @Previewable @State var ascending: Bool = false
     

@@ -53,7 +53,7 @@ internal struct LegacyRouter: View {
             }
             .id(current)
             .modifier(NowPlaying.CompactModifier())
-            .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorID, seriesID, podcastID, episodeData in
+            .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorID, seriesID, podcastID, episodeID in
                 guard let library = library(for: libraryID) else {
                     return
                 }
@@ -73,6 +73,20 @@ internal struct LegacyRouter: View {
                     
                     if let audiobookID {
                         libraryPath.append(Navigation.AudiobookLoadDestination(audiobookId: audiobookID))
+                    }
+                    if let authorID {
+                        libraryPath.append(Navigation.AuthorLoadDestination(authorId: authorID))
+                    }
+                    if let seriesID {
+                        libraryPath.append(Navigation.SeriesLoadDestination(seriesName: seriesID))
+                    }
+                    
+                    if let podcastID {
+                        if let episodeID {
+                            libraryPath.append(Navigation.EpisodeLoadDestination(episodeId: episodeID, podcastId: podcastID))
+                        } else {
+                            libraryPath.append(Navigation.PodcastLoadDestination(podcastId: podcastID))
+                        }
                     }
                 }
             })

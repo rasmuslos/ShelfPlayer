@@ -11,7 +11,7 @@ import SPOffline
 
 public extension Episode {
     @MainActor
-    static func filterSort(episodes: [Episode], filter: EpisodeFilter, sortOrder: EpisodeSortOrder, ascending: Bool) -> [Episode] {
+    static func filterSort(episodes: [Episode], filter: ItemFilter, sortOrder: EpisodeSortOrder, ascending: Bool) -> [Episode] {
         var episodes = episodes
         
         if filter != .all {

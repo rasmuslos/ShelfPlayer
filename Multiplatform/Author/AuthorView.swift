@@ -92,7 +92,7 @@ struct AuthorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobookSortFilter(displayType: $viewModel.displayMode, filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                AudiobookSortFilter(filter: $viewModel.filter, displayType: $viewModel.displayMode, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
             }
         }
         .modifier(NowPlaying.SafeAreaModifier())
