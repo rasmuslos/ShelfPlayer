@@ -22,10 +22,19 @@ public extension PlayableItem {
         }
         
         OfflineManager.shared.finished(finished, item: self, synced: success)
+        
+        NotificationCenter.default.post(name: Self.finishedNotification, object: nil, userInfo: [
+            "itemID": identifiers.itemID,
+            "episodeID": identifiers.episodeID as Any,
+            
+            "finished": finished,
+        ])
     }
     
     func resetProgress() async throws {
         try await AudiobookshelfClient.shared.deleteProgress(itemId: identifiers.itemID, episodeId: identifiers.episodeID)
         try OfflineManager.shared.resetProgressEntity(itemID: identifiers.itemID, episodeID: identifiers.episodeID)
     }
+    
+    static let finishedNotification = Notification.Name("io.rfk.shelfPlayer.item.finished")
 }
