@@ -109,9 +109,7 @@ private struct ControlButtons: View {
                     AudioPlayer.shared.skipBackwards()
                 })
                 .gesture(LongPressGesture().onEnded { _ in
-                    if AudioPlayer.shared.chapter != nil {
-                        AudioPlayer.shared.chapterCurrentTime = 0
-                    }
+                    AudioPlayer.shared.chapterCurrentTime = 0
                 })
             
             Button {
@@ -135,9 +133,7 @@ private struct ControlButtons: View {
                     AudioPlayer.shared.skipForwards()
                 })
                 .gesture(LongPressGesture().onEnded { _ in
-                    if AudioPlayer.shared.chapter != nil {
-                        AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration
-                    }
+                    AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration
                 })
         }
         .foregroundStyle(.primary)
