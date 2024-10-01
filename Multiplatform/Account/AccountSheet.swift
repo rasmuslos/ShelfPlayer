@@ -10,7 +10,7 @@ import Defaults
 import Nuke
 import ShelfPlayerKit
 
-struct AccountSheet: View {
+internal struct AccountSheet: View {
     @Default(.customSleepTimer) private var customSleepTimer
     @Default(.customPlaybackSpeed) private var customPlaybackSpeed
     @Default(.defaultPlaybackSpeed) private var defaultPlaybackSpeed

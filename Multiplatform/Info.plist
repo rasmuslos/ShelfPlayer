@@ -49,6 +49,15 @@
 			<string>shelfplayer</string>
 		</dict>
 	</array>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>INPlayMediaIntent</string>
+	</array>
+	<key>INSupportedMediaCategories</key>
+	<array>
+		<string>INMediaCategoryPodcasts</string>
+		<string>INMediaCategoryAudiobooks</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSAppTransportSecurity</key>

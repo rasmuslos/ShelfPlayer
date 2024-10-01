@@ -21,4 +21,7 @@ public extension AudioPlayer {
     
     static let routeDidChangeNotification = Notification.Name("io.rfk.shelfPlayer.audioPlayer.updates.route")
     static let volumeDidChangeNotification = Notification.Name("io.rfk.shelfPlayer.audioPlayer.updates.volume")
+    
+    static let backwardsNotification = Notification.Name("io.rfk.shelfPlayer.audioPlayer.backwards")
+    static let forwardsNotification = Notification.Name("io.rfk.shelfPlayer.audioPlayer.forwards")
 }

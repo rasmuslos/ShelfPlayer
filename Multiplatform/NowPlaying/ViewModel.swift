@@ -323,6 +323,17 @@ private extension NowPlaying.ViewModel {
             }
         })
         
+        tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.backwardsNotification, object: nil, queue: nil) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.notifyBackwards += 1
+            }
+        })
+        tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.forwardsNotification, object: nil, queue: nil) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.notifyForwards += 1
+            }
+        })
+        
         tokens.append(NotificationCenter.default.addObserver(forName: OfflineManager.bookmarksUpdatedNotification, object: nil, queue: nil) { [weak self] _ in
             Task { @MainActor in
                 self?.updateBookmarks()
