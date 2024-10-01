@@ -4443,6 +4443,38 @@
         }
       }
     },
+    "tip.offlineSiri.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn keine Verbindung zur Audiobookshelf-Instanz möglich ist, füge „aus meiner Bibliothek“ zu deiner Anfrage hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you want to continue using Siri but cannot connect to your Audiobookshelf-Instance append \"from my library\" to your prompt."
+          }
+        }
+      }
+    },
+    "tip.offlineSiri.title" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri unterwegs benutzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Siri offline"
+          }
+        }
+      }
+    },
     "toolbar.remove" : {
       "localizations" : {
         "de" : {

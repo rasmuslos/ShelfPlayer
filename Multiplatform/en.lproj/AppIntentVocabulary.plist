@@ -9,7 +9,8 @@
 			<string>INPlayMediaIntent</string>
 			<key>IntentExamples</key>
 			<array>
-				<string>Play the audiobook 1984</string>
+				<string>Play the audiobook 1984 using ShelfPlayer</string>
+				<string>Play the podcast episode &quot;Indusitral society and it&apos;s future&quot; using ShelfPlayer</string>
 			</array>
 		</dict>
 	</array>

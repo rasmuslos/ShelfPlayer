@@ -58,11 +58,11 @@ internal struct AudiobookView: View {
                 
                 if viewModel.sameSeries.count > 1 {
                     AudiobookRow(title: String(localized: "audiobook.similar.series"), small: true, audiobooks: viewModel.sameSeries)
-                        .padding(.bottom, 20)
+                        .padding(.bottom, 12)
                 }
                 if viewModel.sameAuthor.count > 1, let author = viewModel.audiobook.authors?.first {
                     AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), small: true, audiobooks: viewModel.sameAuthor)
-                        .padding(.bottom, 20)
+                        .padding(.bottom, 12)
                 }
                 if viewModel.sameNarrator.count > 1, let narrator = viewModel.audiobook.narrator {
                     AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator)

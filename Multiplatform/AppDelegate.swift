@@ -8,16 +8,13 @@
 import UIKit
 import Intents
 
+// MARK: Background Downloads
+
 internal final class AppDelegate: NSObject, UIApplicationDelegate {
     private var backgroundCompletionHandler: (() -> Void)? = nil
     
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
         backgroundCompletionHandler = completionHandler
-    }
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        UNUserNotificationCenter.current().delegate = self
-        return true
     }
     
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
@@ -27,16 +24,16 @@ internal final class AppDelegate: NSObject, UIApplicationDelegate {
         
         backgroundCompletionHandler()
     }
-    
-    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        switch intent {
-        default:
-            return nil
-        }
-    }
 }
 
+// MARK: Notification Handling
+
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        return true
+    }
+    
     internal func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.banner]
     }
@@ -55,3 +52,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
+// MARK: Intents
+
+internal extension AppDelegate {
+    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
+        switch intent {
+        case is INPlayMediaIntent:
+            PlayMediaIntentHandler()
+        default:
+            nil
+        }
+    }
+}
