@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import OSLog
+import Intents
 import CoreSpotlight
 import Defaults
 import ShelfPlayerKit
@@ -15,8 +15,6 @@ internal struct SpotlightIndexer {
     // 3 days
     static let indexWaitTime: TimeInterval = 60 * 60 * 24
     static let searchableIndex = CSSearchableIndex(name: "ShelfPlayer_Items", protectionClass: .completeUntilFirstUserAuthentication)
-    
-    static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "Spotlight")
     
     static func index() {
         guard !NetworkMonitor.shared.isRouteLimited else {
@@ -58,9 +56,11 @@ internal struct SpotlightIndexer {
             
             searchableIndex.beginBatch()
             
-            logger.info("Indexing \(items.count) items.")
+            UserContext.logger.info("Indexing \(items.count) items.")
             
             try await searchableIndex.indexSearchableItems(items)
+            
+            try await INInteraction.delete(with: remainingIdentifiers)
             try await searchableIndex.deleteSearchableItems(withIdentifiers: remainingIdentifiers)
             
             try await searchableIndex.endBatch(withClientState: .init())
@@ -68,10 +68,11 @@ internal struct SpotlightIndexer {
             Defaults[.lastSpotlightIndex] = .now
             Defaults[.indexedIdentifiers] = indexedIndentifers
             
-            logger.info("Indexed \(indexedIndentifers.count) Spotlight items while deleting \(remainingIdentifiers.count) outdated items.")
+            UserContext.logger.info("Indexed \(indexedIndentifers.count) Spotlight items while deleting \(remainingIdentifiers.count) outdated items.")
         }
     }
     static func deleteIndex() {
+        INInteraction.deleteAll()
         searchableIndex.deleteAllSearchableItems()
         
         Defaults[.lastSpotlightIndex] = nil

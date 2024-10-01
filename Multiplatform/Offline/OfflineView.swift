@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 import ShelfPlayerKit
 import SPPlayback
 
@@ -20,6 +21,13 @@ struct OfflineView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    TipView(SiriOfflineTip())
+                        .tipBackground(.background)
+                        .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(Color.clear)
+                }
+                
                 if !audiobooks.isEmpty {
                     Section("downloads.audiobooks") {
                         OfflineAudiobookList(audiobooks: audiobooks.sorted())
@@ -82,6 +90,20 @@ struct OfflineView: View {
     }
 }
 
+private struct SiriOfflineTip: Tip {
+    var title: Text {
+        .init("tip.offlineSiri.title")
+    }
+    var message: Text? {
+        .init("tip.offlineSiri.message")
+    }
+    
+    var image: Image? {
+        .init(systemName: "network.slash")
+    }
+}
+
 #Preview {
     OfflineView()
+        .environment(NowPlaying.ViewModel())
 }

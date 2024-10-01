@@ -147,6 +147,7 @@ public final class AudioPlayer {
             Task {
                 await populateNowPlayingWidgetMetadata()
             }
+            
             NotificationCenter.default.post(name: AudioPlayer.itemDidChangeNotification, object: nil)
         }
     }
@@ -280,6 +281,7 @@ public final class AudioPlayer {
 internal extension AudioPlayer {
     enum AudioPlayerError: Error {
         case missing
+        case offline
     }
 }
 

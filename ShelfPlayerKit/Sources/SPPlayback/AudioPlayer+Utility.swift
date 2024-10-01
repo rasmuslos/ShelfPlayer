@@ -63,7 +63,7 @@ internal extension AudioPlayer {
 }
 
 internal extension AudioPlayer {
-    func retrievePlaybackSession() async throws -> TimeInterval {
+    func retrievePlaybackSession(offline: Bool = false) async throws -> TimeInterval {
         guard let item else {
             throw AudioPlayerError.missing
         }
@@ -77,6 +77,10 @@ internal extension AudioPlayer {
         do {
             let playbackSessionId: String
             playbackReporter = nil
+            
+            if offline {
+                throw AudioPlayerError.offline
+            }
             
             (tracks, chapters, startTime, playbackSessionId) = try await AudiobookshelfClient.shared.startPlaybackSession(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID)
             playbackReporter = PlaybackReporter(itemId: item.identifiers.itemID, episodeId: item.identifiers.episodeID, playbackSessionId: playbackSessionId)

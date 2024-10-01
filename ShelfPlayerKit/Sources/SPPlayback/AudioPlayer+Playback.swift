@@ -15,10 +15,10 @@ import SPExtension
 import SPOffline
 
 public extension AudioPlayer {
-    func play(_ item: PlayableItem, at seconds: TimeInterval? = nil) async throws {
+    func play(_ item: PlayableItem, at seconds: TimeInterval? = nil, withoutPlaybackSession: Bool = false) async throws {
         stop()
         
-        try await start(item, at: seconds)
+        try await start(item, at: seconds, withoutPlaybackSession: withoutPlaybackSession)
         
         Task {
             guard queue.isEmpty else {
@@ -131,6 +131,7 @@ public extension AudioPlayer {
     }
     func skipForwards() async {
         await seek(to: itemCurrentTime + .init(skipForwardsInterval))
+        NotificationCenter.default.post(name: Self.forwardsNotification, object: nil)
     }
     
     func skipBackwards() {
@@ -140,18 +141,19 @@ public extension AudioPlayer {
     }
     func skipBackwards() async {
         await seek(to: itemCurrentTime - .init(skipBackwardsInterval))
+        NotificationCenter.default.post(name: Self.backwardsNotification, object: nil)
     }
 }
 
 internal extension AudioPlayer {
-    func start(_ item: PlayableItem, at seconds: Double? = nil) async throws {
+    func start(_ item: PlayableItem, at seconds: Double? = nil, withoutPlaybackSession: Bool = false) async throws {
         buffering = true
         
         let startTime: TimeInterval
         self.item = item
         
         do {
-            let suggestedStartTime = try await retrievePlaybackSession()
+            let suggestedStartTime = try await retrievePlaybackSession(offline: withoutPlaybackSession)
             startTime = seconds ?? suggestedStartTime
         } catch {
             self.item = nil
