@@ -86,7 +86,7 @@ internal extension PlayMediaIntentHandler {
     }
     
     func resolveResumePlayback(for intent: INPlayMediaIntent) async -> INBooleanResolutionResult {
-        return .success(with: true)
+        .success(with: true)
     }
     
     func resolvePlaybackRepeatMode(for intent: INPlayMediaIntent) async -> INPlaybackRepeatModeResolutionResult {

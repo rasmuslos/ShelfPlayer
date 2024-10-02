@@ -340,6 +340,14 @@ private extension NowPlaying.ViewModel {
             }
         })
         
+        tokens.append(NotificationCenter.default.addObserver(forName: UIWindow.deviceDidShakeNotification, object: nil, queue: nil) { _ in
+            guard Defaults[.shakeExtendsSleepTimer] else {
+                return
+            }
+            
+            SleepTimer.shared.extend()
+        })
+        
         Task {
             for await skipForwardsInterval in Defaults.updates(.skipForwardsInterval) {
                 await MainActor.withAnimation {
