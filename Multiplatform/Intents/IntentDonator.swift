@@ -11,7 +11,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal final class IntentDonator {
-    var lastDonatedItem: Item?
+    internal var lastDonatedItem: Item?
     
     init() {
         lastDonatedItem = nil
