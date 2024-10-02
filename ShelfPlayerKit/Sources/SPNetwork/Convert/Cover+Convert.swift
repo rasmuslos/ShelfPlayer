@@ -20,8 +20,7 @@ extension Cover {
             .appending(queryItems: [
                 URLQueryItem(name: "width", value: "\(size.dimensions)"),
                 URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token),
-            ])
-        )
+            ]))
     }
     
     init(podcast: AudiobookshelfPodcastEpisode.AudiobookshelfItemPodcast, size: CoverSize = .normal) {
@@ -31,7 +30,7 @@ extension Cover {
             .appending(path: podcast.libraryItemId)
             .appending(path: "cover")
             .appending(queryItems: [
-                URLQueryItem(name: "width", value: "1000"),
+                URLQueryItem(name: "width", value: "\(size.dimensions)"),
                 URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token),
             ])
         )
