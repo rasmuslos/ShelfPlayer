@@ -36,6 +36,8 @@ internal extension Defaults.Keys {
     static let showAuthorsRow = Key("showAuthorsRow", default: false)
     static let disableDiscoverRow = Key("disableDiscoverRow", default: false)
     
+    static let shakeExtendsSleepTimer = Key("shakeExtendsSleepTimer", default: true)
+    
     // MARK: Filter & sort utility
     
     static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobooksSortOrder", default: .added)

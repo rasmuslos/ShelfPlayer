@@ -84,7 +84,7 @@
 			<key>Title</key>
 			<string>Playback</string>
 			<key>FooterText</key>
-			<string>The Sleep->Timer will be extended if you press play up to 10 seconds after it expires.
+			<string>The Sleep-&gt;Timer will be extended if you press play up to 10 seconds after it expires.
 Smart rewind will skip back ten seconds when playback was inactive for longer than ten minutes.</string>
 		</dict>
 		<dict>
@@ -114,6 +114,16 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 			<string>Fade sleep timer out</string>
 			<key>Key</key>
 			<string>sleepTimerFadeOut</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Shake extends Sleep-Timer</string>
+			<key>Key</key>
+			<string>shakeExtendsSleepTimer</string>
 			<key>DefaultValue</key>
 			<true/>
 		</dict>
