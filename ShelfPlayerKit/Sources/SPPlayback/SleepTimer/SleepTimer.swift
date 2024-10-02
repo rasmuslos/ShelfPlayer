@@ -65,7 +65,11 @@ public final class SleepTimer {
         
         switch lastSetting {
         case .time(let interval):
-            expiresAt = .now().advanced(by: .seconds(Int(interval)))
+            if let expiresAt {
+                self.expiresAt = expiresAt.advanced(by: .seconds(Int(interval)))
+            } else {
+                expiresAt = .now().advanced(by: .seconds(Int(interval)))
+            }
         case .chapterEnd:
             expiresAtChapterEnd = true
         }
