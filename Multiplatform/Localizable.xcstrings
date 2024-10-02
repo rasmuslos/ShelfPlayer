@@ -1383,7 +1383,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ein Buch"
+                  "value" : "%lld Buch"
                 }
               },
               "other" : {
@@ -1401,7 +1401,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "One book"
+                  "value" : "%lld book"
                 }
               },
               "other" : {
