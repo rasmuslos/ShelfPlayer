@@ -86,7 +86,7 @@ internal extension PlayMediaIntentHandler {
     }
     
     func resolveResumePlayback(for intent: INPlayMediaIntent) async -> INBooleanResolutionResult {
-        .success(with: intent.resumePlayback ?? true)
+        return .success(with: true)
     }
     
     func resolvePlaybackRepeatMode(for intent: INPlayMediaIntent) async -> INPlaybackRepeatModeResolutionResult {
@@ -170,6 +170,7 @@ internal extension PlayMediaIntentHandler {
             AudioPlayer.shared.queue(item)
         } else {
             do {
+                IntentDonator.shared.lastDonatedItem = item
                 try await AudioPlayer.shared.play(item, at: resumePlayback ? nil : 0, withoutPlaybackSession: offline)
             } catch {
                 return .init(code: .failure, userActivity: nil)
