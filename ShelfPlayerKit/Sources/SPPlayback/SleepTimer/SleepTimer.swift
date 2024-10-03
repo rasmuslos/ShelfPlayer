@@ -19,7 +19,8 @@ public final class SleepTimer {
                 setupTimer()
                 
                 if let timeInterval = expiresAt?.distance(to: .now()).timeInterval {
-                    lastSetting = .time(interval: -timeInterval)
+                    let amount = min(-timeInterval, 60 * 60 * 6)
+                    lastSetting = .time(interval: amount)
                 }
             }
             
