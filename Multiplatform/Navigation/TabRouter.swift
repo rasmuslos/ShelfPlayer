@@ -88,7 +88,11 @@ internal struct TabRouter: View {
                     current = library
                 }
                 
-                selection = .audiobookLibrary(library)
+                if library.type == .audiobooks {
+                    selection = .audiobookLibrary(library)
+                } else if library.type == .podcasts {
+                    selection = .podcastLibrary(library)
+                }
                 
                 Task {
                     if previousLibrary != library {
@@ -107,6 +111,8 @@ internal struct TabRouter: View {
                     if let seriesID {
                         libraryPath.append(Navigation.SeriesLoadDestination(seriesId: seriesID, seriesName: ""))
                     }
+                    
+                    print(podcastID, episodeID)
                     
                     if let podcastID {
                         if let episodeID {

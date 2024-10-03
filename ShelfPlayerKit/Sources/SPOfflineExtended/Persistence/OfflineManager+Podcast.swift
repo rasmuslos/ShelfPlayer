@@ -113,8 +113,9 @@ public extension OfflineManager {
 // MARK: Fetch configurations
 
 public extension OfflineManager {
+    @MainActor
     func requireConfiguration(podcastId: String) -> PodcastFetchConfiguration {
-        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let context = PersistenceManager.shared.modelContainer.mainContext
         
         if let configuration = try? getConfiguration(podcastId: podcastId, context: context) {
             return configuration
@@ -154,5 +155,7 @@ internal extension OfflineManager {
         configuration.maxEpisodes = 3
         configuration.autoDownload = false
         configuration.notifications = false
+        
+        try? context.save()
     }
 }

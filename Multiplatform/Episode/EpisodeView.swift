@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct EpisodeView: View {
+    @Environment(\.library) private var library
     @State private var viewModel: EpisodeViewModel
     
     init(_ episode: Episode) {
@@ -34,6 +35,9 @@ struct EpisodeView: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
         .environment(viewModel)
+        .onAppear {
+            viewModel.library = library
+        }
         .task {
             await viewModel.load()
         }

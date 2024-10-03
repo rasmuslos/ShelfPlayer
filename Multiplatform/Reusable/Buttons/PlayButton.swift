@@ -53,20 +53,24 @@ internal struct PlayButton: View {
         return progressEntity.duration - progressEntity.currentTime
     }
     
-    private var label: String {
+    private var label: LocalizedStringKey {
+        if nowPlayingViewModel.item == item {
+            return nowPlayingViewModel.playing ? "pause" : "resume"
+        }
+        
         if progressEntity.isFinished {
-            return String(localized: "listen.again")
+            return "listen.again"
         }
         
         if progressEntity.progress > 0 {
-            return String(localized: "resume")
+            return "resume"
         }
         
         if item.type == .audiobook {
-            return String(localized: "listen")
+            return "listen"
         }
         
-        return String(localized: "play")
+        return "play"
     }
     private var icon: String {
         if item == nowPlayingViewModel.item {

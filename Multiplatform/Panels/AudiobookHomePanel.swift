@@ -94,6 +94,11 @@ internal struct AudiobookHomePanel: View {
                 .refreshable {
                     await fetchItems()
                 }
+                .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
+                    Task {
+                        await fetchItems()
+                    }
+                }
             }
         }
         .navigationTitle(library.name)
@@ -107,7 +112,9 @@ internal struct AudiobookHomePanel: View {
         }
         
         Task {
-            let downloaded = try OfflineManager.shared.audiobooks()
+            let libraryID = await library.id
+            let downloaded = try OfflineManager.shared.audiobooks().filter { $0.libraryID == libraryID }
+            
             await MainActor.withAnimation {
                 self.downloaded = downloaded
             }
