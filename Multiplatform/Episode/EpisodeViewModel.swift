@@ -13,6 +13,7 @@ import ShelfPlayerKit
 @Observable
 internal final class EpisodeViewModel {
     @MainActor let episode: Episode
+    @MainActor var library: Library!
     
     @MainActor private(set) var dominantColor: Color?
     
@@ -27,6 +28,7 @@ internal final class EpisodeViewModel {
     @MainActor
     init(episode: Episode) {
         self.episode = episode
+        library = nil
         
         dominantColor = nil
         
@@ -91,6 +93,10 @@ private extension EpisodeViewModel {
         }
     }
     func loadSessions() async {
+        if await library.type == .offline {
+            return
+        }
+        
         guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: episode.podcastId, episodeID: episode.id) else {
             return
         }

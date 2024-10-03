@@ -92,9 +92,6 @@ internal struct PodcastSettingsSheet: View {
                         .labelStyle(.titleOnly)
                 }
             }
-            .onChange(of: configuration) {
-                try? configuration.modelContext?.save()
-            }
         }
     }
 }

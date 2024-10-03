@@ -197,7 +197,18 @@ internal extension AudioPlayer {
         await clearNowPlayingMetadata()
         audioPlayer.removeAllItems()
         
+        let previous = item
+        
         try await start(queue.removeFirst())
+        
+        if let previous {
+            NotificationCenter.default.post(name: PlayableItem.finishedNotification, object: nil, userInfo: [
+                "itemID": previous.identifiers.itemID,
+                "episodeID": previous.identifiers.episodeID as Any,
+                
+                "finished": true,
+            ])
+        }
     }
     func itemDidFinish(_ item: PlayableItem) {
         OfflineManager.shared.removePlaybackSpeedOverride(for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)

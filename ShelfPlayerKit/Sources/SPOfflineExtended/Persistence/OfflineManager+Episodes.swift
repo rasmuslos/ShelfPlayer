@@ -42,6 +42,17 @@ public extension OfflineManager {
         return try Episode(offlineEpisode(episodeId: episodeId, context: context))
     }
     
+    func downloading() throws -> [Podcast: [Episode]] {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        let descriptor = FetchDescriptor<OfflineEpisode>()
+        
+        let episodes = try context.fetch(descriptor).map(Episode.init).filter { offlineStatus(parentId: $0.id) == .working }
+        
+        return try Dictionary(grouping: episodes, by: \.podcastId).reduce(into: [:]) {
+            try $0[podcast(podcastId: $1.key)] = $1.value
+        }
+    }
+    
     func episodes(query: String) throws -> [Episode] {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         let descriptor = FetchDescriptor<OfflineEpisode>(predicate: #Predicate { $0.name.localizedStandardContains(query) })

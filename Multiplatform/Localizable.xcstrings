@@ -427,6 +427,9 @@
         }
       }
     },
+    "account.downloads" : {
+
+    },
     "account.github" : {
       "localizations" : {
         "de" : {
@@ -1612,6 +1615,9 @@
           }
         }
       }
+    },
+    "ccc" : {
+
     },
     "chapters" : {
       "localizations" : {
@@ -3311,6 +3317,9 @@
         }
       }
     },
+    "pause" : {
+
+    },
     "play" : {
       "localizations" : {
         "de" : {
@@ -3522,13 +3531,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anzahl: %$lld"
+            "value" : "Anzahl: %lld"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Amount: %$lld"
+            "value" : "Amount: %lld"
           }
         }
       }

@@ -47,7 +47,6 @@ internal extension OfflineManager {
 // MARK: Public (Higher order)
 
 public extension OfflineManager {
-    @MainActor
     func createBookmark(itemId: String, position: TimeInterval, note: String) async {
         let bookmark = try? await AudiobookshelfClient.shared.createBookmark(itemId: itemId, position: position, note: note)
         

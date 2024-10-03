@@ -43,6 +43,10 @@ public extension OfflineManager {
         return try offlineAudiobooks(context: context).map(Audiobook.init)
     }
     
+    func downloading() throws -> [Audiobook] {
+        try audiobooks().filter { offlineStatus(parentId: $0.id) == .working }
+    }
+    
     func audiobooks(query: String) throws -> [Audiobook] {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         let descriptor = FetchDescriptor<OfflineAudiobook>(predicate: #Predicate { $0.name.localizedStandardContains(query) })

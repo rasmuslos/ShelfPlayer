@@ -36,7 +36,10 @@ internal extension DownloadManager {
             }
             
             AudiobookshelfClient.defaults.removeObject(forKey: "downloadProgress_\(taskIdentifier)")
-            NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            
+            Task { @MainActor in
+                NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            }
         }
     }
     
@@ -47,13 +50,19 @@ internal extension DownloadManager {
             AudiobookshelfClient.defaults.removeObject(forKey: "downloadTrackFinishedCount_\(itemId)")
             
             AudiobookshelfClient.defaults.removeObject(forKey: "downloadProgress_\(taskIdentifier)")
-            NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            
+            Task { @MainActor in
+                NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            }
         }
     }
     func abortProgressTracking(taskIdentifier: Int) {
         Self.serialQueue.sync {
             AudiobookshelfClient.defaults.removeObject(forKey: "downloadProgress_\(taskIdentifier)")
-            NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            
+            Task { @MainActor in
+                NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            }
         }
     }
     
@@ -70,7 +79,9 @@ internal extension DownloadManager {
             AudiobookshelfClient.defaults.set(current, forKey: "downloadTotalProgress_\(itemId)")
             AudiobookshelfClient.defaults.set(progress, forKey: "downloadProgress_\(taskIdentifier)")
             
-            NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            Task { @MainActor in
+                NotificationCenter.default.post(name: OfflineManager.downloadProgressUpdatedNotification, object: nil)
+            }
         }
     }
 }

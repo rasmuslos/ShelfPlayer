@@ -70,6 +70,11 @@ internal struct PodcastHomePanel: View {
                 .refreshable {
                     await fetchItems()
                 }
+                .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
+                    Task {
+                        await fetchItems()
+                    }
+                }
             }
         }
         .navigationTitle(library.name)
