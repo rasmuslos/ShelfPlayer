@@ -10,20 +10,18 @@ import TipKit
 import ShelfPlayerKit
 import SPPlayback
 
-struct OfflineView: View {
-    @State var accountSheetPresented = false
+internal struct OfflineView: View {
+    @State private var accountSheetPresented = false
     
-    @State var audiobooks = [Audiobook]()
-    @State var podcasts = [Podcast: [Episode]]()
-    
-    // TODO: ADD A REUSABLE QUEUE (account menu, too)
+    @State private var audiobooks = [Audiobook]()
+    @State private var podcasts = [Podcast: [Episode]]()
     
     var body: some View {
         NavigationStack {
             List {
                 Section {
                     TipView(SiriOfflineTip())
-                        .tipBackground(.background)
+                        .tipBackground(.background.tertiary)
                         .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .listRowBackground(Color.clear)
                 }

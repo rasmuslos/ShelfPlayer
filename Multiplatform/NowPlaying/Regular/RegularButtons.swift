@@ -25,7 +25,7 @@ extension NowPlaying {
                 Button {
                     NowPlaying.presentPicker()
                 } label: {
-                    Label("route", systemImage: "airplay.audio")
+                    Label("route", systemImage: "airplayaudio")
                         .labelStyle(.iconOnly)
                         .modifier(NowPlayingButtonModifier())
                         .foregroundStyle(viewModel.isUsingExternalRoute ? Color.accentColor : .secondary)

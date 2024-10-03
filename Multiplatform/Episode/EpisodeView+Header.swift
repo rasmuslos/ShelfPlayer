@@ -58,6 +58,7 @@ private struct Eyebrow: View {
 
 private struct Title: View {
     @Environment(EpisodeViewModel.self) private var viewModel
+    @Environment(\.library) private var library
     
     let alignment: HorizontalAlignment
     
@@ -76,6 +77,7 @@ private struct Title: View {
                     Label("author.view", systemImage: "chevron.right.circle")
                         .labelStyle(.iconOnly)
                 }
+                .disabled(library.type == .offline)
                 .lineLimit(1)
                 .font(.footnote)
                 .foregroundStyle(.secondary)

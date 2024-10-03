@@ -60,20 +60,19 @@ struct PodcastView: View {
         }
         .sheet(isPresented: $viewModel.descriptionSheetPresented) {
             NavigationStack {
-                HStack(spacing: 0) {
-                    VStack(alignment: .leading) {
+                ScrollView {
+                    HStack(spacing: 0) {
                         if let description = viewModel.podcast.description {
-                            Text(description)
+                            Text("ccc")
                         } else {
                             Text("description.unavailable")
                         }
                         
-                        Spacer()
+                        Spacer(minLength: 0)
                     }
-                    
-                    Spacer()
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 20)
                 }
-                .padding(.horizontal, 20)
                 .navigationTitle(viewModel.podcast.name)
                 .presentationDragIndicator(.visible)
             }

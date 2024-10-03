@@ -60,17 +60,21 @@ struct AuthorView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
-            RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                .listRowSeparator(.hidden, edges: .top)
-                .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+            if !viewModel.audiobooks.isEmpty {
+                RowTitle(title: String(localized: "books"), fontDesign: .serif)
+                    .listRowSeparator(.hidden, edges: .top)
+                    .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+                
+                AudiobookList(audiobooks: viewModel.visible)
+            }
             
-            AudiobookList(audiobooks: viewModel.visible)
-            
-            RowTitle(title: String(localized: "series"), fontDesign: .serif)
-                .listRowSeparator(.hidden, edges: .top)
-                .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
-            
-            SeriesList(series: viewModel.series)
+            if !viewModel.series.isEmpty {
+                RowTitle(title: String(localized: "series"), fontDesign: .serif)
+                    .listRowSeparator(.hidden, edges: .top)
+                    .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+                
+                SeriesList(series: viewModel.series)
+            }
         }
         .listStyle(.plain)
     }

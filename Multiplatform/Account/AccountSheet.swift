@@ -99,6 +99,12 @@ internal struct AccountSheet: View {
                 }
                 
                 Section {
+                    DownloadQueue()
+                } header: {
+                    Text("account.downloads")
+                }
+                
+                Section {
                     Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
                         PlaybackSpeedButton.Options(selected: $defaultPlaybackSpeed)
                     }
