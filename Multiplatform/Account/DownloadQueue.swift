@@ -21,35 +21,44 @@ internal struct DownloadQueue: View {
     
     var body: some View {
         Section {
-            ForEach(audiobooks) {
-                DownloadAudiobookRow(audiobook: $0)
-                    .listRowInsets(.init(top: $0 == audiobooks.first ? 12 : 6, leading: 12, bottom: $0 == audiobooks.last ? 12 : 6, trailing: 20))
+            if audiobooks.isEmpty && podcasts.isEmpty {
+                Text("downloadQueue.empty")
+                    .foregroundStyle(.secondary)
             }
-        }
-        
-        Section {
-            ForEach(podcastsKeys) { podcast in
-                let episodes = podcasts[podcast]!
-                
-                HStack(spacing: 12) {
-                    ItemImage(cover: podcast.cover)
-                        .frame(width: 60)
+            
+            Section {
+                ForEach(audiobooks) {
+                    DownloadAudiobookRow(audiobook: $0)
+                        .listRowInsets(.init(top: $0 == audiobooks.first ? 12 : 6, leading: 12, bottom: $0 == audiobooks.last ? 12 : 6, trailing: 20))
+                }
+            }
+            
+            Section {
+                ForEach(podcastsKeys) { podcast in
+                    let episodes = podcasts[podcast]!
                     
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(podcast.name)
-                            .lineLimit(1)
-                        Text("\(episodes.count) episodes")
-                            .lineLimit(1)
-                            .foregroundStyle(.secondary)
+                    HStack(spacing: 12) {
+                        ItemImage(cover: podcast.cover)
+                            .frame(width: 60)
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(podcast.name)
+                                .lineLimit(1)
+                            Text("\(episodes.count) episodes")
+                                .lineLimit(1)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .listRowInsets(.init(top: podcast == podcastsKeys.first ? 12 : 6, leading: 12, bottom: 6, trailing: 20))
+                    
+                    ForEach(episodes) { episode in
+                        DownloadEpisodeRow(episode: episode)
+                            .listRowInsets(.init(top: episode == episodes.first ? 12 : 6, leading: 12, bottom: podcast == podcastsKeys.last && episode == episodes.last ? 12 : 6, trailing: 20))
                     }
                 }
-                .listRowInsets(.init(top: podcast == podcastsKeys.first ? 12 : 6, leading: 12, bottom: 6, trailing: 20))
-                
-                ForEach(episodes) { episode in
-                    DownloadEpisodeRow(episode: episode)
-                        .listRowInsets(.init(top: episode == episodes.first ? 12 : 6, leading: 12, bottom: podcast == podcastsKeys.last && episode == episodes.last ? 12 : 6, trailing: 20))
-                }
             }
+        } header: {
+            Text("downloadQueue")
         }
         .sensoryFeedback(.error, trigger: errorNotify)
         .onAppear {
