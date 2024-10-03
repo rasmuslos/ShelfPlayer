@@ -98,11 +98,7 @@ internal struct AccountSheet: View {
                     Text("account.notifications.text")
                 }
                 
-                Section {
-                    DownloadQueue()
-                } header: {
-                    Text("account.downloads")
-                }
+                DownloadQueue()
                 
                 Section {
                     Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
