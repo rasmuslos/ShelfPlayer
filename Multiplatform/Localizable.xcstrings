@@ -427,9 +427,6 @@
         }
       }
     },
-    "account.downloads" : {
-
-    },
     "account.github" : {
       "localizations" : {
         "de" : {
@@ -1868,6 +1865,12 @@
           }
         }
       }
+    },
+    "downloadQueue" : {
+
+    },
+    "downloadQueue.empty" : {
+
     },
     "downloads" : {
       "localizations" : {
