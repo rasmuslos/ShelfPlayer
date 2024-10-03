@@ -49,7 +49,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 ProgressButton(item: episode)
                 DownloadButton(item: episode)
             } preview: {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
                     ItemImage(cover: episode.cover)
                         .frame(height: 50)
                     
@@ -66,7 +66,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     }
                     .font(.caption.smallCaps())
                     .foregroundStyle(.secondary)
-                    .padding(.top, 4)
+                    .padding(.top, 8)
                     
                     Group {
                         Text(episode.name)
@@ -78,6 +78,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                             .foregroundStyle(.secondary)
                         
                         Text(episode.descriptionText ?? "description.unavailable")
+                            .padding(.top, 4)
                     }
                     .multilineTextAlignment(.leading)
                 }
