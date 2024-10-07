@@ -200,7 +200,7 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld集"
                 }
               }
@@ -269,7 +269,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "自定义选项"
           }
         }
@@ -287,6 +287,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Here you can define custom values that will show up next to their pre-defined options in the relevant pickers."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您可以在这里设置自定义值，这些值将显示在预定义选项旁边。"
           }
         }
       }
@@ -307,7 +313,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "默认播放速度"
           }
         }
@@ -326,6 +332,12 @@
             "state" : "translated",
             "value" : "Default values"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认值"
+          }
         }
       }
     },
@@ -341,6 +353,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "These values will be used when starting a new item"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在播放新项目时将使用这个值"
           }
         }
       }
@@ -361,7 +379,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "删除缓存"
           }
         }
@@ -383,7 +401,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "删除所有下载"
           }
         }
@@ -405,7 +423,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "删除缓存将清除所有本地收听进度并清空图片缓存"
           }
         }
@@ -423,6 +441,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete Spotlight Index"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除 spotlight 索引"
           }
         }
       }
@@ -575,7 +599,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "申请通知权限"
           }
         }
@@ -593,6 +617,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If you grant ShelfPlayer permission to send notifications and enable the option to receive them in the podcast settings sheet, you will be informed when new episodes are downloaded in the background."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果您授予 ShelfPlayer 发送通知的权限，并在对应播客的设置中启用接收通知的选项，当新单集在后台下载时，您将收到通知。"
           }
         }
       }
@@ -613,7 +643,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "通知授权未知"
           }
         }
@@ -635,7 +665,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "播放速度: %@"
           }
         }
@@ -675,6 +705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ (%2$@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@(%2$@)"
           }
         }
       }
@@ -978,6 +1014,12 @@
             "state" : "translated",
             "value" : "Account"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账扣"
+          }
         }
       }
     },
@@ -990,6 +1032,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer %1$@ (%2$@)"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer %1$@ (%2$@)"
@@ -1010,6 +1058,12 @@
             "state" : "translated",
             "value" : "Datenbank: %1$@ (%2$@)"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据版本: %1$@ (%2$@)"
+          }
         }
       }
     },
@@ -1025,6 +1079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Added: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加: %@"
           }
         }
       }
@@ -1089,8 +1149,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "第二作者: %@"
+            "state" : "translated",
+            "value" : "作者: %@"
           }
         }
       }
@@ -1107,6 +1167,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrated by %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朗读者: %@"
           }
         }
       }
@@ -1127,7 +1193,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "也在系列中"
           }
         }
@@ -1412,6 +1478,18 @@
               }
             }
           }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 本有声书"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1614,7 +1692,14 @@
       }
     },
     "ccc" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ccc"
+          }
+        }
+      }
     },
     "chapters" : {
       "localizations" : {
@@ -1672,6 +1757,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Decrease"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "减小"
           }
         }
       }
@@ -1733,6 +1824,12 @@
             "state" : "translated",
             "value" : "Dismiss"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
         }
       }
     },
@@ -1748,6 +1845,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grid"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网格视图"
           }
         }
       }
@@ -1765,6 +1868,12 @@
             "state" : "translated",
             "value" : "List"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "列表视图"
+          }
         }
       }
     },
@@ -1780,6 +1889,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Done"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
           }
         }
       }
@@ -1841,6 +1956,12 @@
             "state" : "translated",
             "value" : "Force remove download"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除下载"
+          }
         }
       }
     },
@@ -1867,10 +1988,24 @@
       }
     },
     "downloadQueue" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载队列"
+          }
+        }
+      }
     },
     "downloadQueue.empty" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载队列为空"
+          }
+        }
+      }
     },
     "downloads" : {
       "localizations" : {
@@ -1951,6 +2086,12 @@
             "state" : "translated",
             "value" : "Drag"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖动"
+          }
         }
       }
     },
@@ -1966,6 +2107,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld items in queue"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "队列中有%lld个项目"
           }
         }
       }
@@ -2250,8 +2397,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "请确认您已连接互联网"
+            "state" : "translated",
+            "value" : "请确认您已连接互联网，并且可以访问你的 AudiobookShelf服务器"
           }
         }
       }
@@ -2357,6 +2504,12 @@
             "state" : "translated",
             "value" : "Started"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已开始"
+          }
         }
       }
     },
@@ -2461,6 +2614,12 @@
             "state" : "translated",
             "value" : "Genres"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "风格"
+          }
         }
       }
     },
@@ -2476,6 +2635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No genres"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "风格为空"
           }
         }
       }
@@ -2493,6 +2658,12 @@
             "state" : "translated",
             "value" : "Increase"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增加"
+          }
         }
       }
     },
@@ -2508,6 +2679,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Change library"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换媒体库"
           }
         }
       }
@@ -2546,6 +2723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listen again"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再次收听"
           }
         }
       }
@@ -2852,7 +3035,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "使用 OpenID 登录"
           }
         }
@@ -2874,7 +3057,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "请确认 ShelfPlayer的url scheme (shelfplayer://callback) 在Audiobookshelf 服务器中已配置"
           }
         }
@@ -2918,7 +3101,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "登录 ABS"
           }
         }
@@ -2962,7 +3145,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "请先架设好您的Audiobooshelf 服务"
           }
         }
@@ -3113,6 +3296,12 @@
             "state" : "translated",
             "value" : "More"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多"
+          }
         }
       }
     },
@@ -3128,6 +3317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bookmarks"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书签"
           }
         }
       }
@@ -3145,6 +3340,12 @@
             "state" : "translated",
             "value" : "Chapters"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "章节"
+          }
         }
       }
     },
@@ -3160,6 +3361,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Queue"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "队列"
           }
         }
       }
@@ -3221,6 +3428,12 @@
             "state" : "translated",
             "value" : "Downloads"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已下载"
+          }
         }
       }
     },
@@ -3236,6 +3449,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Authors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作者"
           }
         }
       }
@@ -3253,6 +3472,12 @@
             "state" : "translated",
             "value" : "Home"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首页"
+          }
         }
       }
     },
@@ -3268,6 +3493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Latest"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新"
           }
         }
       }
@@ -3285,6 +3516,12 @@
             "state" : "translated",
             "value" : "Library"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒体库"
+          }
         }
       }
     },
@@ -3300,6 +3537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索"
           }
         }
       }
@@ -3317,11 +3560,24 @@
             "state" : "translated",
             "value" : "Series"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系列"
+          }
         }
       }
     },
     "pause" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停"
+          }
+        }
+      }
     },
     "play" : {
       "localizations" : {
@@ -3520,7 +3776,7 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "ShelfPlayer 将会下载该播客中 %lld 集内容，请注意不是最新的几集，而是该播客的排序设置的前几集"
                 }
               }
@@ -3542,6 +3798,12 @@
             "state" : "translated",
             "value" : "Amount: %lld"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数量: %lld"
+          }
         }
       }
     },
@@ -3561,7 +3823,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "在新节目可用时，ShelfPlayer 将会推送通知提醒您"
           }
         }
@@ -3602,6 +3864,12 @@
             "state" : "translated",
             "value" : "Automatic downloads"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动下载"
+          }
         }
       }
     },
@@ -3639,6 +3907,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Load more"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "载入更多"
           }
         }
       }
@@ -3678,6 +3952,12 @@
             "state" : "translated",
             "value" : "Mark as \"finished\""
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标记已听完"
+          }
         }
       }
     },
@@ -3693,6 +3973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mark as \"unfinished\""
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标记为未听完"
           }
         }
       }
@@ -3713,7 +3999,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "重置进度"
           }
         }
@@ -3732,6 +4018,12 @@
             "state" : "translated",
             "value" : "Clear"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
         }
       }
     },
@@ -3747,6 +4039,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Queue is empty"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放队列为空"
           }
         }
       }
@@ -3764,6 +4062,12 @@
             "state" : "translated",
             "value" : "Queue"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "队列"
+          }
         }
       }
     },
@@ -3779,6 +4083,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Play"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放"
           }
         }
       }
@@ -3796,6 +4106,12 @@
             "state" : "translated",
             "value" : "Press and hold this button to add items to the queue"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "长按以添加到播放队列"
+          }
         }
       }
     },
@@ -3811,6 +4127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Queue"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "队列"
           }
         }
       }
@@ -3828,6 +4150,12 @@
             "state" : "translated",
             "value" : "Read by: %@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朗读者: %@"
+          }
         }
       }
     },
@@ -3843,6 +4171,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Released: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发布日期: %@"
           }
         }
       }
@@ -3860,6 +4194,12 @@
             "state" : "translated",
             "value" : "Resume"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复播放"
+          }
         }
       }
     },
@@ -3872,6 +4212,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio-route"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Audio-route"
@@ -3936,6 +4282,12 @@
             "state" : "translated",
             "value" : "Search for audiobooks, series & authors"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索有声书，系列和作者"
+          }
         }
       }
     },
@@ -3951,6 +4303,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search for podcasts"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索播客"
           }
         }
       }
@@ -4012,6 +4370,12 @@
             "state" : "translated",
             "value" : "Display"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示"
+          }
         }
       }
     },
@@ -4072,6 +4436,12 @@
             "state" : "translated",
             "value" : "Sort-Order"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排序方式"
+          }
         }
       }
     },
@@ -4087,6 +4457,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Series"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系列"
           }
         }
       }
@@ -4177,6 +4553,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Syncing progress"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同步进度"
           }
         }
       }
@@ -4392,6 +4774,12 @@
             "state" : "translated",
             "value" : "Series"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系列"
+          }
         }
       }
     },
@@ -4433,7 +4821,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "请从侧边栏中选择一项"
           }
         }
@@ -4452,6 +4840,12 @@
             "state" : "translated",
             "value" : "Timeline"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史"
+          }
         }
       }
     },
@@ -4467,6 +4861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If you want to continue using Siri but cannot connect to your Audiobookshelf-Instance append \"from my library\" to your prompt."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当你无法连接到你的 AudiobookShelf 服务时，继续使用 Siri的话请在语音指令中添加\"from my library\" "
           }
         }
       }
@@ -4484,6 +4884,12 @@
             "state" : "translated",
             "value" : "Use Siri offline"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "离线时使用 Siri"
+          }
         }
       }
     },
@@ -4499,6 +4905,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
           }
         }
       }
@@ -4519,7 +4931,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "最大音量"
           }
         }
