@@ -10,6 +10,12 @@
             "state" : "new",
             "value" : "ShelfPlayer"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
         }
       },
       "shouldTranslate" : false
@@ -23,6 +29,12 @@
             "state" : "new",
             "value" : "ShelfPlayer"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
         }
       },
       "shouldTranslate" : false
@@ -34,6 +46,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "2024 Rasmus Krämer & ShelfPlayer contributors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "2024 Rasmus Krämer & ShelfPlayer contributors"
           }
         }
@@ -55,13 +73,35 @@
             "state" : "new",
             "value" : "Play items from your library using Siri"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 Siri 播放您的资料库中的项目"
+          }
         }
       }
     },
     "Shelf Player" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shelf Player"
+          }
+        }
+      },
       "shouldTranslate" : false
     },
     "shelfplayer" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "shelfplayer"
+          }
+        }
+      },
       "shouldTranslate" : false
     }
   },
