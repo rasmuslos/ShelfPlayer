@@ -10,6 +10,8 @@ import ShelfPlayerKit
 
 internal extension NowPlaying {
     struct Slider: View {
+        @Environment(\.colorScheme) private var colorScheme
+        
         @Binding var percentage: Percentage
         @Binding var dragging: Bool
         
@@ -23,9 +25,15 @@ internal extension NowPlaying {
                 let width = geometry.size.width * min(1, max(0, CGFloat(self.percentage)))
                 
                 ZStack(alignment: .leading) {
-                    Rectangle()
-                        .fill(.background.secondary)
-                        .saturation(1.6)
+                    if colorScheme == .dark {
+                        Rectangle()
+                            .fill(.background)
+                            .saturation(1.6)
+                    } else {
+                        Rectangle()
+                            .fill(.background.secondary)
+                            .saturation(1.6)
+                    }
                     
                     Rectangle()
                         .frame(width: width)
