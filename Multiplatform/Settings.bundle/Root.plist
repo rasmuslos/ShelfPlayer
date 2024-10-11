@@ -8,38 +8,6 @@
 	<array>
 		<dict>
 			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Home</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Show &quot;authors&quot;</string>
-			<key>Key</key>
-			<string>showAuthorsRow</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Hide &quot;discover&quot;</string>
-			<key>Key</key>
-			<string>disableDiscoverRow</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Miscellaneous</string>
-		</dict>
-		<dict>
-			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
 			<string>Delete finished downloads</string>
@@ -75,6 +43,32 @@
 			<string>Force 1:1 aspect ratio</string>
 			<key>Key</key>
 			<string>forceAspectRatio</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Home</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Show &quot;authors&quot;</string>
+			<key>Key</key>
+			<string>showAuthorsRow</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Hide &quot;discover&quot;</string>
+			<key>Key</key>
+			<string>disableDiscoverRow</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
