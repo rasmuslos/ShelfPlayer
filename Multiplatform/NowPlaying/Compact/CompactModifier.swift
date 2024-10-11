@@ -12,6 +12,8 @@ import SPPlayback
 internal extension NowPlaying {
     struct CompactModifier: ViewModifier {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        @Environment(\.colorScheme) private var colorScheme
+        
         @Environment(NowPlaying.ViewModel.self) private var viewModel
         
         var bottomOffset: CGFloat = 88
@@ -44,8 +46,15 @@ internal extension NowPlaying {
                                     .opacity(viewModel.expanded ? 0 : 1)
                                 
                                 // Now playing view background
-                                Rectangle()
-                                    .foregroundStyle(.background)
+                                Group {
+                                    if colorScheme == .dark {
+                                            Rectangle()
+                                            .foregroundStyle(.background.secondary)
+                                    } else {
+                                        Rectangle()
+                                            .foregroundStyle(.background)
+                                    }
+                                }
                                     .opacity(viewModel.expanded ? 1 : 0)
                             }
                             .allowsHitTesting(false)
