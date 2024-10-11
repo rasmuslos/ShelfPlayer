@@ -63,7 +63,7 @@ struct PodcastView: View {
                 ScrollView {
                     HStack(spacing: 0) {
                         if let description = viewModel.podcast.description {
-                            Text("ccc")
+                            Text(description)
                         } else {
                             Text("description.unavailable")
                         }
