@@ -51,7 +51,7 @@ struct EpisodeFeaturedGrid: View {
                             EpisodeGridItem(episode: episode)
                                 .frame(width: size)
                                 .padding(.leading, gap)
-                                .shadow(radius: 4)
+                                .secondaryShadow(radius: 4)
                         }
                         .buttonStyle(.plain)
                     }
