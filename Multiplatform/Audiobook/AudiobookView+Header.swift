@@ -134,7 +134,7 @@ private struct CompactPresentation: View {
         VStack(spacing: 0) {
             ItemImage(cover: viewModel.audiobook.cover, aspectRatio: .none)
                 .padding(.horizontal, 40)
-                .shadow(radius: 40)
+                .secondaryShadow(radius: 40)
             
             SeriesName()
             
@@ -165,7 +165,7 @@ private struct RegularPresentation: View {
             
             HStack(spacing: 40) {
                 ItemImage(cover: viewModel.audiobook.cover, aspectRatio: .none)
-                    .shadow(radius: 40)
+                    .secondaryShadow(radius: 40)
                     .frame(width: max(0, min(400, (availableWidth - 40) / 2)))
                     .hoverEffect(.highlight)
                 
