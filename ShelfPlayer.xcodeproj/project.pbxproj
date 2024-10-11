@@ -49,6 +49,7 @@
 		3A36ED3D2BE8EC0E00AECE9C /* AccountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36ED3C2BE8EC0E00AECE9C /* AccountSheet.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
 		3A3A36FD2C7CAF84001A29FD /* RFKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3A36FC2C7CAF84001A29FD /* RFKit */; };
+		3A47D1872CB991BC0045C2BB /* SecondaryShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */; };
 		3A48D2512AD0661500991139 /* SelectLibraryModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A48D2502AD0661500991139 /* SelectLibraryModifier.swift */; };
 		3A4E8A192B8E52A700A2586C /* CarPlay+Offline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4E8A182B8E52A700A2586C /* CarPlay+Offline.swift */; };
 		3A4F6E012C8240D7004BADBD /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4F6E002C8240D7004BADBD /* Timeline.swift */; };
@@ -236,6 +237,7 @@
 		3A36D78A2ACF2C1D002EEC54 /* AudiobookGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookGrid.swift; sourceTree = "<group>"; };
 		3A36ED3C2BE8EC0E00AECE9C /* AccountSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSheet.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
+		3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryShadow.swift; sourceTree = "<group>"; };
 		3A48D2502AD0661500991139 /* SelectLibraryModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLibraryModifier.swift; sourceTree = "<group>"; };
 		3A4E8A182B8E52A700A2586C /* CarPlay+Offline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlay+Offline.swift"; sourceTree = "<group>"; };
 		3A4F6E002C8240D7004BADBD /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
@@ -491,20 +493,12 @@
 		3A1EAB972ACC822F0064C80C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				3A0E42EB2C8195810034873F /* Alignment+Text.swift */,
-				3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */,
 				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
 				3AA089362B6E43FA00773414 /* Defaults+Keys.swift */,
-				3A012E262C806B5D0073A619 /* Double+Format.swift */,
 				3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */,
-				3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */,
-				3A7F84A42CAD1F4600A51EEE /* UIWindow+Shake.swift */,
-				3AA097862C7C5E0600EA32D7 /* Environment+Keys.swift */,
-				3A012E282C806D970073A619 /* View+ReverseMask.swift */,
-				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
-				3AE7005E2C7B1ED500D93BA8 /* MainActor+withAnimation.swift */,
-				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
-				3A0D2D0C2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift */,
+				3A012E262C806B5D0073A619 /* Double+Format.swift */,
+				3A47D1852CB991860045C2BB /* UIKit */,
+				3A47D1842CB991720045C2BB /* SwiftUI */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -539,6 +533,31 @@
 				3AB8BBC02BD7B7B30012023A /* PodcastLibraryPanel.swift */,
 			);
 			path = Panels;
+			sourceTree = "<group>";
+		};
+		3A47D1842CB991720045C2BB /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */,
+				3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */,
+				3A0E42EB2C8195810034873F /* Alignment+Text.swift */,
+				3AA097862C7C5E0600EA32D7 /* Environment+Keys.swift */,
+				3A012E282C806D970073A619 /* View+ReverseMask.swift */,
+				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
+				3AE7005E2C7B1ED500D93BA8 /* MainActor+withAnimation.swift */,
+				3A0D2D0C2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		3A47D1852CB991860045C2BB /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */,
+				3A7F84A42CAD1F4600A51EEE /* UIWindow+Shake.swift */,
+				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
+			);
+			path = UIKit;
 			sourceTree = "<group>";
 		};
 		3A5210042B6D2A9F00F59101 /* Common */ = {
@@ -954,6 +973,7 @@
 				3A9824722B6EB0DE0098C06A /* OfflinePodcastView.swift in Sources */,
 				3A48D2512AD0661500991139 /* SelectLibraryModifier.swift in Sources */,
 				3A7F84A52CAD1F4A00A51EEE /* UIWindow+Shake.swift in Sources */,
+				3A47D1872CB991BC0045C2BB /* SecondaryShadow.swift in Sources */,
 				3A98246E2B6EAC7F0098C06A /* ProgressIndicator.swift in Sources */,
 				3A9BC7252CA44CEE00D085C4 /* RegularModifier.swift in Sources */,
 				3AB8BBBD2BD7B7290012023A /* PodcastHomePanel.swift in Sources */,

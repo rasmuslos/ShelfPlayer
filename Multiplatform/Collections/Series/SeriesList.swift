@@ -57,7 +57,7 @@ private struct GridItem: View {
                         .frame(height: 60)
                         .scaleEffect(factor)
                         .offset(x: offset)
-                        .shadow(radius: 2)
+                        .secondaryShadow(radius: 2)
                 }
             }
             .frame(height: 60)

@@ -138,7 +138,13 @@ private extension PodcastViewModel {
             return
         }
         
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image), let result = RFKVisuals.determineMostSaturated(colors.map { $0.color }) else {
+        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
+            return
+        }
+        
+        let filtered = RFKVisuals.brightnessExtremeFilter(colors.map { $0.color }, threshold: 0.1)
+        
+        guard let result = RFKVisuals.determineMostSaturated(filtered) else {
             return
         }
         

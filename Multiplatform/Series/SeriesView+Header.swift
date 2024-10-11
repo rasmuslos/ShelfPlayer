@@ -22,7 +22,7 @@ internal extension SeriesView {
                             ItemImage(cover: viewModel.images[index])
                                 .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 180 : 160)
                                 .offset(x: index == 0 ? 0 : index == 1 ? -40 : index == 2 ? 40 : index == 3 ? -75 : 75)
-                                .shadow(radius: 4)
+                                .secondaryShadow(radius: 4)
                         }
                     }
                     

@@ -94,7 +94,7 @@ private struct Row: View {
                 } label: {
                     ItemStatusImage(item: audiobook, aspectRatio: .none)
                         .frame(width: 88)
-                        .shadow(radius: 4)
+                        .secondaryShadow(radius: 4)
                         .overlay {
                             if loading {
                                 ZStack {
