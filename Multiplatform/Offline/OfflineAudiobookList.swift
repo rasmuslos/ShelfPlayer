@@ -56,7 +56,7 @@ internal extension OfflineAudiobookList {
         var body: some View {
             Button {
                 Task {
-                    try await AudioPlayer.shared.play(audiobook)
+                    try await AudioPlayer.shared.play(audiobook, withoutPlaybackSession: true)
                 }
             } label: {
                 HStack(spacing: 0) {

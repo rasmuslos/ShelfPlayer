@@ -38,8 +38,6 @@ internal struct SleepTimerButton: View {
                     .fixedSize()
                     .fontDesign(.rounded)
                     .contentTransition(.numericText(countsDown: true))
-            } primaryAction: {
-                SleepTimer.shared.expiresAt = nil
             }
             .menuActionDismissBehavior(.disabled)
         } else if viewModel.sleepTimerExpiresAtChapterEnd {

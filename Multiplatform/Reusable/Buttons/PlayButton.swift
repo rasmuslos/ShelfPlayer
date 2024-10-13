@@ -16,6 +16,7 @@ internal struct PlayButton: View {
     @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
     @Environment(\.playButtonStyle) private var playButtonStyle
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.library) private var library
     
     let item: PlayableItem
     
@@ -187,10 +188,11 @@ internal struct PlayButton: View {
         }
         
         Task {
+            let withoutPlaybackSession = library.type == .offline
             loading = true
             
             do {
-                try await AudioPlayer.shared.play(item)
+                try await AudioPlayer.shared.play(item, withoutPlaybackSession: withoutPlaybackSession)
             } catch {
                 self.error.toggle()
                 loading = false

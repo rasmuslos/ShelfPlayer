@@ -53,7 +53,7 @@ internal struct DownloadQueue: View {
                     
                     ForEach(episodes) { episode in
                         DownloadEpisodeRow(episode: episode)
-                            .listRowInsets(.init(top: episode == episodes.first ? 12 : 6, leading: 12, bottom: podcast == podcastsKeys.last && episode == episodes.last ? 12 : 6, trailing: 20))
+                            .listRowInsets(.init(top: 6, leading: 12, bottom: 6, trailing: 20))
                     }
                 }
             }
@@ -76,6 +76,8 @@ internal struct DownloadQueue: View {
         } catch {
             errorNotify.toggle()
         }
+        
+        podcasts = [.fixture: .init(repeating: .fixture, count: 7)]
     }
 }
 

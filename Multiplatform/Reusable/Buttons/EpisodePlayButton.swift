@@ -11,6 +11,8 @@ import SPOffline
 import SPPlayback
 
 internal struct EpisodePlayButton: View {
+    @Environment(\.library) private var library
+    
     private let viewModel: EpisodePlayButtonViewModel
     
     @MainActor
@@ -39,6 +41,9 @@ internal struct EpisodePlayButton: View {
         .modifier(ButtonHoverEffectModifier(cornerRadius: .infinity, hoverEffect: .lift))
         .id(viewModel.episode.id)
         .environment(viewModel)
+        .onAppear {
+            viewModel.library = library
+        }
     }
 }
 
@@ -114,6 +119,7 @@ private struct ButtonText: View {
 @Observable
 private final class EpisodePlayButtonViewModel {
     let episode: Episode
+    var library: Library!
     
     let highlighted: Bool
     
@@ -132,8 +138,10 @@ private final class EpisodePlayButtonViewModel {
     
     func play() {
         Task {
+            let withoutPlaybackSession = library.type == .offline
+            
             loading.wrappedValue = true
-            try? await AudioPlayer.shared.play(episode)
+            try? await AudioPlayer.shared.play(episode, withoutPlaybackSession: withoutPlaybackSession)
             loading.wrappedValue = false
         }
     }
