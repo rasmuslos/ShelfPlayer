@@ -47,7 +47,7 @@ internal extension OfflineManager {
 // MARK: Public (Higher order)
 
 public extension OfflineManager {
-    func createBookmark(itemId: String, position: TimeInterval, note: String) async {
+    func createBookmark(itemId: String, position: TimeInterval, note: String) async throws {
         let bookmark = try? await AudiobookshelfClient.shared.createBookmark(itemId: itemId, position: position, note: note)
         
         let context = ModelContext(PersistenceManager.shared.modelContainer)
@@ -60,19 +60,19 @@ public extension OfflineManager {
         }
         
         context.insert(entity)
-        try? context.save()
+        try context.save()
         
         NotificationCenter.default.post(name: Self.bookmarksUpdatedNotification, object: itemId)
     }
     
-    func deleteBookmark(_ bookmark: Bookmark) async {
+    func deleteBookmark(_ bookmark: Bookmark) async throws {
         do {
             try await AudiobookshelfClient.shared.deleteBookmark(itemId: bookmark.itemId, position: bookmark.position)
             
             let context = ModelContext(PersistenceManager.shared.modelContainer)
             
             context.delete(bookmark)
-            try? context.save()
+            try context.save()
         } catch {
             bookmark.status = Bookmark.SyncStatus.deleted
         }
