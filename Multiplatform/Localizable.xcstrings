@@ -1056,12 +1056,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Datenbank: %1$@ (%2$@)"
+            "value" : "Database: %1$@ (%2$@)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "数据版本: %1$@ (%2$@)"
           }
         }
