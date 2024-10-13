@@ -43,7 +43,7 @@ private extension SleepTimer {
             return nil
         }
         
-        if timeInterval <= 0 {
+        if timeInterval <= 0.5 {
             didExpire()
             return nil
         }
