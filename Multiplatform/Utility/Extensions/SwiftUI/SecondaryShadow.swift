@@ -22,7 +22,7 @@ internal struct SecondaryShadow: ViewModifier {
 
 internal extension View {
     @ViewBuilder
-    func secondaryShadow(radius: CGFloat = 12, opacity: Double = 1) -> some View {
+    func secondaryShadow(radius: CGFloat = 12, opacity: Double = 0.4) -> some View {
         modifier(SecondaryShadow(radius: radius, opacity: opacity))
     }
 }
