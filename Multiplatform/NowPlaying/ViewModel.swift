@@ -79,6 +79,8 @@ internal extension NowPlaying {
         @MainActor private(set) var notifyForwards: Int
         @MainActor private(set) var notifyBackwards: Int
         
+        @MainActor private(set) var notifyError: Int
+        
         @ObservationIgnored private var tokens = [Any]()
         
         @MainActor
@@ -132,6 +134,8 @@ internal extension NowPlaying {
             
             notifyForwards = 0
             notifyBackwards = 0
+            
+            notifyError = 0
             
             setupObservers()
         }
@@ -219,14 +223,14 @@ internal extension NowPlaying.ViewModel {
     @MainActor
     var sheetLabelIcon: String {
         switch sheetTab {
-            case .queue:
-                "list.triangle"
-            case .chapters:
-                "list.number"
-            case .bookmarks:
-                "list.star"
-            case .none:
-                "loading"
+        case .queue:
+            "list.triangle"
+        case .chapters:
+            "list.number"
+        case .bookmarks:
+            "list.star"
+        case .none:
+            "loading"
         }
     }
 }
@@ -248,11 +252,9 @@ private extension NowPlaying.ViewModel {
                     let item = self?.item
                     
                     self?.item = AudioPlayer.shared.item
+                    self?.chapters = AudioPlayer.shared.chapters
                     
                     self?.isUsingExternalRoute = AudioPlayer.shared.isUsingExternalRoute
-                    
-                    self?.chapters = AudioPlayer.shared.chapters
-                    self?.updateBookmarks()
                     
                     if item == nil && self?.item?.type == .audiobook {
                         self?.expanded = true
@@ -260,6 +262,8 @@ private extension NowPlaying.ViewModel {
                         self?.expanded = false
                     }
                 }
+                
+                await self?.updateBookmarks()
             }
         })
         tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.playingDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
@@ -335,8 +339,8 @@ private extension NowPlaying.ViewModel {
         })
         
         tokens.append(NotificationCenter.default.addObserver(forName: OfflineManager.bookmarksUpdatedNotification, object: nil, queue: nil) { [weak self] _ in
-            Task { @MainActor in
-                self?.updateBookmarks()
+            Task {
+                await self?.updateBookmarks()
             }
         })
         
@@ -362,12 +366,15 @@ private extension NowPlaying.ViewModel {
         }
     }
     
-    @MainActor
-    func updateBookmarks() {
-        if let item, item.type == .audiobook, let bookmark = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
-            self.bookmarks = bookmark
+    func updateBookmarks() async {
+        if let item = await item, item.type == .audiobook, let bookmark = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
+            await MainActor.withAnimation {
+                self.bookmarks = bookmark
+            }
         } else {
-            bookmarks = []
+            await MainActor.withAnimation {
+                self.bookmarks = []
+            }
         }
     }
 }
@@ -402,9 +409,16 @@ internal extension NowPlaying.ViewModel {
                 return
             }
             
-            await OfflineManager.shared.createBookmark(itemId: item.id, position: AudioPlayer.shared.itemCurrentTime, note: Date.now.formatted(date: .complete, time: .shortened))
-            await MainActor.run {
-                notifyBookmark += 1
+            do {
+                try await OfflineManager.shared.createBookmark(itemId: item.id, position: AudioPlayer.shared.itemCurrentTime, note: Date.now.formatted(date: .complete, time: .shortened))
+                
+                await MainActor.run {
+                    notifyBookmark += 1
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError += 1
+                }
             }
             
             await updateBookmarks()
@@ -416,11 +430,20 @@ internal extension NowPlaying.ViewModel {
                 return
             }
             
-            await OfflineManager.shared.createBookmark(itemId: item.identifiers.itemID, position: bookmarkCapturedTime, note: bookmarkNote)
+            do {
+                try await OfflineManager.shared.createBookmark(itemId: item.identifiers.itemID, position: bookmarkCapturedTime, note: bookmarkNote)
+                
+                await MainActor.run {
+                    notifyBookmark += 1
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError += 1
+                }
+            }
             
             await MainActor.run {
                 self.bookmarkCapturedTime = nil
-                notifyBookmark += 1
             }
             
             await updateBookmarks()
@@ -429,7 +452,17 @@ internal extension NowPlaying.ViewModel {
     
     func deleteBookmark(index: Int) {
         Task {
-            await OfflineManager.shared.deleteBookmark(bookmarks[index])
+            do {
+                try await OfflineManager.shared.deleteBookmark(bookmarks[index])
+                
+                await MainActor.run {
+                    notifyBookmark += 1
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError += 1
+                }
+            }
         }
     }
 }
@@ -467,7 +500,7 @@ internal extension NowPlaying.ViewModel {
         
         var next: Self {
             switch self {
-                case .queue:
+            case .queue:
                     .chapters
             case .chapters:
                     .bookmarks

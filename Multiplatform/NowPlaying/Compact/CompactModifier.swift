@@ -100,6 +100,7 @@ internal extension NowPlaying {
                         .padding(.horizontal, viewModel.expanded ? 0 : 12)
                         .padding(.bottom, viewModel.expanded ? 0 : bottomOffset)
                         .animation(.snappy(duration: 0.8), value: viewModel.expanded)
+                        .modifier(FeedbackModifier())
                     }
                     
                 }
