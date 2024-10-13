@@ -54,7 +54,7 @@ internal extension AudioPlayer {
                 }
                 
                 Task {
-                    await OfflineManager.shared.deleteBookmark(bookmark)
+                    try await OfflineManager.shared.deleteBookmark(bookmark)
                 }
             } else {
                 let dateFormatter = DateFormatter()
@@ -65,7 +65,7 @@ internal extension AudioPlayer {
                 dateFormatter.timeStyle = .medium
                 
                 Task {
-                    await OfflineManager.shared.createBookmark(itemId: audiobook.id, position: itemCurrentTime, note: dateFormatter.string(from: .now))
+                    try await OfflineManager.shared.createBookmark(itemId: audiobook.id, position: itemCurrentTime, note: dateFormatter.string(from: .now))
                 }
             }
             

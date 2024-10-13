@@ -20,6 +20,7 @@ internal extension NowPlaying {
             if horizontalSizeClass != .compact {
                 content
                     .modifier(RegularBarModifier())
+                    .modifier(FeedbackModifier())
                     .sheet(isPresented: $viewModel.expanded) {
                         RegularView()
                     }

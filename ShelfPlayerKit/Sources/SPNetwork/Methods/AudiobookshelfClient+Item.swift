@@ -60,6 +60,6 @@ public extension AudiobookshelfClient {
     }
     
     func deleteBookmark(itemId: String, position: TimeInterval) async throws {
-        let _ = try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark/\(position)", method: "DELETE"))
+        let _ = try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark/\(Int(position))", method: "DELETE"))
     }
 }

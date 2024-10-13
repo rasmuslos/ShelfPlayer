@@ -141,6 +141,7 @@
 		3ABCC7E42AD46655004AEADF /* FullscreenBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABCC7E32AD46655004AEADF /* FullscreenBackground.swift */; };
 		3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABD77C12AD1459100636513 /* SeriesView+Header.swift */; };
 		3AC108C92CAE8E4E006B912F /* DownloadQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC108C82CAE8E4B006B912F /* DownloadQueue.swift */; };
+		3AC89C6A2CBBC6A200D0EA71 /* FeedbackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC89C692CBBC69E00D0EA71 /* FeedbackModifier.swift */; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
 		3ACD19B52ACB58EB007D01FE /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B42ACB58EB007D01FE /* LoadingView.swift */; };
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
@@ -331,6 +332,7 @@
 		3ABCC7E32AD46655004AEADF /* FullscreenBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenBackground.swift; sourceTree = "<group>"; };
 		3ABD77C12AD1459100636513 /* SeriesView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SeriesView+Header.swift"; sourceTree = "<group>"; };
 		3AC108C82CAE8E4B006B912F /* DownloadQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadQueue.swift; sourceTree = "<group>"; };
+		3AC89C692CBBC69E00D0EA71 /* FeedbackModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackModifier.swift; sourceTree = "<group>"; };
 		3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGrid.swift; sourceTree = "<group>"; };
 		3ACD19B42ACB58EB007D01FE /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
@@ -484,6 +486,7 @@
 			children = (
 				3A9BC7242CA44CEC00D085C4 /* RegularModifier.swift */,
 				3A1A670C2BD81C0200528DA6 /* SafeAreaModifier.swift */,
+				3AC89C692CBBC69E00D0EA71 /* FeedbackModifier.swift */,
 				3A17E6872AD5EC3000E59464 /* BackgroundModifier.swift */,
 				3A9E5DFE2BC6C7D400FF6F7A /* ContextMenuModifier.swift */,
 			);
@@ -1075,6 +1078,7 @@
 				3A0F99F22BE8C08700F6B7B4 /* UIScreen+Radius.swift in Sources */,
 				3AA089352B6E413800773414 /* AudiobookList.swift in Sources */,
 				3A1507952AD348E700D7D6CF /* PodcastView+EpisodeList.swift in Sources */,
+				3AC89C6A2CBBC6A200D0EA71 /* FeedbackModifier.swift in Sources */,
 				3AA19BA62AD6E94B00C468EA /* PodcastGrid.swift in Sources */,
 				3AA0B0852AD316E50009FBB4 /* EpisodeSortFilter.swift in Sources */,
 				3ABCC7E22AD4659F004AEADF /* Description.swift in Sources */,
