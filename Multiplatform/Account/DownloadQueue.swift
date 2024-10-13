@@ -76,8 +76,6 @@ internal struct DownloadQueue: View {
         } catch {
             errorNotify.toggle()
         }
-        
-        podcasts = [.fixture: .init(repeating: .fixture, count: 7)]
     }
 }
 

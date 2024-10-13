@@ -4611,6 +4611,9 @@
         }
       }
     },
+    "sleep.clear" : {
+
+    },
     "sleepTimer" : {
       "localizations" : {
         "de" : {
