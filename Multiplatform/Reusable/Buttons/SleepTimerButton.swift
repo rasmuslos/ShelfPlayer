@@ -33,6 +33,12 @@ internal struct SleepTimerButton: View {
                             .labelStyle(.iconOnly)
                     }
                 }
+                
+                Button {
+                    SleepTimer.shared.expiresAt = nil
+                } label: {
+                    Label("sleep.clear", systemImage: "moon.stars")
+                }
             } label: {
                 Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
                     .fixedSize()

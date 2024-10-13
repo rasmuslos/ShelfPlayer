@@ -17,7 +17,7 @@ internal extension AuthorView {
                 ItemImage(cover: viewModel.author.cover)
                     .frame(width: 100, height: 100)
                     .clipShape(.rect(cornerRadius: .infinity))
-                    .secondaryShadow(radius: 20, opacity: 0.4)
+                    .secondaryShadow(radius: 20)
                 
                 Text(viewModel.author.name)
                     .modifier(SerifModifier())

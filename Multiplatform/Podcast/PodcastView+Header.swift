@@ -134,7 +134,7 @@ private struct CompactPresentation: View {
         VStack(spacing: 0) {
             ItemImage(cover: viewModel.podcast.cover)
                 .frame(width: 240)
-                .secondaryShadow(radius: 12, opacity: 0.4)
+                .secondaryShadow(radius: 12)
             
             VStack(spacing: 4) {
                 Title(largeFont: false, alignment: .center)
