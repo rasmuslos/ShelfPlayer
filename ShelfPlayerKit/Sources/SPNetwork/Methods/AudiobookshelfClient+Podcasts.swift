@@ -52,6 +52,8 @@ public extension AudiobookshelfClient {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
+        query.append(.init(name: "include", value: "numEpisodesIncomplete"))
+        
         let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: "GET", query: query))
         return (response.results.map(Podcast.init), response.total)
     }

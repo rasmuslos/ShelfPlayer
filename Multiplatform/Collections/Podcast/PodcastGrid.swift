@@ -91,16 +91,14 @@ private struct PodcastGridItem: View {
     
     var body: some View {
         NavigationLink(destination: PodcastLoadView(podcastId: podcast.id)) {
-            ZStack(alignment: .topTrailing) {
+            VStack(alignment: .leading, spacing: 4) {
                 ItemImage(cover: podcast.cover)
                     .hoverEffect(.highlight)
                 
-                if episodeCount > 0 {
-                    Text(String(episodeCount))
+                if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
+                    Text("\(incompleteEpisodeCount) episodes.unplayed")
                         .font(.caption)
-                        .padding(8)
-                        .background(Color.accentColor, in: .circle)
-                        .padding(8)
+                        .foregroundColor(.secondary)
                 }
             }
             .contentShape(.hoverMenuInteraction, Rectangle())
