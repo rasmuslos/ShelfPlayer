@@ -209,6 +209,22 @@
         }
       }
     },
+    "%lld episodes.unplayed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ungespielt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld unplayed"
+          }
+        }
+      }
+    },
     "abridged" : {
       "localizations" : {
         "de" : {
@@ -4612,7 +4628,20 @@
       }
     },
     "sleep.clear" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        }
+      }
     },
     "sleepTimer" : {
       "localizations" : {
