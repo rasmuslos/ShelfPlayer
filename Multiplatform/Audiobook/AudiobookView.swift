@@ -103,5 +103,6 @@ internal struct AudiobookView: View {
     NavigationStack {
         AudiobookView(.fixture)
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif

@@ -41,7 +41,6 @@ internal extension EpisodeView {
                     ToolbarItem(placement: .topBarTrailing) {
                         DownloadButton(item: viewModel.episode, downloadingLabel: false)
                             .labelStyle(.iconOnly)
-                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.toolbarVisible))
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
@@ -54,14 +53,11 @@ internal extension EpisodeView {
                                 Label("progress.reset", systemImage: "slash.circle")
                             }
                         } label: {
-                            Group {
                                 if viewModel.progressEntity.isFinished {
-                                    Image(systemName: "minus")
+                                    Image(systemName: "minus.circle.fill")
                                 } else {
-                                    Image(systemName: "checkmark")
+                                    Image(systemName: "checkmark.circle")
                                 }
-                            }
-                            .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.toolbarVisible))
                         } primaryAction: {
                             viewModel.toggleFinished()
                         }

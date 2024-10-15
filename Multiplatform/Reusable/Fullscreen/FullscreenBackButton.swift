@@ -20,7 +20,6 @@ internal struct FullscreenBackButton: View {
             } label: {
                 Label("back", systemImage: "chevron.left")
                     .labelStyle(.iconOnly)
-                    .modifier(FullscreenToolbarModifier(isLight: isLight, isToolbarVisible: isToolbarVisible))
             }
         }
     }

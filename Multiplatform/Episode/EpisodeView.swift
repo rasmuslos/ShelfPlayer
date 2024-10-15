@@ -64,5 +64,6 @@ struct EpisodeView: View {
     NavigationStack {
         EpisodeView(.fixture)
     }
+    .environment(NowPlaying.ViewModel())
 }
 #endif
