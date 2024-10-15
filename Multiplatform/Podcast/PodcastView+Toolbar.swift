@@ -44,8 +44,8 @@ extension PodcastView {
                         @Bindable var viewModel = viewModel
                         
                         Menu {
-                            PodcastSettingsSheet.NotificationToggle(autoDownloadEnabled: viewModel.fetchConfiguration.autoDownload, notificationsEnabled: $viewModel.fetchConfiguration.notifications)
                             PodcastSettingsSheet.DownloadSettings(maxEpisodes: $viewModel.fetchConfiguration.maxEpisodes, autoDownloadEnabled: $viewModel.fetchConfiguration.autoDownload)
+                            PodcastSettingsSheet.NotificationToggle(autoDownloadEnabled: viewModel.fetchConfiguration.autoDownload, notificationsEnabled: $viewModel.fetchConfiguration.notifications)
                             
                             Divider()
                             
@@ -53,8 +53,7 @@ extension PodcastView {
                                 Button {
                                     viewModel.fetchConfiguration.maxEpisodes -= 1
                                 } label: {
-                                    Label("decrease", systemImage: "minus")
-                                        .labelStyle(.iconOnly)
+                                    Image(systemName: "minus")
                                 }
                                 
                                 Text(String(viewModel.fetchConfiguration.maxEpisodes))
@@ -62,15 +61,12 @@ extension PodcastView {
                                 Button {
                                     viewModel.fetchConfiguration.maxEpisodes -= 1
                                 } label: {
-                                    Label("increase", systemImage: "plus")
-                                        .labelStyle(.iconOnly)
+                                    Image(systemName: "plus")
                                 }
                             }
                         } label: {
-                            Image(systemName: "antenna.radiowaves.left.and.right")
+                            Image(systemName: "arrow.down.to.line.circle")
                                 .labelStyle(.iconOnly)
-                                .symbolVariant(.circle.fill)
-                                .modifier(FullscreenToolbarModifier(isLight: viewModel.dominantColor?.isLight(), isToolbarVisible: viewModel.toolbarVisible))
                         } primaryAction: {
                             viewModel.settingsSheetPresented.toggle()
                         }

@@ -56,7 +56,6 @@ extension AudiobookView {
                     ToolbarItem(placement: .primaryAction) {
                         DownloadButton(item: viewModel.audiobook, downloadingLabel: false, progressIndicator: true)
                             .labelStyle(.iconOnly)
-                            .modifier(FullscreenToolbarModifier(isToolbarVisible: viewModel.toolbarVisible))
                     }
                     
                     ToolbarItem(placement: .primaryAction) {
@@ -117,8 +116,7 @@ extension AudiobookView {
                                 }
                             }
                         } label: {
-                            Image(systemName: "ellipsis")
-                                .modifier(FullscreenToolbarModifier(isToolbarVisible: viewModel.toolbarVisible))
+                            Image(systemName: "ellipsis.circle")
                         }
                     }
                 }
