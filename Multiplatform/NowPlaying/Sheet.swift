@@ -177,12 +177,25 @@ private extension NowPlaying.Sheet {
             if viewModel.bookmarks.isEmpty {
                 emptyText("bookmarks.empty")
             } else {
-                ForEach(viewModel.bookmarks) { bookmark in
+                ForEach(Array(viewModel.bookmarks.enumerated()), id: \.offset) { index, bookmark in
                     Chapters.Row(id: "\(bookmark.position)", title: bookmark.note, time: bookmark.position, active: false, finished: false) {
                         AudioPlayer.shared.itemCurrentTime = bookmark.position
                     }
                     .padding(.horizontal, 20)
                     .listRowBackground(Color(UIColor.secondarySystemBackground))
+                    .contextMenu {
+                        Button {
+                            viewModel.bookmarkEditingIndex = index
+                        } label: {
+                            Label("bookmark.edit", systemImage: "pencil.line")
+                        }
+                        
+                        Button(role: .destructive) {
+                            viewModel.deleteBookmark(index: index)
+                        } label: {
+                            Label("bookmark.remove", systemImage: "xmark")
+                        }
+                    }
                 }
                 .onDelete {
                     for index in $0 {

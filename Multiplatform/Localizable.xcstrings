@@ -1413,6 +1413,24 @@
         }
       }
     },
+    "bookmark.edit" : {
+
+    },
+    "bookmark.remove" : {
+
+    },
+    "bookmark.update.action" : {
+
+    },
+    "bookmark.update.alert" : {
+
+    },
+    "bookmark.update.cancel" : {
+
+    },
+    "bookmark.update.title" : {
+
+    },
     "bookmarks.empty" : {
       "localizations" : {
         "de" : {
