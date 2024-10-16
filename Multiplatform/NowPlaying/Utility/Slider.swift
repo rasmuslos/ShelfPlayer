@@ -27,7 +27,7 @@ internal extension NowPlaying {
                 ZStack(alignment: .leading) {
                     if colorScheme == .dark {
                         Rectangle()
-                            .fill(.background)
+                            .fill(.background.tertiary)
                             .saturation(1.6)
                     } else {
                         Rectangle()

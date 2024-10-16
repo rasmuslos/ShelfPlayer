@@ -172,23 +172,23 @@ private struct ExpandedForeground: View {
         .sheet(isPresented: $viewModel.sheetPresented) {
             NowPlaying.Sheet()
         }
-        .alert("bookmark.create.alert", isPresented: .init(get: { viewModel.bookmarkCapturedTime != nil }, set: {
-            if !$0 {
-                viewModel.dismissBookmarkAlert()
-            }
-        })) {
+        .alert("bookmark.create.alert", isPresented: .init(get: { viewModel.bookmarkCapturedTime != nil }, set: { _ in } )) {
             TextField("bookmark.create.title", text: $viewModel.bookmarkNote)
+            
+            Button {
+                viewModel.dismissBookmarkAlert()
+            } label: {
+                Text("bookmark.create.cancel")
+            }
+            .buttonStyle(.plain)
+            .tint(.red)
             
             Button {
                 viewModel.createBookmarkWithNote()
             } label: {
                 Text("bookmark.create.action")
             }
-            Button(role: .cancel) {
-                viewModel.dismissBookmarkAlert()
-            } label: {
-                Text("bookmark.create.cancel")
-            }
+            .buttonStyle(.plain)
         }
     }
 }

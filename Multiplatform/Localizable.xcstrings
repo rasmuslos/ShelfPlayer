@@ -4047,6 +4047,9 @@
         }
       }
     },
+    "queue.bottom" : {
+
+    },
     "queue.clear" : {
       "localizations" : {
         "de" : {
@@ -4135,6 +4138,9 @@
         }
       }
     },
+    "queue.remove" : {
+
+    },
     "queue.tip.message" : {
       "localizations" : {
         "de" : {
@@ -4178,6 +4184,9 @@
           }
         }
       }
+    },
+    "queue.top" : {
+
     },
     "readBy %@" : {
       "localizations" : {

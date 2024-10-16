@@ -233,6 +233,16 @@ internal extension NowPlaying.ViewModel {
             "loading"
         }
     }
+    
+    @MainActor
+    var bookmarkTabVisible: Bool {
+        item?.type == .audiobook
+    }
+    
+    @MainActor
+    var visibleSheetTabs: [SheetTab] {
+        bookmarkTabVisible ? [.bookmarks, .chapters, .queue] : [.chapters, .queue]
+    }
 }
 
 // MARK: Observers
