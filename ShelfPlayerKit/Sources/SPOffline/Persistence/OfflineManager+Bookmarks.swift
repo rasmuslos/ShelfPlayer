@@ -22,7 +22,11 @@ internal extension OfflineManager {
             try? await AudiobookshelfClient.shared.deleteBookmark(itemId: entity.itemId, position: entity.position)
         }
         
-        for entity in bookmarks.filter({ $0.status == .pending }) {
+        for entity in bookmarks.filter({ $0.status == .pendingUpdate }) {
+            let _ = try? await AudiobookshelfClient.shared.updateBookmark(itemId: entity.itemId, position: entity.position, note: entity.note)
+        }
+        
+        for entity in bookmarks.filter({ $0.status == .pendingCreation }) {
             let _ = try await AudiobookshelfClient.shared.createBookmark(itemId: entity.itemId, position: entity.position, note: entity.note)
         }
         
@@ -48,6 +52,10 @@ internal extension OfflineManager {
 
 public extension OfflineManager {
     func createBookmark(itemId: String, position: TimeInterval, note: String) async throws {
+        guard !note.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw OfflineError.malformed
+        }
+        
         let bookmark = try? await AudiobookshelfClient.shared.createBookmark(itemId: itemId, position: position, note: note)
         
         let context = ModelContext(PersistenceManager.shared.modelContainer)
@@ -56,7 +64,7 @@ public extension OfflineManager {
         if let bookmark {
             entity = Bookmark(itemId: bookmark.libraryItemId, episodeId: nil, note: bookmark.title, position: bookmark.time, status: .synced)
         } else {
-            entity = Bookmark(itemId: itemId, episodeId: nil, note: note, position: position, status: .pending)
+            entity = Bookmark(itemId: itemId, episodeId: nil, note: note, position: position, status: .pendingCreation)
         }
         
         context.insert(entity)
@@ -65,17 +73,59 @@ public extension OfflineManager {
         NotificationCenter.default.post(name: Self.bookmarksUpdatedNotification, object: itemId)
     }
     
+    func updateBookmark(itemId: String, position: TimeInterval, note: String) async throws {
+        guard !note.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw OfflineError.malformed
+        }
+        
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        let entity = try context.fetch(FetchDescriptor<Bookmark>(predicate: #Predicate { $0.itemId == itemId }))
+            .filter { $0.status != .deleted }
+            .first { $0.position == position }
+        
+        
+        guard let entity else {
+            throw OfflineError.missing
+        }
+        
+        let bookmark = try? await AudiobookshelfClient.shared.updateBookmark(itemId: itemId, position: position, note: note)
+        
+        if let bookmark {
+            entity.note = bookmark.title
+        } else {
+            entity.note = note
+            entity.status = .pendingUpdate
+        }
+        
+        try context.save()
+        
+        NotificationCenter.default.post(name: Self.bookmarksUpdatedNotification, object: itemId)
+    }
+    
     func deleteBookmark(_ bookmark: Bookmark) async throws {
+        let success: Bool
+        
         do {
             try await AudiobookshelfClient.shared.deleteBookmark(itemId: bookmark.itemId, position: bookmark.position)
-            
-            let context = ModelContext(PersistenceManager.shared.modelContainer)
-            
-            context.delete(bookmark)
-            try context.save()
+            success = true
         } catch {
-            bookmark.status = Bookmark.SyncStatus.deleted
+            success = false
         }
+        
+        // Thread safety
+        // Incredibly, this fixed a bug
+        guard let bookmark = try bookmarks(itemId: bookmark.itemId).first(where: { $0.position == bookmark.position }), let content = bookmark.modelContext else {
+            throw OfflineError.missing
+        }
+        
+        if success {
+            content.delete(bookmark)
+        } else {
+            bookmark.status = .deleted
+        }
+        
+        try content.save()
         
         NotificationCenter.default.post(name: Self.bookmarksUpdatedNotification, object: bookmark.itemId)
     }

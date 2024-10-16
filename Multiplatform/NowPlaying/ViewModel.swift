@@ -67,8 +67,9 @@ internal extension NowPlaying {
         // MARK: Bookmarks
         
         @MainActor var bookmarks: [Bookmark]
-        
         @MainActor var bookmarkNote: String
+        
+        @MainActor var bookmarkEditingIndex: Int?
         @MainActor var bookmarkCapturedTime: TimeInterval?
         
         // MARK: Helper
@@ -377,13 +378,15 @@ private extension NowPlaying.ViewModel {
     }
     
     func updateBookmarks() async {
-        if let item = await item, item.type == .audiobook, let bookmark = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
+        if let item = await item, item.type == .audiobook, let bookmarks = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
             await MainActor.withAnimation {
-                self.bookmarks = bookmark
+                self.bookmarks = bookmarks
+                self.bookmarkEditingIndex = nil
             }
         } else {
             await MainActor.withAnimation {
                 self.bookmarks = []
+                self.bookmarkEditingIndex = nil
             }
         }
     }
@@ -454,6 +457,33 @@ internal extension NowPlaying.ViewModel {
             
             await MainActor.run {
                 self.bookmarkCapturedTime = nil
+            }
+            
+            await updateBookmarks()
+        }
+    }
+    
+    func updateBookmark(note: String) {
+        Task {
+            guard let item = await item, let index = await bookmarkEditingIndex, item.type == .audiobook else {
+                return
+            }
+            
+            do {
+                try await OfflineManager.shared.updateBookmark(itemId: item.identifiers.itemID, position: bookmarks[index].position, note: note)
+                
+                await MainActor.run {
+                    notifyBookmark += 1
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError += 1
+                }
+            }
+            
+            await MainActor.run {
+                self.sheetPresented = true
+                self.bookmarkEditingIndex = nil
             }
             
             await updateBookmarks()

@@ -63,6 +63,7 @@ public extension OfflineManager {
     enum OfflineError: Error {
         case existing
         case missing
+        case malformed
         case fetchFailed
     }
 }
