@@ -12,12 +12,14 @@ import SPOffline
 internal struct ProgressButton: View {
     let item: PlayableItem
     let tint: Bool
+    let callback: (() -> Void)?
     
     @State private var progressEntity: ProgressEntity
     
-    init(item: PlayableItem, tint: Bool = false) {
+    init(item: PlayableItem, tint: Bool = false, callback: (() -> Void)? = nil) {
         self.item = item
         self.tint = tint
+        self.callback = callback
         
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
         progressEntity.beginReceivingUpdates()
@@ -27,6 +29,7 @@ internal struct ProgressButton: View {
         Button {
             Task {
                 try await item.finished(!progressEntity.isFinished)
+                callback?()
             }
         } label: {
             Label(progressEntity.isFinished ? "progress.finished.unset" : "progress.finished.set", systemImage: progressEntity.isFinished ? "minus" : "checkmark")

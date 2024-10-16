@@ -49,42 +49,52 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 ProgressButton(item: episode)
                 DownloadButton(item: episode)
             } preview: {
-                VStack(alignment: .leading, spacing: 4) {
-                    ItemImage(cover: episode.cover)
-                        .frame(height: 50)
-                    
-                    Group {
-                        let durationText = Text(episode.duration, format: .duration)
-                        
-                        if let releaseDate = episode.releaseDate {
-                            Text(releaseDate, style: .date)
-                            + Text(verbatim: " • ")
-                            + durationText
-                        } else {
-                            durationText
-                        }
-                    }
-                    .font(.caption.smallCaps())
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 8)
-                    
-                    Group {
-                        Text(episode.name)
-                            .font(.headline)
-                        
-                        Text(episode.podcastName)
-                            .lineLimit(1)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        
-                        Text(episode.descriptionText ?? "description.unavailable")
-                            .padding(.top, 4)
-                    }
-                    .multilineTextAlignment(.leading)
-                }
-                .frame(width: 300)
-                .padding(20)
+                Preview(episode: episode)
             }
+    }
+}
+
+internal extension EpisodeContextMenuModifier {
+    struct Preview: View {
+        let episode: Episode
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                ItemImage(cover: episode.cover)
+                    .frame(height: 50)
+                
+                Group {
+                    let durationText = Text(episode.duration, format: .duration)
+                    
+                    if let releaseDate = episode.releaseDate {
+                        Text(releaseDate, style: .date)
+                        + Text(verbatim: " • ")
+                        + durationText
+                    } else {
+                        durationText
+                    }
+                }
+                .font(.caption.smallCaps())
+                .foregroundStyle(.secondary)
+                .padding(.top, 8)
+                
+                Group {
+                    Text(episode.name)
+                        .font(.headline)
+                    
+                    Text(episode.podcastName)
+                        .lineLimit(1)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    
+                    Text(episode.descriptionText ?? "description.unavailable")
+                        .padding(.top, 4)
+                }
+                .multilineTextAlignment(.leading)
+            }
+            .frame(width: 300)
+            .padding(20)
+        }
     }
 }
 
