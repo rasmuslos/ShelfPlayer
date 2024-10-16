@@ -24,7 +24,7 @@ internal extension PodcastView {
             @Bindable var viewModel = viewModel
             
             ZStack {
-                FullscreenBackground(threshold: isRegularPresentation ? -160 : -280, backgroundColor: viewModel.dominantColor ?? Color(UIColor.secondarySystemBackground), isToolbarVisible: $viewModel.toolbarVisible)
+                FullscreenBackground(threshold: isRegularPresentation ? -160 : -335, backgroundColor: viewModel.dominantColor ?? Color(UIColor.secondarySystemBackground), isToolbarVisible: $viewModel.toolbarVisible)
                 
                 ViewThatFits {
                     RegularPresentation()
