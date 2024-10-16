@@ -119,7 +119,7 @@ private struct ButtonText: View {
 @Observable
 private final class EpisodePlayButtonViewModel {
     let episode: Episode
-    var library: Library!
+    var library: Library?
     
     let highlighted: Bool
     
@@ -137,6 +137,13 @@ private final class EpisodePlayButtonViewModel {
     }
     
     func play() {
+        guard let library else {
+            // for some inexplicable reason library is nil if highlighted it set to true
+            // i have no idea why, maybe i will use one of my code level assistance credits for this
+            // but only when you use the release configuration
+            return
+        }
+        
         Task {
             let withoutPlaybackSession = library.type == .offline
             
