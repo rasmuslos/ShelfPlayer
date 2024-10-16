@@ -14,7 +14,7 @@ public final class Bookmark {
     // episodes are not supported by ABS right now, but i will leave this here
     public let episodeId: String?
     
-    public let note: String
+    public var note: String
     public let position: TimeInterval
     
     internal var status: SyncStatus
@@ -31,7 +31,8 @@ public final class Bookmark {
 internal extension Bookmark {
     enum SyncStatus: Int, Codable {
         case synced = 0
-        case pending = 1
         case deleted = 2
+        case pendingUpdate = 3
+        case pendingCreation = 1
     }
 }

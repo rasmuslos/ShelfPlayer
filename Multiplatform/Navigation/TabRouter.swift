@@ -112,8 +112,6 @@ internal struct TabRouter: View {
                         libraryPath.append(Navigation.SeriesLoadDestination(seriesId: seriesID, seriesName: ""))
                     }
                     
-                    print(podcastID, episodeID)
-                    
                     if let podcastID {
                         if let episodeID {
                             libraryPath.append(Navigation.EpisodeLoadDestination(episodeId: episodeID, podcastId: podcastID))

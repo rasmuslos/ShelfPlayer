@@ -58,8 +58,14 @@ public extension AudiobookshelfClient {
             "time": Int(position),
         ]))
     }
+    func updateBookmark(itemId: String, position: TimeInterval, note: String) async throws -> Bookmark {
+        try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark", method: "PATCH", body: [
+            "title": note,
+            "time": Int(position),
+        ]))
+    }
     
     func deleteBookmark(itemId: String, position: TimeInterval) async throws {
-        let _ = try await request(ClientRequest<Bookmark>(path: "api/me/item/\(itemId)/bookmark/\(Int(position))", method: "DELETE"))
+        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/item/\(itemId)/bookmark/\(Int(position))", method: "DELETE"))
     }
 }
