@@ -55,31 +55,10 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 ProgressButton(item: audiobook)
                 DownloadButton(item: audiobook)
             } preview: {
-                VStack(alignment: .leading, spacing: 2) {
-                    ItemStatusImage(item: audiobook, aspectRatio: .none)
-                        .padding(.bottom, 12)
-                    
-                    Text(audiobook.name)
-                        .font(.headline)
-                        .modifier(SerifModifier())
-                    
-                    if let author = audiobook.author {
-                        Text(author)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                Preview(audiobook: audiobook)
+                    .task {
+                        await loadAuthorID()
                     }
-                    
-                    if let narrator = audiobook.narrator {
-                        Text("readBy \(narrator)")
-                            .font(.subheadline)
-                            .foregroundStyle(.tertiary)
-                    }
-                }
-                .frame(width: 240)
-                .padding(20)
-                .task {
-                    await loadAuthorID()
-                }
             }
     }
     
@@ -94,6 +73,37 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
         
         await MainActor.withAnimation {
             self.authorId = authorId
+        }
+    }
+}
+
+internal extension AudiobookContextMenuModifier {
+    struct Preview: View {
+        let audiobook: Audiobook
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 2) {
+                ItemStatusImage(item: audiobook, aspectRatio: .none)
+                    .padding(.bottom, 12)
+                
+                Text(audiobook.name)
+                    .font(.headline)
+                    .modifier(SerifModifier())
+                
+                if let author = audiobook.author {
+                    Text(author)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                
+                if let narrator = audiobook.narrator {
+                    Text("readBy \(narrator)")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .frame(width: 240)
+            .padding(20)
         }
     }
 }
