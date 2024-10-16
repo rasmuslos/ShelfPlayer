@@ -16,7 +16,7 @@ internal struct SecondaryShadow: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .shadow(color: (colorScheme == .dark ? Color.gray.opacity(0.3) : .black).opacity(opacity), radius: radius)
+            .shadow(color: (colorScheme == .dark ? Color.gray.opacity(0.4) : .black).opacity(opacity), radius: radius)
     }
 }
 
