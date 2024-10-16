@@ -65,6 +65,9 @@ internal struct PodcastLibraryPanel: View {
                     }
                     .padding(.horizontal, 20)
                 }
+                .refreshable {
+                    await lazyLoader.refresh()
+                }
             }
         }
         .navigationTitle("panel.library")
