@@ -1325,28 +1325,6 @@
         }
       }
     },
-    "bookmark.create.action" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erstellen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "创建"
-          }
-        }
-      }
-    },
     "bookmark.create.alert" : {
       "localizations" : {
         "de" : {
@@ -1391,12 +1369,28 @@
         }
       }
     },
-    "bookmark.create.title" : {
+    "bookmark.create.finalize" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bemerkung"
+            "value" : "Erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        }
+      }
+    },
+    "bookmark.create.prompt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notiz"
           }
         },
         "en" : {
@@ -1404,32 +1398,104 @@
             "state" : "translated",
             "value" : "Note"
           }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "备注"
-          }
         }
       }
     },
     "bookmark.edit" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Bookmark"
+          }
+        }
+      }
     },
     "bookmark.remove" : {
-
-    },
-    "bookmark.update.action" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Bookmark"
+          }
+        }
+      }
     },
     "bookmark.update.alert" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Bookmark"
+          }
+        }
+      }
     },
     "bookmark.update.cancel" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
     },
-    "bookmark.update.title" : {
-
+    "bookmark.update.finalize" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update"
+          }
+        }
+      }
+    },
+    "bookmark.update.prompt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notiz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
+          }
+        }
+      }
     },
     "bookmarks.empty" : {
       "localizations" : {
@@ -3309,29 +3375,6 @@
         }
       }
     },
-    "mute" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stumm"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mute"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静音"
-          }
-        }
-      }
-    },
     "nowPlaying.sheet" : {
       "localizations" : {
         "de" : {
@@ -4067,7 +4110,20 @@
       }
     },
     "queue.bottom" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach unten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move to bottom"
+          }
+        }
+      }
     },
     "queue.clear" : {
       "localizations" : {
@@ -4158,7 +4214,20 @@
       }
     },
     "queue.remove" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from queue"
+          }
+        }
+      }
     },
     "queue.tip.message" : {
       "localizations" : {
@@ -4205,7 +4274,20 @@
       }
     },
     "queue.top" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach oben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move to top"
+          }
+        }
+      }
     },
     "readBy %@" : {
       "localizations" : {
@@ -4997,29 +5079,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除"
-          }
-        }
-      }
-    },
-    "volume.max" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maximale Lautstärke"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maximum volume"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最大音量"
           }
         }
       }

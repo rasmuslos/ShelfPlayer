@@ -24,7 +24,7 @@ internal extension NowPlaying {
                 .sensoryFeedback(.error, trigger: viewModel.notifyError)
                 .sensoryFeedback(.alignment, trigger: viewModel.notifyBookmark)
                 .alert("bookmark.create.alert", isPresented: .init(get: { viewModel.bookmarkCapturedTime != nil }, set: { _ in } )) {
-                    TextField("bookmark.create.title", text: $viewModel.bookmarkNote)
+                    TextField("bookmark.create.prompt", text: $viewModel.bookmarkNote)
                     
                     Button {
                         viewModel.dismissBookmarkAlert()
@@ -37,12 +37,12 @@ internal extension NowPlaying {
                     Button {
                         viewModel.createBookmarkWithNote()
                     } label: {
-                        Text("bookmark.create.action")
+                        Text("bookmark.create.finalize")
                     }
                     .buttonStyle(.plain)
                 }
                 .alert("bookmark.update.alert", isPresented: .init(get: { viewModel.bookmarkEditingIndex != nil }, set: { _ in } )) {
-                    TextField("bookmark.update.title", text: $bookmarkEditingNote)
+                    TextField("bookmark.update.prompt", text: $bookmarkEditingNote)
                     
                     Button {
                         viewModel.bookmarkEditingIndex = nil
@@ -55,7 +55,7 @@ internal extension NowPlaying {
                     Button {
                         viewModel.updateBookmark(note: bookmarkEditingNote)
                     } label: {
-                        Text("bookmark.update.action")
+                        Text("bookmark.update.finalize")
                     }
                     .buttonStyle(.plain)
                 }
