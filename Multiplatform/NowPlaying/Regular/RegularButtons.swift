@@ -42,6 +42,7 @@ extension NowPlaying {
                 } label: {
                     Text(viewModel.sheetTab?.label ?? "loading")
                         .foregroundStyle(.secondary)
+                        .animation(.smooth, value: viewModel.sheetTab)
                 }
                 .buttonStyle(.plain)
                 .padding(.trailing, 8)
@@ -53,6 +54,8 @@ extension NowPlaying {
                     } label: {
                         Label("queue.clear", systemImage: "xmark.square.fill")
                             .labelStyle(.iconOnly)
+                            .contentTransition(.opacity)
+                            .animation(.smooth, value: viewModel.sheetTab)
                     }
                     .modifier(NowPlayingButtonModifier(fixedWidth: false))
                     .padding(.trailing, 8)
@@ -71,6 +74,8 @@ extension NowPlaying {
                 } label: {
                     Label(viewModel.sheetTab?.label ?? "loading", systemImage: viewModel.sheetTab?.icon ?? "command")
                         .labelStyle(.iconOnly)
+                        .contentTransition(.symbolEffect(.replace.upUp.wholeSymbol))
+                        .animation(.smooth, value: viewModel.sheetTab)
                 } primaryAction: {
                     withAnimation {
                         viewModel.sheetTab = viewModel.sheetTab?.next
