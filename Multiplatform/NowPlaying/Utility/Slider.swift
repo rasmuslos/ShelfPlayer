@@ -21,71 +21,74 @@ internal extension NowPlaying {
         @State private var lastLocation: CGPoint? = nil
         
         var body: some View {
-            GeometryReader { geometry in
-                let width = geometry.size.width * min(1, max(0, CGFloat(self.percentage)))
-                
-                ZStack(alignment: .leading) {
-                    if colorScheme == .dark {
-                        Rectangle()
-                            .fill(.background.tertiary)
-                            .saturation(1.6)
-                    } else {
-                        Rectangle()
-                            .fill(.background.secondary)
-                            .saturation(1.6)
-                    }
+            ZStack {
+                GeometryReader { geometry in
+                    let width = geometry.size.width * min(1, max(0, CGFloat(self.percentage)))
                     
-                    Rectangle()
-                        .frame(width: width)
-                        .foregroundStyle(.primary)
-                        .animation(.smooth, value: width)
-                }
-                .clipShape(.rect(cornerRadius: 8))
-                .gesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
-                    .onChanged { value in
-                        if blocked {
-                            return
+                    ZStack(alignment: .leading) {
+                        if colorScheme == .dark {
+                            Rectangle()
+                                .fill(.background.tertiary)
+                                .saturation(1.6)
+                        } else {
+                            Rectangle()
+                                .fill(.background.secondary)
+                                .saturation(1.6)
                         }
                         
-                        counter += 1
-                        
-                        if counter < 7 {
-                            return
-                        }
-                        counter = 0
-                        
-                        dragging = true
-                        blocked = true
-                        
-                        guard let lastLocation else {
-                            lastLocation = value.location
-                            blocked = false
+                        Rectangle()
+                            .frame(width: width)
+                            .foregroundStyle(.primary)
+                            .animation(.smooth, value: width)
+                    }
+                    .clipShape(.rect(cornerRadius: 8))
+                    .gesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
+                        .onChanged { value in
+                            if blocked {
+                                return
+                            }
                             
-                            return
+                            counter += 1
+                            
+                            if counter < 7 {
+                                return
+                            }
+                            counter = 0
+                            
+                            dragging = true
+                            blocked = true
+                            
+                            guard let lastLocation else {
+                                lastLocation = value.location
+                                blocked = false
+                                
+                                return
+                            }
+                            
+                            let velocity = value.velocity.width
+                            let acceleration = velocity > 300 ? 1.5 : 1.2
+                            
+                            let delta = value.location.x - lastLocation.x
+                            let offset = (delta / geometry.size.width) * acceleration
+                            
+                            self.lastLocation = value.location
+                            
+                            percentage = min(1, max(0, percentage + offset))
+                            blocked = false
                         }
-                        
-                        let velocity = value.velocity.width
-                        let acceleration = velocity > 300 ? 1.5 : 1.2
-                        
-                        let delta = value.location.x - lastLocation.x
-                        let offset = (delta / geometry.size.width) * acceleration
-                        
-                        self.lastLocation = value.location
-                        
-                        percentage = min(1, max(0, percentage + offset))
-                        blocked = false
-                    }
-                    .onEnded { _ in
-                        dragging = false
-                        lastLocation = nil
-                    }
-                )
+                        .onEnded { _ in
+                            dragging = false
+                            lastLocation = nil
+                        }
+                    )
+                }
+                .frame(height: dragging ? 12 : 8)
+                .padding(20)
+                .contentShape(.hoverMenuInteraction, .rect)
+                .padding(-20)
+                .animation(.spring, value: dragging)
             }
-            .frame(height: dragging ? 12 : 8)
-            .padding(20)
-            .contentShape(.hoverMenuInteraction, .rect)
-            .padding(-20)
-            .animation(.spring, value: dragging)
+            .frame(height: 12)
         }
     }
 }

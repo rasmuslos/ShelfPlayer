@@ -45,7 +45,6 @@ private struct ProgressSlider: View {
                 
                 viewModel.setPosition(percentage: $0)
             }), dragging: .init(get: { viewModel.seekDragging }, set: { viewModel.seekDragging = $0; viewModel.controlsDragging = $0 }))
-            .frame(height: 10)
             .padding(.bottom, compact ? 2 : 4)
             
             HStack(spacing: 0) {
@@ -161,7 +160,7 @@ private struct ControlButtons: View {
     
     var body: some View {
         if !compact {
-            LazyVGrid(columns: .init(repeating: .init(), count: 3)) {
+            LazyVGrid(columns: [.init(), .init(), .init()]) {
                 backwardsButton
                 playButton
                 forwardButton
@@ -169,6 +168,8 @@ private struct ControlButtons: View {
             .padding(.top, 60)
             .padding(.bottom, 80)
             .padding(.horizontal, 20)
+            .frame(maxHeight: 160)
+            .border(.green)
         } else {
             HStack(spacing: 0) {
                 backwardsButton
