@@ -18,8 +18,12 @@ internal extension SleepTimer {
     }
     
     func suspend() {
-        isSuspended = true
+        guard !isSuspended else {
+            return
+        }
+        
         timer.suspend()
+        isSuspended = true
     }
     func resume() {
         guard isSuspended else {
