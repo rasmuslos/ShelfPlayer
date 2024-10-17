@@ -66,7 +66,6 @@
 		3A64B3752CAAD26900446871 /* UserContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A64B3742CAAD26400446871 /* UserContext.swift */; };
 		3A64B3772CAAD37A00446871 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A64B3762CAAD37700446871 /* SpotlightIndexer.swift */; };
 		3A64B3A82CAADEF400446871 /* FilterSort+Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A64B3A72CAADEEE00446871 /* FilterSort+Label.swift */; };
-		3A64B3AA2CAB145B00446871 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3A64B3A92CAB145B00446871 /* Intents.intentdefinition */; };
 		3A6B93152C26BB3600400802 /* UnavailableWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6B93142C26BB2F00400802 /* UnavailableWrapper.swift */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
 		3A77B6FD2ACDE2FA00F22C7F /* AuthorUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */; };
@@ -168,6 +167,7 @@
 		3AF240F12ADA99940065C0A4 /* AuthorGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */; };
 		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
+		3AFEEA632CC14F530040336D /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3AFEEA622CC14F530040336D /* Intents.intentdefinition */; };
 		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
@@ -257,7 +257,6 @@
 		3A64B3742CAAD26400446871 /* UserContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContext.swift; sourceTree = "<group>"; };
 		3A64B3762CAAD37700446871 /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
 		3A64B3A72CAADEEE00446871 /* FilterSort+Label.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterSort+Label.swift"; sourceTree = "<group>"; };
-		3A64B3A92CAB145B00446871 /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
 		3A6B93142C26BB2F00400802 /* UnavailableWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnavailableWrapper.swift; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B6FC2ACDE2FA00F22C7F /* AuthorUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorUnavailableView.swift; sourceTree = "<group>"; };
@@ -361,6 +360,10 @@
 		3AF6A52C2B60402300770A1E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
+		3AFEEA612CC14F530040336D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
+		3AFEEA6B2CC14F720040336D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
+		3AFEEA6D2CC14F730040336D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
+		3AFEEA6F2CC14F730040336D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -605,7 +608,7 @@
 		3A64B3732CAACF4900446871 /* Intents */ = {
 			isa = PBXGroup;
 			children = (
-				3A64B3A92CAB145B00446871 /* Intents.intentdefinition */,
+				3AFEEA622CC14F530040336D /* Intents.intentdefinition */,
 				3A64B3742CAAD26400446871 /* UserContext.swift */,
 				3AD6EA712CABE7AC00B412DB /* IntentHelper.swift */,
 				3AD6EA6F2CABE64800B412DB /* IntentDonator.swift */,
@@ -1071,7 +1074,7 @@
 				3AD6EA722CABE7B100B412DB /* IntentHelper.swift in Sources */,
 				3A9874272B599BA600B2704F /* Chapters.swift in Sources */,
 				3A77B7022ACDF01C00F22C7F /* SeriesUnavailableView.swift in Sources */,
-				3A64B3AA2CAB145B00446871 /* Intents.intentdefinition in Sources */,
+				3AFEEA632CC14F530040336D /* Intents.intentdefinition in Sources */,
 				3A337E3A2B0E13CE009C932A /* EpisodeContextMenuModifier.swift in Sources */,
 				3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */,
 				3A1011842AD697B600AAE220 /* CompactButtons.swift in Sources */,
@@ -1134,6 +1137,17 @@
 				3A00397E2BEF55E600849F70 /* zh-Hans */,
 			);
 			name = AppIntentVocabulary.plist;
+			sourceTree = "<group>";
+		};
+		3AFEEA622CC14F530040336D /* Intents.intentdefinition */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3AFEEA612CC14F530040336D /* Base */,
+				3AFEEA6B2CC14F720040336D /* en */,
+				3AFEEA6D2CC14F730040336D /* zh-Hans */,
+				3AFEEA6F2CC14F730040336D /* de */,
+			);
+			name = Intents.intentdefinition;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -9,7 +9,7 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>E8HaDg</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>24A335</string>
+	<string>24A348</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
 	<string>16A242d</string>
 	<key>INIntentDefinitionToolsVersion</key>
@@ -72,15 +72,6 @@
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>o6CuZu</string>
 				</dict>
-				<key>mediaContainer,playShuffled</key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Shuffle ${mediaContainer}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>nAv25k</string>
-				</dict>
 				<key>mediaContainer,resumePlayback</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -120,39 +111,6 @@
 					<string>Resume ${mediaItems}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>mIvv3D</string>
-				</dict>
-				<key>playShuffled,mediaContainer,mediaItems</key>
-				<dict>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>${mediaItems}</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>5oBQUn</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Shuffle ${mediaContainer}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>nNozW1</string>
-				</dict>
-				<key>playShuffled,mediaContainer,resumePlayback</key>
-				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<true/>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Resume ${mediaContainer}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>H25xHi</string>
-				</dict>
-				<key>playShuffled,mediaItems</key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Shuffle ${mediaItems}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>MbU5ep</string>
 				</dict>
 			</dict>
 			<key>INIntentParameters</key>
