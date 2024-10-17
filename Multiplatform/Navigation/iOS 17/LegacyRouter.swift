@@ -10,7 +10,7 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-@available(iOS, deprecated: 18.0, message: "Use `TabRouter` instead.")
+@available(iOS, deprecated: 18.0, message: "Use <code>TabRouter</code> instead.")
 internal struct LegacyRouter: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     

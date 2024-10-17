@@ -98,47 +98,72 @@ private struct ControlButtons: View {
     
     let compact: Bool
     
-    var body: some View {
-        HStack(spacing: 0) {
-            Label("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
-                .labelStyle(.iconOnly)
-                .symbolEffect(.bounce.up, value: viewModel.notifyBackwards)
-                .font(.system(size: 32))
-                .modifier(ButtonHoverEffectModifier())
-                .gesture(TapGesture().onEnded { _ in
-                    AudioPlayer.shared.skipBackwards()
-                })
-                .gesture(LongPressGesture().onEnded { _ in
-                    AudioPlayer.shared.chapterCurrentTime = 0
-                })
-            
-            Button {
-                AudioPlayer.shared.playing.toggle()
-            } label: {
-                Label("playback.toggle", systemImage: viewModel.playing ? "pause.fill" : "play.fill")
-                    .labelStyle(.iconOnly)
-                    .contentTransition(.symbolEffect(.replace.byLayer.downUp))
-            }
-            .frame(width: 52, height: 52)
-            .font(.system(size: 48))
+    @ViewBuilder
+    private var backwardsButton: some View {
+        Label("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
+            .labelStyle(.iconOnly)
+            .symbolEffect(.bounce.up, value: viewModel.notifyBackwards)
+            .font(.system(size: 32))
             .modifier(ButtonHoverEffectModifier())
-            .padding(.horizontal, 50)
-            
-            Label("forwards", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
+            .gesture(TapGesture().onEnded { _ in
+                AudioPlayer.shared.skipBackwards()
+            })
+            .gesture(LongPressGesture().onEnded { _ in
+                AudioPlayer.shared.chapterCurrentTime = 0
+            })
+    }
+    
+    @ViewBuilder
+    private var playButton: some View {
+        Button {
+            AudioPlayer.shared.playing.toggle()
+        } label: {
+            Label("playback.toggle", systemImage: viewModel.playing ? "pause.fill" : "play.fill")
                 .labelStyle(.iconOnly)
-                .symbolEffect(.bounce.up, value: viewModel.notifyForwards)
-                .font(.system(size: 32))
-                .modifier(ButtonHoverEffectModifier())
-                .gesture(TapGesture().onEnded { _ in
-                    AudioPlayer.shared.skipForwards()
-                })
-                .gesture(LongPressGesture().onEnded { _ in
-                    AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration
-                })
+                .contentTransition(.symbolEffect(.replace.byLayer.downUp))
         }
-        .foregroundStyle(.primary)
-        .padding(.top, compact ? 60 : 44)
-        .padding(.bottom, compact ? 80 : 68)
+        .buttonStyle(.plain)
+        .frame(width: 52, height: 52)
+        .font(.system(size: 48))
+        .modifier(ButtonHoverEffectModifier())
+    }
+    
+    @ViewBuilder
+    private var forwardButton: some View {
+        Label("forwards", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
+            .labelStyle(.iconOnly)
+            // .symbolEffect(.rotate.byLayer.clockwise, value: viewModel.notifyForwards)
+            .font(.system(size: 32))
+            .modifier(ButtonHoverEffectModifier())
+            .gesture(TapGesture().onEnded { _ in
+                AudioPlayer.shared.skipForwards()
+            })
+            .gesture(LongPressGesture().onEnded { _ in
+                AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration
+            })
+    }
+    
+    var body: some View {
+        if !compact {
+            LazyVGrid(columns: .init(repeating: .init(), count: 3)) {
+                backwardsButton
+                playButton
+                forwardButton
+            }
+            .padding(.top, 60)
+            .padding(.bottom, 80)
+            .padding(.horizontal, 20)
+        } else {
+            HStack(spacing: 0) {
+                backwardsButton
+                playButton
+                    .padding(.horizontal, 50)
+                forwardButton
+            }
+            .foregroundStyle(.primary)
+            .padding(.top, 44)
+            .padding(.bottom, 68)
+        }
     }
 }
 
