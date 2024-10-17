@@ -39,7 +39,7 @@ internal struct EpisodeSortFilter: View {
             Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
         } label: {
             Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down").circle")
-                .contentTransition(.symbolEffect)
+                .contentTransition(.symbolEffect(.replace.upUp))
         }
     }
 }
