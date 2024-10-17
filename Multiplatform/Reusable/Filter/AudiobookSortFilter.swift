@@ -67,7 +67,7 @@ internal struct AudiobookSortFilter: View {
             }
         } label: {
             Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down").circle")
-                .contentTransition(.symbolEffect)
+                .contentTransition(.symbolEffect(.replace.upUp))
         }
     }
 }
