@@ -54,8 +54,11 @@ internal struct PlayButton: View {
         return progressEntity.duration - progressEntity.currentTime
     }
     
+    private var isPlaying: Bool {
+        nowPlayingViewModel.item == item
+    }
     private var label: LocalizedStringKey {
-        if nowPlayingViewModel.item == item {
+        if isPlaying {
             return nowPlayingViewModel.playing ? "pause" : "resume"
         }
         
@@ -73,48 +76,39 @@ internal struct PlayButton: View {
         
         return "play"
     }
+    
     private var icon: String {
-        if item == nowPlayingViewModel.item {
-            return nowPlayingViewModel.playing ? "waveform" : "pause.fill"
-        } else {
-            return "play.fill"
+        if isPlaying && nowPlayingViewModel.playing {
+            return "pause.fill"
         }
+        
+        return "play.fill"
     }
     
     @ViewBuilder
     var labelContent: some View {
         ZStack {
-            Label(String("FFS"), systemImage: "waveform")
-                .hidden()
-            
-            HStack(spacing: 8) {
-                if loading {
-                    ProgressIndicator()
-                        .padding(.trailing, 4)
-                } else {
-                    ZStack {
-                        Group {
-                            Image(systemName: "waveform")
-                            Image(systemName: "play.fill")
-                            Image(systemName: "pause.fill")
-                        }
-                        .hidden()
-                        
-                        Label("playing", systemImage: icon)
+            HStack(spacing: 4) {
+                Group {
+                    if loading {
+                        ProgressIndicator()
+                    } else {
+                        Label(isPlaying ? "playing" : "play", systemImage: icon)
                             .labelStyle(.iconOnly)
-                            .contentTransition(.symbolEffect(.replace.downUp.byLayer))
-                            .symbolEffect(.variableColor.iterative, isActive: icon == "waveform")
+                            .contentTransition(.symbolEffect(.replace.upUp.wholeSymbol))
                     }
                 }
+                .padding(.trailing, 8)
+                
+                Text(label)
+                    .contentTransition(.opacity)
                 
                 if progressEntity.progress < 1 {
-                    Text(label)
-                    + Text(verbatim: " • ")
-                    + Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
-                } else {
-                    Text(label)
+                    Text(verbatim: "•")
+                    Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                 }
             }
+            .animation(.smooth, value: label)
         }
         .contentShape(.rect)
         .transition(.opacity)
@@ -271,7 +265,7 @@ internal struct LargePlayButtonStyle: PlayButtonStyle {
     
     func makeLabel(configuration: Configuration) -> some View {
         configuration.content
-            .font(.headline)
+            .font(.callout)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
     }
@@ -283,17 +277,17 @@ internal struct LargePlayButtonStyle: PlayButtonStyle {
 internal struct MediumPlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {
         configuration.content
-            .imageScale(.small)
             .bold()
             .font(.footnote)
-            .frame(maxWidth: 240)
+            .frame(maxWidth: 280)
             .background(configuration.background.isLight ? .black : .white)
     }
     
     func makeLabel(configuration: Configuration) -> some View {
         configuration.content
             .foregroundStyle(configuration.background.isLight ? .white : .black)
-            .padding(.vertical, 12)
+            .padding(.vertical, 16)
+            .padding(.horizontal, 8)
             .frame(maxWidth: .infinity)
     }
     

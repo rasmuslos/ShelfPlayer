@@ -102,7 +102,15 @@ private struct ControlButtons: View {
     private var backwardsButton: some View {
         Label("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
             .labelStyle(.iconOnly)
-            .symbolEffect(.bounce.up, value: viewModel.notifyBackwards)
+            .modify {
+                if #available(iOS 18, *) {
+                    $0
+                        .symbolEffect(.rotate.counterClockwise.byLayer, value: viewModel.notifyBackwards)
+                } else {
+                    $0
+                        .symbolEffect(.bounce, value: viewModel.notifyBackwards)
+                }
+            }
             .font(.system(size: 32))
             .modifier(ButtonHoverEffectModifier())
             .gesture(TapGesture().onEnded { _ in
@@ -132,7 +140,15 @@ private struct ControlButtons: View {
     private var forwardButton: some View {
         Label("forwards", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
             .labelStyle(.iconOnly)
-            // .symbolEffect(.rotate.byLayer.clockwise, value: viewModel.notifyForwards)
+            .modify {
+                if #available(iOS 18, *) {
+                    $0
+                        .symbolEffect(.rotate.clockwise.byLayer, value: viewModel.notifyForwards)
+                } else {
+                    $0
+                        .symbolEffect(.bounce, value: viewModel.notifyForwards)
+                }
+            }
             .font(.system(size: 32))
             .modifier(ButtonHoverEffectModifier())
             .gesture(TapGesture().onEnded { _ in
