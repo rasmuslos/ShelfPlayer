@@ -47,14 +47,17 @@ public final class SleepTimer {
     var timer: DispatchSourceTimer
     
     private init() {
+        timer = DispatchSource.makeTimerSource(flags: .strict, queue: AudioPlayer.shared.dispatchQueue)
+        timer.activate()
+        
         expiresAt = nil
         expiresAtChapterEnd = false
         
         expiredAt = nil
         lastSetting = nil
         
-        isSuspended = true
-        timer = DispatchSource.makeTimerSource(flags: .strict, queue: AudioPlayer.shared.dispatchQueue)
+        isSuspended = false
+        suspend()
         
         setupObservers()
     }
