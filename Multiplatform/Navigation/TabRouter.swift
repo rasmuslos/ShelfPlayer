@@ -44,7 +44,13 @@ internal struct TabRouter: View {
     
     var body: some View {
         if !libraries.isEmpty {
-            TabView(selection: $selection) {
+            TabView(selection: .init(get: { selection }, set: {
+                if $0 == selection, case .search = $0 {
+                    NotificationCenter.default.post(name: SearchView.focusNotification, object: nil)
+                }
+                
+                selection = $0
+            })) {
                 if let current {
                     ForEach(TabValue.tabs(for: current)) { tab in
                         Tab(tab.label, systemImage: tab.image, value: tab) {

@@ -137,16 +137,18 @@ private final class EpisodePlayButtonViewModel {
     }
     
     func play() {
-        guard let library else {
+        let withoutPlaybackSession: Bool
+        
+        if let library {
             // for some inexplicable reason library is nil if highlighted it set to true
             // i have no idea why, maybe i will use one of my code level assistance credits for this
             // but only when you use the release configuration
-            return
+            withoutPlaybackSession = library.type == .offline
+        } else {
+            withoutPlaybackSession = false
         }
         
         Task {
-            let withoutPlaybackSession = library.type == .offline
-            
             loading.wrappedValue = true
             try? await AudioPlayer.shared.play(episode, withoutPlaybackSession: withoutPlaybackSession)
             loading.wrappedValue = false
