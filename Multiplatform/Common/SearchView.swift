@@ -136,7 +136,7 @@ private extension SearchViewModel {
     func load() {
         searchTask?.cancel()
         searchTask = Task {
-            let search = await search.trimmingCharacters(in: .whitespacesAndNewlines)
+            let search = await self.search.trimmingCharacters(in: .whitespacesAndNewlines)
             
             if search.isEmpty {
                 try Task.checkCancellation()
@@ -156,7 +156,11 @@ private extension SearchViewModel {
                 self.loading = true
             }
             
-            let (audiobooks, _, authors, series) = try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id)
+            var (audiobooks, _, authors, series) = try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id)
+            
+            audiobooks.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
+            authors.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
+            series.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
             
             try Task.checkCancellation()
             
