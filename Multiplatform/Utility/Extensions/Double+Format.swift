@@ -47,13 +47,12 @@ internal struct DurationComponentsFormatter: FormatStyle {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = unitsStyle
         formatter.allowedUnits = allowedUnits
+        formatter.collapsesLargestUnit = false
         formatter.maximumUnitCount = maximumUnitCount
         
         if unitsStyle == .positional {
-            formatter.collapsesLargestUnit = false
             formatter.zeroFormattingBehavior = .pad
         } else {
-            formatter.collapsesLargestUnit = true
             formatter.zeroFormattingBehavior = .dropLeading
         }
         
