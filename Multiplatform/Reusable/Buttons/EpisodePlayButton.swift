@@ -11,6 +11,7 @@ import SPOffline
 import SPPlayback
 
 internal struct EpisodePlayButton: View {
+    @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
     @Environment(\.library) private var library
     
     private let viewModel: EpisodePlayButtonViewModel
@@ -22,6 +23,11 @@ internal struct EpisodePlayButton: View {
     
     var body: some View {
         Button {
+            if nowPlayingViewModel.item == viewModel.episode {
+                AudioPlayer.shared.playing.toggle()
+                return
+            }
+            
             viewModel.play()
         } label: {
             ButtonText()
@@ -52,23 +58,29 @@ private struct ButtonText: View {
     @Environment(EpisodePlayButtonViewModel.self) private var viewModel
     @Environment(\.colorScheme) private var colorScheme
     
+    private var isPlaying: Bool {
+        nowPlayingViewModel.item == viewModel.episode
+    }
+    
     private var label: String {
         if viewModel.progressEntity.isFinished {
             return String(localized: "listen.again")
         } else if viewModel.progressEntity.progress <= 0 {
             return viewModel.episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute], maximumUnitCount: 1))
-        } else if nowPlayingViewModel.item == viewModel.episode, nowPlayingViewModel.itemDuration > 0 {
-            return (nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+        } else if isPlaying, nowPlayingViewModel.itemDuration > 0 {
+            return (nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime)
+                .formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
         } else {
-            return (viewModel.progressEntity.duration - viewModel.progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+            return (viewModel.progressEntity.duration - viewModel.progressEntity.currentTime)
+                .formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
         }
     }
     private var icon: String {
-        if viewModel.episode == nowPlayingViewModel.item {
-            return nowPlayingViewModel.playing ? "waveform" : "pause.fill"
-        } else {
-            return "play.fill"
+        if isPlaying && nowPlayingViewModel.playing {
+            return "pause.fill"
         }
+        
+        return "play.fill"
     }
     
     private var progressVisible: Bool {
@@ -78,19 +90,16 @@ private struct ButtonText: View {
     var body: some View {
         HStack(spacing: 0) {
             ZStack {
-                Group {
-                    Image(systemName: "waveform")
-                    Image(systemName: "play.fill")
-                    Image(systemName: "pause.fill")
-                }
-                .hidden()
+                Image(systemName: "play.fill")
+                    .hidden()
                 
+                Image(systemName: icon)
+                    .contentTransition(.symbolEffect(.replace.downUp.byLayer))
+                    .opacity(viewModel.loading.wrappedValue ? 0 : 1)
+            }
+            .overlay {
                 if viewModel.loading.wrappedValue {
                     ProgressIndicator()
-                } else {
-                    Image(systemName: icon)
-                        .contentTransition(.symbolEffect(.replace.downUp.byLayer))
-                        .symbolEffect(.variableColor.iterative, isActive: icon == "waveform" && nowPlayingViewModel.playing)
                 }
             }
             .controlSize(.small)

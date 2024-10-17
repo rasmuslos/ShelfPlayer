@@ -17,6 +17,10 @@ internal extension NowPlaying {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(ViewModel.self) private var viewModel
         
+        private var isCompact: Bool {
+            horizontalSizeClass == .compact
+        }
+        
         @ViewBuilder
         func emptyText(_ text: LocalizedStringKey) -> some View {
             VStack(spacing: 2) {
@@ -56,7 +60,7 @@ internal extension NowPlaying {
                                     }
                                     .id(tab)
                                     .frame(width: geometryProxy.size.width)
-                                    .contentMargins(.top, 52)
+                                    .contentMargins(.top, isCompact ? 52 : 0)
                                     .contentMargins(.bottom, 52)
                                 }
                             }
@@ -73,7 +77,7 @@ internal extension NowPlaying {
                 .background(.background.secondary)
                 .overlay {
                     VStack(spacing: 0) {
-                        if horizontalSizeClass == .compact {
+                        if isCompact {
                             CompactHeader(item: item)
                         }
                         
@@ -248,9 +252,19 @@ private struct CompactHeader: View {
             .menuStyle(.button)
             .buttonStyle(.plain)
         }
-        .padding(.vertical, 12)
+        .padding(.top, 12)
+        .padding(.bottom, 16)
         .padding(.horizontal, 20)
         .background(.bar)
+        .mask(
+            VStack(spacing: 0) {
+                LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black]), startPoint: .top, endPoint: .bottom)
+                    .frame(height: 8)
+                
+                Rectangle()
+                    .fill(Color.black)
+            }
+        )
     }
 }
 
