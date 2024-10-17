@@ -17,6 +17,14 @@ internal extension NowPlaying {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(ViewModel.self) private var viewModel
         
+        private var background: Color {
+            if isCompact {
+                return Color(uiColor: .secondarySystemBackground)
+            }
+            
+            return .clear
+        }
+        
         private var isCompact: Bool {
             horizontalSizeClass == .compact
         }
@@ -35,7 +43,7 @@ internal extension NowPlaying {
             }
             .frame(maxWidth: .infinity)
             .listRowSeparator(.hidden)
-            .listRowBackground(Color(UIColor.secondarySystemBackground))
+            .listRowBackground(background)
             .padding(.top, 160)
         }
         
@@ -61,12 +69,11 @@ internal extension NowPlaying {
                                     .id(tab)
                                     .frame(width: geometryProxy.size.width)
                                     .contentMargins(.top, isCompact ? 52 : 0)
-                                    .contentMargins(.bottom, 52)
+                                    .contentMargins(.bottom, isCompact ? 52 : 0)
                                 }
                             }
                             .scrollTargetLayout()
                         }
-                        .scrollClipDisabled()
                         .scrollTargetBehavior(.paging)
                         .scrollPosition(id: $viewModel.sheetTab)
                         .onAppear {
@@ -74,16 +81,14 @@ internal extension NowPlaying {
                         }
                     }
                 }
-                .background(.background.secondary)
+                .background(background)
                 .overlay {
-                    VStack(spacing: 0) {
-                        if isCompact {
+                    if isCompact {
+                        VStack(spacing: 0) {
                             CompactHeader(item: item)
+                            Spacer()
+                            BottomToolbar()
                         }
-                        
-                        Spacer()
-                        
-                        BottomToolbar()
                     }
                 }
                 .statusBarHidden()
@@ -129,7 +134,7 @@ private extension NowPlaying.Sheet {
                     }
                     .id(item)
                     .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
-                    .listRowBackground(Color(UIColor.secondarySystemBackground))
+                    .listRowBackground(background)
                     .contentShape(.rect)
                     .contextMenu {
                         QueueContextMenuItems(item: item, index: index)
@@ -163,7 +168,7 @@ private extension NowPlaying.Sheet {
                 if !viewModel.chapters.isEmpty, let item = viewModel.item {
                     Chapters(item: item, chapters: viewModel.chapters)
                         .padding(.horizontal, 20)
-                        .listRowBackground(Color(UIColor.secondarySystemBackground))
+                        .listRowBackground(background)
                 } else {
                     emptyText("chapters.empty")
                 }
@@ -186,7 +191,7 @@ private extension NowPlaying.Sheet {
                         AudioPlayer.shared.itemCurrentTime = bookmark.position
                     }
                     .padding(.horizontal, 20)
-                    .listRowBackground(Color(UIColor.secondarySystemBackground))
+                    .listRowBackground(background)
                     .contextMenu {
                         Button {
                             viewModel.bookmarkEditingIndex = index
