@@ -258,11 +258,11 @@ private struct CompactHeader: View {
         .background(.bar)
         .mask(
             VStack(spacing: 0) {
-                LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black]), startPoint: .top, endPoint: .bottom)
-                    .frame(height: 8)
-                
                 Rectangle()
                     .fill(Color.black)
+                
+                LinearGradient(gradient: Gradient(colors: [Color.black, Color.black.opacity(0)]), startPoint: .top, endPoint: .bottom)
+                    .frame(height: 8)
             }
         )
     }
