@@ -11,6 +11,7 @@ import ShelfPlayerKit
 internal struct SearchView: View {
     @Environment(\.library) private var library
     
+    @FocusState private var focused
     @State private var viewModel: SearchViewModel = .init()
     
     var body: some View {
@@ -48,7 +49,15 @@ internal struct SearchView: View {
         }
         .navigationTitle("panel.search")
         .searchable(text: $viewModel.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.placeholder")
-        .modifier(SearchModifier())
+        .modify {
+            if #available(iOS 18, *) {
+                $0
+                    .searchFocused($focused)
+            } else {
+                $0
+            }
+        }
+        .autocorrectionDisabled()
         .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)
         .refreshable {
@@ -57,8 +66,16 @@ internal struct SearchView: View {
         .onAppear {
             viewModel.library = library
         }
+        .onChange(of: viewModel.focusNotify) {
+            focused = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Self.focusNotification)) { _ in
+            viewModel.focus()
+        }
         .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
     }
+    
+    static let focusNotification = Notification.Name("io.rfk.shelfPlayer.search.focus")
 }
 
 @Observable
@@ -110,6 +127,12 @@ private extension SearchViewModel {
         }
     }
     
+    @MainActor
+    func focus() {
+        focusNotify.toggle()
+        search = ""
+    }
+    
     func load() {
         searchTask?.cancel()
         searchTask = Task {
@@ -144,29 +167,6 @@ private extension SearchViewModel {
                 
                 self.loading = false
             }
-        }
-    }
-}
-
-// TODO: Remove this
-
-private struct SearchModifier: ViewModifier {
-    @Environment(SearchViewModel.self) private var viewModel
-    
-    @FocusState private var focused: Bool
-    
-    func body(content: Content) -> some View {
-        Group {
-            if #available(iOS 18, *) {
-                content
-                    .searchFocused($focused)
-            } else {
-                content
-            }
-        }
-        .autocorrectionDisabled()
-        .onChange(of: viewModel.focusNotify) {
-            focused = true
         }
     }
 }
