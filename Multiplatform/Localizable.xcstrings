@@ -3310,6 +3310,7 @@
       }
     },
     "mute" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5001,6 +5002,7 @@
       }
     },
     "volume.max" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
