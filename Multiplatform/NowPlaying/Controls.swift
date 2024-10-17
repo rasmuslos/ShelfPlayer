@@ -169,7 +169,6 @@ private struct ControlButtons: View {
             .padding(.bottom, 80)
             .padding(.horizontal, 20)
             .frame(maxHeight: 160)
-            .border(.green)
         } else {
             HStack(spacing: 0) {
                 backwardsButton
