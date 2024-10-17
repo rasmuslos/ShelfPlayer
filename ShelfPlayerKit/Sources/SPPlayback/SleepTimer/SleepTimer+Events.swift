@@ -34,6 +34,8 @@ internal extension SleepTimer {
         AudioPlayer.shared.audioPlayer.volume = 1
         
         expiredAt = .now
+        
+        suspend()
     }
     
     func setupObservers() {
@@ -48,7 +50,11 @@ internal extension SleepTimer {
             
             setupTimer()
         }
-        timer.activate()
+        
+        
+        timer.setCancelHandler { [weak self] in
+            self?.setupTimer()
+        }
         
         NotificationCenter.default.addObserver(forName: AudioPlayer.chapterDidChangeNotification, object: nil, queue: nil) { [unowned self] _ in
             if expiresAtChapterEnd {
