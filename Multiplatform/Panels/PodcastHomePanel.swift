@@ -42,7 +42,7 @@ internal struct PodcastHomePanel: View {
                     LazyVStack(spacing: 12) {
                         ForEach(episodes) { row in
                             VStack(alignment: .leading, spacing: 0) {
-                                RowTitle(title: row.label)
+                                RowTitle(title: row.localizedLabel)
                                     .padding(.bottom, 8)
                                     .padding(.horizontal, 20)
                                 
@@ -58,7 +58,7 @@ internal struct PodcastHomePanel: View {
                         
                         ForEach(podcasts) { row in
                             VStack(alignment: .leading, spacing: 0) {
-                                RowTitle(title: row.label)
+                                RowTitle(title: row.localizedLabel)
                                     .padding(.bottom, 8)
                                     .padding(.horizontal, 20)
                                 

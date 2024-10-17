@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 public struct HomeRow<T: Item>: Identifiable {
     public let id: String

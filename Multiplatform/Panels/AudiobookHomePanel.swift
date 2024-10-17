@@ -73,12 +73,12 @@ internal struct AudiobookHomePanel: View {
                                 }
                             }
                             
-                            AudiobookRow(title: row.label, small: false, audiobooks: entities)
+                            AudiobookRow(title: row.localizedLabel, small: false, audiobooks: entities)
                         }
                         
                         ForEach(authors) { row in
                             VStack(alignment: .leading, spacing: 0) {
-                                RowTitle(title: row.label)
+                                RowTitle(title: row.localizedLabel)
                                     .padding(.bottom, 8)
                                     .padding(.horizontal, 20)
                                 
