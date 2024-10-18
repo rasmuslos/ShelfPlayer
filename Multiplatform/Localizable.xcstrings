@@ -1594,6 +1594,7 @@
       }
     },
     "carPlay.chapters" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1616,6 +1617,7 @@
       }
     },
     "carPlay.chapters.dismiss" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1638,6 +1640,7 @@
       }
     },
     "carPlay.chapters.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1660,6 +1663,7 @@
       }
     },
     "carPlay.chapters.empty.short" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1682,6 +1686,7 @@
       }
     },
     "carPlay.chapters.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1703,7 +1708,17 @@
         }
       }
     },
+    "carPlay.offline.audiobooks" : {
+
+    },
+    "carPlay.offline.empty" : {
+
+    },
+    "carPlay.offline.empty.subtitle" : {
+
+    },
     "carPlay.offline.sections.audiobooks" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1724,6 +1739,9 @@
           }
         }
       }
+    },
+    "carPlay.offline.tab" : {
+
     },
     "carPlay.offline.title" : {
       "localizations" : {
@@ -1748,6 +1766,7 @@
       }
     },
     "carPlay.unauthorized" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1770,6 +1789,7 @@
       }
     },
     "carPlay.unauthorized.short" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

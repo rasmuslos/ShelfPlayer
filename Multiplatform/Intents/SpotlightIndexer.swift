@@ -17,7 +17,7 @@ internal struct SpotlightIndexer {
     static let searchableIndex = CSSearchableIndex(name: "ShelfPlayer_Items", protectionClass: .completeUntilFirstUserAuthentication)
     
     static func index() {
-        guard !NetworkMonitor.shared.isRouteLimited else {
+        guard !NetworkMonitor.isRouteLimited else {
             return
         }
         

@@ -11,7 +11,7 @@ import Defaults
 import ShelfPlayerKit
 
 @Observable
-internal class SeriesViewModel {
+internal final class SeriesViewModel {
     @MainActor internal let series: Series
     
     @MainActor private(set) var lazyLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder>

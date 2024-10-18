@@ -11,7 +11,7 @@ import Defaults
 import ShelfPlayerKit
 
 @Observable
-internal class LazyLoadHelper<T: Item, O: Any> {
+internal final class LazyLoadHelper<T: Item, O: Any> {
     private static var PAGE_SIZE: Int {
         100
     }

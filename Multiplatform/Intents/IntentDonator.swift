@@ -10,7 +10,7 @@ import Intents
 import ShelfPlayerKit
 import SPPlayback
 
-internal final class IntentDonator {
+internal class IntentDonator {
     internal var lastDonatedItem: Item?
     
     init() {

@@ -11,7 +11,7 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-internal class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
+internal final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
 }
 
 // MARK: Resolve parameters
