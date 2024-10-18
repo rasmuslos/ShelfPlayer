@@ -14,7 +14,7 @@ import SPPlayback
 
 internal extension NowPlaying {
     @Observable
-    class ViewModel {
+    final class ViewModel {
         // MARK: Presentation
         
         @ObservationIgnored var namespace: Namespace.ID!

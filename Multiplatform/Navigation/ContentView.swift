@@ -30,7 +30,7 @@ internal struct ContentView: View {
             }
         }
         .onAppear {
-            NetworkMonitor.shared.start() {
+            NetworkMonitor.start() {
                 step = .sessionImport
             }
             

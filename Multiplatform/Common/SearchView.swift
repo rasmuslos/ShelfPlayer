@@ -79,7 +79,7 @@ internal struct SearchView: View {
 }
 
 @Observable
-private class SearchViewModel {
+private final class SearchViewModel {
     @MainActor var library: Library!
     
     @MainActor private var _search: String
