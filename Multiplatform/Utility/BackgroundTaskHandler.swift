@@ -13,7 +13,7 @@ import UserNotifications
 import ShelfPlayerKit
 import SPPlayback
 
-final internal class BackgroundTaskHandler {
+internal struct BackgroundTaskHandler {
     static let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Background-Refresh")
 }
 
@@ -64,7 +64,7 @@ internal extension BackgroundTaskHandler {
         // Remove existing episodes
         
         let preDownloaded = try OfflineManager.shared.episodes(podcastId: podcastID)
-        let valid = await Episode.filterSort(episodes: preDownloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        let valid = Episode.filterSort(episodes: preDownloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
         let invalid = preDownloaded.filter { episode in !valid.contains { $0.id == episode.id } }
         
         for episode in invalid {
@@ -74,7 +74,7 @@ internal extension BackgroundTaskHandler {
         // Download new episodes
         
         let episodes = try await AudiobookshelfClient.shared.episodes(podcastId: configuration.id)
-        let sorted = await Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        let sorted = Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         let candidates = sorted.prefix(configuration.maxEpisodes)
         var submitted = [Episode]()
@@ -89,7 +89,7 @@ internal extension BackgroundTaskHandler {
         // Remove additional episodes
         
         let downloaded = try OfflineManager.shared.episodes(podcastId: podcastID)
-        var reversed = await Episode.filterSort(episodes: downloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        var reversed = Episode.filterSort(episodes: downloaded, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         while reversed.count > configuration.maxEpisodes {
             OfflineManager.shared.remove(episodeId: reversed.removeLast().id)

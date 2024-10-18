@@ -9,39 +9,15 @@ import CarPlay
 import ShelfPlayerKit
 
 public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
-    // we need to keep a strong reference to this object
-    internal var nowPlayingObserver: NowPlayingObserver?
-    internal var interfaceController: CPInterfaceController?
+    internal var controller: CarPlayController?
     
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
-        self.interfaceController = interfaceController
+        // TODO: Check authorization
         
-        Task {
-            // Check if the user is logged in
-            if !AudiobookshelfClient.shared.authorized {
-                try await interfaceController.presentTemplate(CPAlertTemplate(titleVariants: [String(localized: "carPlay.unauthorized.short"), String(localized: "carPlay.unauthorized")], actions: []), animated: true)
-                
-                return
-            }
-            
-            nowPlayingObserver = updateNowPlayingTemplate()
-            
-            // Try to fetch libraries
-            
-            #if DEBUG
-            /*
-            if let libraries = try? await AudiobookshelfClient.shared.getLibraries() {
-                
-            }
-             */
-            #else
-            try await interfaceController.setRootTemplate(try buildOfflineListTemplate(), animated: true)
-            #endif
-        }
+        controller = .init(interfaceController: interfaceController)
     }
     
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
-        self.interfaceController = nil
-        nowPlayingObserver = nil
+        controller = nil
     }
 }

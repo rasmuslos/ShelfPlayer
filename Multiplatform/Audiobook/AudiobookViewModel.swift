@@ -12,7 +12,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 @Observable
-final internal class AudiobookViewModel {
+internal final class AudiobookViewModel {
     @MainActor var audiobook: Audiobook
     @MainActor var library: Library!
     

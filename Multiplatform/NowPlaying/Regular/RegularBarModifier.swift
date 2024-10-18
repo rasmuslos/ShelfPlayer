@@ -100,7 +100,7 @@ internal extension NowPlaying {
                         .padding(.bottom, 10)
                         .padding(.horizontal, 10)
                         .padding(.leading, adjust)
-                        .animation(.spring, value: width)
+                        .animation(width == .zero ? .none : .spring, value: width)
                         .animation(.spring, value: adjust)
                         .onTapGesture {
                             viewModel.expanded = true
