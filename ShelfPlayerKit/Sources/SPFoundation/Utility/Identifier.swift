@@ -8,19 +8,23 @@
 public func convertIdentifier(identifier: String) -> (itemID: String, episodeID: String?, libraryID: String?, type: Item.ItemType) {
     let parts = identifier.split(separator: "::")
     
-    let type = Item.ItemType.parse(String(parts[0]))!
-    var libraryID: String? = String(parts[1])
+    guard parts[0] == "1" else {
+        fatalError("Malformed identifier")
+    }
+    
+    let type = Item.ItemType.parse(String(parts[1]))!
+    var libraryID: String? = String(parts[2])
     
     if libraryID == "_" {
         libraryID = nil
     }
     
-    let itemID = String(parts[2])
+    let itemID = String(parts[3])
     
     let episodeID: String?
     
-    if parts.count == 4 {
-        episodeID = String(parts[3])
+    if parts.count == 5 {
+        episodeID = String(parts[4])
     } else {
         episodeID = nil
     }
@@ -29,7 +33,7 @@ public func convertIdentifier(identifier: String) -> (itemID: String, episodeID:
 }
 
 public func convertIdentifier(itemID: String, episodeID: String?, libraryID: String?, type: Item.ItemType) -> String {
-    var identifier = "\(type.id)::\(libraryID ?? "_")::\(itemID)"
+    var identifier = "1::\(type.id)::\(libraryID ?? "_")::\(itemID)"
     
     if let episodeID {
         identifier += "::\(episodeID)"
