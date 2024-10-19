@@ -49,7 +49,7 @@ private extension CarPlayOfflineController {
                 return
             }
             
-            var items = await audiobooks.parallelMap(CarPlayHelper.buildAudiobookListItem)
+            let items = await audiobooks.parallelMap(CarPlayHelper.buildAudiobookListItem)
             
             self.audiobooksListSection = CPListSection(items: items,
                                                   header: String(localized: "carPlay.offline.audiobooks"),

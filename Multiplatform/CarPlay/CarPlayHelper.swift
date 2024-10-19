@@ -11,6 +11,10 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct CarPlayHelper {
+    static func buildDescriptionAlert(item: Item) {
+        // let template = CPAlertTemplate(titleVariants: [], actions: <#T##[CPAlertAction]#>)
+    }
+    
     static func buildAudiobookListItem(audiobook: Audiobook) async -> CPListItem {
         let detail: String?
         
