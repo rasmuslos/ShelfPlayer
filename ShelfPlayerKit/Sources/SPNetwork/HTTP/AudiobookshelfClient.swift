@@ -10,10 +10,11 @@ import OSLog
 import SwiftUI
 import SPFoundation
 
-@Observable
-public final class AudiobookshelfClient {
+public final class AudiobookshelfClient: ObservableObject {
     public private(set) var serverUrl: URL!
     public private(set) var _token: String?
+    
+    @Published public private(set) var authorized: Bool
     
     public private(set) var clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     public private(set) var clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
@@ -30,8 +31,9 @@ public final class AudiobookshelfClient {
             logger.warning("User-data will not be stored in a shared app group")
         }
         
-        _serverUrl = serverUrl
+        self.serverUrl = serverUrl
         _token = token
+        authorized = token != nil
         
         if let clientId = Self.defaults.string(forKey: "clientId") {
             self.clientId = clientId
@@ -43,9 +45,6 @@ public final class AudiobookshelfClient {
 }
 
 public extension AudiobookshelfClient {
-    var authorized: Bool {
-        _token != nil
-    }
     var token: String {
         _token ?? ""
     }
@@ -56,12 +55,14 @@ public extension AudiobookshelfClient {
         }
         
         Self.defaults.set(serverUrl, forKey: "serverUrl")
-        _serverUrl = serverUrl
+        self.serverUrl = serverUrl
     }
     
     func store(token: String?) {
         Self.defaults.set(token, forKey: "token")
+        
         _token = token
+        authorized = token != nil
     }
 }
 

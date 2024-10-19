@@ -1811,6 +1811,12 @@
         }
       }
     },
+    "carPlay.unauthorized.subtitle" : {
+
+    },
+    "carPlay.unauthorized.title" : {
+
+    },
     "chapters" : {
       "localizations" : {
         "de" : {
