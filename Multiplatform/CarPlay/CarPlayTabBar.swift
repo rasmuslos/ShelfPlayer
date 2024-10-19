@@ -31,7 +31,6 @@ internal final class CarPlayTabBar {
         template = .init(templates: [offlineController.template])
         
         updateTemplates()
-        print("ddd")
     }
     
     protocol LibraryTemplate {
@@ -40,6 +39,29 @@ internal final class CarPlayTabBar {
 }
 
 private extension CarPlayTabBar {
+    var librariesListTemplate: CPListTemplate {
+        let items = libraries.map {
+            let library = $0.key
+            let template = $0.value.template
+            
+            let item = CPListItem(text: library.name,
+                                  detailText: nil,
+                                  image: .init(systemName: library.type == .podcasts ? "antenna.radiowaves.left.and.right" : "headphones"))
+            
+            item.handler = { _, completion in
+                Task {
+                    try await self.interfaceController.pushTemplate(template, animated: true)
+                    completion()
+                }
+            }
+            
+            return item
+        }
+        
+        let section = CPListSection(items: items)
+        return CPListTemplate(title: String(localized: "carPlay.libraries"), sections: [section], assistantCellConfiguration: .none)
+    }
+    
     func updateTemplates() {
         updateTask?.cancel()
         updateTask = .detached {
@@ -61,7 +83,11 @@ private extension CarPlayTabBar {
                 }
             }
             
-            self.template.updateTemplates(templates)
+            if templates.count > CPTabBarTemplate.maximumTabCount || true {
+                self.template.updateTemplates([self.offlineController.template, self.librariesListTemplate])
+            } else {
+                self.template.updateTemplates(templates)
+            }
         }
     }
 }

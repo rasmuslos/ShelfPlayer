@@ -45,7 +45,8 @@ private extension CarPlayOfflineController {
     func updateAudiobooksSection() {
         audiobooksUpdateTask?.cancel()
         audiobooksUpdateTask = Task.detached {
-            guard let audiobooks = try? OfflineManager.shared.audiobooks() else {
+            guard let audiobooks = try? OfflineManager.shared.audiobooks(), !audiobooks.isEmpty else {
+                self.audiobooksListSection = nil
                 return
             }
             

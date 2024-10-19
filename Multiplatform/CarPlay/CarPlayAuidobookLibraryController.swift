@@ -7,6 +7,7 @@
 
 import Foundation
 import CarPlay
+import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
@@ -37,48 +38,35 @@ private extension CarPlayAudiobookLibraryController {
                 return
             }
             
-            var sections = [CPListSection]()
+            let disableDiscoverRow = Defaults[.disableDiscoverRow]
+            let hideFromContinueListening = Defaults[.hideFromContinueListening]
             
-            for row in rows {
-                let audiobooks = row.entities
-                
-                if row.id == "continue-listening" && audiobooks.count <= CPMaximumNumberOfGridImages {
-                    let items = await audiobooks.parallelMap {
-                        let image: UIImage
-                        
-                        if let data = await $0.cover?.data, let uiImage = UIImage(data: data) {
-                            image = uiImage
-                        } else {
-                            image = .logo
-                        }
-                        
-                        return (image, $0.name)
-                    }
-                    
-                    let item = CPListImageRowItem(text: row.localizedLabel, images: items.map(\.0), imageTitles: items.map(\.1))
-                    
-                    item.isEnabled = false
-                    item.listImageRowHandler = { _, index, completion in
-                        let audiobook = audiobooks[index]
-                        
-                        Task {
-                            try await AudioPlayer.shared.play(audiobook)
-                            completion()
-                        }
-                    }
-                    
-                    sections.append(CPListSection(items: [item], header: nil, sectionIndexTitle: nil))
-                } else {
-                    let items = await row.entities.parallelMap(CarPlayHelper.buildAudiobookListItem)
-                    let section = CPListSection(items: items,
-                                                header: row.localizedLabel,
-                                                headerSubtitle: nil,
-                                                headerImage: nil,
-                                                headerButton: nil,
-                                                sectionIndexTitle: nil)
-                    
-                    sections.append(section)
+            let sections = await rows.filter {
+                guard $0.id == "discover" else {
+                    return !$0.entities.isEmpty
                 }
+                
+                return !disableDiscoverRow && !$0.entities.isEmpty
+            }.parallelMap { row in
+                let audiobooks: [Audiobook] = {
+                    guard row.id == "continue-listening" else {
+                        return row.entities
+                    }
+                    
+                    return row.entities.filter { audiobook in
+                        !hideFromContinueListening.contains { $0.itemId == audiobook.id }
+                    }
+                }()
+                
+                let items = await row.entities.parallelMap(CarPlayHelper.buildAudiobookListItem)
+                let section = CPListSection(items: items,
+                                            header: row.localizedLabel,
+                                            headerSubtitle: nil,
+                                            headerImage: nil,
+                                            headerButton: nil,
+                                            sectionIndexTitle: nil)
+                
+                return section
             }
             
             self.template.updateSections(sections)
