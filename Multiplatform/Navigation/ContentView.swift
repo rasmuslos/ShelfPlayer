@@ -133,8 +133,8 @@ internal struct ContentView: View {
         .onAppear {
             viewModel.namespace = namespace
         }
-        .onChange(of: AudiobookshelfClient.shared.authorized) {
-            step = AudiobookshelfClient.shared.authorized ? .sessionImport : .login
+        .onReceive(AudiobookshelfClient.shared.$authorized) { authorized in
+            step = authorized ? .sessionImport : .login
         }
         .onReceive(NotificationCenter.default.publisher(for: SelectLibraryModifier.changeLibraryNotification)) { notification in
             if let offline = notification.userInfo?["offline"] as? Bool {
