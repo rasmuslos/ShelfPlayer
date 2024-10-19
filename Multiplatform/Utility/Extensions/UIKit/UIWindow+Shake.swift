@@ -15,5 +15,5 @@ extension UIWindow {
         }
      }
     
-    static let deviceDidShakeNotification = Notification.Name(rawValue: "io.rfk.shelfPlayer.shake")
+    internal static let deviceDidShakeNotification = Notification.Name(rawValue: "io.rfk.shelfPlayer.shake")
 }
