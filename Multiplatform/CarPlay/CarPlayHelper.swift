@@ -19,7 +19,7 @@ internal struct CarPlayHelper {
         let detail: String?
         
         if let narrator = audiobook.narrator, let author = audiobook.author {
-            detail = "\(narrator) • \(author)"
+            detail = "\(author) • \(narrator)"
         } else if let author = audiobook.author {
             detail = author
         } else if let narrator = audiobook.narrator {

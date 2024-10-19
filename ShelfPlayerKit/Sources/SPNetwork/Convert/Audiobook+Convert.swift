@@ -46,6 +46,15 @@ internal extension Audiobook {
         let addedAt = item.addedAt ?? 0
         let duration = media.duration ?? 0
         
+        let narrator: String?
+        let trimmedNarrator = media.metadata.narratorName?.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if trimmedNarrator?.isEmpty == false {
+            narrator = trimmedNarrator
+        } else {
+            narrator = nil
+        }
+        
         self.init(
             id: item.id,
             libraryID: item.libraryId!,
@@ -58,7 +67,7 @@ internal extension Audiobook {
             released: media.metadata.publishedYear,
             size: item.size!,
             duration: duration,
-            narrator: media.metadata.narratorName?.trimmingCharacters(in: .whitespacesAndNewlines),
+            narrator: narrator,
             series: resolvedSeries,
             explicit: item.media?.metadata.explicit ?? false,
             abridged: item.media?.metadata.abridged ?? false)
