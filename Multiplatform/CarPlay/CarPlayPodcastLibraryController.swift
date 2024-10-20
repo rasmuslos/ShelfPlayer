@@ -26,6 +26,7 @@ internal class CarPlayPodcastLibraryController: CarPlayTabBar.LibraryTemplate {
         
         template = .init(title: library.name, sections: [], assistantCellConfiguration: .none)
         
+        setupObservers()
         updateSections()
     }
 }
@@ -38,7 +39,7 @@ private extension CarPlayPodcastLibraryController {
                 return
             }
             
-            let sections = await HomeRow.prepareForPresentation(rows).parallelMap {
+            var sections = await HomeRow.prepareForPresentation(rows).parallelMap {
                 let items = await $0.entities.parallelMap(CarPlayHelper.buildEpisodeListItem)
                 let section = CPListSection(items: items,
                                             header: $0.localizedLabel,
@@ -49,6 +50,17 @@ private extension CarPlayPodcastLibraryController {
                 
                 return section
             }
+            
+            let item = CPListItem(text: String(localized: "carPlay.podcasts.all"), detailText: nil)
+            item.handler = { _, completion in
+                Task {
+                    let controller = CarPlayPodcastListController(interfaceController: self.interfaceController, library: self.library)
+                    try await self.interfaceController.pushTemplate(controller.template, animated: true)
+                    completion()
+                }
+            }
+            
+            sections.append(.init(items: [item]))
             
             self.template.updateSections(sections)
         }

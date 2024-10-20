@@ -1,0 +1,63 @@
+//
+//  CarPlayPodcastListController.swift
+//  Multiplatform
+//
+//  Created by Rasmus Krämer on 20.10.24.
+//
+
+import Foundation
+import CarPlay
+import Defaults
+import ShelfPlayerKit
+
+internal class CarPlayPodcastListController {
+    private let interfaceController: CPInterfaceController
+    private let library: Library
+    
+    let template: CPListTemplate
+    private var updateTask: Task<Void, Never>?
+    
+    init(interfaceController: CPInterfaceController, library: Library) {
+        self.interfaceController = interfaceController
+        self.library = library
+        
+        template = .init(title: library.name, sections: [], assistantCellConfiguration: .none)
+        updateSections()
+    }
+}
+
+private extension CarPlayPodcastListController {
+    func updateSections() {
+        updateTask?.cancel()
+        updateTask = .detached {
+            guard let podcasts = try? await AudiobookshelfClient.shared.podcasts(libraryID: self.library.id, limit: nil, page: nil).0 else {
+                return
+            }
+            
+            let items = await podcasts.sorted { $0.sortName < $1.sortName }.parallelMap { podcast in
+                let image: UIImage?
+                
+                if let data = await podcast.cover?.data {
+                    image = .init(data: data)
+                } else {
+                    image = nil
+                }
+                
+                let item = CPListItem(text: podcast.name, detailText: podcast.author, image: image)
+                
+                item.handler = { _, completion in
+                    Task {
+                        let controller = CarPlayPodcastController(interfaceController: self.interfaceController, podcast: podcast)
+                        try await self.interfaceController.pushTemplate(controller.template, animated: true)
+                        completion()
+                    }
+                }
+                
+                return item
+            }
+            
+            let section = CPListSection(items: items, header: nil, sectionIndexTitle: nil)
+            self.template.updateSections([section])
+        }
+    }
+}

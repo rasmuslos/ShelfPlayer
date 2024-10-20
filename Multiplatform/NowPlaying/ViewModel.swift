@@ -401,6 +401,18 @@ internal extension NowPlaying.ViewModel {
         AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration * percentage
     }
     
+    func advance(to index: Int) {
+        Task {
+            do {
+                try await AudioPlayer.shared.advance(to: index)
+            } catch {
+                await MainActor.run {
+                    notifyError += 1
+                }
+            }
+        }
+    }
+    
     func dismissBookmarkAlert() {
         Task { @MainActor in
             bookmarkCapturedTime = nil
