@@ -26,6 +26,7 @@ internal class CarPlayAudiobookLibraryController: CarPlayTabBar.LibraryTemplate 
         
         template = .init(title: library.name, sections: [], assistantCellConfiguration: .none)
         
+        setupObservers()
         updateSections()
     }
 }
