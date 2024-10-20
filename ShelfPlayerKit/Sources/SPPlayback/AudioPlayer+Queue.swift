@@ -12,6 +12,16 @@ import SPOffline
 import SPOfflineExtended
 
 public extension AudioPlayer {
+    func advance(to index: Int) async throws {
+        guard index < queue.count else {
+            stop()
+            return
+        }
+        
+        queue.removeFirst(index)
+        try await advance()
+    }
+    
     func queue(_ item: PlayableItem) {
         if self.item == nil && queue.isEmpty {
             Task {

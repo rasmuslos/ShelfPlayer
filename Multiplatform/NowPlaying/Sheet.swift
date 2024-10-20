@@ -108,34 +108,38 @@ private extension NowPlaying.Sheet {
                 emptyText("queue.empty")
             } else {
                 ForEach(Array(viewModel.queue.enumerated()), id: \.offset) { index, item in
-                    HStack(spacing: 0) {
-                        ItemImage(cover: item.cover)
-                            .frame(width: 48)
-                            .padding(.trailing, 8)
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(item.name)
-                                .lineLimit(1)
+                    Button {
+                        viewModel.advance(to: index)
+                    } label: {
+                        HStack(spacing: 0) {
+                            ItemImage(cover: item.cover)
+                                .frame(width: 48)
+                                .padding(.trailing, 8)
                             
-                            if let author = item.author {
-                                Text(author)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(item.name)
                                     .lineLimit(1)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+                                
+                                if let author = item.author {
+                                    Text(author)
+                                        .lineLimit(1)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
+                            
+                            Spacer(minLength: 12)
+                            
+                            Label("drag", systemImage: "line.3.horizontal")
+                                .labelStyle(.iconOnly)
+                                .font(.title3)
+                                .foregroundStyle(.secondary)
                         }
-                        
-                        Spacer(minLength: 12)
-                        
-                        Label("drag", systemImage: "line.3.horizontal")
-                            .labelStyle(.iconOnly)
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
+                        .contentShape(.rect)
                     }
                     .id(item)
                     .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
                     .listRowBackground(background)
-                    .contentShape(.rect)
                     .contextMenu {
                         QueueContextMenuItems(item: item, index: index)
                     } preview: {

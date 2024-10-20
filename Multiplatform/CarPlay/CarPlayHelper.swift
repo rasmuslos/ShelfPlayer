@@ -54,10 +54,10 @@ internal struct CarPlayHelper {
             listItem.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
         }
         
-        listItem.playingIndicatorLocation = .trailing
+        listItem.playingIndicatorLocation = .leading
+        listItem.isPlaying = AudioPlayer.shared.item == item
         listItem.isExplicitContent = (item as? Audiobook)?.explicit ?? false
         
-        listItem.isPlaying = AudioPlayer.shared.item == item
         listItem.playbackProgress = OfflineManager.shared.progressEntity(item: item).progress
         
         return listItem
