@@ -38,29 +38,10 @@ private extension CarPlayAudiobookLibraryController {
                 return
             }
             
-            let disableDiscoverRow = Defaults[.disableDiscoverRow]
-            let hideFromContinueListening = Defaults[.hideFromContinueListening]
-            
-            let sections = await rows.filter {
-                guard $0.id == "discover" else {
-                    return !$0.entities.isEmpty
-                }
-                
-                return !disableDiscoverRow && !$0.entities.isEmpty
-            }.parallelMap { row in
-                let audiobooks: [Audiobook] = {
-                    guard row.id == "continue-listening" else {
-                        return row.entities
-                    }
-                    
-                    return row.entities.filter { audiobook in
-                        !hideFromContinueListening.contains { $0.itemId == audiobook.id }
-                    }
-                }()
-                
-                let items = await row.entities.parallelMap(CarPlayHelper.buildAudiobookListItem)
+            let sections = await HomeRow.prepareForPresentation(rows).parallelMap {
+                let items = await $0.entities.parallelMap(CarPlayHelper.buildAudiobookListItem)
                 let section = CPListSection(items: items,
-                                            header: row.localizedLabel,
+                                            header: $0.localizedLabel,
                                             headerSubtitle: nil,
                                             headerImage: nil,
                                             headerButton: nil,

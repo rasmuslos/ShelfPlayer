@@ -72,18 +72,26 @@ private extension CarPlayTabBar {
             var templates: [CPTemplate] = [self.offlineController.template]
             
             for library in libraries {
-                if library.type == .audiobooks {
-                    let controller = CarPlayAudiobookLibraryController(interfaceController: self.interfaceController, library: library)
-                    self.libraries[library] = controller
-                    
-                    controller.template.tabTitle = library.name
+                let controller: CarPlayTabBar.LibraryTemplate
+                
+                switch library.type {
+                case .audiobooks:
+                    controller = CarPlayAudiobookLibraryController(interfaceController: self.interfaceController, library: library)
                     controller.template.tabImage = .init(systemName: "headphones")
-                    
-                    templates.append(controller.template)
+                case .podcasts:
+                    controller = CarPlayPodcastLibraryController(interfaceController: self.interfaceController, library: library)
+                    controller.template.tabImage = .init(systemName: "antenna.radiowaves.left.and.right")
+                default:
+                    continue
                 }
+                
+                controller.template.tabTitle = library.name
+                
+                self.libraries[library] = controller
+                templates.append(controller.template)
             }
             
-            if templates.count > CPTabBarTemplate.maximumTabCount || true {
+            if templates.count > CPTabBarTemplate.maximumTabCount {
                 self.template.updateTemplates([self.offlineController.template, self.librariesListTemplate])
             } else {
                 self.template.updateTemplates(templates)
