@@ -15,8 +15,6 @@ internal struct AudiobookHomePanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.showAuthorsRow) private var showAuthorsRow
-    @Default(.disableDiscoverRow) private var disableDiscoverRow
-    @Default(.hideFromContinueListening) private var hideFromContinueListening
     
     @State private var _authors = [HomeRow<Author>]()
     @State private var _audiobooks = [HomeRow<Audiobook>]()
@@ -33,13 +31,7 @@ internal struct AudiobookHomePanel: View {
         return _authors
     }
     private var audiobooks: [HomeRow<Audiobook>] {
-        _audiobooks.filter {
-            guard $0.id == "discover" else {
-                return !$0.entities.isEmpty
-            }
-            
-            return !disableDiscoverRow && !$0.entities.isEmpty
-        }
+        HomeRow.prepareForPresentation(_audiobooks)
     }
     
     var body: some View {
@@ -62,18 +54,8 @@ internal struct AudiobookHomePanel: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        ForEach(audiobooks) { row in
-                            var entities: [Audiobook] {
-                                guard row.id == "continue-listening" else {
-                                    return row.entities
-                                }
-                                
-                                return row.entities.filter { audiobook in
-                                    !hideFromContinueListening.contains { $0.itemId == audiobook.id }
-                                }
-                            }
-                            
-                            AudiobookRow(title: row.localizedLabel, small: false, audiobooks: entities)
+                        ForEach(audiobooks) {
+                            AudiobookRow(title: $0.localizedLabel, small: false, audiobooks: $0.entities)
                         }
                         
                         ForEach(authors) { row in

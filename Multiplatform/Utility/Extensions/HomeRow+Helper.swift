@@ -1,11 +1,12 @@
 //
-//  HomeRow+Label.swift
+//  HomeHelper.swift
 //  Multiplatform
 //
-//  Created by Rasmus Krämer on 17.10.24.
+//  Created by Rasmus Krämer on 20.10.24.
 //
 
 import Foundation
+import Defaults
 import ShelfPlayerKit
 
 internal extension HomeRow {
@@ -33,6 +34,25 @@ internal extension HomeRow {
             String(localized: "row.newestAuthors")
         default:
             label
+        }
+    }
+    
+    static func prepareForPresentation<S>(_ rows: [HomeRow<S>]) -> [HomeRow<S>] {
+        let disableDiscoverRow = Defaults[.disableDiscoverRow]
+        let hideFromContinueListening = Defaults[.hideFromContinueListening]
+        
+        return rows.compactMap { (row: HomeRow<S>) -> HomeRow<S>? in
+            if row.id == "discover" && disableDiscoverRow {
+                return nil
+            }
+            
+            guard row.id == "continue-listening" else {
+                return row
+            }
+            
+            return .init(id: row.id, label: row.label, entities: row.entities.filter { item in
+                !hideFromContinueListening.contains { $0.itemId == item.identifiers.itemID && $0.episodeId == item.identifiers.episodeID }
+            })
         }
     }
 }
