@@ -15,10 +15,15 @@ internal class CarPlayNowPlayingController: NSObject {
     private let template = CPNowPlayingTemplate.shared
     private let interfaceController: CPInterfaceController
     
+    private let queueController: CarPlayQueueController
+    
     private let rateButton: CPNowPlayingPlaybackRateButton
+    private let nextButton: CPNowPlayingImageButton
     
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
+        queueController = .init(interfaceController: interfaceController)
+        
         rateButton = CPNowPlayingPlaybackRateButton { _ in
             var rate = AudioPlayer.shared.playbackRate + Defaults[.playbackSpeedAdjustment]
             
@@ -27,6 +32,11 @@ internal class CarPlayNowPlayingController: NSObject {
             }
             
             AudioPlayer.shared.playbackRate = rate
+        }
+        nextButton = CPNowPlayingImageButton(image: .init(systemName: "forward.end.fill")!) { _ in
+            Task {
+                try await AudioPlayer.shared.advance(to: 0)
+            }
         }
         
         super.init()
@@ -38,6 +48,11 @@ internal class CarPlayNowPlayingController: NSObject {
 
 extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
     func nowPlayingTemplateUpNextButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
+        Task {
+            try await interfaceController.pushTemplate(queueController.template, animated: true)
+        }
+    }
+    func nowPlayingTemplateAlbumArtistButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
         if let audiobook = AudioPlayer.shared.item as? Audiobook {
             Task {
                 let controller = CarPlayChaptersController(interfaceController: interfaceController, audiobook: audiobook)
@@ -55,40 +70,22 @@ extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
 }
 
 private extension CarPlayNowPlayingController {
-    var nextButton: CPNowPlayingImageButton {
-        .init(image: .init(systemName: "forward.end.fill")!) { _ in
-            Task {
-                try await AudioPlayer.shared.advance(to: 0)
-            }
-        }
-    }
-    
-    func setupObservers() {
-        template.add(self)
-        
-        NotificationCenter.default.addObserver(forName: AudioPlayer.itemDidChangeNotification, object: nil, queue: nil) { _ in
-            self.update()
-        }
-        NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { _ in
-            self.update()
-        }
-    }
-    
-    private func update() {
+    func update() {
         if AudioPlayer.shared.queue.isEmpty {
             template.updateNowPlayingButtons([rateButton])
         } else {
             template.updateNowPlayingButtons([rateButton, nextButton])
         }
         
-        guard let item = AudioPlayer.shared.item else {
-            template.isAlbumArtistButtonEnabled = false
-            template.isUpNextButtonEnabled = false
-            
-            return
-        }
-        
         template.isUpNextButtonEnabled = true
-        template.isAlbumArtistButtonEnabled = item.type == .episode
+        template.isAlbumArtistButtonEnabled = true
+    }
+    
+    func setupObservers() {
+        template.add(self)
+        
+        NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { _ in
+            self.update()
+        }
     }
 }

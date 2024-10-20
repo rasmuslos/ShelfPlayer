@@ -36,10 +36,6 @@ internal struct CarPlayHelper {
     }
     
     private static func finalizeListItem(_ listItem: CPListItem, item: PlayableItem) async -> CPListItem {
-        if let data = await item.cover?.data {
-            listItem.setImage(UIImage(data: data))
-        }
-        
         listItem.userInfo = [
             "identifier": convertIdentifier(item: item),
         ]
@@ -58,6 +54,7 @@ internal struct CarPlayHelper {
         listItem.isPlaying = AudioPlayer.shared.item == item
         listItem.isExplicitContent = (item as? Audiobook)?.explicit ?? false
         
+        listItem.setImage(await item.cover?.platformImage)
         listItem.playbackProgress = OfflineManager.shared.progressEntity(item: item).progress
         
         return listItem

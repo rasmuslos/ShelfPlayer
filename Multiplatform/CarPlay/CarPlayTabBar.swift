@@ -13,6 +13,7 @@ internal final class CarPlayTabBar {
     private let interfaceController: CPInterfaceController
     private let offlineController: CarPlayOfflineController
     
+    // The Task helps to prevent unnecessary image loading
     private var updateTask: Task<Void, Never>?
     private var libraries: [Library: LibraryTemplate]
     
