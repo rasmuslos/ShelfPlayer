@@ -60,7 +60,7 @@ private extension CarPlayPodcastLibraryController {
                 }
             }
             
-            sections.append(.init(items: [item]))
+            sections.append(.init(items: [item], header: String(localized: "carPlay.podcasts.library"), sectionIndexTitle: nil))
             
             self.template.updateSections(sections)
         }

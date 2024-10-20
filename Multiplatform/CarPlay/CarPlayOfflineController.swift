@@ -73,19 +73,11 @@ private extension CarPlayOfflineController {
             self.podcastsListSections = []
             
             for (podcast, episodes) in podcasts {
-                let image: UIImage?
-                
-                if let data = await podcast.cover?.data {
-                    image = UIImage(data: data)
-                } else {
-                    image = nil
-                }
-                
                 let episodeItems = await episodes.parallelMap(CarPlayHelper.buildEpisodeListItem)
                 let section = CPListSection(items: episodeItems,
                                             header: podcast.name,
                                             headerSubtitle: podcast.author,
-                                            headerImage: image,
+                                            headerImage: await podcast.cover?.platformImage,
                                             headerButton: nil,
                                             sectionIndexTitle: nil)
                 
