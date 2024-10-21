@@ -53,6 +53,8 @@ private extension CarPlayDelegate {
         if authorized {
             controller = .init(interfaceController: interfaceController)
         } else {
+            controller = nil
+            
             Task {
                 try await interfaceController.setRootTemplate(unauthorizedTemplate, animated: false)
             }
