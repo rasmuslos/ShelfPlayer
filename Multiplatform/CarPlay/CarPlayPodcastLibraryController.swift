@@ -62,6 +62,10 @@ private extension CarPlayPodcastLibraryController {
             
             sections.append(.init(items: [item], header: String(localized: "carPlay.podcasts.library"), sectionIndexTitle: nil))
             
+            guard !Task.isCancelled else {
+                return
+            }
+            
             self.template.updateSections(sections)
         }
     }

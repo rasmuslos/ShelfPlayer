@@ -40,6 +40,8 @@ public enum AudiobookSortOrder: String, Identifiable, Hashable, Codable, CaseIte
     case added = "addedAt"
     case duration = "media.duration"
     
+    case lastPlayed = "internal.lastPlayed"
+    
     public var id: Self {
         self
     }

@@ -59,6 +59,8 @@ internal extension AudiobookSortOrder {
             "sort.added"
         case .duration:
             "sort.duration"
+        case .lastPlayed:
+            "sort.lastPlayed"
         }
     }
 }

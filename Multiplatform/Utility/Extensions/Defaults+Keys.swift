@@ -43,6 +43,9 @@ internal extension Defaults.Keys {
     static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobooksSortOrder", default: .added)
     static let audiobooksAscending = Key<Bool>("audiobooksFilterAscending", default: true)
     
+    static let offlineAudiobooksAscending = Key<Bool>("offlineAudiobooksAscending", default: true)
+    static let offlineAudiobooksSortOrder = Key<AudiobookSortOrder>("offlineAudiobooksSortOrder", default: .lastPlayed)
+    
     static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .all)
     static let audiobooksDisplay = Key<ItemDisplayType>("audiobooksDisplay", default: .list)
     

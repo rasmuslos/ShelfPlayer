@@ -51,6 +51,10 @@ private extension CarPlayAudiobookLibraryController {
                 return section
             }
             
+            guard !Task.isCancelled else {
+                return
+            }
+            
             self.template.updateSections(sections)
         }
     }

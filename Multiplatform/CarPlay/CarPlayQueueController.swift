@@ -48,6 +48,10 @@ private extension CarPlayQueueController {
                 return listItem
             }
             
+            guard !Task.isCancelled else {
+                return
+            }
+            
             let section = CPListSection(items: items)
             self.template.updateSections([section])
         }
