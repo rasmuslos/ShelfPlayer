@@ -99,9 +99,11 @@ internal struct OfflineView: View {
             return
         }
         
+        let sorted = Dictionary(uniqueKeysWithValues: podcasts.sorted(by: { $0.key.sortName < $1.key.sortName }))
+        
         await MainActor.withAnimation {
             self._audiobooks = audiobooks
-            self.podcasts = podcasts
+            self.podcasts = sorted
         }
     }
 }
