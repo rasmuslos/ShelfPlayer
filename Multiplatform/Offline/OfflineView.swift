@@ -7,14 +7,22 @@
 
 import SwiftUI
 import TipKit
+import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
 internal struct OfflineView: View {
+    @Default(.offlineAudiobooksSortOrder) private var offlineAudiobooksSortOrder
+    @Default(.offlineAudiobooksAscending) private var offlineAudiobooksAscending
+    
     @State private var accountSheetPresented = false
     
-    @State private var audiobooks = [Audiobook]()
+    @State private var _audiobooks = [Audiobook]()
     @State private var podcasts = [Podcast: [Episode]]()
+    
+    private var audiobooks: [Audiobook] {
+        return AudiobookSortFilter.sort(audiobooks: _audiobooks, order: offlineAudiobooksSortOrder, ascending: offlineAudiobooksAscending)
+    }
     
     var body: some View {
         NavigationStack {
@@ -56,6 +64,16 @@ internal struct OfflineView: View {
             }
             .navigationTitle("offline.title")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Menu {
+                    AudiobookSortFilter.SortOrders(options: AudiobookSortOrder.allCases,
+                                                   sortOrder: $offlineAudiobooksSortOrder,
+                                                   ascending: $offlineAudiobooksAscending)
+                } label: {
+                    Label("filterSort", systemImage: "arrowshape.\(offlineAudiobooksAscending ? "up" : "down").circle")
+                        .contentTransition(.symbolEffect(.replace.upUp))
+                }
+            }
             .modifier(NowPlaying.SafeAreaModifier())
             .modifier(NowPlaying.BackgroundModifier(bottomOffset: -40))
             .task {
@@ -82,7 +100,7 @@ internal struct OfflineView: View {
         }
         
         await MainActor.withAnimation {
-            self.audiobooks = audiobooks
+            self._audiobooks = audiobooks
             self.podcasts = podcasts
         }
     }

@@ -48,6 +48,10 @@ private extension CarPlayPodcastListController {
                 return item
             }
             
+            guard !Task.isCancelled else {
+                return
+            }
+            
             let section = CPListSection(items: items, header: nil, sectionIndexTitle: nil)
             self.template.updateSections([section])
         }

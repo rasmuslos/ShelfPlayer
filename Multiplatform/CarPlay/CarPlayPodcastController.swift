@@ -45,6 +45,10 @@ private extension CarPlayPodcastController {
             let items = await sorted.parallelMap(CarPlayHelper.buildEpisodeListItem)
             let section = CPListSection(items: items, header: nil, sectionIndexTitle: nil)
             
+            guard !Task.isCancelled else {
+                return
+            }
+            
             self.template.updateSections([section])
         }
     }
