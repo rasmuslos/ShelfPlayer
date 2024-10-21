@@ -7,6 +7,7 @@
 
 import Foundation
 import CarPlay
+import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
@@ -50,7 +51,14 @@ private extension CarPlayOfflineController {
                 return
             }
             
-            let items = await audiobooks.parallelMap(CarPlayHelper.buildAudiobookListItem)
+            let sorted = AudiobookSortFilter.sort(audiobooks: audiobooks,
+                                                  order: Defaults[.offlineAudiobooksSortOrder],
+                                                  ascending: Defaults[.offlineAudiobooksAscending])
+            let items = await sorted.parallelMap(CarPlayHelper.buildAudiobookListItem)
+            
+            guard !Task.isCancelled else {
+                return
+            }
             
             self.audiobooksListSection = CPListSection(items: items,
                                                   header: String(localized: "carPlay.offline.audiobooks"),
@@ -110,6 +118,12 @@ private extension CarPlayOfflineController {
         NotificationCenter.default.addObserver(forName: AudioPlayer.itemDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.updateAudiobooksSection()
             self?.updatePodcastsSection()
+        }
+        
+        Task {
+            for await _ in Defaults.updates([.offlineAudiobooksAscending, .offlineAudiobooksSortOrder]) {
+                updateAudiobooksSection()
+            }
         }
         
         // TODO: Update progress
