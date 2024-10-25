@@ -1596,9 +1596,6 @@
     "carPlay.libraries" : {
 
     },
-    "carPlay.offline.audiobooks" : {
-
-    },
     "carPlay.offline.empty" : {
 
     },
@@ -4550,7 +4547,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FIlter"
+            "value" : "Filter"
           }
         },
         "en" : {

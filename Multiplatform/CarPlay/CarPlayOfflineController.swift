@@ -60,12 +60,7 @@ private extension CarPlayOfflineController {
                 return
             }
             
-            self.audiobooksListSection = CPListSection(items: items,
-                                                  header: String(localized: "carPlay.offline.audiobooks"),
-                                                  headerSubtitle: nil,
-                                                  headerImage: UIImage(systemName: "book"),
-                                                  headerButton: nil,
-                                                  sectionIndexTitle: nil)
+            self.audiobooksListSection = .init(items: items)
             
             self.updateTemplate()
         }
@@ -81,7 +76,7 @@ private extension CarPlayOfflineController {
             self.podcastsListSections = []
             
             for (podcast, episodes) in podcasts.sorted(by: { $0.key.sortName < $1.key.sortName }) {
-                let items = await episodes.parallelMap(CarPlayHelper.buildEpisodeListItem)
+                let items = await episodes.parallelMap { await CarPlayHelper.buildEpisodeListItem($0, displayCover: false) }
                 let section = CPListSection(items: items,
                                             header: podcast.name,
                                             headerSubtitle: podcast.author,
