@@ -25,8 +25,6 @@ internal struct Timeline: View {
     
     var body: some View {
         LazyVStack(spacing: 52) {
-            EventRow(date: .now, currentTime: 10, type: .end)
-            
             ForEach(sessions) { session in
                 VStack(spacing: 8) {
                     EventRow(date: session.endDate, currentTime: session.currentTime, type: .end)

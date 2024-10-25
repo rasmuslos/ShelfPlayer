@@ -36,7 +36,7 @@ internal struct OfflineView: View {
                 
                 if !audiobooks.isEmpty {
                     Section("downloads.audiobooks") {
-                        OfflineAudiobookList(audiobooks: audiobooks.sorted())
+                        OfflineAudiobookList(audiobooks: audiobooks)
                     }
                 }
                 

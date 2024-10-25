@@ -14,9 +14,7 @@ internal struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
     func makeBody(configuration: Configuration) -> some View {
         VStack(spacing: 0) {
             Button {
-                withAnimation {
-                    configuration.isExpanded.toggle()
-                }
+                configuration.isExpanded.toggle()
             } label: {
                 HStack {
                     configuration.label
@@ -39,6 +37,18 @@ internal struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
                 .frame(maxHeight: configuration.isExpanded ? .infinity : 0, alignment: .top)
                 .clipped()
                 .allowsHitTesting(configuration.isExpanded)
+        }
+    }
+}
+
+#Preview {
+    ScrollView {
+        DisclosureGroup(String("Hello, World!")) {
+            LazyVStack {
+                ForEach(1..<200) {
+                    Text($0.description)
+                }
+            }
         }
     }
 }
