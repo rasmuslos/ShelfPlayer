@@ -6,21 +6,25 @@
 //
 
 import SwiftUI
+import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-struct SwipeActionsModifier: ViewModifier {
+internal struct SwipeActionsModifier: ViewModifier {
+    @Default(.tintColor) private var tintColor
+    
     let item: PlayableItem
     
     @Binding var loading: Bool
     
     func body(content: Content) -> some View {
         content
-            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            .swipeActions(edge: .leading) {
                 QueueButton(item: item, hideLast: true)
-                    .tint(.orange)
+                    .tint(tintColor.accent)
+                    .labelStyle(.iconOnly)
             }
-            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            .swipeActions(edge: .leading) {
                 Button {
                     Task {
                         loading = true
@@ -30,13 +34,25 @@ struct SwipeActionsModifier: ViewModifier {
                 } label: {
                     Label("play", systemImage: "play")
                 }
-                .tint(.accentColor)
+                .tint(tintColor.color)
+                .labelStyle(.iconOnly)
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            .swipeActions(edge: .trailing) {
                 DownloadButton(item: item, tint: true)
+                    .labelStyle(.iconOnly)
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            .swipeActions(edge: .trailing) {
                 ProgressButton(item: item, tint: true)
+                    .labelStyle(.iconOnly)
             }
     }
 }
+
+#if DEBUG
+#Preview {
+    List {
+        AudiobookList(audiobooks: .init(repeating: [.fixture], count: 7))
+    }
+    .environment(NowPlaying.ViewModel())
+}
+#endif

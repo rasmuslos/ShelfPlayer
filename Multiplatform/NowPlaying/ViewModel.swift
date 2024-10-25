@@ -166,12 +166,14 @@ internal extension NowPlaying.ViewModel {
             return _expanded
         }
         set {
+            UIApplication.shared.isIdleTimerDisabled = newValue
+            
             Task { @MainActor in
                 if newValue {
                     dragOffset = 0
                 }
                 
-                UIApplication.shared.isIdleTimerDisabled = newValue
+                sheetPresented = false
                 _expanded = newValue
             }
         }
