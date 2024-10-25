@@ -91,7 +91,7 @@ internal extension NowPlaying {
                         }
                     }
                 }
-                .statusBarHidden()
+                .persistentSystemOverlays(isCompact ? .hidden : .automatic)
                 .ignoresSafeArea(edges: .bottom)
                 .presentationDetents([.fraction(0.7)])
                 .sensoryFeedback(.selection, trigger: viewModel.sheetTab)

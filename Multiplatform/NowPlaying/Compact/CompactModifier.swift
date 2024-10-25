@@ -48,14 +48,14 @@ internal extension NowPlaying {
                                 // Now playing view background
                                 Group {
                                     if colorScheme == .dark {
-                                            Rectangle()
+                                        Rectangle()
                                             .foregroundStyle(.background.secondary)
                                     } else {
                                         Rectangle()
                                             .foregroundStyle(.background)
                                     }
                                 }
-                                    .opacity(viewModel.expanded ? 1 : 0)
+                                .opacity(viewModel.expanded ? 1 : 0)
                             }
                             .allowsHitTesting(false)
                             .mask {
@@ -164,7 +164,7 @@ private struct ExpandedForeground: View {
                 .padding(40)
                 .modifier(NowPlaying.GestureModifier(active: true))
                 .padding(-40)
-                .transition(.opacity)
+                .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.4)), removal: .identity))
             }
         }
         .padding(.horizontal, 28)

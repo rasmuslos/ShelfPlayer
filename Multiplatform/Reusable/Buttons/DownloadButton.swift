@@ -65,7 +65,7 @@ internal struct DownloadButton: View {
         }
         .sensoryFeedback(.success, trigger: notify)
         .symbolVariant(tint ? .none : .circle)
-        .tint(tint ? offlineTracker.status == .downloaded ? .red : .green : nil)
+        .tint(tint ? .blue : nil)
     }
     
     private func download() {
