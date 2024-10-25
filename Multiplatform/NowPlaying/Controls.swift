@@ -160,10 +160,14 @@ private struct ControlButtons: View {
     
     var body: some View {
         if !compact {
-            LazyVGrid(columns: [.init(), .init(), .init()]) {
+            HStack(spacing: 0) {
+                Spacer()
                 backwardsButton
+                Spacer()
                 playButton
+                Spacer()
                 forwardButton
+                Spacer()
             }
             .padding(.top, 60)
             .padding(.bottom, 80)

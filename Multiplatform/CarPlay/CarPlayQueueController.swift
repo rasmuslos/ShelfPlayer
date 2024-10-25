@@ -31,9 +31,9 @@ private extension CarPlayQueueController {
                 let listItem: CPListItem
                 
                 if let audiobook = item as? Audiobook {
-                    listItem = await CarPlayHelper.buildAudiobookListItem(audiobook: audiobook)
+                    listItem = await CarPlayHelper.buildAudiobookListItem(audiobook)
                 } else if let episode = item as? Episode {
-                    listItem = await CarPlayHelper.buildEpisodeListItem(episode: episode)
+                    listItem = await CarPlayHelper.buildEpisodeListItem(episode, displayCover: true)
                 } else {
                     listItem = .init(text: ":F", detailText: "somehow invalid item type in queue?")
                 }

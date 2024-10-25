@@ -52,8 +52,6 @@ extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
     func nowPlayingTemplateUpNextButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
         if let lastNextUpTapDate {
             print(lastNextUpTapDate.distance(to: .now))
-        } else {
-            print("ddd")
         }
         
         lastNextUpTapDate = .now
