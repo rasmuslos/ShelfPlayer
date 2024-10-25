@@ -40,7 +40,7 @@ private extension CarPlayPodcastLibraryController {
             }
             
             var sections = await HomeRow.prepareForPresentation(rows).parallelMap {
-                let items = await $0.entities.parallelMap(CarPlayHelper.buildEpisodeListItem)
+                let items = await $0.entities.parallelMap { await CarPlayHelper.buildEpisodeListItem($0, displayCover: true) }
                 let section = CPListSection(items: items,
                                             header: $0.localizedLabel,
                                             headerSubtitle: nil,

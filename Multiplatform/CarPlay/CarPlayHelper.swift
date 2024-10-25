@@ -11,7 +11,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct CarPlayHelper {
-    static func buildAudiobookListItem(audiobook: Audiobook) async -> CPListItem {
+    static func buildAudiobookListItem(_ audiobook: Audiobook) async -> CPListItem {
         let detail: String?
         
         if let narrator = audiobook.narrator, let author = audiobook.author {
@@ -24,14 +24,14 @@ internal struct CarPlayHelper {
             detail = nil
         }
         
-        return await finalizeListItem(CPListItem(text: audiobook.name, detailText: detail, image: nil), item: audiobook)
+        return await finalizeListItem(CPListItem(text: audiobook.name, detailText: detail, image: nil), item: audiobook, displayCover: true)
     }
     
-    static func buildEpisodeListItem(episode: Episode) async -> CPListItem {
-        await finalizeListItem(CPListItem(text: episode.name, detailText: episode.author, image: nil), item: episode)
+    static func buildEpisodeListItem(_ episode: Episode, displayCover: Bool) async -> CPListItem {
+        await finalizeListItem(CPListItem(text: episode.name, detailText: episode.author, image: nil), item: episode, displayCover: displayCover)
     }
     
-    private static func finalizeListItem(_ listItem: CPListItem, item: PlayableItem) async -> CPListItem {
+    private static func finalizeListItem(_ listItem: CPListItem, item: PlayableItem, displayCover: Bool) async -> CPListItem {
         listItem.userInfo = [
             "identifier": convertIdentifier(item: item),
         ]
@@ -42,6 +42,10 @@ internal struct CarPlayHelper {
             }
         }
         
+        if displayCover {
+            listItem.setImage(await item.cover?.platformImage)
+        }
+        
         if OfflineManager.shared.offlineStatus(parentId: item.id) == .downloaded {
             listItem.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
         }
@@ -50,7 +54,6 @@ internal struct CarPlayHelper {
         listItem.isPlaying = AudioPlayer.shared.item == item
         listItem.isExplicitContent = (item as? Audiobook)?.explicit ?? false
         
-        listItem.setImage(await item.cover?.platformImage)
         listItem.playbackProgress = OfflineManager.shared.progressEntity(item: item).progress
         
         return listItem
