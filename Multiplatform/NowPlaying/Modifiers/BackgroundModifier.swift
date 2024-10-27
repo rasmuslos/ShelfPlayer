@@ -22,22 +22,22 @@ internal extension NowPlaying {
                         // Tab bar background
                         if viewModel.item != nil {
                             Rectangle()
-                                .frame(height: 300)
+                                .fill(.bar)
+                                .frame(height: 200)
                                 .mask {
                                     VStack(spacing: 0) {
                                         LinearGradient(colors: [.black.opacity(0), .black], startPoint: .top, endPoint: .bottom)
-                                            .frame(height: 50)
+                                            .frame(height: 30)
                                         
                                         Rectangle()
-                                            .frame(height: 150)
+                                            .frame(height: 170)
                                     }
                                 }
-                                .ignoresSafeArea(.keyboard)
-                                .ignoresSafeArea(edges: .all)
-                                .foregroundStyle(.bar)
-                                .padding(.bottom, -175 + bottomOffset)
-                                .allowsHitTesting(false)
                                 .toolbarBackground(.hidden, for: .tabBar)
+                                .allowsHitTesting(false)
+                                .padding(.bottom, -140 + bottomOffset)
+                                .ignoresSafeArea(.all)
+                                .ignoresSafeArea(edges: .all)
                         }
                     }
             } else {
