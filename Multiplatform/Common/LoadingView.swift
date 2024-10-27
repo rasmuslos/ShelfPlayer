@@ -7,22 +7,31 @@
 
 import SwiftUI
 
-internal struct LoadingView: View {    
+internal struct LoadingView: View {
     var body: some View {
         UnavailableWrapper {
             VStack(spacing: 4) {
                 ProgressIndicator()
                 Text("loading")
+                    .foregroundStyle(.gray)
             }
-            .foregroundStyle(.gray)
         }
     }
 }
 
 internal struct ProgressIndicator: View {
+    var tint: Color = .gray
+    
     var body: some View {
-        ProgressView()
-            .tint(.gray)
+        #if DEBUG
+            Image(systemName: "rainbow")
+                .font(.title3)
+                .symbolRenderingMode(.multicolor)
+                .symbolEffect(.variableColor.iterative.dimInactiveLayers)
+        #else
+            ProgressView()
+                .tint(tint)
+        #endif
     }
 }
 

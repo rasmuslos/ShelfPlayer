@@ -36,6 +36,11 @@ internal struct CarPlayHelper {
             "identifier": convertIdentifier(item: item),
         ]
         listItem.handler = { _, completion in
+            guard AudioPlayer.shared.item != item else {
+                AudioPlayer.shared.playing.toggle()
+                return
+            }
+            
             Task {
                 try await AudioPlayer.shared.play(item)
                 completion()
