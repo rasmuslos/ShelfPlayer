@@ -82,7 +82,8 @@ internal extension NowPlaying {
                         }
                     )
                 }
-                .frame(height: dragging ? 12 : 8)
+                .frame(height: dragging ? 12 : 6)
+                .secondaryShadow(radius: dragging ? 10 : 0)
                 .padding(20)
                 .contentShape(.hoverMenuInteraction, .rect)
                 .padding(-20)

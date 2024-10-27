@@ -20,6 +20,9 @@ internal final class CarPlayQueueController {
         self.interfaceController = interfaceController
         
         template = .init(title: String(localized: "carPlay.queue.title"), sections: [], assistantCellConfiguration: .none)
+        
+        setupObservers()
+        updateSections()
     }
 }
 
@@ -54,6 +57,12 @@ private extension CarPlayQueueController {
             
             let section = CPListSection(items: items)
             self.template.updateSections([section])
+        }
+    }
+    
+    func setupObservers() {
+        NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.updateSections()
         }
     }
 }

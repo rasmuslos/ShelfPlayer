@@ -102,8 +102,7 @@ private struct Row: View {
                                         .opacity(0.2)
                                         .clipShape(.rect(cornerRadius: 8))
                                     
-                                    ProgressView()
-                                        .tint(.white)
+                                    ProgressIndicator(tint: .white)
                                 }
                             }
                         }

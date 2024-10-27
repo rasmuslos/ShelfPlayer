@@ -371,6 +371,8 @@ private extension NowPlaying.ViewModel {
                     self.skipForwardsInterval = skipForwardsInterval
                 }
             }
+        }
+        Task {
             for await skipBackwardsInterval in Defaults.updates(.skipBackwardsInterval) {
                 await MainActor.withAnimation {
                     self.skipBackwardsInterval = skipBackwardsInterval
