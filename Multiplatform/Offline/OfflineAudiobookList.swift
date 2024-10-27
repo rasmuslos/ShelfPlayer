@@ -69,8 +69,7 @@ internal extension OfflineAudiobookList {
                                     
                                     switch overlay {
                                         case .loading:
-                                            ProgressView()
-                                                .tint(.white)
+                                        ProgressIndicator(tint: .white)
                                         case .playing(let active):
                                             Label("playing", systemImage: "waveform")
                                                 .labelStyle(.iconOnly)
