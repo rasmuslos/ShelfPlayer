@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 import SPFoundation
 import SPNetwork
 import SPOffline
@@ -19,7 +20,7 @@ public extension AudioPlayer {
         }
         
         queue.removeFirst(index)
-        try await advance()
+        try await advance(finished: false)
     }
     
     func queue(_ item: PlayableItem) {
@@ -82,7 +83,11 @@ internal extension AudioPlayer {
         #endif
     }
     private func handleNextEpisodes(_ episodes: [Episode], episode: Episode) {
-        let episodes = episodes.sorted { $0.index < $1.index }
+        let filter = Defaults[.episodesFilter(podcastId: episode.podcastId)]
+        let sortOrder = Defaults[.episodesSortOrder(podcastId: episode.podcastId)]
+        let ascending = Defaults[.episodesAscending(podcastId: episode.podcastId)]
+        
+        let episodes = Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         guard let index = episodes.firstIndex(of: episode) else {
             return

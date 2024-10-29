@@ -22,6 +22,8 @@ public final class AudioPlayer {
             audioPlayer.rate > 0
         }
         set {
+            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
+            
             guard newValue != playing else {
                 return
             }
@@ -48,7 +50,6 @@ public final class AudioPlayer {
             Task {
                 await updateNowPlayingWidget()
             }
-            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
             
             NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
         }

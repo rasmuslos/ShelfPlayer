@@ -16,13 +16,13 @@ internal struct SecondaryShadow: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .shadow(color: (colorScheme == .dark ? Color.gray.opacity(0.5) : .black).opacity(opacity), radius: radius)
+            .shadow(color: (colorScheme == .dark ? Color.gray : .black).opacity(opacity), radius: radius)
     }
 }
 
 internal extension View {
     @ViewBuilder
-    func secondaryShadow(radius: CGFloat = 12, opacity: Double = 0.2) -> some View {
+    func secondaryShadow(radius: CGFloat = 12, opacity: Double = 0.3) -> some View {
         modifier(SecondaryShadow(radius: radius, opacity: opacity))
     }
 }
