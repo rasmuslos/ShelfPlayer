@@ -54,7 +54,7 @@ internal extension EpisodeView {
                             }
                         } label: {
                                 if viewModel.progressEntity.isFinished {
-                                    Image(systemName: "minus.circle.fill")
+                                    Image(systemName: "minus.circle")
                                 } else {
                                     Image(systemName: "checkmark.circle")
                                 }

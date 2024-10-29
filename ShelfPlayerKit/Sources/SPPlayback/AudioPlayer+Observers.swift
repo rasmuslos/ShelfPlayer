@@ -52,7 +52,7 @@ internal extension AudioPlayer {
                 }
                 
                 Task {
-                    try await self.advance()
+                    try await self.advance(finished: true)
                 }
                 
                 return
@@ -94,8 +94,7 @@ internal extension AudioPlayer {
             if finished && item?.identifiers.itemID == itemID && item?.identifiers.episodeID == episodeID {
                 Task {
                     do {
-                        playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration, forceReport: true)
-                        try await advance()
+                        try await advance(finished: true)
                     } catch {
                         stop()
                     }

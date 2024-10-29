@@ -48,10 +48,6 @@ internal struct AudiobookSortFilter: View {
             
             Section("section.sortOrder") {
                 SortOrders(options: [.name, .series, .author, .released, .added, .duration], sortOrder: $sortOrder, ascending: $ascending)
-                
-                Divider()
-                
-                Toggle("sort.ascending", systemImage: "arrowshape.up", isOn: $ascending)
             }
         } label: {
             Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down").circle")

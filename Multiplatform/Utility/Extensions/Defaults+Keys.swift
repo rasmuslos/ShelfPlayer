@@ -54,17 +54,6 @@ internal extension Defaults.Keys {
     static let authorsAscending = Key("authorsAscending", default: true)
     static let podcastsAscending = Key("podcastsAscending", default: true)
     
-    static func episodesFilter(podcastId: String) -> Defaults.Key<ItemFilter> {
-        .init("episodesFilter-\(podcastId)", default: .unfinished)
-    }
-    
-    static func episodesSortOrder(podcastId: String) -> Defaults.Key<EpisodeSortOrder> {
-        .init("episodesSort-\(podcastId)", default: .released)
-    }
-    static func episodesAscending(podcastId: String) -> Defaults.Key<Bool> {
-        .init("episodesFilterAscending-\(podcastId)", default: false)
-    }
-    
     // MARK: Intents
     
     static let lastSpotlightIndex = Key<Date?>("lastSpotlightIndex", default: nil)

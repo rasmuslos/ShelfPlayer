@@ -243,7 +243,7 @@ public extension OfflineManager {
     }
     
     func updateProgressEntity(itemID: String, episodeID: String?, currentTime: TimeInterval, duration: TimeInterval, success: Bool? = nil) {
-        let entity = OfflineManager.shared.progressEntity(itemID: itemID, episodeID: episodeID)
+        let entity = progressEntity(itemID: itemID, episodeID: episodeID)
         
         entity.progress = currentTime / duration
         

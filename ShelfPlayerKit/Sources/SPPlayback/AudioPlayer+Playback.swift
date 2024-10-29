@@ -73,11 +73,9 @@ public extension AudioPlayer {
         }
         
         if itemDuration != 0 && to >= itemDuration {
-            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
-            
             Task {
                 do {
-                    try await advance()
+                    try await advance(finished: true)
                 } catch {
                     stop()
                 }
@@ -175,7 +173,7 @@ internal extension AudioPlayer {
         updateChapterIndex()
     }
     
-    func advance() async throws {
+    func advance(finished: Bool) async throws {
         if queue.isEmpty {
             stop()
             return
@@ -192,6 +190,10 @@ internal extension AudioPlayer {
         chapterTTL = 0
         
         lastPause = nil
+        
+        if finished {
+            playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration, forceReport: true)
+        }
         playbackReporter = nil
         
         await clearNowPlayingMetadata()
@@ -202,12 +204,14 @@ internal extension AudioPlayer {
         try await start(queue.removeFirst())
         
         if let previous {
-            NotificationCenter.default.post(name: PlayableItem.finishedNotification, object: nil, userInfo: [
-                "itemID": previous.identifiers.itemID,
-                "episodeID": previous.identifiers.episodeID as Any,
-                
-                "finished": true,
-            ])
+            await MainActor.run {
+                NotificationCenter.default.post(name: PlayableItem.finishedNotification, object: nil, userInfo: [
+                    "itemID": previous.identifiers.itemID,
+                    "episodeID": previous.identifiers.episodeID as Any,
+                    
+                    "finished": true,
+                ])
+            }
         }
     }
     func itemDidFinish(_ item: PlayableItem) {
