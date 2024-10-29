@@ -20,8 +20,6 @@ internal class CarPlayNowPlayingController: NSObject {
     private let rateButton: CPNowPlayingPlaybackRateButton
     private let nextButton: CPNowPlayingImageButton
     
-    private var lastNextUpTapDate: Date?
-    
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         queueController = .init(interfaceController: interfaceController)
@@ -46,16 +44,13 @@ internal class CarPlayNowPlayingController: NSObject {
         setupObservers()
         update()
     }
+    deinit {
+        template.remove(self)
+    }
 }
 
 extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
     func nowPlayingTemplateUpNextButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
-        if let lastNextUpTapDate {
-            print(lastNextUpTapDate.distance(to: .now))
-        }
-        
-        lastNextUpTapDate = .now
-        
         Task {
             try await interfaceController.pushTemplate(queueController.template, animated: true)
         }
@@ -92,8 +87,8 @@ private extension CarPlayNowPlayingController {
     func setupObservers() {
         template.add(self)
         
-        NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { _ in
-            self.update()
+        NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.update()
         }
     }
 }
