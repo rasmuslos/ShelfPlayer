@@ -61,7 +61,7 @@ internal extension EpisodeContextMenuModifier {
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {
                 ItemImage(cover: episode.cover)
-                    .frame(height: 50)
+                    .frame(width: 50, height: 50)
                 
                 Group {
                     let durationText = Text(episode.duration, format: .duration)
@@ -77,8 +77,6 @@ internal extension EpisodeContextMenuModifier {
                 .font(.caption.smallCaps())
                 .foregroundStyle(.secondary)
                 .padding(.top, 8)
-                
-                Group {
                     Text(episode.name)
                         .font(.headline)
                     
@@ -86,13 +84,13 @@ internal extension EpisodeContextMenuModifier {
                         .lineLimit(1)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    
-                    Text(episode.descriptionText ?? "description.unavailable")
+                
+                if let descriptionText = episode.descriptionText {
+                    Text(descriptionText)
                         .padding(.top, 4)
+                        .frame(idealWidth: 400)
                 }
-                .multilineTextAlignment(.leading)
             }
-            .frame(width: 300)
             .padding(20)
         }
     }
