@@ -16,9 +16,20 @@ internal struct SleepTimerButton: View {
     @Default(.customSleepTimer) private var customSleepTimer
     @Default(.sleepTimerAdjustment) private var sleepTimerAdjustment
     
+    @ViewBuilder
+    private var clearButton: some View {
+        Button {
+            SleepTimer.shared.expiresAt = nil
+            SleepTimer.shared.expiresAtChapterEnd = nil
+        } label: {
+            Label("sleep.clear", systemImage: "trash")
+                .labelStyle(.iconOnly)
+        }
+    }
+    
     var body: some View {
-        if let remainingSleepTime = viewModel.remainingSleepTime {
-            Menu {
+        Menu {
+            if let remainingSleepTime = viewModel.remainingSleepTime {
                 ControlGroup {
                     Button {
                         SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(-sleepTimerAdjustment)))
@@ -34,27 +45,28 @@ internal struct SleepTimerButton: View {
                     }
                 }
                 
-                Button {
-                    SleepTimer.shared.expiresAt = nil
-                } label: {
-                    Label("sleep.clear", systemImage: "moon.stars")
+                clearButton
+            } else if let sleepTimerExpiresAtChapterEnd = viewModel.sleepTimerExpiresAtChapterEnd {
+                ControlGroup {
+                    Button {
+                        SleepTimer.shared.expiresAtChapterEnd? -= 1
+                    } label: {
+                        Label("decrease", systemImage: "minus")
+                            .labelStyle(.iconOnly)
+                    }
+                    
+                    Text("\(sleepTimerExpiresAtChapterEnd)")
+                    
+                    Button {
+                        SleepTimer.shared.expiresAtChapterEnd? += 1
+                    } label: {
+                        Label("increase", systemImage: "plus")
+                            .labelStyle(.iconOnly)
+                    }
                 }
-            } label: {
-                Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
-                    .fixedSize()
-                    .fontDesign(.rounded)
-                    .contentTransition(.numericText(countsDown: true))
-            }
-            .menuActionDismissBehavior(.disabled)
-        } else if viewModel.sleepTimerExpiresAtChapterEnd {
-            Button {
-                SleepTimer.shared.expiresAtChapterEnd = false
-            } label: {
-                Label("sleep.chapter", systemImage: "book.pages.fill")
-                    .labelStyle(.iconOnly)
-            }
-        } else {
-            Menu {
+                
+                clearButton
+            } else {
                 ForEach([120, 90, 60, 45, 30, 15, 5].map { $0 * 60 }, id: \.self) { duration in
                     Button {
                         SleepTimer.shared.expiresAt = .now().advanced(by: .seconds(duration))
@@ -79,14 +91,25 @@ internal struct SleepTimerButton: View {
                     Divider()
                     
                     Button {
-                        SleepTimer.shared.expiresAtChapterEnd = true
+                        SleepTimer.shared.expiresAtChapterEnd = 1
                     } label: {
                         Text("sleep.chapter")
                     }
                 }
-            } label: {
+            }
+        } label: {
+            if let remainingSleepTime = viewModel.remainingSleepTime {
+                Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                    .fixedSize()
+                    .fontDesign(.rounded)
+                    .contentTransition(.numericText(countsDown: true))
+            } else if viewModel.sleepTimerExpiresAtChapterEnd != nil {
+                Label("sleep.chapter", systemImage: "book.pages.fill")
+                    .labelStyle(.iconOnly)
+            } else {
                 Label("sleepTimer", systemImage: "moon.zzz")
             }
         }
+        .menuActionDismissBehavior(.disabled)
     }
 }

@@ -28,7 +28,7 @@ internal extension SleepTimer {
     
     func didExpire() {
         expiresAt = nil
-        expiresAtChapterEnd = false
+        expiresAtChapterEnd = nil
         
         AudioPlayer.shared.playing = false
         AudioPlayer.shared.audioPlayer.volume = 1
@@ -57,7 +57,9 @@ internal extension SleepTimer {
         }
         
         NotificationCenter.default.addObserver(forName: AudioPlayer.chapterDidChangeNotification, object: nil, queue: nil) { [unowned self] _ in
-            if expiresAtChapterEnd {
+            self.expiresAtChapterEnd? -= 1
+            
+            if let expiresAtChapterEnd, expiresAtChapterEnd <= 0 {
                 didExpire()
             }
         }

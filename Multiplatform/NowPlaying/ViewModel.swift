@@ -57,7 +57,7 @@ internal extension NowPlaying {
         // MARK: Sleep timer
         
         @MainActor private(set) var remainingSleepTime: TimeInterval?
-        @MainActor private(set) var sleepTimerExpiresAtChapterEnd: Bool
+        @MainActor private(set) var sleepTimerExpiresAtChapterEnd: Int?
         
         // MARK: Sheet
         
@@ -120,7 +120,7 @@ internal extension NowPlaying {
             isUsingExternalRoute = false
             
             remainingSleepTime = nil
-            sleepTimerExpiresAtChapterEnd = false
+            sleepTimerExpiresAtChapterEnd = nil
             
             bookmarks = []
             
