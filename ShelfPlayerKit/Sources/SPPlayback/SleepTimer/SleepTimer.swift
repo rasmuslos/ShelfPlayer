@@ -15,7 +15,7 @@ public final class SleepTimer {
             if expiresAt == nil {
                 suspend()
             } else {
-                expiresAtChapterEnd = false
+                expiresAtChapterEnd = nil
                 setupTimer()
                 
                 if let timeInterval = expiresAt?.distance(to: .now()).timeInterval {
@@ -27,13 +27,17 @@ public final class SleepTimer {
             NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
         }
     }
-    public var expiresAtChapterEnd: Bool {
+    public var expiresAtChapterEnd: Int? {
         didSet {
-            if expiresAtChapterEnd {
+            if let expiresAtChapterEnd, expiresAtChapterEnd <= 0 {
+                self.expiresAtChapterEnd = nil
+            }
+            
+            if let expiresAtChapterEnd {
                 expiresAt = nil
                 suspend()
                 
-                lastSetting = .chapterEnd
+                lastSetting = .chapterEnd(amount: abs(expiresAtChapterEnd - (oldValue ?? 0)))
             }
             
             NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
@@ -51,7 +55,7 @@ public final class SleepTimer {
         timer.activate()
         
         expiresAt = nil
-        expiresAtChapterEnd = false
+        expiresAtChapterEnd = nil
         
         expiredAt = nil
         lastSetting = nil
@@ -74,14 +78,18 @@ public final class SleepTimer {
             } else {
                 expiresAt = .now().advanced(by: .seconds(Int(interval)))
             }
-        case .chapterEnd:
-            expiresAtChapterEnd = true
+        case .chapterEnd(let amount):
+            if let expiresAtChapterEnd {
+                self.expiresAtChapterEnd? += amount
+            } else {
+                expiresAtChapterEnd = amount
+            }
         }
     }
     
     enum SleepTimerSetting {
         case time(interval: TimeInterval)
-        case chapterEnd
+        case chapterEnd(amount: Int)
     }
 }
 
