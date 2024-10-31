@@ -70,22 +70,10 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            if let authorId = viewModel.authorID {
-                                NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
-                                    Label("author.view", systemImage: "person")
-                                    
-                                    if let author = viewModel.audiobook.authors?.first {
-                                        Text(author)
-                                    }
-                                }
+                            if let authors = viewModel.audiobook.authors {
+                                AuthorMenu(authors: authors)
                             }
-                            
-                            ForEach(viewModel.audiobook.series, id: \.name) { series in
-                                NavigationLink(destination: SeriesLoadView(series: series)) {
-                                    Label("series.view", systemImage: "rectangle.grid.2x2.fill")
-                                    Text(series.name)
-                                }
-                            }
+                            SeriesMenu(series: viewModel.audiobook.series, libraryID: viewModel.audiobook.libraryID, flat: true)
                             
                             Divider()
                             

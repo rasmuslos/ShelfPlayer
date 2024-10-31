@@ -23,11 +23,11 @@ internal final class AudiobookViewModel {
     @MainActor var sessionsVisible: Bool
     
     @MainActor var chapters: [PlayableItem.Chapter]
-    @MainActor var authorID: String?
+    @MainActor var authorIDs: [String: String]
     
-    @MainActor private(set) var sameAuthor: [Audiobook]
-    @MainActor private(set) var sameSeries: [Audiobook]
-    @MainActor private(set) var sameNarrator: [Audiobook]
+    @MainActor private(set) var sameAuthor: [Author: [Audiobook]]
+    @MainActor private(set) var sameSeries: [Audiobook.ReducedSeries: [Audiobook]]
+    @MainActor private(set) var sameNarrator: [String: [Audiobook]]
     
     @MainActor let progressEntity: ProgressEntity
     @MainActor let offlineTracker: ItemOfflineTracker
@@ -46,11 +46,11 @@ internal final class AudiobookViewModel {
         sessionsVisible = false
         
         chapters = []
-        authorID = nil
+        authorIDs = [:]
         
-        sameAuthor = []
-        sameSeries = []
-        sameNarrator = []
+        sameAuthor = [:]
+        sameSeries = [:]
+        sameNarrator = [:]
         
         progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
         offlineTracker = .init(audiobook)
@@ -69,9 +69,9 @@ internal extension AudiobookViewModel {
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.loadAudiobook() }
             
-            $0.addTask { await self.loadAuthor() }
+            $0.addTask { await self.loadAuthors() }
             $0.addTask { await self.loadSeries() }
-            $0.addTask { await self.loadNarrator() }
+            $0.addTask { await self.loadNarrators() }
             
             $0.addTask { await self.loadSessions() }
             $0.addTask { await self.extractColor() }
@@ -117,18 +117,28 @@ private extension AudiobookViewModel {
         }
     }
     
-    func loadAuthor() async {
-        guard let author = await audiobook.authors?.first, let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: library.id) else {
+    func loadAuthors() async {
+        guard let authors = await audiobook.authors else {
             return
         }
+        
+        let authorIDs = await AuthorMenu.mapAuthorIDs(authors, libraryID: library.id)
         
         await MainActor.withAnimation {
-            self.authorID = authorId
+            self.authorIDs = authorIDs
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryID: library.id).1 else {
-            return
-        }
+        let audiobooks = Dictionary(uniqueKeysWithValues: await authorIDs.parallelMap { (_, authorID) -> (Author, [Audiobook])? in
+            guard let author = try? await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: self.library.id) else {
+                return nil
+            }
+            
+            guard author.1.count > 1 else {
+                return nil
+            }
+            
+            return (author.0, author.1)
+        }.compactMap { $0 })
         
         await MainActor.withAnimation {
             self.sameAuthor = audiobooks
@@ -136,33 +146,61 @@ private extension AudiobookViewModel {
     }
     
     func loadSeries() async {
-        let seriesId: String
-        
-        if let id = await audiobook.series.first?.id {
-            seriesId = id
-        } else if let name = await audiobook.series.first?.name, let id = try? await AudiobookshelfClient.shared.seriesID(name: name, libraryID: library.id) {
-            seriesId = id
-        } else {
-            return
-        }
-        
-        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesId, libraryID: library.id, sortOrder: .series, ascending: true, limit: nil, page: nil).0 else {
-            return
-        }
+        let audiobooks = await audiobook.series.parallelMap { series -> Audiobook.ReducedSeries? in
+            if series.id != nil {
+                return series
+            }
+            
+            guard let id = try? await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: self.audiobook.libraryID) else {
+                return nil
+            }
+            
+            var series = series
+            series.id = id
+            
+            return series
+        }.parallelMap { series -> (Audiobook.ReducedSeries, [Audiobook])? in
+            guard let series else {
+                return nil
+            }
+            
+            guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: series.id!,
+                                                                                     libraryID: self.audiobook.libraryID,
+                                                                                     sortOrder: .series,
+                                                                                     ascending: true,
+                                                                                     limit: nil,
+                                                                                     page: nil).0 else {
+                return nil
+            }
+            
+            guard audiobooks.count > 1 else {
+                return nil
+            }
+            
+            return (series, audiobooks)
+        }.compactMap { $0 }
         
         await MainActor.withAnimation {
-            self.sameSeries = audiobooks
+            self.sameSeries = Dictionary(uniqueKeysWithValues: audiobooks)
         }
     }
     
-    func loadNarrator() async {
-        guard let narratorName = await audiobook.narrator else {
+    func loadNarrators() async {
+        guard let narrators = await audiobook.narrators else {
             return
         }
         
-        guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(narratorName: narratorName, libraryID: library.id) else {
-            return
-        }
+        let audiobooks = await Dictionary(uniqueKeysWithValues: narrators.parallelMap { narrator -> (String, [Audiobook])? in
+            guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(narratorName: narrator, libraryID: self.audiobook.libraryID) else {
+                return nil
+            }
+            
+            guard audiobooks.count > 1 else {
+                return nil
+            }
+            
+            return (narrator, audiobooks)
+        }.compactMap { $0 })
         
         await MainActor.withAnimation {
             self.sameNarrator = audiobooks
