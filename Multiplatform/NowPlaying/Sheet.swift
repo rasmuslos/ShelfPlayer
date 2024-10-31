@@ -394,40 +394,10 @@ private struct QueueContextMenuItems: View {
                     Label("audiobook.view", systemImage: "book")
                 }
                 
-                if let author = audiobook.author {
-                    Button {
-                        Task {
-                            if let authorID = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) {
-                                Navigation.navigate(authorID: authorID, libraryID: audiobook.libraryID)
-                            }
-                        }
-                    } label: {
-                        Label("author.view", systemImage: "person")
-                    }
+                if let authors = audiobook.authors {
+                    AuthorMenu(authors: authors)
                 }
-                
-                if !audiobook.series.isEmpty {
-                    if audiobook.series.count == 1, let series = audiobook.series.first {
-                        Button {
-                            Navigation.navigate(seriesName: series.name, seriesID: series.id, libraryID: audiobook.libraryID)
-                        } label: {
-                            Label("series.view", systemImage: "rectangle.grid.2x2.fill")
-                            Text(series.name)
-                        }
-                    } else {
-                        Menu {
-                            ForEach(audiobook.series, id: \.name) { series in
-                                Button {
-                                    Navigation.navigate(seriesName: series.name, seriesID: series.id, libraryID: audiobook.libraryID)
-                                } label: {
-                                    Text(series.name)
-                                }
-                            }
-                        } label: {
-                            Label("series.view", systemImage: "rectangle.grid.2x2.fill")
-                        }
-                    }
-                }
+                SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID, flat: false)
             }
         }
         .disabled(isOffline)
