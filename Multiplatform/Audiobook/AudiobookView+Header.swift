@@ -35,6 +35,20 @@ private struct Title: View {
     let largeFont: Bool
     let alignment: HorizontalAlignment
     
+    @ViewBuilder
+    private func authorLabel(_ author: String) -> some View {
+        Text(author)
+            .font(largeFont ? .title2 : .subheadline)
+            .lineLimit(1)
+            .overlay(alignment: .trailingLastTextBaseline) {
+                Label("author.view", systemImage: "chevron.right.circle")
+                    .labelStyle(.iconOnly)
+                    .imageScale(.small)
+                    .offset(x: 17)
+            }
+            .font(.subheadline)
+    }
+    
     var body: some View {
         VStack(alignment: alignment, spacing: 4) {
             Text(viewModel.audiobook.name)
@@ -44,25 +58,24 @@ private struct Title: View {
                 .multilineTextAlignment(alignment.textAlignment)
             
             if let author = viewModel.audiobook.author {
-                NavigationLink {
-                    if let authorId = viewModel.authorID {
-                        AuthorLoadView(authorId: authorId)
-                    } else {
-                        AuthorUnavailableView()
+                if viewModel.authorIDs.count > 1 {
+                    Menu {
+                        AuthorMenu.AuthorsMenu(authorIDs: viewModel.authorIDs)
+                    } label: {
+                        authorLabel(author)
                     }
-                } label: {
-                    Text(author)
-                        .font(largeFont ? .title2 : .subheadline)
-                        .lineLimit(1)
-                        .overlay(alignment: .trailingLastTextBaseline) {
-                            Label("author.view", systemImage: "chevron.right.circle")
-                                .labelStyle(.iconOnly)
-                                .imageScale(.small)
-                                .offset(x: 17)
-                        }
-                        .font(.subheadline)
+                    .menuStyle(.button)
+                    .buttonStyle(.plain)
+                } else if let first = viewModel.authorIDs.first {
+                    NavigationLink {
+                        AuthorLoadView(authorId: first.value)
+                    } label: {
+                        authorLabel(first.key)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    authorLabel(author)
                 }
-                .buttonStyle(.plain)
             }
             
             HStack(spacing: 2) {

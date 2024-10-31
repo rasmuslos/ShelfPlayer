@@ -55,15 +55,14 @@ internal struct AudiobookView: View {
                 .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
                 
                 VStack(spacing: 12) {
-                    if viewModel.sameSeries.count > 1 {
-                        AudiobookRow(title: String(localized: "audiobook.similar.series"), small: true, audiobooks: viewModel.sameSeries)
+                    ForEach(Array(viewModel.sameSeries.keys), id: \.self) { series in
+                        AudiobookRow(title: String(localized: "audiobook.similar.series \(series.name)"), small: true, audiobooks: viewModel.sameSeries[series]!)
                     }
-                    if viewModel.sameAuthor.count > 1, let author = viewModel.audiobook.authors?.first {
-                        AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), small: true, audiobooks: viewModel.sameAuthor)
-
+                    ForEach(Array(viewModel.sameAuthor.keys), id: \.self) { author in
+                        AudiobookRow(title: String(localized: "audiobook.similar.author \(author.name)"), small: true, audiobooks: viewModel.sameAuthor[author]!)
                     }
-                    if viewModel.sameNarrator.count > 1, let narrator = viewModel.audiobook.narrator {
-                        AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator)
+                    ForEach(Array(viewModel.sameNarrator.keys), id: \.self) { narrator in
+                        AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator[narrator]!)
                     }
                 }
                 .padding(.vertical, 16)

@@ -55,7 +55,7 @@ internal struct SleepTimerButton: View {
                             .labelStyle(.iconOnly)
                     }
                     
-                    Text("\(sleepTimerExpiresAtChapterEnd)")
+                    Text(String(sleepTimerExpiresAtChapterEnd))
                     
                     Button {
                         SleepTimer.shared.expiresAtChapterEnd? += 1

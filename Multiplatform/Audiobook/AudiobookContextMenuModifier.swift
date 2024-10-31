@@ -12,8 +12,6 @@ import SPPlayback
 internal struct AudiobookContextMenuModifier: ViewModifier {
     let audiobook: Audiobook
     
-    @State private var authorId: String?
-    
     func body(content: Content) -> some View {
         content
             .contextMenu {
@@ -33,22 +31,11 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                     Label("audiobook.view", systemImage: "book")
                 }
                 
-                if let authorId = authorId {
-                    NavigationLink(destination: AuthorLoadView(authorId: authorId)) {
-                        Label("author.view", systemImage: "person")
-                        
-                        if let author = audiobook.author {
-                            Text(author)
-                        }
-                    }
+                if let authors = audiobook.authors {
+                    AuthorMenu(authors: authors)
                 }
                 
-                ForEach(audiobook.series, id: \.name) { series in
-                    NavigationLink(destination: SeriesLoadView(series: series)) {
-                        Label("series.view", systemImage: "rectangle.grid.2x2.fill")
-                        Text(series.name)
-                    }
-                }
+                SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID, flat: true)
                 
                 Divider()
                 
@@ -56,24 +43,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 DownloadButton(item: audiobook)
             } preview: {
                 Preview(audiobook: audiobook)
-                    .task {
-                        await loadAuthorID()
-                    }
             }
-    }
-    
-    private nonisolated func loadAuthorID() async {
-        guard let author = await audiobook.author else {
-            return
-        }
-        
-        guard let authorId = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID) else {
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.authorId = authorId
-        }
     }
 }
 

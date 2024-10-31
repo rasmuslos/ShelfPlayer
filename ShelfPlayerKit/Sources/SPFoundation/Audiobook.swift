@@ -53,8 +53,8 @@ public extension Audiobook {
 }
 
 public extension Audiobook {
-    struct ReducedSeries: Codable {
-        public let id: String?
+    struct ReducedSeries: Identifiable, Codable, Hashable {
+        public var id: String?
         
         public let name: String
         public let sequence: Float?
