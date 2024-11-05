@@ -13,8 +13,8 @@ import SPPlayback
 internal struct AudiobookVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    let audiobooks: [Audiobook]
-    var onAppear: ((_ audiobook: Audiobook) -> Void)? = nil
+    let sections: [AudiobookSection]
+    var onAppear: ((_ section: AudiobookSection) -> Void)? = nil
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 100.0 : 200.0
@@ -22,17 +22,32 @@ internal struct AudiobookVGrid: View {
     
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 16) {
-            ForEach(audiobooks) { audiobook in
-                NavigationLink {
-                    AudiobookView(audiobook)
-                } label: {
-                    ItemStatusImage(item: audiobook, aspectRatio: .none)
-                        .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
-                        .hoverEffect(.highlight)
-                }
-                .buttonStyle(.plain)
-                .onAppear {
-                    onAppear?(audiobook)
+            ForEach(sections, id: \.self) { section in
+                VStack(spacing: 0) {
+                    switch section {
+                    case .audiobook(let audiobook):
+                        NavigationLink {
+                            AudiobookView(audiobook)
+                        } label: {
+                            ItemStatusImage(item: audiobook, aspectRatio: .none)
+                                .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+                                .hoverEffect(.highlight)
+                        }
+                        .buttonStyle(.plain)
+                        .onAppear {
+                            onAppear?(section)
+                        }
+                    case .series(let seriesName, let audiobooks):
+                        NavigationLink(destination: SeriesLoadView(seriesName: seriesName)) {
+                            SeriesGrid.SeriesGridItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover })
+                        }
+                        .buttonStyle(.plain)
+                        .onAppear {
+                            onAppear?(section)
+                        }
+                    }
+                    
+                    Spacer()
                 }
             }
         }
@@ -97,7 +112,7 @@ internal struct AudiobookHGrid: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookVGrid(audiobooks: .init(repeating: [.fixture], count: 7))
+            AudiobookVGrid(sections: .init(repeating: [.audiobook(audiobook: .fixture)], count: 7))
         }
         .padding(.horizontal, 20)
     }

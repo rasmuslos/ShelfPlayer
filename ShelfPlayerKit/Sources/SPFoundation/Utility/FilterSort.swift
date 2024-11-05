@@ -33,9 +33,9 @@ public enum ItemFilter: String, Identifiable, Hashable, Codable, CaseIterable, D
 // MARK: Audiobooks
 
 public enum AudiobookSortOrder: String, Identifiable, Hashable, Codable, CaseIterable, Defaults.Serializable {
-    case name = "media.metadata.title"
-    case series = "item.media.metadata.seriesName"
-    case author = "media.metadata.authorName"
+    case sortName = "media.metadata.title"
+    case seriesName = "item.media.metadata.seriesName"
+    case authorName = "media.metadata.authorName"
     case released = "media.metadata.publishedYear"
     case added = "addedAt"
     case duration = "media.duration"

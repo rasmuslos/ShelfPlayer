@@ -21,13 +21,17 @@ internal struct PodcastVGrid: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
             ForEach(podcasts) { podcast in
-                if let onAppear {
-                    PodcastGridItem(podcast: podcast)
-                        .onAppear {
-                            onAppear(podcast)
-                        }
-                } else {
-                    PodcastGridItem(podcast: podcast)
+                VStack(spacing: 0) {
+                    if let onAppear {
+                        PodcastGridItem(podcast: podcast)
+                            .onAppear {
+                                onAppear(podcast)
+                            }
+                    } else {
+                        PodcastGridItem(podcast: podcast)
+                    }
+                    
+                    Spacer()
                 }
             }
         }

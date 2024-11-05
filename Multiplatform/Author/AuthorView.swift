@@ -37,7 +37,7 @@ struct AuthorView: View {
                 .padding(.top, 16)
                 .padding(.horizontal, 20)
                 
-                AudiobookVGrid(audiobooks: viewModel.visible)
+                AudiobookVGrid(sections: viewModel.audiobooks)
                     .padding(.horizontal, 20)
             }
             
@@ -65,7 +65,7 @@ struct AuthorView: View {
                     .listRowSeparator(.hidden, edges: .top)
                     .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
                 
-                AudiobookList(audiobooks: viewModel.visible)
+                AudiobookList(sections: viewModel.audiobooks)
             }
             
             if !viewModel.series.isEmpty {

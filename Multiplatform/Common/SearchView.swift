@@ -40,7 +40,7 @@ internal struct SearchView: View {
                     
                     if !viewModel.audiobooks.isEmpty {
                         Section("section.audiobooks") {
-                            AudiobookList(audiobooks: viewModel.audiobooks)
+                            AudiobookList(sections: viewModel.audiobooks.map { .audiobook(audiobook: $0) })
                         }
                     }
                 }

@@ -46,20 +46,20 @@ internal final class SeriesViewModel {
         displayMode = Defaults[.audiobooksDisplay]
         
         ascending = true
-        sortOrder = .series
+        sortOrder = .seriesName
     }
 }
 
 internal extension SeriesViewModel {
     @MainActor
-    var visible: [Audiobook] {
-        let filtered = AudiobookSortFilter.filterSort(audiobooks: lazyLoader.items, filter: filter, order: sortOrder, ascending: ascending)
+    var visible: [AudiobookSection] {
+        let filtered = Audiobook.filterSort(lazyLoader.items, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         if filtered.isEmpty {
-            return AudiobookSortFilter.sort(audiobooks: lazyLoader.items, order: sortOrder, ascending: ascending)
+            return Audiobook.sort(lazyLoader.items, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
         }
         
-        return filtered
+        return filtered.map { .audiobook(audiobook: $0) }
     }
     
     @MainActor
@@ -68,7 +68,7 @@ internal extension SeriesViewModel {
             return series.covers
         }
         
-        return visible.map { $0.cover }
+        return lazyLoader.items.map { $0.cover }
     }
     
     @MainActor
