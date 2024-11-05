@@ -38,6 +38,8 @@ internal extension Defaults.Keys {
     
     static let shakeExtendsSleepTimer = Key("shakeExtendsSleepTimer", default: true)
     
+    static let collapseSeries = Key("collapseSeries", default: true)
+    
     // MARK: Filter & sort utility
     
     static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobooksSortOrder", default: .added)

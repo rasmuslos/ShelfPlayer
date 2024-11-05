@@ -10,16 +10,25 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct AudiobookList: View {
-    let audiobooks: [Audiobook]
-    var onAppear: ((_ audiobook: Audiobook) -> Void)? = nil
+    let sections: [AudiobookSection]
+    var onAppear: ((_ section: AudiobookSection) -> Void)? = nil
     
     var body: some View {
-        ForEach(audiobooks) { audiobook in
-            if let onAppear {
+        ForEach(sections, id: \.self) { section in
+            switch section {
+            case .audiobook(let audiobook):
                 Row(audiobook: audiobook)
-                    .onAppear { onAppear(audiobook) }
-            } else {
-                Row(audiobook: audiobook)
+                    .onAppear {
+                        onAppear?(section)
+                    }
+            case .series(let seriesName, let audiobooks):
+                NavigationLink(destination: SeriesLoadView(seriesName: seriesName)) {
+                    SeriesList.ListItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover })
+                }
+                .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+                .onAppear {
+                    onAppear?(section)
+                }
             }
         }
     }
@@ -142,7 +151,7 @@ private struct Row: View {
 #Preview {
     NavigationStack {
         List {
-            AudiobookList(audiobooks: .init(repeating: [.fixture], count: 7))
+            AudiobookList(sections: .init(repeating: [.audiobook(audiobook: .fixture)], count: 7))
         }
         .listStyle(.plain)
     }

@@ -13,6 +13,13 @@ internal struct SeriesLoadView: View {
     
     let series: Audiobook.ReducedSeries
     
+    init(seriesName: String) {
+        series = .init(id: nil, name: seriesName, sequence: nil)
+    }
+    init(series: Audiobook.ReducedSeries) {
+        self.series = series
+    }
+    
     @State private var failed = false
     @State private var resolved: Series?
     

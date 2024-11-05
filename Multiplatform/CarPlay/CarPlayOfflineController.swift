@@ -51,9 +51,9 @@ private extension CarPlayOfflineController {
                 return
             }
             
-            let sorted = AudiobookSortFilter.sort(audiobooks: audiobooks,
-                                                  order: Defaults[.offlineAudiobooksSortOrder],
-                                                  ascending: Defaults[.offlineAudiobooksAscending])
+            let sorted = Audiobook.sort(audiobooks,
+                                        sortOrder: Defaults[.offlineAudiobooksSortOrder],
+                                        ascending: Defaults[.offlineAudiobooksAscending])
             let items = await sorted.parallelMap(CarPlayHelper.buildAudiobookListItem)
             
             guard !Task.isCancelled else {

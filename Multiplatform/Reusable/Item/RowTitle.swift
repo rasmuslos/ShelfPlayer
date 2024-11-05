@@ -33,7 +33,7 @@ internal struct AudiobookRow: View {
                 if audiobooks.count > 5 {
                     NavigationLink {
                         ScrollView {
-                            AudiobookVGrid(audiobooks: audiobooks)
+                            AudiobookVGrid(sections: audiobooks.map { .audiobook(audiobook: $0)})
                                 .padding(.horizontal, 20)
                         }
                         .navigationTitle(title)

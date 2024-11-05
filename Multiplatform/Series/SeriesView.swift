@@ -31,7 +31,7 @@ internal struct SeriesView: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    AudiobookVGrid(audiobooks: viewModel.visible) {
+                    AudiobookVGrid(sections: viewModel.visible) {
                         if $0 == viewModel.visible.last {
                             viewModel.lazyLoader.didReachEndOfLoadedContent()
                         }
@@ -48,7 +48,7 @@ internal struct SeriesView: View {
                         .listRowSeparator(.hidden, edges: .top)
                         .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
                     
-                    AudiobookList(audiobooks: viewModel.visible) {
+                    AudiobookList(sections: viewModel.visible) {
                         if $0 == viewModel.visible[max(0, viewModel.visible.endIndex - 4)] {
                             viewModel.lazyLoader.didReachEndOfLoadedContent()
                         }

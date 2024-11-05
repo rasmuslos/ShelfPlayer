@@ -21,7 +21,7 @@ internal struct OfflineView: View {
     @State private var podcasts = [Podcast: [Episode]]()
     
     private var audiobooks: [Audiobook] {
-        return AudiobookSortFilter.sort(audiobooks: _audiobooks, order: offlineAudiobooksSortOrder, ascending: offlineAudiobooksAscending)
+        Audiobook.sort(_audiobooks, sortOrder: offlineAudiobooksSortOrder, ascending: offlineAudiobooksAscending)
     }
     
     var body: some View {

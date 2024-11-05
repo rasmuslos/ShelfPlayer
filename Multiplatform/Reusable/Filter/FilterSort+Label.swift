@@ -47,11 +47,11 @@ internal extension ItemDisplayType {
 internal extension AudiobookSortOrder {
     var label: LocalizedStringKey {
         switch self {
-        case .name:
+        case .sortName:
             "sort.name"
-        case .series:
+        case .seriesName:
             "sort.series"
-        case .author:
+        case .authorName:
             "sort.author"
         case .released:
             "sort.released"

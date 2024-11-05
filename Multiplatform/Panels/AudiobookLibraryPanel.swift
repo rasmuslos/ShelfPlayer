@@ -19,6 +19,8 @@ internal struct AudiobookLibraryPanel: View {
     @Default(.audiobooksSortOrder) private var sortOrder
     @Default(.audiobooksAscending) private var ascending
     
+    @Default(.collapseSeries) private var collapseSeries
+    
     @State private var selected = [String]()
     @State private var genreFilterPresented = false
     @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortOrder>.audiobooks
@@ -34,19 +36,25 @@ internal struct AudiobookLibraryPanel: View {
         
         return Array(genres)
     }
-    private var visible: [Audiobook] {
-        let visible = AudiobookSortFilter.filterSort(audiobooks: lazyLoader.items, filter: filter, order: sortOrder, ascending: ascending)
+    private var visible: [AudiobookSection] {
+        let audiobooks: [Audiobook]
         
         if selected.isEmpty {
-            return visible
+            audiobooks = lazyLoader.items
+        } else {
+            audiobooks = lazyLoader.items.filter {
+                let matches = $0.genres.reduce(0, { result, genre in
+                    selected.contains(where: { $0 == genre }) ? result + 1 : result
+                })
+                
+                return matches == selected.count
+            }
         }
         
-        return visible.filter {
-            let matches = $0.genres.reduce(0, { result, genre in
-                selected.contains(where: { $0 == genre }) ? result + 1 : result
-            })
-            
-            return matches == selected.count
+        if collapseSeries {
+            return AudiobookSection.filterSortGroup(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        } else {
+            return Audiobook.filterSort(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
         }
     }
     
@@ -72,7 +80,7 @@ internal struct AudiobookLibraryPanel: View {
                     switch display {
                         case .grid:
                             ScrollView {
-                                AudiobookVGrid(audiobooks: visible) {
+                                AudiobookVGrid(sections: visible) {
                                     if $0 == visible.last {
                                         lazyLoader.didReachEndOfLoadedContent()
                                     }
@@ -81,7 +89,7 @@ internal struct AudiobookLibraryPanel: View {
                             }
                         case .list:
                             List {
-                                AudiobookList(audiobooks: visible) {
+                                AudiobookList(sections: visible) {
                                     if $0 == visible[max(0, visible.endIndex - 4)] {
                                         lazyLoader.didReachEndOfLoadedContent()
                                     }
