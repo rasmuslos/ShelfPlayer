@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-struct SeriesGrid: View {
+internal struct SeriesGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let series: [Series]
@@ -33,56 +33,69 @@ struct SeriesGrid: View {
     }
 }
 
-private struct SeriesGridItem: View {
-    let series: Series
-    
-    private var flipped: Bool {
-        series.covers.count == 3
-    }
-    
-    var body: some View {
-        VStack(spacing: 4) {
-            Group {
-                if series.covers.isEmpty {
-                    ItemImage(cover: nil)
-                } else if series.covers.count == 1 {
-                    ItemImage(cover: series.covers.first)
-                } else if series.covers.count < 4 {
-                    GeometryReader { proxy in
-                        let width = proxy.size.width / 1.6
-                        
-                        ZStack(alignment: flipped ? .bottomLeading : .topLeading) {
-                            Rectangle()
-                                .fill(.clear)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+extension SeriesGrid {
+    struct SeriesGridItem: View {
+        let name: String
+        let covers: [Cover]
+        
+        init(series: Series) {
+            self.name = series.name
+            self.covers = series.covers
+        }
+        
+        init(name: String, covers: [Cover]) {
+            self.name = name
+            self.covers = covers
+        }
+        
+        private var flipped: Bool {
+            covers.count == 3
+        }
+        
+        var body: some View {
+            VStack(spacing: 4) {
+                Group {
+                    if covers.isEmpty {
+                        ItemImage(cover: nil)
+                    } else if covers.count == 1 {
+                        ItemImage(cover: covers.first)
+                    } else if covers.count < 4 {
+                        GeometryReader { proxy in
+                            let width = proxy.size.width / 1.6
                             
-                            Group {
-                                ItemImage(cover: series.covers[0])
-                                ItemImage(cover: series.covers[1])
-                                    .offset(x: proxy.size.width - width, y: (proxy.size.height - width) * (flipped ? -1 : 1))
+                            ZStack(alignment: flipped ? .bottomLeading : .topLeading) {
+                                Rectangle()
+                                    .fill(.clear)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                
+                                Group {
+                                    ItemImage(cover: covers[0])
+                                    ItemImage(cover: covers[1])
+                                        .offset(x: proxy.size.width - width, y: (proxy.size.height - width) * (flipped ? -1 : 1))
+                                }
+                                .frame(width: width)
                             }
-                            .frame(width: width)
                         }
-                    }
-                    .aspectRatio(1, contentMode: .fill)
-                } else {
-                    VStack(spacing: 8) {
-                        HStack(spacing: 8) {
-                            ItemImage(cover: series.covers[0])
-                            ItemImage(cover: series.covers[1])
-                        }
-                        HStack(spacing: 8) {
-                            ItemImage(cover: series.covers[2])
-                            ItemImage(cover: series.covers[3])
+                        .aspectRatio(1, contentMode: .fill)
+                    } else {
+                        VStack(spacing: 8) {
+                            HStack(spacing: 8) {
+                                ItemImage(cover: covers[0])
+                                ItemImage(cover: covers[1])
+                            }
+                            HStack(spacing: 8) {
+                                ItemImage(cover: covers[2])
+                                ItemImage(cover: covers[3])
+                            }
                         }
                     }
                 }
+                .hoverEffect(.highlight)
+                
+                Text(name)
+                    .modifier(SerifModifier())
+                    .lineLimit(1)
             }
-            .hoverEffect(.highlight)
-            
-            Text(series.name)
-                .modifier(SerifModifier())
-                .lineLimit(1)
         }
     }
 }

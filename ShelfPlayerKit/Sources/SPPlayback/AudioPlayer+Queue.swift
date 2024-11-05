@@ -118,7 +118,12 @@ internal extension AudioPlayer {
                 }
             }
             
-            if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryID: audiobook.libraryID, sortOrder: .series, ascending: true, limit: nil, page: nil).0 {
+            if let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID,
+                                                                                  libraryID: audiobook.libraryID,
+                                                                                  sortOrder: .seriesName,
+                                                                                  ascending: true,
+                                                                                  limit: nil,
+                                                                                  page: nil).0 {
                 handleNextAudiobooksInSeries(audiobooks, audiobook: audiobook)
                 break
             }

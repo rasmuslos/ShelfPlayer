@@ -79,7 +79,7 @@ public final class SleepTimer {
                 expiresAt = .now().advanced(by: .seconds(Int(interval)))
             }
         case .chapterEnd(let amount):
-            if let expiresAtChapterEnd {
+            if expiresAtChapterEnd != nil {
                 self.expiresAtChapterEnd? += amount
             } else {
                 expiresAtChapterEnd = amount

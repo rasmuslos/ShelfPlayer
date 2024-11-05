@@ -15,8 +15,8 @@ internal final class AuthorViewModel {
     @MainActor private(set) var author: Author
     @MainActor var library: Library!
     
-    @MainActor private(set) var series = [Series]()
-    @MainActor private(set) var audiobooks = [Audiobook]()
+    @MainActor private(set) var _series: [Series]
+    @MainActor private(set) var _audiobooks: [Audiobook]
     
     @MainActor internal var filter: ItemFilter {
         didSet {
@@ -32,14 +32,16 @@ internal final class AuthorViewModel {
     @MainActor var ascending: Bool
     @MainActor var sortOrder: AudiobookSortOrder
     
-    @MainActor private(set) var errorNotify: Bool
+    @MainActor private(set) var collapseSeries: Bool
+    
     @MainActor var descriptionSheetVisible: Bool
+    @MainActor private(set) var errorNotify: Bool
     
     @MainActor
     init(author: Author, series: [Series], audiobooks: [Audiobook]) {
         self.author = author
-        self.series = series
-        self.audiobooks = audiobooks
+        _series = series
+        _audiobooks = audiobooks
         
         ascending = false
         sortOrder = .released
@@ -47,15 +49,28 @@ internal final class AuthorViewModel {
         filter = Defaults[.audiobooksFilter]
         displayMode = Defaults[.audiobooksDisplay]
         
+        collapseSeries = Defaults[.collapseSeries]
+        
         errorNotify = false
         descriptionSheetVisible = false
     }
+    
+    
 }
 
 internal extension AuthorViewModel {
     @MainActor
-    var visible: [Audiobook] {
-        AudiobookSortFilter.filterSort(audiobooks: audiobooks, filter: filter, order: sortOrder, ascending: ascending)
+    var audiobooks: [AudiobookSection] {
+        Audiobook.filterSort(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+    }
+    
+    @MainActor
+    var series: [Series] {
+        guard !collapseSeries else {
+            return []
+        }
+        
+        return _series.sorted()
     }
     
     func load() async {
@@ -69,8 +84,8 @@ internal extension AuthorViewModel {
         
         await MainActor.withAnimation {
             self.author = author
-            self.series = series
-            self.audiobooks = audiobooks
+            self._series = series
+            self._audiobooks = audiobooks
         }
     }
 }
