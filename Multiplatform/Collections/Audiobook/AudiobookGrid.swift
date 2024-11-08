@@ -62,7 +62,7 @@ internal struct AudiobookHGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private var gap: CGFloat { small ? 8 : 12 }
+    private let gap: CGFloat = 8
     private let padding: CGFloat = 20
     
     private var size: CGFloat {

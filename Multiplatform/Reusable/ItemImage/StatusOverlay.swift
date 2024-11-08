@@ -96,9 +96,8 @@ internal struct ItemStatusImage: View {
         ItemImage(cover: item.cover, aspectRatio: aspectRatio)
             .overlay {
                 StatusOverlay(item: item)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: 8))
     }
 }
 
