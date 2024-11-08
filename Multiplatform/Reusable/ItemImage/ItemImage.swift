@@ -19,6 +19,7 @@ internal struct ItemImage: View {
     var cornerRadius: CGFloat = 8
     var aspectRatio = AspectRatioPolicy.square
     var priority: ImageRequest.Priority = .normal
+    var contrastConfiguration: ContrastConfiguration? = .init()
     
     private var fallbackIcon: String {
         switch library.type {
@@ -69,53 +70,113 @@ internal struct ItemImage: View {
     }
     
     var body: some View {
-        if aspectRatioPolicy == .none {
-            LazyImage(request: request) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                } else {
-                    placeholder
-                }
-            }
-        } else {
-            Color.clear
-                .overlay {
-                    LazyImage(request: request) { phase in
-                        if let image = phase.image {
-                            if aspectRatioPolicy == .square {
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                                    .clipped()
-                            } else if aspectRatioPolicy == .squareFit {
-                                ZStack {
-                                    image
-                                        .resizable()
-                                        .blur(radius: 25)
-                                    
-                                    image
-                                        .resizable()
-                                        .scaledToFit()
-                                }
-                            }
-                        } else {
-                            placeholder
-                        }
+        Group {
+            if aspectRatioPolicy == .none {
+                LazyImage(request: request) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                            .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
+                    } else {
+                        placeholder
                     }
                 }
-                .aspectRatio(1, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                .padding(0)
+            } else {
+                Color.clear
+                    .overlay {
+                        LazyImage(request: request) { phase in
+                            if let image = phase.image {
+                                if aspectRatioPolicy == .square {
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .clipped()
+                                } else if aspectRatioPolicy == .squareFit {
+                                    ZStack {
+                                        image
+                                            .resizable()
+                                            .blur(radius: 25)
+                                        
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                    }
+                                }
+                            } else {
+                                placeholder
+                            }
+                        }
+                    }
+                    .aspectRatio(1, contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
+                    .padding(0)
+            }
         }
+        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: cornerRadius))
     }
     
     enum AspectRatioPolicy {
         case square
         case squareFit
         case none
+    }
+    
+    struct ContrastConfiguration {
+        var shadowRadius: CGFloat = 4
+        var shadowOpacity: CGFloat = 0.3
+        
+        var borderOpacity: CGFloat = 0.6
+        var borderThickness: CGFloat = 1
+        
+        init() {}
+        
+        init(shadowRadius: CGFloat? = nil, shadowOpacity: CGFloat? = nil) {
+            if let shadowRadius {
+                self.shadowRadius = shadowRadius
+            }
+            if let shadowOpacity {
+                self.shadowOpacity = shadowOpacity
+            }
+        }
+        
+        init(borderOpacity: CGFloat? = nil, borderThickness: CGFloat? = nil) {
+            if let borderOpacity {
+                self.borderOpacity = borderOpacity
+            }
+            if let borderThickness {
+                self.borderThickness = borderThickness
+            }
+        }
+    }
+}
+
+private struct ContrastModifier: ViewModifier {
+    @Environment(\.library) private var library
+    
+    let cornerRadius: CGFloat
+    let configuration: ItemImage.ContrastConfiguration?
+    
+    func body(content: Content) -> some View {
+        if let configuration {
+            switch library.type {
+            case .audiobooks:
+                content
+                    .secondaryShadow(radius: configuration.shadowRadius, opacity: configuration.shadowOpacity)
+            case .podcasts:
+                content
+                    .overlay {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .stroke(.gray.opacity(configuration.borderOpacity), lineWidth: configuration.borderThickness)
+                    }
+            default:
+                content
+            }
+        } else {
+            content
+        }
     }
 }
 

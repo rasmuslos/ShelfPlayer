@@ -29,10 +29,6 @@ private struct Row: View {
             HStack(spacing: 0) {
                 ItemImage(cover: episode.cover)
                     .frame(width: 104)
-                    .background {
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.gray, lineWidth: 0.5)
-                    }
                     .padding(.trailing, 12)
                     .hoverEffect(.highlight)
                 

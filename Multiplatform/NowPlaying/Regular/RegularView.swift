@@ -37,7 +37,6 @@ internal extension NowPlaying {
                                 Spacer()
                                 
                                 ItemImage(cover: item.cover, aspectRatio: .none)
-                                    .secondaryShadow(radius: 16)
                                     .padding(.vertical, 10)
                                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                                     .animation(.spring(duration: 0.3, bounce: 0.6), value: AudioPlayer.shared.playing)
