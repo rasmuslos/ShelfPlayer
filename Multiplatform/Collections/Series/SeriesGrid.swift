@@ -35,7 +35,7 @@ internal struct SeriesGrid: View {
 
 extension SeriesGrid {
     struct SeriesGridItem: View {
-        let name: String
+        let name: String?
         let covers: [Cover]
         
         init(series: Series) {
@@ -43,7 +43,7 @@ extension SeriesGrid {
             self.covers = series.covers
         }
         
-        init(name: String, covers: [Cover]) {
+        init(name: String?, covers: [Cover]) {
             self.name = name
             self.covers = covers
         }
@@ -92,9 +92,11 @@ extension SeriesGrid {
                 }
                 .hoverEffect(.highlight)
                 
-                Text(name)
-                    .modifier(SerifModifier())
-                    .lineLimit(1)
+                if let name {
+                    Text(name)
+                        .modifier(SerifModifier())
+                        .lineLimit(1)
+                }
             }
         }
     }
