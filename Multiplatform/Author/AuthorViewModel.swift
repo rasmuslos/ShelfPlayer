@@ -53,15 +53,29 @@ internal final class AuthorViewModel {
         
         errorNotify = false
         descriptionSheetVisible = false
+        
+        setupObservers()
     }
     
-    
+    private func setupObservers() {
+        Task {
+            for await collapseSeries in Defaults.updates(.collapseSeries) {
+                await MainActor.withAnimation {
+                    self.collapseSeries = collapseSeries
+                }
+            }
+        }
+    }
 }
 
 internal extension AuthorViewModel {
     @MainActor
     var audiobooks: [AudiobookSection] {
-        Audiobook.filterSort(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+        if collapseSeries {
+            return AudiobookSection.filterSortGroup(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        }
+        
+        return Audiobook.filterSort(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
     }
     
     @MainActor

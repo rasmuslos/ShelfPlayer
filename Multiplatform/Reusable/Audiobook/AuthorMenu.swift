@@ -13,51 +13,30 @@ internal struct AuthorMenu: View {
     @Environment(\.library) private var library
     
     let authors: [String]
-    @State private var authorIDs: [String: String] = [:]
     
     var body: some View {
-        if !authors.isEmpty {
-            if authorIDs.isEmpty {
-                Button {
-                    
-                } label: {
-                    Label {
-                        Text(authors.joined(separator: ", "))
-                    } icon: {
-                        ProgressIndicator()
-                    }
-                }
-                .disabled(true)
-                .task {
-                    authorIDs = await Self.mapAuthorIDs(authors, libraryID: library.id)
-                }
-            } else {
-                if authorIDs.count == 1, let first = authorIDs.first {
-                    NavigationLink(destination: AuthorLoadView(authorId: first.value)) {
-                        Label("author.view", systemImage: "person")
-                        Text(first.key)
-                    }
-                } else {
-                    Menu {
-                        AuthorsMenu(authorIDs: authorIDs)
-                    } label: {
-                        Label("author.view", systemImage: "person")
-                    }
-                }
+        if authors.count == 1, let authorName = authors.first {
+            NavigationLink(destination: AuthorLoadView(authorName: authorName)) {
+                Label("author.view", systemImage: "person")
+                Text(authorName)
+            }
+        } else if !authors.isEmpty {
+            Menu {
+                AuthorsMenu(authors: authors)
+            } label: {
+                Label("author.view", systemImage: "person")
             }
         }
     }
     
     internal struct AuthorsMenu: View {
-        let authorIDs: [String: String]
+        let authors: [String]
         
         var body: some View {
-            ForEach(Array(authorIDs.keys), id: \.self) { author in
-                let authorID = authorIDs[author]!
-                
-                NavigationLink(destination: AuthorLoadView(authorId: authorID)) {
+            ForEach(Array(authors), id: \.self) { authorName in
+                NavigationLink(destination: AuthorLoadView(authorName: authorName)) {
                     Label("author.view", systemImage: "person")
-                    Text(author)
+                    Text(authorName)
                 }
             }
         }
