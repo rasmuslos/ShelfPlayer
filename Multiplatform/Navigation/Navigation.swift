@@ -101,7 +101,7 @@ internal extension Navigation {
                     AudiobookLoadView(audiobookId: data.audiobookId)
                 }
                 .navigationDestination(for: Navigation.AuthorLoadDestination.self) { data in
-                    AuthorLoadView(authorId: data.authorId)
+                    AuthorLoadView(authorID: data.authorId)
                 }
                 .navigationDestination(for: Navigation.SeriesLoadDestination.self) { data in
                     SeriesLoadView(series: .init(id: data.seriesId, name: data.seriesName, sequence: nil))

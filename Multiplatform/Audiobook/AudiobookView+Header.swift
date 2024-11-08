@@ -36,17 +36,19 @@ private struct Title: View {
     let alignment: HorizontalAlignment
     
     @ViewBuilder
-    private func authorLabel(_ author: String) -> some View {
-        Text(author)
-            .font(largeFont ? .title2 : .subheadline)
-            .lineLimit(1)
-            .overlay(alignment: .trailingLastTextBaseline) {
-                Label("author.view", systemImage: "chevron.right.circle")
-                    .labelStyle(.iconOnly)
-                    .imageScale(.small)
-                    .offset(x: 17)
-            }
-            .font(.subheadline)
+    private var authorLabel: some View {
+        if let author = viewModel.audiobook.author {
+            Text(author)
+                .font(largeFont ? .title2 : .subheadline)
+                .lineLimit(1)
+                .overlay(alignment: .trailingLastTextBaseline) {
+                    Label("author.view", systemImage: "chevron.right.circle")
+                        .labelStyle(.iconOnly)
+                        .imageScale(.small)
+                        .offset(x: 17)
+                }
+                .font(.subheadline)
+        }
     }
     
     var body: some View {
@@ -57,24 +59,22 @@ private struct Title: View {
                 .lineLimit(4)
                 .multilineTextAlignment(alignment.textAlignment)
             
-            if let author = viewModel.audiobook.author {
-                if viewModel.authorIDs.count > 1 {
+            if let authors = viewModel.audiobook.authors {
+                if authors.count > 1 {
                     Menu {
-                        AuthorMenu.AuthorsMenu(authorIDs: viewModel.authorIDs)
+                        AuthorMenu.AuthorsMenu(authors: authors)
                     } label: {
-                        authorLabel(author)
+                        authorLabel
                     }
                     .menuStyle(.button)
                     .buttonStyle(.plain)
-                } else if let first = viewModel.authorIDs.first {
+                } else if let authorName = authors.first {
                     NavigationLink {
-                        AuthorLoadView(authorId: first.value)
+                        AuthorLoadView(authorName: authorName)
                     } label: {
-                        authorLabel(first.key)
+                        authorLabel
                     }
                     .buttonStyle(.plain)
-                } else {
-                    authorLabel(author)
                 }
             }
             

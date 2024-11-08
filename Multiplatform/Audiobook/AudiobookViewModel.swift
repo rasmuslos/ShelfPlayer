@@ -23,7 +23,6 @@ internal final class AudiobookViewModel {
     @MainActor var sessionsVisible: Bool
     
     @MainActor var chapters: [PlayableItem.Chapter]
-    @MainActor var authorIDs: [String: String]
     
     @MainActor private(set) var sameAuthor: [Author: [Audiobook]]
     @MainActor private(set) var sameSeries: [Audiobook.ReducedSeries: [Audiobook]]
@@ -46,7 +45,6 @@ internal final class AudiobookViewModel {
         sessionsVisible = false
         
         chapters = []
-        authorIDs = [:]
         
         sameAuthor = [:]
         sameSeries = [:]
@@ -123,10 +121,6 @@ private extension AudiobookViewModel {
         }
         
         let authorIDs = await AuthorMenu.mapAuthorIDs(authors, libraryID: library.id)
-        
-        await MainActor.withAnimation {
-            self.authorIDs = authorIDs
-        }
         
         let audiobooks = Dictionary(uniqueKeysWithValues: await authorIDs.parallelMap { (_, authorID) -> (Author, [Audiobook])? in
             guard let author = try? await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: self.library.id) else {

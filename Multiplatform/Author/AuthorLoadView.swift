@@ -11,7 +11,17 @@ import ShelfPlayerKit
 internal struct AuthorLoadView: View {
     @Environment(\.library) private var library
     
-    let authorId: String
+    private var authorID: String?
+    private var authorName: String?
+    
+    init(authorID: String?) {
+        self.authorID = authorID
+        authorName = nil
+    }
+    init (authorName: String) {
+        authorID = nil
+        self.authorName = authorName
+    }
     
     @State private var failed = false
     @State private var author: (Author, [Audiobook], [Series])?
@@ -36,16 +46,26 @@ internal struct AuthorLoadView: View {
     }
     
     private nonisolated func loadAuthor() async {
-        guard let author = try? await AudiobookshelfClient.shared.author(authorId: authorId, libraryID: library.id) else {
+        do {
+            let authorID: String
+            
+            if let provided = self.authorID {
+                authorID = provided
+            } else if let authorName {
+                authorID = try await AudiobookshelfClient.shared.authorID(name: authorName, libraryID: library.id)
+            } else {
+                return
+            }
+            
+            let author = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: library.id)
+            
+            await MainActor.withAnimation {
+                self.author = author
+            }
+        } catch {
             await MainActor.withAnimation {
                 failed = true
             }
-            
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.author = author
         }
     }
 }

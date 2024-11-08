@@ -39,7 +39,7 @@ internal struct AudiobookVGrid: View {
                         }
                     case .series(let seriesName, let audiobooks):
                         NavigationLink(destination: SeriesLoadView(seriesName: seriesName)) {
-                            SeriesGrid.SeriesGridItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover })
+                            SeriesGrid.SeriesGridItem(name: nil, covers: audiobooks.prefix(10).compactMap { $0.cover })
                         }
                         .buttonStyle(.plain)
                         .onAppear {
