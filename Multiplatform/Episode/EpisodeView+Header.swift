@@ -96,7 +96,7 @@ private struct CompactPresentation: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ItemImage(cover: viewModel.episode.cover)
+            ItemImage(cover: viewModel.episode.cover, contrastConfiguration: nil)
                 .frame(width: 180)
             
             Eyebrow()
@@ -119,7 +119,7 @@ private struct RegularPresentation: View {
     
     var body: some View {
         HStack(spacing: 20) {
-            ItemImage(cover: viewModel.episode.cover)
+            ItemImage(cover: viewModel.episode.cover, contrastConfiguration: nil)
                 .frame(width: 225)
                 .hoverEffect(.highlight)
             

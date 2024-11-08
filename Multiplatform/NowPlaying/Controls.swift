@@ -45,7 +45,7 @@ private struct ProgressSlider: View {
                 
                 viewModel.setPosition(percentage: $0)
             }), dragging: .init(get: { viewModel.seekDragging }, set: { viewModel.seekDragging = $0; viewModel.controlsDragging = $0 }))
-            .padding(.bottom, compact ? 2 : 4)
+            .padding(.bottom, 2)
             
             HStack(spacing: 0) {
                 Group {

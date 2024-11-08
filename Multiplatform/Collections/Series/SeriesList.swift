@@ -70,7 +70,6 @@ internal extension SeriesList {
                             .frame(height: 60)
                             .scaleEffect(factor)
                             .offset(x: offset)
-                            .secondaryShadow(radius: 2)
                     }
                 }
                 .frame(height: 60)

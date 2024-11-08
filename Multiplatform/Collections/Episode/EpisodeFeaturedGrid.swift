@@ -51,7 +51,7 @@ struct EpisodeFeaturedGrid: View {
                             EpisodeGridItem(episode: episode)
                                 .frame(width: size)
                                 .padding(.leading, gap)
-                                .secondaryShadow(radius: 4)
+                                .secondaryShadow(radius: 8, opacity: 0.4)
                         }
                         .buttonStyle(.plain)
                     }
@@ -138,11 +138,11 @@ private struct Background: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
-                ItemImage(cover: cover)
+                ItemImage(cover: cover, contrastConfiguration: nil)
                     .frame(width: geometry.size.height)
                     .blur(radius: 15)
                 
-                ItemImage(cover: cover)
+                ItemImage(cover: cover, contrastConfiguration: nil)
                     .frame(height: geometry.size.width)
                     .mask {
                         LinearGradient(colors: [.black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
