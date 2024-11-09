@@ -34,8 +34,6 @@ internal struct ContentView: View {
                 step = .sessionImport
             }
             
-            OfflineManager.shared.setupFinishedRemoveObserver()
-            
             Task {
                 try? await OfflineManager.shared.attemptListeningTimeSync()
                 try await UserContext.run()

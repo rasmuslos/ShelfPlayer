@@ -112,14 +112,21 @@ struct AuthorView: View {
             await viewModel.load()
         }
         .sheet(isPresented: $viewModel.descriptionSheetVisible) {
-            if let description = viewModel.author.description {
-                NavigationStack {
-                    Text(description)
-                        .navigationTitle(viewModel.author.name)
-                        .padding(20)
-                    
-                    Spacer()
+            NavigationStack {
+                ScrollView {
+                    HStack(spacing: 0) {
+                        if let description = viewModel.author.description {
+                            Text(description)
+                        } else {
+                            Text("description.unavailable")
+                        }
+                        
+                        Spacer(minLength: 0)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 20)
                 }
+                .navigationTitle(viewModel.author.name)
                 .presentationDragIndicator(.visible)
             }
         }
