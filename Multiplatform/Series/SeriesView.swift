@@ -70,6 +70,7 @@ internal struct SeriesView: View {
             }
         }
         .environment(viewModel)
+        .environment(\.displayContext, .series(series: viewModel.series))
         .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
             viewModel.library = library
