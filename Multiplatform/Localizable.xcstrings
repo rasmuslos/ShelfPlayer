@@ -754,10 +754,36 @@
       }
     },
     "account.spotlight.lastIndex %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight-Index: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight-Index: %@"
+          }
+        }
+      }
     },
     "account.spotlight.pending" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight Indexierung ausstehend"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight index pending"
+          }
+        }
+      }
     },
     "account.support" : {
       "localizations" : {
@@ -1200,7 +1226,20 @@
       }
     },
     "audiobook.similar.series %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Serie %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Series %@"
+          }
+        }
+      }
     },
     "audiobook.view" : {
       "localizations" : {

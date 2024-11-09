@@ -9,8 +9,8 @@ import Foundation
 import OSLog
 
 public final class DownloadManager: NSObject {
-    private(set) var documentsURL: URL!
-    private(set) var urlSession: URLSession!
+    private(set) public var documentsURL: URL!
+    private(set) internal var urlSession: URLSession!
     
     let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Download")
     

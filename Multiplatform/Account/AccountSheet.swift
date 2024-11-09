@@ -22,6 +22,9 @@ internal struct AccountSheet: View {
     
     @State private var serverInfoToggled = false
     
+    @State private var cacheSize: Int? = nil
+    @State private var downloadsSize: Int? = nil
+    
     @State private var navigationPath = NavigationPath()
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
@@ -38,7 +41,7 @@ internal struct AccountSheet: View {
         NavigationStack(path: $navigationPath) {
             List {
                 Section {
-                    if let username = username {
+                    if let username {
                         Text(username)
                     } else {
                         ProgressIndicator()
@@ -150,7 +153,18 @@ internal struct AccountSheet: View {
                         Button(role: .destructive) {
                             OfflineManager.shared.removeAllDownloads()
                         } label: {
-                            Label("account.delete.downloads", systemImage: "slash.circle")
+                            Label {
+                                let text = Text("account.delete.downloads")
+                                
+                                if let downloadsSize {
+                                    text
+                                    + Text(verbatim: " (\(downloadsSize.formatted(.byteCount(style: .file))))")
+                                } else {
+                                    text
+                                }
+                            } icon: {
+                                Image(systemName: "slash.circle")
+                            }
                         }
                         
                         Button(role: .destructive) {
@@ -161,7 +175,18 @@ internal struct AccountSheet: View {
                                 "offline": false,
                             ])
                         } label: {
-                            Label("account.delete.cache", systemImage: "square.stack.3d.up.slash")
+                            Label {
+                                let text = Text("account.delete.cache")
+                                
+                                if let cacheSize {
+                                    text
+                                    + Text(verbatim: " (\(cacheSize.formatted(.byteCount(style: .file))))")
+                                } else {
+                                    text
+                                }
+                            } icon: {
+                                Image(systemName: "square.stack.3d.up.slash")
+                            }
                         }
                         
                         Button(role: .destructive) {
@@ -226,8 +251,48 @@ internal struct AccountSheet: View {
                 }
             }
             .task {
-                username = try? await AudiobookshelfClient.shared.me().1
-                serverVersion = try? await AudiobookshelfClient.shared.status().serverVersion
+                await update()
+            }
+        }
+    }
+    
+    private nonisolated func update() async {
+        await withTaskGroup(of: Void.self) {
+            $0.addTask {
+                guard let username = try? await AudiobookshelfClient.shared.me().1 else {
+                    return
+                }
+                
+                await MainActor.withAnimation {
+                    self.username = username
+                }
+            }
+            $0.addTask {
+                guard let serverVersion = try? await AudiobookshelfClient.shared.status().serverVersion else {
+                    return
+                }
+                
+                await MainActor.withAnimation {
+                    self.serverVersion = serverVersion
+                }
+            }
+            $0.addTask {
+                guard let size = try? (ImagePipeline.shared.configuration.dataCache as? DataCache)?.path.directoryTotalAllocatedSize() else {
+                    return
+                }
+                
+                await MainActor.withAnimation {
+                    self.cacheSize = size
+                }
+            }
+            $0.addTask {
+                guard let size = try? DownloadManager.shared.documentsURL.directoryTotalAllocatedSize() else {
+                    return
+                }
+                
+                await MainActor.withAnimation {
+                    self.downloadsSize = size
+                }
             }
         }
     }
