@@ -22,13 +22,18 @@ public extension PlayableItem {
         }
         
         OfflineManager.shared.finished(finished, item: self, synced: success)
-        
-        NotificationCenter.default.post(name: Self.finishedNotification, object: nil, userInfo: [
-            "itemID": identifiers.itemID,
-            "episodeID": identifiers.episodeID as Any,
-            
-            "finished": finished,
-        ])
+        await postFinishedNotification(finished: finished)
+    }
+    
+    func postFinishedNotification(finished: Bool) async {
+        await MainActor.run {
+            NotificationCenter.default.post(name: Self.finishedNotification, object: nil, userInfo: [
+                "itemID": identifiers.itemID,
+                "episodeID": identifiers.episodeID as Any,
+                
+                "finished": finished,
+            ])
+        }
     }
     
     func resetProgress() async throws {

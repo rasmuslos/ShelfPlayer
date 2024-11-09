@@ -13,6 +13,21 @@ import SPNetwork
 
 public struct OfflineManager {
     public let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "OfflineProgress")
+    
+    private init() {
+        setupObservers()
+    }
+    
+    private func setupObservers() {
+        NotificationCenter.default.addObserver(forName: PlayableItem.finishedNotification, object: nil, queue: nil) {
+            guard let userInfo = $0.userInfo, let itemID = userInfo["itemID"] as? String else {
+                return
+            }
+            
+            let episodeID = userInfo["episodeID"] as? String
+            OfflineManager.shared.removePlaybackSpeedOverride(for: itemID, episodeID: episodeID)
+        }
+    }
 }
 
 public extension OfflineManager {

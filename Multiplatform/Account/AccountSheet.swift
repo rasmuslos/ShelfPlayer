@@ -15,8 +15,12 @@ internal struct AccountSheet: View {
     @Default(.customPlaybackSpeed) private var customPlaybackSpeed
     @Default(.defaultPlaybackSpeed) private var defaultPlaybackSpeed
     
+    @Default(.lastSpotlightIndex) private var lastSpotlightIndex
+    
     @State private var username: String?
     @State private var serverVersion: String?
+    
+    @State private var serverInfoToggled = false
     
     @State private var navigationPath = NavigationPath()
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
@@ -188,16 +192,27 @@ internal struct AccountSheet: View {
                 
                 Group {
                     Section("account.server") {
-                        Group {
-                            Text("account.server \(AudiobookshelfClient.shared.serverUrl.absoluteString) \(serverVersion ?? "?")")
-                            Text(AudiobookshelfClient.shared.clientId)
+                        Button {
+                            serverInfoToggled.toggle()
+                        } label: {
+                            Text(serverInfoToggled
+                                 ? AudiobookshelfClient.shared.clientId
+                                 : String(localized: "account.server \(AudiobookshelfClient.shared.serverUrl.absoluteString) \(serverVersion ?? "?")"))
+                            .animation(.smooth, value: serverInfoToggled)
+                            .fontDesign(.monospaced)
                         }
-                        .fontDesign(.monospaced)
+                        .buttonStyle(.plain)
                     }
                     
                     Section {
                         Text("account.version \(AudiobookshelfClient.shared.clientVersion) \(AudiobookshelfClient.shared.clientBuild)")
                         Text("account.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
+                        
+                        if let lastSpotlightIndex {
+                            Text("account.spotlight.lastIndex \(lastSpotlightIndex.formatted(date: .abbreviated, time: .shortened))")
+                        } else {
+                            Text("account.spotlight.pending")
+                        }
                     }
                 }
                 .font(.caption)
