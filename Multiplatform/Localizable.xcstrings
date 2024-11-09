@@ -753,6 +753,12 @@
         }
       }
     },
+    "account.spotlight.lastIndex %@" : {
+
+    },
+    "account.spotlight.pending" : {
+
+    },
     "account.support" : {
       "localizations" : {
         "de" : {
@@ -1189,29 +1195,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "朗读者: %@"
-          }
-        }
-      }
-    },
-    "audiobook.similar.series" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In der Serie"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In Series"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "也在系列中"
           }
         }
       }

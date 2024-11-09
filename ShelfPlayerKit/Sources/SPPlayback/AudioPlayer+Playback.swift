@@ -204,27 +204,7 @@ internal extension AudioPlayer {
         try await start(queue.removeFirst())
         
         if let previous {
-            await MainActor.run {
-                NotificationCenter.default.post(name: PlayableItem.finishedNotification, object: nil, userInfo: [
-                    "itemID": previous.identifiers.itemID,
-                    "episodeID": previous.identifiers.episodeID as Any,
-                    
-                    "finished": true,
-                ])
-            }
+            await previous.postFinishedNotification(finished: true)
         }
-    }
-    func itemDidFinish(_ item: PlayableItem) {
-        OfflineManager.shared.removePlaybackSpeedOverride(for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
-            
-        #if canImport(SPOfflineExtended)
-        if Defaults[.deleteFinishedDownloads] {
-            if let episodeID = item.identifiers.episodeID {
-                OfflineManager.shared.remove(episodeId: episodeID)
-            } else {
-                OfflineManager.shared.remove(audiobookId: item.identifiers.itemID)
-            }
-        }
-        #endif
     }
 }

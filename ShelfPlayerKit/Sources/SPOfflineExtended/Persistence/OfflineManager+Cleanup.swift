@@ -44,4 +44,24 @@ public extension OfflineManager {
         
         try? context.save()
     }
+    
+    func removeOutdated(identifiers: [String]) {
+        for identifier in identifiers {
+            let audiobook = try? audiobook(audiobookId: identifier)
+            let podcast = try? podcast(podcastId: identifier)
+            let episode = try? episode(episodeId: identifier)
+            
+            if audiobook != nil {
+                remove(audiobookId: identifier)
+                removePlaybackSpeedOverride(for: identifier, episodeID: nil)
+            }
+            if podcast != nil {
+                remove(podcastId: identifier)
+            }
+            if let episode {
+                remove(episodeId: identifier)
+                removePlaybackSpeedOverride(for: episode.podcastId, episodeID: identifier)
+            }
+        }
+    }
 }
