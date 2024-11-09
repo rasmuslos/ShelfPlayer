@@ -39,7 +39,7 @@ internal extension EpisodeView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        DownloadButton(item: viewModel.episode, downloadingLabel: false)
+                        DownloadButton(item: viewModel.episode, downloadingLabel: false, progressIndicator: true)
                             .labelStyle(.iconOnly)
                     }
                     
