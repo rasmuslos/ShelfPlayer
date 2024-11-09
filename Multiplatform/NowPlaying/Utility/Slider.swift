@@ -82,14 +82,14 @@ internal extension NowPlaying {
                         }
                     )
                 }
-                .frame(height: dragging ? 12 : 6)
-                .secondaryShadow(radius: dragging ? 10 : 0)
+                .frame(height: dragging ? 10 : 6)
+                .secondaryShadow(radius: dragging ? 10 : 0, opacity: 0.2)
                 .padding(20)
                 .contentShape(.hoverMenuInteraction, .rect)
                 .padding(-20)
                 .animation(.spring, value: dragging)
             }
-            .frame(height: 12)
+            .frame(height: 10)
         }
     }
 }
