@@ -11,34 +11,55 @@ import ShelfPlayerKit
 
 internal struct SeriesMenu: View {
     let series: [Audiobook.ReducedSeries]
-    let libraryID: String
-    let flat: Bool
+    let libraryID: String?
     
-    private var presentMenu: Bool {
-        !flat && series.count > 1
+    @ViewBuilder
+    private static func label(series: Audiobook.ReducedSeries?) -> some View {
+        Label("series.view", systemImage: "rectangle.grid.2x2.fill")
+        
+        if let series {
+            Text(series.name)
+        }
     }
-    var body: some View {
-        if !series.isEmpty {
-            if presentMenu {
-                Menu {
-                    ForEach(series, id: \.name) { series in
-                        Button {
-                            Navigation.navigate(seriesName: series.name, seriesID: series.id, libraryID: libraryID)
-                        } label: {
-                            Text(series.name)
-                        }
-                    }
-                } label: {
-                    Label("series.view", systemImage: "rectangle.grid.2x2.fill")
+    @ViewBuilder
+    private static func button(series: Audiobook.ReducedSeries, libraryID: String?, @ViewBuilder buildLabel: (_ series: Audiobook.ReducedSeries) -> some View) -> some View {
+        if let libraryID {
+            Button {
+                if let seriesID = series.id {
+                    Navigation.navigate(seriesID: seriesID, libraryID: libraryID)
+                } else {
+                    Navigation.navigate(seriesName: series.name, libraryID: libraryID)
                 }
-            } else {
-                ForEach(self.series, id: \.name) { series in
-                    Button {
-                        Navigation.navigate(seriesName: series.name, seriesID: series.id, libraryID: libraryID)
-                    } label: {
-                        Label("series.view", systemImage: "rectangle.grid.2x2.fill")
-                        Text(series.name)
-                    }
+            } label: {
+                buildLabel(series)
+            }
+        } else {
+            NavigationLink(destination: SeriesLoadView(series: series)) {
+                buildLabel(series)
+            }
+        }
+    }
+    
+    var body: some View {
+        if series.count == 1, let series = series.first {
+            Self.button(series: series, libraryID: libraryID, buildLabel: Self.label)
+        } else if !series.isEmpty {
+            Menu {
+                SeriesMenuInner(series: series, libraryID: libraryID)
+            } label: {
+                Self.label(series: nil)
+            }
+        }
+    }
+    
+    internal struct SeriesMenuInner: View {
+        let series: [Audiobook.ReducedSeries]
+        let libraryID: String?
+        
+        var body: some View {
+            ForEach(series, id: \.self) { series in
+                SeriesMenu.button(series: series, libraryID: libraryID) {
+                    Text($0.name)
                 }
             }
         }

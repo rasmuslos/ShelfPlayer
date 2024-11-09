@@ -395,9 +395,9 @@ private struct QueueContextMenuItems: View {
                 }
                 
                 if let authors = audiobook.authors {
-                    AuthorMenu(authors: authors)
+                    AuthorMenu(authors: authors, libraryID: audiobook.libraryID)
                 }
-                SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID, flat: false)
+                SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
             }
         }
         .disabled(isOffline)

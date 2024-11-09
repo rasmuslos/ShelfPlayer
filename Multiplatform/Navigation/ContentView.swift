@@ -56,7 +56,7 @@ internal struct ContentView: View {
             case .author:
                 Navigation.navigate(authorID: data.itemID, libraryID: libraryID)
             case .series:
-                Navigation.navigate(seriesName: "", seriesID: data.itemID, libraryID: libraryID)
+                Navigation.navigate(seriesID: data.itemID, libraryID: libraryID)
             case .podcast:
                 Navigation.navigate(podcastID: data.itemID, libraryID: libraryID)
             case .episode:
@@ -89,7 +89,7 @@ internal struct ContentView: View {
                 return
             }
             
-            Navigation.navigate(seriesName: "", seriesID: identifier, libraryID: libraryID)
+            Navigation.navigate(seriesID: identifier, libraryID: libraryID)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.podcast") { activity in
             guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
