@@ -62,7 +62,7 @@ private struct Title: View {
             if let authors = viewModel.audiobook.authors {
                 if authors.count > 1 {
                     Menu {
-                        AuthorMenu.AuthorsMenu(authors: authors)
+                        AuthorMenu.AuthorsMenu(authors: authors, libraryID: nil)
                     } label: {
                         authorLabel
                     }

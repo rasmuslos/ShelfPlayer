@@ -105,7 +105,7 @@ internal extension NowPlaying {
                     
                 }
                 .ignoresSafeArea(edges: .all)
-                .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _, _ in
+                .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _, _, _ in
                     viewModel.expanded = false
                 })
             } else {
@@ -127,7 +127,7 @@ private struct ExpandedForeground: View {
             if viewModel.expanded {
                 Spacer(minLength: 12)
                 
-                ItemImage(cover: item.cover, aspectRatio: .none)
+                ItemImage(cover: item.cover, aspectRatio: .none, contrastConfiguration: nil)
                     .shadow(color: .black.opacity(0.4), radius: 20)
                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                     .animation(.spring(duration: 0.3, bounce: 0.6), value: viewModel.playing)

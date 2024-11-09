@@ -46,10 +46,10 @@ internal extension NowPlaying {
                             }
                             
                             if let authors = audiobook.authors {
-                                AuthorMenu(authors: authors)
+                                AuthorMenu(authors: authors, libraryID: audiobook.libraryID)
                             }
                             
-                            SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID, flat: false)
+                            SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
                         }
                     }
                     .disabled(offline)
@@ -64,7 +64,7 @@ internal extension NowPlaying {
                     
                     Divider()
                     
-                    // SleepTimerButton()
+                    SleepTimerButton()
                     PlaybackSpeedButton()
                     
                     Divider()
