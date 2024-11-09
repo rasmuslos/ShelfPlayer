@@ -34,10 +34,21 @@ internal extension Navigation {
             "authorID": authorID,
         ])
     }
-    static func navigate(seriesName: String, seriesID: String?, libraryID: String) {
+    static func navigate(authorName: String, libraryID: String) {
+        NotificationCenter.default.post(name: Self.navigateAuthorNotification, object: nil, userInfo: [
+            "libraryID": libraryID,
+            "authorName": authorName,
+        ])
+    }
+    static func navigate(seriesID: String, libraryID: String) {
         NotificationCenter.default.post(name: Self.navigateSeriesNotification, object: nil, userInfo: [
             "libraryID": libraryID,
-            "seriesID": seriesID as Any,
+            "seriesID": seriesID,
+        ])
+    }
+    static func navigate(seriesName: String, libraryID: String) {
+        NotificationCenter.default.post(name: Self.navigateSeriesNotification, object: nil, userInfo: [
+            "libraryID": libraryID,
             "seriesName": seriesName,
         ])
     }
@@ -58,7 +69,7 @@ internal extension Navigation {
 
 internal extension Navigation {
     struct NotificationModifier: ViewModifier {
-        typealias Callback = (_ libraryID: String, _ audiobookID: String?, _ authorID: String?, _ seriesName: String?, _ seriesID: String?, _ podcastID: String?, _ episodeID: String?) -> Void
+        typealias Callback = (_ libraryID: String, _ audiobookID: String?, _ authorName: String?, _ authorID: String?, _ seriesName: String?, _ seriesID: String?, _ podcastID: String?, _ episodeID: String?) -> Void
         
         let didNavigate: Callback
         
@@ -90,7 +101,7 @@ internal extension Navigation {
                 return
             }
             
-            didNavigate(libraryID, userInfo["audiobookID"], userInfo["authorID"], userInfo["seriesName"], userInfo["ID"], userInfo["podcastID"], userInfo["episodeID"])
+            didNavigate(libraryID, userInfo["audiobookID"], userInfo["authorName"], userInfo["authorID"], userInfo["seriesName"], userInfo["seriesID"], userInfo["podcastID"], userInfo["episodeID"])
         }
     }
     
@@ -101,10 +112,18 @@ internal extension Navigation {
                     AudiobookLoadView(audiobookId: data.audiobookId)
                 }
                 .navigationDestination(for: Navigation.AuthorLoadDestination.self) { data in
-                    AuthorLoadView(authorID: data.authorId)
+                    if let authorID = data.authorId {
+                        AuthorLoadView(authorID: authorID)
+                    } else if let authorName = data.authorName {
+                        AuthorLoadView(authorName: authorName)
+                    }
                 }
                 .navigationDestination(for: Navigation.SeriesLoadDestination.self) { data in
-                    SeriesLoadView(series: .init(id: data.seriesId, name: data.seriesName, sequence: nil))
+                    if let seriesID = data.seriesId {
+                        SeriesLoadView(seriesID: seriesID)
+                    } else if let seriesName = data.seriesName {
+                        SeriesLoadView(seriesName: seriesName)
+                    }
                 }
                 .navigationDestination(for: Navigation.PodcastLoadDestination.self) { data in
                     PodcastLoadView(podcastId: data.podcastId)
@@ -122,12 +141,31 @@ internal extension Navigation {
     }
     
     struct AuthorLoadDestination: Hashable {
-        let authorId: String
+        let authorId: String?
+        let authorName: String?
+        
+        init(authorId: String) {
+            self.authorId = authorId
+            authorName = nil
+        }
+        init(authorName: String) {
+            authorId = nil
+            self.authorName = authorName
+        }
     }
     
     struct SeriesLoadDestination: Hashable {
         let seriesId: String?
-        let seriesName: String
+        let seriesName: String?
+        
+        init(seriesId: String) {
+            self.seriesId = seriesId
+            seriesName = nil
+        }
+        init(seriesName: String) {
+            seriesId = nil
+            self.seriesName = seriesName
+        }
     }
     
     struct PodcastLoadDestination: Hashable {

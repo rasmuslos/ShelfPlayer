@@ -11,13 +11,20 @@ import ShelfPlayerKit
 internal struct SeriesLoadView: View {
     @Environment(\.library) private var library
     
-    let series: Audiobook.ReducedSeries
+    let seriesID: String?
+    let seriesName: String?
     
+    init(seriesID: String) {
+        self.seriesID = seriesID
+        seriesName = nil
+    }
     init(seriesName: String) {
-        series = .init(id: nil, name: seriesName, sequence: nil)
+        seriesID = nil
+        self.seriesName = seriesName
     }
     init(series: Audiobook.ReducedSeries) {
-        self.series = series
+        seriesID = series.id
+        seriesName = series.name
     }
     
     @State private var failed = false
@@ -43,26 +50,27 @@ internal struct SeriesLoadView: View {
     }
     
     private nonisolated func loadSeries() async {
-        var id = await series.id
-        
-        if id == nil {
-            id = try? await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: library.id)
-        }
-        
-        guard let id else {
-            return
-        }
-        
-        guard let series = try? await AudiobookshelfClient.shared.series(seriesId: id, libraryID: library.id) else {
+        do {
+            let seriesID: String
+            
+            if let id = self.seriesID {
+                seriesID = id
+            } else if let seriesName {
+                let id = try await AudiobookshelfClient.shared.seriesID(name: seriesName, libraryID: library.id)
+                seriesID = id
+            } else {
+                throw GenericError.missing
+            }
+            
+            let series = try await AudiobookshelfClient.shared.series(seriesId: seriesID, libraryID: library.id)
+            
+            await MainActor.withAnimation {
+                self.resolved = series
+            }
+        } catch {
             await MainActor.withAnimation {
                 failed = true
             }
-            
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.resolved = series
         }
     }
 }

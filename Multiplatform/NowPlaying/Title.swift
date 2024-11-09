@@ -19,84 +19,75 @@ internal extension NowPlaying {
         
         let item: PlayableItem
         
-        private var offline: Bool {
+        private var isOffline: Bool {
             library.type == .offline
+        }
+        
+        @ViewBuilder
+        private var label: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                Group {
+                    if let episode = item as? Episode, let releaseDate = episode.releaseDate {
+                        Text(releaseDate, style: .date)
+                    } else if let audiobook = item as? Audiobook, let seriesName = audiobook.seriesName {
+                        Text(seriesName)
+                    }
+                }
+                .font(.caption.smallCaps())
+                .foregroundStyle(.secondary)
+                
+                Text(item.name)
+                    .font(.headline)
+                    .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
+                    .foregroundStyle(.primary)
+                
+                if let author = item.author {
+                    Text(author)
+                        .font(.subheadline)
+                        .lineLimit(1)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
         
         var body: some View {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Group {
-                        if let episode = item as? Episode, let releaseDate = episode.releaseDate {
-                            Text(releaseDate, style: .date)
-                        } else if let audiobook = item as? Audiobook, let seriesName = audiobook.seriesName {
-                            if audiobook.series.count == 0, let series = audiobook.series.first {
-                                NavigationLink(destination: SeriesLoadView(series: series)) {
-                                    Text(seriesName)
-                                        .lineLimit(1)
-                                }
-                                .buttonStyle(.plain)
-                            } else {
-                                Menu {
-                                    ForEach(audiobook.series, id: \.name) { series in
-                                        NavigationLink(destination: SeriesLoadView(series: series)) {
-                                            Text(series.name)
-                                        }
-                                    }
-                                } label: {
-                                    Text(seriesName)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    .font(.caption.smallCaps())
-                    .foregroundStyle(.secondary)
-                    
-                    Text(item.name)
-                        .font(.headline)
-                        .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
-                        .foregroundStyle(.primary)
-                    
-                    if let author = item.author {
-                        Menu {
-                            if let episode = item as? Episode {
-                                Button {
-                                    Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
-                                } label: {
-                                    Label("episode.view", systemImage: "play.square.stack")
-                                }
-                                
-                                Button(action: {
-                                    Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
-                                }) {
-                                    Label("podcast.view", systemImage: "rectangle.stack")
-                                    Text(episode.podcastName)
-                                }
+                if isOffline {
+                    label
+                } else {
+                    Menu {
+                        if let episode = item as? Episode {
+                            Button {
+                                Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
+                            } label: {
+                                Label("episode.view", systemImage: "play.square.stack")
                             }
                             
-                            if let audiobook = item as? Audiobook {
-                                Button {
-                                    Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
-                                } label: {
-                                    Label("audiobook.view", systemImage: "book")
-                                }
-                                
-                                if let authors = audiobook.authors {
-                                    AuthorMenu(authors: authors)
-                                }
-                                
-                                SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID, flat: false)
+                            Button {
+                                Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
+                            } label: {
+                                Label("podcast.view", systemImage: "rectangle.stack")
+                                Text(episode.podcastName)
                             }
-                        } label: {
-                            Text(author)
-                                .font(.subheadline)
-                                .lineLimit(1)
-                                .foregroundStyle(.secondary)
                         }
-                        .buttonStyle(.plain)
-                        .disabled(offline)
+                        
+                        if let audiobook = item as? Audiobook {
+                            Button {
+                                Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
+                            } label: {
+                                Label("audiobook.view", systemImage: "book")
+                            }
+                            
+                            if let authors = audiobook.authors {
+                                AuthorMenu(authors: authors, libraryID: audiobook.libraryID)
+                            }
+                            
+                            SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
+                        }
+                    } label: {
+                        label
                     }
+                    .buttonStyle(.plain)
                 }
                 
                 Spacer(minLength: 12)

@@ -32,10 +32,10 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 }
                 
                 if let authors = audiobook.authors {
-                    AuthorMenu(authors: authors)
+                    AuthorMenu(authors: authors, libraryID: nil)
                 }
                 
-                SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID, flat: true)
+                SeriesMenu(series: audiobook.series, libraryID: nil)
                 
                 Divider()
                 

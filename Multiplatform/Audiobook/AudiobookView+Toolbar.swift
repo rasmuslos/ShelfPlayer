@@ -71,9 +71,9 @@ extension AudiobookView {
                             Divider()
                             
                             if let authors = viewModel.audiobook.authors {
-                                AuthorMenu(authors: authors)
+                                AuthorMenu(authors: authors, libraryID: nil)
                             }
-                            SeriesMenu(series: viewModel.audiobook.series, libraryID: viewModel.audiobook.libraryID, flat: true)
+                            SeriesMenu(series: viewModel.audiobook.series, libraryID: nil)
                             
                             Divider()
                             
