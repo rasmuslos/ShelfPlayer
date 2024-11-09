@@ -30,13 +30,9 @@ public extension Audiobook {
             return nil
         }
         
-        let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2
-        
         return series.map {
-            if let sequence = $0.sequence, let formatted = formatter.string(from: NSNumber(value: sequence)) {
-                return "\($0.name) #\(formatted)"
+            if let formattedSequence = $0.formattedSequence {
+                return "\($0.name) #\(formattedSequence)"
             }
             
             return $0.name
@@ -63,6 +59,18 @@ public extension Audiobook {
             self.id = id
             self.name = name
             self.sequence = sequence
+        }
+        
+        public var formattedSequence: String? {
+            guard let sequence else {
+                return nil
+            }
+            
+            let formatter = NumberFormatter()
+            formatter.minimumFractionDigits = 0
+            formatter.maximumFractionDigits = 2
+            
+            return formatter.string(from: NSNumber(value: sequence))
         }
     }
 }
