@@ -59,24 +59,25 @@ internal extension EpisodeContextMenuModifier {
         let episode: Episode
         
         var body: some View {
-            VStack(alignment: .leading, spacing: 4) {
-                ItemImage(cover: episode.cover)
-                    .frame(width: 50, height: 50)
-                
-                Group {
-                    let durationText = Text(episode.duration, format: .duration)
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    ItemImage(cover: episode.cover)
+                        .frame(width: 50, height: 50)
                     
-                    if let releaseDate = episode.releaseDate {
-                        Text(releaseDate, style: .date)
-                        + Text(verbatim: " • ")
-                        + durationText
-                    } else {
-                        durationText
+                    Group {
+                        let durationText = Text(episode.duration, format: .duration)
+                        
+                        if let releaseDate = episode.releaseDate {
+                            Text(releaseDate, style: .date)
+                            + Text(verbatim: " • ")
+                            + durationText
+                        } else {
+                            durationText
+                        }
                     }
-                }
-                .font(.caption.smallCaps())
-                .foregroundStyle(.secondary)
-                .padding(.top, 8)
+                    .font(.caption.smallCaps())
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 8)
                     Text(episode.name)
                         .font(.headline)
                     
@@ -84,14 +85,17 @@ internal extension EpisodeContextMenuModifier {
                         .lineLimit(1)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                
-                if let descriptionText = episode.descriptionText {
-                    Text(descriptionText)
-                        .padding(.top, 4)
-                        .frame(idealWidth: 400)
+                    
+                    if let descriptionText = episode.descriptionText {
+                        Text(descriptionText)
+                            .padding(.top, 4)
+                            .frame(idealWidth: 400)
+                    }
                 }
+                .padding(20)
+                
+                Spacer()
             }
-            .padding(20)
         }
     }
 }

@@ -23,7 +23,7 @@ internal extension NowPlaying {
                                 return
                             }
                             
-                            if $0.velocity.height > 3500 {
+                            if $0.velocity.height > 4000 {
                                 viewModel.expanded = false
                             } else {
                                 viewModel.dragOffset = min(1000, max(0, $0.translation.height))

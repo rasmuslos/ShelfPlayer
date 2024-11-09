@@ -24,6 +24,11 @@ internal extension NowPlaying {
                     content
                         .allowsHitTesting(!viewModel.expanded)
                     
+                    Rectangle()
+                        .fill(.black)
+                        .opacity(viewModel.expanded ? 0.6 : 0)
+                        .animation(.smooth, value: viewModel.expanded)
+                    
                     if let item = viewModel.item {
                         ZStack {
                             // Background
@@ -87,6 +92,13 @@ internal extension NowPlaying {
                             VStack(spacing: 0) {
                                 CollapsedForeground(item: item)
                                     .opacity(viewModel.expanded ? 0 : 1)
+                                    .highPriorityGesture(DragGesture()
+                                            .onChanged {
+                                                if $0.translation.height < -100 || $0.velocity.height < -2000 {
+                                                    viewModel.expanded = true
+                                                }
+                                            }
+                                    )
                                     .allowsHitTesting(!viewModel.expanded)
                                 
                                 ExpandedForeground(item: item)
@@ -99,7 +111,7 @@ internal extension NowPlaying {
                         .frame(height: viewModel.expanded ? nil : 56)
                         .padding(.horizontal, viewModel.expanded ? 0 : 12)
                         .padding(.bottom, viewModel.expanded ? 0 : bottomOffset)
-                        .animation(.snappy(duration: 0.8), value: viewModel.expanded)
+                        .animation(.snappy(duration: 0.6), value: viewModel.expanded)
                         .modifier(FeedbackModifier())
                     }
                     
@@ -164,7 +176,7 @@ private struct ExpandedForeground: View {
                 .padding(40)
                 .modifier(NowPlaying.GestureModifier(active: true))
                 .padding(-40)
-                .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.4)), removal: .identity))
+                .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.3)), removal: .identity))
             }
         }
         .padding(.horizontal, 28)
