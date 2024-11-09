@@ -23,9 +23,9 @@ internal struct SpotlightIndexer {
         
         let lastIndex = Defaults[.lastSpotlightIndex]
         var remainingIdentifiers = Defaults[.indexedIdentifiers]
-        var indexedIndentifers: [String] = []
+        var indexedIdentifiers: [String] = []
         
-        if let lastIndex {
+        if let lastIndex, false {
             guard lastIndex.distance(to: .now) > indexWaitTime else {
                 return
             }
@@ -42,13 +42,13 @@ internal struct SpotlightIndexer {
                     
                     items += libraryItems
                     remainingIdentifiers = remaining
-                    indexedIndentifers += updated
+                    indexedIdentifiers += updated
                 case .podcasts:
                     let (libraryItems, remaining, updated) = try await indexPodcastLibrary(library, remainingIdentifiers: remainingIdentifiers)
                     
                     items += libraryItems
                     remainingIdentifiers = remaining
-                    indexedIndentifers += updated
+                    indexedIdentifiers += updated
                 default:
                     continue
                 }
@@ -63,12 +63,14 @@ internal struct SpotlightIndexer {
             try await INInteraction.delete(with: remainingIdentifiers)
             try await searchableIndex.deleteSearchableItems(withIdentifiers: remainingIdentifiers)
             
+            OfflineManager.shared.removeOutdated(identifiers: remainingIdentifiers)
+            
             try await searchableIndex.endBatch(withClientState: .init())
             
             Defaults[.lastSpotlightIndex] = .now
-            Defaults[.indexedIdentifiers] = indexedIndentifers
+            Defaults[.indexedIdentifiers] = indexedIdentifiers
             
-            UserContext.logger.info("Indexed \(indexedIndentifers.count) Spotlight items while deleting \(remainingIdentifiers.count) outdated items.")
+            UserContext.logger.info("Indexed \(indexedIdentifiers.count) Spotlight items while deleting \(remainingIdentifiers.count) outdated items.")
         }
     }
     static func deleteIndex() {

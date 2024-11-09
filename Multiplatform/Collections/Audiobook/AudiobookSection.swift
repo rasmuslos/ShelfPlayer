@@ -75,11 +75,11 @@ internal extension AudiobookSection {
     static func group(_ audiobooks: [Audiobook]) -> [AudiobookSection] {
         let grouped = Dictionary(audiobooks.map { ($0.series.first?.name, [$0]) }, uniquingKeysWith: +)
         
-        return grouped.map { seriesName, audiobooks in
+        return grouped.flatMap { seriesName, audiobooks in
             if audiobooks.count > 1, let seriesName {
-                return .series(seriesName: seriesName, audiobooks: audiobooks)
+                return [AudiobookSection.series(seriesName: seriesName, audiobooks: audiobooks)]
             } else {
-                return .audiobook(audiobook: audiobooks.first!)
+                return audiobooks.map { .audiobook(audiobook: $0) }
             }
         }
     }
