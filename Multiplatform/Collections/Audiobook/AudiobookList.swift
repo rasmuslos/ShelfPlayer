@@ -36,6 +36,7 @@ internal struct AudiobookList: View {
 
 private struct Row: View {
     @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
+    @Environment(\.displayContext) private var displayContext
     @Environment(\.colorScheme) private var colorScheme
     
     let audiobook: Audiobook
@@ -63,6 +64,10 @@ private struct Row: View {
     
     private var additional: [String] {
         var parts = [String]()
+        
+        if case .series(let series) = displayContext, let formattedSequence = audiobook.series.first(where: { $0.name == series.name })?.formattedSequence {
+            parts.append("#\(formattedSequence)")
+        }
         
         if audiobook.explicit && audiobook.abridged {
             parts.append("🅴🅰")
