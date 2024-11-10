@@ -15,7 +15,7 @@ internal struct SeriesMenu: View {
     
     @ViewBuilder
     private static func label(series: Audiobook.ReducedSeries?) -> some View {
-        Label("series.view", systemImage: "rectangle.grid.2x2.fill")
+        Label("series.view", systemImage: "rectangle.grid.2x2")
         
         if let series {
             Text(series.name)
