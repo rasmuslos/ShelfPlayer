@@ -216,7 +216,7 @@ internal struct AccountSheet: View {
                 .foregroundStyle(.primary)
                 
                 Group {
-                    Section("account.server") {
+                    Section {
                         Button {
                             serverInfoToggled.toggle()
                         } label: {
@@ -227,9 +227,7 @@ internal struct AccountSheet: View {
                             .fontDesign(.monospaced)
                         }
                         .buttonStyle(.plain)
-                    }
-                    
-                    Section {
+                        
                         Text("account.version \(AudiobookshelfClient.shared.clientVersion) \(AudiobookshelfClient.shared.clientBuild)")
                         Text("account.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
                         
