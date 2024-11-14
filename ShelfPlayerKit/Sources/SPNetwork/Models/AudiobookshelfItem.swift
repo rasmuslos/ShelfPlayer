@@ -190,7 +190,7 @@ internal struct AudiobookshelfAudioTrack: Codable {
     let duration: Double
     let contentUrl: String
     let mimeType: String
-    let codec: String
+    let codec: String?
     
     let metadata: AudioTrackMetadata?
     
