@@ -88,7 +88,7 @@
 			<key>Title</key>
 			<string>Playback</string>
 			<key>FooterText</key>
-			<string>The Sleep-&gt;Timer will be extended if you press play up to 10 seconds after it expires.
+			<string>The Sleep-Timer will be extended if you press play up to 15 seconds after it expires.
 Smart rewind will skip back ten seconds when playback was inactive for longer than ten minutes.</string>
 		</dict>
 		<dict>

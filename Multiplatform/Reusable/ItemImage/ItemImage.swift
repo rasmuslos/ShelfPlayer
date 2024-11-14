@@ -126,9 +126,9 @@ internal struct ItemImage: View {
     
     struct ContrastConfiguration {
         var shadowRadius: CGFloat = 4
-        var shadowOpacity: CGFloat = 0.2
+        var shadowOpacity: CGFloat = 0.3
         
-        var borderOpacity: CGFloat = 0.6
+        var borderOpacity: CGFloat = 0.4
         var borderThickness: CGFloat = 1
         
         init() {}
