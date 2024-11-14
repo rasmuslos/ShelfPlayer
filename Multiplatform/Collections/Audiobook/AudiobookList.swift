@@ -128,12 +128,16 @@ private struct Row: View {
                         .font(.headline)
                         .modifier(SerifModifier())
                     
-                    if let author = audiobook.author {
-                        Text(author)
-                            .lineLimit(2)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                    Group {
+                        if case .author = displayContext, let seriesName = audiobook.seriesName {
+                            Text(seriesName)
+                        } else if let author = audiobook.author {
+                            Text(author)
+                        }
                     }
+                    .lineLimit(2)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
                     
                     if !additional.isEmpty {
                         Text(additional.joined(separator: " • "))

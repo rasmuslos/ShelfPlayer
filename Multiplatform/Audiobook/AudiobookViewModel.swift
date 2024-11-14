@@ -171,7 +171,7 @@ private extension AudiobookViewModel {
                 return nil
             }
             
-            return (series, audiobooks)
+            return (series, Audiobook.sort(audiobooks, sortOrder: .seriesName, ascending: true))
         }.compactMap { $0 }
         
         await MainActor.withAnimation {

@@ -102,6 +102,7 @@ struct AuthorView: View {
         .modifier(NowPlaying.SafeAreaModifier())
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .environment(viewModel)
+        .environment(\.displayContext, .author(author: viewModel.author))
         .onAppear {
             viewModel.library = library
         }
