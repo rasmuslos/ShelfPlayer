@@ -11,6 +11,7 @@ import SPFoundation
 import SPNetwork
 import SPOffline
 import SPOfflineExtended
+import SPExtension
 
 public extension AudioPlayer {
     func advance(to index: Int) async throws {
@@ -132,6 +133,8 @@ internal extension AudioPlayer {
         }
     }
     func handleNextAudiobooksInSeries(_ audiobooks: [Audiobook], audiobook: Audiobook) {
+        let audiobooks = Audiobook.sort(audiobooks, sortOrder: .seriesName, ascending: true)
+        
         guard let index = audiobooks.firstIndex(of: audiobook) else {
             return
         }
