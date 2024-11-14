@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 
 // This is completely engineered, but pretty cool
 
@@ -69,6 +70,10 @@ public final class SleepTimer {
     public func extend() {
         guard let lastSetting else {
             return
+        }
+        
+        if Defaults[.smartRewind] {
+            AudioPlayer.shared.itemCurrentTime -= 7
         }
         
         switch lastSetting {

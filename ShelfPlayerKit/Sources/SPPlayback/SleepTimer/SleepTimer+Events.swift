@@ -16,7 +16,7 @@ internal extension SleepTimer {
         if let expiredAt {
             let intervalSinceExpire = expiredAt.distance(to: .now)
             
-            if Defaults[.extendSleepTimerOnPlay] && intervalSinceExpire < 10 {
+            if Defaults[.extendSleepTimerOnPlay] && intervalSinceExpire < 15 {
                 extend()
             }
         }

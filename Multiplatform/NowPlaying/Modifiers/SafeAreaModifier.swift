@@ -69,7 +69,7 @@ internal extension NowPlaying {
         func body(content: Content) -> some View {
             if horizontalSizeClass == .compact {
                 content
-                    .safeAreaPadding(.bottom, isVisible ? 64 : 0)
+                    .safeAreaPadding(.bottom, isVisible ? 60 : 0)
             } else {
                 ZStack {
                     GeometryReader { reader in
