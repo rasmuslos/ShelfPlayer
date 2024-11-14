@@ -17,7 +17,7 @@ internal extension PlayableItem.AudioTrack {
             codec: track.codec,
             mimeType: track.mimeType,
             contentUrl: track.contentUrl,
-            fileExtension: track.metadata!.ext!)
+            fileExtension: track.metadata?.ext)
     }
 }
 

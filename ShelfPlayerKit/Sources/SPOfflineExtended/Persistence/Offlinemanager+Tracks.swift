@@ -33,12 +33,23 @@ internal extension OfflineManager {
     }
     
     func download(tracks: [PlayableItem.AudioTrack], for itemId: String, type: OfflineTrack.ParentType, context: ModelContext) {
+        guard tracks.reduce(true, { $0 && $1.fileExtension != nil }) else {
+            switch type {
+            case .audiobook:
+                remove(audiobookId: itemId)
+            case .episode:
+                remove(episodeId: itemId)
+            }
+            
+            return
+        }
+        
         for track in tracks {
             let offlineTrack = OfflineTrack(
                 id: "\(itemId)_\(track.index)",
                 parentId: itemId,
                 index: track.index,
-                fileExtension: track.fileExtension,
+                fileExtension: track.fileExtension!,
                 offset: track.offset,
                 duration: track.duration,
                 type: type)

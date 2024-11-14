@@ -26,12 +26,12 @@ public extension PlayableItem {
         public let offset: TimeInterval
         public let duration: TimeInterval
         
-        public let codec: String
+        public let codec: String?
         public let mimeType: String
         public let contentUrl: String
-        public let fileExtension: String
+        public let fileExtension: String?
         
-        public init(index: Int, offset: TimeInterval, duration: TimeInterval, codec: String, mimeType: String, contentUrl: String, fileExtension: String) {
+        public init(index: Int, offset: TimeInterval, duration: TimeInterval, codec: String?, mimeType: String, contentUrl: String, fileExtension: String?) {
             self.index = index
             self.offset = offset
             self.duration = duration
