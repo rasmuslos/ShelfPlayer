@@ -42,7 +42,7 @@ private extension CarPlayPodcastController {
             let ascending = Defaults[.episodesAscending(podcastId: self.podcast.id)]
             
             let sorted = Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
-            let items = await sorted.parallelMap { await CarPlayHelper.buildEpisodeListItem($0, displayCover: false) }
+            let items = sorted.map { CarPlayHelper.buildEpisodeListItem($0, displayCover: false) }
             let section = CPListSection(items: items, header: nil, sectionIndexTitle: nil)
             
             guard !Task.isCancelled else {
