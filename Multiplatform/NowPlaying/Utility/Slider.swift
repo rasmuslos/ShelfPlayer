@@ -23,7 +23,7 @@ internal extension NowPlaying {
         var body: some View {
             ZStack {
                 GeometryReader { geometry in
-                    let width = geometry.size.width * min(1, max(0, CGFloat(self.percentage)))
+                    let width = geometry.size.width * min(1, max(0, CGFloat(percentage)))
                     
                     ZStack(alignment: .leading) {
                         if colorScheme == .dark {
@@ -42,7 +42,7 @@ internal extension NowPlaying {
                             .animation(.smooth, value: width)
                     }
                     .clipShape(.rect(cornerRadius: 8))
-                    .gesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
+                    .highPriorityGesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
                         .onChanged { value in
                             if blocked {
                                 return
@@ -66,12 +66,22 @@ internal extension NowPlaying {
                             }
                             
                             let velocity = value.velocity.width
-                            let acceleration = velocity > 300 ? 1.5 : 1.2
+                            let acceleration: CGFloat
+                            
+                            if velocity < 100 {
+                                acceleration = 0.8
+                            } else if velocity > 300 {
+                                acceleration = 1.5
+                            } else {
+                                acceleration = 1.2
+                            }
                             
                             let delta = value.location.x - lastLocation.x
                             let offset = (delta / geometry.size.width) * acceleration
                             
                             self.lastLocation = value.location
+                            
+                            print(percentage, offset)
                             
                             percentage = min(1, max(0, percentage + offset))
                             blocked = false

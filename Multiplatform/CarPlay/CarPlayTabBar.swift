@@ -23,8 +23,6 @@ internal final class CarPlayTabBar {
         self.interfaceController = interfaceController
         
         offlineController = .init(interfaceController: interfaceController)
-        offlineController.template.tabImage = UIImage(systemName: "bookmark")
-        offlineController.template.tabTitle = String(localized: "carPlay.offline.tab")
         
         updateTask = nil
         libraries = [:]
@@ -95,6 +93,8 @@ private extension CarPlayTabBar {
             guard !Task.isCancelled else {
                 return
             }
+            
+            print(templates)
             
             if templates.count > CPTabBarTemplate.maximumTabCount {
                 self.template.updateTemplates([self.offlineController.template, self.librariesListTemplate])
