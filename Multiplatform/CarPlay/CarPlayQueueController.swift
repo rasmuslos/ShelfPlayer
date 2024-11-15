@@ -30,13 +30,13 @@ private extension CarPlayQueueController {
     func updateSections() {
         updateTask?.cancel()
         updateTask = .detached {
-            let items = await AudioPlayer.shared.queue.enumerated().compactMap { ($0, $1) }.parallelMap { index, item in
+            let items = AudioPlayer.shared.queue.enumerated().map { index, item in
                 let listItem: CPListItem
                 
                 if let audiobook = item as? Audiobook {
-                    listItem = await CarPlayHelper.buildAudiobookListItem(audiobook)
+                    listItem = CarPlayHelper.buildAudiobookListItem(audiobook)
                 } else if let episode = item as? Episode {
-                    listItem = await CarPlayHelper.buildEpisodeListItem(episode, displayCover: true)
+                    listItem = CarPlayHelper.buildEpisodeListItem(episode, displayCover: true)
                 } else {
                     listItem = .init(text: ":F", detailText: "somehow invalid item type in queue?")
                 }

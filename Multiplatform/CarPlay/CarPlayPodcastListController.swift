@@ -34,8 +34,12 @@ private extension CarPlayPodcastListController {
                 return
             }
             
-            let items = await podcasts.sorted { $0.sortName < $1.sortName }.parallelMap { podcast in
-                let item = CPListItem(text: podcast.name, detailText: podcast.author, image: await podcast.cover?.platformImage)
+            let items = podcasts.sorted { $0.sortName < $1.sortName }.map { podcast in
+                let item = CPListItem(text: podcast.name, detailText: podcast.author, image: nil)
+                
+                Task {
+                    item.setImage(await podcast.cover?.platformImage)
+                }
                 
                 item.handler = { _, completion in
                     Task {

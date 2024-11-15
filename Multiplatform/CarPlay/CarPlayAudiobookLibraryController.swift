@@ -39,8 +39,8 @@ private extension CarPlayAudiobookLibraryController {
                 return
             }
             
-            let sections = await HomeRow.prepareForPresentation(rows).parallelMap {
-                let items = await $0.entities.parallelMap(CarPlayHelper.buildAudiobookListItem)
+            let sections = HomeRow.prepareForPresentation(rows).map {
+                let items = $0.entities.map(CarPlayHelper.buildAudiobookListItem)
                 let section = CPListSection(items: items,
                                             header: $0.localizedLabel,
                                             headerSubtitle: nil,
