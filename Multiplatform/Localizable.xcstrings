@@ -390,7 +390,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pruge cache"
+            "value" : "Purge cache"
           }
         },
         "zh-Hans" : {
