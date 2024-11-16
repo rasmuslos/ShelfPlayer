@@ -39,6 +39,8 @@ private struct ProgressSlider: View {
     @State private var wasPlaying: Bool? = nil
     
     var body: some View {
+        @Bindable var viewModel = viewModel
+        
         VStack(spacing: 2) {
             NowPlaying.Slider(percentage: .init(get: { viewModel.chapterCurrentTime / viewModel.chapterDuration }, set: {
                 if Defaults[.lockSeekBar] {
@@ -46,7 +48,7 @@ private struct ProgressSlider: View {
                 }
                 
                 AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration * $0
-            }), dragging: .init() { viewModel.seekDragging } set: {
+            }), displayed: $viewModel.positionDisplayed, dragging: .init() { viewModel.seekDragging } set: {
                 if $0 && wasPlaying == nil {
                     wasPlaying = AudioPlayer.shared.playing
                     AudioPlayer.shared.playing = false
@@ -67,7 +69,7 @@ private struct ProgressSlider: View {
                             .scaleEffect(0.5)
                             .tint(.primary)
                     } else {
-                        Text(viewModel.chapterCurrentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                        Text(viewModel.displayedCurrentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
                             .contentTransition(.numericText())
                     }
                 }
@@ -76,8 +78,8 @@ private struct ProgressSlider: View {
                 Spacer()
                 
                 Group {
-                    if viewModel.chapter != nil {
-                        Text(viewModel.itemCurrentTime, format: .duration(unitsStyle: .abbreviated))
+                    if let positionDisplayed = viewModel.positionDisplayed, viewModel.chapter != nil {
+                        Text(viewModel.itemCurrentTime + viewModel.chapterCurrentTime * positionDisplayed, format: .duration(unitsStyle: .abbreviated))
                             .contentTransition(.numericText())
                     } else if let chapter = AudioPlayer.shared.chapter {
                         Text(chapter.title)

@@ -24,6 +24,8 @@ internal extension NowPlaying {
         
         // MARK: Sliders
         
+        @MainActor var positionDisplayed: Percentage?
+        
         @MainActor var seekDragging: Bool
         @MainActor var volumeDragging: Bool
         @MainActor var controlsDragging: Bool
@@ -92,6 +94,8 @@ internal extension NowPlaying {
             seekDragging = false
             volumeDragging = false
             controlsDragging = false
+            
+            positionDisplayed = nil
             
             item = nil
             queue = []
@@ -213,6 +217,15 @@ internal extension NowPlaying.ViewModel {
     @MainActor
     var played: Percentage {
         .init((AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100)
+    }
+    
+    @MainActor
+    var displayedCurrentTime: TimeInterval {
+        if let positionDisplayed {
+            return chapterDuration * positionDisplayed
+        }
+        
+        return chapterCurrentTime
     }
     
     @MainActor

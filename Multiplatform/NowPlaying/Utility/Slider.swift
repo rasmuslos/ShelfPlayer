@@ -13,13 +13,14 @@ internal extension NowPlaying {
         @Environment(\.colorScheme) private var colorScheme
         
         @Binding var percentage: Percentage
+        @Binding var displayed: Percentage?
+        
         @Binding var dragging: Bool
         
         @State private var counter = 0
         @State private var blocked = false
         
         @State private var captured: Percentage? = nil
-        @State private var displayed: Percentage? = nil
         
         var body: some View {
             ZStack {
@@ -96,7 +97,8 @@ internal extension NowPlaying {
 #Preview {
     @Previewable @State var dragging = false
     @Previewable @State var percentage = 0.5
+    @Previewable @State var displayed: Percentage? = nil
     
-    NowPlaying.Slider(percentage: $percentage, dragging: $dragging)
+    NowPlaying.Slider(percentage: $percentage, displayed: $displayed, dragging: $dragging)
         .padding(.horizontal)
 }
