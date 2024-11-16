@@ -24,7 +24,7 @@ internal struct UserContext {
         }
 
         SpotlightIndexer.index()
-        let _ = IntentDonator.shared
+        IntentDonator.shared.ping()
     }
     
     private static func update() async throws {

@@ -9,13 +9,20 @@ import Foundation
 import Intents
 import ShelfPlayerKit
 import SPPlayback
+import OSLog
 
 internal class IntentDonator {
     internal var lastDonatedItem: Item?
     
-    init() {
+    let logger = Logger(subsystem: "USerContext", category: "Intents")
+    
+    private init() {
         lastDonatedItem = nil
         setupObservers()
+    }
+    
+    public func ping() {
+        logger.debug("Pong from IntentDonator")
     }
     
     static let shared = IntentDonator()
