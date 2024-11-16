@@ -174,6 +174,11 @@ internal extension AudioPlayer {
     }
     
     func advance(finished: Bool) async throws {
+        if finished {
+            playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration, forceReport: true)
+            playbackReporter = nil
+        }
+        
         if queue.isEmpty {
             stop()
             return
@@ -190,10 +195,6 @@ internal extension AudioPlayer {
         chapterTTL = 0
         
         lastPause = nil
-        
-        if finished {
-            playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration, forceReport: true)
-        }
         playbackReporter = nil
         
         await clearNowPlayingMetadata()
