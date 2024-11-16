@@ -15,10 +15,6 @@ struct MultiplatformApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
-        #if !ENABLE_ALL_FEATURES
-        ENABLE_ALL_FEATURES = false
-        #endif
-        
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
         
         BackgroundTaskHandler.setup()
