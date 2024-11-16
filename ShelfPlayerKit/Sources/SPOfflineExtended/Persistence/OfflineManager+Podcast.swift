@@ -104,7 +104,8 @@ public extension OfflineManager {
             context.delete(podcast)
         }
         
-        resetConfiguration(for: podcastId, context: context)
+        // Disabled for now
+        // resetConfiguration(for: podcastId, context: context)
         
         try? context.save()
     }
