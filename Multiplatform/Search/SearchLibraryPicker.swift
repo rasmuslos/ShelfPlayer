@@ -33,12 +33,8 @@ struct SearchLibraryPicker: ViewModifier {
                                     .foregroundStyle(.secondary)
                             } else {
                                 Section {
-                                    ForEach(libraries) { library in
-                                        Button {
-                                            Search.shared.emit(library: library, search: search)
-                                        } label: {
-                                            Text(library.name)
-                                        }
+                                    SelectLibraryModifier.LibraryMenu(libraries: libraries) {
+                                        Search.shared.emit(library: $0, search: search)
                                     }
                                 } footer: {
                                     Text("search.library.select \(search)")
