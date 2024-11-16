@@ -22,7 +22,7 @@ internal extension NowPlaying {
                 ProgressSlider(compact: compact)
                 ControlButtons(compact: compact)
                 
-                VolumeSlider(dragging: .init(get: { viewModel.volumeDragging }, set: { viewModel.volumeDragging = $0; viewModel.controlsDragging = $0 }))
+                VolumeSlider(dragging: .init(get: { viewModel.volumeDragging }, set: {viewModel.volumeDragging = $0; viewModel.controlsDragging = $0 }))
                 VolumePicker()
                     .hidden()
                     .frame(height: 0)
@@ -36,15 +36,28 @@ private struct ProgressSlider: View {
     
     let compact: Bool
     
+    @State private var wasPlaying: Bool? = nil
+    
     var body: some View {
         VStack(spacing: 2) {
-            NowPlaying.Slider(percentage: .init(get: { viewModel.displayedProgress }, set: {
+            NowPlaying.Slider(percentage: .init(get: { viewModel.chapterCurrentTime / viewModel.chapterDuration }, set: {
                 if Defaults[.lockSeekBar] {
                     return
                 }
                 
-                viewModel.setPosition(percentage: $0)
-            }), dragging: .init(get: { viewModel.seekDragging }, set: { viewModel.seekDragging = $0; viewModel.controlsDragging = $0 }))
+                AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration * $0
+            }), dragging: .init() { viewModel.seekDragging } set: {
+                if $0 && wasPlaying == nil {
+                    wasPlaying = AudioPlayer.shared.playing
+                    AudioPlayer.shared.playing = false
+                } else if !$0, let wasPlaying {
+                    AudioPlayer.shared.playing = wasPlaying
+                    self.wasPlaying = nil
+                }
+                
+                viewModel.seekDragging = $0
+                viewModel.controlsDragging = $0
+            })
             .padding(.bottom, 2)
             
             HStack(spacing: 0) {
@@ -63,7 +76,7 @@ private struct ProgressSlider: View {
                 Spacer()
                 
                 Group {
-                    if viewModel.seekDragging && viewModel.chapter != nil {
+                    if viewModel.chapter != nil {
                         Text(viewModel.itemCurrentTime, format: .duration(unitsStyle: .abbreviated))
                             .contentTransition(.numericText())
                     } else if let chapter = AudioPlayer.shared.chapter {
