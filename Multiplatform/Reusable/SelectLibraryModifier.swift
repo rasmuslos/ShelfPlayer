@@ -19,14 +19,8 @@ internal struct SelectLibraryModifier: ViewModifier {
                 if isCompact {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            ForEach(libraries) { library in
-                                Button {
-                                    NotificationCenter.default.post(name: Self.changeLibraryNotification, object: nil, userInfo: [
-                                        "libraryID": library.id,
-                                    ])
-                                } label: {
-                                    Label(library.name, systemImage: library.type == .audiobooks ? "headphones" : "antenna.radiowaves.left.and.right")
-                                }
+                            LibraryMenu(libraries: libraries) {
+                                NotificationCenter.default.post(name: Self.changeLibraryNotification, object: nil, userInfo: [ "libraryID": $0.id ])
                             }
                             
                             Divider()
@@ -48,4 +42,21 @@ internal struct SelectLibraryModifier: ViewModifier {
     }
     
     static let changeLibraryNotification = Notification.Name("io.rfk.shelfplayer.library.change")
+}
+
+extension SelectLibraryModifier {
+    struct LibraryMenu: View {
+        let libraries: [Library]
+        let callback: (Library) -> Void
+        
+        var body: some View {
+            ForEach(libraries) { library in
+                Button {
+                    callback(library)
+                } label: {
+                    Label(library.name, systemImage: library.type == .audiobooks ? "headphones" : "antenna.radiowaves.left.and.right")
+                }
+            }
+        }
+    }
 }
