@@ -39,6 +39,24 @@
             }
           }
         },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld timme"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld timmar"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -86,6 +104,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld minutes"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minut"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minuter"
                 }
               }
             }
@@ -143,6 +179,24 @@
             }
           }
         },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Kapitel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Kapitel"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -195,6 +249,24 @@
             }
           }
         },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Avsnitt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Avsnitt"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -210,6 +282,7 @@
       }
     },
     "%lld episodes.unplayed" : {
+      "comment" : "Could differ depending on if there's one unplayed or many unplayed.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -221,6 +294,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld unplayed"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ospelade"
           }
         }
       }
@@ -237,6 +316,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abridged"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förkortat"
           }
         },
         "zh-Hans" : {
@@ -261,6 +346,12 @@
             "value" : "Account"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -281,6 +372,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Custom values"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassade värden"
           }
         },
         "zh-Hans" : {
@@ -305,6 +402,12 @@
             "value" : "Here you can define custom values that will show up next to their pre-defined options in the relevant pickers."
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Här kan du definiera anpassade värden som kommer att visas vid sidan om deras fördefinierade alternativ i de relevanta väljarna."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -325,6 +428,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Default playback speed"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard uppspelningshastighet"
           }
         },
         "zh-Hans" : {
@@ -349,6 +458,12 @@
             "value" : "Default values"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standardvärden"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -369,6 +484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "These values will be used when starting a new item"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessa värden kommer att användas när ett nytt objekt startas"
           }
         },
         "zh-Hans" : {
@@ -393,6 +514,12 @@
             "value" : "Purge cache"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rensa cache"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -413,6 +540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete all downloads"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort alla nedladdningar"
           }
         },
         "zh-Hans" : {
@@ -437,6 +570,12 @@
             "value" : "Purging the cache will clear the local progress database and remove all caches images"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rensning av cachen tar bort den lokala databasen över framsteg samt alla cacheade bilder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -459,6 +598,12 @@
             "value" : "Delete Spotlight Index"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort Spotlight-index"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -476,6 +621,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
@@ -503,6 +654,12 @@
             "value" : "Logout"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga ut"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -523,6 +680,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manage account"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hantera konto"
           }
         },
         "zh-Hans" : {
@@ -547,6 +710,12 @@
             "value" : "Check for new downloads"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolla efter nya nedladdningar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -567,6 +736,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notification permission denied"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillstånd för notiser nekat"
           }
         },
         "zh-Hans" : {
@@ -591,6 +766,12 @@
             "value" : "Notification permission granted"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillstånd för notiser beviljat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -611,6 +792,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Request notification permission"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efterfråga tillstånd för notiser"
           }
         },
         "zh-Hans" : {
@@ -635,6 +822,12 @@
             "value" : "If you grant ShelfPlayer permission to send notifications and enable the option to receive them in the podcast settings sheet, you will be informed when new episodes are downloaded in the background."
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Om du ger ShelfPlayer tillstånd att skicka notiser och aktiverar valet att ta mot dem i podd-inställningarna så kommer du bli informerad när nya episoder laddas ned i bakgrunden."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -655,6 +848,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notification permission unknown"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillstånd för notifikationer är okänt"
           }
         },
         "zh-Hans" : {
@@ -679,6 +878,12 @@
             "value" : "Playback-speed: %@"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppspelningshastighet: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -696,6 +901,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@)"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ (%2$@)"
@@ -723,6 +934,12 @@
             "value" : "Settings"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inställningar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -744,6 +961,12 @@
             "state" : "translated",
             "value" : "Spotlight-Index: %@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight-index: %@"
+          }
         }
       }
     },
@@ -760,6 +983,12 @@
             "state" : "translated",
             "value" : "Spotlight index pending"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight-indexering avvaktar"
+          }
         }
       }
     },
@@ -772,6 +1001,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Support"
@@ -799,6 +1034,12 @@
             "value" : "Tint"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -819,6 +1060,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aqua"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vatten"
           }
         },
         "zh-Hans" : {
@@ -843,6 +1090,12 @@
             "value" : "Black"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svart"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -863,6 +1116,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Blue"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blå"
           }
         },
         "zh-Hans" : {
@@ -887,6 +1146,12 @@
             "value" : "Green"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grön"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -907,6 +1172,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mint"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mynta"
           }
         },
         "zh-Hans" : {
@@ -931,6 +1202,12 @@
             "value" : "Purple"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lila"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -953,6 +1230,12 @@
             "value" : "Red"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Röd"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -970,6 +1253,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer"
@@ -997,6 +1286,12 @@
             "value" : "Violet"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Violett"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1017,6 +1312,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yellow"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gul"
           }
         },
         "zh-Hans" : {
@@ -1041,6 +1342,12 @@
             "value" : "Account"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1058,6 +1365,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer %1$@ (%2$@)"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer %1$@ (%2$@)"
@@ -1085,6 +1398,12 @@
             "value" : "Database: %1$@ (%2$@)"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Databas: %1$@ (%2$@)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1105,6 +1424,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Added: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lades till: %@"
           }
         },
         "zh-Hans" : {
@@ -1129,6 +1454,12 @@
             "value" : "Ascending"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stigande"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1149,6 +1480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrated by: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berättad av: %@"
           }
         },
         "zh-Hans" : {
@@ -1173,6 +1510,12 @@
             "value" : "Written by %@"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriven av %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1193,6 +1536,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrated by %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berättad av %@"
           }
         },
         "zh-Hans" : {
@@ -1216,6 +1565,12 @@
             "state" : "translated",
             "value" : "In Series %@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I Serien %@"
+          }
         }
       }
     },
@@ -1231,6 +1586,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View audiobook"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa ljudbok"
           }
         },
         "zh-Hans" : {
@@ -1255,6 +1616,12 @@
             "value" : "View author"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa författare"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1275,6 +1642,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Back"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillbaka"
           }
         },
         "zh-Hans" : {
@@ -1299,6 +1672,12 @@
             "value" : "Backwards"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bakåt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1319,6 +1698,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create bookmark"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa bokmärke"
           }
         },
         "zh-Hans" : {
@@ -1343,6 +1728,12 @@
             "value" : "Create bookmark"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa bokmärke"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1363,6 +1754,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbryt"
           }
         },
         "zh-Hans" : {
@@ -1386,6 +1783,12 @@
             "state" : "translated",
             "value" : "Create"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa"
+          }
         }
       }
     },
@@ -1401,6 +1804,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Note"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notera"
           }
         }
       }
@@ -1418,6 +1827,12 @@
             "state" : "translated",
             "value" : "Edit Bookmark"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redigera Bokmärke"
+          }
         }
       }
     },
@@ -1433,6 +1848,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove Bookmark"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta Bort Bokmärke"
           }
         }
       }
@@ -1450,6 +1871,12 @@
             "state" : "translated",
             "value" : "Update Bookmark"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdatera Bokmärke"
+          }
         }
       }
     },
@@ -1465,6 +1892,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbryt"
           }
         }
       }
@@ -1482,6 +1915,12 @@
             "state" : "translated",
             "value" : "Update"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdatera"
+          }
         }
       }
     },
@@ -1498,6 +1937,12 @@
             "state" : "translated",
             "value" : "Note"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notera"
+          }
         }
       }
     },
@@ -1513,6 +1958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No bookmarks"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga bokmärken"
           }
         },
         "zh-Hans" : {
@@ -1535,6 +1986,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Books"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Böcker"
           }
         },
         "zh-Hans" : {
@@ -1583,6 +2040,24 @@
             }
           }
         },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bok"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld böcker"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -1610,6 +2085,12 @@
             "state" : "translated",
             "value" : "Libraries"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotek"
+          }
         }
       }
     },
@@ -1625,6 +2106,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No downloads"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga nedladdningar"
           }
         }
       }
@@ -1642,6 +2129,12 @@
             "state" : "translated",
             "value" : "Downloaded items will appear here"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedladdade objekt kommer att visas här"
+          }
         }
       }
     },
@@ -1658,6 +2151,12 @@
             "state" : "translated",
             "value" : "Offline"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedkopplad"
+          }
         }
       }
     },
@@ -1670,6 +2169,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer"
@@ -1696,6 +2201,12 @@
             "state" : "translated",
             "value" : "All podcasts"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alla poddar"
+          }
         }
       }
     },
@@ -1711,6 +2222,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Library"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotek"
           }
         }
       }
@@ -1728,6 +2245,12 @@
             "state" : "translated",
             "value" : "Queue"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kö"
+          }
         }
       }
     },
@@ -1743,6 +2266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Login to your Audiobookshelf instance to get started"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in på din Audiobookshelf-instans för att börja"
           }
         }
       }
@@ -1760,6 +2289,12 @@
             "state" : "translated",
             "value" : "Unauthorised"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obehörig"
+          }
         }
       }
     },
@@ -1775,6 +2310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chapters"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapitel"
           }
         },
         "zh-Hans" : {
@@ -1799,6 +2340,12 @@
             "value" : "No chapters"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga kapitel"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1819,6 +2366,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Decrease"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minska"
           }
         },
         "zh-Hans" : {
@@ -1843,6 +2396,12 @@
             "value" : "Description"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beskrivning"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1863,6 +2422,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No description available"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen beskrivning tillgänglig"
           }
         },
         "zh-Hans" : {
@@ -1887,6 +2452,12 @@
             "value" : "Dismiss"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avfärda"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1907,6 +2478,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grid"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutnät"
           }
         },
         "zh-Hans" : {
@@ -1931,6 +2508,12 @@
             "value" : "List"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1951,6 +2534,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Done"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klar"
           }
         },
         "zh-Hans" : {
@@ -1975,6 +2564,12 @@
             "value" : "Download"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda ned"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1995,6 +2590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove download"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort nedladdning"
           }
         },
         "zh-Hans" : {
@@ -2019,6 +2620,12 @@
             "value" : "Force remove download"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forcera borttagning av nedladdning"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2028,6 +2635,7 @@
       }
     },
     "downloaded" : {
+      "comment" : "Unclear if it's \"an item was downloaded\" or \"a downloaded item\"",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2039,6 +2647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Downloaded"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedladdad"
           }
         },
         "zh-Hans" : {
@@ -2063,6 +2677,12 @@
             "value" : "Download-Queue"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedladdningskö"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2083,6 +2703,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No downloads"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga nedladdningar"
           }
         },
         "zh-Hans" : {
@@ -2107,6 +2733,12 @@
             "value" : "Downloads"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedladdningar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2127,6 +2759,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Audiobooks"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljudböcker"
           }
         },
         "zh-Hans" : {
@@ -2151,6 +2789,12 @@
             "value" : "Podcasts"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poddar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2171,6 +2815,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Drag"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dra"
           }
         },
         "zh-Hans" : {
@@ -2195,6 +2845,12 @@
             "value" : "%lld items in queue"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld objekt i kö"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2215,6 +2871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New download: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ny nedladdning: %@"
           }
         },
         "zh-Hans" : {
@@ -2239,6 +2901,12 @@
             "value" : "View episode"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa avsnitt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2259,6 +2927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Episodes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avsnitt"
           }
         },
         "zh-Hans" : {
@@ -2283,6 +2957,12 @@
             "value" : "All Episodes"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alla Avsnitt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2303,6 +2983,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Episode count"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antal avsnitt"
           }
         },
         "zh-Hans" : {
@@ -2327,6 +3013,12 @@
             "value" : "%lld new episodes have been downloaded"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld nya avsnitt har laddats ned"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2347,6 +3039,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld new downloads"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld nya nedladdningar"
           }
         },
         "zh-Hans" : {
@@ -2371,6 +3069,12 @@
             "value" : "Audiobook unavailable"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljudbok ej tillgänglig"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2391,6 +3095,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Author unavailable"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Författare ej tillgänglig"
           }
         },
         "zh-Hans" : {
@@ -2415,6 +3125,12 @@
             "value" : "Episode unavailable"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avsnitt ej tillgängligt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2435,6 +3151,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Podcast unavailable"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podd ej tillgänglig"
           }
         },
         "zh-Hans" : {
@@ -2459,6 +3181,12 @@
             "value" : "Series unavailable"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie ej tillgänglig"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2479,6 +3207,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please ensure your device is connected to the internet and can reach your Audiobookshelf instance."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se till att din enhet är ansluten till internet och kan nå din Audiobookshelf-instans"
           }
         },
         "zh-Hans" : {
@@ -2503,6 +3237,12 @@
             "value" : "Content unavailable"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innehåll ej tillgängligt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2520,6 +3260,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicit"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Explicit"
@@ -2547,6 +3293,12 @@
             "value" : "All"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alla"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2567,6 +3319,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Finished"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutad"
           }
         },
         "zh-Hans" : {
@@ -2591,6 +3349,12 @@
             "value" : "Started"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Påbörjad"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2611,6 +3375,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unfinished"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oavslutad"
           }
         },
         "zh-Hans" : {
@@ -2635,6 +3405,12 @@
             "value" : "Filter & sort"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrera & sortera"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2655,6 +3431,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Finished"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutad"
           }
         },
         "zh-Hans" : {
@@ -2679,6 +3461,12 @@
             "value" : "Forwards"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Framåt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2699,6 +3487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Genres"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genrer"
           }
         },
         "zh-Hans" : {
@@ -2723,6 +3517,12 @@
             "value" : "No genres"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga genrer"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2743,6 +3543,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Increase"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öka"
           }
         },
         "zh-Hans" : {
@@ -2767,6 +3573,12 @@
             "value" : "Change library"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Byt bibliotek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2787,6 +3599,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listen"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyssna"
           }
         },
         "zh-Hans" : {
@@ -2811,6 +3629,12 @@
             "value" : "Listen again"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyssna igen"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2831,6 +3655,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Loading"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laddar"
           }
         },
         "zh-Hans" : {
@@ -2855,6 +3685,12 @@
             "value" : "Custom HTTP-Headers"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassade HTTP-Headers"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2875,6 +3711,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till"
           }
         },
         "zh-Hans" : {
@@ -2899,6 +3741,12 @@
             "value" : "Key"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyckel"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2919,6 +3767,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort"
           }
         },
         "zh-Hans" : {
@@ -2943,6 +3797,12 @@
             "value" : "Save"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spara"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2963,6 +3823,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Value"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Värde"
           }
         },
         "zh-Hans" : {
@@ -2987,6 +3853,12 @@
             "value" : "Login failed"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inloggning misslyckades"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3007,6 +3879,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Audiobookshelf server not found"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiobookshelf-servern hittades ej"
           }
         },
         "zh-Hans" : {
@@ -3031,6 +3909,12 @@
             "value" : "Invalid server URL (Format: http(s)://host:port)"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogiltig server-URL (Format: http(s)://host:port)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3051,6 +3935,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Loading"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laddar"
           }
         },
         "zh-Hans" : {
@@ -3075,6 +3965,12 @@
             "value" : "Login with your local account"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in med ditt lokala konto"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3095,6 +3991,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nästa"
           }
         },
         "zh-Hans" : {
@@ -3119,6 +4021,12 @@
             "value" : "Login with OpenID-Connect"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in med OpenID-Connect"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3139,6 +4047,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Make sure shelfplayer://callback is part of the allowed mobile callbacks in the Audiobookshelf settings."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se till att shelfplayer://callback är en del av de tillåtna mobila callbacks i Audiobookshelf-inställningarna"
           }
         },
         "zh-Hans" : {
@@ -3163,6 +4077,12 @@
             "value" : "Password"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösenord"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3183,6 +4103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Login with Audiobookshelf"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in med Audiobookshelf"
           }
         },
         "zh-Hans" : {
@@ -3207,6 +4133,12 @@
             "value" : "Server URL"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server-URL"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3227,6 +4159,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please configure your Audiobookshelf server first"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Var god konfigurera din Audiobookshelf-server först"
           }
         },
         "zh-Hans" : {
@@ -3251,6 +4189,12 @@
             "value" : "Please login to get started"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Var god logga in för att börja"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3271,6 +4215,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Login"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in"
           }
         },
         "zh-Hans" : {
@@ -3295,6 +4245,12 @@
             "value" : "Username"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Användarnam"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3312,6 +4268,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server-Version: %@"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Server-Version: %@"
@@ -3339,6 +4301,12 @@
             "value" : "Welcome to ShelfPlayer"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välkommen till ShelfPlayer"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3359,6 +4327,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "More"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer"
           }
         },
         "zh-Hans" : {
@@ -3383,6 +4357,12 @@
             "value" : "Bookmarks"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bokmärken"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3405,6 +4385,12 @@
             "value" : "Chapters"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapitel"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3414,6 +4400,7 @@
       }
     },
     "nowPlaying.sheet.queue" : {
+      "comment" : "Verb, \"queue the episode\"",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3425,6 +4412,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Queue"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Köa"
           }
         },
         "zh-Hans" : {
@@ -3449,6 +4442,12 @@
             "value" : "Go online"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gå online"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3469,6 +4468,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Go offline"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gå offline"
           }
         },
         "zh-Hans" : {
@@ -3493,6 +4498,12 @@
             "value" : "Downloads"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedladdningar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3513,6 +4524,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Authors"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Författare"
           }
         },
         "zh-Hans" : {
@@ -3537,6 +4554,12 @@
             "value" : "Home"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hem"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3557,6 +4580,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Latest"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaste"
           }
         },
         "zh-Hans" : {
@@ -3581,6 +4610,12 @@
             "value" : "Library"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3601,6 +4636,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök"
           }
         },
         "zh-Hans" : {
@@ -3625,6 +4666,12 @@
             "value" : "Series"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serier"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3645,6 +4692,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pause"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausa"
           }
         },
         "zh-Hans" : {
@@ -3669,6 +4722,12 @@
             "value" : "Play"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3689,6 +4748,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stop playback"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avsluta uppspelning"
           }
         },
         "zh-Hans" : {
@@ -3713,6 +4778,12 @@
             "value" : "Toggle playback"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Växla uppspelning"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3733,6 +4804,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Playing"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spelar"
           }
         },
         "zh-Hans" : {
@@ -3757,6 +4834,12 @@
             "value" : "Episodic"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodisk"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3779,6 +4862,12 @@
             "value" : "Serial"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Följetång"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3799,6 +4888,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto download episodes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda ned avsnitt automatiskt"
           }
         },
         "zh-Hans" : {
@@ -3847,6 +4942,24 @@
             }
           }
         },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ShelfPlayer kommer ladda ned ett avsnitt av denna podd. Avsnitten väljs baserad på poddens filter- & sorteringsinställning."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ShelfPlayer kommer ladda ned %lld avsnitt av podden. Avsnitten väljs baserad på poddens filter- & sorteringsinställning."
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -3875,6 +4988,12 @@
             "value" : "Amount: %lld"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antal: %lld"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3895,6 +5014,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enabling this will allow ShelfPlayer to send you a notification when a new download becomes available."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Om detta aktiveras kommer ShelfPlayer kunna skicka notiser till dig när en ny nedladdning blir tillgänglig."
           }
         },
         "zh-Hans" : {
@@ -3919,6 +5044,12 @@
             "value" : "Enable notifications"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktivera notiser"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3939,6 +5070,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatic downloads"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatiska nedladdningar"
           }
         },
         "zh-Hans" : {
@@ -3963,6 +5100,12 @@
             "value" : "View podcast"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa podd"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3985,6 +5128,12 @@
             "value" : "Load more"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda fler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4002,6 +5151,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "100%"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "100%"
@@ -4029,6 +5184,12 @@
             "value" : "Mark as \"finished\""
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markera som ”avslutad”"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4049,6 +5210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mark as \"unfinished\""
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markera som ”oavslutad”"
           }
         },
         "zh-Hans" : {
@@ -4073,6 +5240,12 @@
             "value" : "Delete progress"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort framsteg"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4094,6 +5267,12 @@
             "state" : "translated",
             "value" : "Move to bottom"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta till botten"
+          }
         }
       }
     },
@@ -4109,6 +5288,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clear"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rensa"
           }
         },
         "zh-Hans" : {
@@ -4133,6 +5318,12 @@
             "value" : "Queue is empty"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kön är tom"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4153,6 +5344,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Queue"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kö"
           }
         },
         "zh-Hans" : {
@@ -4177,6 +5374,12 @@
             "value" : "Play"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4198,6 +5401,12 @@
             "state" : "translated",
             "value" : "Remove from queue"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort från kön"
+          }
         }
       }
     },
@@ -4213,6 +5422,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Press and hold this button to add items to the queue"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck och håll ned denna knapp för att lägga till objekt till kön"
           }
         },
         "zh-Hans" : {
@@ -4237,6 +5452,12 @@
             "value" : "Queue"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kö"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4258,6 +5479,12 @@
             "state" : "translated",
             "value" : "Move to top"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta till toppen"
+          }
         }
       }
     },
@@ -4273,6 +5500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Read by: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inläst av: %@"
           }
         },
         "zh-Hans" : {
@@ -4297,6 +5530,12 @@
             "value" : "Released: %@"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publicerades: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4317,6 +5556,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resume"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätt"
           }
         },
         "zh-Hans" : {
@@ -4341,6 +5586,12 @@
             "value" : "Audio-route"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljud-rutt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4362,6 +5613,12 @@
             "state" : "translated",
             "value" : "Continue listening"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätt lyssna"
+          }
         }
       }
     },
@@ -4377,6 +5634,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continue reading"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätt läs"
           }
         }
       }
@@ -4394,6 +5657,12 @@
             "state" : "translated",
             "value" : "Continue series"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätt serie"
+          }
         }
       }
     },
@@ -4409,6 +5678,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Discover"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upptäck"
           }
         }
       }
@@ -4426,6 +5701,12 @@
             "state" : "translated",
             "value" : "Latest episodes"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaste avsnitt"
+          }
         }
       }
     },
@@ -4441,6 +5722,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listen again"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyssna igen"
           }
         }
       }
@@ -4458,6 +5745,12 @@
             "state" : "translated",
             "value" : "Newest authors"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaste författare"
+          }
         }
       }
     },
@@ -4474,10 +5767,17 @@
             "state" : "translated",
             "value" : "Read again"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läs igen"
+          }
         }
       }
     },
     "row.recentlyAdded" : {
+      "comment" : "Unclear if its plural or singular",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4489,6 +5789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recently added"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyligen tillagda"
           }
         }
       }
@@ -4506,6 +5812,12 @@
             "state" : "translated",
             "value" : "Recent series"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyliga serier"
+          }
         }
       }
     },
@@ -4521,6 +5833,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your search returned no results"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din sökning returnerade inga resultat"
           }
         },
         "zh-Hans" : {
@@ -4545,6 +5863,12 @@
             "value" : "No result"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga resultat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4554,13 +5878,34 @@
       }
     },
     "search.libraries.empty" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "search.libraries.empty"
+          }
+        }
+      }
     },
     "search.library.select" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "search.library.select"
+          }
+        }
+      }
     },
     "search.library.select %@" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "search.library.select %@ "
+          }
+        }
+      }
     },
     "search.placeholder" : {
       "localizations" : {
@@ -4574,6 +5919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search for audiobooks, series & authors"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök efter ljudböcker, serier & författare"
           }
         },
         "zh-Hans" : {
@@ -4598,6 +5949,12 @@
             "value" : "Search for podcasts"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök efter poddar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4618,6 +5975,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Audiobooks "
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljudböcker"
           }
         },
         "zh-Hans" : {
@@ -4642,6 +6005,12 @@
             "value" : "Authors"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Författare"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4664,6 +6033,12 @@
             "value" : "Display"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visning"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4681,6 +6056,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filter"
@@ -4708,6 +6089,12 @@
             "value" : "Series"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serier"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4730,6 +6117,12 @@
             "value" : "Sort-Order"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorteringsordning"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4750,6 +6143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Series"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serier"
           }
         },
         "zh-Hans" : {
@@ -4798,6 +6197,24 @@
             }
           }
         },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bok"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld böcker"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -4826,6 +6243,12 @@
             "value" : "View series"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa serie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4848,6 +6271,12 @@
             "value" : "Syncing progress"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synkroniseringsförlopp"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4857,6 +6286,7 @@
       }
     },
     "sleep.chapter" : {
+      "comment" : "Is it like \"end of a chapter\" or \"by the end of the chapter\"?",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4868,6 +6298,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "End of chapter"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slutet av kapitlet"
           }
         },
         "zh-Hans" : {
@@ -4891,6 +6327,12 @@
             "state" : "translated",
             "value" : "Clear"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rensa"
+          }
         }
       }
     },
@@ -4906,6 +6348,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sleep timer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insomningstimer"
           }
         },
         "zh-Hans" : {
@@ -4930,6 +6378,12 @@
             "value" : "Added at"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lades til"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4950,6 +6404,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ascending"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stigande"
           }
         },
         "zh-Hans" : {
@@ -4974,6 +6434,12 @@
             "value" : "Author"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Författare"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4996,6 +6462,12 @@
             "value" : "Duration"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varaktighet"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5013,6 +6485,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Index"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Index"
@@ -5039,6 +6517,12 @@
             "state" : "translated",
             "value" : "Last played"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spelades senast"
+          }
         }
       }
     },
@@ -5054,6 +6538,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Name"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namn"
           }
         },
         "zh-Hans" : {
@@ -5078,6 +6568,12 @@
             "value" : "Released"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publicerades"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5098,6 +6594,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Series"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie"
           }
         },
         "zh-Hans" : {
@@ -5122,6 +6624,12 @@
             "value" : "Welcome to ShelfPlayer"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välkommen till ShelfPlayer"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5142,6 +6650,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Select a panel from the sidebar to get started."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj en panel från sidomenyn för att börja."
           }
         },
         "zh-Hans" : {
@@ -5166,6 +6680,12 @@
             "value" : "Timeline"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidslinje"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5186,6 +6706,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If you want to continue using Siri but cannot connect to your Audiobookshelf-Instance append \"from my library\" to your prompt."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Om du vill fortsätta använda Siri men kan inte nå din Audiobookshelf-instans, lägg till ”från mitt bibliotek” till din fråga."
           }
         },
         "zh-Hans" : {
@@ -5210,6 +6736,12 @@
             "value" : "Use Siri offline"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Använd Siri offline"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5230,6 +6762,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort"
           }
         },
         "zh-Hans" : {
