@@ -77,6 +77,9 @@ internal struct PodcastLibraryPanel: View {
         .onAppear {
             lazyLoader.library = library
         }
+        .onReceive(Search.shared.searchPublisher) { (library, search) in
+            self.search = search
+        }
     }
 }
 

@@ -94,8 +94,6 @@ private extension CarPlayTabBar {
                 return
             }
             
-            print(templates)
-            
             if templates.count > CPTabBarTemplate.maximumTabCount {
                 self.template.updateTemplates([self.offlineController.template, self.librariesListTemplate])
             } else {
