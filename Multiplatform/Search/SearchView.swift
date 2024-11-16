@@ -70,7 +70,11 @@ internal struct SearchView: View {
             focused = true
         }
         .onReceive(NotificationCenter.default.publisher(for: Self.focusNotification)) { _ in
-            viewModel.focus()
+            viewModel.focus(clear: true)
+        }
+        .onReceive(Search.shared.searchPublisher) { (library, search) in
+            viewModel.focus(clear: true)
+            viewModel.search = search
         }
         .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
     }
@@ -82,7 +86,11 @@ internal struct SearchView: View {
 private final class SearchViewModel {
     @MainActor var library: Library!
     
-    @MainActor private var _search: String
+    @MainActor var search: String {
+        didSet {
+            load()
+        }
+    }
     private var searchTask: Task<Void, Error>?
     
     @MainActor private(set) var loading: Bool
@@ -96,7 +104,7 @@ private final class SearchViewModel {
     
     @MainActor
     init() {
-        _search = ""
+        search = ""
         searchTask = nil
         
         loading = false
@@ -117,20 +125,12 @@ private extension SearchViewModel {
     }
     
     @MainActor
-    var search: String {
-        get {
-            _search
-        }
-        set {
-            _search = newValue
-            load()
-        }
-    }
-    
-    @MainActor
-    func focus() {
+    func focus(clear: Bool) {
         focusNotify.toggle()
-        search = ""
+        
+        if clear {
+            search = ""
+        }
     }
     
     func load() {

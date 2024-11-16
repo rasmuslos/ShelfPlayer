@@ -162,6 +162,29 @@ internal struct TabRouter: View {
                     selection = .podcastHome(library)
                 }
             }
+            .onReceive(Search.shared.searchPublisher) { (library, search) in
+                guard let library else {
+                    return
+                }
+                
+                if current == library {
+                    return
+                }
+                
+                if isCompact {
+                    current = library
+                }
+                if library.type == .audiobooks {
+                    selection = .search(library)
+                } else if library.type == .podcasts {
+                    selection = .podcastLibrary(library)
+                }
+                
+                Task {
+                    try await Task.sleep(for: .milliseconds(500))
+                    Search.shared.emit(library: library, search: search)
+                }
+            }
         } else {
             LoadingView()
                 .task {

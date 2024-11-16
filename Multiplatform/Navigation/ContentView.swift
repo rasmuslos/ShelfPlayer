@@ -29,6 +29,7 @@ internal struct ContentView: View {
                 LegacyRouter()
             }
         }
+        .modifier(SearchLibraryPicker())
         .onAppear {
             NetworkMonitor.start() {
                 step = .sessionImport
@@ -68,7 +69,11 @@ internal struct ContentView: View {
             }
         }
         .onContinueUserActivity(CSQueryContinuationActionType) {
-            print($0)
+            guard let search = $0.userInfo?[CSSearchQueryString] as? String else {
+                return
+            }
+            
+            Search.shared.emit(library: nil, search: search)
         }
         .onContinueUserActivity("io.rfk.shelfplayer.audiobook") { activity in
             guard let identifier = activity.persistentIdentifier, let libraryID = activity.userInfo?["libraryID"] as? String else {
