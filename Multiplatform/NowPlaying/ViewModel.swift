@@ -28,8 +28,6 @@ internal extension NowPlaying {
         @MainActor var volumeDragging: Bool
         @MainActor var controlsDragging: Bool
         
-        @MainActor var draggedPercentage: Double
-        
         // MARK: Current state
         
         @MainActor private(set) var item: PlayableItem?
@@ -94,8 +92,6 @@ internal extension NowPlaying {
             seekDragging = false
             volumeDragging = false
             controlsDragging = false
-            
-            draggedPercentage = 0
             
             item = nil
             queue = []
@@ -205,10 +201,6 @@ internal extension NowPlaying.ViewModel {
         return 0
     }
     
-    @MainActor
-    var displayedProgress: Double {
-        seekDragging ? draggedPercentage : playedPercentage
-    }
     @MainActor
     var playedPercentage: Double {
         chapterCurrentTime / chapterDuration
@@ -397,14 +389,6 @@ private extension NowPlaying.ViewModel {
 }
 
 internal extension NowPlaying.ViewModel {
-    func setPosition(percentage: Double) {
-        Task { @MainActor in
-            draggedPercentage = percentage
-        }
-        
-        AudioPlayer.shared.chapterCurrentTime = AudioPlayer.shared.chapterDuration * percentage
-    }
-    
     func advance(to index: Int) {
         Task {
             do {

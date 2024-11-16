@@ -18,12 +18,13 @@ internal extension NowPlaying {
         @State private var counter = 0
         @State private var blocked = false
         
-        @State private var lastLocation: CGPoint? = nil
+        @State private var captured: Percentage? = nil
+        @State private var displayed: Percentage? = nil
         
         var body: some View {
             ZStack {
                 GeometryReader { geometry in
-                    let width = geometry.size.width * min(1, max(0, CGFloat(percentage)))
+                    let width = geometry.size.width * min(1, max(0, CGFloat(displayed ?? percentage)))
                     
                     ZStack(alignment: .leading) {
                         if colorScheme == .dark {
@@ -43,52 +44,40 @@ internal extension NowPlaying {
                     }
                     .clipShape(.rect(cornerRadius: 8))
                     .highPriorityGesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
-                        .onChanged { value in
-                            if blocked {
-                                return
-                            }
-                            
-                            counter += 1
-                            
-                            if counter < 7 {
-                                return
-                            }
-                            counter = 0
-                            
+                        .onChanged {
                             dragging = true
-                            blocked = true
                             
-                            guard let lastLocation else {
-                                lastLocation = value.location
-                                blocked = false
-                                
-                                return
+                            if captured == nil {
+                                captured = percentage
                             }
                             
-                            let velocity = value.velocity.width
-                            let acceleration: CGFloat
+                            let width = geometry.size.width
+                            let offset = min(width, max(-width, $0.translation.width))
                             
-                            if velocity < 100 {
+                            let moved: Percentage = .init(offset / width)
+                            let velocity = abs($0.velocity.width)
+                            let acceleration: Percentage
+                            
+                            if velocity < 500 {
                                 acceleration = 0.8
-                            } else if velocity > 300 {
-                                acceleration = 1.5
+                            } else if velocity < 1000 {
+                                acceleration = 1
                             } else {
                                 acceleration = 1.2
                             }
                             
-                            let delta = value.location.x - lastLocation.x
-                            let offset = (delta / geometry.size.width) * acceleration
-                            
-                            self.lastLocation = value.location
-                            
-                            print(percentage, offset)
-                            
-                            percentage = min(1, max(0, percentage + offset))
-                            blocked = false
+                            let modifier = moved * acceleration
+                            displayed = captured! + modifier
                         }
                         .onEnded { _ in
                             dragging = false
-                            lastLocation = nil
+                            
+                            if let displayed {
+                                percentage = displayed
+                            }
+                            
+                            displayed = nil
+                            captured = nil
                         }
                     )
                 }
