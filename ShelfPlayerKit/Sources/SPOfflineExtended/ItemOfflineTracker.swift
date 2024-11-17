@@ -40,7 +40,7 @@ extension ItemOfflineTracker {
     public var status: OfflineManager.OfflineStatus {
         get {
             if _status == nil {
-                logger.info("Enabled offline tracking for \(self.itemId)")
+                // logger.info("Enabled offline tracking for \(self.itemId)")
                 
                 token = NotificationCenter.default.addObserver(forName: PlayableItem.downloadStatusUpdatedNotification, object: nil, queue: nil) { [weak self] notification in
                     guard let self else {

@@ -87,6 +87,8 @@ internal struct PodcastHGrid: View {
 }
 
 private struct PodcastGridItem: View {
+    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    
     let podcast: Podcast
     
     private var episodeCount: Int {
@@ -94,7 +96,7 @@ private struct PodcastGridItem: View {
     }
     
     var body: some View {
-        NavigationLink(destination: PodcastLoadView(podcastId: podcast.id)) {
+        NavigationLink(destination: PodcastLoadView(podcastID: podcast.id, zoom: true)) {
             VStack(alignment: .leading, spacing: 4) {
                 ItemImage(cover: podcast.cover)
                     .hoverEffect(.highlight)
@@ -105,7 +107,13 @@ private struct PodcastGridItem: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .contentShape(.hoverMenuInteraction, Rectangle())
+            .contentShape(.hoverMenuInteraction, .rect)
+            .modify {
+                if #available(iOS 18, *) {
+                    $0
+                        .matchedTransitionSource(id: "podcast_\(podcast.id)", in: namespaceWrapper.namepace)
+                } else { $0 }
+            }
         }
         .buttonStyle(.plain)
     }

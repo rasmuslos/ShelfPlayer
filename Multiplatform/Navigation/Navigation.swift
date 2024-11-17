@@ -126,10 +126,10 @@ internal extension Navigation {
                     }
                 }
                 .navigationDestination(for: Navigation.PodcastLoadDestination.self) { data in
-                    PodcastLoadView(podcastId: data.podcastId)
+                    PodcastLoadView(podcastID: data.podcastId, zoom: false)
                 }
                 .navigationDestination(for: Navigation.EpisodeLoadDestination.self) { data in
-                    EpisodeLoadView(id: data.episodeId, podcastId: data.podcastId)
+                    EpisodeLoadView(id: data.episodeId, podcastId: data.podcastId, zoom: false)
                 }
         }
     }
