@@ -9,28 +9,40 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct EpisodeLoadView: View {
+    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    
     let id: String
     let podcastId: String
+    
+    let zoom: Bool
     
     @State private var failed = false
     @State private var episode: Episode?
     
     var body: some View {
-        if let episode {
-            EpisodeView(episode)
-        } else if failed {
-            EpisodeUnavailableView()
-                .refreshable {
-                    await fetchAudiobook()
-                }
-        } else {
-            LoadingView()
-                .task {
-                    await fetchAudiobook()
-                }
-                .refreshable {
-                    await fetchAudiobook()
-                }
+        Group {
+            if let episode {
+                EpisodeView(episode, zoom: zoom)
+            } else if failed {
+                EpisodeUnavailableView()
+                    .refreshable {
+                        await fetchAudiobook()
+                    }
+            } else {
+                LoadingView()
+                    .task {
+                        await fetchAudiobook()
+                    }
+                    .refreshable {
+                        await fetchAudiobook()
+                    }
+            }
+        }
+        .modify {
+            if #available(iOS 18, *), zoom {
+                $0
+                    .navigationTransition(.zoom(sourceID: "episode_\(id)", in: namespaceWrapper.namepace))
+            } else { $0 }
         }
     }
     

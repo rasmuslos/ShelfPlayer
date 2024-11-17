@@ -10,11 +10,15 @@ import Defaults
 import ShelfPlayerKit
 
 struct PodcastView: View {
+    @Environment(NamespaceWrapper.self) private var namespaceWrapper
     @Environment(\.library) private var library
+    
+    let zoom: Bool
     
     @State private var viewModel: PodcastViewModel
     
-    init(_ podcast: Podcast, episodes: [Episode] = []) {
+    init(_ podcast: Podcast, episodes: [Episode] = [], zoom: Bool) {
+        self.zoom = zoom
         _viewModel = .init(initialValue: .init(podcast: podcast, episodes: episodes))
     }
     
@@ -46,6 +50,12 @@ struct PodcastView: View {
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
+        .modify {
+            if #available(iOS 18, *), zoom {
+                $0
+                    .navigationTransition(.zoom(sourceID: "podcast_\(viewModel.podcast.id)", in: namespaceWrapper.namepace))
+            } else { $0 }
+        }
         .modifier(ToolbarModifier())
         .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)
@@ -97,7 +107,7 @@ struct PodcastView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7))
+        PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7), zoom: true)
     }
     .environment(NowPlaying.ViewModel())
 }
