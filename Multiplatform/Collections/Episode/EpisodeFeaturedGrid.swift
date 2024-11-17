@@ -167,11 +167,14 @@ private struct Background: View {
 
 #if DEBUG
 #Preview {
+    @Previewable @Namespace var namespace
+    
     NavigationStack {
         ScrollView {
             EpisodeFeaturedGrid(episodes: .init(repeating: [.fixture], count: 7))
         }
     }
     .environment(NowPlaying.ViewModel())
+    .environment(NamespaceWrapper(namespace))
 }
 #endif

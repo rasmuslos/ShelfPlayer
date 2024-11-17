@@ -41,6 +41,7 @@ extension EpisodeView {
 
 private struct Eyebrow: View {
     @Environment(EpisodeViewModel.self) private var viewModel
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         HStack(spacing: 0) {
@@ -52,12 +53,14 @@ private struct Eyebrow: View {
             Text(viewModel.episode.duration, format: .duration)
         }
         .font(.caption.smallCaps())
-        .foregroundStyle(.secondary)
+        .foregroundStyle(.ultraThinMaterial)
+        .colorScheme(colorScheme == .dark ? .light : .dark)
     }
 }
 
 private struct Title: View {
     @Environment(EpisodeViewModel.self) private var viewModel
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.library) private var library
     
     let alignment: HorizontalAlignment
@@ -80,7 +83,8 @@ private struct Title: View {
                 .disabled(library.type == .offline)
                 .lineLimit(1)
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.ultraThinMaterial)
+                .colorScheme(colorScheme == .dark ? .light : .dark)
                 .buttonStyle(.plain)
                 
                 if alignment == .leading {
