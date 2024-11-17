@@ -7,11 +7,13 @@
 
 import Foundation
 import Intents
+import OSLog
 import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
 internal final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
+    let logger = Logger(subsystem: "Intents", category: "PlayMedia")
 }
 
 // MARK: Resolve parameters
@@ -30,6 +32,7 @@ internal extension PlayMediaIntentHandler {
             do {
                 return try await IntentHelper.nextUp()
             } catch {
+                logger.warning("Failed to resolve next up: \(error)")
                 return [.unsupported(forReason: .serviceUnavailable)]
             }
         }
@@ -42,6 +45,7 @@ internal extension PlayMediaIntentHandler {
             do {
                 return try await IntentHelper.resolveOffline(mediaSearch: search)
             } catch {
+                logger.warning("Failed to resolve offline: \(error)")
                 return [.unsupported(forReason: .serviceUnavailable)]
             }
         }
@@ -56,6 +60,7 @@ internal extension PlayMediaIntentHandler {
             do {
                 result = try await IntentHelper.resolveOffline(mediaSearch: search)
             } catch {
+                logger.warning("Failed to resolve offline: \(error)")
                 return [.unsupported(forReason: .serviceUnavailable)]
             }
         }
@@ -70,6 +75,7 @@ internal extension PlayMediaIntentHandler {
                 
                 return try await IntentHelper.nextUp()
             } catch {
+                logger.warning("Failed to resolve next up: \(error)")
                 return [.unsupported(forReason: .serviceUnavailable)]
             }
         }
@@ -110,6 +116,7 @@ internal extension PlayMediaIntentHandler {
 internal extension PlayMediaIntentHandler {
     func handle(intent: INPlayMediaIntent) async -> INPlayMediaIntentResponse {
         guard let identifier = intent.mediaItems?.first?.identifier else {
+            print(intent.mediaItems)
             return .init(code: .failure, userActivity: nil)
         }
         
@@ -155,12 +162,25 @@ internal extension PlayMediaIntentHandler {
             switch itemType {
             case .audiobook, .episode:
                 item = try? await AudiobookshelfClient.shared.item(itemId: itemID, episodeId: episodeID).0
+            case .podcast:
+                do {
+                    let episodes = try await AudiobookshelfClient.shared.episodes(podcastId: itemID)
+                    let sorted = Episode.filterSort(episodes: episodes,
+                                                    filter: Defaults[.episodesFilter(podcastId: itemID)],
+                                                    sortOrder: Defaults[.episodesSortOrder(podcastId: itemID)],
+                                                    ascending: Defaults[.episodesAscending(podcastId: itemID)])
+                    
+                    item = sorted.first
+                } catch {
+                    item = nil
+                }
             default:
                 item = nil
             }
         }
         
         guard let item else {
+            logger.error("Could not find item for \(itemID)")
             return .init(code: .failure, userActivity: nil)
         }
         
@@ -173,6 +193,7 @@ internal extension PlayMediaIntentHandler {
                 IntentDonator.shared.lastDonatedItem = item
                 try await AudioPlayer.shared.play(item, at: resumePlayback ? nil : 0, withoutPlaybackSession: offline)
             } catch {
+                logger.error("Could not play item: \(error)")
                 return .init(code: .failure, userActivity: nil)
             }
         }

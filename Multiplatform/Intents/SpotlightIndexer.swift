@@ -25,7 +25,7 @@ internal struct SpotlightIndexer {
         var remainingIdentifiers = Defaults[.indexedIdentifiers]
         var indexedIdentifiers: [String] = []
         
-        if let lastIndex, false {
+        if let lastIndex {
             guard lastIndex.distance(to: .now) > indexWaitTime else {
                 return
             }

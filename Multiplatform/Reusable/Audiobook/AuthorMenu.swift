@@ -62,15 +62,4 @@ internal struct AuthorMenu: View {
             }
         }
     }
-    
-    /// Behold
-    internal static func mapAuthorIDs(_ authors: [String], libraryID: String) async -> [String: String] {
-        Dictionary(uniqueKeysWithValues: await authors.parallelMap { author -> (String, String)? in
-            guard let authorID = try? await AudiobookshelfClient.shared.authorID(name: author, libraryID: libraryID) else {
-                return nil
-            }
-            
-            return (author, authorID)
-        }.compactMap { $0 })
-    }
 }
