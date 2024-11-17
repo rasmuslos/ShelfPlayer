@@ -10,7 +10,6 @@ import SPFoundation
 
 struct EpisodeFeaturedGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(NamespaceWrapper.self) private var namespaceWrapper
     
     let episodes: [Episode]
     
@@ -48,20 +47,7 @@ struct EpisodeFeaturedGrid: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 0) {
                     ForEach(episodes) { episode in
-                        NavigationLink(destination: EpisodeView(episode, zoom: true)) {
-                            EpisodeGridItem(episode: episode)
-                                .frame(width: size)
-                                .padding(.leading, gap)
-                                .secondaryShadow(radius: 8, opacity: 0.4)
-                                .modify {
-                                    if #available(iOS 18, *) {
-                                        $0
-                                            .matchedTransitionSource(id: "episode_\(episode.id)", in: namespaceWrapper.namepace)
-                                    } else { $0 }
-                                }
-                        }
-                        .buttonStyle(.plain)
-                        
+                        EpisodeGridItem(episode: episode, gap: gap, size: size)
                     }
                 }
                 .scrollTargetLayout()
@@ -76,23 +62,41 @@ struct EpisodeFeaturedGrid: View {
 
 private struct EpisodeGridItem: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(NamespaceWrapper.self) private var namespaceWrapper
     
     let episode: Episode
     
+    let gap: CGFloat
+    let size: CGFloat
+    
+    @State private var zoomID = UUID()
+    
     var body: some View {
-        ZStack(alignment: .bottom) {
-            LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
-                .aspectRatio(0.72, contentMode: .fill)
-            
-            Title(episode: episode)
+        NavigationLink(destination: EpisodeView(episode, zoomID: zoomID)) {
+            ZStack(alignment: .bottom) {
+                LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
+                    .aspectRatio(0.72, contentMode: .fill)
+                
+                Title(episode: episode)
+            }
+            .foregroundStyle(.white)
+            .colorScheme(.light)
+            .background(Background(cover: episode.cover))
+            .clipShape(.rect(cornerRadius: 16))
+            .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16))
+            .hoverEffect(.highlight)
+            .modifier(EpisodeContextMenuModifier(episode: episode))
+            .frame(width: size)
+            .padding(.leading, gap)
+            .modify {
+                if #available(iOS 18, *) {
+                    $0
+                        .matchedTransitionSource(id: zoomID, in: namespaceWrapper.namepace)
+                } else { $0 }
+            }
+            .secondaryShadow(radius: 8, opacity: 0.4)
         }
-        .foregroundStyle(.white)
-        .colorScheme(.light)
-        .background(Background(cover: episode.cover))
-        .clipShape(.rect(cornerRadius: 16))
-        .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16))
-        .hoverEffect(.highlight)
-        .modifier(EpisodeContextMenuModifier(episode: episode))
+        .buttonStyle(.plain)
     }
 }
 
@@ -169,10 +173,5 @@ private struct Background: View {
         }
     }
     .environment(NowPlaying.ViewModel())
-}
-
-#Preview {
-    EpisodeGridItem(episode: .fixture)
-        .environment(NowPlaying.ViewModel())
 }
 #endif

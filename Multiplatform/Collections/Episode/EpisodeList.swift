@@ -24,10 +24,11 @@ private struct Row: View {
     
     let episode: Episode
     
+    @State private var zoomID = UUID()
     @State private var loading = false
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode, zoom: true)) {
+        NavigationLink(destination: EpisodeView(episode, zoomID: zoomID)) {
             HStack(spacing: 0) {
                 ItemImage(cover: episode.cover)
                     .frame(width: 104)
@@ -73,7 +74,7 @@ private struct Row: View {
             .modify {
                 if #available(iOS 18, *) {
                     $0
-                        .matchedTransitionSource(id: "episode_\(episode.id)", in: namespaceWrapper.namepace)
+                        .matchedTransitionSource(id: zoomID, in: namespaceWrapper.namepace)
                 } else { $0 }
             }
         }

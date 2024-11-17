@@ -33,7 +33,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                NavigationLink(destination: EpisodeView(episode, zoom: false)) {
+                NavigationLink(destination: EpisodeView(episode, zoomID: nil)) {
                     Label("episode.view", systemImage: "play.square.stack")
                 }
                 .disabled(isOffline)

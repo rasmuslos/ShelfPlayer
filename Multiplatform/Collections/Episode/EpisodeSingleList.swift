@@ -24,7 +24,7 @@ private struct EpisodeRow: View {
     @State private var loading = false
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode, zoom: false)) {
+        NavigationLink(destination: EpisodeView(episode, zoomID: nil)) {
             VStack(alignment: .leading, spacing: 0) {
                 Text(episode.name)
                     .lineLimit(2)

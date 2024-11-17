@@ -12,12 +12,12 @@ struct EpisodeView: View {
     @Environment(NamespaceWrapper.self) private var namespaceWrapper
     @Environment(\.library) private var library
     
-    let zoom: Bool
+    let zoomID: UUID?
     
     @State private var viewModel: EpisodeViewModel
     
-    init(_ episode: Episode, zoom: Bool) {
-        self.zoom = zoom
+    init(_ episode: Episode, zoomID: UUID?) {
+        self.zoomID = zoomID
         _viewModel = .init(initialValue: .init(episode: episode))
     }
     
@@ -37,9 +37,9 @@ struct EpisodeView: View {
         }
         .ignoresSafeArea(edges: .top)
         .modify {
-            if #available(iOS 18, *), zoom {
+            if #available(iOS 18, *), let zoomID {
                 $0
-                    .navigationTransition(.zoom(sourceID: "episode_\(viewModel.episode.id)", in: namespaceWrapper.namepace))
+                    .navigationTransition(.zoom(sourceID: zoomID, in: namespaceWrapper.namepace))
             } else { $0 }
         }
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
@@ -73,7 +73,7 @@ struct EpisodeView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        EpisodeView(.fixture, zoom: true)
+        EpisodeView(.fixture, zoomID: .init())
     }
     .environment(NowPlaying.ViewModel())
 }
