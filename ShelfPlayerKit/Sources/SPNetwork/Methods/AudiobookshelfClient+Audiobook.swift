@@ -32,7 +32,7 @@ public extension AudiobookshelfClient {
     
     func audiobooks(libraryID: String, sortOrder: AudiobookSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
         var query: [URLQueryItem] = [
-            .init(name: "sort", value: sortOrder.rawValue),
+            .init(name: "sort", value: sortOrder.apiValue),
             .init(name: "desc", value: ascending ? "0" : "1"),
         ]
         
