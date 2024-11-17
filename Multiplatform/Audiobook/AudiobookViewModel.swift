@@ -120,62 +120,46 @@ private extension AudiobookViewModel {
             return
         }
         
-        let authorIDs = await AuthorMenu.mapAuthorIDs(authors, libraryID: library.id)
+        var resolved = [Author: [Audiobook]]()
         
-        let audiobooks = Dictionary(uniqueKeysWithValues: await authorIDs.parallelMap { (_, authorID) -> (Author, [Audiobook])? in
-            guard let author = try? await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: self.library.id) else {
-                return nil
+        for author in authors {
+            do {
+                let authorID = try await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID)
+                let (author, audiobooks, _) = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: audiobook.libraryID)
+                
+                resolved[author] = audiobooks
+            } catch {
+                
             }
-            
-            guard author.1.count > 1 else {
-                return nil
-            }
-            
-            return (author.0, author.1)
-        }.compactMap { $0 })
+        }
         
         await MainActor.withAnimation {
-            self.sameAuthor = audiobooks
+            self.sameAuthor = resolved
         }
     }
     
     func loadSeries() async {
-        let audiobooks = await audiobook.series.parallelMap { series -> Audiobook.ReducedSeries? in
-            if series.id != nil {
-                return series
+        var resolved = [Audiobook.ReducedSeries: [Audiobook]]()
+        
+        for series in await audiobook.series {
+            do {
+                let seriesID: String
+                
+                if let id = series.id {
+                    seriesID = id
+                } else {
+                    seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: audiobook.libraryID)
+                }
+                
+                let audiobooks = try await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryID: self.audiobook.libraryID, sortOrder: .seriesName, ascending: true, limit: nil, page: nil).0
+                resolved[series] = audiobooks
+            } catch {
+                continue
             }
-            
-            guard let id = try? await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: self.audiobook.libraryID) else {
-                return nil
-            }
-            
-            var series = series
-            series.id = id
-            
-            return series
-        }.parallelMap { series -> (Audiobook.ReducedSeries, [Audiobook])? in
-            guard let series else {
-                return nil
-            }
-            
-            guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(seriesId: series.id!,
-                                                                                     libraryID: self.audiobook.libraryID,
-                                                                                     sortOrder: .seriesName,
-                                                                                     ascending: true,
-                                                                                     limit: nil,
-                                                                                     page: nil).0 else {
-                return nil
-            }
-            
-            guard audiobooks.count > 1 else {
-                return nil
-            }
-            
-            return (series, Audiobook.sort(audiobooks, sortOrder: .seriesName, ascending: true))
-        }.compactMap { $0 }
+        }
         
         await MainActor.withAnimation {
-            self.sameSeries = Dictionary(uniqueKeysWithValues: audiobooks)
+            self.sameSeries = resolved
         }
     }
     
@@ -184,20 +168,18 @@ private extension AudiobookViewModel {
             return
         }
         
-        let audiobooks = await Dictionary(uniqueKeysWithValues: narrators.parallelMap { narrator -> (String, [Audiobook])? in
-            guard let audiobooks = try? await AudiobookshelfClient.shared.audiobooks(narratorName: narrator, libraryID: self.audiobook.libraryID) else {
-                return nil
+        var resolved = [String: [Audiobook]]()
+        
+        for narrator in narrators {
+            do {
+                resolved[narrator] = try await AudiobookshelfClient.shared.audiobooks(narratorName: narrator, libraryID: self.audiobook.libraryID)
+            } catch {
+                continue
             }
-            
-            guard audiobooks.count > 1 else {
-                return nil
-            }
-            
-            return (narrator, audiobooks)
-        }.compactMap { $0 })
+        }
         
         await MainActor.withAnimation {
-            self.sameNarrator = audiobooks
+            self.sameNarrator = resolved
         }
     }
     

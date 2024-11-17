@@ -77,11 +77,32 @@ private extension IntentHelper {
         
         UserContext.logger.info("Resolved \(ranked.map { ($0, $1.name) }) for \"\(search)\"")
         
-        if let first = grouped.first, first.value.count > 1 {
-            return await [.disambiguation(with: first.value.parallelMap { await convert(item: $0.1) }.compactMap { $0 })]
+        var result = [R]()
+        
+        for group in grouped {
+            if group.value.count == 1 {
+                guard let intentItem = await convert(item: group.value.first!.1) else {
+                    continue
+                }
+                
+                result.append(.success(with: intentItem))
+            } else {
+                let intentsItems = await convert(items: group.value.map(\.1))
+                result.append(.disambiguation(with: intentsItems))
+            }
         }
         
-        return await items.parallelMap { await convert(item: $0) }.compactMap { $0 }.map { .success(with: $0) }
+        return result
+    }
+    static func convert(items: [Item]) async -> [INMediaItem] {
+        var result = [INMediaItem]()
+        
+        for item in items {
+            guard let intentItem = await convert(item: item) else { continue }
+            result.append(intentItem)
+        }
+        
+        return result
     }
 }
 
@@ -139,21 +160,35 @@ internal extension IntentHelper {
     }
     
     static func searchForAudiobooks(_ search: String, libraries: [Library]) async throws -> [Audiobook] {
-        try await libraries.filter { $0.type == .audiobooks }.parallelMap {
-            try await AudiobookshelfClient.shared.items(search: search, libraryID: $0.id)
-        }.flatMap { $0.0 }
+        var result = [Audiobook]()
+        
+        for library in libraries.filter({ $0.type == .audiobooks }) {
+            result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).0
+        }
+        
+        return result
     }
     
     static func searchForPodcasts(_ search: String, libraries: [Library]) async throws -> [Podcast] {
-        try await libraries.filter { $0.type == .podcasts }.parallelMap {
-            try await AudiobookshelfClient.shared.items(search: search, libraryID: $0.id)
-        }.flatMap { $0.1 }
+        var result = [Podcast]()
+        
+        for library in libraries.filter({ $0.type == .podcasts }) {
+            result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).1
+        }
+        
+        return result
     }
     
     static func search(_ search: String, libraries: [Library]) async throws -> [Item] {
-        try await libraries.parallelMap {
-            try await AudiobookshelfClient.shared.items(search: search, libraryID: $0.id)
-        }.flatMap { $0.0 + $0.1 + $0.2 }
+        var result = [Item]()
+        
+        for library in libraries {
+            result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).0
+            result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).1
+            result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).2
+        }
+        
+        return result
     }
 }
 
@@ -221,7 +256,7 @@ internal extension IntentHelper {
 
 internal extension IntentHelper {
     static func nextUp<R: INMediaItemResolutionResult>() async throws -> [R] {
-        [.disambiguation(with: try await IntentHelper.nextUp().parallelMap { await IntentHelper.convert(item: $0) }.compactMap( { $0 } ))]
+        [.disambiguation(with: await convert(items: try await IntentHelper.nextUp()))]
     }
     
     static func nextUp() async throws -> [Item] {
