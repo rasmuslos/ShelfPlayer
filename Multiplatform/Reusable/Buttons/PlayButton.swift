@@ -103,7 +103,7 @@ internal struct PlayButton: View {
                 Text(label)
                     .contentTransition(.opacity)
                 
-                if progressEntity.progress < 1 {
+                if progressEntity.progress < 1 && !(playButtonStyle.hideRemainingWhenUnplayed && progressEntity.progress <= 0) {
                     Text(verbatim: "•")
                     Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                 }
@@ -207,6 +207,7 @@ internal protocol PlayButtonStyle {
     func makeLabel(configuration: Self.Configuration) -> Self.LabelBody
     
     var cornerRadius: CGFloat { get }
+    var hideRemainingWhenUnplayed: Bool { get }
 }
 extension PlayButtonStyle where Self == LargePlayButtonStyle {
     static var large: LargePlayButtonStyle { .init() }
@@ -220,6 +221,7 @@ private struct AnyLargePlayButtonStyle: PlayButtonStyle {
     private var _makeLabel: (Configuration) -> AnyView
     
     private var _cornerRadius: CGFloat
+    private var _hideRemainingWhenUnplayed: Bool
     
     init<S: PlayButtonStyle>(style: S) {
         _makeMenu = { configuration in
@@ -230,6 +232,7 @@ private struct AnyLargePlayButtonStyle: PlayButtonStyle {
         }
         
         _cornerRadius = style.cornerRadius
+        _hideRemainingWhenUnplayed = style.hideRemainingWhenUnplayed
     }
     
     func makeMenu(configuration: Configuration) -> some View {
@@ -241,6 +244,9 @@ private struct AnyLargePlayButtonStyle: PlayButtonStyle {
     
     var cornerRadius: CGFloat {
         _cornerRadius
+    }
+    var hideRemainingWhenUnplayed: Bool {
+        _hideRemainingWhenUnplayed
     }
 }
 
@@ -273,6 +279,9 @@ internal struct LargePlayButtonStyle: PlayButtonStyle {
     var cornerRadius: CGFloat {
         8
     }
+    var hideRemainingWhenUnplayed: Bool {
+        true
+    }
 }
 internal struct MediumPlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {
@@ -293,6 +302,9 @@ internal struct MediumPlayButtonStyle: PlayButtonStyle {
     
     var cornerRadius: CGFloat {
         12
+    }
+    var hideRemainingWhenUnplayed: Bool {
+        false
     }
 }
 
