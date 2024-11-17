@@ -51,10 +51,12 @@ If you're comfortable with Xcode, you can build ShelfPlayer yourself:
 3. Edit `Debug.xcconfig`:
     * Change `DEVELOPMENT_TEAM` to your Apple developer team ID.
     * Set a unique `BUNDLE_ID_PREFIX` (e.g., me.yourname).
-4. If you don't have a paid developer account, remove the `ENABLE_ALL_FEATURES` compilation condition to avoid crashes. You can also remove the `DEBUG` flag if you don't intend on further development.
-5. Connect your iPhone to your Mac and enable developer mode.
-6. Select your iPhone as the run destination in Xcode.
-7. Run the application.
+    * If you don't have a paid developer account, remove the `ENABLE_ALL_FEATURES` compilation condition to avoid crashes.
+    * You can also remove the `DEBUG` flag if you don't intend on further development.
+    * If you have access to the [CarPlay entitlement](https://developer.apple.com/documentation/carplay/requesting-carplay-entitlements) comment out the last line, otherwise proceed.
+4. Connect your iPhone to your Mac and enable developer mode.
+5. Select your iPhone as the run destination in Xcode.
+6. Run the application.
 
 > [!NOTE]
 > The `DEBUG` configuration is used by default for most builds. To create a release build for distribution (which isn't allowed under the license), you'll need to edit the `Release.xcconfig` file.
@@ -63,7 +65,7 @@ If you're comfortable with Xcode, you can build ShelfPlayer yourself:
 
 ShelfPlayer is licensed under the Mozilla Public License Version 2. Additionally the "Common Clause" applies. This means that you can modify ShelfPlayer, as well as contribute to it, but you are not allowed to distribute the application in binary form. Compiling for your own personal use is not covered by the commons clause and therefore fine. Additionally, prebuilt binaries are available on GitHub for side loading using popular tools like SideStore, etc.
 
-Contributions are welcome, just fork the repository, and open a pull request with your changes. If you want to contribute translations you have to edit `Localizable.xcstrings` in the `iOS` directory, as well as `Localizable.xcstrings` located at `ShelfPlayerKit/Sources/SPFoundation/Resources` using Xcode. If you want to add a new language add it in the project settings
+Contributions are welcome, just fork the repository, and open a pull request with your changes. If you want to contribute translations you have to edit `Localizable.xcstrings` in the `iOS` directory, as well as one line in `InfoPlist.xcstrings` located at the same directory using Xcode. If you want to add a new language add it in the project settings (The root of the Xcode project named "ShelfPlayer").
 
 ## Miscellaneous
 

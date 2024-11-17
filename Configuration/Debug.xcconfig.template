@@ -10,7 +10,12 @@
 
 #include "Base.xcconfig"
 
+# REMOVE "ENABLE_ALL_FEATURES" IF YOU DON'T HAVE A PAID DEVELOPER ACCOUNT
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG ENABLE_ALL_FEATURES
 
 DEVELOPMENT_TEAM = ABC123456
 BUNDLE_ID_PREFIX = change.me
+
+# ShelfPlayer uses two entitlements only available to paid or even authorized developers.
+# This line uses an alternate set of entitlements, which should be available to everyone.
+CODE_SIGN_ENTITLEMENTS = Configuration/Alternative.entitlements
