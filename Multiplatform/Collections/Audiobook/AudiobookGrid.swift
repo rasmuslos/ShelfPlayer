@@ -47,7 +47,7 @@ internal struct AudiobookVGrid: View {
                         }
                     }
                     
-                    Spacer()
+                    Spacer(minLength: 0)
                 }
             }
         }

@@ -31,7 +31,7 @@ internal struct PodcastVGrid: View {
                         PodcastGridItem(podcast: podcast)
                     }
                     
-                    Spacer()
+                    Spacer(minLength: 0)
                 }
             }
         }

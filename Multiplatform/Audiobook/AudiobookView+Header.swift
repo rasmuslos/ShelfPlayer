@@ -100,7 +100,7 @@ private struct Title: View {
                         Text(verbatim: " • ")
                     }
                     
-                    Text(viewModel.audiobook.duration, format: .duration)
+                    Text(viewModel.audiobook.duration, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
