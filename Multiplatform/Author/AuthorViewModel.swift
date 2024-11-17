@@ -49,22 +49,11 @@ internal final class AuthorViewModel {
         filter = Defaults[.audiobooksFilter]
         displayMode = Defaults[.audiobooksDisplay]
         
-        collapseSeries = Defaults[.collapseSeries]
+        // Disabled
+        collapseSeries = false
         
         errorNotify = false
         descriptionSheetVisible = false
-        
-        setupObservers()
-    }
-    
-    private func setupObservers() {
-        Task {
-            for await collapseSeries in Defaults.updates(.collapseSeries) {
-                await MainActor.withAnimation {
-                    self.collapseSeries = collapseSeries
-                }
-            }
-        }
     }
 }
 
