@@ -106,7 +106,7 @@
 		3AA089332B6E315900773414 /* AuthorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA089322B6E315900773414 /* AuthorList.swift */; };
 		3AA089352B6E413800773414 /* AudiobookList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA089342B6E413800773414 /* AudiobookList.swift */; };
 		3AA089372B6E43FA00773414 /* Defaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA089362B6E43FA00773414 /* Defaults+Keys.swift */; };
-		3AA097872C7C5E0600EA32D7 /* Environment+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA097862C7C5E0600EA32D7 /* Environment+Keys.swift */; };
+		3AA097872C7C5E0600EA32D7 /* Keys+Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA097862C7C5E0600EA32D7 /* Keys+Entries.swift */; };
 		3AA0B0852AD316E50009FBB4 /* EpisodeSortFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0B0842AD316E50009FBB4 /* EpisodeSortFilter.swift */; };
 		3AA0B0892AD322470009FBB4 /* EpisodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0B0882AD322470009FBB4 /* EpisodeView.swift */; };
 		3AA0B08B2AD32D4E0009FBB4 /* EpisodeView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0B08A2AD32D4E0009FBB4 /* EpisodeView+Header.swift */; };
@@ -314,7 +314,7 @@
 		3AA089322B6E315900773414 /* AuthorList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorList.swift; sourceTree = "<group>"; };
 		3AA089342B6E413800773414 /* AudiobookList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookList.swift; sourceTree = "<group>"; };
 		3AA089362B6E43FA00773414 /* Defaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults+Keys.swift"; sourceTree = "<group>"; };
-		3AA097862C7C5E0600EA32D7 /* Environment+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Keys.swift"; sourceTree = "<group>"; };
+		3AA097862C7C5E0600EA32D7 /* Keys+Entries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keys+Entries.swift"; sourceTree = "<group>"; };
 		3AA0B0842AD316E50009FBB4 /* EpisodeSortFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeSortFilter.swift; sourceTree = "<group>"; };
 		3AA0B0882AD322470009FBB4 /* EpisodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeView.swift; sourceTree = "<group>"; };
 		3AA0B08A2AD32D4E0009FBB4 /* EpisodeView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EpisodeView+Header.swift"; sourceTree = "<group>"; };
@@ -586,7 +586,7 @@
 				3A2CA2892CC100CC0004BAAB /* View+Modify.swift */,
 				3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */,
 				3A0E42EB2C8195810034873F /* Alignment+Text.swift */,
-				3AA097862C7C5E0600EA32D7 /* Environment+Keys.swift */,
+				3AA097862C7C5E0600EA32D7 /* Keys+Entries.swift */,
 				3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */,
 				3A012E282C806D970073A619 /* View+ReverseMask.swift */,
 				3A0620922AF7F96A004126D1 /* LocalizedStringKey+Key.swift */,
@@ -1115,7 +1115,7 @@
 				3A27F0F12CA15E0F005DE87D /* TabRouter.swift in Sources */,
 				3AC41F912CC52F3C009ABBFA /* CarPlayPodcastLibraryController.swift in Sources */,
 				3A0AE6BA2AB624E700ACCD68 /* LoginView.swift in Sources */,
-				3AA097872C7C5E0600EA32D7 /* Environment+Keys.swift in Sources */,
+				3AA097872C7C5E0600EA32D7 /* Keys+Entries.swift in Sources */,
 				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
 				3A5891152CD3F1EF005C3289 /* SeriesMenu.swift in Sources */,
 				3A0D2D0D2BE6BA270001EC15 /* ContentShapeKinds+HoverMenuInteraction.swift in Sources */,

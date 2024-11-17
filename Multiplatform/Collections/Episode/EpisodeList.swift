@@ -20,12 +20,14 @@ internal struct EpisodeList: View {
 
 
 private struct Row: View {
+    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    
     let episode: Episode
     
     @State private var loading = false
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode)) {
+        NavigationLink(destination: EpisodeView(episode, zoom: true)) {
             HStack(spacing: 0) {
                 ItemImage(cover: episode.cover)
                     .frame(width: 104)
@@ -68,6 +70,12 @@ private struct Row: View {
                 Spacer()
             }
             .contentShape(.hoverMenuInteraction, .rect())
+            .modify {
+                if #available(iOS 18, *) {
+                    $0
+                        .matchedTransitionSource(id: "episode_\(episode.id)", in: namespaceWrapper.namepace)
+                } else { $0 }
+            }
         }
         .buttonStyle(.plain)
         .modifier(SwipeActionsModifier(item: episode, loading: $loading))

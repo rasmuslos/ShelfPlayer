@@ -9,10 +9,15 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct EpisodeView: View {
+    @Environment(NamespaceWrapper.self) private var namespaceWrapper
     @Environment(\.library) private var library
+    
+    let zoom: Bool
+    
     @State private var viewModel: EpisodeViewModel
     
-    init(_ episode: Episode) {
+    init(_ episode: Episode, zoom: Bool) {
+        self.zoom = zoom
         _viewModel = .init(initialValue: .init(episode: episode))
     }
     
@@ -31,6 +36,12 @@ struct EpisodeView: View {
             .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
         }
         .ignoresSafeArea(edges: .top)
+        .modify {
+            if #available(iOS 18, *), zoom {
+                $0
+                    .navigationTransition(.zoom(sourceID: "episode_\(viewModel.episode.id)", in: namespaceWrapper.namepace))
+            } else { $0 }
+        }
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
@@ -62,7 +73,7 @@ struct EpisodeView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        EpisodeView(.fixture)
+        EpisodeView(.fixture, zoom: true)
     }
     .environment(NowPlaying.ViewModel())
 }

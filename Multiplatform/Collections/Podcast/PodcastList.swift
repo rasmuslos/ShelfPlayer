@@ -20,10 +20,12 @@ internal struct PodcastList: View {
 
 
 private struct PodcastRow: View {
+    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    
     let podcast: Podcast
     
     var body: some View {
-        NavigationLink(destination: PodcastView(podcast)) {
+        NavigationLink(destination: PodcastView(podcast, zoom: true)) {
             HStack(spacing: 0) {
                 ItemImage(cover: podcast.cover)
                     .frame(width: 60)
@@ -41,7 +43,13 @@ private struct PodcastRow: View {
                 }
                 .padding(.leading, 12)
             }
-            .contentShape(.hoverMenuInteraction, Rectangle())
+            .contentShape(.hoverMenuInteraction, .rect)
+            .modify {
+                if #available(iOS 18, *) {
+                    $0
+                        .matchedTransitionSource(id: "podcast_\(podcast.id)", in: namespaceWrapper.namepace)
+                } else { $0 }
+            }
         }
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
