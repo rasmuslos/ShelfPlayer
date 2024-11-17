@@ -16,7 +16,7 @@ struct MultiplatformApp: App {
     
     init() {
         #if !ENABLE_ALL_FEATURES
-        ENABLE_ALL_FEATURES = false
+        SPKit_ENABLE_ALL_FEATURES = false
         #endif
         
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
