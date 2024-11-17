@@ -9,12 +9,8 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct EpisodeLoadView: View {
-    @Environment(NamespaceWrapper.self) private var namespaceWrapper
-    
     let id: String
     let podcastId: String
-    
-    let zoom: Bool
     
     @State private var failed = false
     @State private var episode: Episode?
@@ -22,7 +18,7 @@ internal struct EpisodeLoadView: View {
     var body: some View {
         Group {
             if let episode {
-                EpisodeView(episode, zoom: zoom)
+                EpisodeView(episode, zoomID: nil)
             } else if failed {
                 EpisodeUnavailableView()
                     .refreshable {
@@ -37,12 +33,6 @@ internal struct EpisodeLoadView: View {
                         await fetchAudiobook()
                     }
             }
-        }
-        .modify {
-            if #available(iOS 18, *), zoom {
-                $0
-                    .navigationTransition(.zoom(sourceID: "episode_\(id)", in: namespaceWrapper.namepace))
-            } else { $0 }
         }
     }
     

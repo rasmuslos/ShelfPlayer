@@ -129,7 +129,7 @@ internal extension Navigation {
                     PodcastLoadView(podcastID: data.podcastId, zoom: false)
                 }
                 .navigationDestination(for: Navigation.EpisodeLoadDestination.self) { data in
-                    EpisodeLoadView(id: data.episodeId, podcastId: data.podcastId, zoom: false)
+                    EpisodeLoadView(id: data.episodeId, podcastId: data.podcastId)
                 }
         }
     }
