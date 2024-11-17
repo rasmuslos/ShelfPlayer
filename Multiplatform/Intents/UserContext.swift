@@ -57,9 +57,12 @@ internal struct UserContext {
         
         INUpcomingMediaManager.shared.setPredictionMode(.onlyPredictSuggestedIntents, for: .podcastEpisode)
         
-        let intents: [INPlayMediaIntent] = await items.parallelMap {
-            await IntentHelper.createIntent(item: $0)
-        }.compactMap { $0 }
+        var intents = [INPlayMediaIntent]()
+        
+        for item in items {
+            guard let intent = await IntentHelper.createIntent(item: item) else { continue }
+            intents.append(intent)
+        }
         
         INUpcomingMediaManager.shared.setSuggestedMediaIntents(NSOrderedSet(array: intents))
         

@@ -191,9 +191,7 @@ private struct Position: View {
     .task {
         do {
             previewSessions = try await AudiobookshelfClient.shared.listeningSessions(for: "0fbce99b-97af-4f6b-bb11-2a657b2fea86", episodeID: nil)
-        } catch {
-            print(error)
-        }
+        } catch {}
     }
 }
 #endif

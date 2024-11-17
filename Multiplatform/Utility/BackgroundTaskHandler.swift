@@ -170,8 +170,7 @@ internal extension BackgroundTaskHandler {
             try BGTaskScheduler.shared.submit(request)
             logger.info("Submitted background task, scheduled to run at \(beginDate)")
         } catch {
-            logger.fault("Failed to submit background task request")
-            print(error)
+            logger.fault("Failed to submit background task request: \(error)")
         }
     }
 }
