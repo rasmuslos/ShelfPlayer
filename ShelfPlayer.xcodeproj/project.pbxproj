@@ -397,6 +397,8 @@
 		3AFEEA6D2CC14F730040336D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
 		3AFEEA6F2CC14F730040336D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		FA6717782CEA272A0037CB85 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Intents.strings; sourceTree = "<group>"; };
+		FA6717792CEA272A0037CB85 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = sv; path = sv.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -978,6 +980,7 @@
 				Base,
 				de,
 				"zh-Hans",
+				sv,
 			);
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
@@ -1215,6 +1218,7 @@
 				3A5A4DB12B5EFB1800E72E8B /* en */,
 				3A5A4DB32B5EFB1A00E72E8B /* de */,
 				3A00397E2BEF55E600849F70 /* zh-Hans */,
+				FA6717792CEA272A0037CB85 /* sv */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
@@ -1226,6 +1230,7 @@
 				3AFEEA6B2CC14F720040336D /* en */,
 				3AFEEA6D2CC14F730040336D /* zh-Hans */,
 				3AFEEA6F2CC14F730040336D /* de */,
+				FA6717782CEA272A0037CB85 /* sv */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
