@@ -11,6 +11,8 @@ import SPFoundation
 internal extension PodcastView {
     struct Header: View {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+        @Environment(\.colorScheme) private var colorScheme
+        
         @Environment(PodcastViewModel.self) private var viewModel
         
         private var isLight: Bool? {
@@ -45,6 +47,7 @@ internal extension PodcastView {
 
 private struct Title: View {
     @Environment(PodcastViewModel.self) private var viewModel
+    @Environment(\.colorScheme) private var colorScheme
     
     let largeFont: Bool
     let alignment: TextAlignment
@@ -57,9 +60,11 @@ private struct Title: View {
         
         if let author = viewModel.podcast.author {
             Text(author)
-                .font(largeFont ? .title2 : .subheadline)
                 .lineLimit(2)
+                .foregroundStyle(.thickMaterial)
                 .multilineTextAlignment(alignment)
+                .font(largeFont ? .title2 : .subheadline)
+                .colorScheme(viewModel.dominantColor == nil ? colorScheme == .dark ? .light : .dark : .light)
         }
     }
 }
@@ -86,6 +91,7 @@ private struct PodcastDescription: View {
 
 private struct Additional: View {
     @Environment(PodcastViewModel.self) private var viewModel
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         HStack {
@@ -124,6 +130,8 @@ private struct Additional: View {
             Spacer()
         }
         .font(.footnote)
+        .foregroundStyle(.thickMaterial)
+        .colorScheme(viewModel.dominantColor == nil ? colorScheme == .dark ? .light : .dark : .light)
     }
 }
 

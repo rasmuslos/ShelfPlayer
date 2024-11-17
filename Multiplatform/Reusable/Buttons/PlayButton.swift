@@ -289,7 +289,7 @@ internal struct MediumPlayButtonStyle: PlayButtonStyle {
             .bold()
             .font(.footnote)
             .frame(maxWidth: 280)
-            .background(configuration.background.isLight ? .black : .white)
+            .background(.ultraThickMaterial)
     }
     
     func makeLabel(configuration: Configuration) -> some View {
