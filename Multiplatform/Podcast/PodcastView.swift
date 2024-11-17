@@ -106,9 +106,12 @@ struct PodcastView: View {
 
 #if DEBUG
 #Preview {
+    @Previewable @Namespace var namespace
+    
     NavigationStack {
         PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7), zoom: true)
     }
     .environment(NowPlaying.ViewModel())
+    .environment(NamespaceWrapper(namespace))
 }
 #endif

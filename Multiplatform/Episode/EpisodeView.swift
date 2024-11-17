@@ -38,8 +38,7 @@ struct EpisodeView: View {
         .ignoresSafeArea(edges: .top)
         .modify {
             if #available(iOS 18, *), let zoomID {
-                $0
-                    .navigationTransition(.zoom(sourceID: zoomID, in: namespaceWrapper.namepace))
+                $0.navigationTransition(.zoom(sourceID: zoomID, in: namespaceWrapper.namepace))
             } else { $0 }
         }
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
@@ -72,9 +71,12 @@ struct EpisodeView: View {
 
 #if DEBUG
 #Preview {
+    @Previewable @Namespace var namespace
+    
     NavigationStack {
         EpisodeView(.fixture, zoomID: .init())
     }
     .environment(NowPlaying.ViewModel())
+    .environment(NamespaceWrapper(namespace))
 }
 #endif
