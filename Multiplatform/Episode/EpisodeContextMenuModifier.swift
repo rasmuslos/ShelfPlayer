@@ -102,7 +102,7 @@ internal extension EpisodeContextMenuModifier {
 
 #if DEBUG
 #Preview {
-    Text(":)")
+    Text(verbatim: ":)")
         .modifier(EpisodeContextMenuModifier(episode: .fixture))
 }
 #endif

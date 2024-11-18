@@ -48,7 +48,7 @@ internal struct DownloadButton: View {
     }
     
     var body: some View {
-        Button(role: offlineTracker.status == .none ? nil : .destructive) {
+        Button(role: offlineTracker.status == .none || tint ? nil : .destructive) {
             if offlineTracker.status == .none {
                 download()
             } else {
