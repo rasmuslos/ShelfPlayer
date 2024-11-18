@@ -35,7 +35,15 @@ internal extension PodcastView {
             }
             .background {
                 Rectangle()
-                    .fill(viewModel.dominantColor ?? Color(UIColor.tertiarySystemBackground))
+                    .modify {
+                        if let dominantColor = viewModel.dominantColor {
+                            $0
+                                .fill(dominantColor.gradient)
+                                .rotationEffect(.degrees(180))
+                        } else {
+                            $0.fill(Color(UIColor.tertiarySystemBackground))
+                        }
+                    }
                     .animation(.smooth, value: viewModel.dominantColor)
             }
             .foregroundStyle(isLight == nil ? .primary : isLight! ? Color.black : .white)
