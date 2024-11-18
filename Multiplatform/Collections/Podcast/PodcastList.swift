@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 internal struct PodcastList: View {
     let podcasts: [Podcast]
+    var onAppear: ((_ podcast: Podcast) -> Void)? = nil
     
     var body: some View {
         ForEach(podcasts) { podcast in
             PodcastRow(podcast: podcast)
+                .onAppear {
+                    onAppear?(podcast)
+                }
         }
     }
 }
@@ -23,6 +27,23 @@ private struct PodcastRow: View {
     @Environment(NamespaceWrapper.self) private var namespaceWrapper
     
     let podcast: Podcast
+    
+    private var author: String? {
+        var result = [String]()
+        
+        if let author = podcast.author {
+            result.append(author)
+        }
+        if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
+            result.append(.init(localized: "\(incompleteEpisodeCount) episodes.unplayed"))
+        }
+        
+        guard !result.isEmpty else {
+            return nil
+        }
+        
+        return result.joined(separator: " • ")
+    }
     
     var body: some View {
         NavigationLink(destination: PodcastView(podcast, zoom: true)) {
@@ -34,7 +55,7 @@ private struct PodcastRow: View {
                     Text(podcast.name)
                         .lineLimit(1)
                     
-                    if let author = podcast.author {
+                    if let author {
                         Text(author)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -58,11 +79,14 @@ private struct PodcastRow: View {
 
 #if DEBUG
 #Preview {
+    @Previewable @Namespace var namespace
+    
     NavigationStack {
         List {
             PodcastList(podcasts: .init(repeating: [.fixture], count: 7))
         }
         .listStyle(.plain)
+        .environment(NamespaceWrapper(namespace))
     }
 }
 #endif
