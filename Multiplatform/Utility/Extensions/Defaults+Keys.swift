@@ -52,6 +52,7 @@ internal extension Defaults.Keys {
     static let audiobooksDisplay = Key<ItemDisplayType>("audiobooksDisplay", default: .list)
     
     static let seriesDisplayType = Key<ItemDisplayType>("seriesDisplay", default: .grid)
+    static let podcastsDisplayType = Key<ItemDisplayType>("podcastsDisplay", default: .grid)
     
     static let authorsAscending = Key("authorsAscending", default: true)
     static let podcastsAscending = Key("podcastsAscending", default: true)

@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import Defaults
 import ShelfPlayerKit
 
 internal struct PodcastLibraryPanel: View {
+    @Default(.podcastsDisplayType) private var podcastsDisplayType
+    
     @Environment(\.library) private var library
     
     @State private var search = ""
@@ -22,6 +25,23 @@ internal struct PodcastLibraryPanel: View {
         return lazyLoader.items.filter {
             $0.name.localizedCaseInsensitiveContains(search)
             || $0.author?.localizedCaseInsensitiveContains(search) ?? false
+        }
+    }
+    
+    @ViewBuilder
+    private var loadButton: some View {
+        if visible.isEmpty && !lazyLoader.finished {
+            Button {
+                lazyLoader.didReachEndOfLoadedContent()
+            } label: {
+                Text("podcasts.loadMore")
+                
+                if lazyLoader.working {
+                    ProgressIndicator()
+                }
+            }
+            .disabled(lazyLoader.working)
+            .padding(.top, 40)
         }
     }
     
@@ -43,27 +63,31 @@ internal struct PodcastLibraryPanel: View {
                         }
                 }
             } else {
-                ScrollView {
-                    if visible.isEmpty && !lazyLoader.finished {
-                        Button {
-                            lazyLoader.didReachEndOfLoadedContent()
-                        } label: {
-                            Text("podcasts.loadMore")
+                Group {
+                    switch podcastsDisplayType {
+                    case .grid:
+                        ScrollView {
+                            loadButton
                             
-                            if lazyLoader.working {
-                                ProgressIndicator()
+                            PodcastVGrid(podcasts: visible) {
+                                if $0 == visible.last {
+                                    lazyLoader.didReachEndOfLoadedContent()
+                                }
+                            }
+                            .padding(.horizontal, 20)
+                        }
+                    case .list:
+                        List {
+                            loadButton
+                            
+                            PodcastList(podcasts: visible) {
+                                if $0 == visible.last {
+                                    lazyLoader.didReachEndOfLoadedContent()
+                                }
                             }
                         }
-                        .disabled(lazyLoader.working)
-                        .padding(.top, 40)
+                        .listStyle(.plain)
                     }
-                    
-                    PodcastVGrid(podcasts: visible) {
-                        if $0 == visible.last {
-                            lazyLoader.didReachEndOfLoadedContent()
-                        }
-                    }
-                    .padding(.horizontal, 20)
                 }
                 .refreshable {
                     await lazyLoader.refresh()
@@ -74,6 +98,17 @@ internal struct PodcastLibraryPanel: View {
         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.podcasts")
         .modifier(NowPlaying.SafeAreaModifier())
         .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation {
+                        podcastsDisplayType = podcastsDisplayType == .list ? .grid : .list
+                    }
+                } label: {
+                    Label(podcastsDisplayType == .list ? "display.list" : "display.grid", systemImage: podcastsDisplayType == .list ? "list.bullet" : "square.grid.2x2")
+                }
+            }
+        }
         .onAppear {
             lazyLoader.library = library
         }

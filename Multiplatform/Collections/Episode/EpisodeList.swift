@@ -34,6 +34,12 @@ private struct Row: View {
                     .frame(width: 104)
                     .padding(.trailing, 12)
                     .hoverEffect(.highlight)
+                    .modify {
+                        if #available(iOS 18, *) {
+                            $0
+                                .matchedTransitionSource(id: zoomID, in: namespaceWrapper.namepace)
+                        } else { $0 }
+                    }
                 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(episode.name)
@@ -71,12 +77,6 @@ private struct Row: View {
                 Spacer()
             }
             .contentShape(.hoverMenuInteraction, .rect())
-            .modify {
-                if #available(iOS 18, *) {
-                    $0
-                        .matchedTransitionSource(id: zoomID, in: namespaceWrapper.namepace)
-                } else { $0 }
-            }
         }
         .buttonStyle(.plain)
         .modifier(SwipeActionsModifier(item: episode, loading: $loading))
