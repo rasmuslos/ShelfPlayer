@@ -370,6 +370,12 @@ private extension NowPlaying.ViewModel {
             SleepTimer.shared.extend()
         })
         
+        tokens.append(Search.shared.searchPublisher.sink { _ in
+            Task { @MainActor in
+                self.expanded = false
+            }
+        })
+        
         Task {
             for await skipForwardsInterval in Defaults.updates(.skipForwardsInterval) {
                 await MainActor.withAnimation {

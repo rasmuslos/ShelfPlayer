@@ -337,7 +337,7 @@ internal struct AccountSheetToolbarModifier: ViewModifier {
 }
 
 #Preview {
-    Text(":)")
+    Text(verbatim: ":)")
         .sheet(isPresented: .constant(true)) {
             AccountSheet()
         }
@@ -345,7 +345,7 @@ internal struct AccountSheetToolbarModifier: ViewModifier {
 
 #Preview {
     NavigationStack {
-        Text(":)")
+        Text(verbatim: ":)")
             .modifier(AccountSheetToolbarModifier(requiredSize: nil))
     }
 }

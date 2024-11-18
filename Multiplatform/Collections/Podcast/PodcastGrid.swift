@@ -108,6 +108,14 @@ private struct PodcastGridItem: View {
                 }
             }
             .contentShape(.hoverMenuInteraction, .rect)
+            /*
+            .overlay(alignment: .topTrailing) {
+                Image(systemName: "arrow.down.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.ultraThickMaterial)
+                    .padding(4)
+            }
+             */
             .modify {
                 if #available(iOS 18, *) {
                     $0
@@ -121,17 +129,22 @@ private struct PodcastGridItem: View {
 
 #if DEBUG
 #Preview {
+    @Previewable @Namespace var namespace
+    
     NavigationStack {
         ScrollView {
             PodcastVGrid(podcasts: .init(repeating: [.fixture], count: 7))
                 .padding(.horizontal, 20)
         }
     }
+    .environment(NamespaceWrapper(namespace))
 }
-
+    
 #Preview {
+    @Previewable @Namespace var namespace
     NavigationStack {
         PodcastHGrid(podcasts: .init(repeating: [.fixture], count: 7))
     }
+    .environment(NamespaceWrapper(namespace))
 }
 #endif
