@@ -37,7 +37,9 @@ internal struct ContentView: View {
             
             Task {
                 try? await OfflineManager.shared.attemptListeningTimeSync()
-                try await UserContext.run()
+                try? await UserContext.run()
+                
+                try? await BackgroundTaskHandler.updateDownloads()
             }
         }
         .onContinueUserActivity(CSSearchableItemActionType) {
