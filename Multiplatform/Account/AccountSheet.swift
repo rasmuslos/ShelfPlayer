@@ -151,7 +151,12 @@ internal struct AccountSheet: View {
                 Section {
                     Group {
                         Button(role: .destructive) {
+                            downloadsSize = nil
                             OfflineManager.shared.removeAllDownloads()
+                            
+                            Task {
+                                await update()
+                            }
                         } label: {
                             Label {
                                 let text = Text("account.delete.downloads")
@@ -168,12 +173,18 @@ internal struct AccountSheet: View {
                         }
                         
                         Button(role: .destructive) {
+                            cacheSize = nil
+                            
                             ImagePipeline.shared.cache.removeAll()
                             try? OfflineManager.shared.deleteProgressEntities()
                             
                             NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
                                 "offline": false,
                             ])
+                            
+                            Task {
+                                await update()
+                            }
                         } label: {
                             Label {
                                 let text = Text("account.delete.cache")
