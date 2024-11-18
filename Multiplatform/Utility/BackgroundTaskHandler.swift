@@ -39,6 +39,8 @@ internal extension BackgroundTaskHandler {
  
 internal extension BackgroundTaskHandler {
     static func updateDownloads() async throws {
+        guard !NetworkMonitor.isRouteLimited else { return }
+        
         let configurations = try OfflineManager.shared.getConfigurations(active: true)
         
         try await withThrowingTaskGroup(of: Void.self) { group in
@@ -156,10 +158,10 @@ internal extension BackgroundTaskHandler {
         
         // Run at midnight if the task completed successfully, otherwise retry in one hour
         if failed && failCount <= 3 {
-            beginDate = calendar.date(byAdding: .hour, value: 1, to: Date())!
+            beginDate = Date.now.advanced(by: 60 * 60)
             Defaults[.backgroundTaskFailCount] += 1
         } else {
-            beginDate = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: Date())!)
+            beginDate = Date.now.advanced(by: 60 * 60 * 6)
             Defaults[.backgroundTaskFailCount] = 0
         }
         
