@@ -23,7 +23,7 @@ internal struct AudiobookList: View {
                     }
             case .series(let seriesName, let audiobooks):
                 NavigationLink(destination: SeriesLoadView(seriesName: seriesName)) {
-                    SeriesList.ListItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover })
+                    SeriesList.ListItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover }, itemCount: audiobooks.count)
                 }
                 .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
                 .onAppear {
