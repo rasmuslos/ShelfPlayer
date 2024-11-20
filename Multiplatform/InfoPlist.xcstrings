@@ -74,6 +74,12 @@
             "value" : "Play items from your library using Siri"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela objekt från ditt bibliotek med hjälp av Siri"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
