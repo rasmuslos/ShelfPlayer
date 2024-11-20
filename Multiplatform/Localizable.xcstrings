@@ -288,7 +288,7 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld ungespielt"
                 }
               },
@@ -5914,30 +5914,48 @@
     },
     "search.libraries.empty" : {
       "localizations" : {
-        "sv" : {
+        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "search.libraries.empty"
+            "value" : "Keine Bibliotheken"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No libraries"
           }
         }
       }
     },
     "search.library.select" : {
       "localizations" : {
-        "sv" : {
+        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "search.library.select"
+            "value" : "Wähle eine Bibliothek"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a library"
           }
         }
       }
     },
     "search.library.select %@" : {
       "localizations" : {
-        "sv" : {
+        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "search.library.select %@ "
+            "value" : "Wähle eine Bibliothek aus, in welcher nach „%@“ gesucht werden soll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a library to search for \"%@\" in"
           }
         }
       }
