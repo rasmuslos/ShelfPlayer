@@ -107,7 +107,7 @@ private struct CompactPresentation: View {
                 .padding(.top, 8)
             
             Title(alignment: .center)
-                .padding(.top, 12)
+                .padding(.top, 8)
                 .padding(.bottom, 16)
             
             PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
