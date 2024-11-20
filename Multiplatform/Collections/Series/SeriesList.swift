@@ -29,15 +29,19 @@ internal extension SeriesList {
     struct ListItem: View {
         let name: String
         let covers: [Cover]
+        let itemCount: Int
         
         init(series: Series) {
             self.name = series.name
             self.covers = series.covers
+            
+            itemCount = covers.count
         }
         
-        init(name: String, covers: [Cover]) {
+        init(name: String, covers: [Cover], itemCount: Int) {
             self.name = name
             self.covers = covers
+            self.itemCount = itemCount
         }
         
         private var coverCount: Int {
