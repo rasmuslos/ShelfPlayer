@@ -214,10 +214,6 @@ internal extension NowPlaying.ViewModel {
     var remaining: TimeInterval {
         (chapterDuration - chapterCurrentTime) * (1 / .init(playbackRate))
     }
-    @MainActor
-    var played: Percentage {
-        .init((AudioPlayer.shared.chapterCurrentTime / AudioPlayer.shared.chapterCurrentTime) * 100)
-    }
     
     @MainActor
     var displayedCurrentTime: TimeInterval {
