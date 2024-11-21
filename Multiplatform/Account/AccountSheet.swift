@@ -25,7 +25,6 @@ internal struct AccountSheet: View {
     @State private var cacheSize: Int? = nil
     @State private var downloadsSize: Int? = nil
     
-    @State private var navigationPath = NavigationPath()
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
     private var playbackSpeedText: String {
@@ -38,7 +37,7 @@ internal struct AccountSheet: View {
     }
     
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        NavigationStack {
             List {
                 Section {
                     if let username {
@@ -142,7 +141,7 @@ internal struct AccountSheet: View {
                 Section {
                     TintPicker()
                     
-                    NavigationLink(value: "") {
+                    NavigationLink(destination: CustomHeaderEditView()) {
                         Label("login.customHTTPHeaders", systemImage: "network.badge.shield.half.filled")
                     }
                 }
@@ -254,11 +253,6 @@ internal struct AccountSheet: View {
             }
             .navigationTitle("account.title")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: String.self) { _ in
-                CustomHeaderEditView(backButtonVisible: false) {
-                    navigationPath.removeLast()
-                }
-            }
             .task {
                 await update()
             }

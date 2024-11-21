@@ -59,113 +59,107 @@ struct LoginView: View {
             .padding(.bottom, 8)
         }
         .sheet(isPresented: $loginSheetPresented) {
-            switch loginFlowState {
-            case .server, .credentialsLocal:
-                Form {
-                    Section {
-                        if loginFlowState == .server {
-                            TextField("login.server", text: $server)
-                                .keyboardType(.URL)
-                                .autocorrectionDisabled()
-                                .textInputAutocapitalization(.never)
-                        } else if loginFlowState == .credentialsLocal {
-                            TextField("login.username", text: $username)
-                            SecureField("login.password", text: $password)
-                                .autocorrectionDisabled()
-                                .textInputAutocapitalization(.never)
+            NavigationStack {
+                switch loginFlowState {
+                case .server, .credentialsLocal:
+                    Form {
+                        Section {
+                            if loginFlowState == .server {
+                                TextField("login.server", text: $server)
+                                    .keyboardType(.URL)
+                                    .autocorrectionDisabled()
+                                    .textInputAutocapitalization(.never)
+                            } else if loginFlowState == .credentialsLocal {
+                                TextField("login.username", text: $username)
+                                SecureField("login.password", text: $password)
+                                    .autocorrectionDisabled()
+                                    .textInputAutocapitalization(.never)
+                            }
+                            
+                            Button {
+                                flowStep()
+                            } label: {
+                                Text("login.next")
+                            }
+                        } header: {
+                            if let serverVersion = serverVersion {
+                                Text("login.version \(serverVersion)")
+                            } else {
+                                Text("login.title")
+                            }
+                        } footer: {
+                            Group {
+                                switch loginError {
+                                case .server:
+                                    Text("login.error.server")
+                                case .url:
+                                    Text("login.error.url")
+                                case .failed:
+                                    Text("login.error.failed")
+                                case nil:
+                                    Text(verbatim: "")
+                                }
+                            }
+                            .foregroundStyle(.red)
                         }
                         
-                        Button {
-                            flowStep()
-                        } label: {
-                            Text("login.next")
-                        }
-                    } header: {
-                        if let serverVersion = serverVersion {
-                            Text("login.version \(serverVersion)")
-                        } else {
-                            Text("login.title")
-                        }
-                    } footer: {
-                        Group {
-                            switch loginError {
-                            case .server:
-                                Text("login.error.server")
-                            case .url:
-                                Text("login.error.url")
-                            case .failed:
-                                Text("login.error.failed")
-                            case nil:
-                                Text(verbatim: "")
+                        if loginFlowState == .server {
+                            Section {
+                                NavigationLink(destination: CustomHeaderEditView()) {
+                                    Label("login.customHTTPHeaders", systemImage: "lock.shield.fill")
+                                }
+                                .foregroundStyle(.secondary)
                             }
                         }
-                        .foregroundStyle(.red)
                     }
-                    
-                    if loginFlowState == .server {
+                    .onSubmit(flowStep)
+                case .credentialsOpenID:
+                    if let openIDLoginURL = openIDLoginURL {
+                        ProgressIndicator()
+                            .webAuthenticationSession(isPresented: .constant(true)) {
+                                WebAuthenticationSession(url: openIDLoginURL, callbackURLScheme: "shelfplayer", completionHandler: self.openIDCallback)
+                                    .prefersEphemeralWebBrowserSession(true)
+                            }
+                    } else {
+                        ProgressIndicator()
+                            .task { await fetchOpenIDLoginURL() }
+                    }
+                case .credentialsSelect:
+                    Form {
                         Section {
                             Button {
-                                loginFlowState = .customHTTPHeaders
+                                loginFlowState = .credentialsOpenID
                             } label: {
-                                Label("login.customHTTPHeaders", systemImage: "lock.shield.fill")
+                                Text("login.openid")
                             }
-                            .foregroundStyle(.secondary)
+                            
+                            Button {
+                                loginFlowState = .credentialsLocal
+                            } label: {
+                                Text("login.local")
+                            }
+                        } header: {
+                            Text("login.version \(serverVersion!)")
+                        } footer: {
+                            Text("login.openid.urlScheme")
+                            
+                            if loginError == .failed {
+                                Text("login.error.failed")
+                                    .foregroundStyle(.red)
+                            }
                         }
                     }
-                }
-                .onSubmit(flowStep)
-            case .customHTTPHeaders:
-                NavigationStack {
-                    CustomHeaderEditView(backButtonVisible: true) {
-                        loginFlowState = .server
-                    }
-                }
-            case .credentialsOpenID:
-                if let openIDLoginURL = openIDLoginURL {
-                    ProgressIndicator()
-                        .webAuthenticationSession(isPresented: .constant(true)) {
-                            WebAuthenticationSession(url: openIDLoginURL, callbackURLScheme: "shelfplayer", completionHandler: self.openIDCallback)
-                                .prefersEphemeralWebBrowserSession(true)
-                        }
-                } else {
-                    ProgressIndicator()
-                        .task { await fetchOpenIDLoginURL() }
-                }
-            case .credentialsSelect:
-                Form {
-                    Section {
-                        Button {
-                            loginFlowState = .credentialsOpenID
-                        } label: {
-                            Text("login.openid")
-                        }
-                        
-                        Button {
-                            loginFlowState = .credentialsLocal
-                        } label: {
-                            Text("login.local")
-                        }
-                    } header: {
-                        Text("login.version \(serverVersion!)")
-                    } footer: {
-                        Text("login.openid.urlScheme")
-                        
-                        if loginError == .failed {
-                            Text("login.error.failed")
-                                .foregroundStyle(.red)
-                        }
-                    }
-                }
-            case .setup:
-                Text("login.setup")
-                    .padding()
-            case .serverLoading, .credentialsLoading:
-                VStack {
-                    ProgressIndicator()
-                    Text("login.loading")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                case .setup:
+                    Text("login.setup")
                         .padding()
+                case .serverLoading, .credentialsLoading:
+                    VStack {
+                        ProgressIndicator()
+                        Text("login.loading")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding()
+                    }
                 }
             }
         }
@@ -237,7 +231,6 @@ extension LoginView {
         case credentialsLoading
         
         case setup
-        case customHTTPHeaders
     }
     enum LoginError {
         case server

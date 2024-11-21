@@ -32,7 +32,9 @@ internal struct ContentView: View {
         .modifier(SearchLibraryPicker())
         .onAppear {
             NetworkMonitor.start() {
-                step = .sessionImport
+                if UIApplication.shared.applicationState == .active {
+                    step = .sessionImport
+                }
             }
             
             Task {
