@@ -339,6 +339,18 @@
               }
             }
           }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 集未播放"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1005,6 +1017,12 @@
             "state" : "translated",
             "value" : "Spotlight-index: %@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight索引: %@"
+          }
         }
       }
     },
@@ -1026,6 +1044,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spotlight-indexering avvaktar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待 Spotlight 索引"
           }
         }
       }
@@ -1444,7 +1468,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "数据版本: %1$@ (%2$@)"
           }
         }
@@ -1608,6 +1632,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "I Serien %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "也在 %@ 系列中"
           }
         }
       }
@@ -1827,6 +1857,12 @@
             "state" : "translated",
             "value" : "Skapa"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创建书签"
+          }
         }
       }
     },
@@ -1848,6 +1884,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notera"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备忘"
           }
         }
       }
@@ -1871,6 +1913,12 @@
             "state" : "translated",
             "value" : "Redigera Bokmärke"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑书签"
+          }
         }
       }
     },
@@ -1892,6 +1940,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ta Bort Bokmärke"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除书签"
           }
         }
       }
@@ -1915,6 +1969,12 @@
             "state" : "translated",
             "value" : "Uppdatera Bokmärke"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新书签"
+          }
         }
       }
     },
@@ -1936,6 +1996,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avbryt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
           }
         }
       }
@@ -1959,6 +2025,12 @@
             "state" : "translated",
             "value" : "Uppdatera"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
         }
       }
     },
@@ -1980,6 +2052,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notera"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备忘"
           }
         }
       }
@@ -2129,6 +2207,12 @@
             "state" : "translated",
             "value" : "Bibliotek"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒体库"
+          }
         }
       }
     },
@@ -2150,6 +2234,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inga nedladdningar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无已下载内容"
           }
         }
       }
@@ -2173,6 +2263,12 @@
             "state" : "translated",
             "value" : "Nedladdade objekt kommer att visas här"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已下载内容将会出现在此处"
+          }
         }
       }
     },
@@ -2194,6 +2290,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nedkopplad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "离线"
           }
         }
       }
@@ -2245,6 +2347,12 @@
             "state" : "translated",
             "value" : "Alla poddar"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有播客"
+          }
         }
       }
     },
@@ -2266,6 +2374,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bibliotek"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒体库"
           }
         }
       }
@@ -2289,6 +2403,12 @@
             "state" : "translated",
             "value" : "Kö"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放队列"
+          }
         }
       }
     },
@@ -2311,6 +2431,12 @@
             "state" : "translated",
             "value" : "Logga in på din Audiobookshelf-instans för att börja"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请先登录 Audiobookshelf"
+          }
         }
       }
     },
@@ -2332,6 +2458,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Obehörig"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未登录"
           }
         }
       }
@@ -5311,6 +5443,12 @@
             "state" : "translated",
             "value" : "Flytta till botten"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移到底部"
+          }
         }
       }
     },
@@ -5445,6 +5583,12 @@
             "state" : "translated",
             "value" : "Ta bort från kön"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从队列删除"
+          }
         }
       }
     },
@@ -5522,6 +5666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flytta till toppen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移到顶部"
           }
         }
       }
@@ -5657,6 +5807,12 @@
             "state" : "translated",
             "value" : "Fortsätt lyssna"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续收听"
+          }
         }
       }
     },
@@ -5678,6 +5834,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fortsätt läs"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续阅读"
           }
         }
       }
@@ -5701,6 +5863,12 @@
             "state" : "translated",
             "value" : "Fortsätt serie"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从系列中继续"
+          }
         }
       }
     },
@@ -5722,6 +5890,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Upptäck"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发现"
           }
         }
       }
@@ -5745,6 +5919,12 @@
             "state" : "translated",
             "value" : "Senaste avsnitt"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新节目"
+          }
         }
       }
     },
@@ -5766,6 +5946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lyssna igen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再次收听"
           }
         }
       }
@@ -5789,6 +5975,12 @@
             "state" : "translated",
             "value" : "Senaste författare"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新作者"
+          }
         }
       }
     },
@@ -5810,6 +6002,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Läs igen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再次阅读"
           }
         }
       }
@@ -5834,6 +6032,12 @@
             "state" : "translated",
             "value" : "Nyligen tillagda"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近添加"
+          }
         }
       }
     },
@@ -5855,6 +6059,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nyliga serier"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新系列"
           }
         }
       }
@@ -5928,6 +6138,12 @@
             "state" : "translated",
             "value" : "No libraries"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无媒体库"
+          }
         }
       }
     },
@@ -5944,6 +6160,12 @@
             "state" : "translated",
             "value" : "Select a library"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择一个媒体库"
+          }
         }
       }
     },
@@ -5959,6 +6181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Select a library to search for \"%@\" in"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择一个媒体库来搜索 %@"
           }
         }
       }
@@ -6389,6 +6617,12 @@
             "state" : "translated",
             "value" : "Rensa"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
         }
       }
     },
@@ -6578,6 +6812,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spelades senast"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近播放"
           }
         }
       }
