@@ -116,7 +116,6 @@ internal extension PlayMediaIntentHandler {
 internal extension PlayMediaIntentHandler {
     func handle(intent: INPlayMediaIntent) async -> INPlayMediaIntentResponse {
         guard let identifier = intent.mediaItems?.first?.identifier else {
-            print(intent.mediaItems)
             return .init(code: .failure, userActivity: nil)
         }
         

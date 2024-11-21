@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%lld" : {
-
-    },
     "%lld account.sleepTimer.hours" : {
       "localizations" : {
         "de" : {
