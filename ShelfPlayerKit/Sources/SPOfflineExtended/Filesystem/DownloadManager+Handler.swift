@@ -63,8 +63,6 @@ extension DownloadManager: URLSessionDelegate, URLSessionDownloadDelegate {
             logger.fault("Failed to save context after download finished: \(error.localizedDescription)")
         }
         
-        print("a", OfflineManager.shared.offlineStatus(parentId: track.parentId))
-        
         NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: track.parentId)
         logger.info("Download track finished: \(track.id)")
     }
