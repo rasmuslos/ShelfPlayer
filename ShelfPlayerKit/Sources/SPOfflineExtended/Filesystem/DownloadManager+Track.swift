@@ -26,6 +26,15 @@ internal extension DownloadManager {
         return urlSession.downloadTask(with: request)
     }
     
+    func cancel(taskID: Int) {
+        urlSession.getAllTasks { tasks in
+            guard let task = tasks.first(where: { $0.taskIdentifier == taskID }) else {
+                return
+            }
+            
+            task.cancel()
+        }
+    }
     func remove(track: OfflineTrack) {
         try? FileManager.default.removeItem(at: trackURL(track: track))
     }

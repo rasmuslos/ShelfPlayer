@@ -123,6 +123,10 @@ public extension OfflineManager {
         
         if let tracks = try? offlineTracks(parentId: episodeId, context: context) {
             for track in tracks {
+                if let taskID = track.downloadReference {
+                    DownloadManager.shared.cancel(taskID: taskID)
+                }
+                
                 remove(track: track, context: context)
             }
         }

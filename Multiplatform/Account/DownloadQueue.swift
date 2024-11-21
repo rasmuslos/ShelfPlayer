@@ -31,6 +31,11 @@ internal struct DownloadQueue: View {
                     DownloadAudiobookRow(audiobook: $0)
                         .listRowInsets(.init(top: $0 == audiobooks.first ? 12 : 6, leading: 12, bottom: $0 == audiobooks.last ? 12 : 6, trailing: 20))
                 }
+                .onDelete {
+                    for index in $0 {
+                        OfflineManager.shared.remove(audiobookId: audiobooks[index].id)
+                    }
+                }
             }
             
             Section {
@@ -54,6 +59,11 @@ internal struct DownloadQueue: View {
                     ForEach(episodes) { episode in
                         DownloadEpisodeRow(episode: episode)
                             .listRowInsets(.init(top: 6, leading: 12, bottom: 6, trailing: 20))
+                    }
+                    .onDelete {
+                        for index in $0 {
+                            OfflineManager.shared.remove(episodeId: episodes[index].id, allowPodcastDeletion: true)
+                        }
                     }
                 }
             }
