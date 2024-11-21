@@ -55,6 +55,8 @@ internal struct DownloadButton: View {
                 remove()
             }
         } label: {
+            Text("\(offlineTracker.status.rawValue)")
+            
             if offlineTracker.status == .working && progressIndicator {
                 DownloadProgressIndicator(itemId: item.id, small: false)
             } else if offlineTracker.status == .working && !downloadingLabel {

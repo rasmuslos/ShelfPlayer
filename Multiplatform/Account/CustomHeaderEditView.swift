@@ -11,9 +11,6 @@ import ShelfPlayerKit
 internal struct CustomHeaderEditView: View {
     @State private var current = AudiobookshelfClient.shared.customHTTPHeaders
     
-    let backButtonVisible: Bool
-    let dismiss: (() -> Void)
-    
     private var trimmed: [AudiobookshelfClient.CustomHTTPHeader] {
         current.filter { !$0.key.isEmpty && !$0.value.isEmpty }
     }
@@ -41,17 +38,6 @@ internal struct CustomHeaderEditView: View {
         .navigationTitle("login.customHTTPHeaders")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if backButtonVisible {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Label("done", systemImage: "chevron.left")
-                            .labelStyle(.iconOnly)
-                    }
-                }
-            }
-            
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button {
                     current.append(.init(key: "", value: ""))
@@ -62,7 +48,6 @@ internal struct CustomHeaderEditView: View {
                 
                 Button {
                     AudiobookshelfClient.shared.customHTTPHeaders = trimmed
-                    dismiss()
                 } label: {
                     Label("login.customHTTPHeaders.save", systemImage: "checkmark")
                         .labelStyle(.titleOnly)
@@ -79,6 +64,6 @@ internal struct CustomHeaderEditView: View {
 
 #Preview {
     NavigationStack {
-        CustomHeaderEditView(backButtonVisible: true) {}
+        CustomHeaderEditView()
     }
 }

@@ -15,16 +15,18 @@ public final class ItemOfflineTracker {
     let itemId: String
     
     var token: Any?
-    var _status: OfflineManager.OfflineStatus?
+    @MainActor var _status: OfflineManager.OfflineStatus?
     
     let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Item")
     
+    @MainActor
     init(itemId: String) {
         self.itemId = itemId
         
         token = nil
         _status = nil
     }
+    @MainActor
     public convenience init(_ item: Item) {
         self.init(itemId: item.id)
     }
@@ -37,6 +39,7 @@ public final class ItemOfflineTracker {
 }
 
 extension ItemOfflineTracker {
+    @MainActor
     public var status: OfflineManager.OfflineStatus {
         get {
             if _status == nil {
@@ -48,7 +51,9 @@ extension ItemOfflineTracker {
                     }
                     
                     if notification.object as? String == itemId {
-                        _status = OfflineManager.shared.offlineStatus(parentId: itemId)
+                        Task { @MainActor in
+                            self._status = OfflineManager.shared.offlineStatus(parentId: self.itemId)
+                        }
                     }
                 }
                 
