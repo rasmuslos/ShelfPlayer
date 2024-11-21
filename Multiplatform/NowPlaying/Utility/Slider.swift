@@ -17,9 +17,7 @@ internal extension NowPlaying {
         
         @Binding var dragging: Bool
         
-        @State private var counter = 0
         @State private var blocked = false
-        
         @State private var captured: Percentage? = nil
         
         var body: some View {
