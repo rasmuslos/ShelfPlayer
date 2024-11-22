@@ -82,7 +82,7 @@ internal extension SeriesList {
                     Text(name)
                         .modifier(SerifModifier())
                     
-                    Text("series.count \(covers.count)")
+                    Text("series.count \(itemCount)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
