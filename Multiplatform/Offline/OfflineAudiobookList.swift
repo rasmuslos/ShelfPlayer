@@ -38,7 +38,6 @@ internal extension OfflineAudiobookList {
         init(audiobook: Audiobook) {
             self.audiobook = audiobook
             entity = OfflineManager.shared.progressEntity(item: audiobook)
-            entity.beginReceivingUpdates()
         }
         
         @State private var loading = false
@@ -104,6 +103,9 @@ internal extension OfflineAudiobookList {
             }
             .buttonStyle(.plain)
             .modifier(SwipeActionsModifier(item: audiobook, loading: $loading))
+            .onAppear {
+                entity.beginReceivingUpdates()
+            }
         }
     }
 }

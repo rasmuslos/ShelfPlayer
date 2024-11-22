@@ -14,7 +14,7 @@ internal struct AudiobookList: View {
     var onAppear: ((_ section: AudiobookSection) -> Void)? = nil
     
     var body: some View {
-        ForEach(sections, id: \.self) { section in
+        ForEach(sections) { section in
             switch section {
             case .audiobook(let audiobook):
                 Row(audiobook: audiobook)
@@ -22,7 +22,7 @@ internal struct AudiobookList: View {
                         onAppear?(section)
                     }
             case .series(let seriesName, let audiobooks):
-                NavigationLink(destination: SeriesLoadView(seriesName: seriesName)) {
+                NavigationLink(destination: SeriesLoadView(seriesName: seriesName, filteredIDs: audiobooks.lazy.map { $0.id })) {
                     SeriesList.ListItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover }, itemCount: audiobooks.count)
                 }
                 .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
@@ -47,7 +47,6 @@ private struct Row: View {
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: audiobook))
-        progressEntity.beginReceivingUpdates()
     }
     
     private var icon: String {
@@ -152,6 +151,9 @@ private struct Row: View {
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
         .modifier(SwipeActionsModifier(item: audiobook, loading: $loading))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .onAppear {
+            progressEntity.beginReceivingUpdates()
+        }
     }
 }
 

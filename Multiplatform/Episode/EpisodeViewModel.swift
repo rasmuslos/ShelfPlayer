@@ -39,13 +39,12 @@ internal final class EpisodeViewModel {
         errorNotify = false
         
         progressEntity = OfflineManager.shared.progressEntity(item: episode)
+        progressEntity.beginReceivingUpdates()
     }
 }
 
 internal extension EpisodeViewModel {
     func load() async {
-        await progressEntity.beginReceivingUpdates()
-        
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.loadSessions() }
             $0.addTask { await self.extractDominantColor() }

@@ -90,7 +90,7 @@ internal struct AudiobookLibraryPanel: View {
                         case .list:
                             List {
                                 AudiobookList(sections: visible) {
-                                    if $0 == visible[max(0, visible.endIndex - 4)] {
+                                    if $0 == visible.last {
                                         lazyLoader.didReachEndOfLoadedContent()
                                     }
                                 }

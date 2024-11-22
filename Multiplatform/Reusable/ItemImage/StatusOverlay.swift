@@ -26,8 +26,6 @@ internal struct StatusOverlay: View {
         
         _entity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
         _offlineTracker = .init(initialValue: ItemOfflineTracker(item))
-        
-        entity.beginReceivingUpdates()
     }
     
     var body: some View {
@@ -82,6 +80,9 @@ internal struct StatusOverlay: View {
                         .padding(4)
                 }
             }
+        }
+        .onAppear {
+            entity.beginReceivingUpdates()
         }
     }
 }

@@ -53,6 +53,7 @@ internal struct AudiobookSortFilter: View {
             Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down").circle")
                 .contentTransition(.symbolEffect(.replace.upUp))
         }
+        .menuActionDismissBehavior(.disabled)
         .onChange(of: sortOrder) {
             Task {
                 await didSelect?()

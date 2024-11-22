@@ -22,7 +22,7 @@ internal struct AudiobookVGrid: View {
     
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 16) {
-            ForEach(sections, id: \.self) { section in
+            ForEach(sections) { section in
                 VStack(spacing: 0) {
                     switch section {
                     case .audiobook(let audiobook):
@@ -38,7 +38,7 @@ internal struct AudiobookVGrid: View {
                             onAppear?(section)
                         }
                     case .series(let seriesName, let audiobooks):
-                        NavigationLink(destination: SeriesLoadView(seriesName: seriesName)) {
+                        NavigationLink(destination: SeriesLoadView(seriesName: seriesName, filteredIDs: audiobooks.lazy.map { $0.id })) {
                             SeriesGrid.SeriesGridItem(name: nil, covers: audiobooks.prefix(10).compactMap { $0.cover })
                         }
                         .buttonStyle(.plain)
