@@ -61,6 +61,7 @@ internal extension NowPlaying {
                     } label: {
                         Label("chapters", systemImage: "list.dash")
                     }
+                    .menuActionDismissBehavior(.disabled)
                     
                     Divider()
                     
@@ -82,6 +83,10 @@ internal extension NowPlaying {
                     }
                     
                     Divider()
+                    
+                    if let item = viewModel.item {
+                        ProgressButton(item: item)
+                    }
                     
                     Button {
                         AudioPlayer.shared.stop()

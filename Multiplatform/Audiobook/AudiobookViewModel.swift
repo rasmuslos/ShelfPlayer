@@ -62,8 +62,6 @@ internal final class AudiobookViewModel {
 
 internal extension AudiobookViewModel {
     func load() async {
-        await progressEntity.beginReceivingUpdates()
-        
         await withTaskGroup(of: Void.self) {
             $0.addTask { await self.loadAudiobook() }
             

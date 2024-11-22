@@ -260,6 +260,7 @@ private struct CompactHeader: View {
             }
             .menuStyle(.button)
             .buttonStyle(.plain)
+            .menuActionDismissBehavior(.disabled)
         }
         .padding(.top, 12)
         .padding(.bottom, 16)

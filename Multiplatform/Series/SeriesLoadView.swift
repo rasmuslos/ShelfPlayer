@@ -14,17 +14,25 @@ internal struct SeriesLoadView: View {
     let seriesID: String?
     let seriesName: String?
     
-    init(seriesID: String) {
+    let filteredIDs: [String]
+    
+    init(seriesID: String, filteredIDs: [String] = []) {
         self.seriesID = seriesID
         seriesName = nil
+        
+        self.filteredIDs = filteredIDs
     }
-    init(seriesName: String) {
+    init(seriesName: String, filteredIDs: [String] = []) {
         seriesID = nil
         self.seriesName = seriesName
+        
+        self.filteredIDs = filteredIDs
     }
-    init(series: Audiobook.ReducedSeries) {
+    init(series: Audiobook.ReducedSeries, filteredIDs: [String] = []) {
         seriesID = series.id
         seriesName = series.name
+        
+        self.filteredIDs = filteredIDs
     }
     
     @State private var failed = false
@@ -32,7 +40,7 @@ internal struct SeriesLoadView: View {
     
     var body: some View {
         if let resolved = resolved {
-            SeriesView(resolved)
+            SeriesView(resolved, filteredIDs: filteredIDs)
         } else if failed {
             SeriesUnavailableView()
                 .refreshable {

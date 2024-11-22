@@ -22,7 +22,6 @@ internal struct ProgressButton: View {
         self.callback = callback
         
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
-        progressEntity.beginReceivingUpdates()
     }
     
     var body: some View {
@@ -36,6 +35,9 @@ internal struct ProgressButton: View {
                 .contentTransition(.symbolEffect)
                 .symbolVariant(tint ? .none : .circle)
                 .tint(tint ? progressEntity.isFinished ? .red : .green : nil)
+        }
+        .onAppear {
+            progressEntity.beginReceivingUpdates()
         }
     }
 }

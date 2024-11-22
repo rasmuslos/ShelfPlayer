@@ -45,7 +45,6 @@ internal struct EpisodePlayButton: View {
         .buttonStyle(.plain)
         .clipShape(.rect(cornerRadius: .infinity))
         .modifier(ButtonHoverEffectModifier(cornerRadius: .infinity, hoverEffect: .lift))
-        .id(viewModel.episode.id)
         .environment(viewModel)
         .onAppear {
             viewModel.library = library
@@ -122,6 +121,9 @@ private struct ButtonText: View {
         }
         .font(.caption2)
         .animation(.smooth, value: viewModel.progressEntity.progress)
+        .onAppear {
+            viewModel.progressEntity.beginReceivingUpdates()
+        }
     }
 }
 
@@ -142,7 +144,6 @@ private final class EpisodePlayButtonViewModel {
         self.highlighted = highlighted
         
         progressEntity = OfflineManager.shared.progressEntity(item: episode)
-        progressEntity.beginReceivingUpdates()
     }
     
     func play() {

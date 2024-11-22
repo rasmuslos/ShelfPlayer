@@ -73,6 +73,7 @@ internal struct OfflineView: View {
                     Label("filterSort", systemImage: "arrowshape.\(offlineAudiobooksAscending ? "up" : "down").circle")
                         .contentTransition(.symbolEffect(.replace.upUp))
                 }
+                .menuActionDismissBehavior(.disabled)
             }
             .modifier(NowPlaying.SafeAreaModifier())
             .modifier(NowPlaying.BackgroundModifier(bottomOffset: -40))
