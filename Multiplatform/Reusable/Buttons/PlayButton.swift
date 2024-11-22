@@ -294,7 +294,7 @@ internal struct MediumPlayButtonStyle: PlayButtonStyle {
     
     func makeLabel(configuration: Configuration) -> some View {
         configuration.content
-            .foregroundStyle(configuration.background.isLight ? .white : .black)
+            .foregroundStyle(configuration.background.isLight ? .black : .white)
             .padding(.vertical, 16)
             .padding(.horizontal, 8)
             .frame(maxWidth: .infinity)

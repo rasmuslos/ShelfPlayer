@@ -41,6 +41,7 @@ internal struct EpisodeSortFilter: View {
             Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down").circle")
                 .contentTransition(.symbolEffect(.replace.upUp))
         }
+        .menuActionDismissBehavior(.disabled)
     }
 }
 

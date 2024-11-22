@@ -13,6 +13,7 @@ import ShelfPlayerKit
 @Observable
 internal final class SeriesViewModel {
     @MainActor internal let series: Series
+    @MainActor private(set) internal var filteredSeriesIDs: [String]
     
     @MainActor private(set) var lazyLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder>
     
@@ -37,8 +38,9 @@ internal final class SeriesViewModel {
     @MainActor internal var sortOrder: AudiobookSortOrder
     
     @MainActor
-    init(series: Series) {
+    init(series: Series, filteredSeriesIDs: [String]) {
         self.series = series
+        self.filteredSeriesIDs = filteredSeriesIDs
         
         lazyLoader = .audiobooks(seriesID: series.id)
         
@@ -53,13 +55,17 @@ internal final class SeriesViewModel {
 internal extension SeriesViewModel {
     @MainActor
     var visible: [AudiobookSection] {
-        let filtered = Audiobook.filterSort(lazyLoader.items, filter: filter, sortOrder: sortOrder, ascending: ascending)
+        var audiobooks = Audiobook.filterSort(lazyLoader.items, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
-        if filtered.isEmpty {
-            return Audiobook.sort(lazyLoader.items, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+        if audiobooks.isEmpty {
+            audiobooks = Audiobook.sort(lazyLoader.items, sortOrder: sortOrder, ascending: ascending)
         }
         
-        return filtered.map { .audiobook(audiobook: $0) }
+        if !filteredSeriesIDs.isEmpty {
+            audiobooks = audiobooks.filter { filteredSeriesIDs.contains($0.id) }
+        }
+        
+        return audiobooks.map { .audiobook(audiobook: $0) }
     }
     
     @MainActor
@@ -68,11 +74,25 @@ internal extension SeriesViewModel {
             return series.covers
         }
         
-        return lazyLoader.items.map { $0.cover }
+        return visible.compactMap {
+            if case .audiobook(let audiobook) = $0 {
+                return audiobook.cover
+            }
+            
+            return nil
+        }
     }
     
     @MainActor
     var headerImageCount: Int {
         min(images.count, 5)
+    }
+    
+    func resetFilter() {
+        Task { @MainActor in
+            withAnimation(.smooth) {
+                filteredSeriesIDs = []
+            }
+        }
     }
 }

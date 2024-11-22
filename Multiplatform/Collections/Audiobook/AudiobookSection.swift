@@ -143,3 +143,9 @@ internal extension AudiobookSection {
         }
     }
 }
+
+extension AudiobookSection: Identifiable {
+    public var id: Int {
+        self.hashValue
+    }
+}

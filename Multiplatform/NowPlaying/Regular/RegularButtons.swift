@@ -83,6 +83,7 @@ extension NowPlaying {
                 }
                 .menuStyle(.button)
                 .buttonStyle(.plain)
+                .menuActionDismissBehavior(.disabled)
                 .modifier(NowPlayingButtonModifier(fixedWidth: false))
             }
             .frame(height: 48)
