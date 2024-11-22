@@ -35,6 +35,8 @@ internal struct TabRouter: View {
     @State private var libraries: [Library] = []
     @State private var libraryPath = NavigationPath()
     
+    @State private var accountSheetPresented = false
+    
     private func library(for id: String) -> Library? {
         libraries.first(where: { $0.id == id })
     }
@@ -73,12 +75,43 @@ internal struct TabRouter: View {
             }
             .tabViewStyle(.sidebarAdaptable)
             .tabViewSidebarBottomBar {
-                Button {
-                    NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
-                        "offline": true,
-                    ])
-                } label: {
-                    Label("offline.enable", systemImage: "network.slash")
+                ZStack {
+                    Rectangle()
+                        .fill(.bar)
+                        .mask {
+                            VStack(spacing: 0) {
+                                LinearGradient(colors: [.black.opacity(0), .black], startPoint: .top, endPoint: .bottom)
+                                    .frame(height: 16)
+                                Rectangle()
+                                    .fill(.black)
+                            }
+                        }
+                        .ignoresSafeArea(edges: .bottom)
+                    
+                    HStack(spacing: 16) {
+                        Group {
+                            Button {
+                                accountSheetPresented.toggle()
+                            } label: {
+                                Label("account", systemImage: "person.crop.circle")
+                                    .labelStyle(.iconOnly)
+                            }
+                            
+                            Button {
+                                NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
+                                    "offline": true,
+                                ])
+                            } label: {
+                                Label("offline.enable", systemImage: "network.slash")
+                            }
+                        }
+                        .labelStyle(.iconOnly)
+                        .font(.title3)
+                        
+                        Spacer()
+                    }
+                    .padding(.top, 20)
+                    .padding(.horizontal, 20)
                 }
             }
             .id(current)
@@ -132,6 +165,9 @@ internal struct TabRouter: View {
             })
             .environment(\.libraries, libraries)
             .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
+            .sheet(isPresented: $accountSheetPresented) {
+                AccountSheet()
+            }
             .onChange(of: isCompact) {
                 if isCompact {
                     current = selection?.library

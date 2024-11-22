@@ -10,10 +10,11 @@ import ShelfPlayerKit
 
 internal struct EpisodeList: View {
     let episodes: [Episode]
+    let zoom: Bool
     
     var body: some View {
         ForEach(episodes) {
-            Row(episode: $0)
+            Row(episode: $0, zoom: zoom)
         }
     }
 }
@@ -23,12 +24,13 @@ private struct Row: View {
     @Environment(NamespaceWrapper.self) private var namespaceWrapper
     
     let episode: Episode
+    let zoom: Bool
     
     @State private var zoomID = UUID()
     @State private var loading = false
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode, zoomID: zoomID)) {
+        NavigationLink(destination: EpisodeView(episode, zoomID: zoom ? zoomID : nil)) {
             HStack(spacing: 0) {
                 ItemImage(cover: episode.cover)
                     .frame(width: 104)
@@ -89,7 +91,7 @@ private struct Row: View {
 #Preview {
     NavigationStack {
         List {
-            EpisodeList(episodes: .init(repeating: [.fixture], count: 7))
+            EpisodeList(episodes: .init(repeating: [.fixture], count: 7), zoom: false)
         }
         .listStyle(.plain)
     }

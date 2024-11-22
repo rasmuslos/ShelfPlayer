@@ -201,6 +201,6 @@ private struct RegularPresentation: View {
                 }
         }
         .padding(20)
-        .padding(.top, 40)
+        .padding(.top, 80)
     }
 }
