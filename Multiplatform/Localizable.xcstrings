@@ -3726,6 +3726,12 @@
         }
       }
     },
+    "intents.checkForNewDownloads.description" : {
+
+    },
+    "intents.checkForNewDownloads.title" : {
+
+    },
     "library.change" : {
       "localizations" : {
         "de" : {
