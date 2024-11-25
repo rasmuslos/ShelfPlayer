@@ -149,7 +149,7 @@ private extension AudiobookViewModel {
                     seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: audiobook.libraryID)
                 }
                 
-                let audiobooks = try await AudiobookshelfClient.shared.audiobooks(seriesId: seriesID, libraryID: self.audiobook.libraryID, sortOrder: .seriesName, ascending: true, limit: nil, page: nil).0
+                let audiobooks = try await AudiobookshelfClient.shared.audiobooks(seriesID: seriesID, libraryID: self.audiobook.libraryID).0
                 resolved[series] = audiobooks
             } catch {
                 continue
