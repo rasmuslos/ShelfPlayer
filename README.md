@@ -14,8 +14,8 @@ ShelfPlayer is a meticulously crafted iOS and iPadOS app designed to seamlessly 
 
 ## Download
 
-<a href="https://apps.apple.com/app/apple-store/id6475221163?pt=126778919&ct=GitHub&mt=8" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 250px; height: 83px;">
-    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&releaseDate=1710288000" alt="Download on the App Store" style="border-radius: 13px; width: 250px; height: 83px;">
+<a href="https://apps.apple.com/app/apple-store/id6475221163?ct=GitHub" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 250px; height: 83px;">
+    <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1710288000" alt="Download on the App Store" style="border-radius: 13px; width: 250px; height: 83px;">
 </a>
 
 ## Screenshots
