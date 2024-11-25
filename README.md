@@ -14,14 +14,16 @@ ShelfPlayer is a meticulously crafted iOS and iPadOS app designed to seamlessly 
 
 ## Download
 
-<a href="https://apps.apple.com/app/apple-store/id6475221163?pt=126778919&ct=GitHub&mt=8" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 250px; height: 83px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&releaseDate=1710288000" alt="Download on the App Store" style="border-radius: 13px; width: 250px; height: 83px;"></a>
+<a href="https://apps.apple.com/app/apple-store/id6475221163?pt=126778919&ct=GitHub&mt=8" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 250px; height: 83px;">
+    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&releaseDate=1710288000" alt="Download on the App Store" style="border-radius: 13px; width: 250px; height: 83px;">
+</a>
 
 ## Screenshots
 
 | Home | Audiobook | Player | Podcast |
 | ------------- | ------------- | ------------- | ------------- |
-| <img src="/Screenshots/iOS%20Audiobook%20Home.png?raw=true" alt="Home (iOS)" width="200"/> | <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="audiobook" width="200"/> | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/Podcast.png?raw=true" alt="Queue" width="200"/> 
-| <img src="/Screenshots/iPadOS%20Audiobook%20Home.png?raw=true" alt="Home (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/Podcast%20(iPad).png?raw=true" alt="Queue" width="200"/> 
+| <img src="/Screenshots/iOS%20Audiobook%20Home.png?raw=true" alt="Home (iOS)" width="200"/> | <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="audiobook" width="200"/> | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/iOS%20Podcast.png?raw=true" alt="Queue" width="200"/> 
+| <img src="/Screenshots/iPadOS%20Audiobook%20Home.png?raw=true" alt="Home (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/iPad%20Podcast.png?raw=true" alt="Queue" width="200"/> 
 
 ## Sideload
 

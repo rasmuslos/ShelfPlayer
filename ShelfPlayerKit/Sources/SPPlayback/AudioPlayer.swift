@@ -33,7 +33,7 @@ public final class AudioPlayer {
                 
                 Task {
                     if Defaults[.smartRewind], let lastPause = lastPause, lastPause.timeIntervalSince(Date()) <= -10 * 60 {
-                        await seek(to: itemCurrentTime - 30)
+                        await seek(to: itemCurrentTime - Double(Defaults[.skipBackwardsInterval]))
                     }
                     
                     lastPause = nil
