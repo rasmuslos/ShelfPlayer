@@ -180,6 +180,8 @@
 		3AF240E82ADA853A0065C0A4 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E72ADA853A0065C0A4 /* SearchView.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */; };
 		3AF5A6392CC55FA4002F9B50 /* CarPlayQueueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF5A6382CC55F9F002F9B50 /* CarPlayQueueController.swift */; };
+		3AF7B99A2CF4D309001A1579 /* CheckForNewDownloadsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF7B9992CF4D302001A1579 /* CheckForNewDownloadsIntent.swift */; };
+		3AF7B99C2CF4D430001A1579 /* ShortcutProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF7B99B2CF4D429001A1579 /* ShortcutProvider.swift */; };
 		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
 		3AFD3FE02CD69F9400D121A2 /* AudiobookSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFD3FDF2CD69F9100D121A2 /* AudiobookSection.swift */; };
@@ -389,6 +391,8 @@
 		3AF6A52A2B60401300770A1E /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		3AF6A52B2B60401A00770A1E /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		3AF6A52C2B60402300770A1E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		3AF7B9992CF4D302001A1579 /* CheckForNewDownloadsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForNewDownloadsIntent.swift; sourceTree = "<group>"; };
+		3AF7B99B2CF4D429001A1579 /* ShortcutProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutProvider.swift; sourceTree = "<group>"; };
 		3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		3AFD3FDF2CD69F9100D121A2 /* AudiobookSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookSection.swift; sourceTree = "<group>"; };
@@ -654,6 +658,8 @@
 		3A64B3732CAACF4900446871 /* Intents */ = {
 			isa = PBXGroup;
 			children = (
+				3AF7B99B2CF4D429001A1579 /* ShortcutProvider.swift */,
+				3AF7B9992CF4D302001A1579 /* CheckForNewDownloadsIntent.swift */,
 				3AFEEA622CC14F530040336D /* Intents.intentdefinition */,
 				3A64B3742CAAD26400446871 /* UserContext.swift */,
 				3AD6EA712CABE7AC00B412DB /* IntentHelper.swift */,
@@ -1104,6 +1110,7 @@
 				3A012E272C806B680073A619 /* Double+Format.swift in Sources */,
 				3A0620932AF7F96A004126D1 /* LocalizedStringKey+Key.swift in Sources */,
 				3AE73DB72B7624FB00058F70 /* PodcastSettingsSheet.swift in Sources */,
+				3AF7B99C2CF4D430001A1579 /* ShortcutProvider.swift in Sources */,
 				3AA089332B6E315900773414 /* AuthorList.swift in Sources */,
 				3A9824702B6EAF520098C06A /* OfflinePodcastList.swift in Sources */,
 				3A17E68D2AD5EF9C00E59464 /* CompactModifier.swift in Sources */,
@@ -1164,6 +1171,7 @@
 				3AA089352B6E413800773414 /* AudiobookList.swift in Sources */,
 				3A1507952AD348E700D7D6CF /* PodcastView+EpisodeList.swift in Sources */,
 				3AC89C6A2CBBC6A200D0EA71 /* FeedbackModifier.swift in Sources */,
+				3AF7B99A2CF4D309001A1579 /* CheckForNewDownloadsIntent.swift in Sources */,
 				3ADD434A2CC311630060E043 /* CarPlayOfflineController.swift in Sources */,
 				3AA19BA62AD6E94B00C468EA /* PodcastGrid.swift in Sources */,
 				3AA0B0852AD316E50009FBB4 /* EpisodeSortFilter.swift in Sources */,
