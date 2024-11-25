@@ -32,6 +32,7 @@ public final class SleepTimer {
         didSet {
             if let expiresAtChapterEnd, expiresAtChapterEnd <= 0 {
                 self.expiresAtChapterEnd = nil
+                didExpire()
             }
             
             if let expiresAtChapterEnd {
@@ -72,7 +73,7 @@ public final class SleepTimer {
             return
         }
         
-        if Defaults[.smartRewind] {
+        if Defaults[.smartRewind] && !AudioPlayer.shared.playing {
             AudioPlayer.shared.itemCurrentTime -= 7
         }
         

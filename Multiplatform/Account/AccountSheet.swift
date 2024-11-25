@@ -11,6 +11,8 @@ import Nuke
 import ShelfPlayerKit
 
 internal struct AccountSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @Default(.customSleepTimer) private var customSleepTimer
     @Default(.customPlaybackSpeed) private var customPlaybackSpeed
     @Default(.defaultPlaybackSpeed) private var defaultPlaybackSpeed
@@ -53,6 +55,8 @@ internal struct AccountSheet: View {
                         SpotlightIndexer.deleteIndex()
                         
                         AudiobookshelfClient.shared.store(token: nil)
+                        
+                        dismiss()
                     } label: {
                         Label("account.logout", systemImage: "person.crop.circle.badge.minus")
                             .foregroundStyle(.red)
