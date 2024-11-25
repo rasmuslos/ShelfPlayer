@@ -51,12 +51,17 @@ public extension AudiobookshelfClient {
         return (response.results.map(Series.init), response.total)
     }
     
-    func audiobooks(seriesId: String, libraryID: String, sortOrder: AudiobookSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
+    func audiobooks(seriesID: String, libraryID: String, sortOrder: AudiobookSortOrder? = nil, ascending: Bool? = nil, limit: Int? = nil, page: Int? = nil) async throws -> ([Audiobook], Int) {
         var query: [URLQueryItem] = [
-            .init(name: "sort", value: sortOrder.apiValue),
-            .init(name: "desc", value: ascending ? "0" : "1"),
-            .init(name: "filter", value: "series.\(seriesId.base64)"),
+            .init(name: "filter", value: "series.\(seriesID.base64)"),
         ]
+        
+        if let sortOrder, let ascending {
+            query += [
+                .init(name: "sort", value: sortOrder.apiValue),
+                .init(name: "desc", value: ascending ? "0" : "1"),
+            ]
+        }
         
         if let page {
             query.append(.init(name: "page", value: String(page)))
