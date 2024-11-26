@@ -7,10 +7,12 @@
 
 import Foundation
 
-internal extension String {
+extension String {
     private static let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     
     init(length: Int) {
-        self.init((0..<length).map { _ in Self.letters.randomElement()! })
+        self.init((0..<length).map { _ in
+            Self.letters.randomElement()!
+        })
     }
 }

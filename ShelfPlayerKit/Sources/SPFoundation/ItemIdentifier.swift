@@ -7,51 +7,61 @@
 
 import Foundation
 
-public class ItemIdentifier: Codable {
+public final class ItemIdentifier: Codable {
     public let primaryID: String
     public let groupingID: String?
-    public let libraryID: String!
     
+    public let libraryID: String!
     public let type: ItemType
     
-    public init(string identifier: String) throws {
+    public init(primaryID: String, groupingID: String?, libraryID: String?, type: ItemType) {
+        self.primaryID = primaryID
+        self.groupingID = groupingID
+        
+        if libraryID == "_" {
+            self.libraryID = nil
+        } else {
+            self.libraryID = libraryID
+        }
+        
+        self.type = type
+    }
+    
+    public convenience init(primaryID: String, groupingID: String?) {
+        self.init(primaryID: primaryID, groupingID: groupingID, libraryID: nil, type: groupingID != nil ? .episode : .audiobook)
+    }
+    
+    public convenience init(string identifier: String) throws {
         let parts = identifier.split(separator: "::")
         
-        guard parts[0] == "1" else {
+        var primaryID: String
+        let groupingID: String?
+        
+        var libraryID: String?
+        let type: ItemType
+        
+        switch parts[0] {
+        case "1":
+            type = ItemType(rawValue: String(parts[1]))!
+            libraryID = String(parts[2])
+            
+            primaryID = String(parts[3])
+            
+            if parts.count == 5 {
+                groupingID = primaryID
+                primaryID = String(parts[4])
+            } else {
+                groupingID = nil
+            }
+        default:
             throw ParseError.invalidVersion
         }
         
-        type = ItemType.parse(String(parts[1]))!
-        let libraryID = String(parts[2])
-        
         if libraryID == "_" {
-            self.libraryID = nil
-        } else {
-            self.libraryID = libraryID
+            libraryID = nil
         }
         
-        primaryID = String(parts[3])
-        
-        if parts.count == 5 {
-            episodeID = String(parts[4])
-        } else {
-            episodeID = nil
-        }
-    }
-    
-    public convenience init(itemID: String, episodeID: String?) {
-        self.init(itemID: itemID, episodeID: episodeID, libraryID: nil, type: episodeID != nil ? .episode : .audiobook)
-    }
-    public init(itemID: String, episodeID: String?, libraryID: String?, type: ItemType) {
-        self.primaryID = itemID
-        self.episodeID = episodeID
-        self.type = type
-        
-        if libraryID == "_" {
-            self.libraryID = nil
-        } else {
-            self.libraryID = libraryID
-        }
+        self.init(primaryID: primaryID, groupingID: groupingID, libraryID: libraryID, type: type)
     }
     
     enum ParseError: Error {
@@ -59,19 +69,16 @@ public class ItemIdentifier: Codable {
     }
 }
 
+extension ItemIdentifier: Sendable {}
 extension ItemIdentifier: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(primaryID)
-        hasher.combine(primaryID)
+        hasher.combine(groupingID)
     }
 }
 extension ItemIdentifier: Equatable {
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.primaryID == rhs.primaryID && lhs.episodeID == rhs.episodeID
-    }
-    
-    public func equals(itemID: String, episodeID: String?) -> Bool {
-        self.primaryID == itemID && self.episodeID == episodeID
+    public static func ==(lhs: ItemIdentifier, rhs: ItemIdentifier) -> Bool {
+        lhs.primaryID == rhs.primaryID && lhs.groupingID == rhs.groupingID
     }
 }
 extension ItemIdentifier: Identifiable {
@@ -81,61 +88,24 @@ extension ItemIdentifier: Identifiable {
 }
 extension ItemIdentifier: CustomStringConvertible {
     public var description: String {
-        var identifier = "1::\(type)::\(libraryID ?? "_")::\(primaryID)"
-        
-        if let episodeID {
-            identifier += "::\(episodeID)"
+        if let groupingID {
+            "1::\(type)::\(libraryID ?? "_")::\(groupingID)::\(primaryID)"
+        } else {
+            "1::\(type)::\(libraryID ?? "_")::\(primaryID)"
         }
-        
-        return identifier
     }
 }
 
 public extension ItemIdentifier {
-    enum ItemType: String, Identifiable, Hashable, Codable, CustomStringConvertible {
-        case audiobook
-        case author
-        case series
-        case podcast
-        case episode
-        
-        public var id: String {
-            description
-        }
+    enum ItemType: String, Codable, Sendable, CustomStringConvertible {
+        case audiobook = "audiobook"
+        case author = "author"
+        case series = "series"
+        case podcast = "podcast"
+        case episode = "episode"
         
         public var description: String {
-            switch self {
-            case .audiobook:
-                "audiobook"
-            case .author:
-                "author"
-            case .series:
-                "series"
-            case .podcast:
-                "podcast"
-            case .episode:
-                "episode"
-            }
-        }
-        
-        public static func parse(_ value: String) -> Self? {
-            if value == "audiobook" {
-                return .audiobook
-            } else if value == "author" {
-                return .author
-            } else if value == "series" {
-                return .series
-            } else if value == "podcast" {
-                return .podcast
-            } else if value == "episode" {
-                return .episode
-            }
-            
-            return nil
+            rawValue
         }
     }
-}
-
-public extension ItemIdentifier {
-    struct AudiobookIdentifier: ItemIdentifier {}
 }

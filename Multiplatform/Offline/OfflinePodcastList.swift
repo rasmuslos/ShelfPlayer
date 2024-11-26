@@ -7,8 +7,8 @@
 
 import SwiftUI
 import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import SPPersistence
+import SPPersistenceExtended
 
 internal struct OfflinePodcastList: View {
     let podcasts: [Podcast: [Episode]]

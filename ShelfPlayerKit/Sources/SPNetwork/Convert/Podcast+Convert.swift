@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 internal extension Podcast {
-    convenience init(item: AudiobookshelfItem) {
+    convenience init(item: ItemPayload) {
         let addedAt = item.addedAt ?? 0
         let podcastType: PodcastType?
         
@@ -22,11 +22,10 @@ internal extension Podcast {
         }
         
         self.init(
-            id: .init(itemID: item.id, episodeID: nil, libraryID: item.libraryId, type: .podcast),
+            id: .init(primaryID: item.id, groupingID: nil, libraryID: item.libraryId, type: .podcast),
             name: item.media!.metadata.title!,
             authors: item.media?.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: item.media?.metadata.description,
-            cover: Cover(item: item),
             genres: item.media?.metadata.genres ?? [],
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             released: item.media?.metadata.releaseDate, 

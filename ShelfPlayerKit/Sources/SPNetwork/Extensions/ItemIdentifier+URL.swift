@@ -9,13 +9,22 @@ import Foundation
 import SPFoundation
 
 extension ItemIdentifier {
-    var urlValue: String {
-        var url = "\(primaryID)"
-        
-        if let episodeID {
-            url.append("/\(episodeID)")
+    var pathComponent: String {
+        if let groupingID {
+            "\(groupingID)/\(primaryID)"
+        } else {
+            primaryID
         }
-        
-        return url
     }
+    
+    public var url: URL {
+        switch type {
+        case .author:
+            AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: primaryID)
+        case .series:
+            AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: libraryID).appending(path: "series").appending(path: primaryID)
+        default:
+            AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: primaryID)
+        }
+     }
 }

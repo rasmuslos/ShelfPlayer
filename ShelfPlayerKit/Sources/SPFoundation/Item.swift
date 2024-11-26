@@ -6,10 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 
-@Observable
-public class Item: Identifiable {
+public class Item: Identifiable, @unchecked Sendable {
     public let id: ItemIdentifier
     
     public let name: String
@@ -17,13 +15,12 @@ public class Item: Identifiable {
     
     public let description: String?
     
-    public let cover: Cover?
     public let genres: [String]
     
     public let addedAt: Date
     public let released: String?
     
-    init(id: ItemIdentifier, name: String, authors: [String], description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?) {
+    init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
         
         self.name = name
@@ -31,11 +28,14 @@ public class Item: Identifiable {
         
         self.description = description
         
-        self.cover = cover
         self.genres = genres
         
         self.addedAt = addedAt
         self.released = released
+    }
+    
+    var cover: Cover? {
+        nil
     }
 }
 
@@ -52,7 +52,7 @@ extension Item: Hashable {
 }
 
 extension Item: Comparable {
-    public static func < (lhs: Item, rhs: Item) -> Bool {
+    public static func <(lhs: Item, rhs: Item) -> Bool {
         lhs.sortName < rhs.sortName
     }
 }

@@ -7,13 +7,9 @@
 
 import Foundation
 import SPFoundation
-import SPOffline
+import SPPersistence
 
 public extension Audiobook {
-    static func filterSort(_ audiobooks: [Audiobook], filter: ItemFilter, sortOrder: AudiobookSortOrder, ascending: Bool) -> [Audiobook] {
-        sort(Self.filter(audiobooks, filter: filter), sortOrder: sortOrder, ascending: ascending)
-    }
-    
     static func filter(_ audiobooks: [Audiobook], filter: ItemFilter) -> [Audiobook] {
         audiobooks.filter { audiobook in
             if filter == .all {
@@ -41,6 +37,10 @@ public extension Audiobook {
         } else {
             return audiobooks.reversed()
         }
+    }
+    
+    static func filterSort(_ audiobooks: [Audiobook], filter: ItemFilter, sortOrder: AudiobookSortOrder, ascending: Bool) -> [Audiobook] {
+        sort(Self.filter(audiobooks, filter: filter), sortOrder: sortOrder, ascending: ascending)
     }
     
     static func compare(_ lhs: Audiobook, _ rhs: Audiobook, _ sortOrder: AudiobookSortOrder) -> Bool {

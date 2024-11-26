@@ -34,7 +34,7 @@ public actor SyncDictionary<K: Hashable, V> {
         buffer[key] = value
     }
  
-    public var disctory: [K: V] {
+    public var contents: [K: V] {
         buffer
     }
     public var count: Int {

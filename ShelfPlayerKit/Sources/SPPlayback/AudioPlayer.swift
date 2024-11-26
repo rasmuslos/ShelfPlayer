@@ -12,7 +12,7 @@ import AVKit
 import OSLog
 import Defaults
 import SPFoundation
-import SPOffline
+import SPPersistence
 
 public final class AudioPlayer {
     internal var audioPlayer: AVQueuePlayer

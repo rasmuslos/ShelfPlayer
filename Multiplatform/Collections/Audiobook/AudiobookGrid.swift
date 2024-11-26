@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SPFoundation
-import SPOffline
+import SPPersistence
 import SPPlayback
 
 internal struct AudiobookVGrid: View {

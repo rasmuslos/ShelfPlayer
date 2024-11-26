@@ -8,7 +8,7 @@
 import Foundation
 import CommonCrypto
 
-internal extension Data {
+extension Data {
     var sha256: Data {
         var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
         
