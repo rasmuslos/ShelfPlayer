@@ -8,15 +8,14 @@
 import Foundation
 import SPFoundation
 
-internal extension Author {
-    convenience init(item: AudiobookshelfItem) {
+extension Author {
+    convenience init(item: ItemPayload) {
         let addedAt = item.addedAt ?? 0
         
         self.init(
-            id: .init(itemID: item.id, episodeID: nil, libraryID: item.libraryId, type: .author),
+            id: .init(primaryID: item.id, groupingID: nil, libraryID: item.libraryId, type: .author),
             name: item.name!,
             description: item.description,
-            cover: Cover(item: item),
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             bookCount: item.numBooks ?? 0)
     }

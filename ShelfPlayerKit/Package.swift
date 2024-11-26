@@ -3,8 +3,6 @@
 
 import PackageDescription
 
-private let offlineCondition: TargetDependencyCondition? = .when(platforms: [.iOS, .watchOS, .visionOS, .macOS, .macCatalyst])
-
 let package = Package(
     name: "ShelfPlayerKit",
     defaultLocalization: "en",
@@ -26,9 +24,7 @@ let package = Package(
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPExtension", condition: .none),
             .targetItem(name: "SPNetwork", condition: .none),
-            .targetItem(name: "SPOffline", condition: .none),
-            
-            .targetItem(name: "SPOfflineExtended", condition: offlineCondition),
+            .targetItem(name: "SPPersistence", condition: .none),
         ]),
         
         // Foundation
@@ -41,8 +37,7 @@ let package = Package(
         ),
         .target(name: "SPExtension", dependencies: [
             .targetItem(name: "SPFoundation", condition: .none),
-            .targetItem(name: "SPOffline", condition: .none),
-            .targetItem(name: "SPOfflineExtended", condition: offlineCondition),
+            .targetItem(name: "SPPersistence", condition: .none),
         ]),
         
         // Network
@@ -53,16 +48,11 @@ let package = Package(
         ]),
         
         // Offline
-        .target(name: "SPOffline", dependencies: [
+        .target(name: "SPPersistence", dependencies: [
             .byName(name: "Defaults"),
             
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPNetwork", condition: .none),
-        ]),
-        .target(name: "SPOfflineExtended", dependencies: [
-            .targetItem(name: "SPFoundation", condition: .none),
-            .targetItem(name: "SPNetwork", condition: .none),
-            .targetItem(name: "SPOffline", condition: .none),
         ]),
         
         // Playback
@@ -71,8 +61,7 @@ let package = Package(
             
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPExtension", condition: .none),
-            .targetItem(name: "SPOffline", condition: .none),
-            .targetItem(name: "SPOfflineExtended", condition: offlineCondition),
+            .targetItem(name: "SPPersistence", condition: .none),
         ]),
     ]
 )

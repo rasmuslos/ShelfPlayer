@@ -9,10 +9,10 @@ import Foundation
 import Defaults
 import SPFoundation
 import SPNetwork
-import SPOffline
+import SPPersistence
 
-#if canImport(SPOfflineExtended)
-import SPOfflineExtended
+#if canImport(SPPersistenceExtended)
+import SPPersistenceExtended
 #endif
 
 internal final class PlaybackReporter {

@@ -12,9 +12,9 @@ import SPFoundation
 import SPNetwork
 import SPExtension
 
-#if canImport(SPOfflineExtended)
-import SPOffline
-import SPOfflineExtended
+#if canImport(SPPersistenceExtended)
+import SPPersistence
+import SPPersistenceExtended
 #endif
 
 public extension AudioPlayer {
@@ -102,7 +102,7 @@ internal extension AudioPlayer {
             }
         }
         
-        #if canImport(SPOfflineExtended)
+        #if canImport(SPPersistenceExtended)
         if OfflineManager.shared.offlineStatus(parentId: item.id) == .downloaded {
             // Overwrite remote URLs
             tracks = try OfflineManager.shared.audioTracks(parentId: item.id)
@@ -124,7 +124,7 @@ internal extension AudioPlayer {
     }
     
     func avPlayerItem(item: PlayableItem, track: PlayableItem.AudioTrack) -> AVPlayerItem {
-        #if canImport(SPOfflineExtended)
+        #if canImport(SPPersistenceExtended)
         if let trackURL = try? OfflineManager.shared.url(for: track, itemId: item.id) {
             return AVPlayerItem(url: trackURL)
         }

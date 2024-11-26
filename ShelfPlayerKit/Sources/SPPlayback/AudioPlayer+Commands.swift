@@ -9,7 +9,7 @@ import Foundation
 import MediaPlayer
 import Defaults
 import SPFoundation
-import SPOffline
+import SPPersistence
 
 internal extension AudioPlayer {
     func setupRemoteControls() {

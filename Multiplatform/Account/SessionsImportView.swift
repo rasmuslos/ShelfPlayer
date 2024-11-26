@@ -8,7 +8,7 @@
 import SwiftUI
 import OSLog
 import SPFoundation
-import SPOffline
+import SPPersistence
 
 internal struct SessionsImportView: View {
     let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "SessionImport")

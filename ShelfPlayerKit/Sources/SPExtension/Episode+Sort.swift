@@ -7,7 +7,7 @@
 
 import Foundation
 import SPFoundation
-import SPOffline
+import SPPersistence
 
 public extension Episode {
     static func filterSort(episodes: [Episode], filter: ItemFilter, sortOrder: EpisodeSortOrder, ascending: Bool) -> [Episode] {

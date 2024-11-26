@@ -9,8 +9,8 @@
 @_exported import SPExtension
 
 @_exported import SPNetwork
-@_exported import SPOffline
+@_exported import SPPersistence
 
-#if canImport(SPOfflineExtended)
-@_exported import SPOfflineExtended
+#if canImport(SPPersistenceExtended)
+@_exported import SPPersistenceExtended
 #endif

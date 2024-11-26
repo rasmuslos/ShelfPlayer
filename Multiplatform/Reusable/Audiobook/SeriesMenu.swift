@@ -10,11 +10,11 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct SeriesMenu: View {
-    let series: [Audiobook.ReducedSeries]
+    let series: [Audiobook.SeriesFragment]
     let libraryID: String?
     
     @ViewBuilder
-    private static func label(series: Audiobook.ReducedSeries?) -> some View {
+    private static func label(series: Audiobook.SeriesFragment?) -> some View {
         Label("series.view", systemImage: "rectangle.grid.2x2")
         
         if let series {
@@ -22,7 +22,7 @@ internal struct SeriesMenu: View {
         }
     }
     @ViewBuilder
-    private static func button(series: Audiobook.ReducedSeries, libraryID: String?, @ViewBuilder buildLabel: (_ series: Audiobook.ReducedSeries) -> some View) -> some View {
+    private static func button(series: Audiobook.SeriesFragment, libraryID: String?, @ViewBuilder buildLabel: (_ series: Audiobook.SeriesFragment) -> some View) -> some View {
         if let libraryID {
             Button {
                 if let seriesID = series.id {
@@ -53,7 +53,7 @@ internal struct SeriesMenu: View {
     }
     
     internal struct SeriesMenuInner: View {
-        let series: [Audiobook.ReducedSeries]
+        let series: [Audiobook.SeriesFragment]
         let libraryID: String?
         
         var body: some View {

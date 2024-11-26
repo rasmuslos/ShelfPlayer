@@ -8,7 +8,7 @@
 import Foundation
 import Defaults
 
-public struct Library: Identifiable, Hashable, Codable, Defaults.Serializable {
+public struct Library {
     public let id: String
     public let name: String
     
@@ -22,14 +22,14 @@ public struct Library: Identifiable, Hashable, Codable, Defaults.Serializable {
         self.displayOrder = displayOrder
     }
     
-    public init(id: String, name: String, type: MediaType, displayOrder: Int) {
+    public init(id: String, name: String, type: MediaType!, displayOrder: Int) {
         self.id = id
         self.name = name
         self.type = type
         self.displayOrder = displayOrder
     }
     
-    public enum MediaType: Int, Hashable, Codable, Defaults.Serializable {
+    public enum MediaType: Int, Hashable, Codable, Sendable, Defaults.Serializable {
         case audiobooks = 1
         case podcasts = 2
         
@@ -37,8 +37,13 @@ public struct Library: Identifiable, Hashable, Codable, Defaults.Serializable {
     }
 }
 
+extension Library: Codable {}
+extension Library: Hashable {}
+extension Library: Sendable {}
 extension Library: Comparable {
-    public static func < (lhs: Library, rhs: Library) -> Bool {
+    public static func <(lhs: Library, rhs: Library) -> Bool {
         lhs.displayOrder < rhs.displayOrder
     }
 }
+extension Library: Identifiable {}
+extension Library: Defaults.Serializable {}
