@@ -10,7 +10,7 @@ import AppIntents
 
 struct CheckForNewDownloadsIntent: AppIntent {
     static var title: LocalizedStringResource = "intents.checkForNewDownloads.title"
-    static var description: IntentDescription? = "intents.checkForNewDownloads.description"
+    static var description = IntentDescription("intents.checkForNewDownloads.description")
     
     func perform() async throws -> some IntentResult {
         try await BackgroundTaskHandler.updateDownloads()

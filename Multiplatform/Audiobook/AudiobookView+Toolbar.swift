@@ -33,8 +33,8 @@ extension AudiobookView {
                                     .modifier(SerifModifier())
                                     .lineLimit(1)
                                 
-                                if let author = viewModel.audiobook.author {
-                                    Text(author)
+                                if !viewModel.audiobook.authors.isEmpty {
+                                    Text(viewModel.audiobook.authors, format: .list(type: .and, width: .short))
                                         .font(.caption2)
                                         .lineLimit(1)
                                 }
@@ -70,9 +70,7 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            if let authors = viewModel.audiobook.authors {
-                                AuthorMenu(authors: authors, libraryID: nil)
-                            }
+                            AuthorMenu(authors: viewModel.audiobook.authors, libraryID: nil)
                             SeriesMenu(series: viewModel.audiobook.series, libraryID: nil)
                             
                             Divider()

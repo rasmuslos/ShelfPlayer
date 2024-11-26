@@ -11,13 +11,14 @@ import SPFoundation
 internal extension Series {
     convenience init(item: AudiobookshelfItem) {
         let covers: [Cover] = (item.books ?? item.items ?? []).reduce([], {
+            print($1)
             return $0 + [Cover(item: $1)]
         })
         
         self.init(
-            id: item.id,
-            libraryID: item.libraryId ?? "",
+            id: .init(itemID: item.id, episodeID: nil, libraryID: item.libraryId, type: .series),
             name: item.name!,
+            authors: [],
             description: item.description,
             addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
             covers: covers)

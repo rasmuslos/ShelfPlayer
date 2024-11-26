@@ -86,8 +86,8 @@ internal extension OfflineAudiobookList {
                             .modifier(SerifModifier())
                             .lineLimit(1)
                         
-                        if let author = audiobook.author {
-                            Text(author)
+                        if !audiobook.authors.isEmpty {
+                            Text(audiobook.authors, format: .list(type: .and, width: .short))
                                 .lineLimit(1)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)

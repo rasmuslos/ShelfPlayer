@@ -37,8 +37,8 @@ private struct Title: View {
     
     @ViewBuilder
     private var authorLabel: some View {
-        if let author = viewModel.audiobook.author {
-            Text(author)
+        if !viewModel.audiobook.authors.isEmpty {
+            Text(viewModel.audiobook.authors, format: .list(type: .and, width: .short))
                 .font(largeFont ? .title2 : .subheadline)
                 .lineLimit(1)
                 .overlay(alignment: .trailingLastTextBaseline) {
@@ -59,31 +59,32 @@ private struct Title: View {
                 .lineLimit(4)
                 .multilineTextAlignment(alignment.textAlignment)
             
-            if let authors = viewModel.audiobook.authors {
-                if authors.count > 1 {
-                    Menu {
-                        AuthorMenu.AuthorsMenu(authors: authors, libraryID: nil)
-                    } label: {
-                        authorLabel
-                    }
-                    .menuStyle(.button)
-                    .buttonStyle(.plain)
-                } else if let authorName = authors.first {
-                    NavigationLink {
-                        AuthorLoadView(authorName: authorName)
-                    } label: {
-                        authorLabel
-                    }
-                    .buttonStyle(.plain)
+            if viewModel.audiobook.authors.count > 1 {
+                Menu {
+                    AuthorMenu.AuthorsMenu(authors: viewModel.audiobook.authors, libraryID: nil)
+                } label: {
+                    authorLabel
                 }
+                .menuStyle(.button)
+                .buttonStyle(.plain)
+            } else if let authorName = viewModel.audiobook.authors.first {
+                NavigationLink {
+                    AuthorLoadView(authorName: authorName)
+                } label: {
+                    authorLabel
+                }
+                .buttonStyle(.plain)
             }
-            
+        
             HStack(spacing: 2) {
-                if let narrator = viewModel.audiobook.narrator {
-                    Text("audiobook.narrator \(narrator)")
-                        .font(.caption)
-                        .lineLimit(1)
-                        .foregroundStyle(.secondary)
+                if !viewModel.audiobook.narrators.isEmpty {
+                    Group {
+                        Text("audiobook.narrator")
+                        + Text(viewModel.audiobook.narrators, format: .list(type: .and, width: .short))
+                    }
+                    .font(.caption)
+                    .lineLimit(1)
+                    .foregroundStyle(.secondary)
                 }
                 
                 if viewModel.audiobook.explicit {
@@ -96,7 +97,7 @@ private struct Title: View {
                 }
                 
                 Group {
-                    if viewModel.audiobook.narrator != nil || viewModel.audiobook.explicit || viewModel.audiobook.abridged {
+                    if !viewModel.audiobook.narrators.isEmpty || viewModel.audiobook.explicit || viewModel.audiobook.abridged {
                         Text(verbatim: " • ")
                     }
                     

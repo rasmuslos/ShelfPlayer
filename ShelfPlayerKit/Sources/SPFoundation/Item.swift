@@ -10,13 +10,10 @@ import SwiftUI
 
 @Observable
 public class Item: Identifiable {
-    public let id: String
-    public let libraryID: String
-    
-    public let type: ItemType
+    public let id: ItemIdentifier
     
     public let name: String
-    public let author: String?
+    public let authors: [String]
     
     public let description: String?
     
@@ -26,60 +23,19 @@ public class Item: Identifiable {
     public let addedAt: Date
     public let released: String?
     
-    init(id: String, libraryID: String, type: ItemType, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?) {
+    init(id: ItemIdentifier, name: String, authors: [String], description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
-        self.libraryID = libraryID
-        self.type = type
+        
         self.name = name
-        self.author = author
+        self.authors = authors
+        
         self.description = description
+        
         self.cover = cover
         self.genres = genres
+        
         self.addedAt = addedAt
         self.released = released
-    }
-    
-    public enum ItemType: Identifiable, Hashable, Codable {
-        case audiobook
-        case author
-        case series
-        case podcast
-        case episode
-        
-        public static func parse(_ value: String) -> Self? {
-            if value == "audiobook" {
-                return .audiobook
-            } else if value == "author" {
-                return .author
-            } else if value == "series" {
-                return .series
-            } else if value == "podcast" {
-                return .podcast
-            } else if value == "episode" {
-                return .episode
-            }
-            
-            return nil
-        }
-        
-        public var id: Self {
-            self
-        }
-        
-        public var value: String {
-            switch self {
-            case .audiobook:
-                "audiobook"
-            case .author:
-                "author"
-            case .series:
-                "series"
-            case .podcast:
-                "podcast"
-            case .episode:
-                "episode"
-            }
-        }
     }
 }
 
@@ -113,23 +69,10 @@ public extension Item {
                 sortName = String(sortName.dropFirst(4))
             }
             
+            sortName += " "
+            sortName += authors.joined(separator: " ")
+            
             return sortName
         }
-    }
-    
-    var authors: [String]? {
-        guard let author else {
-            return nil
-        }
-        
-        return author.components(separatedBy: ", ").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
-    }
-    
-    var identifiers: (itemID: String, episodeID: String?) {
-        if let episode = self as? Episode {
-            return (itemID: episode.podcastId, episodeID: episode.id)
-        }
-        
-        return (itemID: id, episodeID: nil)
     }
 }

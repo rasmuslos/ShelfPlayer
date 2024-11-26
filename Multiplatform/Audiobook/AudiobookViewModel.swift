@@ -114,13 +114,9 @@ private extension AudiobookViewModel {
     }
     
     func loadAuthors() async {
-        guard let authors = await audiobook.authors else {
-            return
-        }
-        
         var resolved = [Author: [Audiobook]]()
         
-        for author in authors {
+        for author in await audiobook.authors {
             do {
                 let authorID = try await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID)
                 let (author, audiobooks, _) = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: audiobook.libraryID)
@@ -162,13 +158,9 @@ private extension AudiobookViewModel {
     }
     
     func loadNarrators() async {
-        guard let narrators = await audiobook.narrators else {
-            return
-        }
-        
         var resolved = [String: [Audiobook]]()
         
-        for narrator in narrators {
+        for narrator in await audiobook.narrators {
             do {
                 resolved[narrator] = try await AudiobookshelfClient.shared.audiobooks(narratorName: narrator, libraryID: self.audiobook.libraryID)
             } catch {

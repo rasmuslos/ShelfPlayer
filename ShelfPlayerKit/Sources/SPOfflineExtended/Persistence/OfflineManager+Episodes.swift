@@ -46,9 +46,9 @@ public extension OfflineManager {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         let descriptor = FetchDescriptor<OfflineEpisode>()
         
-        let episodes = try context.fetch(descriptor).map(Episode.init).filter { offlineStatus(parentId: $0.id) == .working }
+        let episodes = try context.fetch(descriptor).map(Episode.init).filter { offlineStatus(parentId: $0.id.offlineID) == .working }
         
-        return try Dictionary(grouping: episodes, by: \.podcastId).reduce(into: [:]) {
+        return try Dictionary(grouping: episodes, by: \.id.primaryID).reduce(into: [:]) {
             try $0[podcast(podcastId: $1.key)] = $1.value
         }
     }
@@ -73,7 +73,7 @@ public extension OfflineManager {
             throw OfflineError.fetchFailed
         }
         
-        try await DownloadManager.shared.download(cover: podcast.cover, itemId: podcast.id)
+        try await DownloadManager.shared.download(cover: podcast.cover, itemId: podcast.id.primaryID)
         
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         let offlinePodcast = offlinePodcast(podcast: podcast, context: context)
@@ -84,10 +84,10 @@ public extension OfflineManager {
         }
         
         let offlineEpisode = OfflineEpisode(
-            id: episode.id,
-            libraryId: episode.libraryID,
+            id: episodeId,
+            libraryId: episode.id.libraryID,
             name: episode.name,
-            author: episode.author,
+            author: episode.authors.joined(separator: ", "),
             overview: episode.description,
             addedAt: episode.addedAt,
             released: episode.released,
@@ -97,12 +97,13 @@ public extension OfflineManager {
         
         context.insert(offlineEpisode)
         
-        storeChapters(chapters, itemId: episode.id, context: context)
-        download(tracks: tracks, for: episode.id, type: .episode, context: context)
+        storeChapters(chapters, itemId: episode.id.offlineID, context: context)
+        download(tracks: tracks, for: episode.id.offlineID, type: .episode, context: context)
         
         try context.save()
         
-        NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
+        // TODO: Broken
+        // NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episode.id)
     }
     
     func remove(episodeId: String, allowPodcastDeletion: Bool = true) {
@@ -138,6 +139,7 @@ public extension OfflineManager {
             removePlaybackSpeedOverride(for: podcastId, episodeID: episodeId)
         }
         
-        NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episodeId)
+        // TODO: Broken
+        // NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: episodeId)
     }
 }

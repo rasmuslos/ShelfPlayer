@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 import SPFoundation
 
 @Observable
@@ -24,7 +25,7 @@ public class ProgressEntity {
     public private(set) var lastUpdate: Date
     public private(set) var finishedAt: Date?
     
-    @ObservationIgnored var token: Any?
+    @ObservationIgnored var token: AnyCancellable?
     
     init(id: String, itemID: String, episodeID: String?, progress: Percentage, duration: TimeInterval, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
         self.id = id
@@ -43,31 +44,23 @@ public class ProgressEntity {
         token = nil
     }
     
-    deinit {
-        guard let token else {
-            return
-        }
-        
-        NotificationCenter.default.removeObserver(token)
-    }
-    
     public func beginReceivingUpdates() {
         guard token == nil else {
             return
         }
         
-        token = NotificationCenter.default.addObserver(forName: Self.progressUpdatedNotification, object: nil, queue: nil) { [weak self] notification in
+        token = Self.updatedPublisher.sink { [weak self] in
             guard let self else {
                 return
             }
             
-            let id = convertIdentifier(itemID: itemID, episodeID: episodeID)
-            
-            guard notification.object as? String == id || notification.object == nil else {
-                return
+            if let itemID = $0 {
+                guard itemID.equals(itemID: self.itemID, episodeID: episodeID) == true else {
+                    return
+                }
             }
             
-            let updated = OfflineManager.shared.progressEntity(itemID: self.itemID, episodeID: self.episodeID)
+            let updated = OfflineManager.shared.progressEntity(id: id)
             
             self.progress = updated.progress
             
@@ -83,6 +76,11 @@ public class ProgressEntity {
     public var isFinished: Bool {
         progress >= 1
     }
-    
-    static let progressUpdatedNotification = Notification.Name("io.rfk.shelfPlayer.progressUpdatedNotification")
+}
+
+public extension ProgressEntity {
+    static let updatedSubject = PassthroughSubject<ItemIdentifier?, Never>()
+    static var updatedPublisher: AnyPublisher<ItemIdentifier?, Never> {
+        updatedSubject.eraseToAnyPublisher()
+    }
 }

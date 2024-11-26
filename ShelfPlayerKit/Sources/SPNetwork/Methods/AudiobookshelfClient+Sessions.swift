@@ -9,25 +9,13 @@ import Foundation
 import SPFoundation
 
 public extension AudiobookshelfClient {
-    func finished(_ finished: Bool, itemId: String, episodeId: String?) async throws {
-        var url = "api/me/progress/\(itemId)"
-        
-        if let episodeId {
-            url.append("/\(episodeId)")
-        }
-        
-        let _ = try await request(ClientRequest<EmptyResponse>(path: url, method: "PATCH", body: [
+    func finished(_ finished: Bool, id: ItemIdentifier) async throws {
+        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(id.urlValue)", method: "PATCH", body: [
             "isFinished": finished,
         ]))
     }
-    func deleteProgress(itemId: String, episodeId: String?) async throws {
-        var url = "api/me/progress/\(itemId)"
-        
-        if let episodeId {
-            url.append("/\(episodeId)")
-        }
-        
-        let _ = try await request(ClientRequest<EmptyResponse>(path: url, method: "DELETE"))
+    func deleteProgress(itemID: ItemIdentifier) async throws {
+        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/me/progress/\(itemID.urlValue)", method: "DELETE"))
     }
 }
 

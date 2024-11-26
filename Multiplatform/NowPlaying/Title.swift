@@ -41,8 +41,8 @@ internal extension NowPlaying {
                     .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
                     .foregroundStyle(.primary)
                 
-                if let author = item.author {
-                    Text(author)
+                if !item.authors.isEmpty {
+                    Text(item.authors, format: .list(type: .and, width: .short))
                         .font(.subheadline)
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
@@ -78,10 +78,7 @@ internal extension NowPlaying {
                                 Label("audiobook.view", systemImage: "book")
                             }
                             
-                            if let authors = audiobook.authors {
-                                AuthorMenu(authors: authors, libraryID: audiobook.libraryID)
-                            }
-                            
+                            AuthorMenu(authors: audiobook.authors, libraryID: audiobook.libraryID)
                             SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
                         }
                     } label: {

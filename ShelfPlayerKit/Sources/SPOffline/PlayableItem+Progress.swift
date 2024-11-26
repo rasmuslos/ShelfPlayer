@@ -7,38 +7,33 @@
 
 import Foundation
 import SwiftUI
+import Combine
 import SPFoundation
 import SPNetwork
 
 public extension PlayableItem {
+    static let finishedSubject = PassthroughSubject<(ItemIdentifier, Bool), Never>()
+    static var finishedPublisher: AnyPublisher<(ItemIdentifier, Bool), Never> {
+        finishedSubject.eraseToAnyPublisher()
+    }
+    
     func finished(_ finished: Bool) async throws {
         let success: Bool
         
         do {
-            try await AudiobookshelfClient.shared.finished(finished, itemId: identifiers.itemID, episodeId: identifiers.episodeID)
+            try await AudiobookshelfClient.shared.finished(finished, id: id)
             success = true
         } catch {
             success = false
         }
         
         OfflineManager.shared.finished(finished, item: self, synced: success)
-        await postFinishedNotification(finished: finished)
-    }
-    
-    func postFinishedNotification(finished: Bool) async {
-        await MainActor.run {
-            NotificationCenter.default.post(name: Self.finishedNotification, object: nil, userInfo: [
-                "itemID": identifiers.itemID,
-                "episodeID": identifiers.episodeID as Any,
-                
-                "finished": finished,
-            ])
-        }
+        Self.finishedSubject.send((id, finished))
     }
     
     func resetProgress() async throws {
-        try OfflineManager.shared.resetProgressEntity(itemID: identifiers.itemID, episodeID: identifiers.episodeID)
-        try await AudiobookshelfClient.shared.deleteProgress(itemId: identifiers.itemID, episodeId: identifiers.episodeID)
+        try OfflineManager.shared.resetProgressEntity(itemID: id)
+        try await AudiobookshelfClient.shared.deleteProgress(itemID: id)
     }
     
     static let finishedNotification = Notification.Name("io.rfk.shelfPlayer.item.finished")

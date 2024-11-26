@@ -130,8 +130,8 @@ private struct Row: View {
                     Group {
                         if case .author = displayContext, let seriesName = audiobook.seriesName {
                             Text(seriesName)
-                        } else if let author = audiobook.author {
-                            Text(author)
+                        } else if !audiobook.authors.isEmpty {
+                            Text(audiobook.authors, format: .list(type: .and, width: .short))
                         }
                     }
                     .lineLimit(2)

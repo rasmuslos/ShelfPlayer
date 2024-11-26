@@ -30,7 +30,7 @@ public extension OfflineManager {
             return
         }
         
-        let progressEntity = progressEntity(itemID: tracker.itemId, episodeID: tracker.episodeId)
+        let progressEntity = progressEntity(itemID: .init(itemID: tracker.itemId, episodeID: tracker.episodeId))
         
         try await AudiobookshelfClient.shared.createListeningSession(
             itemId: tracker.itemId,

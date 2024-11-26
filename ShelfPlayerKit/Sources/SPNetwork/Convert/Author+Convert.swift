@@ -13,8 +13,7 @@ internal extension Author {
         let addedAt = item.addedAt ?? 0
         
         self.init(
-            id: item.id,
-            libraryID: item.libraryId!,
+            id: .init(itemID: item.id, episodeID: nil, libraryID: item.libraryId, type: .author),
             name: item.name!,
             description: item.description,
             cover: Cover(item: item),
