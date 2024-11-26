@@ -73,10 +73,6 @@ public final class SleepTimer {
             return
         }
         
-        if Defaults[.smartRewind] && !AudioPlayer.shared.playing {
-            AudioPlayer.shared.itemCurrentTime -= 7
-        }
-        
         switch lastSetting {
         case .time(let interval):
             if let expiresAt {

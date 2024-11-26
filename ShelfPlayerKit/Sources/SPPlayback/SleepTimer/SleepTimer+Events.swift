@@ -33,8 +33,6 @@ internal extension SleepTimer {
         AudioPlayer.shared.playing = false
         AudioPlayer.shared.audioPlayer.volume = 1
         
-        print(AudioPlayer.shared.playing)
-        
         expiredAt = .now
         
         suspend()
