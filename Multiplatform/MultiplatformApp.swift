@@ -22,8 +22,6 @@ struct MultiplatformApp: App {
         
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
         
-        
-        
         BackgroundTaskHandler.setup()
         OfflineManager.shared.setupFinishedRemoveObserver()
         

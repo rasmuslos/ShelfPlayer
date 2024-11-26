@@ -47,6 +47,7 @@ internal struct EpisodePlayButton: View {
         .modifier(ButtonHoverEffectModifier(cornerRadius: .infinity, hoverEffect: .lift))
         .environment(viewModel)
         .onAppear {
+            viewModel.progressEntity.beginReceivingUpdates()
             viewModel.library = library
         }
     }
@@ -83,7 +84,7 @@ private struct ButtonText: View {
     }
     
     private var progressVisible: Bool {
-        viewModel.progressEntity.progress > 0 && viewModel.progressEntity.progress < 1
+        isPlaying || (viewModel.progressEntity.progress > 0 && viewModel.progressEntity.progress < 1)
     }
     
     var body: some View {
@@ -120,10 +121,9 @@ private struct ButtonText: View {
                 .contentTransition(.numericText(countsDown: true))
         }
         .font(.caption2)
+        .animation(.smooth, value: isPlaying)
+        .animation(.smooth, value: nowPlayingViewModel.playing)
         .animation(.smooth, value: viewModel.progressEntity.progress)
-        .onAppear {
-            viewModel.progressEntity.beginReceivingUpdates()
-        }
     }
 }
 
