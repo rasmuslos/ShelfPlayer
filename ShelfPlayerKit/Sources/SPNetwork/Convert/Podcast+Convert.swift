@@ -22,10 +22,9 @@ internal extension Podcast {
         }
         
         self.init(
-            id: item.id,
-            libraryID: item.libraryId!,
+            id: .init(itemID: item.id, episodeID: nil, libraryID: item.libraryId, type: .podcast),
             name: item.media!.metadata.title!,
-            author: item.media?.metadata.author,
+            authors: item.media?.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: item.media?.metadata.description,
             cover: Cover(item: item),
             genres: item.media?.metadata.genres ?? [],

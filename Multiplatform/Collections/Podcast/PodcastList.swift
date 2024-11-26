@@ -31,8 +31,8 @@ private struct PodcastRow: View {
     private var author: String? {
         var result = [String]()
         
-        if let author = podcast.author {
-            result.append(author)
+        if !podcast.authors.isEmpty {
+            result.append(podcast.authors.formatted(.list(type: .and, width: .short)))
         }
         if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
             result.append(.init(localized: "\(incompleteEpisodeCount) episodes.unplayed"))

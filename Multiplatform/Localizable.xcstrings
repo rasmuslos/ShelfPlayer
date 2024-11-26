@@ -1527,7 +1527,11 @@
         }
       }
     },
+    "audiobook.narrator" : {
+
+    },
     "audiobook.narrator %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3732,6 +3736,12 @@
     "intents.checkForNewDownloads.title" : {
 
     },
+    "intents.playItem.description" : {
+
+    },
+    "intents.playItem.title" : {
+
+    },
     "library.change" : {
       "localizations" : {
         "de" : {
@@ -5679,7 +5689,11 @@
         }
       }
     },
+    "readBy" : {
+
+    },
     "readBy %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

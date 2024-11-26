@@ -45,10 +45,7 @@ internal extension NowPlaying {
                                 Label("audiobook.view", systemImage: "book")
                             }
                             
-                            if let authors = audiobook.authors {
-                                AuthorMenu(authors: authors, libraryID: audiobook.libraryID)
-                            }
-                            
+                            AuthorMenu(authors: audiobook.authors, libraryID: audiobook.libraryID)
                             SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
                         }
                     }
@@ -113,16 +110,19 @@ internal extension NowPlaying {
                                 .font(.headline)
                         }
                         
-                        if let author = viewModel.item?.author {
-                            Text(author)
+                        if let authors = viewModel.item?.authors, !authors.isEmpty {
+                            Text(authors, format: .list(type: .and, width: .short))
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
                         
-                        if let audiobook = viewModel.item as? Audiobook, let narrator = audiobook.narrator {
-                            Text("readBy \(narrator)")
-                                .font(.subheadline)
-                                .foregroundStyle(.tertiary)
+                        if let narrators = (viewModel.item as? Audiobook)?.narrators, !narrators.isEmpty {
+                            Group {
+                                Text("readBy")
+                                + Text(narrators, format: .list(type: .and, width: .short))
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(.tertiary)
                         }
                     }
                     .frame(width: 240)

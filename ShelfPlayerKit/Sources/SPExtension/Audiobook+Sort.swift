@@ -67,14 +67,7 @@ public extension Audiobook {
             
             return false
         case .authorName:
-            guard let lhsAuthor = lhs.author else {
-                return false
-            }
-            guard let rhsAuthor = rhs.author else {
-                return true
-            }
-            
-            return lhsAuthor.localizedStandardCompare(rhsAuthor) == .orderedAscending
+            return lhs.authors.joined(separator: ", ").localizedStandardCompare(rhs.authors.joined(separator: ", ") ) == .orderedAscending
         case .released:
             guard let lhsReleased = lhs.released else {
                 return false

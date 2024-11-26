@@ -18,7 +18,7 @@ internal extension AudioPlayer {
         
         var update = [String: Any]()
         
-        update[MPMediaItemPropertyArtist] = item.author
+        update[MPMediaItemPropertyArtist] = item.authors.joined(separator: ", ")
         update[MPMediaItemPropertyReleaseDate] = item.released
         update[MPNowPlayingInfoPropertyChapterCount] = chapters.count
         

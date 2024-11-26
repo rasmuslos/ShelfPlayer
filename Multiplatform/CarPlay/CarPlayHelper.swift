@@ -12,23 +12,21 @@ import SPPlayback
 
 internal struct CarPlayHelper {
     static func buildAudiobookListItem(_ audiobook: Audiobook) -> CPListItem {
-        let detail: String?
+        var detail = [[String]]()
         
-        if let narrator = audiobook.narrator, let author = audiobook.author {
-            detail = "\(author) • \(narrator)"
-        } else if let author = audiobook.author {
-            detail = author
-        } else if let narrator = audiobook.narrator {
-            detail = narrator
-        } else {
-            detail = nil
+        if !audiobook.authors.isEmpty {
+            detail.append(audiobook.authors)
+        }
+        if !audiobook.narrators.isEmpty {
+            detail.append(audiobook.narrators)
         }
         
-        return finalizeListItem(CPListItem(text: audiobook.name, detailText: detail, image: nil), item: audiobook, displayCover: true)
+        let detailText = detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • ")
+        return finalizeListItem(CPListItem(text: audiobook.name, detailText: detailText, image: nil), item: audiobook, displayCover: true)
     }
     
     static func buildEpisodeListItem(_ episode: Episode, displayCover: Bool) -> CPListItem {
-        finalizeListItem(CPListItem(text: episode.name, detailText: episode.author, image: nil), item: episode, displayCover: displayCover)
+        finalizeListItem(CPListItem(text: episode.name, detailText: episode.authors.formatted(.list(type: .and, width: .short)), image: nil), item: episode, displayCover: displayCover)
     }
     
     private static func finalizeListItem(_ listItem: CPListItem, item: PlayableItem, displayCover: Bool) -> CPListItem {

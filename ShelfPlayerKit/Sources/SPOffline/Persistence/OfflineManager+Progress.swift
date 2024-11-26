@@ -21,17 +21,17 @@ internal extension OfflineManager {
         return try context.fetch(descriptor)
     }
     
-    func progressEntity(itemID: String, episodeID: String?) -> OfflineProgress {
+    func progressEntity(itemID: ItemIdentifier) -> OfflineProgress {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
-        if let entity = progressEntity(itemID: itemID, episodeID: episodeID, context: context) {
+        if let entity = progressEntity(itemID: itemID, context: context) {
             return entity
         }
         
         let progress = OfflineProgress(
-            id: "tmp_\(episodeID ?? itemID)",
-            itemID: itemID,
-            episodeID: episodeID,
+            id: "tmp_\(itemID.episodeID ?? itemID.primaryID)",
+            itemID: itemID.primaryID,
+            episodeID: itemID.episodeID,
             progress: 0,
             duration: 0,
             currentTime: 0,
@@ -55,7 +55,7 @@ internal extension OfflineManager {
         
         if let entities {
             for entity in entities {
-                NotificationCenter.default.post(name: ProgressEntity.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemID, episodeID: entity.episodeID))
+                ProgressEntity.updatedSubject.send(.init(itemID: entity.itemID, episodeID: entity.episodeID))
             }
         }
     }
@@ -67,13 +67,13 @@ internal extension OfflineManager {
         for progress in cached {
             try await AudiobookshelfClient.shared.updateProgress(itemId: progress.itemID, episodeId: progress.episodeID, currentTime: progress.currentTime, duration: progress.duration)
             
-            updateSyncState(.localSynced, itemID: progress.itemID, episodeID: progress.episodeID)
+            updateSyncState(.localSynced, itemID: .init(itemID: progress.itemID, episodeID: progress.episodeID))
         }
     }
     
-    func updateSyncState(_ type: OfflineProgress.ProgressSyncState, itemID: String, episodeID: String?) {
+    func updateSyncState(_ type: OfflineProgress.ProgressSyncState, itemID: ItemIdentifier) {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
-        let entity = progressEntity(itemID: itemID, episodeID: episodeID, context: context)
+        let entity = progressEntity(itemID: itemID, context: context)
         
         entity?.progressType = type
         try? context.save()
@@ -88,7 +88,7 @@ internal extension OfflineManager {
                     hideFromContinueListening.append(.init(itemId: mediaProgress.libraryItemId, episodeId: mediaProgress.episodeId))
                 }
                 
-                let existing = progressEntity(itemID: mediaProgress.libraryItemId, episodeID: mediaProgress.episodeId, context: context)
+                let existing = progressEntity(itemID: .init(itemID: mediaProgress.libraryItemId, episodeID: mediaProgress.episodeId), context: context)
                 let duration = mediaProgress.duration ?? 0
                 
                 if let existing = existing {
@@ -146,8 +146,8 @@ internal extension OfflineManager {
 // MARK: Internal (Helper)
 
 internal extension OfflineManager {
-    func progressEntity(itemID: String, episodeID: String?, context: ModelContext) -> OfflineProgress? {
-        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineProgress> { $0.itemID == itemID && $0.episodeID == episodeID })
+    func progressEntity(itemID: ItemIdentifier, context: ModelContext) -> OfflineProgress? {
+        var descriptor = FetchDescriptor(predicate: #Predicate<OfflineProgress> { $0.itemID == itemID.primaryID && $0.episodeID == itemID.episodeID })
         descriptor.fetchLimit = 1
         
         return try? context.fetch(descriptor).first
@@ -163,7 +163,7 @@ internal extension OfflineManager {
         }
         
         try context.save()
-        NotificationCenter.default.post(name: ProgressEntity.progressUpdatedNotification, object: nil)
+        ProgressEntity.updatedSubject.send(nil)
     }
 }
 
@@ -180,8 +180,8 @@ public extension OfflineManager {
         return count > 0
     }
     
-    func progressEntity(item: Item) -> ProgressEntity {
-        let entity = progressEntity(itemID: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
+    func progressEntity(id: String) -> ProgressEntity {
+        let entity = progressEntity(id: id)
         
         return .init(
             id: entity.id,
@@ -195,15 +195,42 @@ public extension OfflineManager {
             finishedAt: entity.finishedAt)
     }
     
-    func resetProgressEntity(itemID: String, episodeID: String?) throws {
+    func progressEntity(item: Item) -> ProgressEntity {
+        let entity = progressEntity(itemID: item.id)
+        
+        return .init(
+            id: entity.id,
+            itemID: entity.itemID,
+            episodeID: entity.episodeID,
+            progress: entity.progress,
+            duration: entity.duration,
+            currentTime: entity.currentTime,
+            startedAt: entity.startedAt,
+            lastUpdate: entity.lastUpdate,
+            finishedAt: entity.finishedAt)
+    }
+    
+    func resetProgressEntity(id: String) throws {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
         try context.delete(model: OfflineProgress.self, where: #Predicate {
-            $0.itemID == itemID && $0.episodeID == episodeID
+            $0.id == id
         })
         try context.save()
         
-        NotificationCenter.default.post(name: ProgressEntity.progressUpdatedNotification, object: convertIdentifier(itemID: itemID, episodeID: episodeID))
+        // TODO: Broken
+        // NotificationCenter.default.post(name: ProgressEntity.progressUpdatedNotification, object: convertIdentifier(itemID: itemID, episodeID: episodeID))
+    }
+    
+    func resetProgressEntity(itemID: ItemIdentifier) throws {
+        let context = ModelContext(PersistenceManager.shared.modelContainer)
+        
+        try context.delete(model: OfflineProgress.self, where: #Predicate {
+            $0.itemID == itemID.primaryID && $0.episodeID == itemID.episodeID
+        })
+        try context.save()
+        
+        ProgressEntity.updatedSubject.send(itemID)
     }
     
     func deleteProgressEntities() throws {
@@ -212,11 +239,11 @@ public extension OfflineManager {
         try context.delete(model: OfflineProgress.self)
         try context.save()
         
-        NotificationCenter.default.post(name: ProgressEntity.progressUpdatedNotification, object: nil)
+        ProgressEntity.updatedSubject.send(nil)
     }
     
     func finished(_ finished: Bool, item: Item, synced: Bool) {
-        let entity = progressEntity(itemID: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
+        let entity = progressEntity(itemID: item.id)
         
         if finished {
             entity.progress = 1
@@ -239,11 +266,11 @@ public extension OfflineManager {
         }
         
         try? entity.modelContext?.save()
-        NotificationCenter.default.post(name: ProgressEntity.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemID, episodeID: entity.episodeID))
+        ProgressEntity.updatedSubject.send(item.id)
     }
     
-    func updateProgressEntity(itemID: String, episodeID: String?, currentTime: TimeInterval, duration: TimeInterval, success: Bool? = nil) {
-        let entity = progressEntity(itemID: itemID, episodeID: episodeID)
+    func updateProgressEntity(itemID: ItemIdentifier, currentTime: TimeInterval, duration: TimeInterval, success: Bool? = nil) {
+        let entity = progressEntity(itemID: itemID)
         
         entity.progress = currentTime / duration
         
@@ -265,6 +292,6 @@ public extension OfflineManager {
         }
         
         try? entity.modelContext?.save()
-        NotificationCenter.default.post(name: ProgressEntity.progressUpdatedNotification, object: convertIdentifier(itemID: entity.itemID, episodeID: entity.episodeID))
+        ProgressEntity.updatedSubject.send(itemID)
     }
 }

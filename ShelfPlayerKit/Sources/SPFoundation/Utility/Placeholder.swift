@@ -9,17 +9,15 @@ import Foundation
 
 public extension Episode {
     static let placeholder: Episode = .init(
-        id: "placeholder",
-        libraryID: "placeholder",
+        id: .init(itemID: "fixture", episodeID: nil, libraryID: "fixture", type: .episode),
         name: "Placeholder",
-        author: nil,
+        authors: [],
         description: nil,
         cover: nil,
         addedAt: .now,
         released: nil,
         size: 0,
         duration: 0,
-        podcastId: "placeholder",
         podcastName: "Placeholder",
         index: 0)
 }

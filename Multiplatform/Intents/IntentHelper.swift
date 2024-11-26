@@ -31,7 +31,7 @@ internal struct IntentHelper {
             title: item.name,
             type: itemType,
             artwork: artwork,
-            artist: item.author)
+            artist: item.authors.joined(separator: ", "))
     }
     
     static func createIntent(item: Item) async -> INPlayMediaIntent? {

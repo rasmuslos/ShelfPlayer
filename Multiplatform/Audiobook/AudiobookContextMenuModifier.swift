@@ -31,10 +31,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                     Label("audiobook.view", systemImage: "book")
                 }
                 
-                if let authors = audiobook.authors {
-                    AuthorMenu(authors: authors, libraryID: nil)
-                }
-                
+                AuthorMenu(authors: audiobook.authors, libraryID: nil)
                 SeriesMenu(series: audiobook.series, libraryID: nil)
                 
                 Divider()
@@ -60,16 +57,19 @@ internal extension AudiobookContextMenuModifier {
                     .font(.headline)
                     .modifier(SerifModifier())
                 
-                if let author = audiobook.author {
-                    Text(author)
+                if !audiobook.authors.isEmpty {
+                    Text(audiobook.authors, format: .list(type: .and, width: .short))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
                 
-                if let narrator = audiobook.narrator {
-                    Text("readBy \(narrator)")
-                        .font(.subheadline)
-                        .foregroundStyle(.tertiary)
+                if !audiobook.narrators.isEmpty {
+                    Group {
+                        Text("readBy")
+                        + Text(audiobook.narrators, format: .list(type: .and, width: .short))
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.tertiary)
                 }
             }
             .frame(width: 240)

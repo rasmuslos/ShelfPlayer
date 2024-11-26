@@ -60,7 +60,7 @@ public extension OfflineManager {
             }
             if let episode {
                 remove(episodeId: identifier)
-                removePlaybackSpeedOverride(for: episode.podcastId, episodeID: identifier)
+                removePlaybackSpeedOverride(for: episode.id.primaryID, episodeID: identifier)
             }
         }
     }

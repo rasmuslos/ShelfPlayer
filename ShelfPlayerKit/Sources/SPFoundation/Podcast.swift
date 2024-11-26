@@ -15,7 +15,7 @@ public final class Podcast: Item {
     
     public let publishingType: PodcastType?
     
-    public init(id: String, libraryID: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int, incompleteEpisodeCount: Int?, publishingType: PodcastType?) {
+    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int, incompleteEpisodeCount: Int?, publishingType: PodcastType?) {
         self.explicit = explicit
         
         self.episodeCount = episodeCount
@@ -23,7 +23,7 @@ public final class Podcast: Item {
         
         self.publishingType = publishingType
         
-        super.init(id: id, libraryID: libraryID, type: .podcast, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)
+        super.init(id: id, name: name, authors: authors, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released)
     }
 }
 

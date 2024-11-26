@@ -101,8 +101,8 @@ private struct DownloadAudiobookRow: View {
                 Text(audiobook.name)
                     .lineLimit(1)
                 
-                if let author = audiobook.author {
-                    Text(author)
+                if !audiobook.authors.isEmpty {
+                    Text(audiobook.authors, format: .list(type: .and, width: .short))
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
                 }

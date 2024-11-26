@@ -10,13 +10,13 @@ import SPFoundation
 
 public extension Item {
     var url: URL {
-        switch self.type {
+        switch self.id.type {
         case .author:
-            AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: id)
+            AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: id.primaryID)
         case .series:
-            AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: libraryID).appending(path: "series").appending(path: id)
+            AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: id.libraryID).appending(path: "series").appending(path: id.primaryID)
         default:
-            AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: identifiers.itemID)
+            AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: id.primaryID)
         }
      }
 }

@@ -24,7 +24,7 @@ internal struct PodcastLibraryPanel: View {
         
         return lazyLoader.items.filter {
             $0.name.localizedCaseInsensitiveContains(search)
-            || $0.author?.localizedCaseInsensitiveContains(search) ?? false
+            || $0.authors.joined(separator: " ").localizedCaseInsensitiveContains(search)
         }
     }
     
