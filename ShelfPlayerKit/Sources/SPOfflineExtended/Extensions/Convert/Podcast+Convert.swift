@@ -12,10 +12,9 @@ import SPOffline
 internal extension Podcast {
     convenience init(_ podcast: OfflinePodcast) {
         self.init(
-            id: podcast.id,
-            libraryID: podcast.libraryId,
+            id: .init(itemID: podcast.id, episodeID: nil, libraryID: podcast.libraryId, type: .podcast),
             name: podcast.name,
-            author: podcast.author,
+            authors: podcast.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: podcast.overview,
             cover: Cover(type: .local, size: .normal, url: DownloadManager.shared.imageURL(identifiedBy: podcast.id)),
             genres: podcast.genres,

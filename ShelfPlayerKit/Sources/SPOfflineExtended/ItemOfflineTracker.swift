@@ -8,33 +8,28 @@
 import Foundation
 import SPFoundation
 import OSLog
+import Combine
 import SPOffline
 
 @Observable
 public final class ItemOfflineTracker {
-    let itemId: String
+    let itemID: ItemIdentifier
     
-    var token: Any?
+    @ObservationIgnored var token: AnyCancellable?
     @MainActor var _status: OfflineManager.OfflineStatus?
     
-    let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Item")
+    @ObservationIgnored let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "Item")
     
     @MainActor
-    init(itemId: String) {
-        self.itemId = itemId
+    init(itemID: ItemIdentifier) {
+        self.itemID = itemID
         
         token = nil
         _status = nil
     }
     @MainActor
     public convenience init(_ item: Item) {
-        self.init(itemId: item.id)
-    }
-    
-    deinit {
-        if let token {
-            NotificationCenter.default.removeObserver(token)
-        }
+        self.init(itemID: item.id)
     }
 }
 
@@ -43,21 +38,17 @@ extension ItemOfflineTracker {
     public var status: OfflineManager.OfflineStatus {
         get {
             if _status == nil {
-                // logger.info("Enabled offline tracking for \(self.itemId)")
-                
-                token = NotificationCenter.default.addObserver(forName: PlayableItem.downloadStatusUpdatedNotification, object: nil, queue: nil) { [weak self] notification in
-                    guard let self else {
+                token = PlayableItem.downloadStatusUpdatedPublisher.sink { [weak self] in
+                    guard let self, $0 == itemID else {
                         return
                     }
                     
-                    if notification.object as? String == itemId {
-                        Task { @MainActor in
-                            self._status = OfflineManager.shared.offlineStatus(parentId: self.itemId)
-                        }
+                    Task { @MainActor in
+                        self._status = OfflineManager.shared.offlineStatus(parentId: self.itemID.offlineID)
                     }
                 }
                 
-                _status = OfflineManager.shared.offlineStatus(parentId: itemId)
+                _status = OfflineManager.shared.offlineStatus(parentId: self.itemID.offlineID)
             }
             
             return _status!

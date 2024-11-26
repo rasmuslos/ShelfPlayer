@@ -40,9 +40,9 @@ internal enum AudiobookSection: Hashable {
     var authorName: String? {
         switch self {
         case .audiobook(let audiobook):
-            audiobook.author
+            audiobook.authors.formatted(.list(type: .and, width: .short))
         case .series(_, let audiobooks):
-            Dictionary(audiobooks.map { ($0.author, 1) }, uniquingKeysWith: +).sorted { $0.value < $1.value }.compactMap(\.key).first
+            Dictionary(audiobooks.map { ($0.authors.formatted(.list(type: .and, width: .short)), 1) }, uniquingKeysWith: +).sorted { $0.value < $1.value }.compactMap(\.key).first
         }
     }
     var released: String? {

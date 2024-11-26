@@ -8,19 +8,20 @@
 import Foundation
 
 public final class Audiobook: PlayableItem {
-    public let narrator: String?
+    public let narrators: [String]
     public let series: [ReducedSeries]
     
     public let explicit: Bool
     public let abridged: Bool
     
-    public init(id: String, libraryID: String, name: String, author: String?, description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: TimeInterval, narrator: String?, series: [ReducedSeries], explicit: Bool, abridged: Bool) {
-        self.narrator = narrator
+    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, cover: Cover?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: TimeInterval, narrators: [String], series: [ReducedSeries], explicit: Bool, abridged: Bool) {
+        self.narrators = narrators
         self.series = series
+        
         self.explicit = explicit
         self.abridged = abridged
         
-        super.init(id: id, libraryID: libraryID, type: .audiobook, name: name, author: author, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
+        super.init(id: id, name: name, authors: authors, description: description, cover: cover, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
     }
 }
 
@@ -37,14 +38,6 @@ public extension Audiobook {
             
             return $0.name
         }.joined(separator: ", ")
-    }
-    
-    var narrators: [String]? {
-        guard let narrator else {
-            return nil
-        }
-        
-        return narrator.components(separatedBy: ", ").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
     }
 }
 

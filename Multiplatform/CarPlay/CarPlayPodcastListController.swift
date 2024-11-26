@@ -35,7 +35,7 @@ private extension CarPlayPodcastListController {
             }
             
             let items = podcasts.sorted { $0.sortName < $1.sortName }.map { podcast in
-                let item = CPListItem(text: podcast.name, detailText: podcast.author, image: nil)
+                let item = CPListItem(text: podcast.name, detailText: podcast.authors.formatted(.list(type: .and, width: .short)), image: nil)
                 
                 Task {
                     item.setImage(await podcast.cover?.platformImage)

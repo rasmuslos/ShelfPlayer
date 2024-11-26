@@ -120,8 +120,8 @@ private extension NowPlaying.Sheet {
                                 Text(item.name)
                                     .lineLimit(1)
                                 
-                                if let author = item.author {
-                                    Text(author)
+                                if !item.authors.isEmpty {
+                                    Text(item.authors, format: .list(type: .and, width: .short))
                                         .lineLimit(1)
                                         .font(.subheadline)
                                         .foregroundStyle(.secondary)
@@ -395,9 +395,7 @@ private struct QueueContextMenuItems: View {
                     Label("audiobook.view", systemImage: "book")
                 }
                 
-                if let authors = audiobook.authors {
-                    AuthorMenu(authors: authors, libraryID: audiobook.libraryID)
-                }
+                AuthorMenu(authors: audiobook.authors, libraryID: audiobook.libraryID)
                 SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
             }
         }

@@ -16,8 +16,7 @@ import SPOfflineExtended
 #endif
 
 internal final class PlaybackReporter {
-    private let itemId: String
-    private let episodeId: String?
+    private let itemID: ItemIdentifier
     
     private let playbackSessionId: String?
     private let listeningTimeTracker: OfflineListeningTimeTracker?
@@ -27,9 +26,8 @@ internal final class PlaybackReporter {
     
     private var lastReport: Date
     
-    internal init(itemId: String, episodeId: String?, playbackSessionId: String?) {
-        self.itemId = itemId
-        self.episodeId = episodeId
+    internal init(itemID: ItemIdentifier, playbackSessionId: String?) {
+        self.itemID = itemID
         self.playbackSessionId = playbackSessionId
         
         duration = .nan
@@ -38,7 +36,7 @@ internal final class PlaybackReporter {
         lastReport = .now
         
         if playbackSessionId == nil {
-            listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
+            listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemID.primaryID, episodeId: itemID.episodeID)
         } else {
             listeningTimeTracker = nil
         }

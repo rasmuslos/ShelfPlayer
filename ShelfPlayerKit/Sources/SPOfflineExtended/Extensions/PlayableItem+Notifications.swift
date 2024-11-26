@@ -6,8 +6,12 @@
 //
 
 import Foundation
+import Combine
 import SPFoundation
 
 public extension PlayableItem {
-    static let downloadStatusUpdatedNotification = NSNotification.Name("io.rfk.shelfplayer.download.statusUpdated")
+    static let downloadStatusUpdatedSubject = PassthroughSubject<(ItemIdentifier), Never>()
+    static var downloadStatusUpdatedPublisher: AnyPublisher<(ItemIdentifier), Never> {
+        downloadStatusUpdatedSubject.eraseToAnyPublisher()
+    }
 }

@@ -85,7 +85,7 @@ private extension CarPlayOfflineController {
                 
                 let section = CPListSection(items: items,
                                             header: podcast.name,
-                                            headerSubtitle: podcast.author,
+                                            headerSubtitle: podcast.authors.formatted(.list(type: .and, width: .short)),
                                             headerImage: image,
                                             headerButton: nil,
                                             sectionIndexTitle: nil)

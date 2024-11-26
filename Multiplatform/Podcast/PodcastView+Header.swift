@@ -66,8 +66,8 @@ private struct Title: View {
             .font(largeFont ? .title : .headline)
             .multilineTextAlignment(alignment)
         
-        if let author = viewModel.podcast.author {
-            Text(author)
+        if !viewModel.podcast.authors.isEmpty {
+            Text(viewModel.podcast.authors, format: .list(type: .and, width: .short))
                 .lineLimit(2)
                 .foregroundStyle(.thickMaterial)
                 .multilineTextAlignment(alignment)

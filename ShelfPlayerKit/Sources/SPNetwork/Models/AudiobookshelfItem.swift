@@ -50,6 +50,8 @@ internal struct AudiobookshelfItem: Codable {
 
 internal struct AudiobookshelfPodcastEpisode: Codable {
     let id: String?
+    let libraryId: String?
+    
     let podcastId: String?
     let libraryItemId: String?
     

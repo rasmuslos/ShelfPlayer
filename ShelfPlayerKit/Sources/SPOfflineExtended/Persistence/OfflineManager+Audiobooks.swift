@@ -44,7 +44,7 @@ public extension OfflineManager {
     }
     
     func downloading() throws -> [Audiobook] {
-        try audiobooks().filter { offlineStatus(parentId: $0.id) == .working }
+        try audiobooks().filter { offlineStatus(parentId: $0.id.offlineID) == .working }
     }
     
     func audiobooks(query: String) throws -> [Audiobook] {
@@ -61,7 +61,7 @@ public extension OfflineManager {
             throw OfflineError.fetchFailed
         }
         
-        try await DownloadManager.shared.download(cover: audiobook.cover, itemId: audiobook.id)
+        try await DownloadManager.shared.download(cover: audiobook.cover, itemId: audiobook.id.offlineID)
         
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
@@ -71,16 +71,16 @@ public extension OfflineManager {
         }
         
         let offlineAudiobook = OfflineAudiobook(
-            id: audiobook.id,
-            libraryId: audiobook.libraryID,
+            id: audiobook.id.primaryID,
+            libraryId: audiobook.id.libraryID,
             name: audiobook.name,
-            author: audiobook.author,
+            author: audiobook.authors.joined(separator: ", "),
             overview: audiobook.description,
             genres: audiobook.genres,
             addedAt: audiobook.addedAt,
             released: audiobook.released,
             size: audiobook.size,
-            narrator: audiobook.narrator,
+            narrator: audiobook.narrators.joined(separator: ", "),
             seriesName: audiobook.seriesName,
             duration: audiobook.duration,
             explicit: audiobook.explicit,
@@ -88,12 +88,12 @@ public extension OfflineManager {
         
         context.insert(offlineAudiobook)
         
-        storeChapters(chapters, itemId: audiobook.id, context: context)
-        download(tracks: tracks, for: audiobook.id, type: .audiobook, context: context)
+        storeChapters(chapters, itemId: audiobook.id.offlineID, context: context)
+        download(tracks: tracks, for: audiobook.id.offlineID, type: .audiobook, context: context)
         
         try context.save()
         
-        NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobook.id)
+        PlayableItem.downloadStatusUpdatedSubject.send(audiobook.id)
     }
     
     func remove(audiobookId: String) {
@@ -119,6 +119,7 @@ public extension OfflineManager {
         
         removePlaybackSpeedOverride(for: audiobookId, episodeID: nil)
         
-        NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobookId)
+        // TODO: Broken
+        // NotificationCenter.default.post(name: PlayableItem.downloadStatusUpdatedNotification, object: audiobookId)
     }
 }

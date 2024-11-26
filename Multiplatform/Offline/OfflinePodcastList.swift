@@ -49,8 +49,8 @@ internal extension OfflinePodcastList {
                     Text(podcast.name)
                         .lineLimit(1)
                     
-                    if let author = podcast.author {
-                        Text(author)
+                    if !podcast.authors.isEmpty {
+                        Text(podcast.authors, format: .list(type: .and, width: .short))
                             .lineLimit(1)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)

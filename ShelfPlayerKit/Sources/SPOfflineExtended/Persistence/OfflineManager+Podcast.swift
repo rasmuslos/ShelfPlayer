@@ -14,15 +14,15 @@ import SPOffline
 
 internal extension OfflineManager {
     func offlinePodcast(podcast: Podcast, context: ModelContext) -> OfflinePodcast {
-        if let podcast = try? offlinePodcast(podcastId: podcast.id, context: context) {
+        if let podcast = try? offlinePodcast(podcastId: podcast.id.primaryID, context: context) {
             return podcast
         }
         
         let offlinePodcast = OfflinePodcast(
-            id: podcast.id,
-            libraryId: podcast.libraryID,
+            id: podcast.id.primaryID,
+            libraryId: podcast.id.libraryID,
             name: podcast.name,
-            author: podcast.author,
+            author: podcast.authors.joined(separator: ", "),
             overview: podcast.description,
             genres: podcast.genres,
             addedAt: podcast.addedAt,
@@ -71,7 +71,7 @@ public extension OfflineManager {
         
         return result.filter {
             if $0.value.isEmpty {
-                remove(podcastId: $0.key.id)
+                remove(podcastId: $0.key.id.primaryID)
                 return false
             }
             
