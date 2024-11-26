@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftData
 import Defaults
 import SPFoundation
-import SPOffline
-import SPOfflineExtended
+import SPPersistence
+import SPPersistenceExtended
 
 internal struct StatusOverlay: View {
     @Default(.itemImageStatusPercentageText) private var itemImageStatusPercentageText

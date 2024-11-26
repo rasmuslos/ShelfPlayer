@@ -9,8 +9,8 @@ import Foundation
 import Defaults
 import SPFoundation
 import SPNetwork
-import SPOffline
-import SPOfflineExtended
+import SPPersistence
+import SPPersistenceExtended
 import SPExtension
 
 public extension AudioPlayer {
@@ -76,7 +76,7 @@ internal extension AudioPlayer {
             return
         }
         
-        #if canImport(SPOfflineExtended)
+        #if canImport(SPPersistenceExtended)
         if let episodes = try? OfflineManager.shared.episodes(podcastId: episode.podcastId) {
             handleNextEpisodes(episodes, episode: episode)
             return

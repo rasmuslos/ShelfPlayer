@@ -25,7 +25,7 @@ internal final class AudiobookViewModel {
     @MainActor var chapters: [PlayableItem.Chapter]
     
     @MainActor private(set) var sameAuthor: [Author: [Audiobook]]
-    @MainActor private(set) var sameSeries: [Audiobook.ReducedSeries: [Audiobook]]
+    @MainActor private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
     @MainActor private(set) var sameNarrator: [String: [Audiobook]]
     
     @MainActor let progressEntity: ProgressEntity
@@ -133,7 +133,7 @@ private extension AudiobookViewModel {
     }
     
     func loadSeries() async {
-        var resolved = [Audiobook.ReducedSeries: [Audiobook]]()
+        var resolved = [Audiobook.SeriesFragment: [Audiobook]]()
         
         for series in await audiobook.series {
             do {

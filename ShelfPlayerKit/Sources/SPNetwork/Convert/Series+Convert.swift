@@ -9,14 +9,14 @@ import Foundation
 import SPFoundation
 
 internal extension Series {
-    convenience init(item: AudiobookshelfItem) {
+    convenience init(item: ItemPayload) {
         let covers: [Cover] = (item.books ?? item.items ?? []).reduce([], {
             print($1)
-            return $0 + [Cover(item: $1)]
+            return $0 + []
         })
         
         self.init(
-            id: .init(itemID: item.id, episodeID: nil, libraryID: item.libraryId, type: .series),
+            id: .init(primaryID: item.id, groupingID: nil, libraryID: item.libraryId, type: .series),
             name: item.name!,
             authors: [],
             description: item.description,
@@ -24,7 +24,7 @@ internal extension Series {
             covers: covers)
     }
     
-    convenience init(item: AudiobookshelfItem, audiobooks: [AudiobookshelfItem]) {
+    convenience init(item: ItemPayload, audiobooks: [ItemPayload]) {
         var item = item
         item.books = audiobooks
         
@@ -32,22 +32,20 @@ internal extension Series {
     }
 }
 
-public extension Audiobook.ReducedSeries {
+public extension Audiobook.SeriesFragment {
     static func parse(seriesName: String) -> [Self] {
-        let series = seriesName.split(separator: ", ")
-        
-        return series.map {
+        seriesName.split(separator: ", ").map {
             if $0.contains(" #") {
                 let parts = $0.split(separator: " #")
                 let name = parts[0...parts.count - 2].joined(separator: " #")
                 
                 if let sequence = Float(parts[parts.count - 1]) {
-                    return Audiobook.ReducedSeries(id: nil, name: name, sequence: sequence)
+                    return Audiobook.SeriesFragment(id: nil, name: name, sequence: sequence)
                 } else {
-                    return Audiobook.ReducedSeries(id: nil, name: name.appending(" #").appending(parts[parts.count - 1]), sequence: nil)
+                    return Audiobook.SeriesFragment(id: nil, name: name.appending(" #").appending(parts[parts.count - 1]), sequence: nil)
                 }
             } else {
-                return Audiobook.ReducedSeries(id: nil, name: String($0), sequence: nil)
+                return Audiobook.SeriesFragment(id: nil, name: String($0), sequence: nil)
             }
         }
     }

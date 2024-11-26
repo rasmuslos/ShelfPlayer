@@ -8,7 +8,7 @@
 import Foundation
 import MediaPlayer
 import SPFoundation
-import SPOffline
+import SPPersistence
 
 internal extension AudioPlayer {
     func populateNowPlayingWidgetMetadata() async {

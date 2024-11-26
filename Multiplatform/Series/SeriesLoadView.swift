@@ -28,7 +28,7 @@ internal struct SeriesLoadView: View {
         
         self.filteredIDs = filteredIDs
     }
-    init(series: Audiobook.ReducedSeries, filteredIDs: [String] = []) {
+    init(series: Audiobook.SeriesFragment, filteredIDs: [String] = []) {
         seriesID = series.id
         seriesName = series.name
         

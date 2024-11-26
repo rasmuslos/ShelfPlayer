@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPOffline
+import SPPersistence
 
 struct CircularProgressIndicator: View {
     @Default(.tintColor) private var tintColor

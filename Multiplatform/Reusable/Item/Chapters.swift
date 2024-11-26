@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import SPFoundation
-import SPOffline
+import SPPersistence
 import SPPlayback
 
 internal struct Chapters: View {

@@ -12,7 +12,7 @@ import AVKit
 import Defaults
 import SPFoundation
 import SPExtension
-import SPOffline
+import SPPersistence
 
 public extension AudioPlayer {
     func play(_ item: PlayableItem, at seconds: TimeInterval? = nil, withoutPlaybackSession: Bool = false) async throws {

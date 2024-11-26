@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SPFoundation
-import SPOffline
+import SPPersistence
 
 internal struct ProgressButton: View {
     let item: PlayableItem

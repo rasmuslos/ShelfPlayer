@@ -8,8 +8,8 @@
 import Foundation
 import SPFoundation
 
-internal extension Audiobook {
-    convenience init?(item: AudiobookshelfItem) {
+extension Audiobook {
+    convenience init?(item: ItemPayload) {
         guard let media = item.media else {
             return nil
         }
@@ -19,22 +19,22 @@ internal extension Audiobook {
             return nil
         }
         
-        var resolvedSeries = [ReducedSeries]()
+        var resolvedSeries = [SeriesFragment]()
         
         if let series = item.media?.metadata.series, !series.isEmpty {
             resolvedSeries += series.map {
                 let name = $0.name!
                 
                 if let seq = $0.sequence, let sequence = Float(seq) {
-                    return Audiobook.ReducedSeries(id: $0.id, name: name, sequence: sequence)
+                    return Audiobook.SeriesFragment(id: $0.id, name: name, sequence: sequence)
                 } else {
-                    return Audiobook.ReducedSeries(id: $0.id, name: name, sequence: nil)
+                    return Audiobook.SeriesFragment(id: $0.id, name: name, sequence: nil)
                 }
             }
         }
         
         if let seriesName = item.media?.metadata.seriesName {
-            let series = ReducedSeries.parse(seriesName: seriesName)
+            let series = SeriesFragment.parse(seriesName: seriesName)
             
             for series in series {
                 if !resolvedSeries.contains(where: { $0.name == series.name }) {
@@ -47,16 +47,16 @@ internal extension Audiobook {
         let duration = media.duration ?? 0
         
         self.init(
-            id: .init(itemID: item.id, episodeID: nil, libraryID: item.libraryId, type: .audiobook),
+            id: .init(primaryID: item.id, groupingID: nil, libraryID: item.libraryId, type: .audiobook),
             name: media.metadata.title!,
             authors: media.metadata.authorName?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: media.metadata.description?.trimmingCharacters(in: .whitespacesAndNewlines),
-            cover: Cover(item: item),
             genres: media.metadata.genres,
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             released: media.metadata.publishedYear,
             size: item.size!,
             duration: duration,
+            subtitle: media.metadata.subtitle,
             narrators: media.metadata.narratorName?
                 .trimmingCharacters(in: .whitespacesAndNewlines)
                 .components(separatedBy: ", ")
