@@ -20,11 +20,11 @@ extension ItemIdentifier {
     public var url: URL {
         switch type {
         case .author:
-            AudiobookshelfClient.shared.serverUrl.appending(path: "author").appending(path: primaryID)
+            AudiobookshelfClient.shared.serverURL.appending(path: "author").appending(path: primaryID)
         case .series:
-            AudiobookshelfClient.shared.serverUrl.appending(path: "library").appending(path: libraryID).appending(path: "series").appending(path: primaryID)
+            AudiobookshelfClient.shared.serverURL.appending(path: "library").appending(path: libraryID).appending(path: "series").appending(path: primaryID)
         default:
-            AudiobookshelfClient.shared.serverUrl.appending(path: "item").appending(path: primaryID)
+            AudiobookshelfClient.shared.serverURL.appending(path: "item").appending(path: primaryID)
         }
      }
 }

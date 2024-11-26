@@ -235,8 +235,8 @@ internal struct AccountSheet: View {
                             serverInfoToggled.toggle()
                         } label: {
                             Text(serverInfoToggled
-                                 ? AudiobookshelfClient.shared.clientId
-                                 : String(localized: "account.server \(AudiobookshelfClient.shared.serverUrl.absoluteString) \(serverVersion ?? "?")"))
+                                 ? AudiobookshelfClient.shared.clientID
+                                 : String(localized: "account.server \(AudiobookshelfClient.shared.serverURL.absoluteString) \(serverVersion ?? "?")"))
                             .animation(.smooth, value: serverInfoToggled)
                             .fontDesign(.monospaced)
                         }

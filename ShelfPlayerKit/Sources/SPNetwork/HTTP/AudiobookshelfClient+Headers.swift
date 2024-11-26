@@ -10,11 +10,12 @@ import Foundation
 public extension AudiobookshelfClient {
     var customHTTPHeaders: [CustomHTTPHeader] {
         get {
-            if let customHTTPHeaders = _customHTTPHeaders {
-                return customHTTPHeaders
+            if let _customHTTPHeaders {
+                return _customHTTPHeaders
             }
             
-            if let object = Self.defaults.object(forKey: "customHTTPHeaders") as? Data, let headers = try? JSONDecoder().decode([CustomHTTPHeader].self, from: object) {
+            if let object = Self.defaults.object(forKey: "customHTTPHeaders") as? Data,
+               let headers = try? JSONDecoder().decode([CustomHTTPHeader].self, from: object) {
                 _customHTTPHeaders = headers
                 return headers
             }

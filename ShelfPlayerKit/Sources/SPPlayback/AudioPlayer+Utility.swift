@@ -130,7 +130,7 @@ internal extension AudioPlayer {
         }
         #endif
         
-        let url = AudiobookshelfClient.shared.serverUrl
+        let url = AudiobookshelfClient.shared.serverURL
             .appending(path: track.contentUrl.removingPercentEncoding ?? "")
             .appending(queryItems: [
                 URLQueryItem(name: "token", value: AudiobookshelfClient.shared.token)
