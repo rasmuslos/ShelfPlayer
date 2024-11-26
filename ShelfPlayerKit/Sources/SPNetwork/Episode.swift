@@ -9,8 +9,8 @@ import Foundation
 import SPFoundation
 
 public extension AudiobookshelfClient {
-    func episodes(podcastId: String) async throws -> [Episode] {
-        let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(podcastId)", method: "GET"))
+    func episodes(from identifier: ItemIdentifier) async throws -> [Episode] {
+        let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: "GET"))
         
         guard let episodes = item.media?.episodes else {
             throw ClientError.invalidResponse
@@ -19,7 +19,7 @@ public extension AudiobookshelfClient {
         return episodes.compactMap { Episode(episode: $0, item: item) }
     }
     
-    func recentEpisodes(limit: Int, libraryID: String) async throws -> [Episode] {
+    func recentEpisodes(from libraryID: String, limit: Int) async throws -> [Episode] {
         try await request(ClientRequest<EpisodesResponse>(path: "api/libraries/\(libraryID)/recent-episodes", method: "GET", query: [
             URLQueryItem(name: "page", value: "0"),
             URLQueryItem(name: "limit", value: String(describing: limit)),

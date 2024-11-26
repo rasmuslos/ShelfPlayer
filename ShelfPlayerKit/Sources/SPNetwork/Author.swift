@@ -9,15 +9,28 @@ import Foundation
 import SPFoundation
 
 public extension AudiobookshelfClient {
-    func author(authorId: String) async throws -> Author {
-        Author(item: try await request(ClientRequest<ItemPayload>(path: "api/authors/\(authorId)", method: "GET")))
+    func author(with identifier: ItemIdentifier) async throws -> Author {
+        Author(item: try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: "GET")))
     }
     
-    func authors(libraryID: String) async throws -> [Author] {
+    func author(with identifier: ItemIdentifier) async throws -> (Author, [Audiobook], [Series]) {
+        let response = try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: "GET", query: [
+            URLQueryItem(name: "library", value: identifier.libraryID),
+            URLQueryItem(name: "include", value: "items,series"),
+        ]))
+        
+        let author = Author(item: response)
+        let audiobooks = (response.libraryItems ?? []).compactMap(Audiobook.init)
+        let series = (response.series ?? []).map(Series.init)
+        
+        return (author, audiobooks, series)
+    }
+    
+    func authors(from libraryID: String) async throws -> [Author] {
         try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: "GET")).authors.map(Author.init)
     }
     
-    func authorID(name: String, libraryID: String) async throws -> String {
+    func authorID(from libraryID: String, name: String) async throws -> String {
         let response = try? await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "1"),
@@ -28,18 +41,5 @@ public extension AudiobookshelfClient {
         }
         
         throw ClientError.missing
-    }
-    
-    func author(authorId: String, libraryID: String) async throws -> (Author, [Audiobook], [Series]) {
-        let response = try await request(ClientRequest<ItemPayload>(path: "api/authors/\(authorId)", method: "GET", query: [
-            URLQueryItem(name: "library", value: libraryID),
-            URLQueryItem(name: "include", value: "items,series"),
-        ]))
-        
-        let author = Author(item: response)
-        let audiobooks = (response.libraryItems ?? []).compactMap(Audiobook.init)
-        let series = (response.series ?? []).map(Series.init)
-        
-        return (author, audiobooks, series)
     }
 }

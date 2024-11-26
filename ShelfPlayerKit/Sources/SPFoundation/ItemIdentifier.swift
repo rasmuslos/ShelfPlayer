@@ -11,7 +11,7 @@ public final class ItemIdentifier: Codable {
     public let primaryID: String
     public let groupingID: String?
     
-    public let libraryID: String!
+    public let libraryID: String?
     public let type: ItemType
     
     public init(primaryID: String, groupingID: String?, libraryID: String?, type: ItemType) {
@@ -64,6 +64,10 @@ public final class ItemIdentifier: Codable {
         self.init(primaryID: primaryID, groupingID: groupingID, libraryID: libraryID, type: type)
     }
     
+    public var _libraryID: String {
+        libraryID ?? ""
+    }
+    
     enum ParseError: Error {
         case invalidVersion
     }
@@ -89,9 +93,9 @@ extension ItemIdentifier: Identifiable {
 extension ItemIdentifier: CustomStringConvertible {
     public var description: String {
         if let groupingID {
-            "1::\(type)::\(libraryID ?? "_")::\(groupingID)::\(primaryID)"
+            "1::\(type)::\(self.libraryID ?? "_")::\(groupingID)::\(primaryID)"
         } else {
-            "1::\(type)::\(libraryID ?? "_")::\(primaryID)"
+            "1::\(type)::\(self.libraryID ?? "_")::\(primaryID)"
         }
     }
 }

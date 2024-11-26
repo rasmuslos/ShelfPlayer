@@ -48,7 +48,7 @@ public extension AudiobookshelfClient {
         challenge = challenge.replacingOccurrences(of: "/", with: "_")
         challenge = challenge.replacingOccurrences(of: "=", with: "")
         
-        let url = URL(string: AudiobookshelfClient.shared.serverUrl.appending(path: "auth").appending(path: "openid").appending(queryItems: [
+        let url = URL(string: AudiobookshelfClient.shared.serverURL.appending(path: "auth").appending(path: "openid").appending(queryItems: [
             URLQueryItem(name: "client_id", value: "ShelfPlayer"),
             URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
             URLQueryItem(name: "code_challenge_method", value: "S256"),

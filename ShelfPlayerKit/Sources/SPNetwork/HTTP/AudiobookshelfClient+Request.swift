@@ -7,9 +7,9 @@
 
 import Foundation
  
-internal extension AudiobookshelfClient {
+extension AudiobookshelfClient {
     func request<T: Decodable>(_ clientRequest: ClientRequest<T>) async throws -> T {
-        var url = serverUrl.appending(path: clientRequest.path)
+        var url = serverURL.appending(path: clientRequest.path)
         
         if let query = clientRequest.query {
             url = url.appending(queryItems: query)
@@ -60,7 +60,7 @@ internal extension AudiobookshelfClient {
     }
 }
 
-internal extension AudiobookshelfClient {
+extension AudiobookshelfClient {
     struct ClientRequest<T> {
         var path: String
         var method: String

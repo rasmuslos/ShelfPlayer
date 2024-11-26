@@ -63,3 +63,15 @@ public enum EpisodeSortOrder: String, Identifiable, Hashable, Codable, Sendable,
         rawValue
     }
 }
+
+public enum PodcastSortOrder: String, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
+    case name
+    case author
+    case episodeCount
+    case addedAt
+    case duration
+    
+    public var id: String {
+        rawValue
+    }
+}
