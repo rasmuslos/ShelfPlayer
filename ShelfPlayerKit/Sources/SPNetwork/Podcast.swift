@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 public extension AudiobookshelfClient {
-    func home(libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
+    func home(for libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
         let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: "GET"))
         
         var episodes = [HomeRow<Episode>]()
@@ -30,8 +30,8 @@ public extension AudiobookshelfClient {
         return (podcasts, episodes)
     }
     
-    func podcast(podcastId: String) async throws -> (Podcast, [Episode]) {
-        let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(podcastId)", method: "GET"))
+    func podcast(with identifier: ItemIdentifier) async throws -> (Podcast, [Episode]) {
+        let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: "GET"))
         let podcast = Podcast(item: item)
         
         guard let episodes = item.media?.episodes else {
@@ -42,8 +42,11 @@ public extension AudiobookshelfClient {
         
     }
     
-    func podcasts(libraryID: String, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
-        var query: [URLQueryItem] = []
+    func podcasts(from libraryID: String, sortOrder: PodcastSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
+        var query: [URLQueryItem] = [
+            .init(name: "sort", value: sortOrder.queryValue),
+            .init(name: "desc", value: ascending ? "0" : "1"),
+        ]
         
         if let page {
             query.append(.init(name: "page", value: String(page)))

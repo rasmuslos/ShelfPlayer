@@ -29,11 +29,11 @@ public extension AudiobookshelfClient {
         return series.id
     }
     
-    func series(seriesId: String, libraryID: String) async throws -> Series {
-        Series(item: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(libraryID)/series/\(seriesId)", method: "GET")))
+    func series(with identifier: ItemIdentifier) async throws -> Series {
+        Series(item: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier._libraryID)/series/\(identifier.primaryID)", method: "GET")))
     }
     
-    func series(libraryID: String, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
+    func series(in libraryID: String, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
         var query: [URLQueryItem] = [
             .init(name: "filter", value: "all"),
             
@@ -52,9 +52,9 @@ public extension AudiobookshelfClient {
         return (response.results.map(Series.init), response.total)
     }
     
-    func audiobooks(seriesID: String, libraryID: String, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
+    func audiobooks(series identifier: ItemIdentifier, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
         var query: [URLQueryItem] = [
-            .init(name: "filter", value: "series.\(Data(seriesID.utf8).base64EncodedString())"),
+            .init(name: "filter", value: "series.\(Data(identifier.primaryID.utf8).base64EncodedString())"),
         ]
         
         if let page {
@@ -64,7 +64,7 @@ public extension AudiobookshelfClient {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: "GET", query: query))
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(identifier._libraryID)/items", method: "GET", query: query))
         return (response.results.compactMap(Audiobook.init), response.total)
     }
 }

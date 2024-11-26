@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 public extension AudiobookshelfClient {
-    func home(libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Author>]) {
+    func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Author>]) {
         let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: "GET"))
         
         var authors = [HomeRow<Author>]()
@@ -30,7 +30,7 @@ public extension AudiobookshelfClient {
         return (audiobooks, authors)
     }
     
-    func audiobooks(libraryID: String, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
+    func audiobooks(from libraryID: String, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
         var query: [URLQueryItem] = [
             .init(name: "sort", value: sortOrder.queryValue),
             .init(name: "desc", value: ascending ? "0" : "1"),

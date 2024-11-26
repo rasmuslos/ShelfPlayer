@@ -65,8 +65,8 @@ extension SessionPayload {
         
         static var current: Self {
             .init(
-                id: AudiobookshelfClient.shared.clientId,
-                deviceId: AudiobookshelfClient.shared.clientId,
+                id: AudiobookshelfClient.shared.clientID,
+                deviceId: AudiobookshelfClient.shared.clientID,
                 osName: "iOS",
                 osVersion: {
                     #if os(iOS)

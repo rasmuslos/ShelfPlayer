@@ -41,3 +41,20 @@ extension SeriesSortOrder {
         }
     }
 }
+
+extension PodcastSortOrder {
+    var queryValue: String {
+        switch self {
+        case .name:
+            "media.metadata.title"
+        case .author:
+            "media.metadata.author"
+        case .episodeCount:
+            "media.numTracks"
+        case .addedAt:
+            "addedAt"
+        case .duration:
+            "sort.duration"
+        }
+    }
+}
