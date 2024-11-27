@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 
 public enum SchemaV1: VersionedSchema {
+    public static var versionIdentifier: Schema.Version = .init(1, 2, 0)
     public static var models: [any PersistentModel.Type] {[
         OfflineTrack.self,
         OfflineChapter.self,
@@ -25,5 +26,4 @@ public enum SchemaV1: VersionedSchema {
         PodcastFetchConfiguration.self,
         OfflineListeningTimeTracker.self,
     ]}
-    public static var versionIdentifier: Schema.Version = .init(1, 2, 0)
 }

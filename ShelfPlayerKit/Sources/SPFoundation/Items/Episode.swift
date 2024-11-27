@@ -11,13 +11,33 @@ import SwiftSoup
 public final class Episode: PlayableItem, @unchecked Sendable {
     public let podcastName: String
     
-    public let index: Int
+    public let index: EpisodeIndex
     
-    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date, released: String?, size: Int64, duration: TimeInterval, podcastName: String, index: Int) {
+    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date, released: String?, size: Int64, duration: TimeInterval, podcastName: String, index: EpisodeIndex) {
         self.podcastName = podcastName
         self.index = index
         
         super.init(id: id, name: name, authors: authors, description: description, genres: [], addedAt: addedAt, released: released, size: size, duration: duration)
+    }
+    
+    public struct EpisodeIndex {
+        public let season: String?
+        public let episode: String
+    }
+}
+
+extension Episode.EpisodeIndex: Codable {}
+extension Episode.EpisodeIndex: Comparable {
+    public static func <(lhs: Episode.EpisodeIndex, rhs: Episode.EpisodeIndex) -> Bool {
+        if let lhsSeason = lhs.season, let rhsSeason = rhs.season, lhsSeason != rhsSeason {
+            lhsSeason.localizedCaseInsensitiveCompare(rhsSeason) == .orderedAscending
+        } else if lhs.season != nil && rhs.season == nil {
+            true
+        } else if lhs.season == nil && rhs.season != nil {
+            false
+        } else {
+            lhs.episode.localizedCaseInsensitiveCompare(rhs.episode) == .orderedAscending
+        }
     }
 }
 
