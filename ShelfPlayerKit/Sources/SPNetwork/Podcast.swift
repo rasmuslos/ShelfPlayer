@@ -32,7 +32,7 @@ public extension AudiobookshelfClient {
     
     func podcast(with identifier: ItemIdentifier) async throws -> (Podcast, [Episode]) {
         let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: "GET"))
-        let podcast = Podcast(item: item)
+        let podcast = Podcast(payload: item)
         
         guard let episodes = item.media?.episodes else {
             throw ClientError.invalidResponse

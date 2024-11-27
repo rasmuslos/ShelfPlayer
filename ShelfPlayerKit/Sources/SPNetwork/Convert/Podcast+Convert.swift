@@ -9,29 +9,29 @@ import Foundation
 import SPFoundation
 
 internal extension Podcast {
-    convenience init(item: ItemPayload) {
-        let addedAt = item.addedAt ?? 0
+    convenience init(payload: ItemPayload) {
+        let addedAt = payload.addedAt ?? 0
         let podcastType: PodcastType?
         
-        if item.type == "episodic" {
+        if payload.type == "episodic" {
             podcastType = .episodic
-        } else if item.type == "serial" {
+        } else if payload.type == "serial" {
             podcastType = .serial
         } else {
             podcastType = nil
         }
         
         self.init(
-            id: .init(primaryID: item.id, groupingID: nil, libraryID: item.libraryId, type: .podcast),
-            name: item.media!.metadata.title!,
-            authors: item.media?.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
-            description: item.media?.metadata.description,
-            genres: item.media?.metadata.genres ?? [],
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId, type: .podcast),
+            name: payload.media!.metadata.title!,
+            authors: payload.media?.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
+            description: payload.media?.metadata.description,
+            genres: payload.media?.metadata.genres ?? [],
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
-            released: item.media?.metadata.releaseDate, 
-            explicit: item.media?.metadata.explicit ?? false,
-            episodeCount: item.media?.episodes?.count ?? item.numEpisodes ?? 0,
-            incompleteEpisodeCount: item.numEpisodesIncomplete,
+            released: payload.media?.metadata.releaseDate, 
+            explicit: payload.media?.metadata.explicit ?? false,
+            episodeCount: payload.media?.episodes?.count ?? payload.numEpisodes ?? 0,
+            incompleteEpisodeCount: payload.numEpisodesIncomplete,
             publishingType: podcastType
         )
     }

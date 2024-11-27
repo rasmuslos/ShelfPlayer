@@ -30,7 +30,7 @@ public extension AudiobookshelfClient {
     }
     
     func series(with identifier: ItemIdentifier) async throws -> Series {
-        Series(item: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier._libraryID)/series/\(identifier.primaryID)", method: "GET")))
+        Series(payload: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier._libraryID)/series/\(identifier.primaryID)", method: "GET")))
     }
     
     func series(in libraryID: String, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {

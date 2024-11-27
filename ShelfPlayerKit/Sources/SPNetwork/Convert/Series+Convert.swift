@@ -9,18 +9,18 @@ import Foundation
 import SPFoundation
 
 internal extension Series {
-    convenience init(item: ItemPayload) {
-        let covers: [Cover] = (item.books ?? item.items ?? []).reduce([], {
+    convenience init(payload: ItemPayload) {
+        let covers: [Cover] = (payload.books ?? payload.items ?? []).reduce([], {
             print($1)
             return $0 + []
         })
         
         self.init(
-            id: .init(primaryID: item.id, groupingID: nil, libraryID: item.libraryId, type: .series),
-            name: item.name!,
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId, type: .series),
+            name: payload.name!,
             authors: [],
-            description: item.description,
-            addedAt: Date(timeIntervalSince1970: (item.addedAt ?? 0) / 1000),
+            description: payload.description,
+            addedAt: Date(timeIntervalSince1970: (payload.addedAt ?? 0) / 1000),
             covers: covers)
     }
     
@@ -28,7 +28,7 @@ internal extension Series {
         var item = item
         item.books = audiobooks
         
-        self.init(item: item)
+        self.init(payload: item)
     }
 }
 

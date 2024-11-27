@@ -9,19 +9,19 @@ import Foundation
 import SPFoundation
 
 extension Episode {
-    convenience init?(item: ItemPayload) {
-        guard let recentEpisode = item.recentEpisode,
-              let media = item.media,
+    convenience init?(payload: ItemPayload) {
+        guard let recentEpisode = payload.recentEpisode,
+              let media = payload.media,
               let id = recentEpisode.id,
               let title = recentEpisode.title,
               let podcastTitle = media.metadata.title else {
             return nil
         }
         
-        let addedAt = item.addedAt ?? 0
+        let addedAt = payload.addedAt ?? 0
         
         self.init(
-            id: .init(primaryID: id, groupingID: item.id, libraryID: item.libraryId, type: .episode),
+            id: .init(primaryID: id, groupingID: payload.id, libraryID: payload.libraryId, type: .episode),
             name: title,
             authors: media.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: recentEpisode.description,
@@ -36,7 +36,7 @@ extension Episode {
         var item = item
         item.recentEpisode = episode
         
-        self.init(item: item)
+        self.init(payload: item)
     }
     
     convenience init(episode: EpisodePayload) {
