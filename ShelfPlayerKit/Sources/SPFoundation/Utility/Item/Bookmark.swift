@@ -7,13 +7,20 @@
 
 import Foundation
 
-struct Bookmark {
-    let itemID: ItemIdentifier
+public struct Bookmark {
+    public let itemID: ItemIdentifier
     
-    let time: TimeInterval
-    let note: String
+    public let time: UInt64
+    public let note: String
     
-    let created: Date
+    public let created: Date
+    
+    public init(itemID: ItemIdentifier, time: UInt64, note: String, created: Date) {
+        self.itemID = itemID
+        self.time = time
+        self.note = note
+        self.created = created
+    }
 }
 
 extension Bookmark: Sendable {}

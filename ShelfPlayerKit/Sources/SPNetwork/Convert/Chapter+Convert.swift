@@ -9,12 +9,8 @@ import Foundation
 import SPFoundation
 
 extension Chapter {
-    init(chapter: ChapterPayload) {
-        self.init(
-            id: chapter.id,
-            startOffset: chapter.start,
-            endOffset: chapter.end,
-            title: chapter.title)
+    init(payload: ChapterPayload) {
+        self.init(id: payload.id, startOffset: payload.start, endOffset: payload.end, title: payload.title)
     }
 }
 
