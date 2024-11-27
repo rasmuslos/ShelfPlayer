@@ -10,7 +10,7 @@ import SPFoundation
 
 public extension AudiobookshelfClient {
     func author(with identifier: ItemIdentifier) async throws -> Author {
-        Author(item: try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: "GET")))
+        Author(payload: try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: "GET")))
     }
     
     func author(with identifier: ItemIdentifier) async throws -> (Author, [Audiobook], [Series]) {
@@ -19,7 +19,7 @@ public extension AudiobookshelfClient {
             URLQueryItem(name: "include", value: "items,series"),
         ]))
         
-        let author = Author(item: response)
+        let author = Author(payload: response)
         let audiobooks = (response.libraryItems ?? []).compactMap(Audiobook.init)
         let series = (response.series ?? []).map(Series.init)
         

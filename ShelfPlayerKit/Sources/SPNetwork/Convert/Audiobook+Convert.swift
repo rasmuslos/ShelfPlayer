@@ -9,8 +9,8 @@ import Foundation
 import SPFoundation
 
 extension Audiobook {
-    convenience init?(item: ItemPayload) {
-        guard let media = item.media else {
+    convenience init?(payload: ItemPayload) {
+        guard let media = payload.media else {
             return nil
         }
         
@@ -21,7 +21,7 @@ extension Audiobook {
         
         var resolvedSeries = [SeriesFragment]()
         
-        if let series = item.media?.metadata.series, !series.isEmpty {
+        if let series = payload.media?.metadata.series, !series.isEmpty {
             resolvedSeries += series.map {
                 let name = $0.name!
                 
@@ -33,7 +33,7 @@ extension Audiobook {
             }
         }
         
-        if let seriesName = item.media?.metadata.seriesName {
+        if let seriesName = payload.media?.metadata.seriesName {
             let series = SeriesFragment.parse(seriesName: seriesName)
             
             for series in series {
@@ -43,18 +43,18 @@ extension Audiobook {
             }
         }
         
-        let addedAt = item.addedAt ?? 0
+        let addedAt = payload.addedAt ?? 0
         let duration = media.duration ?? 0
         
         self.init(
-            id: .init(primaryID: item.id, groupingID: nil, libraryID: item.libraryId, type: .audiobook),
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId, type: .audiobook),
             name: media.metadata.title!,
             authors: media.metadata.authorName?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: media.metadata.description?.trimmingCharacters(in: .whitespacesAndNewlines),
             genres: media.metadata.genres,
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             released: media.metadata.publishedYear,
-            size: item.size!,
+            size: payload.size!,
             duration: duration,
             subtitle: media.metadata.subtitle,
             narrators: media.metadata.narratorName?
@@ -62,7 +62,7 @@ extension Audiobook {
                 .components(separatedBy: ", ")
                 .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? [],
             series: resolvedSeries,
-            explicit: item.media?.metadata.explicit ?? false,
-            abridged: item.media?.metadata.abridged ?? false)
+            explicit: payload.media?.metadata.explicit ?? false,
+            abridged: payload.media?.metadata.abridged ?? false)
     }
 }
