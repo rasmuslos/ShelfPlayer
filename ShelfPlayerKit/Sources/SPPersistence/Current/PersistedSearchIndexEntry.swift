@@ -17,13 +17,13 @@ extension SchemaV2 {
         private(set) var primaryName: String
         private(set) var secondaryName: String?
         
-        private(set) var author: [String]
+        private(set) var authors: [String]
         
-        init(itemID: ItemIdentifier, primaryName: String, secondaryName: String? = nil, author: [String]) {
+        init(itemID: ItemIdentifier, primaryName: String, secondaryName: String? = nil, authors: [String]) {
             self.itemID = itemID
             self.primaryName = primaryName
             self.secondaryName = secondaryName
-            self.author = author
+            self.authors = authors
         }
     }
 }
