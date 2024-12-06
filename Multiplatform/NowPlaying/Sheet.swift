@@ -286,12 +286,19 @@ private struct BottomToolbar: View {
     }
     
     @ViewBuilder
-    private var remainingPercentage: some View {
-        Text(viewModel.itemCurrentTime / viewModel.itemDuration, format: .percent.notation(.compactName))
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .contentTransition(.numericText())
+    private var bottomLeftContent: some View {
+        Group {
+            if viewModel.playbackRate != 1.0 {
+                Text("\((viewModel.itemDuration - viewModel.itemCurrentTime).formatted(.duration(unitsStyle: .positional, allowedUnits: [.hour, .minute], maximumUnitCount: 2))) remaining")
+            } else {
+                Text(viewModel.itemCurrentTime / viewModel.itemDuration, format: .percent.notation(.compactName))
+            }
+        }
+        .font(.footnote)
+        .foregroundStyle(.secondary)
+        .contentTransition(.numericText())
     }
+        
     @ViewBuilder
     private var clearButton: some View {
         Button {
@@ -317,7 +324,7 @@ private struct BottomToolbar: View {
                         .hidden()
                         .allowsHitTesting(false)
                     
-                    remainingPercentage
+                    bottomLeftContent
                 }
                 
                 Spacer()
@@ -339,10 +346,16 @@ private struct BottomToolbar: View {
                 
                 Spacer()
                 
-                clearButton
-                    .opacity(clearVisible ? 1 : 0)
-                    .allowsHitTesting(clearVisible)
-                    .animation(.smooth, value: clearVisible)
+                ZStack {
+                    bottomLeftContent
+                        .hidden()
+                        .allowsHitTesting(false)
+                    
+                    clearButton
+                        .opacity(clearVisible ? 1 : 0)
+                        .allowsHitTesting(clearVisible)
+                        .animation(.smooth, value: clearVisible)
+                }
             }
         }
         .padding(.top, 16)
