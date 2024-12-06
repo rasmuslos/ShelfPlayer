@@ -38,7 +38,7 @@ public extension Podcast {
 }
 
 public extension Podcast {
-    enum PodcastType {
+    enum PodcastType: Int {
         case episodic
         case serial
     }
