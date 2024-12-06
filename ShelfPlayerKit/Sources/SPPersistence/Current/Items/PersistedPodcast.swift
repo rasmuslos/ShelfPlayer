@@ -25,11 +25,27 @@ extension SchemaV2 {
         private(set) var released: String?
         
         private(set) var explicit: Bool
-        private(set) var episodeCount: Int
+        private(set) var publishingType: Podcast.PodcastType?
         
-        private(set) var publishingType: PodcastType?
+        @Relationship(inverse: \PersistedEpisode.podcast)
+        var episodes: [PersistedEpisode]
         
         @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
         private(set) var searchIndexEntry: PersistedSearchIndexEntry
+        
+        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, explicit: Bool, publishingType: Podcast.PodcastType? = nil, episodes: [PersistedEpisode]) {
+            self.id = id
+            self.name = name
+            self.authors = authors
+            self.overview = overview
+            self.genres = genres
+            self.addedAt = addedAt
+            self.released = released
+            self.explicit = explicit
+            self.publishingType = publishingType
+            self.episodes = episodes
+            
+            searchIndexEntry = .init(itemID: id, primaryName: name, authors: authors)
+        }
     }
 }

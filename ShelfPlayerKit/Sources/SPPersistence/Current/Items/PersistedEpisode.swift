@@ -56,7 +56,7 @@ extension SchemaV2 {
             
             self.tracks = tracks
             
-            searchIndexEntry = .init(itemID: id, primaryName: name, secondaryName: podcast.name, author: authors)
+            searchIndexEntry = .init(itemID: id, primaryName: name, secondaryName: podcast.name, authors: authors)
         }
     }
 }
