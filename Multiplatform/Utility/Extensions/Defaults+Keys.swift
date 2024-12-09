@@ -15,6 +15,7 @@ internal extension Defaults.Keys {
     // MARK: Navigation
     
     static let lastTabValue = Key<TabValue?>("lastTabValue")
+    static let lastCarPlayTabValue = Key<String?>("lastCarPlayTabValue")
     
     // MARK: Settings
     
