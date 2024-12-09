@@ -36,20 +36,24 @@ internal struct SpotlightIndexer {
             var items: [CSSearchableItem] = []
             
             for library in libraries {
-                switch library.type {
-                case .audiobooks:
-                    let (libraryItems, remaining, updated) = try await indexAudiobookLibrary(library, remainingIdentifiers: remainingIdentifiers)
-                    
-                    items += libraryItems
-                    remainingIdentifiers = remaining
-                    indexedIdentifiers += updated
-                case .podcasts:
-                    let (libraryItems, remaining, updated) = try await indexPodcastLibrary(library, remainingIdentifiers: remainingIdentifiers)
-                    
-                    items += libraryItems
-                    remainingIdentifiers = remaining
-                    indexedIdentifiers += updated
-                default:
+                do {
+                    switch library.type {
+                    case .audiobooks:
+                        let (libraryItems, remaining, updated) = try await indexAudiobookLibrary(library, remainingIdentifiers: remainingIdentifiers)
+                        
+                        items += libraryItems
+                        remainingIdentifiers = remaining
+                        indexedIdentifiers += updated
+                    case .podcasts:
+                        let (libraryItems, remaining, updated) = try await indexPodcastLibrary(library, remainingIdentifiers: remainingIdentifiers)
+                        
+                        items += libraryItems
+                        remainingIdentifiers = remaining
+                        indexedIdentifiers += updated
+                    default:
+                        continue
+                    }
+                } catch {
                     continue
                 }
             }
@@ -82,6 +86,12 @@ internal struct SpotlightIndexer {
     }
     
     static func indexAudiobookLibrary(_ library: Library, remainingIdentifiers: [String]) async throws -> ([CSSearchableItem], [String], [String]) {
+        let (_, count) = try await AudiobookshelfClient.shared.audiobooks(libraryID: library.id, sortOrder: .added, ascending: false, limit: 0, page: nil)
+        
+        guard count < 300 else {
+            throw IndexError.libraryToBig
+        }
+        
         var remainingIdentifiers = remainingIdentifiers
         var indexedIdentifiers: [String] = []
         var items: [CSSearchableItem] = []
@@ -174,6 +184,12 @@ internal struct SpotlightIndexer {
         return (items, remainingIdentifiers, indexedIdentifiers)
     }
     static func indexPodcastLibrary(_ library: Library, remainingIdentifiers: [String]) async throws -> ([CSSearchableItem], [String], [String]) {
+        let (_, count) = try await AudiobookshelfClient.shared.podcasts(libraryID: library.id, limit: 0, page: nil)
+        
+        guard count < 25 else {
+            throw IndexError.libraryToBig
+        }
+        
         var remainingIdentifiers = remainingIdentifiers
         var indexedIdentifiers: [String] = []
         var items: [CSSearchableItem] = []
@@ -244,5 +260,9 @@ internal struct SpotlightIndexer {
         }
         
         return (items, remainingIdentifiers, indexedIdentifiers)
+    }
+    
+    enum IndexError: Error {
+        case libraryToBig
     }
 }
