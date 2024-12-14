@@ -182,13 +182,15 @@ internal struct AccountSheet: View {
                             }
                         } label: {
                             Label {
-                                let text = Text("account.delete.downloads")
-                                
-                                if let downloadsSize {
-                                    text
-                                    + Text(verbatim: " (\(downloadsSize.formatted(.byteCount(style: .file))))")
-                                } else {
-                                    text
+                                HStack(spacing: 0) {
+                                    Text("account.delete.downloads")
+                                    
+                                    Spacer(minLength: 4)
+                                    
+                                    if let downloadsSize {
+                                        Text(verbatim: " (\(downloadsSize.formatted(.byteCount(style: .file))))")
+                                            .foregroundStyle(.gray)
+                                    }
                                 }
                             } icon: {
                                 Image(systemName: "slash.circle")
@@ -210,13 +212,15 @@ internal struct AccountSheet: View {
                             }
                         } label: {
                             Label {
-                                let text = Text("account.delete.cache")
-                                
-                                if let cacheSize {
-                                    text
-                                    + Text(verbatim: " (\(cacheSize.formatted(.byteCount(style: .file))))")
-                                } else {
-                                    text
+                                HStack(spacing: 0) {
+                                    Text("account.delete.cache")
+                                    
+                                    Spacer(minLength: 4)
+                                    
+                                    if let cacheSize {
+                                        Text(verbatim: " (\(cacheSize.formatted(.byteCount(style: .file))))")
+                                            .foregroundStyle(.gray)
+                                    }
                                 }
                             } icon: {
                                 Image(systemName: "square.stack.3d.up.slash")
