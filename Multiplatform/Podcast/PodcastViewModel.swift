@@ -142,11 +142,7 @@ private extension PodcastViewModel {
             return
         }
         
-        let filtered = RFKVisuals.brightnessExtremeFilter(colors.map { $0.color }, threshold: 0.1)
-        
-        guard let result = RFKVisuals.determineMostSaturated(filtered) else {
-            return
-        }
+        let result = colors.sorted { $0.percentage > $1.percentage }.first?.color
         
         await MainActor.withAnimation {
             self.dominantColor = result
