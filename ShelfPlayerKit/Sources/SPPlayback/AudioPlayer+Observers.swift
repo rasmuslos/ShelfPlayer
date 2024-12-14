@@ -98,7 +98,7 @@ internal extension AudioPlayer {
                     do {
                         try await advance(finished: true)
                     } catch {
-                        stop()
+                        stop(.advanceFailed)
                     }
                 }
             }
@@ -157,7 +157,7 @@ internal extension AudioPlayer {
         let elapsed = Date().timeIntervalSince(lastPause)
         
         if elapsed > timeout {
-            self.stop()
+            self.stop(.playerTimeout)
         }
     }
 }

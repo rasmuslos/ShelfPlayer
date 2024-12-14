@@ -16,7 +16,7 @@ import SPOffline
 
 public extension AudioPlayer {
     func play(_ item: PlayableItem, at seconds: TimeInterval? = nil, withoutPlaybackSession: Bool = false) async throws {
-        stop()
+        stop(.newItem)
         
         try await start(item, at: seconds, withoutPlaybackSession: withoutPlaybackSession)
         
@@ -33,7 +33,9 @@ public extension AudioPlayer {
         }
     }
     
-    func stop() {
+    func stop(_ reason: StopReason) {
+        stops.append(.init(time: .now, reason: reason))
+        
         buffering = true
         
         item = nil
@@ -77,7 +79,7 @@ public extension AudioPlayer {
                 do {
                     try await advance(finished: true)
                 } catch {
-                    stop()
+                    stop(.seekExceededDuration)
                 }
             }
             
@@ -180,7 +182,7 @@ internal extension AudioPlayer {
         }
         
         if queue.isEmpty {
-            stop()
+            stop(.queueEmpty)
             return
         }
         
