@@ -9,6 +9,7 @@ import SwiftUI
 import Defaults
 import Nuke
 import ShelfPlayerKit
+import SPPlayback
 
 internal struct AccountSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -38,9 +39,28 @@ internal struct AccountSheet: View {
         return formatter.string(from: NSNumber(value: customPlaybackSpeed))!
     }
     
+    @State private var stops: [StopEvent] = SPPlayback.stops
+    
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    ForEach(stops, id: \.time) { stop in
+                        VStack {
+                            Text(stop.time, style: .relative)
+                            Text(stop.reason.label)
+                        }
+                    }
+                    
+                    Button("update") {
+                        stops = SPPlayback.stops
+                    }
+                    
+                    Button("clear") {
+                        clearStops()
+                    }
+                }
+                
                 Section {
                     if let username {
                         Text(username)

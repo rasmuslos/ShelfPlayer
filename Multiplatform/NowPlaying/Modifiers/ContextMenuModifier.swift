@@ -89,7 +89,7 @@ internal extension NowPlaying {
                     }
                     
                     Button {
-                        AudioPlayer.shared.stop()
+                        AudioPlayer.shared.stop(.userRequest)
                     } label: {
                         Label("playback.stop", systemImage: "stop.fill")
                     }
