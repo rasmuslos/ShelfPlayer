@@ -27,6 +27,12 @@ internal extension SleepTimer {
     }
     
     func didExpire() {
+        if expiredAt != nil {
+            stops.append(.init(time: .now, reason: .sleepTime))
+        } else {
+            stops.append(.init(time: .now, reason: .sleepChapter))
+        }
+        
         expiresAt = nil
         expiresAtChapterEnd = nil
         
