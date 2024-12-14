@@ -288,7 +288,7 @@ private struct BottomToolbar: View {
     @ViewBuilder
     private var bottomLeftContent: some View {
         Group {
-            if viewModel.playbackRate != 1.0 {
+            if viewModel.playbackRate != 1.0 || viewModel.chapter != nil {
                 Text("\((viewModel.itemDuration - viewModel.itemCurrentTime).formatted(.duration(unitsStyle: .positional, allowedUnits: [.hour, .minute], maximumUnitCount: 2))) remaining")
             } else {
                 Text(viewModel.itemCurrentTime / viewModel.itemDuration, format: .percent.notation(.compactName))
