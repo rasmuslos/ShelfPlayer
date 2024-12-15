@@ -11,18 +11,17 @@ public final class ItemIdentifier: Codable {
     public let primaryID: String
     public let groupingID: String?
     
-    public let libraryID: String?
+    public let libraryID: String
+    public let serverID: String
+    
     public let type: ItemType
     
-    public init(primaryID: String, groupingID: String?, libraryID: String?, type: ItemType) {
+    public init(primaryID: String, groupingID: String?, libraryID: String, serverID: String, type: ItemType) {
         self.primaryID = primaryID
         self.groupingID = groupingID
         
-        if libraryID == "_" {
-            self.libraryID = nil
-        } else {
-            self.libraryID = libraryID
-        }
+        self.libraryID = libraryID
+        self.serverID = serverID
         
         self.type = type
     }
@@ -37,7 +36,9 @@ public final class ItemIdentifier: Codable {
         var primaryID: String
         let groupingID: String?
         
-        var libraryID: String?
+        var libraryID: String
+        var serverID: String
+        
         let type: ItemType
         
         switch parts[0] {
@@ -55,10 +56,6 @@ public final class ItemIdentifier: Codable {
             }
         default:
             throw ParseError.invalidVersion
-        }
-        
-        if libraryID == "_" {
-            libraryID = nil
         }
         
         self.init(primaryID: primaryID, groupingID: groupingID, libraryID: libraryID, type: type)
