@@ -143,7 +143,7 @@ private struct ExpandedForeground: View {
                     .shadow(color: .black.opacity(0.4), radius: 20)
                     .scaleEffect(AudioPlayer.shared.playing ? 1 : 0.8)
                     .animation(.spring(duration: 0.3, bounce: 0.6), value: viewModel.playing)
-                    .matchedGeometryEffect(id: "image", in: viewModel.namespace, properties: .frame, anchor: .topLeading)
+                    .matchedGeometryEffect(id: "image", in: viewModel.namespace, properties: .frame, anchor: viewModel.expanded ? .topLeading : .topTrailing)
                     .modifier(NowPlaying.GestureModifier(active: true))
                 
                 Spacer(minLength: 12)
