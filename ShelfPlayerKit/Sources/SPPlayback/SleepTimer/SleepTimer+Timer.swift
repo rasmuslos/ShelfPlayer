@@ -10,6 +10,7 @@ import Foundation
 internal extension SleepTimer {
     func setupTimer() {
         guard let deadline else {
+            suspend()
             return
         }
         
