@@ -9,9 +9,10 @@ import Foundation
 import SwiftData
 
 @Model
+@MainActor
 public final class OfflineListeningTimeTracker: Identifiable {
     @Attribute(.unique)
-    public var id: String
+    public let id: String
     
     public var itemId: String
     public var episodeId: String?

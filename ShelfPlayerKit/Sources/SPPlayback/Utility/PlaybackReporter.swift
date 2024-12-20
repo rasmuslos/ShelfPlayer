@@ -20,7 +20,7 @@ internal final class PlaybackReporter {
     private let episodeId: String?
     
     private let playbackSessionId: String?
-    private let listeningTimeTracker: OfflineListeningTimeTracker?
+    private var listeningTimeTracker: OfflineListeningTimeTracker?
     
     private var duration: TimeInterval
     private var currentTime: TimeInterval
@@ -38,7 +38,9 @@ internal final class PlaybackReporter {
         lastReport = .now
         
         if playbackSessionId == nil {
-            listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
+            Task { @MainActor in
+                listeningTimeTracker = OfflineManager.shared.listeningTimeTracker(itemId: itemId, episodeId: episodeId)
+            }
         } else {
             listeningTimeTracker = nil
         }
@@ -103,8 +105,10 @@ private extension PlaybackReporter {
                 }
             } catch {
                 if listeningTimeTracker != nil {
-                    listeningTimeTracker?.duration += timeListened
-                    listeningTimeTracker?.lastUpdate = Date()
+                    await MainActor.run {
+                        listeningTimeTracker?.duration += timeListened
+                        listeningTimeTracker?.lastUpdate = Date()
+                    }
                 } else {
                     lastReport = .now - timeListened
                 }
@@ -135,8 +139,10 @@ private extension PlaybackReporter {
         if currentTime.isFinite && currentTime != 0 {
             self.currentTime = currentTime
             
-            if listeningTimeTracker?.startTime.isNaN == true {
-                listeningTimeTracker?.startTime = currentTime
+            Task { @MainActor in
+                if listeningTimeTracker?.startTime.isNaN == true {
+                    listeningTimeTracker?.startTime = currentTime
+                }
             }
         }
     }
@@ -172,13 +178,15 @@ extension PlaybackReporter {
                 
                 OfflineManager.shared.updateProgressEntity(itemID: itemId, episodeID: episodeId, currentTime: currentTime, duration: duration, success: success)
             }
-            
-            playbackDurationTracker?.duration += timeListened
-            playbackDurationTracker?.lastUpdate = Date()
-            playbackDurationTracker?.eligibleForSync = true
                     
             if let playbackDurationTracker {
                 Task {
+                    await MainActor.run {
+                        playbackDurationTracker.duration += timeListened
+                        playbackDurationTracker.lastUpdate = Date()
+                        playbackDurationTracker.eligibleForSync = true
+                    }
+                    
                     try? await OfflineManager.shared.attemptListeningTimeSync(tracker: playbackDurationTracker)
                 }
             }
