@@ -13,6 +13,7 @@ import SPNetwork
 // MARK: Public (Higher order)
 
 public extension OfflineManager {
+    @MainActor
     func listeningTimeTracker(itemId: String, episodeId: String?) -> OfflineListeningTimeTracker {
         let id = UUID().uuidString
         let context = ModelContext(PersistenceManager.shared.modelContainer)
@@ -24,6 +25,7 @@ public extension OfflineManager {
         return tracker
     }
     
+    @MainActor
     func attemptListeningTimeSync(tracker: OfflineListeningTimeTracker) async throws {
         if tracker.startTime.isNaN || tracker.duration.isNaN || tracker.duration <= 5 {
             try remove(listeningTimeTracker: tracker)
@@ -45,6 +47,7 @@ public extension OfflineManager {
         try remove(listeningTimeTracker: tracker)
         logger.info("Created session \(tracker.id)")
     }
+    @MainActor
     func remove(listeningTimeTracker: OfflineListeningTimeTracker) throws {
         let context = ModelContext(PersistenceManager.shared.modelContainer)
         
@@ -52,6 +55,7 @@ public extension OfflineManager {
         try context.save()
     }
     
+    @MainActor
     func attemptListeningTimeSync() async throws {
         // can be ignored at startup
         // let descriptor = FetchDescriptor<PlaybackDuration>(predicate: #Predicate { $0.eligibleForSync == true })
