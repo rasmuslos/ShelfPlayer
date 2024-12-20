@@ -57,6 +57,7 @@ public extension AudioPlayer {
         }
         
         audioPlayer.removeAllItems()
+        SleepTimer.shared.reset()
         
         NotificationCenter.default.post(name: Self.itemDidChangeNotification, object: nil)
         NotificationCenter.default.post(name: Self.queueDidChangeNotification, object: nil)
