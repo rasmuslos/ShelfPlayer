@@ -2549,9 +2549,6 @@
         }
       }
     },
-    "clear" : {
-
-    },
     "decrease" : {
       "localizations" : {
         "de" : {
@@ -7129,9 +7126,6 @@
           }
         }
       }
-    },
-    "update" : {
-
     }
   },
   "version" : "1.0"

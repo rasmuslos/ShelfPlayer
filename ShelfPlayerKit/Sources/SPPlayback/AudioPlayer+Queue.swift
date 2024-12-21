@@ -16,7 +16,7 @@ import SPExtension
 public extension AudioPlayer {
     func advance(to index: Int) async throws {
         guard index < queue.count else {
-            stop(.queueIndexOutOfBounds)
+            stop()
             return
         }
         
