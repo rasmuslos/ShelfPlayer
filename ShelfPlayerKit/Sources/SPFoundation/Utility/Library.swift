@@ -10,14 +10,14 @@ import Defaults
 
 public struct Library {
     public let id: String
-    public let serverID: String
+    public let serverID: ItemIdentifier.ServerID
     
     public let name: String
     
     public let type: MediaType
     public let index: Int
     
-    public init(id: String, serverID: String, name: String, type: String, index: Int) {
+    public init(id: String, serverID: ItemIdentifier.ServerID, name: String, type: String, index: Int) {
         self.id = id
         self.serverID = serverID
         
@@ -35,7 +35,7 @@ public struct Library {
         self.index = index
     }
     
-    public init(id: String, serverID: String, name: String, type: MediaType, index: Int) {
+    public init(id: String, serverID: ItemIdentifier.ServerID, name: String, type: MediaType, index: Int) {
         self.id = id
         self.serverID = serverID
         

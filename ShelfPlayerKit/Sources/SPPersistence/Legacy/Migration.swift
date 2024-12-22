@@ -6,8 +6,9 @@
 //
 
 import Foundation
-import SPNetwork
 @preconcurrency import SwiftData
+import SPFoundation
+import SPNetwork
 
 enum Migration: SchemaMigrationPlan {
     static var stages: [MigrationStage] {[
@@ -27,7 +28,6 @@ enum Migration: SchemaMigrationPlan {
             v1Audiobooks = (try? context.fetch(.init())) ?? []
         }, didMigrate: { context in
             fatalError("do this")
-            let suite = AudiobookshelfClient.suite
             
             /*
             for v1Audiobook in v1Audiobooks {
@@ -49,7 +49,7 @@ enum Migration: SchemaMigrationPlan {
                         .trimmingCharacters(in: .whitespacesAndNewlines)
                         .components(separatedBy: ", ")
                         .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? [],
-                    series: v1Audiobook.seriesName,
+                    series: v1Audiobook.seriesName == nil ? [] : Audiobook.SeriesFragment.parse(seriesName: v1Audiobook.seriesName!),
                     explicit: v1Audiobook.abridged,
                     abridged: v1Audiobook.abridged,
                     tracks: <#T##[SchemaV2.PersistedAudioTrack]#>)

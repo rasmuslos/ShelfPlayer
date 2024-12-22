@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 extension Audiobook {
-    convenience init?(payload: ItemPayload, serverID: String) {
+    convenience init?(payload: ItemPayload, serverID: ItemIdentifier.ServerID) {
         guard let media = payload.media else {
             return nil
         }

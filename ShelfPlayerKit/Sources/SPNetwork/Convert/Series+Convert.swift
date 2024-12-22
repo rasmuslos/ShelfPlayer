@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 internal extension Series {
-    convenience init(payload: ItemPayload, serverID: String) {
+    convenience init(payload: ItemPayload, serverID: ItemIdentifier.ServerID) {
         let covers: [Cover] = (payload.books ?? payload.items ?? []).reduce([], {
             print($1)
             return $0 + []
@@ -24,7 +24,7 @@ internal extension Series {
             covers: covers)
     }
     
-    convenience init(item: ItemPayload, audiobooks: [ItemPayload], serverID: String) {
+    convenience init(item: ItemPayload, audiobooks: [ItemPayload], serverID: ItemIdentifier.ServerID) {
         var item = item
         item.books = audiobooks
         

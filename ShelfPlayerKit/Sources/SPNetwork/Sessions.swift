@@ -6,14 +6,23 @@
 //
 
 import Foundation
+import RFNetwork
 import SPFoundation
 
-public extension AudiobookshelfClient {
+public extension APIClient {
     func startPlaybackSession(itemID: ItemIdentifier) async throws -> ([PlayableItem.AudioTrack], [Chapter], TimeInterval, String) {
-        let response = try await request(ClientRequest<ItemPayload>(path: "api/items/\(itemID.pathComponent)/play", method: "POST", body: [
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        let machine = String(decoding: withUnsafeBytes(of: systemInfo.machine.self) { [UInt8]($0) }, as: UTF8.self)
+        
+        let response = try await request(ClientRequest<ItemPayload>(path: "api/items/\(itemID.pathComponent)/play", method: .post, body: [
             "deviceInfo": [
-                "deviceId": clientID,
+                "deviceId": ShelfPlayerKit.clientID,
                 "clientName": "ShelfPlayer",
+                "clientVersion": ShelfPlayerKit.clientVersion,
+                "manufacturer": "Apple",
+                "model": ShelfPlayerKit.machine,
             ],
             "supportedMimeTypes": [
                 "audio/flac",
@@ -25,7 +34,7 @@ public extension AudiobookshelfClient {
         ]))
         
         guard let tracks = response.audioTracks, let chapters = response.chapters else {
-            throw ClientError.invalidResponse
+            throw APIClientError.invalidResponse
         }
         
         let startTime = response.startTime ?? 0
@@ -60,18 +69,18 @@ public extension AudiobookshelfClient {
             startedAt: started.timeIntervalSince1970 * 1000,
             updatedAt: updated.timeIntervalSince1970 * 1000)
         
-        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/session/local", method: "POST", body: session))
+        try await request(ClientRequest<Empty>(path: "api/session/local", method: .post, body: session))
     }
     
     func reportUpdate(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/session/\(playbackSessionId)/sync", method: "POST", body: [
+        try await request(ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/sync", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
         ]))
     }
     func reportClose(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        let _ = try await request(ClientRequest<EmptyResponse>(path: "api/session/\(playbackSessionId)/close", method: "POST", body: [
+        try await request(ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/close", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,

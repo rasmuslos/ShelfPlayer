@@ -94,10 +94,10 @@ public final class ItemIdentifier: Codable {
         }
     }
     
-    public var libraryID: String {
+    public var libraryID: LibraryID {
         _libraryID ?? ""
     }
-    public var serverID: String {
+    public var serverID: ServerID {
         _serverID ?? ""
     }
     

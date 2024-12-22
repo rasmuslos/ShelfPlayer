@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import RFNetwork
 import SPFoundation
 
-public extension AudiobookshelfClient {
+public extension APIClient where I == ItemIdentifier.ServerID {
     func seriesID(name: String, libraryID: String) async throws -> String {
-        let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: "GET", query: [
+        let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "10"),
         ]))
@@ -23,14 +24,14 @@ public extension AudiobookshelfClient {
         }
         
         guard let series = series?.first else {
-            throw ClientError.invalidResponse
+            throw APIClientError.invalidResponse
         }
         
         return series.id
     }
     
     func series(with identifier: ItemIdentifier) async throws -> Series {
-        Series(payload: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: "GET")))
+        Series(payload: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get)), serverID: serverID)
     }
     
     func series(in libraryID: String, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
@@ -48,8 +49,8 @@ public extension AudiobookshelfClient {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: "GET", query: query))
-        return (response.results.map(Series.init), response.total)
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query))
+        return (response.results.map { Series(payload: $0, serverID: serverID) }, response.total)
     }
     
     func audiobooks(series identifier: ItemIdentifier, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
@@ -64,7 +65,7 @@ public extension AudiobookshelfClient {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(identifier._libraryID)/items", method: "GET", query: query))
-        return (response.results.compactMap(Audiobook.init), response.total)
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query))
+        return (response.results.compactMap { Audiobook(payload: $0, serverID: serverID) }, response.total)
     }
 }

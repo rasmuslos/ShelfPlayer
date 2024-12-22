@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 extension Episode {
-    convenience init?(payload: ItemPayload) {
+    convenience init?(payload: ItemPayload, serverID: ItemIdentifier.ServerID) {
         guard let recentEpisode = payload.recentEpisode,
               let media = payload.media,
               let id = recentEpisode.id,
@@ -21,7 +21,7 @@ extension Episode {
         let addedAt = payload.addedAt ?? 0
         
         self.init(
-            id: .init(primaryID: id, groupingID: payload.id, libraryID: payload.libraryId, type: .episode),
+            id: .init(primaryID: id, groupingID: payload.id, libraryID: payload.libraryId!, serverID: serverID, type: .episode),
             name: title,
             authors: media.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: recentEpisode.description,
@@ -30,18 +30,18 @@ extension Episode {
             size: recentEpisode.size ?? 0,
             duration: recentEpisode.audioFile?.duration ?? 0,
             podcastName: podcastTitle,
-            index: recentEpisode.index ?? 0)
+            index: .init(season: recentEpisode.season, episode: String(recentEpisode.index ?? 0)))
     }
-    convenience init?(episode: EpisodePayload, item: ItemPayload) {
+    convenience init?(episode: EpisodePayload, item: ItemPayload, serverID: ItemIdentifier.ServerID) {
         var item = item
         item.recentEpisode = episode
         
-        self.init(payload: item)
+        self.init(payload: item, serverID: serverID)
     }
     
-    convenience init(episode: EpisodePayload) {
+    convenience init(episode: EpisodePayload, serverID: ItemIdentifier.ServerID) {
         self.init(
-            id: .init(primaryID: episode.id!, groupingID: episode.podcast!.id, libraryID: episode.libraryId, type: .episode),
+            id: .init(primaryID: episode.id!, groupingID: episode.podcast!.id, libraryID: episode.libraryId!, serverID: serverID, type: .episode),
             name: episode.title!,
             authors: episode.podcast?.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: episode.description,
@@ -50,6 +50,6 @@ extension Episode {
             size: episode.size ?? 0,
             duration: episode.audioFile?.duration ?? 0,
             podcastName: episode.podcast!.metadata.title!,
-            index: episode.index ?? 0)
+            index: .init(season: episode.season, episode: String(episode.index ?? 0)))
     }
 }
