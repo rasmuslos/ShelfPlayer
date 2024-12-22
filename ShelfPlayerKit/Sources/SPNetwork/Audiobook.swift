@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import RFNetwork
 import SPFoundation
 
-public extension AudiobookshelfClient {
+public extension APIClient where I == ItemIdentifier.ServerID {
     func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Author>]) {
-        let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: "GET"))
+        let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
         
         var authors = [HomeRow<Author>]()
         var audiobooks = [HomeRow<Audiobook>]()
@@ -21,9 +22,9 @@ public extension AudiobookshelfClient {
             }
             
             if row.type == "book" {
-                audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap(Audiobook.init)))
+                audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, serverID: serverID) }))
             } else if row.type == "authors" {
-                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map(Author.init)))
+                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Author(payload: $0, serverID: serverID) }))
             }
         }
         
@@ -44,7 +45,7 @@ public extension AudiobookshelfClient {
             query.append(.init(name: "limit", value: String(describing: limit)))
         }
         
-        let result = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: "GET", query: query))
-        return (result.results.compactMap(AudiobookSection.parse), result.total)
+        let result = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
+        return (result.results.compactMap { AudiobookSection.parse(payload: $0, serverID: serverID) }, result.total)
     }
 }

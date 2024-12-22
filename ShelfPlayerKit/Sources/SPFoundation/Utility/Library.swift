@@ -10,23 +10,39 @@ import Defaults
 
 public struct Library {
     public let id: String
+    public let serverID: String
+    
     public let name: String
     
-    public let type: MediaType!
-    public let displayOrder: Int
+    public let type: MediaType
+    public let index: Int
     
-    public init(id: String, name: String, type: String, displayOrder: Int) {
+    public init(id: String, serverID: String, name: String, type: String, index: Int) {
         self.id = id
+        self.serverID = serverID
+        
         self.name = name
-        self.type = type == "book" ? .audiobooks : type == "podcast" ? .podcasts : nil
-        self.displayOrder = displayOrder
+        
+        switch type {
+        case "book":
+            self.type = .audiobooks
+        case "podcast":
+            self.type = .podcasts
+        default:
+            fatalError("Unsupported library type: \(type)")
+        }
+
+        self.index = index
     }
     
-    public init(id: String, name: String, type: MediaType!, displayOrder: Int) {
+    public init(id: String, serverID: String, name: String, type: MediaType, index: Int) {
         self.id = id
+        self.serverID = serverID
+        
         self.name = name
+        
         self.type = type
-        self.displayOrder = displayOrder
+        self.index = index
     }
     
     public enum MediaType: Int, Hashable, Codable, Sendable, Defaults.Serializable {
@@ -42,7 +58,7 @@ extension Library: Hashable {}
 extension Library: Sendable {}
 extension Library: Comparable {
     public static func <(lhs: Library, rhs: Library) -> Bool {
-        lhs.displayOrder < rhs.displayOrder
+        lhs.index < rhs.index
     }
 }
 extension Library: Identifiable {}

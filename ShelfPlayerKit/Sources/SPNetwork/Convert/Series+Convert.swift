@@ -9,14 +9,14 @@ import Foundation
 import SPFoundation
 
 internal extension Series {
-    convenience init(payload: ItemPayload) {
+    convenience init(payload: ItemPayload, serverID: String) {
         let covers: [Cover] = (payload.books ?? payload.items ?? []).reduce([], {
             print($1)
             return $0 + []
         })
         
         self.init(
-            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId, type: .series),
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId!, serverID: serverID, type: .series),
             name: payload.name!,
             authors: [],
             description: payload.description,
@@ -24,11 +24,11 @@ internal extension Series {
             covers: covers)
     }
     
-    convenience init(item: ItemPayload, audiobooks: [ItemPayload]) {
+    convenience init(item: ItemPayload, audiobooks: [ItemPayload], serverID: String) {
         var item = item
         item.books = audiobooks
         
-        self.init(payload: item)
+        self.init(payload: item, serverID: serverID)
     }
 }
 

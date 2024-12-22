@@ -5,7 +5,7 @@
 //  Created by Rasmus Krämer on 21.09.24.
 //
 
-public actor SyncDictionary<K: Hashable, V> {
+public actor SyncDictionary<K: Hashable, V>: Sendable {
     private var buffer: [K: V]
     
     public init(_ elements: [K: V]) {

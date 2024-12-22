@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import RFNetwork
 import SPFoundation
 
-extension AudiobookshelfClient {
+extension APIClient {
     func item(itemID: ItemIdentifier) async throws -> ItemPayload {
         try await request(ClientRequest(path: "api/items/\(itemID.apiItemID)", method: "GET", query: [
             URLQueryItem(name: "expanded", value: "1"),
@@ -16,7 +17,7 @@ extension AudiobookshelfClient {
     }
 }
 
-public extension AudiobookshelfClient {
+public extension APIClient {
     func playableItem(itemID: ItemIdentifier) async throws -> (PlayableItem, [PlayableItem.AudioTrack], [Chapter]) {
         let payload = try await item(itemID: itemID)
         
@@ -24,29 +25,29 @@ public extension AudiobookshelfClient {
             let episode = Episode(episode: item, item: payload)
             
             guard let episode, let audioTrack = item.audioTrack, let chapters = item.chapters else {
-                throw ClientError.invalidResponse
+                throw APIClientError.invalidResponse
             }
             
             return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init))
         }
         
-        guard let audiobook = Audiobook(payload: payload), let tracks = payload.media?.tracks, let chapters = payload.media?.chapters else {
-            throw ClientError.invalidResponse
+        guard let audiobook = Audiobook(payload: payload, serverID: itemID.serverID), let tracks = payload.media?.tracks, let chapters = payload.media?.chapters else {
+            throw APIClientError.invalidResponse
         }
         
         return (audiobook, tracks.map(PlayableItem.AudioTrack.init), chapters.map(Chapter.init))
     }
     
-    func items(in libraryID: String, search: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
-        let payload = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: "GET", query: [
+    func items(in library: Library, search: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
+        let payload = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(library.id)/search", method: "GET", query: [
             URLQueryItem(name: "q", value: search),
         ]))
         
         return (
-            payload.book?.compactMap { Audiobook(payload: $0.libraryItem) } ?? [],
+            payload.book?.compactMap { Audiobook(payload: $0.libraryItem, serverID: library.serverID) } ?? [],
             payload.podcast?.map { Podcast(payload: $0.libraryItem) } ?? [],
-            payload.authors?.map(Author.init) ?? [],
-            payload.series?.map { Series(item: $0.series, audiobooks: $0.books) } ?? []
+            payload.authors?.map { Author(payload: $0, serverID: library.serverID) } ?? [],
+            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, serverID: library.serverID) } ?? []
         )
     }
 }
