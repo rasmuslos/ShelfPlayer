@@ -7,62 +7,102 @@
 
 import Foundation
 
+/**
+ ShelfPlayer Item Identifier
+ 
+ Identifier comprised of multiple others provided by Audiobookshelf. Current and only version: `1`
+ 
+ ### Format
+ `VERSION::TYPE::SERVER_ID::LIBRARY_ID::PRIMARY_ID(::GROUPING_ID)`
+ */
 public final class ItemIdentifier: Codable {
-    public let primaryID: String
-    public let groupingID: String?
+    public typealias PrimaryID = String
+    public typealias GroupingID = String?
     
-    public let libraryID: String
-    public let serverID: String
+    public typealias LibraryID = String
+    public typealias ServerID = String
+    
+    public let primaryID: PrimaryID
+    public let groupingID: GroupingID
+    
+    public let _libraryID: LibraryID!
+    public let _serverID: ServerID!
     
     public let type: ItemType
     
-    public init(primaryID: String, groupingID: String?, libraryID: String, serverID: String, type: ItemType) {
+    public init(primaryID: PrimaryID, groupingID: GroupingID, libraryID: LibraryID, serverID: ServerID, type: ItemType) {
         self.primaryID = primaryID
         self.groupingID = groupingID
         
-        self.libraryID = libraryID
-        self.serverID = serverID
+        _libraryID = libraryID
+        _serverID = serverID
         
         self.type = type
     }
     
-    public convenience init(primaryID: String, groupingID: String?) {
-        self.init(primaryID: primaryID, groupingID: groupingID, libraryID: nil, type: groupingID != nil ? .episode : .audiobook)
+    /// Convenience initializer for an audiobook
+    public init(primaryID: String) {
+        self.primaryID = primaryID
+        self.groupingID = nil
+        
+        _libraryID = nil
+        _serverID = nil
+        
+        type = .audiobook
+    }
+    /// Convenience initializer for an episode
+    public init(primaryID: String, groupingID: String?) {
+        self.primaryID = primaryID
+        self.groupingID = groupingID
+        
+        _libraryID = nil
+        _serverID = nil
+        
+        type = .episode
     }
     
-    public convenience init(string identifier: String) throws {
+    public init(string identifier: String) {
         let parts = identifier.split(separator: "::")
-        
-        var primaryID: String
-        let groupingID: String?
-        
-        var libraryID: String
-        var serverID: String
-        
-        let type: ItemType
         
         switch parts[0] {
         case "1":
             type = ItemType(rawValue: String(parts[1]))!
-            libraryID = String(parts[2])
             
-            primaryID = String(parts[3])
+            let libraryID = String(parts[2])
+            let serverID = String(parts[3])
             
-            if parts.count == 5 {
-                groupingID = primaryID
-                primaryID = String(parts[4])
+            if libraryID == "_" {
+                _libraryID = nil
+            } else {
+                _libraryID = libraryID
+            }
+            if serverID == "_" {
+                _serverID = nil
+            } else {
+                _serverID = serverID
+            }
+            
+            primaryID = String(parts[4])
+            
+            if parts.count == 6 {
+                groupingID = String(parts[5])
             } else {
                 groupingID = nil
             }
         default:
-            throw ParseError.invalidVersion
+            fatalError("Unknown identifier format: \(identifier)")
         }
-        
-        self.init(primaryID: primaryID, groupingID: groupingID, libraryID: libraryID, type: type)
     }
     
-    public var _libraryID: String {
-        libraryID ?? ""
+    public var libraryID: String {
+        _libraryID ?? ""
+    }
+    public var serverID: String {
+        _serverID ?? ""
+    }
+    
+    var shallow: Bool {
+        _libraryID == nil || _serverID == nil
     }
     
     enum ParseError: Error {
@@ -89,11 +129,13 @@ extension ItemIdentifier: Identifiable {
 }
 extension ItemIdentifier: CustomStringConvertible {
     public var description: String {
+        let base = "1::\(type)::\(_serverID ?? "_")::\(_libraryID ?? "_")::\(primaryID)"
+        
         if let groupingID {
-            "1::\(type)::\(self.libraryID ?? "_")::\(groupingID)::\(primaryID)"
-        } else {
-            "1::\(type)::\(self.libraryID ?? "_")::\(primaryID)"
+            return base + "::\(groupingID)"
         }
+        
+        return base
     }
 }
 

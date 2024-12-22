@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 extension Audiobook {
-    convenience init?(payload: ItemPayload) {
+    convenience init?(payload: ItemPayload, serverID: String) {
         guard let media = payload.media else {
             return nil
         }
@@ -47,7 +47,7 @@ extension Audiobook {
         let duration = media.duration ?? 0
         
         self.init(
-            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId, type: .audiobook),
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId!, serverID: serverID, type: .audiobook),
             name: media.metadata.title!,
             authors: media.metadata.authorName?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: media.metadata.description?.trimmingCharacters(in: .whitespacesAndNewlines),
