@@ -19,6 +19,13 @@ public extension ShelfPlayerKit {
     static let clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     static let clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
+    static let machine: String = {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        return String(decoding: withUnsafeBytes(of: systemInfo.machine.self) { [UInt8]($0) }, as: UTF8.self)
+    }()
+    
     static var suite: UserDefaults {
         enableCentralized ? UserDefaults(suiteName: groupContainer)! : UserDefaults.standard
     }

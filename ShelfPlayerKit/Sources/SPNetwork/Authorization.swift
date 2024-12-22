@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import RFNetwork
 import SPFoundation
 
-public extension AudiobookshelfClient {
+public extension APIClient {
     func login(username: String, password: String) async throws -> String {
-        let response = try await request(ClientRequest<AuthorizationResponse>(path: "login", method: "POST", body: [
+        let response = try await request(ClientRequest<AuthorizationResponse>(path: "login", method: .post, body: [
             "username": username,
             "password": password,
         ]))
@@ -19,21 +20,21 @@ public extension AudiobookshelfClient {
     }
     
     func status() async throws -> StatusResponse {
-        try await request(ClientRequest<StatusResponse>(path: "status", method: "GET"))
+        try await request(ClientRequest<StatusResponse>(path: "status", method: .get))
     }
     
     func me() async throws -> (String, String) {
-        let response = try await request(ClientRequest<MeResponse>(path: "api/me", method: "GET"))
+        let response = try await request(ClientRequest<MeResponse>(path: "api/me", method: .get))
         return (response.id, response.username)
     }
     
     func authorize() async throws -> ([ProgressPayload], [BookmarkPayload]) {
-        let response = try await request(ClientRequest<AuthorizationResponse>(path: "api/authorize", method: "POST"))
+        let response = try await request(ClientRequest<AuthorizationResponse>(path: "api/authorize", method: .post))
         return (response.user.mediaProgress, response.user.bookmarks)
     }
 }
 
-public extension AudiobookshelfClient {
+public extension APIClient {
     private final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
         public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
             nil
@@ -41,6 +42,7 @@ public extension AudiobookshelfClient {
     }
     
     func openIDLoginURL(verifier: String) async throws -> URL {
+        let serverURL = await serverURL
         var challenge = Data(verifier.compactMap { $0.asciiValue }).sha256.base64EncodedString()
         
         // Base64 --> URL-Base64
@@ -48,7 +50,7 @@ public extension AudiobookshelfClient {
         challenge = challenge.replacingOccurrences(of: "/", with: "_")
         challenge = challenge.replacingOccurrences(of: "=", with: "")
         
-        let url = URL(string: AudiobookshelfClient.shared.serverURL.appending(path: "auth").appending(path: "openid").appending(queryItems: [
+        let url = URL(string: serverURL.0.appending(path: "auth").appending(path: "openid").appending(queryItems: [
             URLQueryItem(name: "client_id", value: "ShelfPlayer"),
             URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
@@ -65,7 +67,7 @@ public extension AudiobookshelfClient {
         request.httpShouldHandleCookies = true
         request.httpMethod = "GET"
         
-        for pair in customHTTPHeaders {
+        for pair in serverURL.1 {
             request.addValue(pair.value, forHTTPHeaderField: pair.key)
         }
         
@@ -74,11 +76,11 @@ public extension AudiobookshelfClient {
             return url
         }
         
-        throw ClientError.invalidResponse
+        throw APIClientError.invalidResponse
     }
     
     func openIDExchange(code: String, state: String, verifier: String) async throws -> String {
-        let response = try await request(ClientRequest<AuthorizationResponse>(path: "auth/openid/callback", method: "GET", query: [
+        let response = try await request(ClientRequest<AuthorizationResponse>(path: "auth/openid/callback", method: .get, query: [
             .init(name: "code", value: code),
             .init(name: "state", value: state),
             .init(name: "code_verifier", value: verifier),

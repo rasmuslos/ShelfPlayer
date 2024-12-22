@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SPFoundation
+
 #if os(iOS)
 import UIKit
 #endif
@@ -65,20 +67,14 @@ extension SessionPayload {
         
         static var current: Self {
             .init(
-                id: AudiobookshelfClient.shared.clientID,
-                deviceId: AudiobookshelfClient.shared.clientID,
+                id: ShelfPlayerKit.clientID,
+                deviceId: ShelfPlayerKit.clientID,
                 osName: "iOS",
-                osVersion: {
-                    #if os(iOS)
-                    return UIDevice.current.systemVersion
-                    #else
-                    return nil
-                    #endif
-                }(),
+                osVersion: ShelfPlayerKit.machine,
                 deviceType: "iPhone",
                 manufacturer: "Apple",
                 clientName: "ShelfPlayer",
-                clientVersion: AudiobookshelfClient.shared.clientVersion)
+                clientVersion: ShelfPlayerKit.clientVersion)
         }
     }
 }
