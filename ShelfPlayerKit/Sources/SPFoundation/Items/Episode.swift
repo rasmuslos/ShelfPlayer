@@ -23,6 +23,11 @@ public final class Episode: PlayableItem, @unchecked Sendable {
     public struct EpisodeIndex {
         public let season: String?
         public let episode: String
+        
+        public init(season: String?, episode: String) {
+            self.season = season
+            self.episode = episode
+        }
     }
 }
 

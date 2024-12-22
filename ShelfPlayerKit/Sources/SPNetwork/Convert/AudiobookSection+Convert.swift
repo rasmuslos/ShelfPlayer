@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 extension AudiobookSection {
-    static func parse(payload: ItemPayload, serverID: String) -> Self? {
+    static func parse(payload: ItemPayload, serverID: ItemIdentifier.ServerID) -> Self? {
         if let collapsedSeries = payload.collapsedSeries {
             .series(seriesID: collapsedSeries.id,
                     seriesName: collapsedSeries.name,

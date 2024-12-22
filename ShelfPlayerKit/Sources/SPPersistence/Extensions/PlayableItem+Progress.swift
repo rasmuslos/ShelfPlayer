@@ -12,11 +12,6 @@ import SPFoundation
 import SPNetwork
 
 public extension PlayableItem {
-    static let finishedSubject = PassthroughSubject<(ItemIdentifier, Bool), Never>()
-    static var finishedPublisher: AnyPublisher<(ItemIdentifier, Bool), Never> {
-        finishedSubject.eraseToAnyPublisher()
-    }
-    
     func finished(_ finished: Bool) async throws {
         let success: Bool
         
@@ -28,7 +23,6 @@ public extension PlayableItem {
         }
         
         OfflineManager.shared.finished(finished, item: self, synced: success)
-        Self.finishedSubject.send((id, finished))
     }
     
     func resetProgress() async throws {

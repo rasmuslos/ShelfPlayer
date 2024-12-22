@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension APIClient {
     func finished(_ finished: Bool, itemID: ItemIdentifier) async throws {
-        let _ = try await request(ClientRequest<Empty>(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
+        try await request(ClientRequest<Empty>(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
             "isFinished": finished,
         ]))
     }
@@ -20,7 +20,8 @@ public extension APIClient {
 public extension APIClient {
     func updateProgress(itemID: ItemIdentifier, currentTime: TimeInterval, duration: TimeInterval) async throws {
         let progress = currentTime / duration
-        let _ = try await request(ClientRequest<Empty>(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
+        
+        try await request(ClientRequest<Empty>(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
             "duration": duration,
             "currentTime": currentTime,
             "progress": progress,
@@ -29,7 +30,7 @@ public extension APIClient {
     }
     
     func deleteProgress(progressID: String) async throws {
-        let _ = try await request(ClientRequest<Empty>(path: "api/me/progress/\(progressID)", method: .delete))
+        try await request(ClientRequest<Empty>(path: "api/me/progress/\(progressID)", method: .delete))
     }
     
     func listeningSessions(with itemID: ItemIdentifier) async throws -> [SessionPayload] {

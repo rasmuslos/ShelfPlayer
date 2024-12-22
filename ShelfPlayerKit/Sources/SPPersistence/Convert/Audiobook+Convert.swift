@@ -7,7 +7,6 @@
 
 import Foundation
 import SPFoundation
-import SPPersistence
 
 internal extension Audiobook {
     convenience init(audiobook: OfflineAudiobook) {

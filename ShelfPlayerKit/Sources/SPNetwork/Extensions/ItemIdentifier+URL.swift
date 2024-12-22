@@ -32,6 +32,7 @@ extension ItemIdentifier {
         }
     }
     
+    /*
     public var url: URL {
         switch type {
         case .author:
@@ -42,4 +43,5 @@ extension ItemIdentifier {
             AudiobookshelfClient.shared.serverURL.appending(path: "item").appending(path: primaryID)
         }
      }
+     */
 }

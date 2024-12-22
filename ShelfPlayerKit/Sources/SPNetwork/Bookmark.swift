@@ -6,24 +6,25 @@
 //
 
 import Foundation
+import RFNetwork
 import SPFoundation
 
-public extension AudiobookshelfClient {
+public extension APIClient {
     func createBookmark(itemId: String, position: UInt64, note: String) async throws -> Bookmark {
-        Bookmark(payload: try await request(ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark", method: "POST", body: [
+        Bookmark(payload: try await request(ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark", method: .post, body: [
             "title": note,
             "time": position,
         ])))
     }
     
     func updateBookmark(itemId: String, position: UInt64, note: String) async throws -> Bookmark {
-        Bookmark(payload: try await request(ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark", method: "PATCH", body: [
+        Bookmark(payload: try await request(ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark", method: .patch, body: [
             "title": note,
             "time": position,
         ])))
     }
     
     func deleteBookmark(itemId: String, position: UInt64) async throws {
-        let _ = try await request(ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark/\(Int(position))", method: "DELETE"))
+        let _ = try await request(ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark/\(Int(position))", method: .delete))
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 extension Author {
-    convenience init(payload: ItemPayload, serverID: String) {
+    convenience init(payload: ItemPayload, serverID: ItemIdentifier.ServerID) {
         let addedAt = payload.addedAt ?? 0
         
         self.init(
