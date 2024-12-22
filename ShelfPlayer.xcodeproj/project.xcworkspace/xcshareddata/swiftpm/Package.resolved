@@ -1,4 +1,5 @@
 {
+  "originHash" : "91754a11c58da2ee1ce9c674d87e8e4985109aa0764b4cdc32d43be71e402489",
   "pins" : [
     {
       "identity" : "bettersafariview",
@@ -33,7 +34,7 @@
       "location" : "https://github.com/rasmuslos/RFKit",
       "state" : {
         "branch" : "main",
-        "revision" : "6cc0648ca3804a16ff6e3b94e141957705e63306"
+        "revision" : "9bf636604a797ee1a5f449479c790dcba7b4d929"
       }
     },
     {
@@ -46,5 +47,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

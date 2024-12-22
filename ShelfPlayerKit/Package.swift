@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -14,6 +14,8 @@ let package = Package(
         .library(name: "SPPlayback", targets: ["SPPlayback"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/rasmuslos/RFKit", branch: "main"),
+        
         .package(url: "https://github.com/kean/Nuke", from: .init(12, 1, 6)),
         .package(url: "https://github.com/scinfu/SwiftSoup", from: .init(2, 6, 0)),
         .package(url: "https://github.com/sindresorhus/Defaults", from: .init(8, 2, 0)),
@@ -31,6 +33,8 @@ let package = Package(
         .target(
             name: "SPFoundation",
             dependencies: [
+                .byName(name: "RFKit"),
+                
                 .byName(name: "Defaults"),
                 .byName(name: "SwiftSoup"),
             ]
@@ -42,13 +46,15 @@ let package = Package(
         
         // Network
         .target(name: "SPNetwork", dependencies: [
-            .targetItem(name: "SPFoundation", condition: .none),
-            
+            .byName(name: "RFKit"),
             .byName(name: "Nuke"),
+            
+            .targetItem(name: "SPFoundation", condition: .none),
         ]),
         
         // Offline
         .target(name: "SPPersistence", dependencies: [
+            .byName(name: "RFKit"),
             .byName(name: "Defaults"),
             
             .targetItem(name: "SPFoundation", condition: .none),
@@ -57,6 +63,7 @@ let package = Package(
         
         // Playback
         .target(name: "SPPlayback", dependencies: [
+            .byName(name: "RFKit"),
             .byName(name: "Defaults"),
             
             .targetItem(name: "SPFoundation", condition: .none),

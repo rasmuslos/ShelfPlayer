@@ -9,11 +9,11 @@ import Foundation
 import SPFoundation
 
 extension Author {
-    convenience init(payload: ItemPayload) {
+    convenience init(payload: ItemPayload, serverID: String) {
         let addedAt = payload.addedAt ?? 0
         
         self.init(
-            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId, type: .author),
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId!, serverID: serverID, type: .author),
             name: payload.name!,
             description: payload.description,
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),

@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import RFNetwork
 import SPFoundation
 
-public extension AudiobookshelfClient {
+public extension APIClient {
     func home(for libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
-        let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: "GET"))
+        let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
         
         var episodes = [HomeRow<Episode>]()
         var podcasts = [HomeRow<Podcast>]()
@@ -31,11 +32,11 @@ public extension AudiobookshelfClient {
     }
     
     func podcast(with identifier: ItemIdentifier) async throws -> (Podcast, [Episode]) {
-        let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: "GET"))
+        let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: .get))
         let podcast = Podcast(payload: item)
         
         guard let episodes = item.media?.episodes else {
-            throw ClientError.invalidResponse
+            throw APIClientError.invalidResponse
         }
             
         return (podcast, episodes.compactMap { Episode(episode: $0, item: item) })
@@ -57,7 +58,7 @@ public extension AudiobookshelfClient {
         
         query.append(.init(name: "include", value: "numEpisodesIncomplete"))
         
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: "GET", query: query))
+        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
         return (response.results.map(Podcast.init), response.total)
     }
 }
