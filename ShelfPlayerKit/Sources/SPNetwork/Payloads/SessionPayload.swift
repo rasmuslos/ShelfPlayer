@@ -37,12 +37,15 @@ public struct SessionPayload: Codable {
     
     public let serverVersion: String
     
+    public let progress: Double?
     public let timeListening: Double?
+    
     public let startTime: Double
-    public let currentTime: Double
+    public let currentTime: Double?
     
     public let startedAt: Double
     public let updatedAt: Double
+    public let finishedAt: Double?
 }
 
 public extension SessionPayload {

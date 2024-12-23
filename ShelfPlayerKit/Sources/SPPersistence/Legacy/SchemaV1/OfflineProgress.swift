@@ -9,13 +9,14 @@ import Foundation
 import SwiftData
 import SPFoundation
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 internal extension SchemaV1 {
     @Model
-    internal class OfflineProgress {
+    class OfflineProgress {
         @Attribute(.unique)
         var id: String
-        let itemID: String
-        let episodeID: String?
+        var itemID: String
+        var episodeID: String?
         
         var progress: Percentage
         
@@ -47,6 +48,7 @@ internal extension SchemaV1 {
     }
 }
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 internal extension SchemaV1.OfflineProgress {
     enum ProgressSyncState: Int, Codable, Equatable, Identifiable {
         case receivedFromServer = 0
