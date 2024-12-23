@@ -12,7 +12,7 @@ extension SchemaV1 {
     @Model
     public final class PodcastFetchConfiguration {
         @Attribute(.unique)
-        public let id: String
+        public var id: String
         
         public var autoDownload: Bool
         public var maxEpisodes: Int

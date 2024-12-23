@@ -42,7 +42,6 @@ public extension APIClient {
     }
     
     func openIDLoginURL(verifier: String) async throws -> URL {
-        let serverURL = await serverURL
         var challenge = Data(verifier.compactMap { $0.asciiValue }).sha256.base64EncodedString()
         
         // Base64 --> URL-Base64
@@ -50,7 +49,7 @@ public extension APIClient {
         challenge = challenge.replacingOccurrences(of: "/", with: "_")
         challenge = challenge.replacingOccurrences(of: "=", with: "")
         
-        let url = URL(string: serverURL.0.appending(path: "auth").appending(path: "openid").appending(queryItems: [
+        let url = URL(string: host.appending(path: "auth").appending(path: "openid").appending(queryItems: [
             URLQueryItem(name: "client_id", value: "ShelfPlayer"),
             URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
@@ -67,7 +66,7 @@ public extension APIClient {
         request.httpShouldHandleCookies = true
         request.httpMethod = "GET"
         
-        for pair in serverURL.1 {
+        for pair in headers {
             request.addValue(pair.value, forHTTPHeaderField: pair.key)
         }
         

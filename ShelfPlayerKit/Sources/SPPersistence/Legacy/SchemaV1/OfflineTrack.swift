@@ -8,20 +8,21 @@
 import Foundation
 import SwiftData
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 extension SchemaV1 {
     @Model
     public final class OfflineTrack {
         @Attribute(.unique)
-        public let id: String
-        public let parentId: String
+        public var id: String
+        public var parentId: String
         
-        public let index: Int
-        public let fileExtension: String
+        public var index: Int
+        public var fileExtension: String
         
-        public let offset: TimeInterval
-        public let duration: TimeInterval
+        public var offset: TimeInterval
+        public var duration: TimeInterval
         
-        public let type: ParentType
+        public var type: ParentType
         public var downloadReference: Int?
         
         // this does not check for codec support... to bad (to be fair, i don't think the official ABS app does [https://github.com/advplyr/audiobookshelf-app/blob/master/ios/App/App/plugins/AbsDownloader.swift#L257])
@@ -42,6 +43,7 @@ extension SchemaV1 {
     }
 }
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 public extension SchemaV1.OfflineTrack {
     var isDownloaded: Bool {
         downloadReference == nil

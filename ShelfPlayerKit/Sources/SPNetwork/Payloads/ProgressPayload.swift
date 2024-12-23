@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ProgressPayload: Codable {
+public struct ProgressPayload: Sendable, Codable {
     public let id: String
     public let libraryItemId: String
     public let episodeId: String?

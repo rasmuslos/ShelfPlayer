@@ -14,8 +14,6 @@ public extension APIClient {
         var systemInfo = utsname()
         uname(&systemInfo)
         
-        let machine = String(decoding: withUnsafeBytes(of: systemInfo.machine.self) { [UInt8]($0) }, as: UTF8.self)
-        
         let response = try await request(ClientRequest<ItemPayload>(path: "api/items/\(itemID.pathComponent)/play", method: .post, body: [
             "deviceInfo": [
                 "deviceId": ShelfPlayerKit.clientID,

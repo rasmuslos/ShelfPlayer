@@ -9,11 +9,12 @@ import Foundation
 import SwiftData
 import SPFoundation
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 extension SchemaV1 {
     @Model
     public final class PlaybackSpeedOverride {
-        public let itemID: String
-        public let episodeID: String?
+        public var itemID: String
+        public var episodeID: String?
         
         public var speed: Percentage
         

@@ -23,7 +23,7 @@ public struct ProgressEntity: Sendable {
     public let lastUpdate: Date
     public let finishedAt: Date?
     
-    init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
+    public init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
         self.id = id
         self.itemID = itemID
         
@@ -35,19 +35,6 @@ public struct ProgressEntity: Sendable {
         self.startedAt = startedAt
         self.lastUpdate = lastUpdate
         self.finishedAt = finishedAt
-    }
-    init(persistedEntity: PersistedProgress) {
-        self.id = persistedEntity.id
-        self.itemID = persistedEntity.itemID
-        
-        self.progress = persistedEntity.progress
-        
-        self.duration = persistedEntity.duration
-        self.currentTime = persistedEntity.currentTime
-        
-        self.startedAt = persistedEntity.startedAt
-        self.lastUpdate = persistedEntity.lastUpdate
-        self.finishedAt = persistedEntity.finishedAt
     }
     
     public var isFinished: Bool {
