@@ -10,6 +10,9 @@ import SwiftData
 import SPFoundation
 
 public final class PersistenceManager: Sendable {
+    public let keyValue: KeyValueSubsystem
+    public let authorization: AuthorizationSubsystem
+    
     private init() {
         let schema = Schema(versionedSchema: SchemaV2.self)
         
@@ -23,6 +26,15 @@ public final class PersistenceManager: Sendable {
         let container = try! ModelContainer(for: schema, migrationPlan: Migration.self, configurations: [
             modelConfiguration,
         ])
+        
+        keyValue = .init(modelContainer: container)
+        authorization = .init(modelContainer: container)
+    }
+    
+    enum PersistenceError: Error {
+        case serverNotFound
+        case keychainInsertFailed
+        case keychainRetrieveFailed
     }
 }
 

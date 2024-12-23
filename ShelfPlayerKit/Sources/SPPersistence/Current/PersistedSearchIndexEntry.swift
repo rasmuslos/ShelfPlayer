@@ -10,6 +10,7 @@ import SwiftData
 import SPFoundation
 
 extension SchemaV2 {
+    @Model
     final class PersistedSearchIndexEntry {
         @Attribute(.unique)
         private(set) var itemID: ItemIdentifier
