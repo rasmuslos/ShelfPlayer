@@ -32,7 +32,13 @@ extension PersistenceManager {
             signposter = .init(logger: logger)
         }
         
-        func sync(sessions payload: [SessionPayload]) async throws {
+        /// Insert changes into the database and notify the server of pending updates
+        ///
+        /// This function will:
+        /// 1. update or delete existing progress entities
+        /// 2. send detected differences to server
+        /// 3. create missing local entities
+        func sync(sessions payload: [ProgressPayload], serverID: ItemIdentifier.ServerID) async throws {
             do {
                 let signpostID = signposter.makeSignpostID()
                 let signpostState = signposter.beginInterval("sync", id: signpostID)
@@ -40,7 +46,6 @@ extension PersistenceManager {
                 logger.info("Initiating sync")
                 
                 try modelContext.save()
-                let mapped = Dictionary(uniqueKeysWithValues: payload.map { ($0.id, $0) })
                 
                 signposter.emitEvent("mapIDs", id: signpostID)
                 
@@ -51,36 +56,60 @@ extension PersistenceManager {
                 try modelContext.transaction {
                     try modelContext.enumerate(FetchDescriptor<PersistedProgress>()) { entity in
                         let id = entity.id
-                        let payload = mapped[id]
+                        let payload = payload.first(where: { $0.id == id })
                         
                         switch entity.status {
                         case .synchronised, .desynchronised:
                             guard let payload else {
-                                pendingCreation.append(.init(persistedEntity: entity))
+                                if entity.status == .desynchronised {
+                                    pendingCreation.append(.init(persistedEntity: entity))
+                                    return
+                                } else {
+                                    modelContext.delete(entity)
+                                    return
+                                }
+                            }
+                            
+                            guard let lastUpdate = payload.lastUpdate else {
+                                pendingUpdate.append(.init(persistedEntity: entity))
                                 return
                             }
                             
-                            let delta = Int(payload.updatedAt / 1000).distance(to: Int(entity.lastUpdate.timeIntervalSince1970))
+                            let delta = Int(lastUpdate / 1000).distance(to: Int(entity.lastUpdate.timeIntervalSince1970))
                             
                             if delta == 0 && entity.status == .synchronised {
                                 return
-                            } else if delta > 0 {
-                                entity.duration = payload.duration ?? 0
-                                entity.currentTime = payload.currentTime ?? 0
-                                
-                                entity.progress = payload.progress ?? 0
-                                
-                                entity.startedAt = Date(timeIntervalSince1970: Double(payload.startedAt) / 1000)
-                                entity.lastUpdate = Date(timeIntervalSince1970: Double(payload.updatedAt) / 1000)
-                                
-                                if let finishedAt = payload.finishedAt {
-                                    entity.finishedAt = Date(timeIntervalSince1970: Double(finishedAt) / 1000)
-                                } else {
-                                    entity.finishedAt = nil
-                                }
-                            } else {
-                                pendingUpdate.append(.init(persistedEntity: entity))
                             }
+                            
+                            if delta < 0 {
+                                pendingUpdate.append(.init(persistedEntity: entity))
+                                return
+                            }
+                            
+                            entity.duration = payload.duration ?? 0
+                            entity.currentTime = payload.currentTime ?? 0
+                            
+                            entity.progress = payload.progress ?? 0
+                            
+                            if let startedAt = payload.startedAt {
+                                entity.startedAt = Date(timeIntervalSince1970: Double(startedAt) / 1000)
+                            } else {
+                                entity.startedAt = nil
+                            }
+                            
+                            if let lastUpdate = payload.lastUpdate {
+                                entity.lastUpdate = Date(timeIntervalSince1970: Double(lastUpdate) / 1000)
+                            } else {
+                                entity.lastUpdate = .now
+                            }
+                            
+                            if let finishedAt = payload.finishedAt {
+                                entity.finishedAt = Date(timeIntervalSince1970: Double(finishedAt) / 1000)
+                            } else {
+                                entity.finishedAt = nil
+                            }
+                            
+                            entity.status = .synchronised
                         case .tombstone:
                             if payload != nil {
                                 pendingDeletion.append((id, entity.itemID.serverID))
@@ -96,18 +125,49 @@ extension PersistenceManager {
                 logger.info("Deleting \(pendingDeletion.count) progress entities")
                 
                 for (id, serverID) in pendingDeletion {
-                    try? await ABSClient[serverID].deleteProgress(progressID: id)
+                    try? await ABSClient[serverID].delete(progressID: id)
                 }
                 
                 signposter.emitEvent("delete", id: signpostID)
                 
                 let batch = pendingCreation + pendingUpdate
+                let grouped = Dictionary(batch.map { ($0.itemID.serverID, [$0]) }, uniquingKeysWith: +)
                 
-                logger.info("Batch updating \(batch.count) progress entities")
+                logger.info("Batch updating \(batch.count) progress entities from \(grouped.count) servers")
                 
-                
+                for (serverID, entities) in grouped {
+                    try await ABSClient[serverID].batchUpdate(progress: entities)
+                }
                 
                 signposter.emitEvent("batch", id: signpostID)
+                
+                try modelContext.transaction {
+                    let identifiers = try modelContext.fetchIdentifiers(FetchDescriptor<PersistedProgress>()) as! [String]
+                    let remaining = payload.filter { !identifiers.contains($0.id) }
+                    
+                    for payload in remaining {
+                        let entity = PersistedProgress(
+                            id: payload.id,
+                            itemID: .init(primaryID: payload.episodeId ?? payload.libraryItemId,
+                                          groupingID: payload.episodeId != nil ? payload.libraryItemId : nil,
+                                          libraryID: "_",
+                                          serverID: serverID,
+                                          type: payload.episodeId != nil ? .episode : .audiobook),
+                            progress: payload.progress ?? 0,
+                            duration: payload.duration ?? 0,
+                            currentTime: payload.currentTime ?? 0,
+                            startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
+                            lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
+                            finishedAt: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : nil,
+                            status: .synchronised)
+                        
+                        modelContext.insert(entity)
+                    }
+                }
+                
+                signposter.emitEvent("cleanup", id: signpostID)
+                
+                try modelContext.save()
                 
                 signposter.endInterval("sync", signpostState)
             } catch {

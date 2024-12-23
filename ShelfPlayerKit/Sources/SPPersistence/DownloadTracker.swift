@@ -11,16 +11,18 @@ import OSLog
 import Combine
 
 @Observable @MainActor
-public final class DownloadStatusTracker {
+public final class DownloadTracker {
     let itemID: ItemIdentifier
-    
-    var status: OfflineManager.OfflineStatus
+    var currentStatus: DownloadStatus?
     
     init(itemID: ItemIdentifier) {
         self.itemID = itemID
-        status = .none
+        self.currentStatus = nil
     }
-    public convenience init(_ item: Item) {
-        self.init(itemID: item.id)
+    
+    enum DownloadStatus: Sendable, Codable {
+        case missing
+        case downloading
+        case downloaded
     }
 }

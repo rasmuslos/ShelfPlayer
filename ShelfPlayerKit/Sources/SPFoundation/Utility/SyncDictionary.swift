@@ -12,8 +12,9 @@ public actor SyncDictionary<K: Hashable, V>: Sendable {
         buffer = elements
     }
     
-    public func clear() {
-        buffer.removeAll()
+    // Sadly this is the only way
+    public func set(_ key: K, value: V) {
+        buffer[key] = value
     }
     
     public func append(_ elements: [K: V]) {
@@ -29,9 +30,15 @@ public actor SyncDictionary<K: Hashable, V>: Sendable {
         }
     }
     
-    // Sadly this is the only way
-    public func set(_ key: K, value: V) {
-        buffer[key] = value
+    public func removeValue(for key: K) -> V? {
+        let value = buffer[key]
+        buffer[key] = nil
+        
+        return value
+    }
+    
+    public func removeAll() {
+        buffer.removeAll()
     }
  
     public var contents: [K: V] {

@@ -11,12 +11,12 @@ import SwiftData
 extension SchemaV1 {
     @Model
     public final class Bookmark {
-        public let itemId: String
+        public var itemId: String
         // episodes are not supported by ABS right now, but i will leave this here
-        public let episodeId: String?
+        public var episodeId: String?
         
         public var note: String
-        public let position: TimeInterval
+        public var position: TimeInterval
         
         internal var status: SyncStatus
         
