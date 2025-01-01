@@ -8,7 +8,6 @@
 import SwiftUI
 import SPFoundation
 import SPPersistence
-import SPPersistenceExtended
 
 internal struct OfflinePodcastList: View {
     let podcasts: [Podcast: [Episode]]
@@ -28,7 +27,7 @@ internal struct OfflinePodcastList: View {
         }
         .onDelete { indexSet in
             indexSet.forEach { index in
-                OfflineManager.shared.remove(podcastId: Array(podcasts.keys)[index].id)
+                // OfflineManager.shared.remove(podcastId: Array(podcasts.keys)[index].id)
             }
         }
     }

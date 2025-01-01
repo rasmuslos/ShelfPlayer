@@ -31,6 +31,7 @@ internal struct UserContext {
         let context = INMediaUserContext()
         var totalCount = 0
         
+        /*
         let libraries = try await AudiobookshelfClient.shared.libraries()
         for library in libraries {
             switch library.type {
@@ -42,6 +43,7 @@ internal struct UserContext {
                 break
             }
         }
+         */
         
         context.subscriptionStatus = .subscribed
         context.numberOfLibraryItems = totalCount

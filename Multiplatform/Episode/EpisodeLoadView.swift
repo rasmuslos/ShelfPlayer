@@ -41,6 +41,7 @@ internal struct EpisodeLoadView: View {
             failed = false
         }
         
+        /*
         guard let episode = try? await AudiobookshelfClient.shared.item(itemId: podcastId, episodeId: id).0 as? Episode else {
             await MainActor.withAnimation {
                 failed = true
@@ -52,5 +53,6 @@ internal struct EpisodeLoadView: View {
         await MainActor.withAnimation {
             self.episode = episode
         }
+         */
     }
 }

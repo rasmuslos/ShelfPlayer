@@ -13,7 +13,7 @@ internal struct PodcastHomePanel: View {
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    @Default(.hideFromContinueListening) private var hideFromContinueListening
+    // @Default(.hideFromContinueListening) private var hideFromContinueListening
     
     @State private var episodes = [HomeRow<Episode>]()
     @State private var podcasts = [HomeRow<Podcast>]()
@@ -48,7 +48,8 @@ internal struct PodcastHomePanel: View {
                                 
                                 if row.id == "continue-listening" {
                                     EpisodeFeaturedGrid(episodes: row.entities.filter { episode in
-                                        !hideFromContinueListening.contains { $0.itemId == episode.podcastId && $0.episodeId == episode.id }
+                                        // !hideFromContinueListening.contains { $0.itemId == episode.podcastId && $0.episodeId == episode.id }
+                                        true
                                     })
                                 } else {
                                     EpisodeGrid(episodes: row.entities)
@@ -70,11 +71,13 @@ internal struct PodcastHomePanel: View {
                 .refreshable {
                     await fetchItems()
                 }
+                /*
                 .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
                     Task {
                         await fetchItems()
                     }
                 }
+                 */
             }
         }
         .navigationTitle(library.name)
@@ -88,12 +91,14 @@ internal struct PodcastHomePanel: View {
         }
         
         do {
+            /*
             let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await AudiobookshelfClient.shared.home(libraryID: library.id)
             
             await MainActor.withAnimation {
                 self.episodes = home.1
                 self.podcasts = home.0
             }
+             */
         } catch {
             await MainActor.withAnimation {
                 failed = true

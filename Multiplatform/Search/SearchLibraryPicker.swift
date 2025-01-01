@@ -54,10 +54,12 @@ struct SearchLibraryPicker: ViewModifier {
     
     @Sendable
     private nonisolated func fetchLibraries() async {
+        /*
         let libraries = try? await AudiobookshelfClient.shared.libraries()
         
         await MainActor.run {
             self.libraries = libraries ?? []
         }
+         */
     }
 }

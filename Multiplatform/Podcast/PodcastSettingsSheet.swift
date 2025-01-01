@@ -9,38 +9,43 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct PodcastSettingsSheet: View {
+struct PodcastSettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
     
-    let podcast: Podcast
-    let configuration: PodcastFetchConfiguration
+    let itemID: ItemIdentifier
     
+    init(itemID: ItemIdentifier, current configuration: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration) {
+        self.itemID = itemID
+        _configuration = .init(initialValue: .init(configuration))
+    }
+    
+    @State private var loading = false
+    
+    @State private var configuration: PodcastAutoDownloadConfigurationShadow
     @State private var notificationPermission: UNAuthorizationStatus? = nil
     
     var body: some View {
-        @Bindable var configuration = configuration
-        
         NavigationStack {
             List {
                 Section {
-                    DownloadSettings(maxEpisodes: $configuration.maxEpisodes, autoDownloadEnabled: $configuration.autoDownload)
+                    DownloadSettings(maxEpisodes: $configuration.amount, autoDownloadEnabled: $configuration.enabled)
                     
-                    Stepper("podcast.settings.maxEpisodes \(configuration.maxEpisodes)") {
-                        if configuration.maxEpisodes <= 32 {
-                            configuration.maxEpisodes += 1
+                    Stepper("podcast.settings.maxEpisodes \(configuration.amount)") {
+                        if configuration.amount <= 32 {
+                            configuration.amount += 1
                         }
                     } onDecrement: {
-                        if configuration.maxEpisodes > 1 {
-                            configuration.maxEpisodes -= 1
+                        if configuration.amount > 1 {
+                            configuration.amount -= 1
                         }
                     }
-                    .disabled(!configuration.autoDownload)
+                    .disabled(!configuration.enabled)
                 } footer: {
-                    Text("podcast.settings.downloadFooter \(configuration.maxEpisodes)")
+                    Text("podcast.settings.downloadFooter \(configuration.amount)")
                 }
                 
                 Section {
-                    NotificationToggle(autoDownloadEnabled: configuration.autoDownload, notificationsEnabled: $configuration.notifications)
+                    NotificationToggle(autoDownloadEnabled: configuration.enabled, notificationsEnabled: $configuration.enableNotifications)
                         .disabled(notificationPermission != .authorized)
                 } footer: {
                     Text("podcast.settings.notificationFooter")
@@ -77,22 +82,51 @@ internal struct PodcastSettingsSheet: View {
             .navigationTitle("podcast.settings.title")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                Button {
-                    dismiss()
-                    
-                    Task {
-                        guard configuration.autoDownload else {
-                            return
+                ToolbarItem(placement: .confirmationAction) {
+                    if loading {
+                        ProgressIndicator()
+                    } else {
+                        Button("save") {
+                            Task {
+                                loading = true
+                                await PersistenceManager.shared.podcasts.set(itemID, configuration.materialized)
+                                loading = false
+                                
+                                dismiss()
+                                // try await BackgroundTaskHandler.(configuration: configuration)
+                            }
                         }
-                        
-                        try await BackgroundTaskHandler.updateDownloads(configuration: configuration)
+                        .disabled(loading)
                     }
-                } label: {
-                    Label("done", systemImage: "checkmark")
-                        .labelStyle(.titleOnly)
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("cancel") {
+                        dismiss()
+                    }
+                    .disabled(loading)
                 }
             }
         }
+    }
+}
+
+extension UNNotificationSettings: @retroactive @unchecked Sendable {}
+
+struct PodcastAutoDownloadConfigurationShadow: Codable, Sendable {
+    var itemID: ItemIdentifier
+    var enabled: Bool
+    var amount: Int
+    var enableNotifications: Bool
+    
+    init(_ configuration: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration) {
+        itemID = configuration.itemID
+        enabled = configuration.enabled
+        amount = configuration.amount
+        enableNotifications = configuration.enableNotifications
+    }
+    
+    var materialized: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration {
+        .init(itemID: itemID, enabled: enabled, amount: amount, enableNotifications: enableNotifications)
     }
 }
 
@@ -121,7 +155,10 @@ internal extension PodcastSettingsSheet {
 #Preview {
     Text(verbatim: ":)")
         .sheet(isPresented: .constant(true)) {
-            PodcastSettingsSheet(podcast: .fixture, configuration: OfflineManager.shared.requireConfiguration(podcastId: "fixture"))
+            PodcastSettingsSheet(itemID: .fixture, current: .init(itemID: .fixture,
+                                                                  enabled: true,
+                                                                  amount: 7,
+                                                                  enableNotifications: true))
         }
 }
 #endif

@@ -53,6 +53,7 @@ internal struct TabRouter: View {
                 
                 selection = $0
             })) {
+                /*
                 if let current {
                     ForEach(TabValue.tabs(for: current)) { tab in
                         Tab(tab.label, systemImage: tab.image, value: tab) {
@@ -72,6 +73,7 @@ internal struct TabRouter: View {
                     }
                     .hidden(isCompact)
                 }
+                 */
             }
             .tabViewStyle(.sidebarAdaptable)
             .tabViewSidebarBottomBar {
@@ -116,6 +118,7 @@ internal struct TabRouter: View {
             }
             .id(current)
             .modifier(NowPlaying.CompactModifier())
+            /*
             .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorName, authorID, seriesName, seriesID, podcastID, episodeID in
                 guard let library = library(for: libraryID) else {
                     return
@@ -163,8 +166,9 @@ internal struct TabRouter: View {
                     }
                 }
             })
+             */
             .environment(\.libraries, libraries)
-            .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
+            // .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
             .sheet(isPresented: $accountSheetPresented) {
                 AccountSheet()
             }
@@ -233,6 +237,7 @@ internal struct TabRouter: View {
     }
     
     private nonisolated func fetchLibraries() async {
+        /*
         guard let libraries = try? await AudiobookshelfClient.shared.libraries() else {
             return
         }
@@ -244,6 +249,7 @@ internal struct TabRouter: View {
                 current = selection?.library ?? libraries.first
             }
         }
+         */
     }
 }
 

@@ -14,29 +14,6 @@ public extension Episode {
         var episodes = episodes
         
         if filter != .all {
-            episodes = episodes.filter {
-                let entity = OfflineManager.shared.progressEntity(item: $0)
-                
-                if entity.progress > 0 {
-                    if filter == .unfinished {
-                        return entity.progress < 1
-                    }
-                    if entity.progress < 1 && filter == .finished {
-                        return false
-                    }
-                    if entity.isFinished && filter == .progress {
-                        return false
-                    }
-                    
-                    return true
-                } else {
-                    if filter == .unfinished {
-                        return true
-                    } else {
-                        return false
-                    }
-                }
-            }
         }
         
         episodes.sort {

@@ -34,7 +34,7 @@ public class Item: Identifiable, @unchecked Sendable {
         self.released = released
     }
     
-    var cover: Cover? {
+    public var cover: Cover? {
         nil
     }
 }

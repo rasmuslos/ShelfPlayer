@@ -53,6 +53,7 @@ internal struct LegacyRouter: View {
             }
             .id(current)
             .modifier(NowPlaying.CompactModifier())
+            /*
             .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorName, authorID, seriesName, seriesID, podcastID, episodeID in
                 guard let library = library(for: libraryID) else {
                     return
@@ -96,8 +97,9 @@ internal struct LegacyRouter: View {
                     }
                 }
             })
+             */
             .environment(\.libraries, libraries)
-            .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
+            // .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
             .onChange(of: isCompact) {
                 if isCompact {
                     current = selection?.library ?? libraries.first
@@ -158,6 +160,7 @@ internal struct LegacyRouter: View {
     }
     
     private nonisolated func fetchLibraries() async {
+        /*
         guard let libraries = try? await AudiobookshelfClient.shared.libraries() else {
             return
         }
@@ -166,5 +169,6 @@ internal struct LegacyRouter: View {
             current = selection?.library ?? libraries.first
             self.libraries = libraries
         }
+         */
     }
 }

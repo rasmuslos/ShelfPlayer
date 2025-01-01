@@ -44,7 +44,7 @@ private extension CarPlayQueueController {
                 listItem.handler = { _, completion in
                     Task {
                         try await AudioPlayer.shared.advance(to: index)
-                        completion()
+                        // completion()
                     }
                 }
                 
@@ -56,7 +56,7 @@ private extension CarPlayQueueController {
             }
             
             let section = CPListSection(items: items)
-            self.template.updateSections([section])
+            // self.template.updateSections([section])
         }
     }
     

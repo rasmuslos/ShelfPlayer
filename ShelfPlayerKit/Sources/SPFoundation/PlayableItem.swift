@@ -20,7 +20,7 @@ public class PlayableItem: Item, @unchecked Sendable {
 }
 
 public extension PlayableItem {
-    struct AudioTrack: Comparable {
+    struct AudioTrack: Sendable, Comparable {
         public let index: Int
         
         public let offset: TimeInterval
@@ -37,6 +37,23 @@ public extension PlayableItem {
         
         public static func <(lhs: PlayableItem.AudioTrack, rhs: PlayableItem.AudioTrack) -> Bool {
             lhs.index < rhs.index
+        }
+    }
+    
+    struct SupplementaryPDF: Sendable {
+        public let ino: String
+        
+        public let fileName: String
+        public let fileExtension: String
+        
+        public init(ino: String, fileName: String, fileExtension: String) {
+            self.ino = ino
+            self.fileName = fileName
+            self.fileExtension = fileExtension
+        }
+        
+        public var name: String {
+            fileName.replacingOccurrences(of: fileExtension, with: "", range: fileName.range(of: fileExtension, options: .backwards))
         }
     }
 }

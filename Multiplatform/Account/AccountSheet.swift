@@ -49,12 +49,14 @@ internal struct AccountSheet: View {
                     }
                     
                     Button(role: .destructive) {
+                        /*
                         try? OfflineManager.shared.deleteProgressEntities()
                         
                         OfflineManager.shared.removeAllDownloads()
                         SpotlightIndexer.deleteIndex()
                         
                         AudiobookshelfClient.shared.store(token: nil)
+                         */
                         
                         dismiss()
                     } label: {
@@ -73,14 +75,16 @@ internal struct AccountSheet: View {
                         case .notDetermined:
                             Button {
                                 Task {
+                                    /*
                                     try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
                                     notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                                     */
                                 }
                             } label: {
                                 Label("account.notifications.request", systemImage: "bell.badge.waveform.fill")
                             }
                             .task {
-                                notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                                // notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                             }
                         case .denied:
                             Link(destination: URL(string: UIApplication.openNotificationSettingsURLString)!) {
@@ -97,7 +101,7 @@ internal struct AccountSheet: View {
                         
                         Button {
                             Task {
-                                try? await BackgroundTaskHandler.updateDownloads()
+                                // try? await BackgroundTaskHandler.updateDownloads()
                             }
                         } label: {
                             Label("account.newEpisodes.check", systemImage: "antenna.radiowaves.left.and.right")
@@ -155,7 +159,7 @@ internal struct AccountSheet: View {
                     Group {
                         Button(role: .destructive) {
                             downloadsSize = nil
-                            OfflineManager.shared.removeAllDownloads()
+                            // OfflineManager.shared.removeAllDownloads()
                             
                             Task {
                                 await update()
@@ -179,7 +183,7 @@ internal struct AccountSheet: View {
                             cacheSize = nil
                             
                             ImagePipeline.shared.cache.removeAll()
-                            try? OfflineManager.shared.deleteProgressEntities()
+                            // try? OfflineManager.shared.deleteProgressEntities()
                             
                             NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
                                 "offline": false,
@@ -234,22 +238,26 @@ internal struct AccountSheet: View {
                         Button {
                             serverInfoToggled.toggle()
                         } label: {
+                            /*
                             Text(serverInfoToggled
                                  ? AudiobookshelfClient.shared.clientID
                                  : String(localized: "account.server \(AudiobookshelfClient.shared.serverURL.absoluteString) \(serverVersion ?? "?")"))
                             .animation(.smooth, value: serverInfoToggled)
                             .fontDesign(.monospaced)
+                             */
                         }
                         .buttonStyle(.plain)
                         
-                        Text("account.version \(AudiobookshelfClient.shared.clientVersion) \(AudiobookshelfClient.shared.clientBuild)")
-                        Text("account.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
+                        // Text("account.version \(AudiobookshelfClient.shared.clientVersion) \(AudiobookshelfClient.shared.clientBuild)")
+                        // Text("account.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
                         
+                        /*
                         if let lastSpotlightIndex {
                             Text("account.spotlight.lastIndex \(lastSpotlightIndex.formatted(date: .abbreviated, time: .shortened))")
                         } else {
                             Text("account.spotlight.pending")
                         }
+                         */
                     }
                 }
                 .font(.caption)
@@ -266,6 +274,7 @@ internal struct AccountSheet: View {
     private nonisolated func update() async {
         await withTaskGroup(of: Void.self) {
             $0.addTask {
+                /*
                 guard let username = try? await AudiobookshelfClient.shared.me().1 else {
                     return
                 }
@@ -273,8 +282,10 @@ internal struct AccountSheet: View {
                 await MainActor.withAnimation {
                     self.username = username
                 }
+                 */
             }
             $0.addTask {
+                /*
                 guard let serverVersion = try? await AudiobookshelfClient.shared.status().serverVersion else {
                     return
                 }
@@ -282,8 +293,10 @@ internal struct AccountSheet: View {
                 await MainActor.withAnimation {
                     self.serverVersion = serverVersion
                 }
+                 */
             }
             $0.addTask {
+                /*
                 guard let size = try? (ImagePipeline.shared.configuration.dataCache as? DataCache)?.path.directoryTotalAllocatedSize() else {
                     return
                 }
@@ -291,8 +304,10 @@ internal struct AccountSheet: View {
                 await MainActor.withAnimation {
                     self.cacheSize = size
                 }
+                 */
             }
             $0.addTask {
+                /*
                 guard let size = try? DownloadManager.shared.documentsURL.directoryTotalAllocatedSize() else {
                     return
                 }
@@ -300,6 +315,7 @@ internal struct AccountSheet: View {
                 await MainActor.withAnimation {
                     self.downloadsSize = size
                 }
+                 */
             }
         }
     }

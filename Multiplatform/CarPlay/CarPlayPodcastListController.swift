@@ -30,6 +30,7 @@ private extension CarPlayPodcastListController {
     func updateSections() {
         updateTask?.cancel()
         updateTask = .detached {
+            /*
             guard let podcasts = try? await AudiobookshelfClient.shared.podcasts(libraryID: self.library.id, limit: nil, page: nil).0 else {
                 return
             }
@@ -58,6 +59,7 @@ private extension CarPlayPodcastListController {
             
             let section = CPListSection(items: items, header: nil, sectionIndexTitle: nil)
             self.template.updateSections([section])
+             */
         }
     }
 }

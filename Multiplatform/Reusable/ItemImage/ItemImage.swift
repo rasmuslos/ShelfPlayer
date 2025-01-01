@@ -48,6 +48,7 @@ internal struct ItemImage: View {
     }
     
     private var request: ImageRequest? {
+        /*
         guard let url = cover?.url else {
             return nil
         }
@@ -59,6 +60,9 @@ internal struct ItemImage: View {
         }
         
         return .init(urlRequest: urlRequest, priority: priority)
+         */
+        
+        return nil
     }
     
     private var aspectRatioPolicy: AspectRatioPolicy {

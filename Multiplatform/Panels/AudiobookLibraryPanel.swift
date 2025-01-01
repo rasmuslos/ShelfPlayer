@@ -52,10 +52,10 @@ internal struct AudiobookLibraryPanel: View {
         }
         
         if collapseSeries {
-            return AudiobookSection.filterSortGroup(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
-        } else {
-            return Audiobook.filterSort(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+            // return AudiobookSection.filterSortGroup(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
         }
+        
+        return Audiobook.filterSort(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
     }
     
     var body: some View {

@@ -59,9 +59,9 @@ extension PersistenceManager {
                         let payload = payload.first(where: { $0.id == id })
                         
                         switch entity.status {
-                        case .synchronised, .desynchronised:
+                        case .synchronized, .desynchronized:
                             guard let payload else {
-                                if entity.status == .desynchronised {
+                                if entity.status == .desynchronized {
                                     pendingCreation.append(.init(persistedEntity: entity))
                                     return
                                 } else {
@@ -77,7 +77,7 @@ extension PersistenceManager {
                             
                             let delta = Int(lastUpdate / 1000).distance(to: Int(entity.lastUpdate.timeIntervalSince1970))
                             
-                            if delta == 0 && entity.status == .synchronised {
+                            if delta == 0 && entity.status == .synchronized {
                                 return
                             }
                             
@@ -109,7 +109,7 @@ extension PersistenceManager {
                                 entity.finishedAt = nil
                             }
                             
-                            entity.status = .synchronised
+                            entity.status = .synchronized
                         case .tombstone:
                             if payload != nil {
                                 pendingDeletion.append((id, entity.itemID.serverID))
@@ -159,7 +159,7 @@ extension PersistenceManager {
                             startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
                             lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
                             finishedAt: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : nil,
-                            status: .synchronised)
+                            status: .synchronized)
                         
                         modelContext.insert(entity)
                     }
@@ -179,5 +179,59 @@ extension PersistenceManager {
                 throw error
             }
         }
+    }
+}
+
+extension PersistenceManager.ProgressSubsystem {
+    func delete(_ entity: PersistedProgress) async throws {
+        do {
+            try await ABSClient[entity.itemID.serverID].delete(progressID: entity.id)
+        }
+        
+        let id = entity.id
+        
+        try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+            $0.id == id
+        })
+    }
+}
+public extension PersistenceManager.ProgressSubsystem {
+    subscript(_ itemID: ItemIdentifier) -> ProgressEntity {
+        let itemID = itemID
+        var fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+            $0.itemID == itemID
+        })
+        fetchDescriptor.includePendingChanges = true
+        
+        // Return existing
+        
+        do {
+            let entities = try modelContext.fetch(fetchDescriptor)
+            
+            if !entities.isEmpty {
+                if entities.count != 1 {
+                    logger.error("Found \(entities.count) progress entities for \(itemID)")
+                    
+                    var sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
+                    sorted.removeFirst()
+                    
+                    for entity in sorted {
+                        Task {
+                            try await delete(entity)
+                        }
+                    }
+                }
+                
+                return .init(persistedEntity: entities.first!)
+            }
+        } catch {
+            logger.error("Error fetching progress for \(itemID): \(error)")
+        }
+        
+        // Create new
+        
+        logger.error("Missing progress for \(itemID)")
+        
+        return .missing(itemID)
     }
 }

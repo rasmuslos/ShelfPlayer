@@ -13,44 +13,51 @@ import SPPlayback
 
 internal struct Chapters: View {
     let item: PlayableItem
-    let chapters: [PlayableItem.Chapter]
+    let chapters: [Chapter]
     
-    @State private var progressEntity: ProgressEntity
+    @State private var progressEntity: ProgressEntity?
     
     private var activeIndex: Int? {
+        /*
         guard progressEntity.currentTime > 0 else {
             return nil
         }
         
-        return chapters.firstIndex { progressEntity.currentTime >= $0.start && progressEntity.currentTime < $0.end }
+        return chapters.firstIndex { progressEntity.currentTime >= $0.startOffset && progressEntity.currentTime < $0.endOffset }
+         */
+        nil
     }
     private var finished: [Int] {
         var finished = [Int]()
         
+        /*
         for chapter in chapters {
-            if progressEntity.currentTime >= chapter.end {
+            if progressEntity.currentTime >= chapter.endOffset {
                 finished.append(chapters.firstIndex(of: chapter)!)
             }
         }
+         */
         
         return finished
     }
     
-    init(item: PlayableItem, chapters: [PlayableItem.Chapter]) {
+    init(item: PlayableItem, chapters: [Chapter]) {
         self.item = item
         self.chapters = chapters
         
+        /*
         _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
         progressEntity.beginReceivingUpdates()
+         */
     }
     
     var body: some View {
         ForEach(Array(chapters.enumerated()), id: \.element.id) { (offset, chapter) in
-            Row(id: "\(chapter.id)", title: chapter.title, time: chapter.start, active: activeIndex == offset, finished: finished.contains { $0 == offset }) {
+            Row(id: "\(chapter.id)", title: chapter.title, time: chapter.startOffset, active: activeIndex == offset, finished: finished.contains { $0 == offset }) {
                 if AudioPlayer.shared.item?.id == item.id {
-                    await AudioPlayer.shared.seek(to: chapter.start)
+                    await AudioPlayer.shared.seek(to: chapter.startOffset)
                 } else {
-                    try await AudioPlayer.shared.play(item, at: chapter.start)
+                    try await AudioPlayer.shared.play(item, at: chapter.startOffset)
                 }
             }
         }
@@ -120,11 +127,11 @@ internal extension Chapters {
 #Preview {
     List {
         Chapters(item: Audiobook.fixture, chapters: [
-            .init(id: 1, start: 0000, end: 1000, title: "Chapter 1 TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT"),
-            .init(id: 2, start: 1001, end: 2000, title: "Chapter 2"),
-            .init(id: 3, start: 2001, end: 3000, title: "Chapter 3"),
-            .init(id: 4, start: 3001, end: 4000, title: "Chapter 4"),
-            .init(id: 5, start: 4001, end: 5000, title: "Chapter 5"),
+            .init(id: 1, startOffset: 0000, endOffset: 1000, title: "Chapter 1 TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT"),
+            .init(id: 2, startOffset: 1001, endOffset: 2000, title: "Chapter 2"),
+            .init(id: 3, startOffset: 2001, endOffset: 3000, title: "Chapter 3"),
+            .init(id: 4, startOffset: 3001, endOffset: 4000, title: "Chapter 4"),
+            .init(id: 5, startOffset: 4001, endOffset: 5000, title: "Chapter 5"),
         ])
     }
 }

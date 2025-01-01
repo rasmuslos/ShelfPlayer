@@ -37,7 +37,7 @@ struct AuthorizationResponse: Codable {
     }
 }
 
-public struct StatusResponse: Codable {
+public struct StatusResponse: Codable, Sendable {
     public let isInit: Bool
     public let authMethods: [String]
     public let serverVersion: String

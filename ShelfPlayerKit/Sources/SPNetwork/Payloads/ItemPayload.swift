@@ -46,6 +46,21 @@ struct ItemPayload: Codable {
     let chapters: [ChapterPayload]?
     
     let collapsedSeries: CollapsedSeriesPayload?
+    
+    let libraryFiles: [LibraryFile]?
+}
+
+struct LibraryFile: Codable {
+    let ino: String
+    let metadata: MetadataPayload
+    
+    let fileType: String
+    let isSupplementary: Bool
+    
+    struct MetadataPayload: Codable {
+        public let ext: String
+        public let filename: String
+    }
 }
 
 struct EpisodePayload: Codable {

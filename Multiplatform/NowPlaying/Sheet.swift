@@ -190,6 +190,7 @@ private extension NowPlaying.Sheet {
             if viewModel.bookmarks.isEmpty {
                 emptyText("bookmarks.empty")
             } else {
+                /*
                 ForEach(Array(viewModel.bookmarks.enumerated()), id: \.offset) { index, bookmark in
                     Chapters.Row(id: "\(bookmark.position)", title: bookmark.note, time: bookmark.position, active: false, finished: false) {
                         AudioPlayer.shared.itemCurrentTime = bookmark.position
@@ -215,6 +216,7 @@ private extension NowPlaying.Sheet {
                         viewModel.deleteBookmark(index: index)
                     }
                 }
+                 */
             }
         }
         .listStyle(.plain)
@@ -375,13 +377,13 @@ private struct QueueContextMenuItems: View {
         Group {
             if let episode = item as? Episode {
                 Button {
-                    Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
+                    // Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
                 } label: {
                     Label("episode.view", systemImage: "play.square.stack")
                 }
                 
                 Button {
-                    Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
+                    // Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
                 } label: {
                     Label("podcast.view", systemImage: "rectangle.stack")
                     Text(episode.podcastName)
@@ -390,13 +392,13 @@ private struct QueueContextMenuItems: View {
             
             if let audiobook = item as? Audiobook {
                 Button {
-                    Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
+                    // Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
                 } label: {
                     Label("audiobook.view", systemImage: "book")
                 }
                 
-                AuthorMenu(authors: audiobook.authors, libraryID: audiobook.libraryID)
-                SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
+                // AuthorMenu(authors: audiobook.authors, libraryID: audiobook.libraryID)
+                // SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
             }
         }
         .disabled(isOffline)

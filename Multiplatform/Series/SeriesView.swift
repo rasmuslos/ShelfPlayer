@@ -81,12 +81,14 @@ internal struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
+                /*
                 AudiobookSortFilter(filter: $viewModel.filter, displayType: $viewModel.displayMode, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending) {
                     viewModel.lazyLoader.sortOrder = viewModel.sortOrder
                     viewModel.lazyLoader.ascending = viewModel.ascending
                     
                     await viewModel.lazyLoader.refresh()
                 }
+                 */
             }
         }
         .environment(viewModel)
@@ -100,16 +102,16 @@ internal struct SeriesView: View {
             await viewModel.lazyLoader.refresh()
         }
         .userActivity("io.rfk.shelfplayer.series") {
-            $0.title = viewModel.series.id
+            // $0.title = viewModel.series.id
             $0.isEligibleForHandoff = true
             $0.persistentIdentifier = viewModel.series.name
-            $0.targetContentIdentifier = convertIdentifier(item: viewModel.series)
+            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.series)
             $0.userInfo = [
-                "libraryID": viewModel.series.libraryID,
-                "seriesID": viewModel.series.id,
+                // "libraryID": viewModel.series.libraryID,
+                // "seriesID": viewModel.series.id,
                 "seriesName": viewModel.series.name,
             ]
-            $0.webpageURL = viewModel.series.url
+            // $0.webpageURL = viewModel.series.url
         }
     }
 }

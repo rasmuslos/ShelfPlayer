@@ -61,7 +61,7 @@ internal extension AuthorViewModel {
     @MainActor
     var audiobooks: [AudiobookSection] {
         if collapseSeries {
-            return AudiobookSection.filterSortGroup(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
+            // return AudiobookSection.filterSortGroup(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
         }
         
         return Audiobook.filterSort(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
@@ -77,6 +77,7 @@ internal extension AuthorViewModel {
     }
     
     func load() async {
+        /*
         guard let (author, audiobooks, series) = try? await AudiobookshelfClient.shared.author(authorId: author.id, libraryID: library.id) else {
             await MainActor.run {
                 errorNotify.toggle()
@@ -90,5 +91,6 @@ internal extension AuthorViewModel {
             self._series = series
             self._audiobooks = audiobooks
         }
+         */
     }
 }

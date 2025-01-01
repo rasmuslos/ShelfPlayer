@@ -20,7 +20,7 @@ public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDeleg
         self.interfaceController = interfaceController
         
         registerAuthorizationSubscription()
-        updateController(authorized: AudiobookshelfClient.shared.authorized)
+        // updateController(authorized: AudiobookshelfClient.shared.authorized)
     }
     
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
@@ -41,9 +41,11 @@ private extension CarPlayDelegate {
     }
     
     private func registerAuthorizationSubscription() {
+        /*
         apiClientSubscription = AudiobookshelfClient.shared.$authorized.sink { [weak self] authorized in
             self?.updateController(authorized: authorized)
         }
+         */
     }
     private func updateController(authorized: Bool) {
         guard let interfaceController else {
@@ -56,7 +58,7 @@ private extension CarPlayDelegate {
             controller = nil
             
             Task {
-                try await interfaceController.setRootTemplate(unauthorizedTemplate, animated: false)
+                // try await interfaceController.setRootTemplate(unauthorizedTemplate, animated: false)
             }
         }
     }

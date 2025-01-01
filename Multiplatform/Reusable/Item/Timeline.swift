@@ -11,7 +11,7 @@ import ShelfPlayerKit
 
 internal struct Timeline: View {
     let item: PlayableItem
-    let sessions: [ListeningSession]
+    let sessions: [SessionPayload]
     
     private var released: String? {
         if let audiobook = item as? Audiobook {
@@ -71,12 +71,14 @@ internal struct Timeline: View {
 
 private struct EventRow: View {
     let date: Date
-    let currentTime: TimeInterval
+    let currentTime: TimeInterval?
     let type: EventType
     
     var body: some View {
         Row(date: date, icon: type.icon, color: type.color) {
-            Position(current: currentTime)
+            if let currentTime {
+                Position(current: currentTime)
+            }
         }
     }
     
@@ -183,14 +185,14 @@ private struct Position: View {
 
 #if DEBUG
 #Preview {
-    @Previewable @State var previewSessions: [ListeningSession] = []
+    @Previewable @State var previewSessions: [SessionPayload] = []
     
     ScrollView {
         Timeline(item: Audiobook.fixture, sessions: previewSessions)
     }
     .task {
         do {
-            previewSessions = try await AudiobookshelfClient.shared.listeningSessions(for: "0fbce99b-97af-4f6b-bb11-2a657b2fea86", episodeID: nil)
+            // previewSessions = try await AudiobookshelfClient.shared.listeningSessions(for: "0fbce99b-97af-4f6b-bb11-2a657b2fea86", episodeID: nil)
         } catch {}
     }
 }

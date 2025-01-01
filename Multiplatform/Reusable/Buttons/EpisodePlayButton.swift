@@ -47,7 +47,6 @@ internal struct EpisodePlayButton: View {
         .modifier(ButtonHoverEffectModifier(cornerRadius: .infinity, hoverEffect: .lift))
         .environment(viewModel)
         .onAppear {
-            viewModel.progressEntity.beginReceivingUpdates()
             viewModel.library = library
         }
     }
@@ -63,6 +62,7 @@ private struct ButtonText: View {
     }
     
     private var label: String {
+        /*
         if viewModel.progressEntity.isFinished {
             return String(localized: "listen.again")
         } else if viewModel.progressEntity.progress <= 0 {
@@ -74,6 +74,8 @@ private struct ButtonText: View {
             return (viewModel.progressEntity.duration - viewModel.progressEntity.currentTime)
                 .formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
         }
+         */
+        ""
     }
     private var icon: String {
         if isPlaying && nowPlayingViewModel.playing {
@@ -84,7 +86,8 @@ private struct ButtonText: View {
     }
     
     private var progressVisible: Bool {
-        isPlaying || (viewModel.progressEntity.progress > 0 && viewModel.progressEntity.progress < 1)
+        // isPlaying || (viewModel.progressEntity.progress > 0 && viewModel.progressEntity.progress < 1)
+        false
     }
     
     var body: some View {
@@ -109,7 +112,7 @@ private struct ButtonText: View {
                 .fill(.gray.opacity(0.25))
                 .overlay(alignment: .leading) {
                     Rectangle()
-                        .frame(width: progressVisible ? max(40 * viewModel.progressEntity.progress, 5) : 0)
+                        // .frame(width: progressVisible ? max(40 * viewModel.progressEntity.progress, 5) : 0)
                 }
                 .frame(width: progressVisible ? 40 : 0, height: 5)
                 .clipShape(.rect(cornerRadius: .infinity))
@@ -123,7 +126,7 @@ private struct ButtonText: View {
         .font(.caption2)
         .animation(.smooth, value: isPlaying)
         .animation(.smooth, value: nowPlayingViewModel.playing)
-        .animation(.smooth, value: viewModel.progressEntity.progress)
+        // .animation(.smooth, value: viewModel.progressEntity.progress)
     }
 }
 
@@ -135,7 +138,7 @@ private final class EpisodePlayButtonViewModel {
     let highlighted: Bool
     
     var loading: Binding<Bool>
-    var progressEntity: ProgressEntity
+    var progressEntity: ProgressEntity?
     
     @MainActor
     init(episode: Episode, loading: Binding<Bool>, highlighted: Bool) {
@@ -143,7 +146,7 @@ private final class EpisodePlayButtonViewModel {
         self.loading = loading
         self.highlighted = highlighted
         
-        progressEntity = OfflineManager.shared.progressEntity(item: episode)
+        // progressEntity = OfflineManager.shared.progressEntity(item: episode)
     }
     
     func play() {
@@ -159,9 +162,11 @@ private final class EpisodePlayButtonViewModel {
         }
         
         Task {
+            /*
             loading.wrappedValue = true
             try? await AudioPlayer.shared.play(episode, withoutPlaybackSession: withoutPlaybackSession)
             loading.wrappedValue = false
+             */
         }
     }
 }

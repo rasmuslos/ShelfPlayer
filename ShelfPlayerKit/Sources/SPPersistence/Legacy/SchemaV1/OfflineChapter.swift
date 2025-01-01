@@ -8,17 +8,18 @@
 import Foundation
 import SwiftData
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 extension SchemaV1 {
     @Model
-    public final class OfflineChapter {
-        public let id: Int
-        public let itemId: String
+    final class OfflineChapter {
+        var id: Int
+        var itemId: String
         
-        public let start: TimeInterval
-        public let end: TimeInterval
-        public let title: String
+        var start: TimeInterval
+        var end: TimeInterval
+        var title: String
         
-        public init(id: Int, itemId: String, start: TimeInterval, end: TimeInterval, title: String) {
+        init(id: Int, itemId: String, start: TimeInterval, end: TimeInterval, title: String) {
             self.id = id
             self.itemId = itemId
             self.start = start

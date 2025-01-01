@@ -30,13 +30,20 @@ extension PersistenceManager {
         private let service = "io.rfk.shelfPlayer.credentials".data(using: .ascii)!
         private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Authorization")
         
-        var servers: [ItemIdentifier.ServerID: Server]
+        var servers = [ItemIdentifier.ServerID: Server]()
         
         public struct Server: Identifiable, Sendable, Hashable, Codable {
             public let host: URL
             public let user: String
             public let token: String
             public let headers: [HTTPHeader]
+            
+            public init(host: URL, user: String, token: String, headers: [HTTPHeader]) {
+                self.host = host
+                self.user = user
+                self.token = token
+                self.headers = headers
+            }
             
             public var id: ItemIdentifier.ServerID {
                 // If someone has this as their user- or hostname its honestly their fault. This wont event break...
@@ -81,7 +88,7 @@ extension PersistenceManager {
             }
         }
         
-        func addServer(_ server: Server) throws {
+        public func addServer(_ server: Server) throws {
             let discovered = DiscoveredServer(serverID: server.id, host: server.host, user: server.user)
             
             modelContext.insert(discovered)

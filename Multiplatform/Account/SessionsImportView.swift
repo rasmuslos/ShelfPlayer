@@ -46,9 +46,9 @@ internal struct SessionsImportView: View {
         }
         .onAppear {
             task = Task.detached {
-                let success = await OfflineManager.shared.authorizeAndSync()
+                // let success = await OfflineManager.shared.authorizeAndSync()
                 try Task.checkCancellation()
-                await callback(success)
+                // await callback(success)
             }
         }
     }

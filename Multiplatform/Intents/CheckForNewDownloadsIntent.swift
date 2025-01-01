@@ -9,11 +9,11 @@ import Foundation
 import AppIntents
 
 struct CheckForNewDownloadsIntent: AppIntent {
-    static var title: LocalizedStringResource = "intents.checkForNewDownloads.title"
-    static var description = IntentDescription("intents.checkForNewDownloads.description")
+    static let title: LocalizedStringResource = "intents.checkForNewDownloads.title"
+    static let description = IntentDescription("intents.checkForNewDownloads.description")
     
     func perform() async throws -> some IntentResult {
-        try await BackgroundTaskHandler.updateDownloads()
+        // try await BackgroundTaskHandler.updateDownloads()
         return .result()
     }
 }

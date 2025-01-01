@@ -107,10 +107,10 @@ struct AuthorView: View {
             viewModel.library = library
         }
         .task {
-            await viewModel.load()
+            // await viewModel.load()
         }
         .refreshable {
-            await viewModel.load()
+            // await viewModel.load()
         }
         .sheet(isPresented: $viewModel.descriptionSheetVisible) {
             NavigationStack {
@@ -134,13 +134,13 @@ struct AuthorView: View {
         .userActivity("io.rfk.shelfplayer.author") {
             $0.title = viewModel.author.name
             $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = viewModel.author.id
-            $0.targetContentIdentifier = convertIdentifier(item: viewModel.author)
-            $0.userInfo = [
-                "libraryID": viewModel.author.libraryID,
-                "authorID": viewModel.author.id,
+            // $0.persistentIdentifier = viewModel.author.id
+            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.author)
+            $0.userInfo = [:
+                // "libraryID": viewModel.author.libraryID,
+                // "authorID": viewModel.author.id,
             ]
-            $0.webpageURL = viewModel.author.url
+            // $0.webpageURL = viewModel.author.url
         }
     }
 }

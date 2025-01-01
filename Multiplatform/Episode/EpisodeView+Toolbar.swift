@@ -8,7 +8,6 @@
 import SwiftUI
 import SPFoundation
 import SPPersistence
-import SPPersistenceExtended
 
 internal extension EpisodeView {
     struct ToolbarModifier: ViewModifier {
@@ -53,11 +52,13 @@ internal extension EpisodeView {
                                 Label("progress.reset", systemImage: "slash.circle")
                             }
                         } label: {
+                            /*
                                 if viewModel.progressEntity.isFinished {
                                     Image(systemName: "minus.circle")
                                 } else {
                                     Image(systemName: "checkmark.circle")
                                 }
+                             */
                         } primaryAction: {
                             viewModel.toggleFinished()
                         }

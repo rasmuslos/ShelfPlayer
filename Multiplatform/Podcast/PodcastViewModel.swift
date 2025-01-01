@@ -8,45 +8,44 @@
 import Foundation
 import SwiftUI
 import Defaults
-import RFKVisuals
+import RFVisuals
 import ShelfPlayerKit
 
-@Observable
+@Observable @MainActor
 internal final class PodcastViewModel {
-    @MainActor let podcast: Podcast
-    @MainActor private(set) var episodes: [Episode]
+    let podcast: Podcast
+    var episodes: [Episode]
     
-    @MainActor var library: Library!
+    var library: Library!
     
-    @MainActor var dominantColor: Color?
-    @MainActor var toolbarVisible: Bool
+    var dominantColor: Color?
+    var toolbarVisible: Bool
     
-    @MainActor var settingsSheetPresented: Bool
-    @MainActor var descriptionSheetPresented: Bool
+    var settingsSheetPresented: Bool
+    var descriptionSheetPresented: Bool
     
-    @MainActor var filter: ItemFilter {
+    var filter: ItemFilter {
         didSet {
-            Defaults[.episodesFilter(podcastId: podcast.id)] = filter
+            Defaults[.groupingFilter(podcast.id)] = filter
         }
     }
     
-    @MainActor var ascending: Bool {
+    var ascending: Bool {
         didSet {
-            Defaults[.episodesAscending(podcastId: podcast.id)] = ascending
+            Defaults[.groupingAscending(podcast.id)] = ascending
         }
     }
-    @MainActor var sortOrder: EpisodeSortOrder {
+    var sortOrder: EpisodeSortOrder {
         didSet {
-            Defaults[.episodesSortOrder(podcastId: podcast.id)] = sortOrder
+            Defaults[.groupingSortOrder(podcast.id)] = sortOrder
         }
     }
     
-    @MainActor var search: String
-    @MainActor var fetchConfiguration: PodcastFetchConfiguration
+    var search: String
+    var downloadConfiguration: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration?
     
-    @MainActor private var errorNotify: Bool
+    var errorNotify: Bool
     
-    @MainActor
     init(podcast: Podcast, episodes: [Episode]) {
         self.podcast = podcast
         self.episodes = episodes
@@ -57,24 +56,21 @@ internal final class PodcastViewModel {
         settingsSheetPresented = false
         descriptionSheetPresented = false
         
-        filter = Defaults[.episodesFilter(podcastId: podcast.id)]
+        filter = Defaults[.groupingFilter(podcast.id)]
         
-        ascending = Defaults[.episodesAscending(podcastId: podcast.id)]
-        sortOrder = Defaults[.episodesSortOrder(podcastId: podcast.id)]
+        ascending = Defaults[.groupingAscending(podcast.id)]
+        sortOrder = Defaults[.groupingSortOrder(podcast.id)]
         
         search = ""
-        fetchConfiguration = OfflineManager.shared.requireConfiguration(podcastId: podcast.id)
         
         errorNotify = false
     }
 }
 
 internal extension PodcastViewModel {
-    @MainActor
     var visible: [Episode] {
         return Array(Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending).prefix(15))
     }
-    @MainActor
     var filtered: [Episode] {
         let search = search.trimmingCharacters(in: .whitespacesAndNewlines)
         let sorted = Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
@@ -86,7 +82,6 @@ internal extension PodcastViewModel {
         return sorted.filter { $0.sortName.localizedStandardContains(search) || $0.descriptionText?.localizedStandardContains(search) == true }
     }
     
-    @MainActor
     var episodeCount: Int {
         guard !episodes.isEmpty else {
             return podcast.episodeCount
@@ -95,23 +90,21 @@ internal extension PodcastViewModel {
         return episodes.count
     }
     
-    @MainActor
     var settingsIcon: String {
-        guard fetchConfiguration.autoDownload else {
-            return "gear"
+        if downloadConfiguration?.enableNotifications == true {
+            "gear.badge"
+        } else if downloadConfiguration?.enabled == true {
+            "gear.badge.checkmark"
+        } else {
+            "gear.badge.xmark"
         }
-        
-        if fetchConfiguration.notifications {
-            return "gear.badge"
-        }
-        
-        return "gear.badge.checkmark"
     }
     
-    func load() async {
+    nonisolated func load() async {
         await withTaskGroup(of: Void.self) {
-            $0.addTask { await self.fetchEpisodes() }
             $0.addTask { await self.extractColor() }
+            $0.addTask { await self.fetchEpisodes() }
+            $0.addTask { await self.fetchDownloadConfiguration() }
             
             await $0.waitForAll()
         }
@@ -119,21 +112,7 @@ internal extension PodcastViewModel {
 }
 
 private extension PodcastViewModel {
-    func fetchEpisodes() async {
-        guard let episodes = try? await AudiobookshelfClient.shared.episodes(podcastId: podcast.id) else {
-            await MainActor.run {
-                errorNotify.toggle()
-            }
-            
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.episodes = episodes
-        }
-    }
-    
-    func extractColor() async {
+    nonisolated func extractColor() async {
         guard let image = await podcast.cover?.platformImage else {
             return
         }
@@ -150,6 +129,28 @@ private extension PodcastViewModel {
         
         await MainActor.withAnimation {
             self.dominantColor = result
+        }
+    }
+    
+    nonisolated func fetchEpisodes() async {
+        guard let episodes = try? await ABSClient[podcast.id.serverID].episodes(from: podcast.id) else {
+            await MainActor.run {
+                errorNotify.toggle()
+            }
+            
+            return
+        }
+        
+        await MainActor.withAnimation {
+            self.episodes = episodes
+        }
+    }
+    
+    nonisolated func fetchDownloadConfiguration() async {
+        let configuration = await PersistenceManager.shared.podcasts[podcast.id]
+        
+        await MainActor.withAnimation {
+            self.downloadConfiguration = configuration
         }
     }
 }

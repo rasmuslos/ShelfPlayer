@@ -15,6 +15,7 @@ import SPFoundation
 internal extension AudioPlayer {
     func setupObservers() {
         timeSubscription = audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.25, preferredTimescale: 1000), queue: dispatchQueue) { [unowned self] _ in
+            /*
             if chapterTTL < itemCurrentTime {
                 updateChapterIndex()
             }
@@ -22,7 +23,7 @@ internal extension AudioPlayer {
             Task {
                 await updateNowPlayingWidget()
             }
-            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration)
+            // playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration)
             
             if let playItem = audioPlayer.currentItem, playing {
                 if playItem.isPlaybackBufferEmpty {
@@ -35,6 +36,7 @@ internal extension AudioPlayer {
             }
             
             NotificationCenter.default.post(name: AudioPlayer.timeDidChangeNotification, object: nil)
+             */
         }
         
         rateSubscription = audioPlayer.observe(\.rate) { _, _ in
@@ -49,12 +51,12 @@ internal extension AudioPlayer {
             guard let currentTrackIndex = self.currentTrackIndex, currentTrackIndex + 1 < self.tracks.count else {
                 if let item = self.item {
                     Task {
-                        await item.postFinishedNotification(finished: true)
+                        // await item.postFinishedNotification(finished: true)
                     }
                 }
                 
                 Task {
-                    try await self.advance(finished: true)
+                    // try await self.advance(finished: true)
                 }
                 
                 return
@@ -86,6 +88,7 @@ internal extension AudioPlayer {
             NotificationCenter.default.post(name: AudioPlayer.routeDidChangeNotification, object: nil)
         }
         
+        /*
         NotificationCenter.default.addObserver(forName: PlayableItem.finishedNotification, object: nil, queue: nil) { [unowned self] in
             guard let userInfo = $0.userInfo, let itemID = userInfo["itemID"] as? String, let finished = userInfo["finished"] as? Bool else {
                 return
@@ -103,6 +106,7 @@ internal extension AudioPlayer {
                 }
             }
         }
+         */
         
         #if os(iOS)
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [unowned self] _ in
@@ -116,18 +120,18 @@ internal extension AudioPlayer {
         
         Task {
             for await value in Defaults.updates(.skipBackwardsInterval) {
-                skipBackwardsInterval = value
+                // skipBackwardsInterval = value
             }
         }
         Task {
             for await value in Defaults.updates(.skipForwardsInterval) {
-                skipForwardsInterval = value
+                // skipForwardsInterval = value
             }
         }
         Task {
             for await value in Defaults.updates(.enableChapterTrack) {
-                enableChapterTrack = value
-                updateChapterIndex()
+                // enableChapterTrack = value
+                // updateChapterIndex()
             }
         }
         

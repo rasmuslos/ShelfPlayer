@@ -88,18 +88,18 @@ struct PodcastView: View {
             }
         }
         .sheet(isPresented: $viewModel.settingsSheetPresented) {
-            PodcastSettingsSheet(podcast: viewModel.podcast, configuration: viewModel.fetchConfiguration)
+            // PodcastSettingsSheet(podcast: viewModel.podcast, configuration: viewModel.fetchConfiguration)
         }
         .userActivity("io.rfk.shelfplayer.podcast") {
             $0.title = viewModel.podcast.name
             $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = viewModel.podcast.id
-            $0.targetContentIdentifier = convertIdentifier(item: viewModel.podcast)
+            // $0.persistentIdentifier = viewModel.podcast.id
+            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.podcast)
             $0.userInfo = [
-                "libraryID": viewModel.podcast.libraryID,
+                // "libraryID": viewModel.podcast.libraryID,
                 "podcastID": viewModel.podcast.id,
             ]
-            $0.webpageURL = viewModel.podcast.url
+            // $0.webpageURL = viewModel.podcast.url
         }
     }
 }

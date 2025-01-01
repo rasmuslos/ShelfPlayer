@@ -14,6 +14,7 @@ import SPPlayback
 
 internal struct IntentHelper {
     static func convert(item: Item) async -> INMediaItem? {
+        /*
         guard let itemType = convert(type: item.type) else {
             return nil
         }
@@ -32,6 +33,8 @@ internal struct IntentHelper {
             type: itemType,
             artwork: artwork,
             artist: item.authors.joined(separator: ", "))
+         */
+        nil
     }
     
     static func createIntent(item: Item) async -> INPlayMediaIntent? {
@@ -52,7 +55,7 @@ internal struct IntentHelper {
         return intent
     }
     
-    private static func convert(type: Item.ItemType) -> INMediaItemType? {
+    private static func convert(type: ItemIdentifier.ItemType) -> INMediaItemType? {
         switch type {
         case .audiobook:
                 .audioBook
@@ -113,19 +116,19 @@ internal extension IntentHelper {
         // MARK: Identifier provided
         
         if let identifier = mediaSearch.mediaIdentifier {
-            let (itemID, episodeID, _, itemType) = convertIdentifier(identifier: identifier)
+            let itemID = ItemIdentifier(string: identifier)
             
             let item: Item
             
-            switch itemType {
+            switch itemID.type {
             case .audiobook, .episode:
-                item = try await AudiobookshelfClient.shared.item(itemId: itemID, episodeId: episodeID).0
+                item = try await ABSClient[itemID.serverID].playableItem(itemID: itemID).0
             case .author:
-                item = try await AudiobookshelfClient.shared.author(authorId: itemID)
+                item = try await ABSClient[itemID.serverID].author(with: itemID)
             case .series:
                 return [.unsupported()]
             case .podcast:
-                item = try await AudiobookshelfClient.shared.podcast(podcastId: itemID).0
+                item = try await ABSClient[itemID.serverID].podcast(with: itemID).0
             }
             
             guard let mediaItem = await convert(item: item) else {
@@ -143,7 +146,8 @@ internal extension IntentHelper {
             return []
         }
         
-        let libraries = try await AudiobookshelfClient.shared.libraries()
+        /*
+        let libraries = try await ABSClient[]
         
         var items: [Item] = []
         
@@ -157,13 +161,16 @@ internal extension IntentHelper {
         }
         
         return await finalize(items: items, search: search)
+         */
+        
+        fatalError(":(")
     }
     
     static func searchForAudiobooks(_ search: String, libraries: [Library]) async throws -> [Audiobook] {
         var result = [Audiobook]()
         
         for library in libraries.filter({ $0.type == .audiobooks }) {
-            result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).0
+            // result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).0
         }
         
         return result
@@ -173,7 +180,7 @@ internal extension IntentHelper {
         var result = [Podcast]()
         
         for library in libraries.filter({ $0.type == .podcasts }) {
-            result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).1
+            // result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).1
         }
         
         return result
@@ -183,9 +190,11 @@ internal extension IntentHelper {
         var result = [Item]()
         
         for library in libraries {
+            /*
             result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).0
             result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).1
             result += try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id).2
+             */
         }
         
         return result
@@ -199,6 +208,7 @@ internal extension IntentHelper {
         // MARK: Identifier provided
         
         if let identifier = mediaSearch.mediaIdentifier {
+            /*
             let (itemID, episodeID, _, itemType) = convertIdentifier(identifier: identifier)
             
             let item: Item
@@ -223,6 +233,7 @@ internal extension IntentHelper {
             }
             
             return [.success(with: mediaItem)]
+             */
         }
         
         // MARK: Search using provided searches
@@ -235,6 +246,7 @@ internal extension IntentHelper {
         
         var items: [Item] = []
         
+        /*
         switch mediaSearch.mediaType {
         case .audioBook:
             items += try OfflineManager.shared.audiobooks(query: search)
@@ -247,6 +259,7 @@ internal extension IntentHelper {
             items += try OfflineManager.shared.podcasts(query: search)
             items += try OfflineManager.shared.episodes(query: search)
         }
+         */
         
         return await finalize(items: items, search: search)
     }
@@ -262,6 +275,7 @@ internal extension IntentHelper {
     static func nextUp() async throws -> [Item] {
         var items: [Item] = []
         
+        /*
         for library in try await AudiobookshelfClient.shared.libraries() {
             switch library.type {
             case .audiobooks:
@@ -278,6 +292,7 @@ internal extension IntentHelper {
                 break
             }
         }
+         */
         
         return items
     }

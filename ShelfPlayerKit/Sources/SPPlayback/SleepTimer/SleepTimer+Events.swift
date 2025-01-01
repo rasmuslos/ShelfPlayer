@@ -9,7 +9,7 @@ import Foundation
 import Defaults
 
 internal extension SleepTimer {
-    func didPlay(pausedFor: TimeInterval) {
+    func willPlay(pausedFor: TimeInterval) {
         expiresAt = expiresAt?.advanced(by: .milliseconds(Int(pausedFor * 1000)))
         setupTimer()
         
@@ -44,20 +44,22 @@ internal extension SleepTimer {
                 return
             }
             
+            /*
             if let volume {
                 AudioPlayer.shared.audioPlayer.volume = volume
             }
             
             setupTimer()
+             */
         }
         
         
         timer.setCancelHandler { [weak self] in
-            self?.setupTimer()
+            // self?.setupTimer()
         }
         
         NotificationCenter.default.addObserver(forName: AudioPlayer.chapterDidChangeNotification, object: nil, queue: nil) { [unowned self] _ in
-            self.expiresAtChapterEnd? -= 1
+            // self.expiresAtChapterEnd? -= 1
         }
     }
 }

@@ -19,8 +19,10 @@ internal struct SleepTimerButton: View {
     @ViewBuilder
     private var clearButton: some View {
         Button {
+            /*
             SleepTimer.shared.expiresAt = nil
             SleepTimer.shared.expiresAtChapterEnd = nil
+             */
         } label: {
             Label("sleep.clear", systemImage: "trash")
                 .labelStyle(.iconOnly)
@@ -32,13 +34,13 @@ internal struct SleepTimerButton: View {
             if let remainingSleepTime = viewModel.remainingSleepTime {
                 ControlGroup {
                     Button {
-                        SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(-sleepTimerAdjustment)))
+                        // SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(-sleepTimerAdjustment)))
                     } label: {
                         Label("decrease", systemImage: "minus")
                             .labelStyle(.iconOnly)
                     }
                     Button {
-                        SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(sleepTimerAdjustment)))
+                        // SleepTimer.shared.expiresAt = DispatchTime.now().advanced(by: .seconds(Int(remainingSleepTime))).advanced(by: .seconds(Int(sleepTimerAdjustment)))
                     } label: {
                         Label("increase", systemImage: "plus")
                             .labelStyle(.iconOnly)
@@ -49,7 +51,7 @@ internal struct SleepTimerButton: View {
             } else if let sleepTimerExpiresAtChapterEnd = viewModel.sleepTimerExpiresAtChapterEnd {
                 ControlGroup {
                     Button {
-                        SleepTimer.shared.expiresAtChapterEnd? -= 1
+                        // SleepTimer.shared.expiresAtChapterEnd? -= 1
                     } label: {
                         Label("decrease", systemImage: "minus")
                             .labelStyle(.iconOnly)
@@ -58,7 +60,7 @@ internal struct SleepTimerButton: View {
                     Text(String(sleepTimerExpiresAtChapterEnd))
                     
                     Button {
-                        SleepTimer.shared.expiresAtChapterEnd? += 1
+                        // SleepTimer.shared.expiresAtChapterEnd? += 1
                     } label: {
                         Label("increase", systemImage: "plus")
                             .labelStyle(.iconOnly)
@@ -69,7 +71,7 @@ internal struct SleepTimerButton: View {
             } else {
                 ForEach([120, 90, 60, 45, 30, 15, 5].map { $0 * 60 }, id: \.self) { duration in
                     Button {
-                        SleepTimer.shared.expiresAt = .now().advanced(by: .seconds(duration))
+                        // SleepTimer.shared.expiresAt = .now().advanced(by: .seconds(duration))
                     } label: {
                         Text(TimeInterval(duration), format: .duration(unitsStyle: .full, allowedUnits: [.minute]))
                     }
@@ -81,7 +83,7 @@ internal struct SleepTimerButton: View {
                     Divider()
                     
                     Button {
-                        SleepTimer.shared.expiresAt = .now().advanced(by: .seconds(duration))
+                        // SleepTimer.shared.expiresAt = .now().advanced(by: .seconds(duration))
                     } label: {
                         Text(TimeInterval(duration), format: .duration(unitsStyle: .full, allowedUnits: [.minute]))
                     }
@@ -91,7 +93,7 @@ internal struct SleepTimerButton: View {
                     Divider()
                     
                     Button {
-                        SleepTimer.shared.expiresAtChapterEnd = 1
+                        // SleepTimer.shared.expiresAtChapterEnd = 1
                     } label: {
                         Text("sleep.chapter")
                     }

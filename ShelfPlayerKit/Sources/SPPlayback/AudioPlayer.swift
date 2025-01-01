@@ -15,23 +15,24 @@ import SPFoundation
 import SPPersistence
 
 public final class AudioPlayer {
-    internal var audioPlayer: AVQueuePlayer
+    nonisolated(unsafe) var audioPlayer: AVQueuePlayer
     
-    public var playing: Bool {
+    public nonisolated var playing: Bool {
         get {
             audioPlayer.rate > 0
         }
         set {
-            playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
-            
-            guard newValue != playing else {
-                return
-            }
-            
-            if newValue {
-                SleepTimer.shared.didPlay(pausedFor: lastPause?.distance(to: .now) ?? 0)
+            /*
+            Task {
+                playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
                 
-                Task {
+                guard newValue != playing else {
+                    return
+                }
+            
+                if newValue {
+                    await SleepTimer.shared.willPlay(pausedFor: lastPause?.distance(to: .now) ?? 0)
+                    
                     if Defaults[.smartRewind], let lastPause = lastPause, lastPause.timeIntervalSince(Date()) <= -10 * 60 {
                         await seek(to: itemCurrentTime - Double(Defaults[.skipBackwardsInterval]))
                     }
@@ -39,19 +40,17 @@ public final class AudioPlayer {
                     lastPause = nil
                     audioPlayer.play()
                     updateAudioSession(active: true)
+                } else {
+                    lastPause = Date()
+                    audioPlayer.pause()
+                    
+                    await SleepTimer.shared.didPause()
                 }
-            } else {
-                lastPause = Date()
-                audioPlayer.pause()
                 
-                SleepTimer.shared.didPause()
-            }
-            
-            Task {
                 await updateNowPlayingWidget()
+                NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
             }
-            
-            NotificationCenter.default.post(name: AudioPlayer.playingDidChangeNotification, object: nil)
+             */
         }
     }
     public internal(set) var buffering: Bool {
@@ -86,7 +85,7 @@ public final class AudioPlayer {
         }
         set {
             Task {
-                await seek(to: newValue)
+                // await seek(to: newValue)
             }
         }
     }
@@ -103,20 +102,20 @@ public final class AudioPlayer {
     public var chapterCurrentTime: TimeInterval {
         get {
             if let chapter {
-                return itemCurrentTime - chapter.start
+                return itemCurrentTime - chapter.startOffset
             } else {
                 return itemCurrentTime
             }
         }
         set {
             Task {
-                await seek(to: newValue, inCurrentChapter: true)
+                // await seek(to: newValue, inCurrentChapter: true)
             }
         }
     }
     public var chapterDuration: TimeInterval {
         if let chapter {
-            return chapter.end - chapter.start
+            return chapter.endOffset - chapter.startOffset
         } else {
             return itemDuration
         }
@@ -146,7 +145,7 @@ public final class AudioPlayer {
             }
             
             Task {
-                await populateNowPlayingWidgetMetadata()
+                // await populateNowPlayingWidgetMetadata()
             }
             
             NotificationCenter.default.post(name: AudioPlayer.itemDidChangeNotification, object: nil)
@@ -169,12 +168,12 @@ public final class AudioPlayer {
             }
             
             Task {
-                await updateNowPlayingTitle()
+                // await updateNowPlayingTitle()
             }
             NotificationCenter.default.post(name: AudioPlayer.chapterDidChangeNotification, object: nil)
         }
     }
-    public internal(set) var chapters: [PlayableItem.Chapter] {
+    public internal(set) var chapters: [Chapter] {
         didSet {
             guard oldValue != chapters else {
                 return
@@ -193,7 +192,7 @@ public final class AudioPlayer {
             audioPlayer.defaultRate = .init(playbackRate)
             
             if let item {
-                try? OfflineManager.shared.overrideDefaultPlaybackSpeed(playbackRate, for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
+                // try? OfflineManager.shared.overrideDefaultPlaybackSpeed(playbackRate, for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
             }
             
             if playing {
@@ -271,11 +270,13 @@ public final class AudioPlayer {
         skipForwardsInterval = Defaults[.skipForwardsInterval]
         skipBackwardsInterval = Defaults[.skipBackwardsInterval]
         
+        /*
         setupObservers()
         setupRemoteControls()
         
         setupAudioSession()
         updateAudioSession(active: false)
+         */
     }
 }
 
@@ -287,5 +288,5 @@ internal extension AudioPlayer {
 }
 
 public extension AudioPlayer {
-    static let shared = AudioPlayer()
+    nonisolated(unsafe) static let shared = AudioPlayer()
 }
