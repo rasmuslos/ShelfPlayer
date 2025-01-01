@@ -49,8 +49,8 @@ private extension CarPlayTabBar {
             
             item.handler = { _, completion in
                 Task {
-                    try await self.interfaceController.pushTemplate(template, animated: true)
-                    completion()
+                    // try await self.interfaceController.pushTemplate(template, animated: true)
+                    // completion()
                 }
             }
             
@@ -64,6 +64,7 @@ private extension CarPlayTabBar {
     func updateTemplates() {
         updateTask?.cancel()
         updateTask = .detached {
+            /*
             guard let libraries = try? await AudiobookshelfClient.shared.libraries() else {
                 return
             }
@@ -99,6 +100,7 @@ private extension CarPlayTabBar {
             } else {
                 self.template.updateTemplates(templates)
             }
+             */
         }
     }
 }

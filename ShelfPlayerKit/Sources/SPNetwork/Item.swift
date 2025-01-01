@@ -18,24 +18,46 @@ extension APIClient {
 }
 
 public extension APIClient where I == ItemIdentifier.ServerID  {
-    func playableItem(itemID: ItemIdentifier) async throws -> (PlayableItem, [PlayableItem.AudioTrack], [Chapter]) {
+    func playableItem(itemID: ItemIdentifier) async throws -> (PlayableItem, [PlayableItem.AudioTrack], [Chapter], [PlayableItem.SupplementaryPDF]) {
         let payload = try await item(itemID: itemID)
+        var supplementaryPDFs = [PlayableItem.SupplementaryPDF]()
+        
+        if let libraryFiles = payload.libraryFiles {
+            for libraryFile in libraryFiles {
+                guard libraryFile.metadata.ext == ".pdf" && libraryFile.isSupplementary else {
+                    continue
+                }
+                
+                let supplementaryPDF = PlayableItem.SupplementaryPDF(ino: libraryFile.ino,
+                                                                     fileName: libraryFile.metadata.filename,
+                                                                     fileExtension: libraryFile.metadata.ext.replacingOccurrences(
+                                                                        of: ".",
+                                                                        with: "",
+                                                                        range: libraryFile.metadata.ext.startIndex..<libraryFile.metadata.ext.index(libraryFile.metadata.ext.startIndex, offsetBy: 1)))
+                
+                supplementaryPDFs.append(supplementaryPDF)
+            }
+        }
         
         if itemID.groupingID != nil, let item = payload.media?.episodes?.first(where: { $0.id == itemID.primaryID }) {
             let episode = Episode(episode: item, item: payload, serverID: serverID)
             
-            guard let episode, let audioTrack = item.audioTrack, let chapters = item.chapters else {
+            guard let episode,
+                  let audioTrack = item.audioTrack,
+                  let chapters = item.chapters else {
                 throw APIClientError.invalidResponse
             }
             
-            return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init))
+            return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init), supplementaryPDFs)
         }
         
-        guard let audiobook = Audiobook(payload: payload, serverID: itemID.serverID), let tracks = payload.media?.tracks, let chapters = payload.media?.chapters else {
+        guard let audiobook = Audiobook(payload: payload, serverID: itemID.serverID),
+              let tracks = payload.media?.tracks,
+              let chapters = payload.media?.chapters else {
             throw APIClientError.invalidResponse
         }
         
-        return (audiobook, tracks.map(PlayableItem.AudioTrack.init), chapters.map(Chapter.init))
+        return (audiobook, tracks.map(PlayableItem.AudioTrack.init), chapters.map(Chapter.init), supplementaryPDFs)
     }
     
     func items(in library: Library, search: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {

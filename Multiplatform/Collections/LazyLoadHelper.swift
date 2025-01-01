@@ -11,7 +11,7 @@ import Defaults
 import ShelfPlayerKit
 
 @Observable
-internal final class LazyLoadHelper<T: Item, O: Any> {
+internal final class LazyLoadHelper<T: Item, O: Sendable>: Sendable {
     private static var PAGE_SIZE: Int {
         100
     }
@@ -28,10 +28,10 @@ internal final class LazyLoadHelper<T: Item, O: Any> {
     
     @MainActor internal var library: Library!
     
-    private let loadMore: (_ : Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)
+    private let loadMore: @Sendable (_ : Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)
     
     @MainActor
-    init(sortOrder: O, ascending: Bool, loadMore: @escaping (_: Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)) {
+    init(sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_: Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)) {
         self.sortOrder = sortOrder
         self.ascending = ascending
         
@@ -105,34 +105,40 @@ internal final class LazyLoadHelper<T: Item, O: Any> {
 internal extension LazyLoadHelper {
     @MainActor
     static var audiobooks: LazyLoadHelper<Audiobook, AudiobookSortOrder> {
-        .init(sortOrder: Defaults[.audiobooksSortOrder], ascending: Defaults[.audiobooksAscending], loadMore: {
-            try await AudiobookshelfClient.shared.audiobooks(libraryID: $3, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
+        .init(sortOrder: Defaults[.audiobooksSortOrder], ascending: Defaults[.audiobooksAscending], loadMore: { _, _, _, _ in
+            // try await AudiobookshelfClient.shared.audiobooks(libraryID: $3, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
+            ([], 0)
         })
     }
     
     @MainActor
-    static func audiobooks(seriesID: String) -> LazyLoadHelper<Audiobook, AudiobookSortOrder> {
-        .init(sortOrder: .seriesName, ascending: true, loadMore: {
+    static func audiobooks(seriesID: String) -> LazyLoadHelper<Audiobook, ()?> {
+        .init(sortOrder: nil, ascending: true, loadMore: { _, _, _, _ in
+            /*
             try await AudiobookshelfClient.shared.audiobooks(seriesID: seriesID,
                                                              libraryID: $3,
                                                              sortOrder: $1 == .seriesName ? nil : $1,
                                                              ascending: $2,
                                                              limit: PAGE_SIZE,
                                                              page: $0)
+             */
+            ([], 0)
         })
     }
     
     @MainActor
     static var series: LazyLoadHelper<Series, Never?> {
-        .init(sortOrder: nil, ascending: false, loadMore: {
-            try await AudiobookshelfClient.shared.series(libraryID: $3, limit: PAGE_SIZE, page: $0)
+        .init(sortOrder: nil, ascending: false, loadMore: { _, _, _, _ in
+            // try await AudiobookshelfClient.shared.series(libraryID: $3, limit: PAGE_SIZE, page: $0)
+            ([], 0)
         })
     }
     
     @MainActor
     static var podcasts: LazyLoadHelper<Podcast, Never?> {
-        .init(sortOrder: nil, ascending: Defaults[.podcastsAscending], loadMore: {
-            try await AudiobookshelfClient.shared.podcasts(libraryID: $3, limit: PAGE_SIZE, page: $0)
+        .init(sortOrder: nil, ascending: Defaults[.podcastsAscending], loadMore: { _, _, _, _ in
+            // try await AudiobookshelfClient.shared.podcasts(libraryID: $3, limit: PAGE_SIZE, page: $0)
+            ([], 0)
         })
     }
 }

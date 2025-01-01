@@ -23,7 +23,7 @@ struct MultiplatformApp: App {
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
         
         BackgroundTaskHandler.setup()
-        OfflineManager.shared.setupFinishedRemoveObserver()
+        // OfflineManager.shared.setupFinishedRemoveObserver()
         
         try? Tips.configure()
     }

@@ -35,7 +35,7 @@ extension SchemaV2 {
             self.status = status
         }
         
-        enum SyncStatus: Int {
+        enum SyncStatus: Int, Codable {
             case synced
             case deleted
             case pendingUpdate

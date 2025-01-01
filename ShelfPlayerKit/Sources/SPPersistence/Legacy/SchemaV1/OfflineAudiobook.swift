@@ -8,32 +8,33 @@
 import Foundation
 import SwiftData
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 extension SchemaV1 {
     @Model
-    public final class OfflineAudiobook {
+    final class OfflineAudiobook {
         @Attribute(.unique)
-        public let id: String
-        public let libraryId: String
+        var id: String
+        var libraryId: String
         
-        public let name: String
-        public let author: String?
+        var name: String
+        var author: String?
         
-        public let overview: String?
+        var overview: String?
         
-        public let genres: [String]
+        var genres: [String]
         
-        public let addedAt: Date
-        public let released: String?
+        var addedAt: Date
+        var released: String?
         
-        public let size: Int64
+        var size: Int64
         
-        public let narrator: String?
-        public let seriesName: String?
+        var narrator: String?
+        var seriesName: String?
         
-        public let duration: TimeInterval
+        var duration: TimeInterval
         
-        public let explicit: Bool
-        public let abridged: Bool
+        var explicit: Bool
+        var abridged: Bool
         
         public init(id: String, libraryId: String, name: String, author: String?, overview: String?, genres: [String], addedAt: Date, released: String?, size: Int64, narrator: String?, seriesName: String?, duration: TimeInterval, explicit: Bool, abridged: Bool) {
             self.id = id

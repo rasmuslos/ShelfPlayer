@@ -30,13 +30,13 @@ private extension CarPlayChaptersController {
         
         let items = chapters.map { chapter in
             let item = CPListItem(text: chapter.title,
-                                  detailText: (chapter.end - chapter.start).formatted(.duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3)),
+                                  detailText: (chapter.endOffset - chapter.startOffset).formatted(.duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3)),
                                   image: nil)
             
             item.handler = { _, completion in
                 Task {
-                    await AudioPlayer.shared.seek(to: chapter.start)
-                    completion()
+                    await AudioPlayer.shared.seek(to: chapter.startOffset)
+                    // completion()
                 }
             }
             

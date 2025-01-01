@@ -22,10 +22,10 @@ struct OfflinePodcastView: View {
         self.podcast = podcast
         _episodes = .init(initialValue: episodes)
         
-        _episodesSortOrder = .init(.episodesSortOrder(podcastId: podcast.id))
-        _episodesAscending = .init(.episodesAscending(podcastId: podcast.id))
+        _episodesSortOrder = .init(.groupingSortOrder(podcast.id))
+        _episodesAscending = .init(.groupingAscending(podcast.id))
         
-        _episodeFilter = .init(.episodesFilter(podcastId: podcast.id))
+        _episodeFilter = .init(.groupingFilter(podcast.id))
     }
     
     private var sorted: [Episode] {
@@ -45,13 +45,16 @@ struct OfflinePodcastView: View {
             }
         }
         .modifier(NowPlaying.SafeAreaModifier())
+        /*
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             fetchEpisodes()
         }
+         */
     }
     
     private nonisolated func fetchEpisodes() {
         Task {
+            /*
             guard let episodes = try? await OfflineManager.shared.episodes(podcastId: podcast.id) else {
                 return
             }
@@ -59,6 +62,7 @@ struct OfflinePodcastView: View {
             await MainActor.withAnimation {
                 self.episodes = episodes
             }
+             */
         }
     }
 }

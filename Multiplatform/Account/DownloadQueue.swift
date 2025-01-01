@@ -33,7 +33,7 @@ internal struct DownloadQueue: View {
                 }
                 .onDelete {
                     for index in $0 {
-                        OfflineManager.shared.remove(audiobookId: audiobooks[index].id)
+                        // OfflineManager.shared.remove(audiobookId: audiobooks[index].id)
                     }
                 }
             }
@@ -62,7 +62,7 @@ internal struct DownloadQueue: View {
                     }
                     .onDelete {
                         for index in $0 {
-                            OfflineManager.shared.remove(episodeId: episodes[index].id, allowPodcastDeletion: true)
+                            // OfflineManager.shared.remove(episodeId: episodes[index].id, allowPodcastDeletion: true)
                         }
                     }
                 }
@@ -74,15 +74,19 @@ internal struct DownloadQueue: View {
         .onAppear {
             fetchItems()
         }
+        /*
         .onReceive(NotificationCenter.default.publisher(for: OfflineManager.downloadProgressUpdatedNotification)) { _ in
             fetchItems()
         }
+         */
     }
     
     private func fetchItems() {
         do {
+            /*
             podcasts = try OfflineManager.shared.downloading()
             audiobooks = try OfflineManager.shared.downloading()
+             */
         } catch {
             errorNotify.toggle()
         }
@@ -110,7 +114,7 @@ private struct DownloadAudiobookRow: View {
             
             Spacer()
             
-            DownloadProgressIndicator(itemId: audiobook.id, small: false)
+            // DownloadProgressIndicator(itemId: audiobook.id, small: false)
         }
     }
 }
@@ -124,7 +128,7 @@ private struct DownloadEpisodeRow: View {
             
             Spacer(minLength: 12)
             
-            DownloadProgressIndicator(itemId: episode.id, small: false)
+            // DownloadProgressIndicator(itemId: episode.id, small: false)
         }
     }
 }

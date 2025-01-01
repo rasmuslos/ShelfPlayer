@@ -22,7 +22,7 @@ internal extension AudioPlayer {
         update[MPMediaItemPropertyReleaseDate] = item.released
         update[MPNowPlayingInfoPropertyChapterCount] = chapters.count
         
-        await nowPlayingInfo.clear()
+        await nowPlayingInfo.removeAll()
         await self.nowPlayingInfo.append(update)
         
         await updateNowPlayingTitle()
@@ -31,9 +31,9 @@ internal extension AudioPlayer {
         Task {
             if let image = await item.cover?.platformImage {
                 let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
-                await nowPlayingInfo.set(MPMediaItemPropertyArtwork, value: artwork)
+                // await nowPlayingInfo.set(MPMediaItemPropertyArtwork, value: artwork)
                 
-                await updateNowPlayingInfo()
+                // await updateNowPlayingInfo()
             }
         }
     }
@@ -58,9 +58,11 @@ internal extension AudioPlayer {
     }
     
     func updateLastBookmarkTime() async {
+        /*
         if let audiobook = item as? Audiobook, let bookmarks = try? OfflineManager.shared.bookmarks(itemId: audiobook.id) {
             await nowPlayingInfo.set(MPMediaItemPropertyBookmarkTime, value: bookmarks.last?.position as Any)
         }
+         */
     }
     
     func updateNowPlayingWidget() async {
@@ -78,8 +80,10 @@ internal extension AudioPlayer {
     }
     
     func clearNowPlayingMetadata() async {
+        /*
         await nowPlayingInfo.clear()
         MPNowPlayingInfoCenter.default().nowPlayingInfo = await nowPlayingInfo.disctory
+         */
     }
     
     private func updateNowPlayingInfo() async {
@@ -92,6 +96,6 @@ internal extension AudioPlayer {
         lastWidgetUpdate = .now
         
         MPNowPlayingInfoCenter.default().playbackState = playing ? .playing : .paused
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = await nowPlayingInfo.disctory
+        // MPNowPlayingInfoCenter.default().nowPlayingInfo = await nowPlayingInfo.contents
     }
 }

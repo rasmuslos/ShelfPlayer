@@ -9,6 +9,7 @@ import Foundation
 import Network
 import ShelfPlayerKit
 
+/*
 internal struct NetworkMonitor {
     private static var didInit = false
     private static let pathMonitor = NWPathMonitor()
@@ -46,3 +47,4 @@ internal struct NetworkMonitor {
         pathMonitor.currentPath.isExpensive || pathMonitor.currentPath.isConstrained
     }
 }
+*/

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import TipKit
-import RFKVisuals
+import RFVisuals
 import ShelfPlayerKit
 import SPPlayback
 
@@ -25,15 +25,14 @@ internal struct PlayButton: View {
     @State private var error = false
     @State private var loading = false
     
-    @State private var progressEntity: ProgressEntity
+    @State private var progressEntity: ProgressEntity?
     
     @MainActor
     init(item: PlayableItem, color: Color?) {
         self.item = item
         self.color = color
         
-        _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
-        progressEntity.beginReceivingUpdates()
+        // _progressEntity = .init(initialValue: PersistenceManager.shared.progress[item.id])
     }
     
     private var background: Color {
@@ -45,6 +44,7 @@ internal struct PlayButton: View {
     }
     
     private var remaining: TimeInterval {
+        /*
         if nowPlayingViewModel.item == item && nowPlayingViewModel.itemDuration > 0 {
             return nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime
         } else if progressEntity.duration <= 0 {
@@ -52,6 +52,8 @@ internal struct PlayButton: View {
         }
         
         return progressEntity.duration - progressEntity.currentTime
+         */
+        0
     }
     
     private var isPlaying: Bool {
@@ -62,6 +64,7 @@ internal struct PlayButton: View {
             return nowPlayingViewModel.playing ? "pause" : "resume"
         }
         
+        /*
         if progressEntity.isFinished {
             return "listen.again"
         }
@@ -73,6 +76,7 @@ internal struct PlayButton: View {
         if item.type == .audiobook {
             return "listen"
         }
+         */
         
         return "play"
     }
@@ -103,16 +107,18 @@ internal struct PlayButton: View {
                 Text(label)
                     .contentTransition(.opacity)
                 
+                /*
                 if progressEntity.progress < 1 && !(playButtonStyle.hideRemainingWhenUnplayed && progressEntity.progress <= 0) {
                     Text(verbatim: "•")
                     Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                 }
+                 */
             }
             .animation(.smooth, value: label)
         }
         .contentShape(.rect)
         .transition(.opacity)
-        .animation(.smooth, value: progressEntity.progress)
+        .animation(.smooth, value: progressEntity?.progress)
     }
     
     @ViewBuilder
@@ -132,6 +138,7 @@ internal struct PlayButton: View {
             
             ProgressButton(item: item)
             
+            /*
             if progressEntity.startedAt != nil {
                 Button(role: .destructive) {
                     Task {
@@ -149,8 +156,9 @@ internal struct PlayButton: View {
                     Label("progress.reset", systemImage: "slash.circle")
                 }
             }
+             */
         } label: {
-            playButtonStyle.makeLabel(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: labelContent)))
+            // playButtonStyle.makeLabel(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
             if nowPlayingViewModel.item == item {
                 AudioPlayer.shared.playing.toggle()
@@ -165,9 +173,11 @@ internal struct PlayButton: View {
     
     var body: some View {
         Group {
+            /*
             playButtonStyle.makeMenu(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: menuContent)))
                 .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
                 .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
+             */
         }
     }
     

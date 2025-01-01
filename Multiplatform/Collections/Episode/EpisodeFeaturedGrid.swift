@@ -133,7 +133,7 @@ private struct Title: View {
                     
                     Spacer(minLength: 12)
                     
-                    DownloadIndicator(item: episode)
+                    // DownloadIndicator(item: episode)
                 }
                 .padding(.top, 8)
             }

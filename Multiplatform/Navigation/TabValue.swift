@@ -104,6 +104,7 @@ internal enum TabValue: Identifiable, Hashable, Codable, Comparable, Defaults.Se
     @ViewBuilder
     func content(libraryPath: Binding<NavigationPath>) -> some View {
         Group {
+            /*
             switch self {
             case .audiobookHome:
                 NavigationStack {
@@ -149,6 +150,7 @@ internal enum TabValue: Identifiable, Hashable, Codable, Comparable, Defaults.Se
                         .modifier(Navigation.DestinationModifier())
                 }
             }
+             */
         }
         .environment(\.library, library)
         .modifier(NowPlaying.RegularModifier())

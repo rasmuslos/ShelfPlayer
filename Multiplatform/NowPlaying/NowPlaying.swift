@@ -12,10 +12,12 @@ import AVKit
 struct NowPlaying {
     private init() {}
     
+    @MainActor
     static let routePickerView = AVRoutePickerView()
 }
 
 internal extension NowPlaying {
+    @MainActor
     static func presentPicker() {
         for view in routePickerView.subviews {
             guard let button = view as? UIButton else {

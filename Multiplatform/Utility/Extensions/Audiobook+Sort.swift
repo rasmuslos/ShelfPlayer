@@ -19,6 +19,7 @@ internal extension Audiobook {
                 return true
             }
             
+            /*
             let entity = OfflineManager.shared.progressEntity(item: audiobook)
             
             if filter == .finished && entity.isFinished {
@@ -26,6 +27,7 @@ internal extension Audiobook {
             } else if filter == .unfinished && entity.progress < 1 {
                 return true
             }
+             */
             
             return false
         }
@@ -46,25 +48,6 @@ internal extension Audiobook {
         switch sortOrder {
         case .sortName:
             return lhs.sortName.localizedStandardCompare(rhs.sortName) == .orderedAscending
-        case .seriesName:
-            for (index, lhs) in lhs.series.enumerated() {
-                if index > rhs.series.count - 1 {
-                    return true
-                }
-                
-                let rhs = rhs.series[index]
-                
-                if lhs.name == rhs.name {
-                    guard let lhsSequence = lhs.sequence else { return false }
-                    guard let rhsSequence = rhs.sequence else { return true }
-                    
-                    return lhsSequence < rhsSequence
-                }
-                
-                return lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
-            }
-            
-            return false
         case .authorName:
             return lhs.authors.joined(separator: ", ").localizedStandardCompare(rhs.authors.joined(separator: ", ") ) == .orderedAscending
         case .released:
@@ -81,7 +64,8 @@ internal extension Audiobook {
         case .duration:
             return lhs.duration < rhs.duration
         case .lastPlayed:
-            return OfflineManager.shared.progressEntity(item: lhs).lastUpdate < OfflineManager.shared.progressEntity(item: rhs).lastUpdate
+            // return OfflineManager.shared.progressEntity(item: lhs).lastUpdate < OfflineManager.shared.progressEntity(item: rhs).lastUpdate
+            return false
         }
     }
 }

@@ -74,7 +74,8 @@ private struct Title: View {
                 .multilineTextAlignment(alignment.textAlignment)
             
             HStack {
-                NavigationLink(destination: PodcastLoadView(podcastID: viewModel.episode.podcastId, zoom: false)) {
+                NavigationLink(destination: PodcastLoadView(podcastID: "", zoom: false)) {
+                // NavigationLink(destination: PodcastLoadView(podcastID: viewModel.episode.podcastId, zoom: false)) {
                     Text(viewModel.episode.podcastName)
                     
                     Label("author.view", systemImage: "chevron.right.circle")

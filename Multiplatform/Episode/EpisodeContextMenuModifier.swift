@@ -38,11 +38,13 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 }
                 .disabled(isOffline)
                 
+                /*
                 NavigationLink(destination: PodcastLoadView(podcastID: episode.podcastId, zoom: false)) {
                     Label("podcast.view", systemImage: "rectangle.stack")
                     Text(episode.podcastName)
                 }
                 .disabled(isOffline)
+                 */
                 
                 Divider()
                 

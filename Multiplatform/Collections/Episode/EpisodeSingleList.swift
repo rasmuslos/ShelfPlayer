@@ -51,8 +51,8 @@ private struct EpisodeRow: View {
                     
                     Spacer(minLength: 12)
                     
-                    DownloadIndicator(item: episode)
-                        .font(.caption)
+                    // DownloadIndicator(item: episode)
+                        // .font(.caption)
                 }
                 .padding(.top, 12)
             }

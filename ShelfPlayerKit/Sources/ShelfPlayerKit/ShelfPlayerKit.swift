@@ -11,6 +11,3 @@
 @_exported import SPNetwork
 @_exported import SPPersistence
 
-#if canImport(SPPersistenceExtended)
-@_exported import SPPersistenceExtended
-#endif

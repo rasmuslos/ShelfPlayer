@@ -12,7 +12,7 @@ import SPFoundation
 import UIKit
 #endif
 
-public struct SessionPayload: Codable {
+public struct SessionPayload: Codable, Identifiable {
     public let id: String
     let userId: String
     let libraryID: String?

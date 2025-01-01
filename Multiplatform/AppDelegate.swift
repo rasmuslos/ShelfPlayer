@@ -34,6 +34,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         return true
     }
     
+    /*
     internal func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.banner]
     }
@@ -50,6 +51,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             Navigation.navigate(podcastID: podcastID, libraryID: libraryID)
         }
     }
+     */
 }
 
 // MARK: Intents

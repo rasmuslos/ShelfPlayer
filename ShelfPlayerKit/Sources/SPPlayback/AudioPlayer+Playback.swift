@@ -21,6 +21,7 @@ public extension AudioPlayer {
         try await start(item, at: seconds, withoutPlaybackSession: withoutPlaybackSession)
         
         Task {
+            /*
             guard queue.isEmpty else {
                 return
             }
@@ -30,6 +31,7 @@ public extension AudioPlayer {
             } else if item.type == .audiobook && Defaults[.queueNextAudiobooksInSeries] {
                 await queueNextAudiobooksInSeries()
             }
+             */
         }
     }
     
@@ -51,7 +53,7 @@ public extension AudioPlayer {
         playbackReporter = nil
         
         Task {
-            await clearNowPlayingMetadata()
+            // await clearNowPlayingMetadata()
         }
         
         audioPlayer.removeAllItems()
@@ -69,15 +71,15 @@ public extension AudioPlayer {
         }
         
         if inCurrentChapter, let chapter {
-            to += chapter.start
+            to += chapter.startOffset
         }
         
         if itemDuration != 0 && to >= itemDuration {
             Task {
                 do {
-                    try await advance(finished: true)
+                    // try await advance(finished: true)
                 } catch {
-                    stop()
+                    // stop()
                 }
             }
             
@@ -114,7 +116,7 @@ public extension AudioPlayer {
             playing = resume
         }
         
-        playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
+        // playbackReporter?.reportProgress(currentTime: itemCurrentTime, duration: itemDuration, forceReport: true)
         
         updateChapterIndex()
         await updateNowPlayingWidget()
@@ -124,7 +126,7 @@ public extension AudioPlayer {
     
     func skipForwards() {
         Task {
-            await skipForwards()
+            // await skipForwards()
         }
     }
     func skipForwards() async {
@@ -134,7 +136,7 @@ public extension AudioPlayer {
     
     func skipBackwards() {
         Task {
-            await skipBackwards()
+            // await skipBackwards()
         }
     }
     func skipBackwards() async {
@@ -161,10 +163,10 @@ internal extension AudioPlayer {
         tracks.sort()
         chapters.sort()
         
-        playbackRate = OfflineManager.shared.playbackSpeed(for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
+        playbackRate = 1 // OfflineManager.shared.playbackSpeed(for: item.identifiers.itemID, episodeID: item.identifiers.episodeID)
         
         updateAudioSession(active: true)
-        updateBookmarkCommand(active: item.type == .audiobook)
+        // updateBookmarkCommand(active: item.type == .audiobook)
         await populateNowPlayingWidgetMetadata()
         
         await seek(to: startTime)
@@ -175,7 +177,7 @@ internal extension AudioPlayer {
     
     func advance(finished: Bool) async throws {
         if finished {
-            playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration, forceReport: true)
+            // playbackReporter?.reportProgress(currentTime: itemDuration, duration: itemDuration, forceReport: true)
             playbackReporter = nil
         }
         
@@ -205,7 +207,7 @@ internal extension AudioPlayer {
         try await start(queue.removeFirst())
         
         if let previous {
-            await previous.postFinishedNotification(finished: true)
+            // await previous.postFinishedNotification(finished: true)
         }
     }
 }

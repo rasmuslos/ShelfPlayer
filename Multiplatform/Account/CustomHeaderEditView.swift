@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import RFNetwork
 import ShelfPlayerKit
 
 internal struct CustomHeaderEditView: View {
-    @State private var current = AudiobookshelfClient.shared.customHTTPHeaders
+    @State private var current = [HTTPHeader]() // AudiobookshelfClient.shared.customHTTPHeaders
     
-    private var trimmed: [AudiobookshelfClient.CustomHTTPHeader] {
+    private var trimmed: [HTTPHeader] {
         current.filter { !$0.key.isEmpty && !$0.value.isEmpty }
     }
     
@@ -47,7 +48,7 @@ internal struct CustomHeaderEditView: View {
                 }
                 
                 Button {
-                    AudiobookshelfClient.shared.customHTTPHeaders = trimmed
+                    // AudiobookshelfClient.shared.customHTTPHeaders = trimmed
                 } label: {
                     Label("login.customHTTPHeaders.save", systemImage: "checkmark")
                         .labelStyle(.titleOnly)

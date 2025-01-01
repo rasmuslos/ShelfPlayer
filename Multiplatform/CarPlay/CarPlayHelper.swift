@@ -31,8 +31,9 @@ internal struct CarPlayHelper {
     
     private static func finalizeListItem(_ listItem: CPListItem, item: PlayableItem, displayCover: Bool) -> CPListItem {
         listItem.userInfo = [
-            "identifier": convertIdentifier(item: item),
+            // "identifier": convertIdentifier(item: item),
         ]
+        /*
         listItem.handler = { _, completion in
             guard AudioPlayer.shared.item != item else {
                 AudioPlayer.shared.playing.toggle()
@@ -50,7 +51,9 @@ internal struct CarPlayHelper {
                 listItem.setImage(await item.cover?.platformImage)
             }
         }
+         */
         
+        /*
         if OfflineManager.shared.offlineStatus(parentId: item.id) == .downloaded {
             listItem.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
         }
@@ -60,6 +63,7 @@ internal struct CarPlayHelper {
         listItem.isExplicitContent = (item as? Audiobook)?.explicit ?? false
         
         listItem.playbackProgress = OfflineManager.shared.progressEntity(item: item).progress
+         */
         
         return listItem
     }

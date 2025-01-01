@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import RFKVisuals
+import RFVisuals
 import ShelfPlayerKit
 
 @Observable
@@ -20,10 +20,10 @@ internal final class EpisodeViewModel {
     @MainActor var toolbarVisible: Bool
     @MainActor var sessionsVisible: Bool
     
-    @MainActor private(set) var sessions: [ListeningSession]
+    @MainActor private(set) var sessions: [SessionPayload]
     @MainActor private(set) var errorNotify: Bool
     
-    @MainActor let progressEntity: ProgressEntity
+    @MainActor var progressEntity: ProgressEntity?
     
     @MainActor
     init(episode: Episode) {
@@ -38,16 +38,15 @@ internal final class EpisodeViewModel {
         sessions = []
         errorNotify = false
         
-        progressEntity = OfflineManager.shared.progressEntity(item: episode)
-        progressEntity.beginReceivingUpdates()
+        // progressEntity = OfflineManager.shared.progressEntity(item: episode)
     }
 }
 
 internal extension EpisodeViewModel {
     func load() async {
         await withTaskGroup(of: Void.self) {
-            $0.addTask { await self.loadSessions() }
-            $0.addTask { await self.extractDominantColor() }
+            // $0.addTask { await self.loadSessions() }
+            // $0.addTask { await self.extractDominantColor() }
             
             await $0.waitForAll()
         }
@@ -56,10 +55,10 @@ internal extension EpisodeViewModel {
     func toggleFinished() {
         Task {
             do {
-                try await episode.finished(progressEntity.progress < 1)
+                // try await episode.finished(progressEntity.progress < 1)
             } catch {
                 await MainActor.run {
-                    errorNotify.toggle()
+                    // errorNotify.toggle()
                 }
             }
         }
@@ -67,10 +66,10 @@ internal extension EpisodeViewModel {
     func resetProgress() {
         Task {
             do {
-                try await episode.resetProgress()
+                // try await episode.resetProgress()
             } catch {
                 await MainActor.run {
-                    errorNotify.toggle()
+                    // errorNotify.toggle()
                 }
             }
         }
@@ -94,10 +93,11 @@ private extension EpisodeViewModel {
         }
         
         await MainActor.withAnimation {
-            self.dominantColor = result
+            // self.dominantColor = result
         }
     }
     func loadSessions() async {
+        /*
         if await library.type == .offline {
             return
         }
@@ -109,5 +109,6 @@ private extension EpisodeViewModel {
         await MainActor.withAnimation {
             self.sessions = sessions
         }
+         */
     }
 }

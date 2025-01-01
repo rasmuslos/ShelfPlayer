@@ -10,7 +10,6 @@ import Defaults
 import SPFoundation
 import SPNetwork
 import SPPersistence
-import SPPersistenceExtended
 import SPExtension
 
 public extension AudioPlayer {
@@ -27,7 +26,7 @@ public extension AudioPlayer {
     func queue(_ item: PlayableItem) {
         if self.item == nil && queue.isEmpty {
             Task {
-                try await play(item)
+                // try await play(item)
             }
             
             return
@@ -71,7 +70,8 @@ internal extension AudioPlayer {
             return
         }
         
-        if let episodes = try? await AudiobookshelfClient.shared.episodes(podcastId: episode.podcastId) {
+        /*
+        if let episodes = try? await ABSClient[episode.id.serverID].episodes(podcastId: episode.podcastId) {
             handleNextEpisodes(episodes, episode: episode)
             return
         }
@@ -82,8 +82,10 @@ internal extension AudioPlayer {
             return
         }
         #endif
+         */
     }
     private func handleNextEpisodes(_ episodes: [Episode], episode: Episode) {
+        /*
         let filter = Defaults[.episodesFilter(podcastId: episode.podcastId)]
         let sortOrder = Defaults[.episodesSortOrder(podcastId: episode.podcastId)]
         let ascending = Defaults[.episodesAscending(podcastId: episode.podcastId)]
@@ -99,6 +101,7 @@ internal extension AudioPlayer {
         }
         
         queue = Array(episodes[(index + 1)..<episodes.endIndex])
+         */
     }
     
     func queueNextAudiobooksInSeries() async {
@@ -106,6 +109,7 @@ internal extension AudioPlayer {
             return
         }
         
+        /*
         for series in audiobook.series {
             let seriesID: String
             
@@ -126,8 +130,10 @@ internal extension AudioPlayer {
             
             // Looking for offline series is not supported (yet)
         }
+         */
     }
     func handleNextAudiobooksInSeries(_ audiobooks: [Audiobook], audiobook: Audiobook) {
+        /*
         let audiobooks = Audiobook.sort(audiobooks, sortOrder: .seriesName, ascending: true)
         
         guard let index = audiobooks.firstIndex(of: audiobook) else {
@@ -139,5 +145,6 @@ internal extension AudioPlayer {
         }
         
         queue = Array(audiobooks[(index + 1)..<audiobooks.endIndex])
+         */
     }
 }

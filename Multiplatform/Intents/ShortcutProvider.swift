@@ -18,5 +18,5 @@ struct ShortcutProvider: AppShortcutsProvider {
         ], shortTitle: "intents.checkForNewDownloads.title", systemImageName: "antenna.radiowaves.left.and.right")
     }
     
-    static var shortcutTileColor: ShortcutTileColor = .yellow
+    static let shortcutTileColor: ShortcutTileColor = .yellow
 }

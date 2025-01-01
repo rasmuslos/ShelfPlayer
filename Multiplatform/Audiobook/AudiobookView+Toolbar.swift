@@ -75,6 +75,7 @@ extension AudiobookView {
                             
                             Divider()
                             
+                            /*
                             if viewModel.offlineTracker.status == .none {
                                 ProgressButton(item: viewModel.audiobook)
                                 DownloadButton(item: viewModel.audiobook)
@@ -101,6 +102,7 @@ extension AudiobookView {
                                     Text("toolbar.remove")
                                 }
                             }
+                             */
                         } label: {
                             Image(systemName: "ellipsis.circle")
                         }

@@ -45,6 +45,7 @@ internal final class CarPlayOfflineController {
 
 private extension CarPlayOfflineController {
     func updateAudiobooksSection() {
+        /*
         guard let audiobooks = try? OfflineManager.shared.audiobooks(), !audiobooks.isEmpty else {
             self.audiobooksListSection = nil
             return
@@ -61,11 +62,13 @@ private extension CarPlayOfflineController {
         
         self.audiobooksListSection = .init(items: items)
         self.updateTemplate()
+         */
     }
     
     func updatePodcastsSection() {
         podcastsUpdateTask?.cancel()
         podcastsUpdateTask = Task.detached {
+            /*
             guard let podcasts = try? OfflineManager.shared.podcasts() else {
                 return
             }
@@ -94,6 +97,7 @@ private extension CarPlayOfflineController {
             }
             
             self.updateTemplate()
+             */
         }
     }
     
@@ -111,10 +115,12 @@ private extension CarPlayOfflineController {
     }
     
     func setupObservers() {
+        /*
         NotificationCenter.default.addObserver(forName: PlayableItem.downloadStatusUpdatedNotification, object: nil, queue: nil) { [weak self] _ in
             self?.updateAudiobooksSection()
             self?.updatePodcastsSection()
         }
+         */
         
         NotificationCenter.default.addObserver(forName: AudioPlayer.itemDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.updateAudiobooksSection()
@@ -123,7 +129,7 @@ private extension CarPlayOfflineController {
         
         Task {
             for await _ in Defaults.updates([.offlineAudiobooksAscending, .offlineAudiobooksSortOrder]) {
-                updateAudiobooksSection()
+                // updateAudiobooksSection()
             }
         }
         

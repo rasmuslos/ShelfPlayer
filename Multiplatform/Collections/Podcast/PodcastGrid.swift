@@ -96,7 +96,8 @@ private struct PodcastGridItem: View {
     }
     
     var body: some View {
-        NavigationLink(destination: PodcastLoadView(podcastID: podcast.id, zoom: true)) {
+        NavigationLink(destination: PodcastLoadView(podcastID: "", zoom: true)) {
+        // NavigationLink(destination: PodcastLoadView(podcastID: podcast.id, zoom: true)) {
             VStack(alignment: .leading, spacing: 4) {
                 ItemImage(cover: podcast.cover)
                     .hoverEffect(.highlight)

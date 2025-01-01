@@ -18,7 +18,7 @@ internal struct ContentView: View {
     @Namespace private var namespace
     
     @State private var viewModel: NowPlaying.ViewModel = .init()
-    @State private var step: Step = AudiobookshelfClient.shared.authorized ? .sessionImport : .login
+    @State private var step: Step = .login // AudiobookshelfClient.shared.authorized ? .sessionImport : .login
     
     @ViewBuilder
     private var onlineContent: some View {
@@ -31,17 +31,18 @@ internal struct ContentView: View {
         }
         .modifier(SearchLibraryPicker())
         .onAppear {
+            /*
             NetworkMonitor.start() {
                 if UIApplication.shared.applicationState == .active {
                     step = .sessionImport
                 }
             }
+             */
             
             Task {
-                try? await OfflineManager.shared.attemptListeningTimeSync()
+                // try? await OfflineManager.shared.attemptListeningTimeSync()
                 try? await UserContext.run()
-                
-                try? await BackgroundTaskHandler.updateDownloads()
+                // try? await BackgroundTaskHandler.updateDownloads()
             }
         }
         .onContinueUserActivity(CSSearchableItemActionType) {
@@ -49,6 +50,7 @@ internal struct ContentView: View {
                 return
             }
             
+            /*
             let data = convertIdentifier(identifier: identifier)
             
             guard let libraryID = data.libraryID else {
@@ -71,6 +73,7 @@ internal struct ContentView: View {
                 
                 Navigation.navigate(episodeID: episodeID, podcastID: data.itemID, libraryID: libraryID)
             }
+             */
         }
         .onContinueUserActivity(CSQueryContinuationActionType) {
             guard let search = $0.userInfo?[CSSearchQueryString] as? String else {
@@ -112,6 +115,7 @@ internal struct ContentView: View {
                 return
             }
             
+            /*
             let (podcastID, episodeID, _, _) = convertIdentifier(identifier: identifier)
             
             guard let episodeID else {
@@ -119,6 +123,7 @@ internal struct ContentView: View {
             }
             
             Navigation.navigate(episodeID: episodeID, podcastID: podcastID, libraryID: libraryID)
+             */
         }
     }
     
@@ -126,7 +131,7 @@ internal struct ContentView: View {
         Group {
             switch step {
             case .login:
-                LoginView()
+                WelcomeView()
             case .sessionImport:
                 SessionsImportView() {
                     step = $0 ? .online : .offline
@@ -142,9 +147,11 @@ internal struct ContentView: View {
         .onAppear {
             viewModel.namespace = namespace
         }
+        /*
         .onReceive(AudiobookshelfClient.shared.$authorized) { authorized in
             step = authorized ? .sessionImport : .login
         }
+         */
         .onReceive(NotificationCenter.default.publisher(for: SelectLibraryModifier.changeLibraryNotification)) { notification in
             if let offline = notification.userInfo?["offline"] as? Bool {
                 step = offline ? .offline : .sessionImport

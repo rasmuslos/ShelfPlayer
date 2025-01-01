@@ -21,6 +21,7 @@ internal struct AudiobookList: View {
                     .onAppear {
                         onAppear?(section)
                     }
+                /*
             case .series(let seriesName, let audiobooks):
                 NavigationLink(destination: SeriesLoadView(seriesName: seriesName, filteredIDs: audiobooks.lazy.map { $0.id })) {
                     SeriesList.ListItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover }, itemCount: audiobooks.count)
@@ -29,6 +30,9 @@ internal struct AudiobookList: View {
                 .onAppear {
                     onAppear?(section)
                 }
+                 */
+            default:
+                Text("abc")
             }
         }
     }
@@ -42,11 +46,11 @@ private struct Row: View {
     let audiobook: Audiobook
     
     @State private var loading = false
-    @State private var progressEntity: ProgressEntity
+    @State private var progressEntity: ProgressEntity?
     
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
-        _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: audiobook))
+        // _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: audiobook))
     }
     
     private var icon: String {
@@ -58,7 +62,8 @@ private struct Row: View {
     }
     
     private var progressVisible: Bool {
-        progressEntity.progress > 0 && progressEntity.progress < 1
+        // progressEntity.progress > 0 && progressEntity.progress < 1
+        true
     }
     
     private var additional: [String] {
@@ -80,6 +85,7 @@ private struct Row: View {
             parts.append(released)
         }
         
+        /*
         if progressEntity.isFinished {
             parts.append(String(localized: "finished"))
         } else if progressEntity.progress <= 0 {
@@ -91,6 +97,7 @@ private struct Row: View {
             parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
             parts.append((progressEntity.duration - progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         }
+         */
         
         return parts
     }
@@ -151,9 +158,6 @@ private struct Row: View {
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
         .modifier(SwipeActionsModifier(item: audiobook, loading: $loading))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
-        .onAppear {
-            progressEntity.beginReceivingUpdates()
-        }
     }
 }
 

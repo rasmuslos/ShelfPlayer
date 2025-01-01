@@ -48,8 +48,8 @@ extension SchemaV2 {
         }
         
         enum SyncStatus: Int, Codable {
-            case synchronised
-            case desynchronised
+            case synchronized
+            case desynchronized
             case tombstone
         }
     }

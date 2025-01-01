@@ -51,6 +51,7 @@ internal struct PodcastLatestPanel: View {
             failed = false
         }
         
+        /*
         guard let episodes = try? await AudiobookshelfClient.shared.recentEpisodes(limit: 20, libraryID: library.id) else {
             await MainActor.withAnimation {
                 failed = true
@@ -62,6 +63,7 @@ internal struct PodcastLatestPanel: View {
         await MainActor.withAnimation {
             self.episodes = episodes
         }
+         */
     }
 }
 

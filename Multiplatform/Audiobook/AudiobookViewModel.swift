@@ -7,32 +7,32 @@
 
 import Foundation
 import SwiftUI
-import RFKVisuals
+import RFVisuals
 import ShelfPlayerKit
 import SPPlayback
 
-@Observable
-internal final class AudiobookViewModel {
-    @MainActor var audiobook: Audiobook
-    @MainActor var library: Library!
+@Observable @MainActor
+internal final class AudiobookViewModel: Sendable {
+    private(set) var audiobook: Audiobook
+    var library: Library!
     
-    @MainActor private(set) var dominantColor: Color?
+    private(set) var dominantColor: Color?
     
-    @MainActor var toolbarVisible: Bool
-    @MainActor var chaptersVisible: Bool
-    @MainActor var sessionsVisible: Bool
+    var toolbarVisible: Bool
+    var chaptersVisible: Bool
+    var sessionsVisible: Bool
     
-    @MainActor var chapters: [PlayableItem.Chapter]
+    var chapters: [Chapter]
     
-    @MainActor private(set) var sameAuthor: [Author: [Audiobook]]
-    @MainActor private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
-    @MainActor private(set) var sameNarrator: [String: [Audiobook]]
+    private(set) var sameAuthor: [Author: [Audiobook]]
+    private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
+    private(set) var sameNarrator: [String: [Audiobook]]
     
-    @MainActor let progressEntity: ProgressEntity
-    @MainActor let offlineTracker: ItemOfflineTracker
+    private(set) var progressEntity: ProgressEntity.UpdatingProgressEntity?
+    private(set) var offlineTracker: DownloadTracker?
     
-    @MainActor private(set) var sessions: [ListeningSession]
-    @MainActor private(set) var errorNotify: Bool
+    private(set) var sessions: [SessionPayload]
+    private(set) var errorNotify: Bool
     
     @MainActor
     init(audiobook: Audiobook) {
@@ -50,13 +50,11 @@ internal final class AudiobookViewModel {
         sameSeries = [:]
         sameNarrator = [:]
         
-        progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
-        offlineTracker = .init(audiobook)
+        // progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
+        // offlineTracker = .init(audiobook)
         
         sessions = []
         errorNotify = false
-        
-        progressEntity.beginReceivingUpdates()
     }
 }
 
@@ -77,7 +75,7 @@ internal extension AudiobookViewModel {
     }
     
     func play() {
-        Task {
+        Task { [audiobook] in
             do {
                 try await AudioPlayer.shared.play(audiobook)
             } catch {
@@ -91,7 +89,7 @@ internal extension AudiobookViewModel {
     func resetProgress() {
         Task {
             do {
-                try await audiobook.resetProgress()
+                // try await audiobook.resetProgress()
             } catch {
                 await MainActor.run {
                     errorNotify.toggle()
@@ -103,6 +101,7 @@ internal extension AudiobookViewModel {
 
 private extension AudiobookViewModel {
     func loadAudiobook() async {
+        /*
         guard let (item, _, chapters) = try? await AudiobookshelfClient.shared.item(itemId: audiobook.id, episodeId: nil) else {
             return
         }
@@ -111,6 +110,7 @@ private extension AudiobookViewModel {
             self.audiobook = item as! Audiobook
             self.chapters = chapters
         }
+         */
     }
     
     func loadAuthors() async {
@@ -118,10 +118,10 @@ private extension AudiobookViewModel {
         
         for author in await audiobook.authors {
             do {
-                let authorID = try await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID)
-                let (author, audiobooks, _) = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: audiobook.libraryID)
+                // let authorID = try await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID)
+                // let (author, audiobooks, _) = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: audiobook.libraryID)
                 
-                resolved[author] = audiobooks
+                // resolved[author] = audiobooks
             } catch {
                 
             }
@@ -142,11 +142,11 @@ private extension AudiobookViewModel {
                 if let id = series.id {
                     seriesID = id
                 } else {
-                    seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: audiobook.libraryID)
+                    // seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: audiobook.libraryID)
                 }
                 
-                let audiobooks = try await AudiobookshelfClient.shared.audiobooks(seriesID: seriesID, libraryID: self.audiobook.libraryID).0
-                resolved[series] = audiobooks
+                // let audiobooks = try await AudiobookshelfClient.shared.audiobooks(seriesID: seriesID, libraryID: self.audiobook.libraryID).0
+                // resolved[series] = audiobooks
             } catch {
                 continue
             }
@@ -162,7 +162,7 @@ private extension AudiobookViewModel {
         
         for narrator in await audiobook.narrators {
             do {
-                resolved[narrator] = try await AudiobookshelfClient.shared.audiobooks(narratorName: narrator, libraryID: self.audiobook.libraryID)
+                // resolved[narrator] = try await AudiobookshelfClient.shared.audiobooks(narratorName: narrator, libraryID: self.audiobook.libraryID)
             } catch {
                 continue
             }
@@ -178,6 +178,7 @@ private extension AudiobookViewModel {
             return
         }
         
+        /*
         guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
             return
         }
@@ -191,9 +192,11 @@ private extension AudiobookViewModel {
         await MainActor.withAnimation {
             self.dominantColor = result
         }
+         */
     }
     
     func loadSessions() async {
+        /*
         guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: audiobook.id, episodeID: nil) else {
             return
         }
@@ -201,5 +204,6 @@ private extension AudiobookViewModel {
         await MainActor.withAnimation {
             self.sessions = sessions
         }
+         */
     }
 }

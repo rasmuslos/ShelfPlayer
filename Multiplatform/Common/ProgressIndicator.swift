@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import SPPersistence
+import ShelfPlayerKit
 
 struct CircularProgressIndicator: View {
     @Default(.tintColor) private var tintColor

@@ -10,22 +10,21 @@ import SwiftData
 import Defaults
 import SPFoundation
 import SPPersistence
-import SPPersistenceExtended
 
 internal struct StatusOverlay: View {
     @Default(.itemImageStatusPercentageText) private var itemImageStatusPercentageText
     @Default(.tintColor) private var tintColor
     
     let item: Item
-    @State private var entity: ProgressEntity
-    @State private var offlineTracker: ItemOfflineTracker?
+    @State private var entity: ProgressEntity?
+    @State private var offlineTracker: DownloadTracker?
     
     @MainActor
     init(item: PlayableItem) {
         self.item = item
         
-        _entity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
-        _offlineTracker = .init(initialValue: ItemOfflineTracker(item))
+        // _entity = .init(initialValue: PerMa)
+        // _offlineTracker = .init(initialValue: ItemOfflineTracker(item))
     }
     
     var body: some View {
@@ -36,6 +35,7 @@ internal struct StatusOverlay: View {
             HStack(alignment: .top, spacing: 0) {
                 Spacer()
                 
+                /*
                 if entity.progress > 0 {
                     ZStack {
                         Triangle()
@@ -79,10 +79,8 @@ internal struct StatusOverlay: View {
                         .foregroundStyle(.ultraThickMaterial)
                         .padding(4)
                 }
+                 */
             }
-        }
-        .onAppear {
-            entity.beginReceivingUpdates()
         }
     }
 }
