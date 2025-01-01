@@ -38,7 +38,7 @@ internal extension NowPlaying {
                 
                 Text(item.name)
                     .font(.headline)
-                    .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
+                    // .fontDesign(item.type == .audiobook && useSerifFont ? .serif : .default)
                     .foregroundStyle(.primary)
                 
                 if !item.authors.isEmpty {
@@ -58,13 +58,13 @@ internal extension NowPlaying {
                     Menu {
                         if let episode = item as? Episode {
                             Button {
-                                Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
+                                // Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
                             } label: {
                                 Label("episode.view", systemImage: "play.square.stack")
                             }
                             
                             Button {
-                                Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
+                                // Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
                             } label: {
                                 Label("podcast.view", systemImage: "rectangle.stack")
                                 Text(episode.podcastName)
@@ -73,13 +73,13 @@ internal extension NowPlaying {
                         
                         if let audiobook = item as? Audiobook {
                             Button {
-                                Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
+                                // Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
                             } label: {
                                 Label("audiobook.view", systemImage: "book")
                             }
                             
-                            AuthorMenu(authors: audiobook.authors, libraryID: audiobook.libraryID)
-                            SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
+                            // AuthorMenu(authors: audiobook.authors, libraryID: audiobook.libraryID)
+                            // SeriesMenu(series: audiobook.series, libraryID: audiobook.libraryID)
                         }
                     } label: {
                         label
@@ -89,6 +89,7 @@ internal extension NowPlaying {
                 
                 Spacer(minLength: 12)
                 
+                /*
                 if item.type == .audiobook {
                     Label("bookmark.create", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
@@ -102,6 +103,7 @@ internal extension NowPlaying {
                             viewModel.createBookmark()
                         }
                 }
+                 */
             }
         }
     }

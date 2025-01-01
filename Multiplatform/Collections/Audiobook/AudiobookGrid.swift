@@ -24,6 +24,7 @@ internal struct AudiobookVGrid: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 16) {
             ForEach(sections) { section in
                 VStack(spacing: 0) {
+                    /*
                     switch section {
                     case .audiobook(let audiobook):
                         NavigationLink {
@@ -48,6 +49,7 @@ internal struct AudiobookVGrid: View {
                     }
                     
                     Spacer(minLength: 0)
+                     */
                 }
             }
         }

@@ -9,15 +9,16 @@ import SwiftUI
 import ShelfPlayerKit
 
 internal struct DownloadIndicator: View {
-    let itemId: String
-    let offlineTracker: ItemOfflineTracker
+    let itemID: ItemIdentifier
+    // let offlineTracker: DownloadTracker
     
-    init(item: PlayableItem) {
-        itemId = item.id
-        offlineTracker = .init(item)
+    init(itemID: ItemIdentifier) {
+        self.itemID = itemID
+        // offlineTracker = .init(item)
     }
     
     var body: some View {
+        /*
         if offlineTracker.status == .downloaded {
             Label("download", systemImage: "arrow.down.circle.fill")
                 .labelStyle(.iconOnly)
@@ -26,6 +27,8 @@ internal struct DownloadIndicator: View {
         } else if offlineTracker.status == .working {
             DownloadProgressIndicator(itemId: itemId, small: true)
         }
+         */
+        Text("abc")
     }
 }
 
@@ -53,8 +56,10 @@ internal struct DownloadProgressIndicator: View {
                 .frame(width: small ? 10 : 19)
             }
         }
+        /*
         .onReceive(NotificationCenter.default.publisher(for: OfflineManager.downloadProgressUpdatedNotification)) { _ in
             downloadProgress = AudiobookshelfClient.defaults.double(forKey: "downloadTotalProgress_\(itemId)")
         }
+         */
     }
 }

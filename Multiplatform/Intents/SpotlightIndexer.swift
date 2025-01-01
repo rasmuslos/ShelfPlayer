@@ -7,7 +7,7 @@
 
 import Foundation
 import Intents
-import CoreSpotlight
+@preconcurrency import CoreSpotlight
 import Defaults
 import ShelfPlayerKit
 
@@ -17,6 +17,7 @@ internal struct SpotlightIndexer {
     static let searchableIndex = CSSearchableIndex(name: "ShelfPlayer_Items", protectionClass: .completeUntilFirstUserAuthentication)
     
     static func index() {
+        /*
         guard !NetworkMonitor.isRouteLimited else {
             return
         }
@@ -72,6 +73,7 @@ internal struct SpotlightIndexer {
             
             UserContext.logger.info("Indexed \(indexedIdentifiers.count) Spotlight items while deleting \(remainingIdentifiers.count) outdated items.")
         }
+         */
     }
     static func deleteIndex() {
         INInteraction.deleteAll()
@@ -86,6 +88,7 @@ internal struct SpotlightIndexer {
         var indexedIdentifiers: [String] = []
         var items: [CSSearchableItem] = []
         
+        /*
         for audiobook in try await AudiobookshelfClient.shared.audiobooks(libraryID: library.id, sortOrder: .added, ascending: false, limit: nil, page: nil).0 {
             let identifier = convertIdentifier(item: audiobook)
             let identifierIndex = remainingIdentifiers.firstIndex(of: identifier)
@@ -172,12 +175,17 @@ internal struct SpotlightIndexer {
         }
         
         return (items, remainingIdentifiers, indexedIdentifiers)
+         
+         */
+        
+        return ([], [], [])
     }
     static func indexPodcastLibrary(_ library: Library, remainingIdentifiers: [String]) async throws -> ([CSSearchableItem], [String], [String]) {
         var remainingIdentifiers = remainingIdentifiers
         var indexedIdentifiers: [String] = []
         var items: [CSSearchableItem] = []
         
+        /*
         for podcast in try await AudiobookshelfClient.shared.podcasts(libraryID: library.id, limit: nil, page: nil).0 {
             let identifier = convertIdentifier(item: podcast)
             let identifierIndex = remainingIdentifiers.firstIndex(of: identifier)
@@ -244,5 +252,8 @@ internal struct SpotlightIndexer {
         }
         
         return (items, remainingIdentifiers, indexedIdentifiers)
+         */
+        
+        return ([], [], [])
     }
 }

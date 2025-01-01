@@ -179,5 +179,5 @@ internal extension Navigation {
 }
 
 internal extension EnvironmentValues {
-    @Entry var library: Library = .init(id: "offine", name: "ShelfPlayer", type: .offline, displayOrder: -1)
+    @Entry var library: Library = .init(id: "offline", serverID: "offline", name: "ShelfPlayer", type: .offline, index: -1)
 }

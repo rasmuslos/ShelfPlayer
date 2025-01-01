@@ -20,9 +20,11 @@ internal final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling
 
 internal extension PlayMediaIntentHandler {
     func resolveMediaItems(for intent: INPlayMediaIntent) async -> [INPlayMediaMediaItemResolutionResult] {
+        /*
         guard AudiobookshelfClient.shared.authorized else {
             return [.unsupported(forReason: .loginRequired)]
         }
+         */
         
         if let items = intent.mediaItems {
             return INPlayMediaMediaItemResolutionResult.successes(with: items)
@@ -125,6 +127,7 @@ internal extension PlayMediaIntentHandler {
         let queueLocation = intent.playbackQueueLocation
         let offline = intent.mediaSearch?.reference == .my
         
+        /*
         let (itemID, episodeID, _, itemType) = convertIdentifier(identifier: identifier)
         
         // MARK: Resolve item
@@ -196,6 +199,8 @@ internal extension PlayMediaIntentHandler {
                 return .init(code: .failure, userActivity: nil)
             }
         }
+         
+         */
         
         return .init(code: .success, userActivity: nil)
     }

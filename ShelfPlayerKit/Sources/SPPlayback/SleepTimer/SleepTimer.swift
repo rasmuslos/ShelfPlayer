@@ -10,7 +10,7 @@ import Defaults
 
 // This is completely engineered, but pretty cool
 
-public final class SleepTimer {
+public final actor SleepTimer {
     public var expiresAt: DispatchTime? {
         didSet {
             if expiresAt == nil {
@@ -63,9 +63,11 @@ public final class SleepTimer {
         lastSetting = nil
         
         isSuspended = false
-        suspend()
         
-        setupObservers()
+        Task {
+            await suspend()
+            await setupObservers()
+        }
     }
     
     public func extend() {

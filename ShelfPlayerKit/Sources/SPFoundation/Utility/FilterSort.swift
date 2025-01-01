@@ -8,22 +8,22 @@
 import Foundation
 import Defaults
 
-public enum ItemDisplayType: String, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
-    case grid = "grid"
-    case list = "list"
+public enum ItemDisplayType: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
+    case grid
+    case list
     
-    public var id: String {
+    public var id: Int {
         rawValue
     }
 }
 
-public enum ItemFilter: String, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
-    case all = "sort.all"
-    case progress = "sort.progress"
-    case unfinished = "sort.unfinished"
-    case finished = "sort.finished"
+public enum ItemFilter: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
+    case all
+    case progress
+    case unfinished
+    case finished
     
-    public var id: String {
+    public var id: Int {
         rawValue
     }
 }
@@ -53,25 +53,25 @@ public enum SeriesSortOrder: String, Identifiable, Hashable, Codable, Sendable, 
     }
 }
 
-public enum EpisodeSortOrder: String, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
-    case name = "sort.name"
-    case index = "sort.index"
-    case released = "sort.released"
-    case duration = "sort.duration"
+public enum EpisodeSortOrder: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
+    case name
+    case index
+    case released
+    case duration
     
-    public var id: String {
+    public var id: Int {
         rawValue
     }
 }
 
-public enum PodcastSortOrder: String, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
+public enum PodcastSortOrder: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
     case name
     case author
     case episodeCount
     case addedAt
     case duration
     
-    public var id: String {
+    public var id: Int {
         rawValue
     }
 }

@@ -18,7 +18,7 @@ internal extension NowPlaying {
                 Toggle(chapter.title, isOn: .init(get: {
                     chapter == viewModel.chapter
                 }, set: { _ in
-                    AudioPlayer.shared.itemCurrentTime = chapter.start
+                    AudioPlayer.shared.itemCurrentTime = chapter.startOffset
                 }))
             }
         }

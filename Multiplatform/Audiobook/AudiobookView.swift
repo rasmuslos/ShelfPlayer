@@ -88,13 +88,13 @@ internal struct AudiobookView: View {
         .userActivity("io.rfk.shelfplayer.audiobook") {
             $0.title = viewModel.audiobook.name
             $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = viewModel.audiobook.id
-            $0.targetContentIdentifier = convertIdentifier(item: viewModel.audiobook)
+            // $0.persistentIdentifier = viewModel.audiobook.id
+            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.audiobook)
             $0.userInfo = [
-                "libraryID": viewModel.audiobook.libraryID,
+                // "libraryID": viewModel.audiobook.libraryID,
                 "audiobookID": viewModel.audiobook.id,
             ]
-            $0.webpageURL = viewModel.audiobook.url
+            // $0.webpageURL = viewModel.audiobook.url
         }
     }
 }

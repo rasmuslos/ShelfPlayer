@@ -8,7 +8,6 @@
 import SwiftUI
 import SPFoundation
 import SPPersistence
-import SPPersistenceExtended
 
 internal struct DownloadButton: View {
     let item: PlayableItem
@@ -17,7 +16,7 @@ internal struct DownloadButton: View {
     let progressIndicator: Bool
     
     @State private var notify = false
-    @State private var offlineTracker: ItemOfflineTracker
+    @State private var offlineTracker: DownloadTracker?
     
     init(item: PlayableItem, tint: Bool = false, downloadingLabel: Bool = true, progressIndicator: Bool = false) {
         self.item = item
@@ -25,10 +24,11 @@ internal struct DownloadButton: View {
         self.downloadingLabel = downloadingLabel
         self.progressIndicator = progressIndicator
         
-        _offlineTracker = .init(initialValue: .init(item))
+        // _offlineTracker = .init(initialValue: .init(item))
     }
     
     private var title: LocalizedStringKey {
+        /*
         switch offlineTracker.status {
             case .none:
                 "download"
@@ -37,17 +37,23 @@ internal struct DownloadButton: View {
             case .downloaded:
                 "download.remove"
         }
+         */
+        "download"
     }
     private var icon: String {
+        /*
         switch offlineTracker.status {
             case .none:
                 "arrow.down"
             default:
                 "xmark"
         }
+         */
+        "xmark"
     }
     
     var body: some View {
+        /*
         Button(role: offlineTracker.status == .none || tint ? nil : .destructive) {
             if offlineTracker.status == .none {
                 download()
@@ -66,9 +72,12 @@ internal struct DownloadButton: View {
         .sensoryFeedback(.success, trigger: notify)
         .symbolVariant(tint ? .none : .circle)
         .tint(tint ? .blue : nil)
+         */
+        EmptyView()
     }
     
     private func download() {
+        /*
         Task {
             let identifiers = item.identifiers
             
@@ -80,9 +89,11 @@ internal struct DownloadButton: View {
             
             notify.toggle()
         }
+         */
     }
     
     private func remove() {
+        /*
         let identifiers = item.identifiers
         
         if let episodeID = identifiers.episodeID {
@@ -92,6 +103,7 @@ internal struct DownloadButton: View {
         }
         
         notify.toggle()
+         */
     }
 }
 

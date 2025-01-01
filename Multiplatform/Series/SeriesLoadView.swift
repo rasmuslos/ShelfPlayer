@@ -64,16 +64,16 @@ internal struct SeriesLoadView: View {
             if let id = self.seriesID {
                 seriesID = id
             } else if let seriesName {
-                let id = try await AudiobookshelfClient.shared.seriesID(name: seriesName, libraryID: library.id)
-                seriesID = id
+                // let id = try await ABSClient[library.serverID] // AudiobookshelfClient.shared.seriesID(name: seriesName, libraryID: library.id)
+                // seriesID = id
             } else {
-                throw GenericError.missing
+                // throw GenericError.missing
             }
             
-            let series = try await AudiobookshelfClient.shared.series(seriesId: seriesID, libraryID: library.id)
+            // let series = try await AudiobookshelfClient.shared.series(seriesId: seriesID, libraryID: library.id)
             
             await MainActor.withAnimation {
-                self.resolved = series
+                // self.resolved = series
             }
         } catch {
             await MainActor.withAnimation {

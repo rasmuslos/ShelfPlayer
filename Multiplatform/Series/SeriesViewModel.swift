@@ -15,7 +15,7 @@ internal final class SeriesViewModel {
     @MainActor internal let series: Series
     @MainActor private(set) internal var filteredSeriesIDs: [String]
     
-    @MainActor private(set) var lazyLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder>
+    @MainActor private(set) var lazyLoader: LazyLoadHelper<Audiobook, Void?>
     
     @MainActor internal var library: Library! {
         didSet {
@@ -35,26 +35,25 @@ internal final class SeriesViewModel {
     }
     
     @MainActor internal var ascending: Bool
-    @MainActor internal var sortOrder: AudiobookSortOrder
     
     @MainActor
     init(series: Series, filteredSeriesIDs: [String]) {
         self.series = series
         self.filteredSeriesIDs = filteredSeriesIDs
         
-        lazyLoader = .audiobooks(seriesID: series.id)
+        lazyLoader = .audiobooks(seriesID: series.id.primaryID)
         
         filter = Defaults[.audiobooksFilter]
         displayMode = Defaults[.audiobooksDisplay]
         
         ascending = true
-        sortOrder = .seriesName
     }
 }
 
 internal extension SeriesViewModel {
     @MainActor
     var visible: [AudiobookSection] {
+        /*
         var audiobooks = Audiobook.filterSort(lazyLoader.items, filter: filter, sortOrder: sortOrder, ascending: ascending)
         
         if audiobooks.isEmpty {
@@ -62,10 +61,12 @@ internal extension SeriesViewModel {
         }
         
         if !filteredSeriesIDs.isEmpty {
-            audiobooks = audiobooks.filter { filteredSeriesIDs.contains($0.id) }
+            // audiobooks = audiobooks.filter { filteredSeriesIDs.contains($0.id) }
         }
+         */
         
-        return audiobooks.map { .audiobook(audiobook: $0) }
+        // return audiobooks.map { .audiobook(audiobook: $0) }
+        return lazyLoader.items.map { .audiobook(audiobook: $0) }
     }
     
     @MainActor
@@ -91,7 +92,7 @@ internal extension SeriesViewModel {
     func resetFilter() {
         Task { @MainActor in
             withAnimation(.smooth) {
-                filteredSeriesIDs = []
+                // filteredSeriesIDs = []
             }
         }
     }

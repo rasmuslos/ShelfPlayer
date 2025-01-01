@@ -40,12 +40,13 @@ extension PodcastView {
                         }
                     }
                     
+                    /*
                     ToolbarItem(placement: .topBarTrailing) {
                         @Bindable var viewModel = viewModel
                         
                         Menu {
-                            PodcastSettingsSheet.DownloadSettings(maxEpisodes: $viewModel.fetchConfiguration.maxEpisodes, autoDownloadEnabled: $viewModel.fetchConfiguration.autoDownload)
-                            PodcastSettingsSheet.NotificationToggle(autoDownloadEnabled: viewModel.fetchConfiguration.autoDownload, notificationsEnabled: $viewModel.fetchConfiguration.notifications)
+                            // PodcastSettingsSheet.DownloadSettings(maxEpisodes: $viewModel.fetchConfiguration.maxEpisodes, autoDownloadEnabled: $viewModel.fetchConfiguration.autoDownload)
+                            // PodcastSettingsSheet.NotificationToggle(autoDownloadEnabled: viewModel.fetchConfiguration.autoDownload, notificationsEnabled: $viewModel.fetchConfiguration.notifications)
                             
                             Divider()
                             
@@ -68,13 +69,14 @@ extension PodcastView {
                             Image(systemName: "arrow.down.to.line.circle")
                                 .labelStyle(.iconOnly)
                         } primaryAction: {
-                            viewModel.settingsSheetPresented.toggle()
+                            // viewModel.settingsSheetPresented.toggle()
                         }
                         .menuActionDismissBehavior(.disabled)
-                        .onChange(of: viewModel.fetchConfiguration) {
-                            try? viewModel.fetchConfiguration.modelContext?.save()
-                        }
+                        // .onChange(of: viewModel.fetchConfiguration) {
+                            // try? viewModel.fetchConfiguration.modelContext?.save()
+                        // }
                     }
+                     */
                 }
                 .toolbar {
                     if !viewModel.toolbarVisible && !isRegularPresentation {

@@ -13,19 +13,23 @@ enum SchemaV2: VersionedSchema {
         .init(2, 0, 0)
     }
     static var models: [any PersistentModel.Type] {[
+        /*
         PersistedAudiobook.self,
         PersistedEpisode.self,
         PersistedPodcast.self,
+         */
         
-        PersistedAudioTrack.self,
-        PersistedBookmark.self,
-        PersistedChapter.self,
+        // PersistedAudioTrack.self,
+        // PersistedBookmark.self,
+        // PersistedChapter.self,
         
+        /*
         PersistedProgress.self,
         
         PersistedKeyValueEntity.self,
         PersistedSearchIndexEntry.self,
         
         PersistedDiscoveredServer.self,
+         */
     ]}
 }

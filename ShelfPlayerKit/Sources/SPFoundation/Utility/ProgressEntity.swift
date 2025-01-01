@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import RFNotifications
-import SPFoundation
 
 public struct ProgressEntity: Sendable {
     public let id: String
@@ -101,5 +100,18 @@ public struct ProgressEntity: Sendable {
         public var isFinished: Bool {
             progress >= 1
         }
+    }
+}
+
+public extension ProgressEntity {
+    static func missing(_ itemID: ItemIdentifier) -> ProgressEntity {
+        .init(id: UUID().uuidString,
+                     itemID: itemID,
+                     progress: 0,
+                     duration: 0,
+                     currentTime: 0,
+                     startedAt: nil,
+                     lastUpdate: .distantPast,
+                     finishedAt: nil)
     }
 }

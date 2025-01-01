@@ -53,6 +53,7 @@ internal struct AudiobookHomePanel: View {
                 }
             } else {
                 ScrollView {
+                    /*
                     LazyVStack(spacing: 12) {
                         ForEach(audiobooks) {
                             AudiobookRow(title: $0.localizedLabel, small: false, audiobooks: $0.entities)
@@ -72,15 +73,18 @@ internal struct AudiobookHomePanel: View {
                             AudiobookRow(title: String(localized: "downloads"), small: false, audiobooks: downloaded)
                         }
                     }
+                     */
                 }
                 .refreshable {
                     await fetchItems()
                 }
+                /*
                 .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
                     Task {
                         await fetchItems()
                     }
                 }
+                 */
             }
         }
         .navigationTitle(library.name)
@@ -95,20 +99,24 @@ internal struct AudiobookHomePanel: View {
         
         Task {
             let libraryID = await library.id
+            /*
             let downloaded = try OfflineManager.shared.audiobooks().filter { $0.libraryID == libraryID }
             
             await MainActor.withAnimation {
                 self.downloaded = downloaded
             }
+             */
         }
         Task {
             do {
+                /*
                 let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await AudiobookshelfClient.shared.home(libraryID: library.id)
                 
                 await MainActor.withAnimation {
                     _authors = home.1
                     _audiobooks = home.0
                 }
+                 */
             } catch {
                 await MainActor.withAnimation {
                     failed = false

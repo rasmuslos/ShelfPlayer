@@ -47,7 +47,7 @@ internal struct AudiobookSortFilter: View {
             }
             
             Section("section.sortOrder") {
-                SortOrders(options: [.sortName, .seriesName, .authorName, .released, .added, .duration], sortOrder: $sortOrder, ascending: $ascending)
+                SortOrders(options: [.sortName, .authorName, .released, .added, .duration], sortOrder: $sortOrder, ascending: $ascending)
             }
         } label: {
             Label("filterSort", systemImage: "arrowshape.\(ascending ? "up" : "down").circle")

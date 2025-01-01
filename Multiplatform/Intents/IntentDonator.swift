@@ -11,8 +11,9 @@ import ShelfPlayerKit
 import SPPlayback
 import OSLog
 
-internal class IntentDonator {
-    internal var lastDonatedItem: Item?
+final class IntentDonator: Sendable {
+    // bound to the notification queue
+    nonisolated(unsafe) var lastDonatedItem: Item?
     
     let logger = Logger(subsystem: "USerContext", category: "Intents")
     

@@ -39,7 +39,7 @@ internal extension HomeRow {
     
     static func prepareForPresentation<S>(_ rows: [HomeRow<S>]) -> [HomeRow<S>] {
         let disableDiscoverRow = Defaults[.disableDiscoverRow]
-        let hideFromContinueListening = Defaults[.hideFromContinueListening]
+        // let hideFromContinueListening = Defaults[.hideFromContinueListening]
         
         return rows.compactMap { (row: HomeRow<S>) -> HomeRow<S>? in
             if row.id == "discover" && disableDiscoverRow {
@@ -51,7 +51,8 @@ internal extension HomeRow {
             }
             
             return .init(id: row.id, label: row.label, entities: row.entities.filter { item in
-                !hideFromContinueListening.contains { $0.itemId == item.identifiers.itemID && $0.episodeId == item.identifiers.episodeID }
+                // !hideFromContinueListening.contains { $0.itemId == item.identifiers.itemID && $0.episodeId == item.identifiers.episodeID }
+                true
             })
         }
     }

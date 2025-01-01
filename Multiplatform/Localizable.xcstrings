@@ -351,6 +351,9 @@
         }
       }
     },
+    "abc" : {
+
+    },
     "abridged" : {
       "localizations" : {
         "de" : {
@@ -940,6 +943,7 @@
       }
     },
     "account.server %@ %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -996,6 +1000,7 @@
       }
     },
     "account.spotlight.lastIndex %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1024,6 +1029,7 @@
       }
     },
     "account.spotlight.pending" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1416,6 +1422,7 @@
       }
     },
     "account.version %@ %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1444,6 +1451,7 @@
       }
     },
     "account.version.database %@ %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1756,6 +1764,7 @@
       }
     },
     "bookmark.create" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1896,6 +1905,7 @@
       }
     },
     "bookmark.edit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1924,6 +1934,7 @@
       }
     },
     "bookmark.remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2189,6 +2200,9 @@
         }
       }
     },
+    "cancel" : {
+
+    },
     "carPlay.libraries" : {
       "localizations" : {
         "de" : {
@@ -2330,6 +2344,7 @@
       }
     },
     "carPlay.podcasts.all" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2358,6 +2373,7 @@
       }
     },
     "carPlay.podcasts.library" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2470,6 +2486,7 @@
       }
     },
     "chapters" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2524,6 +2541,51 @@
           }
         }
       }
+    },
+    "configuration.strategy.change" : {
+
+    },
+    "connection.add" : {
+
+    },
+    "connection.endpoint" : {
+
+    },
+    "connection.formattingHint" : {
+
+    },
+    "connection.header.add" : {
+
+    },
+    "connection.header.key" : {
+
+    },
+    "connection.header.remove" : {
+
+    },
+    "connection.header.value" : {
+
+    },
+    "connection.headers" : {
+
+    },
+    "connection.login" : {
+
+    },
+    "connection.strategy" : {
+
+    },
+    "connection.strategy.oAuth" : {
+
+    },
+    "connection.strategy.usernamePassword" : {
+
+    },
+    "connection.verify" : {
+
+    },
+    "connection.versionHint %@" : {
+
     },
     "decrease" : {
       "localizations" : {
@@ -2694,6 +2756,7 @@
       }
     },
     "done" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2750,6 +2813,7 @@
       }
     },
     "download.remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2778,6 +2842,7 @@
       }
     },
     "download.remove.force" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2807,6 +2872,7 @@
     },
     "downloaded" : {
       "comment" : "Unclear if it's \"an item was downloaded\" or \"a downloaded item\"",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2891,6 +2957,7 @@
       }
     },
     "downloads" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3031,6 +3098,7 @@
       }
     },
     "episode.new.title %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3171,6 +3239,7 @@
       }
     },
     "episodes.new.body %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3199,6 +3268,7 @@
       }
     },
     "episodes.new.title %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3591,6 +3661,7 @@
       }
     },
     "finished" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3771,6 +3842,7 @@
       }
     },
     "listen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3799,6 +3871,7 @@
       }
     },
     "listen.again" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4498,6 +4571,9 @@
         }
       }
     },
+    "Name" : {
+
+    },
     "nowPlaying.sheet" : {
       "localizations" : {
         "de" : {
@@ -4863,6 +4939,9 @@
         }
       }
     },
+    "Password" : {
+
+    },
     "pause" : {
       "localizations" : {
         "de" : {
@@ -4920,6 +4999,7 @@
       }
     },
     "playback.stop" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5325,6 +5405,9 @@
         }
       }
     },
+    "proceed" : {
+
+    },
     "progress.completed" : {
       "localizations" : {
         "de" : {
@@ -5354,6 +5437,7 @@
       }
     },
     "progress.finished.set" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5382,6 +5466,7 @@
       }
     },
     "progress.finished.unset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6085,6 +6170,9 @@
           }
         }
       }
+    },
+    "save" : {
+
     },
     "search.empty.description" : {
       "localizations" : {
@@ -6924,6 +7012,7 @@
       }
     },
     "sort.series" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7092,6 +7181,7 @@
       }
     },
     "toolbar.remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

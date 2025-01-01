@@ -19,6 +19,7 @@ internal struct BackgroundTaskHandler {
 
 internal extension BackgroundTaskHandler {
     static func handle(task: BGTask) {
+        /*
         let backgroundTask = Task.detached {
             do {
                 try await Self.updateDownloads()
@@ -30,13 +31,15 @@ internal extension BackgroundTaskHandler {
                 submitTask(failed: true)
             }
         }
+         */
         
         task.expirationHandler = {
-            backgroundTask.cancel()
+            // backgroundTask.cancel()
         }
     }
 }
- 
+
+/*
 internal extension BackgroundTaskHandler {
     static func updateDownloads() async throws {
         guard !NetworkMonitor.isRouteLimited else { return }
@@ -142,6 +145,7 @@ internal extension BackgroundTaskHandler {
         try? await UNUserNotificationCenter.current().add(request)
     }
 }
+*/
 
 internal extension BackgroundTaskHandler {
     static func setup() {

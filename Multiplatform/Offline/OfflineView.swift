@@ -78,23 +78,26 @@ internal struct OfflineView: View {
             .modifier(NowPlaying.SafeAreaModifier())
             .modifier(NowPlaying.BackgroundModifier(bottomOffset: -40))
             .task {
-                await loadItems()
+                // await loadItems()
             }
             .refreshable {
-                await loadItems()
+                // await loadItems()
             }
         }
         .modifier(NowPlaying.CompactModifier(bottomOffset: 40))
         .sheet(isPresented: $accountSheetPresented) {
             AccountSheet()
         }
+        /*
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             Task {
                 await loadItems()
             }
         }
+         */
     }
     
+    /*
     private nonisolated func loadItems() async {
         guard let (audiobooks, podcasts) = try? (OfflineManager.shared.audiobooks(), OfflineManager.shared.podcasts()) else {
             return
@@ -107,6 +110,7 @@ internal struct OfflineView: View {
             self.podcasts = sorted
         }
     }
+     */
 }
 
 private struct SiriOfflineTip: Tip {

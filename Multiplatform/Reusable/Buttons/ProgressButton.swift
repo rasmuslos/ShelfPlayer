@@ -14,30 +14,29 @@ internal struct ProgressButton: View {
     let tint: Bool
     let callback: (() -> Void)?
     
-    @State private var progressEntity: ProgressEntity
+    @State private var progressEntity: ProgressEntity?
     
     init(item: PlayableItem, tint: Bool = false, callback: (() -> Void)? = nil) {
         self.item = item
         self.tint = tint
         self.callback = callback
         
-        _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
+        // _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
     }
     
     var body: some View {
         Button {
             Task {
-                try await item.finished(!progressEntity.isFinished)
+                // try await item.finished(!progressEntity.isFinished)
                 callback?()
             }
         } label: {
+            /*
             Label(progressEntity.isFinished ? "progress.finished.unset" : "progress.finished.set", systemImage: progressEntity.isFinished ? "minus" : "checkmark")
                 .contentTransition(.symbolEffect)
                 .symbolVariant(tint ? .none : .circle)
                 .tint(tint ? progressEntity.isFinished ? .red : .green : nil)
-        }
-        .onAppear {
-            progressEntity.beginReceivingUpdates()
+            */
         }
     }
 }

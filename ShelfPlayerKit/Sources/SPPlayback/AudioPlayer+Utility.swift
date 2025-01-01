@@ -12,13 +12,9 @@ import SPFoundation
 import SPNetwork
 import SPExtension
 
-#if canImport(SPPersistenceExtended)
-import SPPersistence
-import SPPersistenceExtended
-#endif
 
 public extension AudioPlayer {
-    var chapter: PlayableItem.Chapter? {
+    var chapter: Chapter? {
         if let currentChapterIndex {
             return chapters[currentChapterIndex]
         }
@@ -54,10 +50,10 @@ internal extension AudioPlayer {
             return
         }
         
-        currentChapterIndex = chapters.firstIndex { $0.start <= itemCurrentTime && $0.end > itemCurrentTime }
+        currentChapterIndex = chapters.firstIndex { $0.startOffset <= itemCurrentTime && $0.endOffset > itemCurrentTime }
         
         if let chapter {
-            chapterTTL = chapter.end
+            chapterTTL = chapter.endOffset
         }
     }
 }
@@ -69,9 +65,10 @@ internal extension AudioPlayer {
         }
         
         var tracks = [PlayableItem.AudioTrack]()
-        var chapters = [PlayableItem.Chapter]()
+        var chapters = [Chapter]()
         
         let startTime: TimeInterval
+        /*
         
         // Try to start playback session
         do {
@@ -101,6 +98,8 @@ internal extension AudioPlayer {
                 startTime = max(currentTime, 0)
             }
         }
+         
+         */
         
         #if canImport(SPPersistenceExtended)
         if OfflineManager.shared.offlineStatus(parentId: item.id) == .downloaded {
@@ -120,7 +119,8 @@ internal extension AudioPlayer {
         self.tracks = tracks
         self.chapters = chapters
         
-        return startTime
+        // return startTime
+        return -1
     }
     
     func avPlayerItem(item: PlayableItem, track: PlayableItem.AudioTrack) -> AVPlayerItem {
@@ -130,6 +130,8 @@ internal extension AudioPlayer {
         }
         #endif
         
+        fatalError(":(")
+        /*
         let url = AudiobookshelfClient.shared.serverURL
             .appending(path: track.contentUrl.removingPercentEncoding ?? "")
             .appending(queryItems: [
@@ -141,6 +143,7 @@ internal extension AudioPlayer {
         ])
         
         return AVPlayerItem(asset: asset)
+         */
     }
 }
 

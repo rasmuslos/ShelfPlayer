@@ -34,6 +34,7 @@ internal struct AudiobookLoadView: View {
     }
     
     private nonisolated func loadAudiobook() async {
+        /*
         guard let audiobook = try? await AudiobookshelfClient.shared.item(itemId: audiobookId, episodeId: nil).0 as? Audiobook else {
             await MainActor.withAnimation {
                 failed = true
@@ -45,5 +46,6 @@ internal struct AudiobookLoadView: View {
         await MainActor.withAnimation {
             self.audiobook = audiobook
         }
+         */
     }
 }

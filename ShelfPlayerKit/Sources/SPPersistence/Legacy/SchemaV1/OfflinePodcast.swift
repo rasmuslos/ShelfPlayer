@@ -8,26 +8,27 @@
 import Foundation
 import SwiftData
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 extension SchemaV1 {
     @Model
-    public final class OfflinePodcast {
+    final class OfflinePodcast {
         @Attribute(.unique)
-        public let id: String
-        public let libraryId: String
+        var id: String
+        var libraryId: String
         
-        public let name: String
-        public let author: String?
+        var name: String
+        var author: String?
         
-        public let overview: String?
-        public let genres: [String]
+        var overview: String?
+        var genres: [String]
         
-        public let addedAt: Date
-        public let released: String?
+        var addedAt: Date
+        var released: String?
         
-        public let explicit: Bool
-        public var episodeCount: Int
+        var explicit: Bool
+        var episodeCount: Int
         
-        public init(id: String, libraryId: String, name: String, author: String?, overview: String?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int) {
+        init(id: String, libraryId: String, name: String, author: String?, overview: String?, genres: [String], addedAt: Date, released: String?, explicit: Bool, episodeCount: Int) {
             self.id = id
             self.libraryId = libraryId
             self.name = name

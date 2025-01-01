@@ -22,16 +22,17 @@ internal extension NowPlaying {
         func body(content: Content) -> some View {
             content
                 .contextMenu {
+                    /*
                     Group {
                         if let episode = viewModel.item as? Episode {
                             Button {
-                                Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
+                                // Navigation.navigate(episodeID: episode.id, podcastID: episode.podcastId, libraryID: episode.libraryID)
                             } label: {
                                 Label("episode.view", systemImage: "play.square.stack")
                             }
                             
                             Button {
-                                Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
+                                // Navigation.navigate(podcastID: episode.podcastId, libraryID: episode.libraryID)
                             } label: {
                                 Label("podcast.view", systemImage: "rectangle.stack")
                                 Text(episode.podcastName)
@@ -40,7 +41,7 @@ internal extension NowPlaying {
                         
                         if let audiobook = viewModel.item as? Audiobook {
                             Button {
-                                Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
+                                // Navigation.navigate(audiobookID: audiobook.id, libraryID: audiobook.libraryID)
                             } label: {
                                 Label("audiobook.view", systemImage: "book")
                             }
@@ -90,8 +91,10 @@ internal extension NowPlaying {
                     } label: {
                         Label("playback.stop", systemImage: "stop.fill")
                     }
+                    */
                 } preview: {
                     VStack(alignment: .leading, spacing: 2) {
+                        /*
                         ItemImage(cover: viewModel.item?.cover, aspectRatio: .none)
                             .padding(.bottom, 12)
                         
@@ -124,6 +127,7 @@ internal extension NowPlaying {
                             .font(.subheadline)
                             .foregroundStyle(.tertiary)
                         }
+                         */
                     }
                     .frame(width: 240)
                     .padding(20)

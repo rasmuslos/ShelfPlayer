@@ -35,6 +35,7 @@ private extension CarPlayAudiobookLibraryController {
     func updateSections() {
         updateTask?.cancel()
         updateTask = .detached {
+            /*
             guard let (rows, _): ([HomeRow<Audiobook>], [HomeRow<Author>]) = try? await AudiobookshelfClient.shared.home(libraryID: self.library.id) else {
                 return
             }
@@ -56,6 +57,7 @@ private extension CarPlayAudiobookLibraryController {
             }
             
             self.template.updateSections(sections)
+             */
         }
     }
     

@@ -82,25 +82,25 @@ internal struct SearchView: View {
     static let focusNotification = Notification.Name("io.rfk.shelfPlayer.search.focus")
 }
 
-@Observable
-private final class SearchViewModel {
-    @MainActor var library: Library!
+@Observable @MainActor
+private final class SearchViewModel: Sendable {
+    var library: Library!
     
-    @MainActor var search: String {
+    var search: String {
         didSet {
             load()
         }
     }
     private var searchTask: Task<Void, Error>?
     
-    @MainActor private(set) var loading: Bool
+    var loading: Bool
     
-    @MainActor private(set) var series: [Series]
-    @MainActor private(set) var authors: [Author]
-    @MainActor private(set) var audiobooks: [Audiobook]
+    var series: [Series]
+    var authors: [Author]
+    var audiobooks: [Audiobook]
     
-    @MainActor private(set) var errorNotify: Bool
-    @MainActor private(set) var focusNotify: Bool
+    var errorNotify: Bool
+    var focusNotify: Bool
     
     @MainActor
     init() {
@@ -156,6 +156,7 @@ private extension SearchViewModel {
                 self.loading = true
             }
             
+            /*
             var (audiobooks, _, authors, series) = try await AudiobookshelfClient.shared.items(search: search, libraryID: library.id)
             
             audiobooks.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
@@ -171,6 +172,7 @@ private extension SearchViewModel {
                 
                 self.loading = false
             }
+             */
         }
     }
 }

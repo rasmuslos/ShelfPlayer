@@ -47,6 +47,7 @@ internal extension AudioPlayer {
                 return .noActionableNowPlayingItem
             }
             
+            /*
             if bookmarkCommandEvent.isNegative {
                 guard let bookmarks = try? OfflineManager.shared.bookmarks(itemId: audiobook.id),
                       let bookmark = bookmarks.first(where: { abs($0.position - itemCurrentTime) <= 5 }) else {
@@ -54,7 +55,7 @@ internal extension AudioPlayer {
                 }
                 
                 Task {
-                    try await OfflineManager.shared.deleteBookmark(bookmark)
+                    // try await OfflineManager.shared.deleteBookmark(bookmark)
                 }
             } else {
                 let dateFormatter = DateFormatter()
@@ -68,6 +69,7 @@ internal extension AudioPlayer {
                     try await OfflineManager.shared.createBookmark(itemId: audiobook.id, position: itemCurrentTime, note: dateFormatter.string(from: .now))
                 }
             }
+             */
             
             return .success
         }

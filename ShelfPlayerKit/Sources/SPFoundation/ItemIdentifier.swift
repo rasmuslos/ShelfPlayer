@@ -17,20 +17,20 @@ import Foundation
  */
 public final class ItemIdentifier: Codable {
     public typealias PrimaryID = String
-    public typealias GroupingID = String?
+    public typealias GroupingID = String
     
     public typealias LibraryID = String
     public typealias ServerID = String
     
     public let primaryID: PrimaryID
-    public let groupingID: GroupingID
+    public let groupingID: GroupingID?
     
     public let _libraryID: LibraryID!
     public let _serverID: ServerID!
     
     public let type: ItemType
     
-    public init(primaryID: PrimaryID, groupingID: GroupingID, libraryID: LibraryID, serverID: ServerID, type: ItemType) {
+    public init(primaryID: PrimaryID, groupingID: GroupingID?, libraryID: LibraryID, serverID: ServerID, type: ItemType) {
         self.primaryID = primaryID
         self.groupingID = groupingID
         
@@ -127,7 +127,11 @@ extension ItemIdentifier: Identifiable {
         description
     }
 }
-extension ItemIdentifier: CustomStringConvertible {
+extension ItemIdentifier: LosslessStringConvertible {
+    public convenience init(_ description: String) {
+        self.init(string: description)
+    }
+    
     public var description: String {
         let base = "1::\(type)::\(_serverID ?? "_")::\(_libraryID ?? "_")::\(primaryID)"
         
@@ -140,12 +144,16 @@ extension ItemIdentifier: CustomStringConvertible {
 }
 
 public extension ItemIdentifier {
-    enum ItemType: String, Codable, Sendable, CustomStringConvertible {
+    enum ItemType: String, Codable, Sendable, LosslessStringConvertible {
         case audiobook = "audiobook"
         case author = "author"
         case series = "series"
         case podcast = "podcast"
         case episode = "episode"
+        
+        public init?(_ description: String) {
+            self.init(rawValue: description)
+        }
         
         public var description: String {
             rawValue

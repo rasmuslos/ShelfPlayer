@@ -52,12 +52,12 @@ internal struct AuthorLoadView: View {
             if let provided = self.authorID {
                 authorID = provided
             } else if let authorName {
-                authorID = try await AudiobookshelfClient.shared.authorID(name: authorName, libraryID: library.id)
+                // authorID = try await ABSClient[].authorID(name: authorName, libraryID: library.id)
             } else {
                 return
             }
             
-            let author = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: library.id)
+            // let author = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: library.id)
             
             await MainActor.withAnimation {
                 self.author = author

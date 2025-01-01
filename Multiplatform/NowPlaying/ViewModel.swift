@@ -8,69 +8,57 @@
 import Foundation
 import SwiftUI
 import Defaults
-import RFKVisuals
+import RFVisuals
 import ShelfPlayerKit
 import SPPlayback
 
 internal extension NowPlaying {
-    @Observable
-    final class ViewModel {
-        // MARK: Presentation
+    @Observable @MainActor
+    final class ViewModel: Sendable {
+        var namespace: Namespace.ID!
+        var _dragOffset: CGFloat
         
-        @ObservationIgnored var namespace: Namespace.ID!
-        @MainActor var _dragOffset: CGFloat
+        private var _expanded: Bool
         
-        @MainActor private var _expanded: Bool
+        var positionDisplayed: Percentage?
         
-        // MARK: Sliders
+        var seekDragging: Bool
+        var volumeDragging: Bool
+        var controlsDragging: Bool
         
-        @MainActor var positionDisplayed: Percentage?
+        var item: PlayableItem?
+        var queue: [PlayableItem]
         
-        @MainActor var seekDragging: Bool
-        @MainActor var volumeDragging: Bool
-        @MainActor var controlsDragging: Bool
+        var playing: Bool
         
-        // MARK: Current state
+        var itemDuration: Double
+        var itemCurrentTime: Double
         
-        @MainActor private(set) var item: PlayableItem?
-        @MainActor private(set) var queue: [PlayableItem]
+        var chapterDuration: Double
+        var chapterCurrentTime: Double
         
-        @MainActor private(set) var playing: Bool
+        var playbackRate: Percentage
         
-        @MainActor private(set) var itemDuration: Double
-        @MainActor private(set) var itemCurrentTime: Double
+        var chapter: Chapter?
+        var chapters: [Chapter]
         
-        @MainActor private(set) var chapterDuration: Double
-        @MainActor private(set) var chapterCurrentTime: Double
+        var skipForwardsInterval: Int
+        var skipBackwardsInterval: Int
         
-        @MainActor private(set) var playbackRate: Percentage
+        var buffering: Bool
+        var isUsingExternalRoute: Bool
         
-        @MainActor private(set) var chapter: PlayableItem.Chapter?
-        @MainActor private(set) var chapters: [PlayableItem.Chapter]
+        var remainingSleepTime: TimeInterval?
+        var sleepTimerExpiresAtChapterEnd: Int?
         
-        @MainActor private(set) var skipForwardsInterval: Int
-        @MainActor private(set) var skipBackwardsInterval: Int
+        var sheetTab: SheetTab?
+        var sheetPresented: Bool
         
-        @MainActor private(set) var buffering: Bool
-        @MainActor private(set) var isUsingExternalRoute: Bool
+        var bookmarks: [Bookmark]
+        var bookmarkNote: String
         
-        // MARK: Sleep timer
-        
-        @MainActor private(set) var remainingSleepTime: TimeInterval?
-        @MainActor private(set) var sleepTimerExpiresAtChapterEnd: Int?
-        
-        // MARK: Sheet
-        
-        @MainActor var sheetTab: SheetTab?
-        @MainActor var sheetPresented: Bool
-        
-        // MARK: Bookmarks
-        
-        @MainActor var bookmarks: [Bookmark]
-        @MainActor var bookmarkNote: String
-        
-        @MainActor var bookmarkEditingIndex: Int?
-        @MainActor var bookmarkCapturedTime: TimeInterval?
+        var bookmarkEditingIndex: Int?
+        var bookmarkCapturedTime: TimeInterval?
         
         // MARK: Helper
         
@@ -240,7 +228,8 @@ internal extension NowPlaying.ViewModel {
     
     @MainActor
     var bookmarkTabVisible: Bool {
-        item?.type == .audiobook
+        // item?.type == .audiobook
+        false
     }
     
     @MainActor
@@ -270,11 +259,13 @@ private extension NowPlaying.ViewModel {
                     
                     self?.isUsingExternalRoute = AudioPlayer.shared.isUsingExternalRoute
                     
+                    /*
                     if item == nil && self?.item?.type == .audiobook {
                         self?.expanded = true
                     } else if self?.item == nil {
                         self?.expanded = false
                     }
+                     */
                 }
                 
                 await self?.updateBookmarks()
@@ -317,6 +308,7 @@ private extension NowPlaying.ViewModel {
                 self?.itemDuration = AudioPlayer.shared.itemDuration
                 self?.itemCurrentTime = AudioPlayer.shared.itemCurrentTime
                 
+                /*
                 if let expiresAt = SleepTimer.shared.expiresAt {
                     self?.remainingSleepTime = DispatchTime.now().distance(to: expiresAt).timeInterval
                 } else {
@@ -324,6 +316,7 @@ private extension NowPlaying.ViewModel {
                 }
                 
                 self?.sleepTimerExpiresAtChapterEnd = SleepTimer.shared.expiresAtChapterEnd
+                 */
             }
         })
         tokens.append(NotificationCenter.default.addObserver(forName: AudioPlayer.speedDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
@@ -352,18 +345,20 @@ private extension NowPlaying.ViewModel {
             }
         })
         
+        /*
         tokens.append(NotificationCenter.default.addObserver(forName: OfflineManager.bookmarksUpdatedNotification, object: nil, queue: nil) { [weak self] _ in
             Task {
                 await self?.updateBookmarks()
             }
         })
+         */
         
         tokens.append(NotificationCenter.default.addObserver(forName: UIWindow.deviceDidShakeNotification, object: nil, queue: nil) { _ in
             guard Defaults[.shakeExtendsSleepTimer] else {
                 return
             }
             
-            SleepTimer.shared.extend()
+            // SleepTimer.shared.extend()
         })
         
         tokens.append(Search.shared.searchPublisher.sink { _ in
@@ -389,6 +384,7 @@ private extension NowPlaying.ViewModel {
     }
     
     func updateBookmarks() async {
+        /*
         if let item = await item, item.type == .audiobook, let bookmarks = try? OfflineManager.shared.bookmarks(itemId: item.identifiers.itemID) {
             await MainActor.withAnimation {
                 self.bookmarks = bookmarks
@@ -400,6 +396,7 @@ private extension NowPlaying.ViewModel {
                 self.bookmarkEditingIndex = nil
             }
         }
+         */
     }
 }
 
@@ -423,9 +420,11 @@ internal extension NowPlaying.ViewModel {
     }
     func presentBookmarkAlert() {
         Task { @MainActor in
+            /*
             guard item?.type == .audiobook else {
                 return
             }
+             */
             
             bookmarkCapturedTime = AudioPlayer.shared.itemCurrentTime
         }
@@ -433,6 +432,7 @@ internal extension NowPlaying.ViewModel {
     
     func createBookmark() {
         Task {
+            /*
             guard let item = await item, item.type == .audiobook else {
                 return
             }
@@ -450,10 +450,12 @@ internal extension NowPlaying.ViewModel {
             }
             
             await updateBookmarks()
+             */
         }
     }
     func createBookmarkWithNote() {
         Task {
+            /*
             guard let item = await item, let bookmarkCapturedTime = await bookmarkCapturedTime, item.type == .audiobook else {
                 return
             }
@@ -475,11 +477,13 @@ internal extension NowPlaying.ViewModel {
             }
             
             await updateBookmarks()
+             */
         }
     }
     
     func updateBookmark(note: String) {
         Task {
+            /*
             guard let item = await item, let index = await bookmarkEditingIndex, item.type == .audiobook else {
                 return
             }
@@ -502,13 +506,14 @@ internal extension NowPlaying.ViewModel {
             }
             
             await updateBookmarks()
+             */
         }
     }
     
     func deleteBookmark(index: Int) {
         Task {
             do {
-                try await OfflineManager.shared.deleteBookmark(bookmarks[index])
+                // try await OfflineManager.shared.deleteBookmark(bookmarks[index])
                 
                 await MainActor.run {
                     notifyBookmark += 1

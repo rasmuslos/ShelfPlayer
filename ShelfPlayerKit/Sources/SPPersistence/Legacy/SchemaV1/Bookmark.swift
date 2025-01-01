@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 extension SchemaV1 {
     @Model
     public final class Bookmark {
@@ -30,6 +31,7 @@ extension SchemaV1 {
     }
 }
 
+@available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 internal extension SchemaV1.Bookmark {
     enum SyncStatus: Int, Codable {
         case synced = 0

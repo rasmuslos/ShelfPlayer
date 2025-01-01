@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import Combine
+@preconcurrency import Combine
 import ShelfPlayerKit
 
-struct Search {
+struct Search: Sendable {
     private let searchSubject: PassthroughSubject<(Library?, String), Never>
     
     private init() {

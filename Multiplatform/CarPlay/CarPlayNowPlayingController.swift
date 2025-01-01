@@ -52,21 +52,23 @@ internal class CarPlayNowPlayingController: NSObject {
 extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
     func nowPlayingTemplateUpNextButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
         Task {
-            try await interfaceController.pushTemplate(queueController.template, animated: true)
+            // try await interfaceController.pushTemplate(queueController.template, animated: true)
         }
     }
     func nowPlayingTemplateAlbumArtistButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
         if let audiobook = AudioPlayer.shared.item as? Audiobook {
             Task {
-                let controller = CarPlayChaptersController(interfaceController: interfaceController, audiobook: audiobook)
-                try await interfaceController.pushTemplate(controller.template, animated: true)
+                // let controller = CarPlayChaptersController(interfaceController: interfaceController, audiobook: audiobook)
+                // try await interfaceController.pushTemplate(controller.template, animated: true)
             }
         } else if let episode = AudioPlayer.shared.item as? Episode {
             Task {
+                /*
                 let podcast = try await AudiobookshelfClient.shared.podcast(podcastId: episode.podcastId).0
                 let controller = CarPlayPodcastController(interfaceController: self.interfaceController, podcast: podcast)
                 
                 try await self.interfaceController.pushTemplate(controller.template, animated: true)
+                 */
             }
         }
     }

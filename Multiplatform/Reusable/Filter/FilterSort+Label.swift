@@ -49,8 +49,6 @@ internal extension AudiobookSortOrder {
         switch self {
         case .sortName:
             "sort.name"
-        case .seriesName:
-            "sort.series"
         case .authorName:
             "sort.author"
         case .released:

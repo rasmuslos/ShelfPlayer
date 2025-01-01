@@ -7,7 +7,7 @@
 
 import RFNotifications
 
-extension RFNotification.Notification {
+public extension RFNotification.Notification {
     static var progressEntityUpdated: Notification<ProgressEntity> {
         .init("io.rfk.shelfPlayerKit.progressEntity.updated")
     }

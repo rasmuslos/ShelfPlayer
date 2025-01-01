@@ -49,22 +49,22 @@ struct EpisodeView: View {
             viewModel.library = library
         }
         .task {
-            await viewModel.load()
+            // await viewModel.load()
         }
         .refreshable {
-            await viewModel.load()
+            // await viewModel.load()
         }
         .userActivity("io.rfk.shelfplayer.episode") {
             $0.title = viewModel.episode.name
             $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = convertIdentifier(item: viewModel.episode)
-            $0.targetContentIdentifier = convertIdentifier(item: viewModel.episode)
-            $0.userInfo = [
-                "libraryID": viewModel.episode.libraryID,
-                "episodeID": viewModel.episode.id,
-                "podcastID": viewModel.episode.podcastId,
+            // $0.persistentIdentifier = convertIdentifier(item: viewModel.episode)
+            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.episode)
+            $0.userInfo = [:
+                // "libraryID": viewModel.episode.libraryID,
+                // "episodeID": viewModel.episode.id,
+                // "podcastID": viewModel.episode.podcastId,
             ]
-            $0.webpageURL = viewModel.episode.url
+            // $0.webpageURL = viewModel.episode.url
         }
     }
 }

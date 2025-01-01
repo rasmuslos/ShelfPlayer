@@ -20,22 +20,28 @@ extension SchemaV2 {
         private(set) var itemID: ItemIdentifier
         
         private(set) var index: Int
-        private(set) var fileExtension: String
+        
+        private(set) var fileType: FileType
         
         private(set) var offset: TimeInterval
         private(set) var duration: TimeInterval
         
         var downloadTaskID: Int?
         
-        init(id: UUID, itemID: ItemIdentifier, index: Int, fileExtension: String, offset: TimeInterval, duration: TimeInterval) {
+        init(id: UUID, itemID: ItemIdentifier, index: Int, fileType: FileType, offset: TimeInterval, duration: TimeInterval) {
             self.id = id
             self.itemID = itemID
             self.index = index
-            self.fileExtension = fileExtension
+            self.fileType = fileType
             self.offset = offset
             self.duration = duration
             
             downloadTaskID = nil
+        }
+        
+        enum FileType: Codable {
+            case audio(fileExtension: String)
+            case pdf
         }
     }
 }

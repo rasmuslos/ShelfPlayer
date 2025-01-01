@@ -23,7 +23,7 @@ internal class CarPlayController {
         nowPlayingController = .init(interfaceController: interfaceController)
         
         Task {
-            try await interfaceController.setRootTemplate(tabBar.template, animated: false)
+            // try await interfaceController.setRootTemplate(tabBar.template, animated: false)
         }
     }
 }

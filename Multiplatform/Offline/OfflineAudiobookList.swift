@@ -32,12 +32,13 @@ internal struct OfflineAudiobookList: View {
 internal extension OfflineAudiobookList {
     struct AudiobookRow: View {
         let audiobook: Audiobook
-        let entity: ProgressEntity
+        let entity: ProgressEntity?
         
         @MainActor
         init(audiobook: Audiobook) {
             self.audiobook = audiobook
-            entity = OfflineManager.shared.progressEntity(item: audiobook)
+            // entity = OfflineManager.shared.progressEntity(item: audiobook)
+            entity = nil
         }
         
         @State private var loading = false
@@ -96,16 +97,15 @@ internal extension OfflineAudiobookList {
                     
                     Spacer(minLength: 12)
                     
+                    /*
                     CircularProgressIndicator(entity: entity)
                         .frame(width: 20)
+                     */
                 }
                 .contentShape(.hoverMenuInteraction, .rect)
             }
             .buttonStyle(.plain)
             .modifier(SwipeActionsModifier(item: audiobook, loading: $loading))
-            .onAppear {
-                entity.beginReceivingUpdates()
-            }
         }
     }
 }
