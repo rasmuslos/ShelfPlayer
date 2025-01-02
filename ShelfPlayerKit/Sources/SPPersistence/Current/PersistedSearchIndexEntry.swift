@@ -12,7 +12,7 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedSearchIndexEntry {
-        @Attribute(.unique)
+        @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
         private(set) var itemID: ItemIdentifier
         
         private(set) var primaryName: String

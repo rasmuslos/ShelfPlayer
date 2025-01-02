@@ -12,7 +12,7 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedEpisode {
-        @Attribute(.unique)
+        @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
         private(set) var id: ItemIdentifier
         
         private(set) var name: String
