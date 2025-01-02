@@ -17,7 +17,7 @@ extension SchemaV2 {
         
         @Attribute(.unique)
         private(set) var id: String
-        @Attribute(.unique)
+        @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
         private(set) var itemID: ItemIdentifier
         
         var progress: Percentage

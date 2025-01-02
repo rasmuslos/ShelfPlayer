@@ -16,7 +16,7 @@ typealias DiscoveredServer = SchemaV2.PersistedDiscoveredServer
 
 public let ABSClient = APIClientStore { serverID in
     guard let server = PersistenceManager.shared.authorization[serverID] else {
-        throw PersistenceManager.PersistenceError.serverNotFound
+        throw PersistenceError.serverNotFound
     }
     
     let authorizationHeader = HTTPHeader(key: "Authorization", value: "Bearer \(server.token)")
@@ -53,6 +53,13 @@ extension PersistenceManager {
             }
         }
         
+        public struct KnownServer: Sendable, Identifiable, Equatable {
+            public let id = UUID()
+            
+            public let host: URL
+            public let username: String
+        }
+        
         func retrieveServers() throws {
             let query = [
                 kSecAttrService: service,
@@ -87,33 +94,54 @@ extension PersistenceManager {
                 }
             }
         }
+    }
+}
+
+public extension PersistenceManager.AuthorizationSubsystem {
+    var knownServers: [KnownServer] {
+        get async {
+            var descriptor = FetchDescriptor<DiscoveredServer>()
+            descriptor.fetchLimit = 100
+            
+            do {
+                return try modelContext.fetch(descriptor).map { .init(host: $0.host, username: $0.user) }
+            } catch {
+                return []
+            }
+        }
+    }
+    
+    func addServer(_ server: Server) throws {
+        let descriptor = FetchDescriptor<DiscoveredServer>(predicate: #Predicate { $0.serverID == server.id })
+        let count = try? modelContext.fetchCount(descriptor)
         
-        public func addServer(_ server: Server) throws {
+        if let count, count == 0 {
             let discovered = DiscoveredServer(serverID: server.id, host: server.host, user: server.user)
             
             modelContext.insert(discovered)
             try modelContext.save()
-            
-            let query = [
-                kSecClass: kSecClassGenericPassword,
-                kSecAttrService: service,
-                kSecAttrSynchronizable: true,
-                
-                kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
-                
-                kSecAttrAccount: server.id,
-                kSecValueData: try JSONEncoder().encode(server)
-            ] as! [String: Any] as CFDictionary
-            
-            let status = SecItemAdd(query, nil)
-            
-            guard status == errSecSuccess else {
-                throw PersistenceError.keychainInsertFailed
-            }
         }
         
-        public subscript(_ id: ItemIdentifier.ServerID) -> Server? {
-            servers[id]
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecAttrSynchronizable: true,
+            
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+            
+            kSecAttrAccount: server.id,
+            kSecValueData: try JSONEncoder().encode(server)
+        ] as! [String: Any] as CFDictionary
+        
+        let status = SecItemAdd(query, nil)
+        
+        guard status == errSecSuccess else {
+            logger.error("Error adding server to keychain: \(SecCopyErrorMessageString(status, nil))")
+            throw PersistenceError.keychainInsertFailed
         }
+    }
+    
+    subscript(_ id: ItemIdentifier.ServerID) -> Server? {
+        servers[id]
     }
 }

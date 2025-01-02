@@ -16,7 +16,6 @@ struct ConnectionAddView: View {
     
     var body: some View {
         NavigationStack {
-            let _ = PersistenceManager.shared
             Form {
                 Section {
                     TextField("connection.endpoint", text: $viewModel.endpoint)
@@ -36,8 +35,22 @@ struct ConnectionAddView: View {
                 }
                 .disabled(viewModel.version != nil || viewModel.endpoint.isEmpty)
                 
-                DisclosureGroup("connection.headers") {
-                    HeadersEditSection(headers: $viewModel.headers)
+                Section {
+                    DisclosureGroup("connection.headers") {
+                        HeadersEditSection(headers: $viewModel.headers)
+                    }
+                    
+                    if !viewModel.knownServers.isEmpty {
+                        DisclosureGroup("connection.knownServers") {
+                            ForEach(viewModel.knownServers) { server in
+                                Button(String("\(server.host.absoluteString): \(server.username)")) {
+                                    viewModel.selectKnownServer(host: server.host, username: server.username)
+                                }
+                                .disabled(viewModel.loading)
+                            }
+                        }
+                        .animation(.smooth, value: viewModel.knownServers)
+                    }
                 }
                 
                 if !viewModel.strategies.isEmpty {
@@ -102,6 +115,9 @@ struct ConnectionAddView: View {
             .onChange(of: viewModel.notifyFinished) {
                 didFinish()
             }
+            .task {
+                await viewModel.fetchKnownServers()
+            }
         }
     }
     
@@ -134,10 +150,12 @@ private final class ViewModel: Sendable {
     var username = ""
     var password = ""
     
-    var headers: [HeaderShadow] = []
+    var headers = [HeaderShadow]()
     
     var strategy: AuthorizationStrategy?
     var strategies = [AuthorizationStrategy]()
+    
+    var knownServers = [PersistenceManager.AuthorizationSubsystem.KnownServer]()
     
     var loading = false
     var notifyError = false
@@ -174,8 +192,6 @@ private final class ViewModel: Sendable {
                         ""
                     }
                 } catch {
-                    print(error, username, password)
-                    
                     notifyError.toggle()
                     loading = false
                 }
@@ -183,6 +199,33 @@ private final class ViewModel: Sendable {
                 await validateEndpoint()
             }
         }
+    }
+    
+    nonisolated func fetchKnownServers() async {
+        let servers = await PersistenceManager.shared.authorization.knownServers
+        
+        await MainActor.run {
+            self.knownServers = servers
+        }
+    }
+    
+    func selectKnownServer(host: URL, username: String) {
+        endpoint = ""
+        
+        url = nil
+        version = nil
+        
+        self.username = ""
+        password = ""
+        
+        strategy = nil
+        strategies = []
+        
+        endpoint = host.absoluteString
+        
+        proceed()
+        
+        self.username = username
     }
     
     func validateEndpoint() async {
@@ -237,7 +280,6 @@ private final class ViewModel: Sendable {
             notifyError.toggle()
         }
     }
-        
     
     enum ConnectionError: Error {
         case serverIsNotInitialized
@@ -285,6 +327,6 @@ final class HeaderShadow {
 
 #Preview {
     ConnectionAddView() {
-        print("finished")
+        
     }
 }
