@@ -2569,6 +2569,9 @@
     "connection.headers" : {
 
     },
+    "connection.knownServers" : {
+
+    },
     "connection.login" : {
 
     },

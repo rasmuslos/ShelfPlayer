@@ -17,6 +17,7 @@ extension SchemaV2 {
         
         @Attribute(.unique)
         private(set) var id: UUID
+        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
         private(set) var itemID: ItemIdentifier
         
         private(set) var name: String

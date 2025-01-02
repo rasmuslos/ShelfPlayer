@@ -160,3 +160,38 @@ public extension ItemIdentifier {
         }
     }
 }
+
+@objc(NSAttributedStringTransformer)
+public class ItemIdentifierTransformer: NSSecureUnarchiveFromDataTransformer {
+    public override class func allowsReverseTransformation() -> Bool {
+        true
+    }
+
+    public override class var allowedTopLevelClasses: [AnyClass] {
+        [ItemIdentifier.self]
+    }
+
+    public override class func transformedValueClass() -> AnyClass {
+        ItemIdentifier.self
+    }
+
+    public override func reverseTransformedValue(_ value: Any?) -> Any? {
+        if let id = value as? ItemIdentifier, let data = id.description.data(using: .utf8) {
+            NSData(data: data)
+        } else {
+            nil
+        }
+    }
+
+    public override func transformedValue(_ value: Any?) -> Any? {
+        if let data = value as? NSData, let string = String(data: data as Data, encoding: .utf8) {
+            ItemIdentifier(string)
+        } else {
+            nil
+        }
+    }
+}
+
+public extension NSValueTransformerName {
+    static let itemIdentifierTransformer = NSValueTransformerName(rawValue: "ItemIdentifierTransformer")
+}

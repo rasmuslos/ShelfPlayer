@@ -18,6 +18,8 @@ public final class PersistenceManager: Sendable {
     public let podcasts: PodcastSubsystem
     
     private init() {
+        ValueTransformer.setValueTransformer(ItemIdentifierTransformer(), forName: .itemIdentifierTransformer)
+        
         let schema = Schema(versionedSchema: SchemaV2.self)
         
         let modelConfiguration = ModelConfiguration("ShelfPlayerUpdated",
@@ -38,14 +40,14 @@ public final class PersistenceManager: Sendable {
         
         podcasts = .init()
     }
+}
+
+enum PersistenceError: Error {
+    case unsupportedDownloadItemType
     
-    enum PersistenceError: Error {
-        case unsupportedDownloadItemType
-        
-        case serverNotFound
-        case keychainInsertFailed
-        case keychainRetrieveFailed
-    }
+    case serverNotFound
+    case keychainInsertFailed
+    case keychainRetrieveFailed
 }
 
 // MARK: Singleton

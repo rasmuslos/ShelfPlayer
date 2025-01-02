@@ -12,7 +12,7 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedPodcast {
-        @Attribute(.unique)
+        @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
         private(set) var id: ItemIdentifier
         
         private(set) var name: String
@@ -27,7 +27,7 @@ extension SchemaV2 {
         private(set) var explicit: Bool
         private(set) var publishingType: Podcast.PodcastType?
         
-        @Relationship(inverse: \PersistedEpisode.podcast)
+        @Relationship(deleteRule: .cascade, inverse: \PersistedEpisode.podcast)
         var episodes: [PersistedEpisode]
         
         @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
