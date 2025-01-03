@@ -133,7 +133,7 @@ private extension PodcastViewModel {
     }
     
     nonisolated func fetchEpisodes() async {
-        guard let episodes = try? await ABSClient[podcast.id.serverID].episodes(from: podcast.id) else {
+        guard let episodes = try? await ABSClient[podcast.id.connectionID].episodes(from: podcast.id) else {
             await MainActor.run {
                 errorNotify.toggle()
             }

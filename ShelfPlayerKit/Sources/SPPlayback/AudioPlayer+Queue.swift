@@ -71,7 +71,7 @@ internal extension AudioPlayer {
         }
         
         /*
-        if let episodes = try? await ABSClient[episode.id.serverID].episodes(podcastId: episode.podcastId) {
+        if let episodes = try? await ABSClient[episode.id.connectionID].episodes(podcastId: episode.podcastId) {
             handleNextEpisodes(episodes, episode: episode)
             return
         }

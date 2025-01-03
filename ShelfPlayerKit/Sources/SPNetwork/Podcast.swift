@@ -9,7 +9,7 @@ import Foundation
 import RFNetwork
 import SPFoundation
 
-public extension APIClient where I == ItemIdentifier.ServerID {
+public extension APIClient where I == ItemIdentifier.ConnectionID {
     func home(for libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
         let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
         
@@ -22,9 +22,9 @@ public extension APIClient where I == ItemIdentifier.ServerID {
             }
             
             if row.type == "episode" {
-                episodes.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap{ Episode(payload: $0, serverID: serverID) }))
+                episodes.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap{ Episode(payload: $0, connectionID: connectionID) }))
             } else if row.type == "podcast" {
-                podcasts.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Podcast(payload: $0, serverID: serverID) }))
+                podcasts.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Podcast(payload: $0, connectionID: connectionID) }))
             }
         }
         
@@ -33,13 +33,13 @@ public extension APIClient where I == ItemIdentifier.ServerID {
     
     func podcast(with identifier: ItemIdentifier) async throws -> (Podcast, [Episode]) {
         let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: .get))
-        let podcast = Podcast(payload: item, serverID: serverID)
+        let podcast = Podcast(payload: item, connectionID: connectionID)
         
         guard let episodes = item.media?.episodes else {
             throw APIClientError.invalidResponse
         }
             
-        return (podcast, episodes.compactMap { Episode(episode: $0, item: item, serverID: serverID) })
+        return (podcast, episodes.compactMap { Episode(episode: $0, item: item, connectionID: connectionID) })
         
     }
     
@@ -59,6 +59,6 @@ public extension APIClient where I == ItemIdentifier.ServerID {
         query.append(.init(name: "include", value: "numEpisodesIncomplete"))
         
         let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
-        return (response.results.map { Podcast(payload: $0, serverID: serverID) }, response.total)
+        return (response.results.map { Podcast(payload: $0, connectionID: connectionID) }, response.total)
     }
 }

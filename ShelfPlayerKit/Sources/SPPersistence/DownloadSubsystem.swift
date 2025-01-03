@@ -20,7 +20,7 @@ extension PersistenceManager {
                 throw PersistenceError.unsupportedDownloadItemType
             }
             
-            let (item, audioTracks, chapters, supplementaryPDFs) = try await ABSClient[itemID.serverID].playableItem(itemID: itemID)
+            let (item, audioTracks, chapters, supplementaryPDFs) = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID)
         }
     }
 }

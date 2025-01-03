@@ -9,7 +9,7 @@ import Foundation
 import RFNetwork
 import SPFoundation
 
-public extension APIClient where I == ItemIdentifier.ServerID {
+public extension APIClient where I == ItemIdentifier.ConnectionID {
     func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Author>]) {
         let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
         
@@ -22,9 +22,9 @@ public extension APIClient where I == ItemIdentifier.ServerID {
             }
             
             if row.type == "book" {
-                audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, serverID: serverID) }))
+                audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, connectionID: connectionID) }))
             } else if row.type == "authors" {
-                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Author(payload: $0, serverID: serverID) }))
+                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Author(payload: $0, connectionID: connectionID) }))
             }
         }
         
@@ -46,6 +46,6 @@ public extension APIClient where I == ItemIdentifier.ServerID {
         }
         
         let result = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
-        return (result.results.compactMap { AudiobookSection.parse(payload: $0, serverID: serverID) }, result.total)
+        return (result.results.compactMap { AudiobookSection.parse(payload: $0, connectionID: connectionID) }, result.total)
     }
 }
