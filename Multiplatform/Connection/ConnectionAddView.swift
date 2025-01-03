@@ -35,22 +35,21 @@ struct ConnectionAddView: View {
                 }
                 .disabled(viewModel.version != nil || viewModel.endpoint.isEmpty)
                 
-                Section {
-                    DisclosureGroup("connection.headers") {
-                        HeadersEditSection(headers: $viewModel.headers)
-                    }
-                    
-                    if !viewModel.knownServers.isEmpty {
-                        DisclosureGroup("connection.knownServers") {
-                            ForEach(viewModel.knownServers) { server in
-                                Button(String("\(server.host.absoluteString): \(server.username)")) {
-                                    viewModel.selectKnownServer(host: server.host, username: server.username)
-                                }
-                                .disabled(viewModel.loading)
+                // No section here, would prevent headers from displaying correctly
+                DisclosureGroup("connection.headers") {
+                    HeadersEditSection(headers: $viewModel.headers)
+                }
+                
+                if !viewModel.knownConnections.isEmpty {
+                    DisclosureGroup("connection.knownConnections") {
+                        ForEach(viewModel.knownConnections) { connection in
+                            Button(String("\(connection.host.absoluteString): \(connection.username)")) {
+                                viewModel.selectKnownConnection(host: connection.host, username: connection.username)
                             }
+                            .disabled(viewModel.loading)
                         }
-                        .animation(.smooth, value: viewModel.knownServers)
                     }
+                    .animation(.smooth, value: viewModel.knownConnections)
                 }
                 
                 if !viewModel.strategies.isEmpty {
@@ -116,7 +115,7 @@ struct ConnectionAddView: View {
                 didFinish()
             }
             .task {
-                await viewModel.fetchKnownServers()
+                await viewModel.fetchKnownConnections()
             }
         }
     }
@@ -155,7 +154,7 @@ private final class ViewModel: Sendable {
     var strategy: AuthorizationStrategy?
     var strategies = [AuthorizationStrategy]()
     
-    var knownServers = [PersistenceManager.AuthorizationSubsystem.KnownServer]()
+    var knownConnections = [PersistenceManager.AuthorizationSubsystem.KnownConnection]()
     
     var loading = false
     var notifyError = false
@@ -180,11 +179,11 @@ private final class ViewModel: Sendable {
                         loading = true
                         
                         let headers = headers.compactMap(\.materialized)
-                        let client = APIClient(serverID: "temporary", host: url, headers: headers)
+                        let client = APIClient(connectionID: "temporary", host: url, headers: headers)
                         
                         let token = try await client.login(username: username, password: password)
                         
-                        try await PersistenceManager.shared.authorization.addServer(.init(host: url, user: username, token: token, headers: headers))
+                        try await PersistenceManager.shared.authorization.addConnection(.init(host: url, user: username, token: token, headers: headers))
                         
                         notifyFinished.toggle()
                     case .openID:
@@ -201,15 +200,15 @@ private final class ViewModel: Sendable {
         }
     }
     
-    nonisolated func fetchKnownServers() async {
-        let servers = await PersistenceManager.shared.authorization.knownServers
+    nonisolated func fetchKnownConnections() async {
+        let connections = await PersistenceManager.shared.authorization.knownConnections
         
         await MainActor.run {
-            self.knownServers = servers
+            self.knownConnections = connections
         }
     }
     
-    func selectKnownServer(host: URL, username: String) {
+    func selectKnownConnection(host: URL, username: String) {
         endpoint = ""
         
         url = nil
@@ -236,7 +235,7 @@ private final class ViewModel: Sendable {
             return
         }
         
-        let client = APIClient(serverID: "temporary", host: url, headers: headers.compactMap(\.materialized))
+        let client = APIClient(connectionID: "temporary", host: url, headers: headers.compactMap(\.materialized))
         
         do {
             withAnimation {
@@ -300,28 +299,6 @@ private final class ViewModel: Sendable {
                 "connection.strategy.oAuth"
             }
         }
-    }
-}
-
-@Observable @MainActor
-final class HeaderShadow {
-    var key: String
-    var value: String
-    
-    init(key: String, value: String) {
-        self.key = key
-        self.value = value
-    }
-    
-    var isValid: Bool {
-        !key.isEmpty && !value.isEmpty
-    }
-    var materialized: HTTPHeader? {
-        guard isValid else {
-            return nil
-        }
-        
-        return .init(key: key, value: value)
     }
 }
 

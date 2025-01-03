@@ -9,9 +9,9 @@ import Foundation
 import RFNetwork
 import SPFoundation
 
-public extension APIClient where I == ItemIdentifier.ServerID {
+public extension APIClient where I == ItemIdentifier.ConnectionID {
     func author(with identifier: ItemIdentifier) async throws -> Author {
-        Author(payload: try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), serverID: serverID)
+        Author(payload: try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), connectionID: connectionID)
     }
     
     func author(with identifier: ItemIdentifier) async throws -> (Author, [Audiobook], [Series]) {
@@ -20,15 +20,15 @@ public extension APIClient where I == ItemIdentifier.ServerID {
             URLQueryItem(name: "include", value: "items,series"),
         ]))
         
-        let author = Author(payload: response, serverID: serverID)
-        let audiobooks = (response.libraryItems ?? []).compactMap { Audiobook(payload: $0, serverID: serverID) }
-        let series = (response.series ?? []).map{ Series(payload: $0, serverID: serverID) }
+        let author = Author(payload: response, connectionID: connectionID)
+        let audiobooks = (response.libraryItems ?? []).compactMap { Audiobook(payload: $0, connectionID: connectionID) }
+        let series = (response.series ?? []).map{ Series(payload: $0, connectionID: connectionID) }
         
         return (author, audiobooks, series)
     }
     
     func authors(from libraryID: String) async throws -> [Author] {
-        try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: .get)).authors.map { Author(payload: $0, serverID: serverID) }
+        try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: .get)).authors.map { Author(payload: $0, connectionID: connectionID) }
     }
     
     func authorID(from libraryID: String, name: String) async throws -> String {

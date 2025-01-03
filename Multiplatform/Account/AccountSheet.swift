@@ -241,7 +241,7 @@ internal struct AccountSheet: View {
                             /*
                             Text(serverInfoToggled
                                  ? AudiobookshelfClient.shared.clientID
-                                 : String(localized: "account.server \(AudiobookshelfClient.shared.serverURL.absoluteString) \(serverVersion ?? "?")"))
+                                 : String(localized: "account.connection \(AudiobookshelfClient.shared.serverURL.absoluteString) \(serverVersion ?? "?")"))
                             .animation(.smooth, value: serverInfoToggled)
                             .fontDesign(.monospaced)
                              */

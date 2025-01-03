@@ -20,22 +20,22 @@ public final class ItemIdentifier: Codable {
     public typealias GroupingID = String
     
     public typealias LibraryID = String
-    public typealias ServerID = String
+    public typealias ConnectionID = String
     
     public let primaryID: PrimaryID
     public let groupingID: GroupingID?
     
     public let _libraryID: LibraryID!
-    public let _serverID: ServerID!
+    public let _connectionID: ConnectionID!
     
     public let type: ItemType
     
-    public init(primaryID: PrimaryID, groupingID: GroupingID?, libraryID: LibraryID, serverID: ServerID, type: ItemType) {
+    public init(primaryID: PrimaryID, groupingID: GroupingID?, libraryID: LibraryID, connectionID: ConnectionID, type: ItemType) {
         self.primaryID = primaryID
         self.groupingID = groupingID
         
         _libraryID = libraryID
-        _serverID = serverID
+        _connectionID = connectionID
         
         self.type = type
     }
@@ -46,7 +46,7 @@ public final class ItemIdentifier: Codable {
         self.groupingID = nil
         
         _libraryID = nil
-        _serverID = nil
+        _connectionID = nil
         
         type = .audiobook
     }
@@ -56,7 +56,7 @@ public final class ItemIdentifier: Codable {
         self.groupingID = groupingID
         
         _libraryID = nil
-        _serverID = nil
+        _connectionID = nil
         
         type = .episode
     }
@@ -69,17 +69,17 @@ public final class ItemIdentifier: Codable {
             type = ItemType(rawValue: String(parts[1]))!
             
             let libraryID = String(parts[2])
-            let serverID = String(parts[3])
+            let connectionID = String(parts[3])
             
             if libraryID == "_" {
                 _libraryID = nil
             } else {
                 _libraryID = libraryID
             }
-            if serverID == "_" {
-                _serverID = nil
+            if connectionID == "_" {
+                _connectionID = nil
             } else {
-                _serverID = serverID
+                _connectionID = connectionID
             }
             
             primaryID = String(parts[4])
@@ -97,12 +97,12 @@ public final class ItemIdentifier: Codable {
     public var libraryID: LibraryID {
         _libraryID ?? ""
     }
-    public var serverID: ServerID {
-        _serverID ?? ""
+    public var connectionID: ConnectionID {
+        _connectionID ?? ""
     }
     
     var shallow: Bool {
-        _libraryID == nil || _serverID == nil
+        _libraryID == nil || _connectionID == nil
     }
     
     enum ParseError: Error {
@@ -133,7 +133,7 @@ extension ItemIdentifier: LosslessStringConvertible {
     }
     
     public var description: String {
-        let base = "1::\(type)::\(_serverID ?? "_")::\(_libraryID ?? "_")::\(primaryID)"
+        let base = "1::\(type)::\(_connectionID ?? "_")::\(_libraryID ?? "_")::\(primaryID)"
         
         if let groupingID {
             return base + "::\(groupingID)"

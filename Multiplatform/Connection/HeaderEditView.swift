@@ -12,15 +12,13 @@ struct HeadersEditSection: View {
     @Binding var headers: [HeaderShadow]
     
     var body: some View {
-        Section {
-            Button("connection.header.add") {
-                if let last = headers.last, !last.isValid {
-                    return
-                }
-                
-                withAnimation {
-                    headers.append(.init(key: "", value: ""))
-                }
+        Button("connection.header.add") {
+            if let last = headers.last, !last.isValid {
+                return
+            }
+            
+            withAnimation {
+                headers.append(.init(key: "", value: ""))
             }
         }
         
@@ -47,5 +45,27 @@ struct HeaderEditColumn: View {
                 remove()
             }
         }
+    }
+}
+
+@Observable @MainActor
+final class HeaderShadow {
+    var key: String
+    var value: String
+    
+    init(key: String, value: String) {
+        self.key = key
+        self.value = value
+    }
+    
+    var isValid: Bool {
+        !key.isEmpty && !value.isEmpty
+    }
+    var materialized: HTTPHeader? {
+        guard isValid else {
+            return nil
+        }
+        
+        return .init(key: key, value: value)
     }
 }

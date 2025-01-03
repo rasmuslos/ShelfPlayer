@@ -17,7 +17,7 @@ extension APIClient {
     }
 }
 
-public extension APIClient where I == ItemIdentifier.ServerID  {
+public extension APIClient where I == ItemIdentifier.ConnectionID  {
     func playableItem(itemID: ItemIdentifier) async throws -> (PlayableItem, [PlayableItem.AudioTrack], [Chapter], [PlayableItem.SupplementaryPDF]) {
         let payload = try await item(itemID: itemID)
         var supplementaryPDFs = [PlayableItem.SupplementaryPDF]()
@@ -40,7 +40,7 @@ public extension APIClient where I == ItemIdentifier.ServerID  {
         }
         
         if itemID.groupingID != nil, let item = payload.media?.episodes?.first(where: { $0.id == itemID.primaryID }) {
-            let episode = Episode(episode: item, item: payload, serverID: serverID)
+            let episode = Episode(episode: item, item: payload, connectionID: connectionID)
             
             guard let episode,
                   let audioTrack = item.audioTrack,
@@ -51,7 +51,7 @@ public extension APIClient where I == ItemIdentifier.ServerID  {
             return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init), supplementaryPDFs)
         }
         
-        guard let audiobook = Audiobook(payload: payload, serverID: itemID.serverID),
+        guard let audiobook = Audiobook(payload: payload, connectionID: itemID.connectionID),
               let tracks = payload.media?.tracks,
               let chapters = payload.media?.chapters else {
             throw APIClientError.invalidResponse
@@ -66,10 +66,10 @@ public extension APIClient where I == ItemIdentifier.ServerID  {
         ]))
         
         return (
-            payload.book?.compactMap { Audiobook(payload: $0.libraryItem, serverID: library.serverID) } ?? [],
-            payload.podcast?.map { Podcast(payload: $0.libraryItem, serverID: serverID) } ?? [],
-            payload.authors?.map { Author(payload: $0, serverID: library.serverID) } ?? [],
-            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, serverID: library.serverID) } ?? []
+            payload.book?.compactMap { Audiobook(payload: $0.libraryItem, connectionID: library.connectionID) } ?? [],
+            payload.podcast?.map { Podcast(payload: $0.libraryItem, connectionID: connectionID) } ?? [],
+            payload.authors?.map { Author(payload: $0, connectionID: library.connectionID) } ?? [],
+            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, connectionID: library.connectionID) } ?? []
         )
     }
 }

@@ -9,12 +9,12 @@ import Foundation
 import SPFoundation
 
 extension AudiobookSection {
-    static func parse(payload: ItemPayload, serverID: ItemIdentifier.ServerID) -> Self? {
+    static func parse(payload: ItemPayload, connectionID: ItemIdentifier.ConnectionID) -> Self? {
         if let collapsedSeries = payload.collapsedSeries {
             .series(seriesID: collapsedSeries.id,
                     seriesName: collapsedSeries.name,
                     audiobookIDs: collapsedSeries.libraryItemIds.map { .init(primaryID: $0) })
-        } else if let audiobook = Audiobook(payload: payload, serverID: serverID) {
+        } else if let audiobook = Audiobook(payload: payload, connectionID: connectionID) {
             .audiobook(audiobook: audiobook)
         } else {
             nil

@@ -12,9 +12,9 @@ import ShelfPlayerKit
 
 struct LoginView: View {
     @State private var loginSheetPresented = false
-    @State private var loginFlowState: LoginFlowState = .server
+    @State private var loginFlowState: LoginFlowState = .connection
     
-    @State private var server = "" // AudiobookshelfClient.shared.serverURL?.absoluteString ?? "https://"
+    @State private var connection = "" // AudiobookshelfClient.shared.serverURL?.absoluteString ?? "https://"
     @State private var username = ""
     @State private var password = ""
     
@@ -61,11 +61,11 @@ struct LoginView: View {
         .sheet(isPresented: $loginSheetPresented) {
             NavigationStack {
                 switch loginFlowState {
-                case .server, .credentialsLocal:
+                case .connection, .credentialsLocal:
                     Form {
                         Section {
-                            if loginFlowState == .server {
-                                TextField("login.server", text: $server)
+                            if loginFlowState == .connection {
+                                TextField("login.server", text: $connection)
                                     .keyboardType(.URL)
                                     .autocorrectionDisabled()
                                     .textInputAutocapitalization(.never)
@@ -82,7 +82,7 @@ struct LoginView: View {
                                 Text("login.next")
                             }
                         } header: {
-                            if let serverVersion = serverVersion {
+                            if let serverVersion {
                                 Text("login.version \(serverVersion)")
                             } else {
                                 Text("login.title")
@@ -90,7 +90,7 @@ struct LoginView: View {
                         } footer: {
                             Group {
                                 switch loginError {
-                                case .server:
+                                case .connection:
                                     Text("login.error.server")
                                 case .url:
                                     Text("login.error.url")
@@ -103,7 +103,7 @@ struct LoginView: View {
                             .foregroundStyle(.red)
                         }
                         
-                        if loginFlowState == .server {
+                        if loginFlowState == .connection {
                             Section {
                                 NavigationLink(destination: CustomHeaderEditView()) {
                                     Label("login.customHTTPHeaders", systemImage: "lock.shield.fill")
@@ -170,7 +170,7 @@ struct LoginView: View {
 
 extension LoginView {
     private func flowStep() {
-        if loginFlowState == .server {
+        if loginFlowState == .connection {
             loginFlowState = .serverLoading
             
             // Verify url format
@@ -178,7 +178,7 @@ extension LoginView {
                 // try AudiobookshelfClient.shared.store(serverUrl: server)
             } catch {
                 loginError = .url
-                loginFlowState = .server
+                loginFlowState = .connection
                 
                 return
             }
@@ -200,8 +200,8 @@ extension LoginView {
                     }
                      */
                 } catch {
-                    loginError = .server
-                    loginFlowState = .server
+                    loginError = .connection
+                    loginFlowState = .connection
                     
                     return
                 }
@@ -224,7 +224,7 @@ extension LoginView {
     }
     
     enum LoginFlowState {
-        case server
+        case connection
         case serverLoading
         
         case credentialsLocal
@@ -235,7 +235,7 @@ extension LoginView {
         case setup
     }
     enum LoginError {
-        case server
+        case connection
         case url
         case failed
     }
@@ -246,8 +246,8 @@ private extension LoginView {
         do {
             // openIDLoginURL = try await AudiobookshelfClient.shared.openIDLoginURL(verifier: verifier)
         } catch {
-            loginError = .failed
-            loginFlowState = .server
+            loginError = .connection
+            loginFlowState = .connection
         }
     }
     
@@ -279,7 +279,7 @@ private extension LoginView {
         openIDLoginURL = nil
         
         loginError = .failed
-        loginFlowState = .server
+        loginFlowState = .connection
     }
 }
 

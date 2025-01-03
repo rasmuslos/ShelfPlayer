@@ -122,13 +122,13 @@ internal extension IntentHelper {
             
             switch itemID.type {
             case .audiobook, .episode:
-                item = try await ABSClient[itemID.serverID].playableItem(itemID: itemID).0
+                item = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID).0
             case .author:
-                item = try await ABSClient[itemID.serverID].author(with: itemID)
+                item = try await ABSClient[itemID.connectionID].author(with: itemID)
             case .series:
                 return [.unsupported()]
             case .podcast:
-                item = try await ABSClient[itemID.serverID].podcast(with: itemID).0
+                item = try await ABSClient[itemID.connectionID].podcast(with: itemID).0
             }
             
             guard let mediaItem = await convert(item: item) else {

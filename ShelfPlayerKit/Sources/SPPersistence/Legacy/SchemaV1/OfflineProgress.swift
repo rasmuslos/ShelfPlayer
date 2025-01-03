@@ -51,7 +51,7 @@ internal extension SchemaV1 {
 @available(*, deprecated, renamed: "SchemaV2", message: "Outdated schema")
 internal extension SchemaV1.OfflineProgress {
     enum ProgressSyncState: Int, Codable, Equatable, Identifiable {
-        case receivedFromServer = 0
+        case receivedFromConnection = 0
         case localSynced = 1
         case localCached = 2
         
