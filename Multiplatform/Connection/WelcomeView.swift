@@ -37,7 +37,12 @@ struct WelcomeView: View {
             .controlSize(.large)
             .buttonStyle(.borderedProminent)
         }
-        .modifier(ConnectionAddSheetModifier(isPresented: $connectionAddViewPresented))
+        // .modifier(ConnectionAddSheetModifier(isPresented: $connectionAddViewPresented))
+        .sheet(isPresented: $connectionAddViewPresented) {
+            NavigationStack {
+                ConnectionsManageView()
+            }
+        }
     }
 }
 

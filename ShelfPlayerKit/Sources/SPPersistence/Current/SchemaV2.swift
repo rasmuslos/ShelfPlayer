@@ -26,6 +26,6 @@ enum SchemaV2: VersionedSchema {
         PersistedKeyValueEntity.self,
         PersistedSearchIndexEntry.self,
         
-        PersistedDiscoveredServer.self,
+        PersistedDiscoveredConnection.self,
     ]}
 }

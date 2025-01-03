@@ -32,13 +32,13 @@ extension PersistenceManager {
             signposter = .init(logger: logger)
         }
         
-        /// Insert changes into the database and notify the server of pending updates
+        /// Insert changes into the database and notify the connection of pending updates
         ///
         /// This function will:
         /// 1. update or delete existing progress entities
         /// 2. send detected differences to server
         /// 3. create missing local entities
-        func sync(sessions payload: [ProgressPayload], serverID: ItemIdentifier.ServerID) async throws {
+        func sync(sessions payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
             do {
                 let signpostID = signposter.makeSignpostID()
                 let signpostState = signposter.beginInterval("sync", id: signpostID)
@@ -49,7 +49,7 @@ extension PersistenceManager {
                 
                 signposter.emitEvent("mapIDs", id: signpostID)
                 
-                var pendingDeletion = [(id: String, serverID: String)]()
+                var pendingDeletion = [(id: String, connectionID: String)]()
                 var pendingCreation = [ProgressEntity]()
                 var pendingUpdate = [ProgressEntity]()
                 
@@ -112,7 +112,7 @@ extension PersistenceManager {
                             entity.status = .synchronized
                         case .tombstone:
                             if payload != nil {
-                                pendingDeletion.append((id, entity.itemID.serverID))
+                                pendingDeletion.append((id, entity.itemID.connectionID))
                             }
                             
                             modelContext.delete(entity)
@@ -124,19 +124,19 @@ extension PersistenceManager {
                 
                 logger.info("Deleting \(pendingDeletion.count) progress entities")
                 
-                for (id, serverID) in pendingDeletion {
-                    try? await ABSClient[serverID].delete(progressID: id)
+                for (id, connectionID) in pendingDeletion {
+                    try? await ABSClient[connectionID].delete(progressID: id)
                 }
                 
                 signposter.emitEvent("delete", id: signpostID)
                 
                 let batch = pendingCreation + pendingUpdate
-                let grouped = Dictionary(batch.map { ($0.itemID.serverID, [$0]) }, uniquingKeysWith: +)
+                let grouped = Dictionary(batch.map { ($0.itemID.connectionID, [$0]) }, uniquingKeysWith: +)
                 
                 logger.info("Batch updating \(batch.count) progress entities from \(grouped.count) servers")
                 
-                for (serverID, entities) in grouped {
-                    try await ABSClient[serverID].batchUpdate(progress: entities)
+                for (connectionID, entities) in grouped {
+                    try await ABSClient[connectionID].batchUpdate(progress: entities)
                 }
                 
                 signposter.emitEvent("batch", id: signpostID)
@@ -151,7 +151,7 @@ extension PersistenceManager {
                             itemID: .init(primaryID: payload.episodeId ?? payload.libraryItemId,
                                           groupingID: payload.episodeId != nil ? payload.libraryItemId : nil,
                                           libraryID: "_",
-                                          serverID: serverID,
+                                          connectionID: connectionID,
                                           type: payload.episodeId != nil ? .episode : .audiobook),
                             progress: payload.progress ?? 0,
                             duration: payload.duration ?? 0,
@@ -185,7 +185,7 @@ extension PersistenceManager {
 extension PersistenceManager.ProgressSubsystem {
     func delete(_ entity: PersistedProgress) async throws {
         do {
-            try await ABSClient[entity.itemID.serverID].delete(progressID: entity.id)
+            try await ABSClient[entity.itemID.connectionID].delete(progressID: entity.id)
         }
         
         let id = entity.id

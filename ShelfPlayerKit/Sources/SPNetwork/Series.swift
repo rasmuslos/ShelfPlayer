@@ -9,7 +9,7 @@ import Foundation
 import RFNetwork
 import SPFoundation
 
-public extension APIClient where I == ItemIdentifier.ServerID {
+public extension APIClient where I == ItemIdentifier.ConnectionID {
     func seriesID(name: String, libraryID: String) async throws -> String {
         let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
@@ -31,7 +31,7 @@ public extension APIClient where I == ItemIdentifier.ServerID {
     }
     
     func series(with identifier: ItemIdentifier) async throws -> Series {
-        Series(payload: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get)), serverID: serverID)
+        Series(payload: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get)), connectionID: connectionID)
     }
     
     func series(in libraryID: String, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
@@ -50,7 +50,7 @@ public extension APIClient where I == ItemIdentifier.ServerID {
         }
         
         let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query))
-        return (response.results.map { Series(payload: $0, serverID: serverID) }, response.total)
+        return (response.results.map { Series(payload: $0, connectionID: connectionID) }, response.total)
     }
     
     func audiobooks(series identifier: ItemIdentifier, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
@@ -66,6 +66,6 @@ public extension APIClient where I == ItemIdentifier.ServerID {
         }
         
         let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query))
-        return (response.results.compactMap { Audiobook(payload: $0, serverID: serverID) }, response.total)
+        return (response.results.compactMap { Audiobook(payload: $0, connectionID: connectionID) }, response.total)
     }
 }

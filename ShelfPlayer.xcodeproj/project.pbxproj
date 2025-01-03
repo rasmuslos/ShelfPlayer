@@ -83,6 +83,7 @@
 		3A7A9C992BE6177D00701D58 /* NowPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7A9C982BE6177D00701D58 /* NowPlaying.swift */; };
 		3A7F84A52CAD1F4A00A51EEE /* UIWindow+Shake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7F84A42CAD1F4600A51EEE /* UIWindow+Shake.swift */; };
 		3A82864D2AEC104400384BC9 /* SleepTimerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */; };
+		3A828E062D27459A00267961 /* ConnectionManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A828E052D27459300267961 /* ConnectionManageView.swift */; };
 		3A83B8732B8893E000A05957 /* CarPlayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */; };
 		3A8410532CDF92A700FC3FCB /* URL+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8410522CDF92A400FC3FCB /* URL+Size.swift */; };
 		3A853FAF2AD03FA600FACAF6 /* AuthorView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A853FAE2AD03FA600FACAF6 /* AuthorView+Header.swift */; };
@@ -297,6 +298,7 @@
 		3A7F84A42CAD1F4600A51EEE /* UIWindow+Shake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Shake.swift"; sourceTree = "<group>"; };
 		3A82864B2AEC0DD800384BC9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTimerButton.swift; sourceTree = "<group>"; };
+		3A828E052D27459300267961 /* ConnectionManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManageView.swift; sourceTree = "<group>"; };
 		3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDelegate.swift; sourceTree = "<group>"; };
 		3A8410522CDF92A400FC3FCB /* URL+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Size.swift"; sourceTree = "<group>"; };
 		3A853FAE2AD03FA600FACAF6 /* AuthorView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthorView+Header.swift"; sourceTree = "<group>"; };
@@ -600,6 +602,7 @@
 				3A3129A42D24190200D143B4 /* HeaderEditView.swift */,
 				3A3129A02D24140B00D143B4 /* WelcomeView.swift */,
 				3A3129A22D2414E100D143B4 /* ConnectionAddView.swift */,
+				3A828E052D27459300267961 /* ConnectionManageView.swift */,
 				3A0AE6B92AB624E700ACCD68 /* LoginView.swift */,
 			);
 			path = Connection;
@@ -1236,6 +1239,7 @@
 				3A17E68F2AD5F15900E59464 /* Title.swift in Sources */,
 				3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */,
 				3A17E6912AD5F21B00E59464 /* Slider.swift in Sources */,
+				3A828E062D27459A00267961 /* ConnectionManageView.swift in Sources */,
 				3A64B3752CAAD26900446871 /* UserContext.swift in Sources */,
 				3A5159562AD0374600CD5680 /* AudiobookSortFilter.swift in Sources */,
 			);

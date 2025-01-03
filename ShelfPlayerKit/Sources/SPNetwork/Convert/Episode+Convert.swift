@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 extension Episode {
-    convenience init?(payload: ItemPayload, serverID: ItemIdentifier.ServerID) {
+    convenience init?(payload: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
         guard let recentEpisode = payload.recentEpisode,
               let media = payload.media,
               let id = recentEpisode.id,
@@ -21,7 +21,7 @@ extension Episode {
         let addedAt = payload.addedAt ?? 0
         
         self.init(
-            id: .init(primaryID: id, groupingID: payload.id, libraryID: payload.libraryId!, serverID: serverID, type: .episode),
+            id: .init(primaryID: id, groupingID: payload.id, libraryID: payload.libraryId!, connectionID: connectionID, type: .episode),
             name: title,
             authors: media.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: recentEpisode.description,
@@ -32,16 +32,16 @@ extension Episode {
             podcastName: podcastTitle,
             index: .init(season: recentEpisode.season, episode: String(recentEpisode.index ?? 0)))
     }
-    convenience init?(episode: EpisodePayload, item: ItemPayload, serverID: ItemIdentifier.ServerID) {
+    convenience init?(episode: EpisodePayload, item: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
         var item = item
         item.recentEpisode = episode
         
-        self.init(payload: item, serverID: serverID)
+        self.init(payload: item, connectionID: connectionID)
     }
     
-    convenience init(episode: EpisodePayload, serverID: ItemIdentifier.ServerID) {
+    convenience init(episode: EpisodePayload, connectionID: ItemIdentifier.ConnectionID) {
         self.init(
-            id: .init(primaryID: episode.id!, groupingID: episode.podcast!.id, libraryID: episode.libraryId!, serverID: serverID, type: .episode),
+            id: .init(primaryID: episode.id!, groupingID: episode.podcast!.id, libraryID: episode.libraryId!, connectionID: connectionID, type: .episode),
             name: episode.title!,
             authors: episode.podcast?.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: episode.description,

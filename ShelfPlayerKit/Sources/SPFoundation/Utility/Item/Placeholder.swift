@@ -9,7 +9,7 @@ import Foundation
 
 public extension Episode {
     static let placeholder: Episode = .init(
-        id: .init(primaryID: "fixture", groupingID: "fixture", libraryID: "fixture", serverID: "fixture", type: .episode),
+        id: .init(primaryID: "fixture", groupingID: "fixture", libraryID: "fixture", connectionID: "fixture", type: .episode),
         name: "Placeholder",
         authors: [],
         description: nil,

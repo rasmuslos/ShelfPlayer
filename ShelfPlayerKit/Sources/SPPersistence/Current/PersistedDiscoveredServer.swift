@@ -1,5 +1,5 @@
 //
-//  PersistedDiscoveredServer.swift
+//  PersistedDiscoveredConnection.swift
 //  ShelfPlayerKit
 //
 //  Created by Rasmus Krämer on 23.12.24.
@@ -10,15 +10,15 @@ import SwiftData
 
 extension SchemaV2 {
     @Model
-    final class PersistedDiscoveredServer {
+    final class PersistedDiscoveredConnection {
         @Attribute(.unique)
-        private(set) var serverID: String
+        private(set) var connectionID: String
         
         private(set) var host: URL
         private(set) var user: String
         
-        init(serverID: String, host: URL, user: String) {
-            self.serverID = serverID
+        init(connectionID: String, host: URL, user: String) {
+            self.connectionID = connectionID
             self.host = host
             self.user = user
         }

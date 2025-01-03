@@ -12,7 +12,7 @@ import Foundation
 #if DEBUG
 public extension ItemIdentifier {
     static var fixture: ItemIdentifier {
-        .init(primaryID: "fixture", groupingID: nil, libraryID: "fixture", serverID: "fixture", type: .audiobook)
+        .init(primaryID: "fixture", groupingID: nil, libraryID: "fixture", connectionID: "fixture", type: .audiobook)
     }
 }
 #endif
