@@ -37,7 +37,7 @@ struct ConnectionAddView: View {
                 
                 // No section here, would prevent headers from displaying correctly
                 DisclosureGroup("connection.headers") {
-                    HeadersEditSection(headers: $viewModel.headers)
+                    HeaderEditor(headers: $viewModel.headers)
                 }
                 
                 if !viewModel.knownConnections.isEmpty {
@@ -141,13 +141,15 @@ struct ConnectionAddSheetModifier: ViewModifier {
 
 @Observable @MainActor
 private final class ViewModel: Sendable {
-    var endpoint = "https://audiobooks.dev"
+    var endpoint = "https://"
     
     var url: URL?
     var version: String?
     
     var username = ""
     var password = ""
+    
+    var verifier: String!
     
     var headers = [HeaderShadow]()
     
@@ -263,6 +265,10 @@ private final class ViewModel: Sendable {
                     }
                 }
                 
+                if strategies.contains(.openID) {
+                    verifier = String.random(length: 100)
+                }
+                
                 if strategies.count == 1 {
                     strategy = strategies.first
                 }
@@ -303,7 +309,5 @@ private final class ViewModel: Sendable {
 }
 
 #Preview {
-    ConnectionAddView() {
-        
-    }
+    ConnectionAddView() {}
 }

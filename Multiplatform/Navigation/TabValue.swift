@@ -10,7 +10,7 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal enum TabValue: Identifiable, Hashable, Codable, Comparable, Defaults.Serializable {
+enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     case audiobookHome(Library)
     case audiobookSeries(Library)
     case audiobookAuthors(Library)
@@ -153,8 +153,8 @@ internal enum TabValue: Identifiable, Hashable, Codable, Comparable, Defaults.Se
              */
         }
         .environment(\.library, library)
-        .modifier(NowPlaying.RegularModifier())
-        .modifier(NowPlaying.BackgroundModifier())
+        // .modifier(NowPlaying.RegularModifier())
+        // .modifier(NowPlaying.BackgroundModifier())
     }
 }
 

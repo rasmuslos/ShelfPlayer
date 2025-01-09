@@ -14,6 +14,7 @@ internal extension Defaults.Keys {
     
     // MARK: Navigation
     
+    static let lastOffline = Key("lastOffline", default: false)
     static let lastTabValue = Key<TabValue?>("lastTabValue")
     
     // MARK: Settings

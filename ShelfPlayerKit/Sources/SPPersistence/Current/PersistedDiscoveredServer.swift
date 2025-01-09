@@ -11,7 +11,8 @@ import SwiftData
 extension SchemaV2 {
     @Model
     final class PersistedDiscoveredConnection {
-        @Attribute(.unique)
+        #Unique<PersistedDiscoveredConnection>([\.connectionID])
+        
         private(set) var connectionID: String
         
         private(set) var host: URL

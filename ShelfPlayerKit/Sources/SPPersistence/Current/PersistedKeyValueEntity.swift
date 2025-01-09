@@ -11,7 +11,10 @@ import SwiftData
 extension SchemaV2 {
     @Model
     final class PersistedKeyValueEntity {
-        @Attribute(.unique)
+        #Index<PersistedKeyValueEntity>([\.key])
+        #Unique<PersistedKeyValueEntity>([\.key])
+        
+
         private(set) var key: String
         var value: Data
         
