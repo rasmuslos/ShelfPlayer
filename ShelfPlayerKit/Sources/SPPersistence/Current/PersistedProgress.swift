@@ -12,12 +12,11 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedProgress {
-        // #Index<PersistedBookmark>([\.id], [\.itemID])
-        // #Unique<PersistedBookmark>([\.id], [\.itemID, \.time])
+        #Index<PersistedProgress>([\.id], [\.itemID])
+        #Unique<PersistedProgress>([\.id], [\.itemID])
         
-        @Attribute(.unique)
         private(set) var id: String
-        @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
+        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
         private(set) var itemID: ItemIdentifier
         
         var progress: Percentage

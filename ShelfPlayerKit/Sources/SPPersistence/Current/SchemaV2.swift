@@ -17,7 +17,7 @@ enum SchemaV2: VersionedSchema {
         PersistedEpisode.self,
         PersistedPodcast.self,
          
-        PersistedAudioTrack.self,
+        PersistedAsset.self,
         PersistedBookmark.self,
         PersistedChapter.self,
         

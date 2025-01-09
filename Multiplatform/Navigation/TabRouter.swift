@@ -13,10 +13,61 @@ import ShelfPlayerKit
 @available(iOS 18, *)
 internal struct TabRouter: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(ConnectionStore.self) private var connectionStore
     
-    @Default(.lastTabValue) private var selection
-    @State private var current: Library? {
-        didSet {
+    @Binding var selection: TabValue?
+    
+    @State private var libraryPath = NavigationPath()
+    
+    var selectionProxy: Binding<TabValue?> {
+        .init() { selection } set: {
+            if $0 == selection, case .search = $0 {
+                // NotificationCenter.default.post(name: SearchView.focusNotification, object: nil)
+            }
+            
+            selection = $0
+        }
+    }
+    
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+    private var current: Library? {
+        guard isCompact else {
+            return nil
+        }
+        
+        return selection?.library
+    }
+    
+    var body: some View {
+        TabView(selection: selectionProxy) {
+            if let current {
+                ForEach(TabValue.tabs(for: current)) { tab in
+                    Tab(tab.label, systemImage: tab.image, value: tab) {
+                        tab.content(libraryPath: $libraryPath)
+                    }
+                }
+            }
+            ForEach(connectionStore.flat) { connection in
+                if let libraries = connectionStore.libraries[connection.id] {
+                    TabSection(connection.user) {
+                        ForEach(libraries) {
+                            ForEach(TabValue.tabs(for: $0)) { tab in
+                                Tab(tab.label, systemImage: tab.image, value: tab) {
+                                    tab.content(libraryPath: $libraryPath)
+                                }
+                                .hidden(isCompact)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .tabViewStyle(.sidebarAdaptable)
+        .id(current)
+        // .modifier(NowPlaying.CompactModifier())
+        .onChange(of: current) {
             let appearance = UINavigationBarAppearance()
             
             if current?.type == .audiobooks && Defaults[.useSerifFont] {
@@ -30,231 +81,29 @@ internal struct TabRouter: View {
             appearance.configureWithDefaultBackground()
             UINavigationBar.appearance().compactAppearance = appearance
         }
-    }
-    
-    @State private var libraries: [Library] = []
-    @State private var libraryPath = NavigationPath()
-    
-    @State private var accountSheetPresented = false
-    
-    private func library(for id: String) -> Library? {
-        libraries.first(where: { $0.id == id })
-    }
-    private var isCompact: Bool {
-        horizontalSizeClass == .compact
-    }
-    
-    var body: some View {
-        if !libraries.isEmpty {
-            TabView(selection: .init(get: { selection }, set: {
-                if $0 == selection, case .search = $0 {
-                    NotificationCenter.default.post(name: SearchView.focusNotification, object: nil)
-                }
-                
-                selection = $0
-            })) {
-                /*
-                if let current {
-                    ForEach(TabValue.tabs(for: current)) { tab in
-                        Tab(tab.label, systemImage: tab.image, value: tab) {
-                            tab.content(libraryPath: $libraryPath)
-                        }
-                        .hidden(!isCompact)
-                    }
-                }
-                
-                ForEach(libraries) { library in
-                    TabSection(library.name) {
-                        ForEach(TabValue.tabs(for: library)) { tab in
-                            Tab(tab.label, systemImage: tab.image, value: tab) {
-                                tab.content(libraryPath: $libraryPath)
-                            }
-                        }
-                    }
-                    .hidden(isCompact)
-                }
-                 */
+        .onChange(of: selection?.library) {
+            while !libraryPath.isEmpty {
+                libraryPath.removeLast()
             }
-            .tabViewStyle(.sidebarAdaptable)
-            .tabViewSidebarBottomBar {
-                ZStack {
-                    Rectangle()
-                        .fill(.bar)
-                        .mask {
-                            VStack(spacing: 0) {
-                                LinearGradient(colors: [.black.opacity(0), .black], startPoint: .top, endPoint: .bottom)
-                                    .frame(height: 16)
-                                Rectangle()
-                                    .fill(.black)
-                            }
-                        }
-                        .ignoresSafeArea(edges: .bottom)
-                    
-                    HStack(spacing: 16) {
-                        Group {
-                            Button {
-                                accountSheetPresented.toggle()
-                            } label: {
-                                Label("account", systemImage: "person.crop.circle")
-                                    .labelStyle(.iconOnly)
-                            }
-                            
-                            Button {
-                                NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
-                                    "offline": true,
-                                ])
-                            } label: {
-                                Label("offline.enable", systemImage: "network.slash")
-                            }
-                        }
-                        .labelStyle(.iconOnly)
-                        .font(.title3)
-                        
-                        Spacer()
-                    }
-                    .padding(.top, 20)
-                    .padding(.horizontal, 20)
-                }
-            }
-            .id(current)
-            .modifier(NowPlaying.CompactModifier())
-            /*
-            .modifier(Navigation.NotificationModifier() { libraryID, audiobookID, authorName, authorID, seriesName, seriesID, podcastID, episodeID in
-                guard let library = library(for: libraryID) else {
-                    return
-                }
-                
-                let previousLibrary = selection?.library
-                
-                if isCompact {
-                    current = library
-                }
-                
-                if library.type == .audiobooks {
-                    selection = .audiobookLibrary(library)
-                } else if library.type == .podcasts {
-                    selection = .podcastLibrary(library)
-                }
-                
-                Task {
-                    if previousLibrary != library {
-                        try await Task.sleep(nanoseconds: NSEC_PER_SEC / 2)
-                    }
-                    
-                    if let audiobookID {
-                        libraryPath.append(Navigation.AudiobookLoadDestination(audiobookId: audiobookID))
-                    }
-                    if let authorName {
-                        libraryPath.append(Navigation.AuthorLoadDestination(authorName: authorName))
-                    }
-                    if let authorID {
-                        libraryPath.append(Navigation.AuthorLoadDestination(authorId: authorID))
-                    }
-                    if let seriesName {
-                        libraryPath.append(Navigation.SeriesLoadDestination(seriesName: seriesName))
-                    }
-                    if let seriesID {
-                        libraryPath.append(Navigation.SeriesLoadDestination(seriesId: seriesID))
-                    }
-                    
-                    if let podcastID {
-                        if let episodeID {
-                            libraryPath.append(Navigation.EpisodeLoadDestination(episodeId: episodeID, podcastId: podcastID))
-                        } else {
-                            libraryPath.append(Navigation.PodcastLoadDestination(podcastId: podcastID))
-                        }
-                    }
-                }
-            })
-             */
-            .environment(\.libraries, libraries)
-            // .environment(\.library, selection?.library ?? .init(id: "", name: "", type: .offline, displayOrder: -1))
-            .sheet(isPresented: $accountSheetPresented) {
-                AccountSheet()
-            }
-            .onChange(of: isCompact) {
-                if isCompact {
-                    current = selection?.library
-                } else {
-                    current = nil
-                }
-            }
-            .onChange(of: selection?.library) {
-                while !libraryPath.isEmpty {
-                    libraryPath.removeLast()
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: SelectLibraryModifier.changeLibraryNotification)) {
-                guard let userInfo = $0.userInfo as? [String: String], let libraryID = userInfo["libraryID"] else {
-                    return
-                }
-                
-                guard let library = libraries.first(where: { $0.id == libraryID }) else {
-                    return
-                }
-                
-                if isCompact {
-                    current = library
-                }
-                if library.type == .audiobooks {
-                    selection = .audiobookHome(library)
-                } else if library.type == .podcasts {
-                    selection = .podcastHome(library)
-                }
-            }
-            .onReceive(Search.shared.searchPublisher) { (library, search) in
-                guard let library else {
-                    return
-                }
-                
-                if current == library {
-                    return
-                }
-                
-                if isCompact {
-                    current = library
-                }
-                if library.type == .audiobooks {
-                    selection = .search(library)
-                } else if library.type == .podcasts {
-                    selection = .podcastLibrary(library)
-                }
-                
-                Task {
-                    try await Task.sleep(for: .milliseconds(500))
-                    Search.shared.emit(library: library, search: search)
-                }
-            }
-        } else {
-            LoadingView()
-                .task {
-                    await fetchLibraries()
-                }
-                .refreshable {
-                    await fetchLibraries()
-                }
         }
-    }
-    
-    private nonisolated func fetchLibraries() async {
-        /*
-        guard let libraries = try? await AudiobookshelfClient.shared.libraries() else {
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.libraries = libraries
+        .onChange(of: connectionStore.libraries, initial: true) {
+            guard selection == nil, let library = connectionStore.libraries.first?.value.first else { return }
             
-            if isCompact {
-                current = selection?.library ?? libraries.first
+            switch library.type {
+            case .audiobooks:
+                selection = .audiobookHome(library)
+            case .podcasts:
+                selection = .podcastHome(library)
+            default:
+                return
             }
         }
-         */
     }
 }
 
-@available(iOS 18, *)
 #Preview {
-    TabRouter()
-        .environment(NowPlaying.ViewModel())
+    @Previewable @State var selection: TabValue? = nil
+    
+    TabRouter(selection: $selection)
+        .environment(ConnectionStore())
 }

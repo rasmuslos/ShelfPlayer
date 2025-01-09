@@ -12,7 +12,10 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedPodcast {
-        @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
+        #Index<PersistedPodcast>([\.id])
+        #Unique<PersistedPodcast>([\.id])
+        
+        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
         private(set) var id: ItemIdentifier
         
         private(set) var name: String

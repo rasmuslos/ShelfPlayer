@@ -2578,10 +2578,16 @@
     "connection.manage" : {
 
     },
+    "connection.manage.multiple" : {
+
+    },
     "connection.remove" : {
 
     },
     "connection.reset" : {
+
+    },
+    "connection.save" : {
 
     },
     "connection.strategy" : {
@@ -4117,6 +4123,7 @@
       }
     },
     "login.error.failed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4145,6 +4152,7 @@
       }
     },
     "login.error.server" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4173,6 +4181,7 @@
       }
     },
     "login.error.url" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4201,6 +4210,7 @@
       }
     },
     "login.loading" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4229,6 +4239,7 @@
       }
     },
     "login.local" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4257,6 +4268,7 @@
       }
     },
     "login.next" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4285,6 +4297,7 @@
       }
     },
     "login.openid" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4313,6 +4326,7 @@
       }
     },
     "login.openid.urlScheme" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4341,6 +4355,7 @@
       }
     },
     "login.password" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4397,6 +4412,7 @@
       }
     },
     "login.server" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4425,6 +4441,7 @@
       }
     },
     "login.setup" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4481,6 +4498,7 @@
       }
     },
     "login.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4509,6 +4527,7 @@
       }
     },
     "login.username" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4537,6 +4556,7 @@
       }
     },
     "login.version %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7062,6 +7082,7 @@
       }
     },
     "splitView.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7090,6 +7111,7 @@
       }
     },
     "splitView.empty.description" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
