@@ -9,57 +9,7 @@ import SwiftUI
 import OSLog
 import ShelfPlayerKit
 
-struct ConnectionsManageView: View {
-    let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "ConnectionManageView")
-    
-    @State private var connections: [PersistenceManager.AuthorizationSubsystem.Connection] = []
-    @State private var notifyError = false
-    
-    var body: some View {
-        List {
-            ForEach(connections) { connection in
-                NavigationLink(destination: ConnectionManageView(connection: connection)) {
-                    Text(String("\(connection.host.absoluteString): \(connection.user)"))
-                }
-            }
-            
-            Section {
-                NavigationLink("connection.add", destination: ConnectionAddViewWrapper())
-                Button("connection.reset") {
-                    Task {
-                        do {
-                            try await PersistenceManager.shared.authorization.reset()
-                        } catch {
-                            notifyError.toggle()
-                        }
-                    }
-                }
-                .foregroundStyle(.red)
-            }
-        }
-        .navigationTitle("connection.manage.multiple")
-        .task {
-            await fetchConnections()
-        }
-        .refreshable {
-            await fetchConnections()
-        }
-        .sensoryFeedback(.error, trigger: notifyError)
-    }
-    
-    private func fetchConnections() async {
-        connections = Array(await PersistenceManager.shared.authorization.connections.values)
-        
-        do {
-            try await PersistenceManager.shared.authorization.fetchConnections()
-            connections = Array(await PersistenceManager.shared.authorization.connections.values)
-        } catch {
-            logger.error("Error fetching connections: \(error.localizedDescription)")
-        }
-    }
-}
-
-private struct ConnectionManageView: View {
+struct ConnectionManageView: View {
     @Environment(\.dismiss) private var dismiss
     
     let connection: PersistenceManager.AuthorizationSubsystem.Connection
@@ -76,6 +26,10 @@ private struct ConnectionManageView: View {
     @State private var headers: [HeaderShadow]
     @State private var notifyError = false
     
+    var hasUnsavedChanges: Bool {
+        connection.headers != headers.compactMap(\.materialized)
+    }
+    
     var body: some View {
         List {
             Section {
@@ -83,7 +37,7 @@ private struct ConnectionManageView: View {
                 Text(connection.host.absoluteString)
             }
             
-            HeadersEditSection(headers: $headers)
+            HeaderEditor(headers: $headers)
             
             Section {
                 Button("connection.test") {
@@ -108,11 +62,15 @@ private struct ConnectionManageView: View {
         }
         .navigationTitle("connection.manage")
         .toolbar {
-            if loading {
                 ToolbarItem(placement: .topBarTrailing) {
-                    ProgressIndicator()
+                    if loading {
+                        ProgressIndicator()
+                    } else if hasUnsavedChanges {
+                        Button("connection.save") {
+                            update()
+                        }
+                    }
                 }
-            }
         }
         .sensoryFeedback(.error, trigger: notifyError)
     }
@@ -125,6 +83,22 @@ private struct ConnectionManageView: View {
             } catch {
                 notifyError.toggle()
             }
+            loading = false
+        }
+    }
+    
+    private func update() {
+        Task {
+            loading = true
+            
+            do {
+                try await PersistenceManager.shared.authorization.updateConnection(connection.id, headers: headers.compactMap(\.materialized))
+                dismiss()
+            } catch {
+                notifyError.toggle()
+                loading = false
+            }
+            
             loading = false
         }
     }
@@ -142,20 +116,5 @@ private struct ConnectionManageView: View {
             
             loading = false
         }
-    }
-}
-private struct ConnectionAddViewWrapper: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        ConnectionAddView() {
-            dismiss()
-        }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        ConnectionsManageView()
     }
 }

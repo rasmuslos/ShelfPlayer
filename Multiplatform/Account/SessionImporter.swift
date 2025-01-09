@@ -10,7 +10,7 @@ import OSLog
 import SPFoundation
 import SPPersistence
 
-internal struct SessionsImportView: View {
+struct SessionImporter: View {
     let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "SessionImport")
     
     var callback: (_ success: Bool) -> ()
@@ -55,5 +55,5 @@ internal struct SessionsImportView: View {
 }
 
 #Preview {
-    SessionsImportView() { _ in }
+    SessionImporter() { _ in }
 }

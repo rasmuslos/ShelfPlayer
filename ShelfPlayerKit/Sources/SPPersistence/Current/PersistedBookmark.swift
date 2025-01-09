@@ -12,8 +12,8 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedBookmark {
-        // #Index<PersistedBookmark>([\.id], [\.itemID])
-        // #Unique<PersistedBookmark>([\.id], [\.itemID, \.time])
+        #Index<PersistedBookmark>([\.id], [\.itemID])
+        #Unique<PersistedBookmark>([\.id], [\.itemID, \.time])
         
         @Attribute(.unique)
         private(set) var id = UUID()

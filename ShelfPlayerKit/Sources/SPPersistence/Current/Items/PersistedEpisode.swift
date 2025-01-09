@@ -12,7 +12,10 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedEpisode {
-        @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
+        #Index<PersistedEpisode>([\.id], [\.name])
+        #Unique<PersistedEpisode>([\.id])
+        
+        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
         private(set) var id: ItemIdentifier
         
         private(set) var name: String
@@ -32,12 +35,12 @@ extension SchemaV2 {
         private(set) var podcast: PersistedPodcast
         
         @Relationship(deleteRule: .deny, minimumModelCount: 1)
-        private(set) var tracks: [PersistedAudioTrack]
+        private(set) var assets: [PersistedAsset]
         
         @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
         private(set) var searchIndexEntry: PersistedSearchIndexEntry
         
-        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, podcast: PersistedPodcast, index: Episode.EpisodeIndex, tracks: [PersistedAudioTrack]) {
+        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, podcast: PersistedPodcast, index: Episode.EpisodeIndex, assets: [PersistedAsset]) {
             self.id = id
             
             self.name = name
@@ -54,7 +57,7 @@ extension SchemaV2 {
             self.podcast = podcast
             self.index = index
             
-            self.tracks = tracks
+            self.assets = assets
             
             searchIndexEntry = .init(itemID: id, primaryName: name, secondaryName: podcast.name, authors: authors)
         }

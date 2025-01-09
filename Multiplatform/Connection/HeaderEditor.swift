@@ -8,10 +8,18 @@
 import SwiftUI
 import RFNetwork
 
-struct HeadersEditSection: View {
+struct HeaderEditor: View {
     @Binding var headers: [HeaderShadow]
     
     var body: some View {
+        ForEach(Array(headers.enumerated()), id: \.offset) { (index, _) in
+            HeaderEditorColumn(header: $headers[index]) {
+                let _ = withAnimation {
+                    headers.remove(at: index)
+                }
+            }
+        }
+        
         Button("connection.header.add") {
             if let last = headers.last, !last.isValid {
                 return
@@ -21,18 +29,10 @@ struct HeadersEditSection: View {
                 headers.append(.init(key: "", value: ""))
             }
         }
-        
-        ForEach(Array(headers.enumerated()), id: \.offset) { (index, _) in
-            HeaderEditColumn(header: $headers[index]) {
-                let _ = withAnimation {
-                    headers.remove(at: index)
-                }
-            }
-        }
     }
 }
 
-struct HeaderEditColumn: View {
+struct HeaderEditorColumn: View {
     @Binding var header: HeaderShadow
     let remove: () -> Void
     

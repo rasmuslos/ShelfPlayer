@@ -9,8 +9,9 @@ import Foundation
 import OSLog
 import CryptoKit
 import SwiftData
-import SPFoundation
 import RFNetwork
+import RFNotifications
+import SPFoundation
 
 typealias DiscoveredConnection = SchemaV2.PersistedDiscoveredConnection
 
@@ -104,35 +105,18 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         for item in items {
             do {
-                guard let account = item[kSecAttrAccount as String] as? String else {
+                guard let connectionID = item[kSecAttrAccount as String] as? String else {
                     continue
                 }
                 
-                let query: [CFString: Any] = [
-                    kSecClass: kSecClassGenericPassword,
-                    kSecAttrSynchronizable: kSecAttrSynchronizableAny,
-                    
-                    kSecAttrService: service,
-                    kSecAttrAccount: account,
-                    
-                    kSecReturnData: kCFBooleanTrue as Any,
-                ]
-                
-                var data: CFTypeRef?
-                let status = SecItemCopyMatching(query as CFDictionary, &data)
-                
-                guard status == errSecSuccess, let data = data as? Data else {
-                    logger.fault("Error retrieving connection data from keychain: \(SecCopyErrorMessageString(status, nil))")
-                    continue
-                }
-                
-                let connection = try JSONDecoder().decode(Connection.self, from: data)
-                connections[connection.id] = connection
+                connections[connectionID] = try fetchConnection(connectionID)
             } catch {
                 logger.fault("Error decoding connection from keychain: \(error).")
                 continue
             }
         }
+        
+        RFNotification[.connectionsChanged].send(connections)
     }
     
     func addConnection(_ connection: Connection) throws {
@@ -164,6 +148,50 @@ public extension PersistenceManager.AuthorizationSubsystem {
             logger.error("Error adding connection to keychain: \(SecCopyErrorMessageString(status, nil))")
             throw PersistenceError.keychainInsertFailed
         }
+        
+        try fetchConnections()
+    }
+    
+    func fetchConnection(_ connectionID: ItemIdentifier.ConnectionID) throws -> Connection {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+            
+            kSecAttrService: service,
+            kSecAttrAccount: connectionID,
+            
+            kSecReturnData: kCFBooleanTrue as Any,
+        ]
+        
+        var data: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &data)
+        
+        guard status == errSecSuccess, let data = data as? Data else {
+            logger.fault("Error retrieving connection data from keychain: \(SecCopyErrorMessageString(status, nil))")
+            throw PersistenceError.keychainRetrieveFailed
+        }
+        
+        return try JSONDecoder().decode(Connection.self, from: data)
+    }
+    
+    func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, headers: [HTTPHeader]) throws {
+        let connection = try fetchConnection(connectionID)
+        
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrSynchronizable: kCFBooleanTrue as Any,
+            
+            kSecAttrService: service,
+            kSecAttrAccount: connectionID as CFString,
+        ] as! [String: Any] as CFDictionary
+        
+        let updated = Connection(host: connection.host, user: connection.user, token: connection.token, headers: headers)
+        
+        SecItemUpdate(query, [
+            kSecValueData: try JSONEncoder().encode(updated) as CFData,
+        ] as! [String: Any] as CFDictionary)
+        
+        try fetchConnections()
     }
     
     func removeConnection(_ connectionID: ItemIdentifier.ConnectionID) throws {
@@ -192,9 +220,16 @@ public extension PersistenceManager.AuthorizationSubsystem {
         ] as CFDictionary)
         
         try modelContext.delete(model: DiscoveredConnection.self)
+        try fetchConnections()
     }
     
     subscript(_ id: ItemIdentifier.ConnectionID) -> Connection? {
         connections[id]
+    }
+}
+
+extension RFNotification.Notification {
+    public static var connectionsChanged: Notification<[ItemIdentifier.ConnectionID: PersistenceManager.AuthorizationSubsystem.Connection]> {
+        .init("io.rfk.ShelfPlayer.connectionsChanged")
     }
 }

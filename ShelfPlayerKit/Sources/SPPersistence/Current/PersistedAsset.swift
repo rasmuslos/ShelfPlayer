@@ -11,9 +11,10 @@ import SPFoundation
 
 extension SchemaV2 {
     @Model
-    final class PersistedAudioTrack {
-        // #Index<PersistedAudioTrack>([\.id], [\.parentID])
-        // #Unique<PersistedAudioTrack>([\.id], [\.parentID, \.index])
+    final class PersistedAsset {
+        #Index<PersistedAsset>([\.id], [\.itemID], [\.downloadTaskID])
+        #Unique<PersistedAsset>([\.id])
+        // #Unique<PersistedAsset>([\.id], [\.itemID, \.fileType, \.index])
         
         @Attribute(.unique)
         private(set) var id = UUID()

@@ -12,6 +12,9 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedAudiobook {
+        #Index<PersistedAudiobook>([\.id], [\.name])
+        #Unique<PersistedAudiobook>([\.id])
+        
         @Attribute(.unique, .transformable(by: ItemIdentifierTransformer.self))
         private(set) var id: ItemIdentifier
         
@@ -36,12 +39,12 @@ extension SchemaV2 {
         private(set) var abridged: Bool
         
         @Relationship(deleteRule: .deny, minimumModelCount: 1)
-        private(set) var tracks: [PersistedAudioTrack]
+        private(set) var tracks: [PersistedAsset]
         
         @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
         private(set) var searchIndexEntry: PersistedSearchIndexEntry
         
-        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, subtitle: String? = nil, narrators: [String], series: [Audiobook.SeriesFragment], explicit: Bool, abridged: Bool, tracks: [PersistedAudioTrack]) {
+        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, subtitle: String? = nil, narrators: [String], series: [Audiobook.SeriesFragment], explicit: Bool, abridged: Bool, tracks: [PersistedAsset]) {
             self.id = id
             
             self.name = name

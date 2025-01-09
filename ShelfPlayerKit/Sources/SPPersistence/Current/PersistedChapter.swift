@@ -12,8 +12,8 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedChapter {
-        // #Index<PersistedChapter>([\.id], [\.itemID])
-        // #Unique<PersistedChapter>([\.id], [\.itemID, \.start])
+        #Index<PersistedChapter>([\.id], [\.itemID])
+        #Unique<PersistedChapter>([\.id], [\.itemID, \.start])
         
         @Attribute(.unique)
         private(set) var id: UUID

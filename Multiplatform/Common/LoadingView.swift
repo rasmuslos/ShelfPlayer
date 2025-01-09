@@ -8,13 +8,12 @@
 import SwiftUI
 
 internal struct LoadingView: View {
+    let symbols = ["pc", "server.rack", "cpu", "memorychip"]
+    
     var body: some View {
         UnavailableWrapper {
-            VStack(spacing: 4) {
-                ProgressIndicator()
-                Text("loading")
-                    .foregroundStyle(.gray)
-            }
+            ContentUnavailableView("loading", systemImage: symbols.randomElement()!)
+                .symbolEffect(.pulse)
         }
     }
 }
@@ -24,13 +23,13 @@ internal struct ProgressIndicator: View {
     
     var body: some View {
         #if DEBUG
-            Image(systemName: "rainbow")
-                .font(.title3)
-                .symbolRenderingMode(.multicolor)
-                .symbolEffect(.variableColor.iterative.dimInactiveLayers)
+        Image(systemName: "rainbow")
+            .font(.title3)
+            .symbolRenderingMode(.multicolor)
+            .symbolEffect(.variableColor.iterative.dimInactiveLayers)
         #else
-            ProgressView()
-                .tint(tint)
+        ProgressView()
+            .tint(tint)
         #endif
     }
 }
