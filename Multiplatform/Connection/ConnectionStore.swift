@@ -17,11 +17,15 @@ final class ConnectionStore {
     private(set) var didLoad = false
     
     private(set) var connections: [ItemIdentifier.ConnectionID: PersistenceManager.AuthorizationSubsystem.Connection]
+    
     private(set) var libraries: [ItemIdentifier.ConnectionID: [Library]]
+    private(set) var offlineConnections: [ItemIdentifier.ConnectionID]
     
     init() {
         connections = [:]
+        
         libraries = [:]
+        offlineConnections = []
         
         Task {
             try await PersistenceManager.shared.authorization.fetchConnections()
@@ -42,14 +46,20 @@ final class ConnectionStore {
     
     nonisolated func update() {
         Task {
+            var offline = [ItemIdentifier.ConnectionID]()
             var libraries = [ItemIdentifier.ConnectionID: [Library]]()
             
             for connection in await connections {
                 do {
                     libraries[connection.key] = try await ABSClient[connection.key].libraries()
                 } catch {
+                    offline.append(connection.key)
                     continue
                 }
+            }
+            
+            await MainActor.withAnimation {
+                self.offlineConnections = offline
             }
             
             guard !libraries.isEmpty else {
