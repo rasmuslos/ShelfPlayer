@@ -11,49 +11,48 @@ import SPFoundation
 import SPPersistence
 
 struct SessionImporter: View {
-    let logger = Logger(subsystem: "io.rfk.shelfplayer", category: "SessionImport")
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    var callback: (_ success: Bool) -> ()
-    @State var task: Task<(), Error>?
+    let connectionID: ItemIdentifier.ConnectionID
+    let callback: @MainActor (_ success: Bool) -> ()
+    
+    @State private var task: Task<(), Error>?
     
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-            
-            ProgressIndicator()
-            
-            Text("sessions.importing")
-                .padding(.top, 8)
-                .foregroundStyle(.secondary)
-            
-            Spacer()
-        }
-        .safeAreaInset(edge: .bottom) {
-            Button {
-                task?.cancel()
-                callback(false)
-            } label: {
-                Label("offline.enable", systemImage: "network.slash")
-                    .labelStyle(.titleOnly)
-                    .contentShape(.rect)
-                    .padding(.vertical, 16)
-                    .padding(.horizontal, 60)
+        ContentUnavailableView("sessions.importing", systemImage: "binoculars")
+            .symbolEffect(.pulse)
+            .safeAreaInset(edge: .bottom) {
+                Menu("library.change") {
+                    LibraryPicker() {
+                        task?.cancel()
+                        callback(false)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
-            .background(Color.accentColor, in: .rect(cornerRadius: 12))
-            .foregroundStyle(.background)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 8)
-        }
-        .onAppear {
-            task = Task.detached {
-                // let success = await OfflineManager.shared.authorizeAndSync()
-                try Task.checkCancellation()
-                // await callback(success)
+            .onAppear {
+                task = Task.detached {
+                    let success: Bool
+                    
+                    do {
+                        let (sessions, bookmarks) = try await ABSClient[connectionID].authorize()
+                        try await PersistenceManager.shared.progress.sync(sessions: sessions, connectionID: connectionID)
+                        
+                        success = true
+                    } catch {
+                        success = false
+                    }
+                    
+                    try Task.checkCancellation()
+                    await callback(success)
+                }
             }
-        }
     }
 }
 
 #Preview {
-    SessionImporter() { _ in }
+    SessionImporter(connectionID: "fixture") { _ in
+        // Nothing
+    }
 }

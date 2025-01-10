@@ -99,7 +99,7 @@ struct AuthorView: View {
                 AudiobookSortFilter(filter: $viewModel.filter, displayType: $viewModel.displayMode, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
             }
         }
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .environment(viewModel)
         .environment(\.displayContext, .author(author: viewModel.author))
@@ -150,6 +150,5 @@ struct AuthorView: View {
     NavigationStack {
         AuthorView(.fixture)
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

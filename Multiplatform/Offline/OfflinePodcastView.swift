@@ -44,7 +44,7 @@ struct OfflinePodcastView: View {
                 EpisodeSortFilter(filter: $episodeFilter, sortOrder: $episodesSortOrder, ascending: $episodesAscending)
             }
         }
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         /*
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             fetchEpisodes()

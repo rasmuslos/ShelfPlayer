@@ -12,11 +12,10 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedSearchIndexEntry {
-        #Index<PersistedSearchIndexEntry>([\.itemID, \.primaryName, \.secondaryName, \.authors])
-        #Unique<PersistedSearchIndexEntry>([\.itemID])
+        #Index<PersistedSearchIndexEntry>([\._itemID, \.primaryName, \.secondaryName, \.authors])
+        #Unique<PersistedSearchIndexEntry>([\._itemID])
         
-        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
-        private(set) var itemID: ItemIdentifier
+        private var _itemID: String
         
         private(set) var primaryName: String
         private(set) var secondaryName: String?
@@ -24,10 +23,14 @@ extension SchemaV2 {
         private(set) var authors: [String]
         
         init(itemID: ItemIdentifier, primaryName: String, secondaryName: String? = nil, authors: [String]) {
-            self.itemID = itemID
+            _itemID = itemID.description
             self.primaryName = primaryName
             self.secondaryName = secondaryName
             self.authors = authors
+        }
+        
+        var itemID: ItemIdentifier {
+            .init(_itemID)
         }
     }
 }

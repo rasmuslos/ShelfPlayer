@@ -118,7 +118,6 @@ internal struct AudiobookHGrid: View {
         }
         .padding(.horizontal, 20)
     }
-    .environment(NowPlaying.ViewModel())
 }
 
 #Preview {
@@ -127,6 +126,5 @@ internal struct AudiobookHGrid: View {
             AudiobookHGrid(audiobooks: .init(repeating: [.fixture], count: 7), small: true)
         }
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

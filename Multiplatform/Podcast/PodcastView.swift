@@ -57,7 +57,7 @@ struct PodcastView: View {
             } else { $0 }
         }
         .modifier(ToolbarModifier())
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)
         .onAppear {
             viewModel.library = library
@@ -111,7 +111,6 @@ struct PodcastView: View {
     NavigationStack {
         PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7), zoom: true)
     }
-    .environment(NowPlaying.ViewModel())
     .environment(NamespaceWrapper(namespace))
 }
 #endif

@@ -12,13 +12,12 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedChapter {
-        #Index<PersistedChapter>([\.id], [\.itemID])
-        #Unique<PersistedChapter>([\.id], [\.itemID, \.start])
+        #Index<PersistedChapter>([\.id], [\._itemID])
+        #Unique<PersistedChapter>([\.id], [\._itemID, \.start])
         
         @Attribute(.unique)
         private(set) var id: UUID
-        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
-        private(set) var itemID: ItemIdentifier
+        private var _itemID: String
         
         private(set) var name: String
         
@@ -27,10 +26,14 @@ extension SchemaV2 {
         
         init(id: UUID, itemID: ItemIdentifier, name: String, start: TimeInterval, end: TimeInterval) {
             self.id = id
-            self.itemID = itemID
+            _itemID = itemID.description
             self.name = name
             self.start = start
             self.end = end
+        }
+        
+        var itemID: ItemIdentifier {
+            .init(_itemID)
         }
     }
 }

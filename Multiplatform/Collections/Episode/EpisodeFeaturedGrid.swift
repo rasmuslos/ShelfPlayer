@@ -174,7 +174,6 @@ private struct Background: View {
             EpisodeFeaturedGrid(episodes: .init(repeating: [.fixture], count: 7))
         }
     }
-    .environment(NowPlaying.ViewModel())
     .environment(NamespaceWrapper(namespace))
 }
 #endif

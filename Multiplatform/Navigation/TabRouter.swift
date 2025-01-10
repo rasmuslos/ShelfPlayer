@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Defaults
+import RFNotifications
 import ShelfPlayerKit
 
 @available(iOS 18, *)
@@ -19,6 +20,9 @@ internal struct TabRouter: View {
     
     @State private var libraryPath = NavigationPath()
     
+    @State private var importedConnectionIDs = [String]()
+    @State private var importFailedConnectionIDs = [String]()
+    
     var selectionProxy: Binding<TabValue?> {
         .init() { selection } set: {
             if $0 == selection, case .search = $0 {
@@ -27,6 +31,44 @@ internal struct TabRouter: View {
             
             selection = $0
         }
+    }
+    
+    @ViewBuilder
+    private func content(for tab: TabValue) -> some View {
+        Group {
+            if importedConnectionIDs.contains(tab.library.connectionID) {
+                tab.content(libraryPath: $libraryPath)
+            } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
+                ContentUnavailableView("import.failed", systemImage: "circle.badge.xmark", description: Text("import.failed.description"))
+                    .symbolRenderingMode(.multicolor)
+                    .symbolEffect(.wiggle, options: .nonRepeating)
+                    .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
+                    .safeAreaInset(edge: .bottom) {
+                        VStack(spacing: 16) {
+                            Button("import.failed.proceed") {
+                                importedConnectionIDs.append(tab.library.connectionID)
+                            }
+                            
+                            Menu("library.change") {
+                                LibraryPicker()
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.large)
+                        }
+                    }
+            } else {
+                SessionImporter(connectionID: tab.library.connectionID) {
+                    if $0 {
+                        importedConnectionIDs.append(tab.library.connectionID)
+                    } else {
+                        importFailedConnectionIDs.append(tab.library.connectionID)
+                    }
+                }
+                .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
+            }
+        }
+        .animation(.smooth, value: importedConnectionIDs)
+        .animation(.smooth, value: importFailedConnectionIDs)
     }
     
     private var isCompact: Bool {
@@ -39,13 +81,16 @@ internal struct TabRouter: View {
         
         return selection?.library
     }
+    private var connectionID: ItemIdentifier.ConnectionID? {
+        selection?.library.connectionID
+    }
     
     var body: some View {
         TabView(selection: selectionProxy) {
             if let current {
                 ForEach(TabValue.tabs(for: current)) { tab in
                     Tab(tab.label, systemImage: tab.image, value: tab) {
-                        tab.content(libraryPath: $libraryPath)
+                        content(for: tab)
                     }
                 }
             }
@@ -55,7 +100,7 @@ internal struct TabRouter: View {
                         ForEach(libraries) {
                             ForEach(TabValue.tabs(for: $0)) { tab in
                                 Tab(tab.label, systemImage: tab.image, value: tab) {
-                                    tab.content(libraryPath: $libraryPath)
+                                    content(for: tab)
                                 }
                                 .hidden(isCompact)
                             }
@@ -67,6 +112,7 @@ internal struct TabRouter: View {
         .tabViewStyle(.sidebarAdaptable)
         .id(current)
         // .modifier(NowPlaying.CompactModifier())
+        .sensoryFeedback(.error, trigger: importFailedConnectionIDs)
         .onChange(of: current) {
             let appearance = UINavigationBarAppearance()
             
@@ -89,14 +135,21 @@ internal struct TabRouter: View {
         .onChange(of: connectionStore.libraries, initial: true) {
             guard selection == nil, let library = connectionStore.libraries.first?.value.first else { return }
             
-            switch library.type {
-            case .audiobooks:
-                selection = .audiobookHome(library)
-            case .podcasts:
-                selection = .podcastHome(library)
-            default:
-                return
-            }
+            select(library)
+        }
+        .onReceive(RFNotification[.changeLibrary].publisher()) {
+            select($0)
+        }
+    }
+    
+    private func select(_ library: Library) {
+        switch library.type {
+        case .audiobooks:
+            selection = .audiobookHome(library)
+        case .podcasts:
+            selection = .podcastHome(library)
+        default:
+            return
         }
     }
 }

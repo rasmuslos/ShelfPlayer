@@ -8,6 +8,7 @@
 import SwiftUI
 import TipKit
 import Defaults
+import RFNotifications
 import ShelfPlayerKit
 import SPPlayback
 
@@ -48,9 +49,7 @@ internal struct OfflineView: View {
                 
                 Group {
                     Button {
-                        NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
-                            "offline": false,
-                        ])
+                        RFNotification[.changeOfflineMode].send(false)
                     } label: {
                         Label("offline.disable", systemImage: "network")
                     }
@@ -75,8 +74,8 @@ internal struct OfflineView: View {
                 }
                 .menuActionDismissBehavior(.disabled)
             }
-            .modifier(NowPlaying.SafeAreaModifier())
-            .modifier(NowPlaying.BackgroundModifier(bottomOffset: -40))
+            // .modifier(NowPlaying.SafeAreaModifier())
+            // .modifier(NowPlaying.BackgroundModifier(bottomOffset: -40))
             .task {
                 // await loadItems()
             }
@@ -84,7 +83,7 @@ internal struct OfflineView: View {
                 // await loadItems()
             }
         }
-        .modifier(NowPlaying.CompactModifier(bottomOffset: 40))
+        // .modifier(NowPlaying.CompactModifier(bottomOffset: 40))
         .sheet(isPresented: $accountSheetPresented) {
             AccountSheet()
         }
@@ -128,5 +127,4 @@ private struct SiriOfflineTip: Tip {
 
 #Preview {
     OfflineView()
-        .environment(NowPlaying.ViewModel())
 }

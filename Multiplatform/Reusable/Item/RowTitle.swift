@@ -38,7 +38,7 @@ internal struct AudiobookRow: View {
                         }
                         .navigationTitle(title)
                         .navigationBarTitleDisplayMode(.inline)
-                        .modifier(NowPlaying.SafeAreaModifier())
+                        // .modifier(NowPlaying.SafeAreaModifier())
                     } label: {
                         HStack(alignment: .firstTextBaseline) {
                             RowTitle(title: title, fontDesign: .serif)
