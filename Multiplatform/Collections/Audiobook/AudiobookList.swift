@@ -39,7 +39,7 @@ internal struct AudiobookList: View {
 }
 
 private struct Row: View {
-    @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
+    // @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
     @Environment(\.displayContext) private var displayContext
     @Environment(\.colorScheme) private var colorScheme
     
@@ -54,11 +54,14 @@ private struct Row: View {
     }
     
     private var icon: String {
+        /*
         if audiobook == nowPlayingViewModel.item {
             return nowPlayingViewModel.playing ? "waveform.circle.fill" : "pause.circle.fill"
         } else {
             return "play.circle.fill"
         }
+         */
+        ""
     }
     
     private var progressVisible: Bool {
@@ -169,6 +172,5 @@ private struct Row: View {
         }
         .listStyle(.plain)
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

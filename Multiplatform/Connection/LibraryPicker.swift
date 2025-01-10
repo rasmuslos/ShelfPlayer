@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import RFNotifications
 import ShelfPlayerKit
 
 struct LibraryPicker: View {
     @Environment(ConnectionStore.self) private var connectionStore
     
-    
+    var callback: (() -> Void)? = nil
     
     var body: some View {
         ForEach(connectionStore.flat) { connection in
@@ -19,7 +20,8 @@ struct LibraryPicker: View {
                 Section {
                     ForEach(libraries) { library in
                         Button(library.name, systemImage: image(for: library)) {
-                            
+                            RFNotification[.changeLibrary].send(library)
+                            callback?()
                         }
                     }
                 } header: {
@@ -28,6 +30,10 @@ struct LibraryPicker: View {
                     }
                 }
             }
+        }
+        
+        Button("offline.enable", systemImage: "network.slash") {
+            RFNotification[.changeOfflineMode].send(true)
         }
     }
     
@@ -38,6 +44,11 @@ struct LibraryPicker: View {
             "headphones"
         }
     }
+}
+
+extension RFNotification.Notification {
+    static var changeLibrary: Notification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
+    static var changeOfflineMode: Notification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
 }
 
 #Preview {

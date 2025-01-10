@@ -12,14 +12,13 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedAsset {
-        #Index<PersistedAsset>([\.id], [\.itemID], [\.downloadTaskID])
+        #Index<PersistedAsset>([\.id], [\._itemID], [\.downloadTaskID])
         #Unique<PersistedAsset>([\.id])
         // #Unique<PersistedAsset>([\.id], [\.itemID, \.fileType, \.index])
         
         @Attribute(.unique)
         private(set) var id = UUID()
-        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
-        private(set) var itemID: ItemIdentifier
+        private var _itemID: String
         
         private(set) var index: Int
         
@@ -32,13 +31,17 @@ extension SchemaV2 {
         
         init(id: UUID, itemID: ItemIdentifier, index: Int, fileType: FileType, offset: TimeInterval, duration: TimeInterval) {
             self.id = id
-            self.itemID = itemID
+            _itemID = itemID.description
             self.index = index
             self.fileType = fileType
             self.offset = offset
             self.duration = duration
             
             downloadTaskID = nil
+        }
+        
+        var itemID: ItemIdentifier {
+            .init(_itemID)
         }
         
         enum FileType: Codable {

@@ -15,7 +15,7 @@ import Foundation
  ### Format
  `VERSION::TYPE::SERVER_ID::LIBRARY_ID::PRIMARY_ID(::GROUPING_ID)`
  */
-public final class ItemIdentifier: Codable {
+public final class ItemIdentifier {
     public typealias PrimaryID = String
     public typealias GroupingID = String
     
@@ -110,6 +110,33 @@ public final class ItemIdentifier: Codable {
     }
 }
 
+extension ItemIdentifier: Codable {}
+
+extension ItemIdentifier: NSSecureCoding {
+    public func encode(with coder: NSCoder) {
+        coder.encode(primaryID as NSString, forKey: "primaryID")
+        coder.encode(groupingID as? NSString, forKey: "groupingID")
+        coder.encode(libraryID as NSString, forKey: "libraryID")
+        coder.encode(connectionID as NSString, forKey: "connectionID")
+        coder.encode(type.rawValue as NSString, forKey: "type")
+    }
+    
+    public convenience init?(coder: NSCoder) {
+        guard let primaryID = coder.decodeObject(of: NSString.self, forKey: "primaryID") as? String,
+              let groupingID = coder.decodeObject(of: NSString.self, forKey: "groupingID") as? String,
+              let libraryID = coder.decodeObject(of: NSString.self, forKey: "libraryID") as? String,
+              let connectionID = coder.decodeObject(of: NSString.self, forKey: "connectionID") as? String,
+              let typeString = coder.decodeObject(of: NSString.self, forKey: "type") as? String else { return nil }
+        
+        guard let type = ItemIdentifier.ItemType(rawValue: typeString) else { return nil }
+        
+        self.init(primaryID: primaryID, groupingID: groupingID, libraryID: libraryID, connectionID: connectionID, type: type)
+    }
+    
+    public static var supportsSecureCoding: Bool {
+        true
+    }
+}
 extension ItemIdentifier: Sendable {}
 extension ItemIdentifier: Hashable {
     public func hash(into hasher: inout Hasher) {
@@ -159,39 +186,4 @@ public extension ItemIdentifier {
             rawValue
         }
     }
-}
-
-@objc(NSAttributedStringTransformer)
-public class ItemIdentifierTransformer: NSSecureUnarchiveFromDataTransformer {
-    public override class func allowsReverseTransformation() -> Bool {
-        true
-    }
-
-    public override class var allowedTopLevelClasses: [AnyClass] {
-        [ItemIdentifier.self]
-    }
-
-    public override class func transformedValueClass() -> AnyClass {
-        ItemIdentifier.self
-    }
-
-    public override func reverseTransformedValue(_ value: Any?) -> Any? {
-        if let id = value as? ItemIdentifier, let data = id.description.data(using: .utf8) {
-            NSData(data: data)
-        } else {
-            nil
-        }
-    }
-
-    public override func transformedValue(_ value: Any?) -> Any? {
-        if let data = value as? NSData, let string = String(data: data as Data, encoding: .utf8) {
-            ItemIdentifier(string)
-        } else {
-            nil
-        }
-    }
-}
-
-public extension NSValueTransformerName {
-    static let itemIdentifierTransformer = NSValueTransformerName(rawValue: "ItemIdentifierTransformer")
 }

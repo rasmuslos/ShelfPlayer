@@ -42,7 +42,7 @@ struct EpisodeView: View {
             } else { $0 }
         }
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
         .environment(viewModel)
         .onAppear {
@@ -76,7 +76,6 @@ struct EpisodeView: View {
     NavigationStack {
         EpisodeView(.fixture, zoomID: .init())
     }
-    .environment(NowPlaying.ViewModel())
     .environment(NamespaceWrapper(namespace))
 }
 #endif

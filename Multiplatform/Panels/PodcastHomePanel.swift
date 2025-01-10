@@ -81,8 +81,14 @@ internal struct PodcastHomePanel: View {
             }
         }
         .navigationTitle(library.name)
-        .modifier(SelectLibraryModifier(isCompact: horizontalSizeClass == .compact))
-        .modifier(NowPlaying.SafeAreaModifier())
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu("library.change", systemImage: "books.vertical.fill") {
+                    LibraryPicker()
+                }
+            }
+        }
+        // .modifier(NowPlaying.SafeAreaModifier())
     }
     
     private nonisolated func fetchItems() async {
@@ -110,6 +116,5 @@ internal struct PodcastHomePanel: View {
 #Preview {
     NavigationStack {
         PodcastHomePanel()
-            .environment(NowPlaying.ViewModel())
     }
 }

@@ -58,7 +58,7 @@ internal struct SearchView: View {
             }
         }
         .autocorrectionDisabled()
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)
         .refreshable {
             viewModel.load()

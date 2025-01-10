@@ -43,7 +43,7 @@ internal struct PodcastLatestPanel: View {
             }
         }
         .navigationTitle("panel.latest")
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
     }
 
     private nonisolated func fetchItems() async {

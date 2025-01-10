@@ -10,6 +10,7 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
+/*
 internal struct SleepTimerButton: View {
     @Environment(NowPlaying.ViewModel.self) private var viewModel
     
@@ -115,3 +116,4 @@ internal struct SleepTimerButton: View {
         .menuActionDismissBehavior(.disabled)
     }
 }
+*/

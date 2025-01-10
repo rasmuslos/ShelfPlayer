@@ -10,13 +10,14 @@ import Intents
 import CoreSpotlight
 import SwiftData
 import Defaults
+import RFNotifications
 import ShelfPlayerKit
 
 internal struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.tintColor) private var tintColor
-    @Default(.lastOffline) private var lastOffline
+    @Default(.lastOffline) private var isOffline
     @Default(.lastTabValue) private var lastTabValue
     
     @State private var connectionStore = ConnectionStore()
@@ -31,13 +32,16 @@ internal struct ContentView: View {
                 LoadingView()
             } else if connectionStore.flat.isEmpty {
                 WelcomeView()
-            } else if lastOffline {
+            } else if isOffline {
                 
             } else {
                 TabRouter(selection: $lastTabValue)
             }
         }
         .tint(tintColor.color)
+        .onReceive(RFNotification[.changeOfflineMode].publisher()) {
+            isOffline = $0
+        }
         .onContinueUserActivity(CSSearchableItemActionType) {
             guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
                 return

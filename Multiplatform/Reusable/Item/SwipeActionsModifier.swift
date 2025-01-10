@@ -53,6 +53,5 @@ internal struct SwipeActionsModifier: ViewModifier {
     List {
         AudiobookList(sections: .init(repeating: [.audiobook(audiobook: .fixture)], count: 7))
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

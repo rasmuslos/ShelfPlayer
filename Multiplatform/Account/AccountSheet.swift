@@ -116,7 +116,7 @@ internal struct AccountSheet: View {
                 
                 Section {
                     Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
-                        PlaybackSpeedButton.Options(selected: $defaultPlaybackSpeed)
+                        // PlaybackSpeedButton.Options(selected: $defaultPlaybackSpeed)
                     }
                     .tint(.primary)
                 } header: {
@@ -185,9 +185,11 @@ internal struct AccountSheet: View {
                             ImagePipeline.shared.cache.removeAll()
                             // try? OfflineManager.shared.deleteProgressEntities()
                             
+                            /*
                             NotificationCenter.default.post(name: SelectLibraryModifier.changeLibraryNotification, object: nil, userInfo: [
                                 "offline": false,
                             ])
+                             */
                             
                             Task {
                                 await update()

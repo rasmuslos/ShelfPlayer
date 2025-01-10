@@ -12,13 +12,12 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedBookmark {
-        #Index<PersistedBookmark>([\.id], [\.itemID])
-        #Unique<PersistedBookmark>([\.id], [\.itemID, \.time])
+        #Index<PersistedBookmark>([\.id], [\._itemID])
+        #Unique<PersistedBookmark>([\.id], [\._itemID, \.time])
         
         @Attribute(.unique)
         private(set) var id = UUID()
-        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
-        private(set) var itemID: ItemIdentifier
+        private var _itemID: String
         
         private(set) var time: UInt64
         var note: String
@@ -28,12 +27,16 @@ extension SchemaV2 {
         var status: SyncStatus
         
         init(itemID: ItemIdentifier, time: UInt64, note: String, created: Date, status: SyncStatus) {
-            self.itemID = itemID
+            _itemID = itemID.description
             self.time = time
             self.note = note
             self.created = created
             
             self.status = status
+        }
+        
+        var itemID: ItemIdentifier {
+            .init(_itemID)
         }
         
         enum SyncStatus: Int, Codable {

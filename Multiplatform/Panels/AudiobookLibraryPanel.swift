@@ -121,7 +121,7 @@ internal struct AudiobookLibraryPanel: View {
             }
         }
         .navigationTitle("panel.library")
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
         .onAppear {
             lazyLoader.library = library
