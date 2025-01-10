@@ -1736,6 +1736,7 @@
       }
     },
     "backwards" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1793,6 +1794,7 @@
       }
     },
     "bookmark.create.alert" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1821,6 +1823,7 @@
       }
     },
     "bookmark.create.cancel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1849,6 +1852,7 @@
       }
     },
     "bookmark.create.finalize" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1877,6 +1881,7 @@
       }
     },
     "bookmark.create.prompt" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1963,6 +1968,7 @@
       }
     },
     "bookmark.update.alert" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1991,6 +1997,7 @@
       }
     },
     "bookmark.update.cancel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2019,6 +2026,7 @@
       }
     },
     "bookmark.update.finalize" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2047,6 +2055,7 @@
       }
     },
     "bookmark.update.prompt" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2075,6 +2084,7 @@
       }
     },
     "bookmarks.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2515,6 +2525,7 @@
       }
     },
     "chapters.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2615,6 +2626,7 @@
 
     },
     "decrease" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3069,6 +3081,7 @@
       }
     },
     "drag" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3097,6 +3110,7 @@
       }
     },
     "empty.other.queue %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3717,6 +3731,7 @@
       }
     },
     "forwards" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3800,7 +3815,17 @@
         }
       }
     },
+    "import.failed" : {
+
+    },
+    "import.failed.description" : {
+
+    },
+    "import.failed.proceed" : {
+
+    },
     "increase" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4616,6 +4641,7 @@
 
     },
     "nowPlaying.sheet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4644,6 +4670,7 @@
       }
     },
     "nowPlaying.sheet.bookmarks" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4672,6 +4699,7 @@
       }
     },
     "nowPlaying.sheet.chapters" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4701,6 +4729,7 @@
     },
     "nowPlaying.sheet.queue" : {
       "comment" : "Verb, \"queue the episode\"",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4984,6 +5013,7 @@
 
     },
     "pause" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5069,6 +5099,7 @@
       }
     },
     "playback.toggle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5391,6 +5422,7 @@
       }
     },
     "podcast.view" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5564,6 +5596,7 @@
       }
     },
     "queue.bottom" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5592,6 +5625,7 @@
       }
     },
     "queue.clear" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5620,6 +5654,7 @@
       }
     },
     "queue.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5704,6 +5739,7 @@
       }
     },
     "queue.remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5788,6 +5824,7 @@
       }
     },
     "queue.top" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5876,6 +5913,7 @@
       }
     },
     "resume" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5904,6 +5942,7 @@
       }
     },
     "route" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6745,6 +6784,7 @@
     },
     "sleep.chapter" : {
       "comment" : "Is it like \"end of a chapter\" or \"by the end of the chapter\"?",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6773,6 +6813,7 @@
       }
     },
     "sleep.clear" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6801,6 +6842,7 @@
       }
     },
     "sleepTimer" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -72,7 +72,7 @@ internal struct AudiobookView: View {
                 Spacer()
             }
         }
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
         .environment(viewModel)
@@ -104,6 +104,5 @@ internal struct AudiobookView: View {
     NavigationStack {
         AudiobookView(.fixture)
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

@@ -93,7 +93,7 @@ internal struct SeriesView: View {
         }
         .environment(viewModel)
         .environment(\.displayContext, .series(series: viewModel.series))
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
             viewModel.library = library
             viewModel.lazyLoader.initialLoad()
@@ -121,6 +121,5 @@ internal struct SeriesView: View {
     NavigationStack {
         SeriesView(.fixture, filteredIDs: ["abc"])
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

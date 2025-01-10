@@ -73,6 +73,5 @@ private struct EpisodeRow: View {
         }
         .listStyle(.plain)
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

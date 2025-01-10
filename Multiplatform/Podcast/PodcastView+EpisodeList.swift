@@ -20,7 +20,7 @@ struct PodcastEpisodesView: View {
         .navigationTitle("episodes")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $viewModel.search, placement: .toolbar)
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EpisodeSortFilter(filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)

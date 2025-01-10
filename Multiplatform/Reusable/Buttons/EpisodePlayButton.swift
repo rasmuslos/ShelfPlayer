@@ -11,7 +11,7 @@ import SPPersistence
 import SPPlayback
 
 internal struct EpisodePlayButton: View {
-    @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
+    // @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
     @Environment(\.library) private var library
     
     private let viewModel: EpisodePlayButtonViewModel
@@ -23,10 +23,12 @@ internal struct EpisodePlayButton: View {
     
     var body: some View {
         Button {
+            /*
             if nowPlayingViewModel.item == viewModel.episode {
                 AudioPlayer.shared.playing.toggle()
                 return
             }
+             */
             
             viewModel.play()
         } label: {
@@ -53,12 +55,13 @@ internal struct EpisodePlayButton: View {
 }
 
 private struct ButtonText: View {
-    @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
+    // @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
     @Environment(EpisodePlayButtonViewModel.self) private var viewModel
     @Environment(\.colorScheme) private var colorScheme
     
     private var isPlaying: Bool {
-        nowPlayingViewModel.item == viewModel.episode
+        // nowPlayingViewModel.item == viewModel.episode
+        false
     }
     
     private var label: String {
@@ -78,9 +81,11 @@ private struct ButtonText: View {
         ""
     }
     private var icon: String {
+        /*
         if isPlaying && nowPlayingViewModel.playing {
             return "pause.fill"
         }
+         */
         
         return "play.fill"
     }
@@ -125,7 +130,7 @@ private struct ButtonText: View {
         }
         .font(.caption2)
         .animation(.smooth, value: isPlaying)
-        .animation(.smooth, value: nowPlayingViewModel.playing)
+        // .animation(.smooth, value: nowPlayingViewModel.playing)
         // .animation(.smooth, value: viewModel.progressEntity.progress)
     }
 }

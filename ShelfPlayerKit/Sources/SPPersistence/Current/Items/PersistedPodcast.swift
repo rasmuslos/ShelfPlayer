@@ -12,11 +12,10 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedPodcast {
-        #Index<PersistedPodcast>([\.id])
-        #Unique<PersistedPodcast>([\.id])
+        #Index<PersistedPodcast>([\._id])
+        #Unique<PersistedPodcast>([\._id])
         
-        @Attribute(.transformable(by: ItemIdentifierTransformer.self))
-        private(set) var id: ItemIdentifier
+        private var _id: String
         
         private(set) var name: String
         private(set) var authors: [String]
@@ -37,7 +36,7 @@ extension SchemaV2 {
         private(set) var searchIndexEntry: PersistedSearchIndexEntry
         
         init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, explicit: Bool, publishingType: Podcast.PodcastType? = nil, episodes: [PersistedEpisode]) {
-            self.id = id
+            _id = id.description
             self.name = name
             self.authors = authors
             self.overview = overview
@@ -49,6 +48,10 @@ extension SchemaV2 {
             self.episodes = episodes
             
             searchIndexEntry = .init(itemID: id, primaryName: name, authors: authors)
+        }
+        
+        var id: ItemIdentifier {
+            .init(_id)
         }
     }
 }

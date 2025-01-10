@@ -13,7 +13,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct PlayButton: View {
-    @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
+    // @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
     @Environment(\.playButtonStyle) private var playButtonStyle
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.library) private var library
@@ -57,11 +57,12 @@ internal struct PlayButton: View {
     }
     
     private var isPlaying: Bool {
-        nowPlayingViewModel.item == item
+        // nowPlayingViewModel.item == item
+        false
     }
     private var label: LocalizedStringKey {
         if isPlaying {
-            return nowPlayingViewModel.playing ? "pause" : "resume"
+            // return nowPlayingViewModel.playing ? "pause" : "resume"
         }
         
         /*
@@ -82,9 +83,11 @@ internal struct PlayButton: View {
     }
     
     private var icon: String {
+        /*
         if isPlaying && nowPlayingViewModel.playing {
             return "pause.fill"
         }
+         */
         
         return "play.fill"
     }
@@ -160,10 +163,12 @@ internal struct PlayButton: View {
         } label: {
             // playButtonStyle.makeLabel(configuration: .init(progress: progressEntity.progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
+            /*
             if nowPlayingViewModel.item == item {
                 AudioPlayer.shared.playing.toggle()
                 return
             }
+             */
             
             play()
         }

@@ -95,6 +95,5 @@ private struct Row: View {
         }
         .listStyle(.plain)
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

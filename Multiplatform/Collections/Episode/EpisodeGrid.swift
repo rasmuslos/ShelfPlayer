@@ -59,6 +59,5 @@ internal struct EpisodeGrid: View {
     NavigationStack {
         EpisodeGrid(episodes: .init(repeating: [.fixture], count: 7))
     }
-    .environment(NowPlaying.ViewModel())
 }
 #endif

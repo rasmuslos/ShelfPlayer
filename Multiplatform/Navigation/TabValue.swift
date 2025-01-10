@@ -101,10 +101,9 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
         }
     }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     func content(libraryPath: Binding<NavigationPath>) -> some View {
         Group {
-            /*
             switch self {
             case .audiobookHome:
                 NavigationStack {
@@ -150,7 +149,6 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                         .modifier(Navigation.DestinationModifier())
                 }
             }
-             */
         }
         .environment(\.library, library)
         // .modifier(NowPlaying.RegularModifier())

@@ -72,7 +72,7 @@ internal struct AudiobookSeriesPanel: View {
             }
         }
         .navigationTitle("panel.series")
-        .modifier(NowPlaying.SafeAreaModifier())
+        // .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
             lazyLoader.library = library
         }
