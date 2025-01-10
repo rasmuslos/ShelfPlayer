@@ -2592,6 +2592,9 @@
     "connection.manage.multiple" : {
 
     },
+    "connection.offline %lld" : {
+
+    },
     "connection.remove" : {
 
     },
@@ -3821,9 +3824,6 @@
     "import.failed.description" : {
 
     },
-    "import.failed.proceed" : {
-
-    },
     "increase" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3892,6 +3892,9 @@
           }
         }
       }
+    },
+    "library.change.automatic" : {
+
     },
     "listen" : {
       "extractionState" : "stale",

@@ -13,13 +13,13 @@ import Defaults
 import RFNotifications
 import ShelfPlayerKit
 
-internal struct ContentView: View {
+struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.tintColor) private var tintColor
-    @Default(.lastOffline) private var isOffline
     @Default(.lastTabValue) private var lastTabValue
     
+    @State private var isOffline = false
     @State private var connectionStore = ConnectionStore()
     
     // try? await OfflineManager.shared.attemptListeningTimeSync()

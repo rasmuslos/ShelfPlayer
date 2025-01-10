@@ -136,7 +136,6 @@ public extension PersistenceManager.ProgressSubsystem {
             }
             
             signposter.emitEvent("transaction", id: signpostID)
-            try Task.checkCancellation()
             
             logger.info("Deleting \(pendingDeletion.count) progress entities")
             
@@ -145,7 +144,6 @@ public extension PersistenceManager.ProgressSubsystem {
             }
             
             signposter.emitEvent("delete", id: signpostID)
-            try Task.checkCancellation()
             
             let batch = pendingCreation + pendingUpdate
             let grouped = Dictionary(batch.map { ($0.itemID.connectionID, [$0]) }, uniquingKeysWith: +)
@@ -157,7 +155,6 @@ public extension PersistenceManager.ProgressSubsystem {
             }
             
             signposter.emitEvent("batch", id: signpostID)
-            try Task.checkCancellation()
             
             // try modelContext.transaction {
                 for payload in payload {
@@ -181,7 +178,6 @@ public extension PersistenceManager.ProgressSubsystem {
             // }
             
             signposter.emitEvent("cleanup", id: signpostID)
-            try Task.checkCancellation()
             
             try modelContext.save()
             
