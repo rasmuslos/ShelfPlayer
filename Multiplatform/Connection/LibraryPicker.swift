@@ -32,6 +32,12 @@ struct LibraryPicker: View {
             }
         }
         
+        if !connectionStore.offlineConnections.isEmpty {
+            Button("connection.offline \(connectionStore.offlineConnections.count)", role: .destructive) {
+                connectionStore.update()
+            }
+        }
+        
         Button("offline.enable", systemImage: "network.slash") {
             RFNotification[.changeOfflineMode].send(true)
         }

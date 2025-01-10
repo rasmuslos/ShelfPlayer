@@ -19,6 +19,7 @@ internal struct TabRouter: View {
     @Binding var selection: TabValue?
     
     @State private var libraryPath = NavigationPath()
+    @State private var automaticOfflineModeDeadline: Date? = nil
     
     @State private var importedConnectionIDs = [String]()
     @State private var importFailedConnectionIDs = [String]()
@@ -45,8 +46,25 @@ internal struct TabRouter: View {
                     .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
                     .safeAreaInset(edge: .bottom) {
                         VStack(spacing: 16) {
-                            Button("import.failed.proceed") {
-                                importedConnectionIDs.append(tab.library.connectionID)
+                            Button {
+                                
+                            } label: {
+                                if let automaticOfflineModeDeadline {
+                                    Text("library.change.automatic")
+                                    + Text(automaticOfflineModeDeadline, style: .relative)
+                                }
+                            }
+                            .task {
+                                automaticOfflineModeDeadline = .now.addingTimeInterval(7)
+                                
+                                do {
+                                    try await Task.sleep(for: .seconds(7))
+                                    
+                                    RFNotification[.changeOfflineMode].send(true)
+                                    automaticOfflineModeDeadline = nil
+                                } catch {
+                                    automaticOfflineModeDeadline = nil
+                                }
                             }
                             
                             Menu("library.change") {
