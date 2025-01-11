@@ -46,14 +46,6 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             library
         }
     }
-    var isLibrary: Bool {
-        switch self {
-        case .audiobookLibrary, .podcastLibrary:
-            true
-        case .audiobookHome, .audiobookSeries, .audiobookAuthors, .podcastHome, .podcastLatest, .search:
-            false
-        }
-    }
     
     var label: LocalizedStringKey {
         switch self {
@@ -102,57 +94,30 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     }
     
     @ViewBuilder @MainActor
-    func content(libraryPath: Binding<NavigationPath>) -> some View {
-        Group {
+    var content: some View {
+        NavigationStackWrapper(tab: self) {
             switch self {
             case .audiobookHome:
-                NavigationStack {
-                    AudiobookHomePanel()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                AudiobookHomePanel()
             case .audiobookSeries:
-                NavigationStack {
-                    AudiobookSeriesPanel()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                AudiobookSeriesPanel()
             case .audiobookAuthors:
-                NavigationStack {
-                    AudiobookAuthorsPanel()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                AudiobookAuthorsPanel()
                 
             case .podcastHome:
-                NavigationStack {
-                    PodcastHomePanel()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                PodcastHomePanel()
             case .podcastLatest:
-                NavigationStack {
-                    PodcastLatestPanel()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                PodcastLatestPanel()
                 
             case .audiobookLibrary:
-                NavigationStack(path: libraryPath) {
-                    AudiobookLibraryPanel()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                AudiobookLibraryPanel()
             case .podcastLibrary:
-                NavigationStack(path: libraryPath) {
-                    PodcastLibraryPanel()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                PodcastLibraryPanel()
                 
             case .search:
-                NavigationStack {
-                    SearchView()
-                        .modifier(Navigation.DestinationModifier())
-                }
+                SearchView()
             }
         }
-        .environment(\.library, library)
-        // .modifier(NowPlaying.RegularModifier())
-        // .modifier(NowPlaying.BackgroundModifier())
     }
 }
 

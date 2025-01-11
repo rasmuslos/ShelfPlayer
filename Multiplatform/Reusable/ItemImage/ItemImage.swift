@@ -22,7 +22,7 @@ internal struct ItemImage: View {
     var contrastConfiguration: ContrastConfiguration? = .init()
     
     private var fallbackIcon: String {
-        switch library.type {
+        switch library?.type {
         case .audiobooks:
             "book"
         case .podcasts:
@@ -165,7 +165,7 @@ private struct ContrastModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         if let configuration {
-            switch library.type {
+            switch library!.type {
             case .audiobooks:
                 content
                     .secondaryShadow(radius: configuration.shadowRadius, opacity: configuration.shadowOpacity)

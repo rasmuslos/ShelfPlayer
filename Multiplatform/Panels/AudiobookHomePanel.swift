@@ -87,7 +87,7 @@ internal struct AudiobookHomePanel: View {
                  */
             }
         }
-        .navigationTitle(library.name)
+        .navigationTitle(library!.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("library.change", systemImage: "books.vertical.fill") {
@@ -104,7 +104,7 @@ internal struct AudiobookHomePanel: View {
         }
         
         Task {
-            let libraryID = await library.id
+            let libraryID = await library!.id
             /*
             let downloaded = try OfflineManager.shared.audiobooks().filter { $0.libraryID == libraryID }
             

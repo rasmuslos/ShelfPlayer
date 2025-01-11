@@ -63,7 +63,7 @@ final class ConnectionStore {
             }
             
             guard !libraries.isEmpty else {
-                RFNotification[.librariesEmpty].send()
+                RFNotification[.changeOfflineMode].send(true)
                 return
             }
             
@@ -75,11 +75,5 @@ final class ConnectionStore {
     
     var flat: [PersistenceManager.AuthorizationSubsystem.Connection] {
         Array(connections.values)
-    }
-}
-
-extension RFNotification.Notification {
-    static var librariesEmpty: RFNotification.Notification<RFNotificationEmptyPayload> {
-        .init("io.rfk.shelfPlayer.librariesEmpty")
     }
 }
