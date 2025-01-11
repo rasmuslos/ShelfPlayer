@@ -32,7 +32,9 @@ struct LibraryPicker: View {
             }
         }
         
-        if !connectionStore.offlineConnections.isEmpty {
+        if connectionStore.libraries.count + connectionStore.offlineConnections.count < connectionStore.connections.count {
+            Text("connection.loading \(connectionStore.connections.count - (connectionStore.libraries.count + connectionStore.offlineConnections.count))")
+        } else if !connectionStore.offlineConnections.isEmpty {
             Button("connection.offline \(connectionStore.offlineConnections.count)", role: .destructive) {
                 connectionStore.update()
             }
