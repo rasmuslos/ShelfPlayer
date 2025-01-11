@@ -15,7 +15,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
     let episode: Episode
     
     private var isOffline: Bool {
-        library.type == .offline
+        library!.type == .offline
     }
     
     func body(content: Content) -> some View {

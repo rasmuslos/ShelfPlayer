@@ -80,7 +80,7 @@ internal struct PodcastHomePanel: View {
                  */
             }
         }
-        .navigationTitle(library.name)
+        .navigationTitle(library!.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("library.change", systemImage: "books.vertical.fill") {

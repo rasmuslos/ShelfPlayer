@@ -27,7 +27,7 @@ internal struct AuthorMenu: View {
     private static func button(authorName: String, libraryID: String?, @ViewBuilder buildLabel: (_ authorName: String) -> some View) -> some View {
         if let libraryID {
             Button {
-                Navigation.navigate(authorName: authorName, libraryID: libraryID)
+                // Navigation.navigate(authorName: authorName, libraryID: libraryID)
             } label: {
                 buildLabel(authorName)
             }

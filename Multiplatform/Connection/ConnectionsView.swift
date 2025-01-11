@@ -45,6 +45,7 @@ struct ConnectionManager: View {
         
         Section {
             NavigationLink("connection.add", destination: ConnectionAddViewWrapper())
+            
             Button("connection.reset") {
                 Task {
                     do {

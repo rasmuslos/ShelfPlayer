@@ -38,7 +38,7 @@ internal struct TabRouter: View {
     private func content(for tab: TabValue) -> some View {
         Group {
             if importedConnectionIDs.contains(tab.library.connectionID) {
-                tab.content(libraryPath: $libraryPath)
+                tab.content
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
                 ContentUnavailableView("import.failed", systemImage: "circle.badge.xmark", description: Text("import.failed.description"))
                     .symbolRenderingMode(.multicolor)
@@ -55,10 +55,10 @@ internal struct TabRouter: View {
                                 }
                             }
                             .task {
-                                automaticOfflineModeDeadline = .now.addingTimeInterval(7)
+                                automaticOfflineModeDeadline = .now.addingTimeInterval(4)
                                 
                                 do {
-                                    try await Task.sleep(for: .seconds(7))
+                                    try await Task.sleep(for: .seconds(4))
                                     
                                     RFNotification[.changeOfflineMode].send(true)
                                     automaticOfflineModeDeadline = nil
@@ -129,7 +129,6 @@ internal struct TabRouter: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .id(current)
-        // .modifier(NowPlaying.CompactModifier())
         .sensoryFeedback(.error, trigger: importFailedConnectionIDs)
         .onChange(of: current) {
             let appearance = UINavigationBarAppearance()

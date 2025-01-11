@@ -197,7 +197,7 @@ internal struct PlayButton: View {
         }
         
         Task {
-            let withoutPlaybackSession = library.type == .offline
+            let withoutPlaybackSession = false // library.type == .offline
             loading = true
             
             do {

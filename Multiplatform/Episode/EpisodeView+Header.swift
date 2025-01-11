@@ -81,7 +81,7 @@ private struct Title: View {
                     Label("author.view", systemImage: "chevron.right.circle")
                         .labelStyle(.iconOnly)
                 }
-                .disabled(library.type == .offline)
+                .disabled(library!.type == .offline)
                 .lineLimit(1)
                 .font(.footnote)
                 .foregroundStyle(.ultraThinMaterial)

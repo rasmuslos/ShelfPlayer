@@ -26,9 +26,9 @@ internal struct SeriesMenu: View {
         if let libraryID {
             Button {
                 if let seriesID = series.id {
-                    Navigation.navigate(seriesID: seriesID, libraryID: libraryID)
+                    // Navigation.navigate(seriesID: seriesID, libraryID: libraryID)
                 } else {
-                    Navigation.navigate(seriesName: series.name, libraryID: libraryID)
+                    // Navigation.navigate(seriesName: series.name, libraryID: libraryID)
                 }
             } label: {
                 buildLabel(series)
