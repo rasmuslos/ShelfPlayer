@@ -33,7 +33,16 @@ struct ContentView: View {
             } else if connectionStore.flat.isEmpty {
                 WelcomeView()
             } else if isOffline {
-                
+                NavigationStack {
+                    List {
+                        ConnectionManager()
+                    }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    Button("offline.disable") {
+                        isOffline = false
+                    }
+                }
             } else {
                 TabRouter(selection: $lastTabValue)
             }

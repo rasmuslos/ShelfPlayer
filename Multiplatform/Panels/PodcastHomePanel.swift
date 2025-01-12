@@ -9,7 +9,7 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct PodcastHomePanel: View {
+struct PodcastHomePanel: View {
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -97,14 +97,12 @@ internal struct PodcastHomePanel: View {
         }
         
         do {
-            /*
-            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await AudiobookshelfClient.shared.home(libraryID: library.id)
+            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library!.connectionID].home(for: library!.id)
             
             await MainActor.withAnimation {
                 self.episodes = home.1
                 self.podcasts = home.0
             }
-             */
         } catch {
             await MainActor.withAnimation {
                 failed = true

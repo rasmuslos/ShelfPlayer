@@ -16,7 +16,7 @@ extension SchemaV2 {
         #Unique<PersistedProgress>([\.id], [\._itemID])
         
         private(set) var id: String
-        private var _itemID: String
+        private(set) var _itemID: String
         
         var progress: Percentage
         

@@ -39,7 +39,7 @@ private struct Row: View {
                     .modify {
                         if #available(iOS 18, *) {
                             $0
-                                .matchedTransitionSource(id: zoomID, in: namespaceWrapper.namepace)
+                                .matchedTransitionSource(id: zoomID, in: namespaceWrapper())
                         } else { $0 }
                     }
                 
@@ -91,7 +91,7 @@ private struct Row: View {
 #Preview {
     NavigationStack {
         List {
-            EpisodeList(episodes: .init(repeating: [.fixture], count: 7), zoom: false)
+            EpisodeList(episodes: .init(repeating: .fixture, count: 7), zoom: false)
         }
         .listStyle(.plain)
     }

@@ -16,7 +16,7 @@ internal extension PodcastView {
         @Environment(PodcastViewModel.self) private var viewModel
         
         private var isLight: Bool? {
-            viewModel.dominantColor?.isLight()
+            viewModel.dominantColor?.isLight
         }
         private var isRegularPresentation: Bool {
             horizontalSizeClass == .regular

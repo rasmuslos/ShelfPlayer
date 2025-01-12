@@ -101,17 +101,14 @@ internal struct SeriesView: View {
         .refreshable {
             await viewModel.lazyLoader.refresh()
         }
-        .userActivity("io.rfk.shelfplayer.series") {
-            // $0.title = viewModel.series.id
-            $0.isEligibleForHandoff = true
-            $0.persistentIdentifier = viewModel.series.name
-            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.series)
-            $0.userInfo = [
-                // "libraryID": viewModel.series.libraryID,
-                // "seriesID": viewModel.series.id,
-                "seriesName": viewModel.series.name,
-            ]
-            // $0.webpageURL = viewModel.series.url
+        .userActivity("io.rfk.shelfplayer.series") { activity in
+            activity.title = viewModel.series.name
+            activity.isEligibleForHandoff = true
+            activity.persistentIdentifier = viewModel.series.id.description
+            
+            Task {
+                try await activity.webpageURL = viewModel.series.id.url
+            }
         }
     }
 }

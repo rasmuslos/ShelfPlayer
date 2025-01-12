@@ -114,7 +114,7 @@ internal struct AudiobookHGrid: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookVGrid(sections: .init(repeating: [.audiobook(audiobook: .fixture)], count: 7))
+            AudiobookVGrid(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7))
         }
         .padding(.horizontal, 20)
     }
@@ -123,7 +123,7 @@ internal struct AudiobookHGrid: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookHGrid(audiobooks: .init(repeating: [.fixture], count: 7), small: true)
+            AudiobookHGrid(audiobooks: .init(repeating: .fixture, count: 7), small: true)
         }
     }
 }

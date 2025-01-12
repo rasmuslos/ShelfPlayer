@@ -55,7 +55,9 @@ internal struct AudiobookLibraryPanel: View {
             // return AudiobookSection.filterSortGroup(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
         }
         
-        return Audiobook.filterSort(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+        // return Audiobook.filterSort(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+        
+        return audiobooks.map { .audiobook(audiobook: $0) }
     }
     
     var body: some View {

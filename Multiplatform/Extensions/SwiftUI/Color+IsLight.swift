@@ -9,11 +9,11 @@ import Foundation
 import SwiftUI
 
 internal extension Color {
-    var isLight: Bool {
-        isLight() ?? false
+    var isLight: Bool? {
+        isLight(threshold: 0.6)
     }
     
-    func isLight(threshold: Float = 0.6) -> Bool? {
+    func isLight(threshold: Float) -> Bool? {
         guard let originalCGColor = self.cgColor else {
             return nil
         }
@@ -21,6 +21,7 @@ internal extension Color {
         // Now we need to convert it to the RGB colorspace. UIColor.white / UIColor.black are greyscale and not RGB.
         // If you don't do this then you will crash when accessing components index 2 below when evaluating greyscale colors.
         let RGBCGColor = originalCGColor.converted(to: CGColorSpaceCreateDeviceRGB(), intent: .defaultIntent, options: nil)
+        
         guard let components = RGBCGColor?.components else {
             return nil
         }
@@ -29,6 +30,7 @@ internal extension Color {
         }
         
         let brightness = Float(((components[0] * 299) + (components[1] * 587) + (components[2] * 114)) / 1000)
+        
         return (brightness > threshold)
     }
 }

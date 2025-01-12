@@ -36,7 +36,7 @@ internal struct AuthorList: View {
 #Preview {
     NavigationStack {
         List {
-            AuthorList(authors: .init(repeating: [.fixture], count: 7))
+            AuthorList(authors: .init(repeating: .fixture, count: 7))
         }
         .listStyle(.plain)
     }

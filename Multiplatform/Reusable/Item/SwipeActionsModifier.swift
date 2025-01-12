@@ -51,7 +51,7 @@ internal struct SwipeActionsModifier: ViewModifier {
 #if DEBUG
 #Preview {
     List {
-        AudiobookList(sections: .init(repeating: [.audiobook(audiobook: .fixture)], count: 7))
+        AudiobookList(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7))
     }
 }
 #endif

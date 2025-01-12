@@ -55,7 +55,7 @@ struct LibraryFile: Codable {
     let metadata: MetadataPayload
     
     let fileType: String
-    let isSupplementary: Bool
+    let isSupplementary: Bool?
     
     struct MetadataPayload: Codable {
         public let ext: String

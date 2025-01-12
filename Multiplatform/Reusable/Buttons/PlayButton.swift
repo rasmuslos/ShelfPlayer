@@ -172,7 +172,7 @@ internal struct PlayButton: View {
             
             play()
         }
-        .foregroundColor(background.isLight ? .black : .white)
+        .foregroundColor((background.isLight ?? false) ? .black : .white)
         .animation(.smooth, value: color)
     }
     
@@ -275,7 +275,7 @@ internal struct LargePlayButtonStyle: PlayButtonStyle {
                     
                     GeometryReader { geometry in
                         Rectangle()
-                            .fill(configuration.background.isLight ? .white : .black)
+                            .fill((configuration.background.isLight ?? false) ? .white : .black)
                             .opacity(0.2)
                             .frame(width: geometry.size.width * configuration.progress)
                             .animation(.smooth, value: configuration.progress)
@@ -304,12 +304,12 @@ internal struct MediumPlayButtonStyle: PlayButtonStyle {
             .bold()
             .font(.footnote)
             .frame(maxWidth: 280)
-            .background(configuration.background.isLight ? .white : .black)
+            .background((configuration.background.isLight ?? false) ? .white : .black)
     }
     
     func makeLabel(configuration: Configuration) -> some View {
         configuration.content
-            .foregroundStyle(configuration.background.isLight ? .black : .white)
+            .foregroundStyle((configuration.background.isLight ?? false) ? .black : .white)
             .padding(.vertical, 16)
             .padding(.horizontal, 8)
             .frame(maxWidth: .infinity)

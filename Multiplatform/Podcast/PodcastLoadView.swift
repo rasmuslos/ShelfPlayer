@@ -40,7 +40,7 @@ internal struct PodcastLoadView: View {
         .modify {
             if #available(iOS 18, *), zoom {
                 $0
-                    .navigationTransition(.zoom(sourceID: "podcast_\(podcastID)", in: namespaceWrapper.namepace))
+                    .navigationTransition(.zoom(sourceID: "podcast_\(podcastID)", in: namespaceWrapper()))
             } else { $0 }
         }
     }

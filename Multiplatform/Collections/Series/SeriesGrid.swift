@@ -106,7 +106,7 @@ extension SeriesGrid {
 #Preview {
     NavigationStack {
         ScrollView {
-            SeriesGrid(series: .init(repeating: [.fixture], count: 7))
+            SeriesGrid(series: .init(repeating: .fixture, count: 7))
                 .padding(20)
         }
     }

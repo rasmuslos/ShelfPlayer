@@ -3986,6 +3986,7 @@
       }
     },
     "login.customHTTPHeaders" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4014,6 +4015,7 @@
       }
     },
     "login.customHTTPHeaders.add" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4042,6 +4044,7 @@
       }
     },
     "login.customHTTPHeaders.key" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4070,6 +4073,7 @@
       }
     },
     "login.customHTTPHeaders.remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4098,6 +4102,7 @@
       }
     },
     "login.customHTTPHeaders.save" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4126,6 +4131,7 @@
       }
     },
     "login.customHTTPHeaders.value" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6317,6 +6323,7 @@
       }
     },
     "search.libraries.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6339,6 +6346,7 @@
       }
     },
     "search.library.select" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6361,6 +6369,7 @@
       }
     },
     "search.library.select %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
