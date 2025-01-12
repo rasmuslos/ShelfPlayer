@@ -91,7 +91,7 @@ private struct EpisodeGridItem: View {
             .modify {
                 if #available(iOS 18, *) {
                     $0
-                        .matchedTransitionSource(id: zoomID, in: namespaceWrapper.namepace)
+                        .matchedTransitionSource(id: zoomID, in: namespaceWrapper())
                 } else { $0 }
             }
             .secondaryShadow(radius: 8, opacity: 0.4)
@@ -171,7 +171,7 @@ private struct Background: View {
     
     NavigationStack {
         ScrollView {
-            EpisodeFeaturedGrid(episodes: .init(repeating: [.fixture], count: 7))
+            EpisodeFeaturedGrid(episodes: .init(repeating: .fixture, count: 7))
         }
     }
     .environment(NamespaceWrapper(namespace))

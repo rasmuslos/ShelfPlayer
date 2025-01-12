@@ -11,8 +11,7 @@ import Defaults
 import RFNotifications
 import ShelfPlayerKit
 
-@available(iOS 18, *)
-internal struct TabRouter: View {
+struct TabRouter: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(ConnectionStore.self) private var connectionStore
     
@@ -47,7 +46,8 @@ internal struct TabRouter: View {
                     .safeAreaInset(edge: .bottom) {
                         VStack(spacing: 16) {
                             Button {
-                                
+                                automaticOfflineModeDeadline = nil
+                                RFNotification[.changeOfflineMode].send(true)
                             } label: {
                                 if let automaticOfflineModeDeadline {
                                     Text("library.change.automatic")

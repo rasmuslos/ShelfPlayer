@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-internal struct UnavailableWrapper<Content: View>: View {
-    @ViewBuilder let content: Content
+struct UnavailableWrapper<Content: View>: View {
+    @ViewBuilder let content: () -> Content
     
     var body: some View {
         ScrollView {
@@ -16,7 +16,7 @@ internal struct UnavailableWrapper<Content: View>: View {
                 Spacer()
                     .containerRelativeFrame([.horizontal, .vertical])
                 
-                content
+                content()
             }
         }
     }

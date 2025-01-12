@@ -125,7 +125,11 @@ private struct Row<Content: View>: View {
             return .black
         }
         
-        return color.isLight ? .black : .white
+        if let isLight = color.isLight {
+            return isLight ? .black : .white
+        }
+        
+        return colorScheme == .dark ? .white : .black
     }
     
     var body: some View {

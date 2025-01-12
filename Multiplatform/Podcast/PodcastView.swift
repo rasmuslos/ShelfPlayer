@@ -53,7 +53,7 @@ struct PodcastView: View {
         .modify {
             if #available(iOS 18, *), zoom {
                 $0
-                    .navigationTransition(.zoom(sourceID: "podcast_\(viewModel.podcast.id)", in: namespaceWrapper.namepace))
+                    .navigationTransition(.zoom(sourceID: "podcast_\(viewModel.podcast.id)", in: namespaceWrapper()))
             } else { $0 }
         }
         .modifier(ToolbarModifier())
@@ -109,7 +109,7 @@ struct PodcastView: View {
     @Previewable @Namespace var namespace
     
     NavigationStack {
-        PodcastView(Podcast.fixture, episodes: .init(repeating: [.fixture], count: 7), zoom: true)
+        PodcastView(Podcast.fixture, episodes: .init(repeating: .fixture, count: 7), zoom: true)
     }
     .environment(NamespaceWrapper(namespace))
 }

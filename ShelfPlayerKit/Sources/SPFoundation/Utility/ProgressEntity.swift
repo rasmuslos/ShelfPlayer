@@ -41,7 +41,7 @@ public struct ProgressEntity: Sendable {
     }
     
     @MainActor
-    var updating: UpdatingProgressEntity {
+    public var updating: UpdatingProgressEntity {
         .init(id: id,
               itemID: itemID,
               progress: progress,

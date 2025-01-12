@@ -11,8 +11,8 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct AudiobookHomePanel: View {
-    @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.library) private var library
     
     @Default(.showAuthorsRow) private var showAuthorsRow
     
@@ -53,7 +53,6 @@ internal struct AudiobookHomePanel: View {
                 }
             } else {
                 ScrollView {
-                    /*
                     LazyVStack(spacing: 12) {
                         ForEach(audiobooks) {
                             AudiobookRow(title: $0.localizedLabel, small: false, audiobooks: $0.entities)
@@ -69,21 +68,22 @@ internal struct AudiobookHomePanel: View {
                             }
                         }
                         
-                        if !downloaded.isEmpty {
-                            AudiobookRow(title: String(localized: "downloads"), small: false, audiobooks: downloaded)
-                        }
+                        /*
+                         if !downloaded.isEmpty {
+                         AudiobookRow(title: String(localized: "downloads"), small: false, audiobooks: downloaded)
+                         }
+                         */
                     }
-                     */
                 }
                 .refreshable {
                     await fetchItems()
                 }
                 /*
-                .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
-                    Task {
-                        await fetchItems()
-                    }
-                }
+                 .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
+                 Task {
+                 await fetchItems()
+                 }
+                 }
                  */
             }
         }
@@ -103,29 +103,29 @@ internal struct AudiobookHomePanel: View {
             failed = false
         }
         
-        Task {
-            let libraryID = await library!.id
-            /*
-            let downloaded = try OfflineManager.shared.audiobooks().filter { $0.libraryID == libraryID }
-            
-            await MainActor.withAnimation {
-                self.downloaded = downloaded
-            }
-             */
-        }
-        Task {
-            do {
+        await withTaskGroup(of: Void.self) {
+            $0.addTask {
+                let libraryID = await library!.id
                 /*
-                let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await AudiobookshelfClient.shared.home(libraryID: library.id)
-                
-                await MainActor.withAnimation {
-                    _authors = home.1
-                    _audiobooks = home.0
-                }
+                 let downloaded = try OfflineManager.shared.audiobooks().filter { $0.libraryID == libraryID }
+                 
+                 await MainActor.withAnimation {
+                 self.downloaded = downloaded
+                 }
                  */
-            } catch {
-                await MainActor.withAnimation {
-                    failed = false
+            }
+            $0.addTask {
+                do {
+                    let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await ABSClient[library!.connectionID].home(for: library!.id)
+                    
+                    await MainActor.withAnimation {
+                        _authors = home.1
+                        _audiobooks = home.0
+                    }
+                } catch {
+                    await MainActor.withAnimation {
+                        failed = true
+                    }
                 }
             }
         }

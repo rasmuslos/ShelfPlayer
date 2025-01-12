@@ -148,10 +148,6 @@ internal struct AccountSheet: View {
                 
                 Section {
                     TintPicker()
-                    
-                    NavigationLink(destination: CustomHeaderEditView()) {
-                        Label("login.customHTTPHeaders", systemImage: "network.badge.shield.half.filled")
-                    }
                 }
                 .foregroundStyle(.primary)
                 

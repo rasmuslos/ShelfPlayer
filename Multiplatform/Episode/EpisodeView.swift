@@ -38,7 +38,7 @@ struct EpisodeView: View {
         .ignoresSafeArea(edges: .top)
         .modify {
             if #available(iOS 18, *), let zoomID {
-                $0.navigationTransition(.zoom(sourceID: zoomID, in: namespaceWrapper.namepace))
+                $0.navigationTransition(.zoom(sourceID: zoomID, in: namespaceWrapper()))
             } else { $0 }
         }
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)

@@ -12,9 +12,7 @@ import ShelfPlayerKit
 
 @Observable
 internal final class LazyLoadHelper<T: Item, O: Sendable>: Sendable {
-    private static var PAGE_SIZE: Int {
-        100
-    }
+    private static var PAGE_SIZE: Int { 100 }
     
     @MainActor private(set) internal var items: [T]
     @MainActor private(set) internal var count: Int
@@ -28,10 +26,10 @@ internal final class LazyLoadHelper<T: Item, O: Sendable>: Sendable {
     
     @MainActor internal var library: Library!
     
-    private let loadMore: @Sendable (_ : Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)
+    private let loadMore: @Sendable (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ library: Library) async throws -> ([T], Int)
     
     @MainActor
-    init(sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_: Int, _ : O, _ : Bool, _ : String) async throws -> ([T], Int)) {
+    init(sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ library: Library) async throws -> ([T], Int)) {
         self.sortOrder = sortOrder
         self.ascending = ascending
         
@@ -85,7 +83,7 @@ internal final class LazyLoadHelper<T: Item, O: Sendable>: Sendable {
             let page = itemCount / Self.PAGE_SIZE
             
             do {
-                let (received, totalCount) = try await loadMore(page, sortOrder, ascending, library.id)
+                let (received, totalCount) = try await loadMore(page, sortOrder, ascending, library)
                 
                 await MainActor.withAnimation { [self] in
                     items += received
@@ -127,10 +125,9 @@ internal extension LazyLoadHelper {
     }
     
     @MainActor
-    static var series: LazyLoadHelper<Series, Never?> {
-        .init(sortOrder: nil, ascending: false, loadMore: { _, _, _, _ in
-            // try await AudiobookshelfClient.shared.series(libraryID: $3, limit: PAGE_SIZE, page: $0)
-            ([], 0)
+    static var series: LazyLoadHelper<Series, SeriesSortOrder> {
+        .init(sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: {
+            try await ABSClient[$3.connectionID].series(in: $3.id, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
         })
     }
     

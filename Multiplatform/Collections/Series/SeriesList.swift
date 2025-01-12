@@ -96,7 +96,7 @@ internal extension SeriesList {
 #Preview {
     NavigationStack {
         List {
-            SeriesList(series: .init(repeating: [.fixture], count: 7))
+            SeriesList(series: .init(repeating: .fixture, count: 7))
         }
         .listStyle(.plain)
     }

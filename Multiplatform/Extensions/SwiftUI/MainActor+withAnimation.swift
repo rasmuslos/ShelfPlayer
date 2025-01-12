@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-internal extension MainActor {
+extension MainActor {
     static func withAnimation<T: Sendable>(_ animation: Animation? = nil, _ body: @MainActor () -> T) async {
         let _ = await MainActor.run {
             SwiftUI.withAnimation(animation) {

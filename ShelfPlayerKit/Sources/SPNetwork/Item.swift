@@ -24,7 +24,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
         
         if let libraryFiles = payload.libraryFiles {
             for libraryFile in libraryFiles {
-                guard libraryFile.metadata.ext == ".pdf" && libraryFile.isSupplementary else {
+                guard libraryFile.metadata.ext == ".pdf" && (libraryFile.isSupplementary ?? true) else {
                     continue
                 }
                 

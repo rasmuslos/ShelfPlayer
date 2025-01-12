@@ -9,7 +9,7 @@ import Foundation
 import Defaults
 import ShelfPlayerKit
 
-internal extension HomeRow {
+extension HomeRow {
     var localizedLabel: String {
         switch id {
         case "continue-listening":
@@ -37,6 +37,7 @@ internal extension HomeRow {
         }
     }
     
+    // TODO: Hide from continue listening
     static func prepareForPresentation<S>(_ rows: [HomeRow<S>]) -> [HomeRow<S>] {
         let disableDiscoverRow = Defaults[.disableDiscoverRow]
         // let hideFromContinueListening = Defaults[.hideFromContinueListening]

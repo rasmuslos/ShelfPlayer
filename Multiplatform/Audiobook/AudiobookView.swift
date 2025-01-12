@@ -8,9 +8,9 @@
 import SwiftUI
 import ShelfPlayerKit
 
-internal struct AudiobookView: View {
-    @Environment(\.library) private var library
+struct AudiobookView: View {
     @Environment(\.defaultMinListRowHeight) private var minimumHeight
+    @Environment(\.library) private var library
     
     @State private var viewModel: AudiobookViewModel
     
@@ -85,16 +85,14 @@ internal struct AudiobookView: View {
         .refreshable {
             await viewModel.load()
         }
-        .userActivity("io.rfk.shelfplayer.audiobook") {
-            $0.title = viewModel.audiobook.name
-            $0.isEligibleForHandoff = true
-            // $0.persistentIdentifier = viewModel.audiobook.id
-            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.audiobook)
-            $0.userInfo = [
-                // "libraryID": viewModel.audiobook.libraryID,
-                "audiobookID": viewModel.audiobook.id,
-            ]
-            // $0.webpageURL = viewModel.audiobook.url
+        .userActivity("io.rfk.shelfPlayer.item") { activity in
+            activity.title = viewModel.audiobook.name
+            activity.isEligibleForHandoff = true
+            activity.persistentIdentifier = viewModel.audiobook.id.description
+            
+            Task {
+                try await activity.webpageURL = viewModel.audiobook.id.url
+            }
         }
     }
 }
