@@ -23,13 +23,14 @@ internal final class AudiobookViewModel: Sendable {
     var sessionsVisible: Bool
     
     var chapters: [Chapter]
+    var supplementaryPDFs: [PlayableItem.SupplementaryPDF]
     
     private(set) var sameAuthor: [Author: [Audiobook]]
     private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
     private(set) var sameNarrator: [String: [Audiobook]]
     
     private(set) var progressEntity: ProgressEntity.UpdatingProgressEntity?
-    private(set) var offlineTracker: DownloadTracker?
+    private(set) var downloadTracker: DownloadTracker?
     
     private(set) var sessions: [SessionPayload]
     private(set) var errorNotify: Bool
@@ -45,32 +46,36 @@ internal final class AudiobookViewModel: Sendable {
         sessionsVisible = false
         
         chapters = []
+        supplementaryPDFs = []
         
         sameAuthor = [:]
         sameSeries = [:]
         sameNarrator = [:]
         
-        // progressEntity = OfflineManager.shared.progressEntity(item: audiobook)
-        // offlineTracker = .init(audiobook)
-        
         sessions = []
         errorNotify = false
+        
+        Task {
+            progressEntity = await PersistenceManager.shared.progress[audiobook.id].updating
+        }
     }
 }
 
-internal extension AudiobookViewModel {
-    func load() async {
-        await withTaskGroup(of: Void.self) {
-            $0.addTask { await self.loadAudiobook() }
-            
-            $0.addTask { await self.loadAuthors() }
-            $0.addTask { await self.loadSeries() }
-            $0.addTask { await self.loadNarrators() }
-            
-            $0.addTask { await self.loadSessions() }
-            $0.addTask { await self.extractColor() }
-            
-            await $0.waitForAll()
+extension AudiobookViewModel {
+    nonisolated func load() {
+        Task {
+            await withTaskGroup(of: Void.self) {
+                $0.addTask { await self.loadAudiobook() }
+                
+                $0.addTask { await self.loadAuthors() }
+                $0.addTask { await self.loadSeries() }
+                $0.addTask { await self.loadNarrators() }
+                
+                $0.addTask { await self.loadSessions() }
+                $0.addTask { await self.extractColor() }
+                
+                await $0.waitForAll()
+            }
         }
     }
     
@@ -101,16 +106,15 @@ internal extension AudiobookViewModel {
 
 private extension AudiobookViewModel {
     func loadAudiobook() async {
-        /*
-        guard let (item, _, chapters) = try? await AudiobookshelfClient.shared.item(itemId: audiobook.id, episodeId: nil) else {
+        guard let (item, _, chapters, supplementaryPDFs) = try? await ABSClient[audiobook.id.connectionID].playableItem(itemID: audiobook.id) else {
             return
         }
         
         await MainActor.withAnimation {
             self.audiobook = item as! Audiobook
             self.chapters = chapters
+            self.supplementaryPDFs = supplementaryPDFs
         }
-         */
     }
     
     func loadAuthors() async {

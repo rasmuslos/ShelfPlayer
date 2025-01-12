@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-internal struct SecondaryShadow: ViewModifier {
+struct SecondaryShadow: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
     
     let radius: CGFloat
@@ -20,7 +20,7 @@ internal struct SecondaryShadow: ViewModifier {
     }
 }
 
-internal extension View {
+extension View {
     @ViewBuilder
     func secondaryShadow(radius: CGFloat = 12, opacity: Double = 0.3) -> some View {
         modifier(SecondaryShadow(radius: radius, opacity: opacity))

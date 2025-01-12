@@ -58,6 +58,9 @@ internal extension Defaults.Keys {
     static let authorsAscending = Key("authorsAscending", default: true)
     static let podcastsAscending = Key("podcastsAscending", default: true)
     
+    static let seriesSortOrder = Key<SeriesSortOrder>("seriesSortOrder", default: .sortName)
+    static let seriesAscending = Key<Bool>("seriesAscending", default: true)
+    
     // MARK: Intents
     
     static let lastSpotlightIndex = Key<Date?>("lastSpotlightIndex", default: nil)

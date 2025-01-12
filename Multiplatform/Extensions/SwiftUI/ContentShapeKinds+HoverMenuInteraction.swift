@@ -7,6 +7,6 @@
 
 import SwiftUI
 
-internal extension ContentShapeKinds {
+extension ContentShapeKinds {
     static let hoverMenuInteraction: Self = [.contextMenuPreview, .hoverEffect, .interaction]
 }

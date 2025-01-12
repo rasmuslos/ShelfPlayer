@@ -8,7 +8,7 @@
 import SwiftUI
 import Defaults
 
-internal struct TintPicker: View {
+struct TintPicker: View {
     @Default(.tintColor) private var tintColor
     
     var body: some View {
@@ -17,7 +17,7 @@ internal struct TintPicker: View {
             
             Divider()
             
-            ForEach(TintColor.allCases.filter { $0 != .shelfPlayer }, id: \.hashValue) {
+            ForEach(TintColor.allCases.filter { $0 != .shelfPlayer }) {
                 Row(tint: $0)
             }
         } label: {
@@ -42,10 +42,8 @@ internal struct TintPicker: View {
             .tag(tint)
         }
     }
-}
-
-internal extension TintPicker {
-    enum TintColor: CaseIterable, Codable, _DefaultsSerializable {
+    
+    enum TintColor: Identifiable, Codable, _DefaultsSerializable, CaseIterable {
         case shelfPlayer
         
         case yellow
@@ -57,12 +55,11 @@ internal extension TintPicker {
         case mint
         case green
         case black
-    }
-}
-
-internal extension TintPicker.TintColor {
-    var title: LocalizedStringKey {
-        switch self {
+        
+        var id: Self { self }
+        
+        var title: LocalizedStringKey {
+            switch self {
             case .shelfPlayer:
                 "account.tint.shelfPlayer"
             case .yellow:
@@ -83,11 +80,11 @@ internal extension TintPicker.TintColor {
                 "account.tint.mint"
             case .black:
                 "account.tint.black"
+            }
         }
-    }
-    
-    var color: Color {
-        switch self {
+        
+        var color: Color {
+            switch self {
             case .shelfPlayer:
                     .accent
             case .yellow:
@@ -108,11 +105,11 @@ internal extension TintPicker.TintColor {
                     .mint
             case .black:
                     .black
+            }
         }
-    }
-    
-    var accent: Color {
-        switch self {
+        
+        var accent: Color {
+            switch self {
             case .shelfPlayer:
                     .orange
             case .yellow:
@@ -133,6 +130,7 @@ internal extension TintPicker.TintColor {
                     .blue
             case .black:
                     .gray
+            }
         }
     }
 }

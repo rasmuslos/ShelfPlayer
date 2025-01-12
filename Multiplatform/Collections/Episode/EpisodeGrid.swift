@@ -40,7 +40,7 @@ internal struct EpisodeGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: [GridItem(.flexible(), spacing: 8)].repeated(count: amount), spacing: 0) {
+                LazyHGrid(rows: .init(repeating: GridItem(.flexible(), spacing: 8), count: amount), spacing: 0) {
                     EpisodeList(episodes: episodes, zoom: true)
                         .padding(.leading, gap)
                         .frame(width: size)
@@ -57,7 +57,7 @@ internal struct EpisodeGrid: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        EpisodeGrid(episodes: .init(repeating: [.fixture], count: 7))
+        EpisodeGrid(episodes: .init(repeating: .fixture, count: 7))
     }
 }
 #endif

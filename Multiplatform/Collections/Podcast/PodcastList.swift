@@ -77,7 +77,7 @@ private struct PodcastRow: View {
     
     NavigationStack {
         List {
-            PodcastList(podcasts: .init(repeating: [.fixture], count: 7))
+            PodcastList(podcasts: .init(repeating: .fixture, count: 7))
         }
         .listStyle(.plain)
         .environment(NamespaceWrapper(namespace))

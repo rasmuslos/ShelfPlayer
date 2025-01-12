@@ -24,6 +24,7 @@ struct SearchLibraryPicker: ViewModifier {
                 libraries = []
                 self.search = search
             }
+        /*
             .sheet(item: $search) { search in
                 NavigationStack {
                     List {
@@ -48,6 +49,7 @@ struct SearchLibraryPicker: ViewModifier {
                     .task(fetchLibraries)
                 }
             }
+         */
     }
     
     @Sendable

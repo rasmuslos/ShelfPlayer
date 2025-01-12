@@ -120,7 +120,7 @@ private struct PodcastGridItem: View {
             .modify {
                 if #available(iOS 18, *) {
                     $0
-                        .matchedTransitionSource(id: "podcast_\(podcast.id)", in: namespaceWrapper.namepace)
+                        .matchedTransitionSource(id: "podcast_\(podcast.id)", in: namespaceWrapper())
                 } else { $0 }
             }
         }
@@ -134,7 +134,7 @@ private struct PodcastGridItem: View {
     
     NavigationStack {
         ScrollView {
-            PodcastVGrid(podcasts: .init(repeating: [.fixture], count: 7))
+            PodcastVGrid(podcasts: .init(repeating: .fixture, count: 7))
                 .padding(.horizontal, 20)
         }
     }
@@ -144,7 +144,7 @@ private struct PodcastGridItem: View {
 #Preview {
     @Previewable @Namespace var namespace
     NavigationStack {
-        PodcastHGrid(podcasts: .init(repeating: [.fixture], count: 7))
+        PodcastHGrid(podcasts: .init(repeating: .fixture, count: 7))
     }
     .environment(NamespaceWrapper(namespace))
 }

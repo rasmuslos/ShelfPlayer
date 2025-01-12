@@ -69,7 +69,7 @@ private struct EpisodeRow: View {
 #Preview {
     NavigationStack {
         List {
-            EpisodeSingleList(episodes: .init(repeating: [.fixture], count: 7))
+            EpisodeSingleList(episodes: .init(repeating: .fixture, count: 7))
         }
         .listStyle(.plain)
     }

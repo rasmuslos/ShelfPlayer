@@ -93,7 +93,9 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         guard status != errSecItemNotFound else {
             logger.info("No connections found in keychain")
+            
             connections.removeAll()
+            RFNotification[.connectionsChanged].send(connections)
             
             return
         }

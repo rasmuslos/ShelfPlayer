@@ -70,7 +70,7 @@ struct AuthorGrid: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        AuthorGrid(authors: .init(repeating: [.fixture], count: 7))
+        AuthorGrid(authors: .init(repeating: .fixture, count: 7))
     }
 }
 #endif

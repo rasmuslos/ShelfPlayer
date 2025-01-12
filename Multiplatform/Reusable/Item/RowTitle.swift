@@ -71,6 +71,6 @@ internal struct AudiobookRow: View {
 }
 
 #Preview {
-    AudiobookRow(title: "Title", small: true, audiobooks: .init(repeating: [.fixture], count: 7))
+    AudiobookRow(title: "Title", small: true, audiobooks: .init(repeating: .fixture, count: 7))
 }
 #endif

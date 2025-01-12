@@ -64,7 +64,8 @@ internal extension AuthorViewModel {
             // return AudiobookSection.filterSortGroup(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
         }
         
-        return Audiobook.filterSort(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+        // return Audiobook.filterSort(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
+        return []
     }
     
     @MainActor

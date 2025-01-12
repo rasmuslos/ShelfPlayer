@@ -31,7 +31,7 @@ struct PodcastEpisodesView: View {
 
 #if DEBUG
 #Preview {
-    @Previewable @State var viewModel: PodcastViewModel = .init(podcast: .fixture, episodes: .init(repeating: [.fixture], count: 7))
+    @Previewable @State var viewModel: PodcastViewModel = .init(podcast: .fixture, episodes: .init(repeating: .fixture, count: 7))
     
     NavigationStack {
         PodcastEpisodesView(viewModel: $viewModel)

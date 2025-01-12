@@ -168,7 +168,7 @@ private struct Row: View {
 #Preview {
     NavigationStack {
         List {
-            AudiobookList(sections: .init(repeating: [.audiobook(audiobook: .fixture)], count: 7))
+            AudiobookList(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7))
         }
         .listStyle(.plain)
     }

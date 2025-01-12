@@ -9,8 +9,9 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct AudiobookSeriesPanel: View {
+struct AudiobookSeriesPanel: View {
     @Environment(\.library) private var library
+    
     @Default(.seriesDisplayType) private var seriesDisplayType
     
     @State private var lazyLoader = LazyLoadHelper<Series, Void>.series

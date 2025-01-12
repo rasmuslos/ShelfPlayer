@@ -10,24 +10,28 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal extension EnvironmentValues {
+extension EnvironmentValues {
     @Entry var libraries = [Library]()
     @Entry var displayContext: DisplayContext = .unknown
     
     @Entry var namespace: NamespaceWrapper!
 }
 
-internal enum DisplayContext {
+enum DisplayContext {
     case unknown
     case author(author: Author)
     case series(series: Series)
 }
 
-@Observable
+@Observable @MainActor
 final class NamespaceWrapper {
-    var namepace: Namespace.ID
+    var namespace: Namespace.ID
     
-    init(_ namepace: Namespace.ID) {
-        self.namepace = namepace
+    init(_ namespace: Namespace.ID) {
+        self.namespace = namespace
+    }
+    
+    func callAsFunction() -> Namespace.ID {
+        namespace
     }
 }
