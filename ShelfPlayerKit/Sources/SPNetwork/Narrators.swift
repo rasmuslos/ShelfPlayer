@@ -15,6 +15,6 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             URLQueryItem(name: "page", value: String(describing: page)),
             URLQueryItem(name: "limit", value: String(describing: limit)),
             URLQueryItem(name: "filter", value: "narrators.\(Data(narratorName.utf8).base64EncodedString())"),
-        ])).results.compactMap { Audiobook(payload: $0, connectionID: connectionID) }
+        ])).results.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }
     }
 }

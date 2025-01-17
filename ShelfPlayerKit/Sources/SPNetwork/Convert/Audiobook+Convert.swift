@@ -9,7 +9,7 @@ import Foundation
 import SPFoundation
 
 extension Audiobook {
-    convenience init?(payload: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init?(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
         guard let media = payload.media else {
             return nil
         }
@@ -24,11 +24,18 @@ extension Audiobook {
         if let series = payload.media?.metadata.series, !series.isEmpty {
             resolvedSeries += series.map {
                 let name = $0.name!
+                let id: ItemIdentifier?
+                
+                if let seriesID = $0.id {
+                    id = .init(primaryID: seriesID, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: .series)
+                } else {
+                    id = nil
+                }
                 
                 if let seq = $0.sequence, let sequence = Float(seq) {
-                    return Audiobook.SeriesFragment(id: $0.id, name: name, sequence: sequence)
+                    return Audiobook.SeriesFragment(id: id, name: name, sequence: sequence)
                 } else {
-                    return Audiobook.SeriesFragment(id: $0.id, name: name, sequence: nil)
+                    return Audiobook.SeriesFragment(id: id, name: name, sequence: nil)
                 }
             }
         }

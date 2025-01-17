@@ -22,7 +22,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             }
             
             if row.type == "book" {
-                audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, connectionID: connectionID) }))
+                audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }))
             } else if row.type == "authors" {
                 authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Author(payload: $0, connectionID: connectionID) }))
             }
@@ -46,6 +46,6 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         }
         
         let result = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
-        return (result.results.compactMap { AudiobookSection.parse(payload: $0, connectionID: connectionID) }, result.total)
+        return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
 }

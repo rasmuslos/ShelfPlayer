@@ -9,20 +9,20 @@ import Foundation
 import SPFoundation
 
 internal extension Series {
-    convenience init(payload: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
         self.init(
-            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId!, connectionID: connectionID, type: .series),
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: .series),
             name: payload.name!,
             authors: [],
             description: payload.description,
             addedAt: Date(timeIntervalSince1970: (payload.addedAt ?? 0) / 1000))
     }
     
-    convenience init(item: ItemPayload, audiobooks: [ItemPayload], connectionID: ItemIdentifier.ConnectionID) {
+    convenience init(item: ItemPayload, audiobooks: [ItemPayload], libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
         var item = item
         item.books = audiobooks
         
-        self.init(payload: item, connectionID: connectionID)
+        self.init(payload: item, libraryID: libraryID, connectionID: connectionID)
     }
 }
 

@@ -21,8 +21,8 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         ]))
         
         let author = Author(payload: response, connectionID: connectionID)
-        let audiobooks = (response.libraryItems ?? []).compactMap { Audiobook(payload: $0, connectionID: connectionID) }
-        let series = (response.series ?? []).map{ Series(payload: $0, connectionID: connectionID) }
+        let audiobooks = (response.libraryItems ?? []).compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }
+        let series = (response.series ?? []).map { Series(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }
         
         return (author, audiobooks, series)
     }
@@ -31,14 +31,18 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: .get)).authors.map { Author(payload: $0, connectionID: connectionID) }
     }
     
-    func authorID(from libraryID: String, name: String) async throws -> String {
+    func authorID(from libraryID: String, name: String) async throws -> ItemIdentifier {
         let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "1"),
         ]))
         
         if let id = response.authors?.first?.id {
-            return id
+            return .init(primaryID: id,
+                         groupingID: nil,
+                         libraryID: libraryID,
+                         connectionID: connectionID,
+                         type: .author)
         }
         
         throw APIClientError.missing

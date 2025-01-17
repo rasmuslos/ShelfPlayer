@@ -51,7 +51,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
             return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init), supplementaryPDFs)
         }
         
-        guard let audiobook = Audiobook(payload: payload, connectionID: itemID.connectionID),
+        guard let audiobook = Audiobook(payload: payload, libraryID: itemID.libraryID, connectionID: itemID.connectionID),
               let tracks = payload.media?.tracks,
               let chapters = payload.media?.chapters else {
             throw APIClientError.invalidResponse
@@ -66,10 +66,10 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
         ]))
         
         return (
-            payload.book?.compactMap { Audiobook(payload: $0.libraryItem, connectionID: library.connectionID) } ?? [],
+            payload.book?.compactMap { Audiobook(payload: $0.libraryItem, libraryID: library.id, connectionID: library.connectionID) } ?? [],
             payload.podcast?.map { Podcast(payload: $0.libraryItem, connectionID: connectionID) } ?? [],
             payload.authors?.map { Author(payload: $0, connectionID: library.connectionID) } ?? [],
-            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, connectionID: library.connectionID) } ?? []
+            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, libraryID: library.id, connectionID: library.connectionID) } ?? []
         )
     }
 }
