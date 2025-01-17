@@ -15,7 +15,7 @@ internal struct AuthorList: View {
         ForEach(authors) { author in
             NavigationLink(destination: AuthorView(author)) {
                 HStack(spacing: 12) {
-                    ItemImage(cover: author.cover, cornerRadius: .infinity)
+                    ItemImage(item: author, cornerRadius: .infinity)
                         .frame(width: 60)
                     
                     VStack(alignment: .leading, spacing: 2) {

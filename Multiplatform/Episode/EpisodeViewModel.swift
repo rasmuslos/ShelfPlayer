@@ -78,7 +78,7 @@ internal extension EpisodeViewModel {
 
 private extension EpisodeViewModel {
     func extractDominantColor() async {
-        guard let image = await episode.cover?.platformImage else {
+        guard let image = await episode.id.platformCover else {
             return
         }
         

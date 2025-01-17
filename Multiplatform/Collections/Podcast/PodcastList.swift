@@ -48,7 +48,7 @@ private struct PodcastRow: View {
     var body: some View {
         NavigationLink(destination: PodcastView(podcast, zoom: false)) {
             HStack(spacing: 0) {
-                ItemImage(cover: podcast.cover)
+                ItemImage(item: podcast)
                     .frame(width: 60)
                 
                 VStack(alignment: .leading, spacing: 4) {

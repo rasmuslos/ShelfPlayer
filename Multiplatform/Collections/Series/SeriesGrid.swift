@@ -36,14 +36,14 @@ internal struct SeriesGrid: View {
 extension SeriesGrid {
     struct SeriesGridItem: View {
         let name: String?
-        let covers: [Cover]
+        let covers: [URL]
         
         init(series: Series) {
             self.name = series.name
-            self.covers = series.covers
+            self.covers = [] // series.covers
         }
         
-        init(name: String?, covers: [Cover]) {
+        init(name: String?, covers: [URL]) {
             self.name = name
             self.covers = covers
         }
@@ -56,9 +56,9 @@ extension SeriesGrid {
             VStack(spacing: 4) {
                 Group {
                     if covers.isEmpty {
-                        ItemImage(cover: nil)
+                        ItemImage(item: nil)
                     } else if covers.count == 1 {
-                        ItemImage(cover: covers.first)
+                        // RequestImage(request: <#T##ImageRequest?#>)
                     } else if covers.count < 4 {
                         GeometryReader { proxy in
                             let width = proxy.size.width / 1.6
@@ -69,9 +69,11 @@ extension SeriesGrid {
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 
                                 Group {
+                                    /*
                                     ItemImage(cover: covers[0])
                                     ItemImage(cover: covers[1])
                                         .offset(x: proxy.size.width - width, y: (proxy.size.height - width) * (flipped ? -1 : 1))
+                                     */
                                 }
                                 .frame(width: width)
                             }
@@ -79,6 +81,7 @@ extension SeriesGrid {
                         .aspectRatio(1, contentMode: .fill)
                     } else {
                         VStack(spacing: 8) {
+                            /*
                             HStack(spacing: 8) {
                                 ItemImage(cover: covers[0])
                                 ItemImage(cover: covers[1])
@@ -87,6 +90,7 @@ extension SeriesGrid {
                                 ItemImage(cover: covers[2])
                                 ItemImage(cover: covers[3])
                             }
+                             */
                         }
                     }
                 }

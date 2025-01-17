@@ -10,59 +10,22 @@ import NukeUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct ItemImage: View {
-    @Environment(\.library) private var library
+struct RequestImage: View {
     @Default(.forceAspectRatio) private var forceAspectRatio
     
-    let cover: Cover?
+    var request: ImageRequest?
     
-    var cornerRadius: CGFloat = 8
-    var aspectRatio = AspectRatioPolicy.square
-    var priority: ImageRequest.Priority = .normal
-    var contrastConfiguration: ContrastConfiguration? = .init()
+    let cornerRadius: CGFloat
+    let aspectRatio: AspectRatioPolicy
+    let priority: ImageRequest.Priority
+    let contrastConfiguration: ContrastConfiguration?
     
-    private var fallbackIcon: String {
-        switch library?.type {
-        case .audiobooks:
-            "book"
-        case .podcasts:
-            "play.square.stack.fill"
-        default:
-            "bookmark"
-        }
-    }
-    private var placeholder: some View {
-        ZStack {
-            Image(systemName: fallbackIcon)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 100)
-                .foregroundStyle(.gray.opacity(0.5))
-                .padding(20)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.gray.opacity(0.1))
-        .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: cornerRadius))
-    }
-    
-    private var request: ImageRequest? {
-        /*
-        guard let url = cover?.url else {
-            return nil
-        }
-        
-        var urlRequest = URLRequest(url: url)
-        
-        for header in AudiobookshelfClient.shared.customHTTPHeaders {
-            urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
-        }
-        
-        return .init(urlRequest: urlRequest, priority: priority)
-         */
-        
-        return nil
+    init(request: ImageRequest?, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, priority: ImageRequest.Priority = .normal, contrastConfiguration: ContrastConfiguration? = .init()) {
+        self.request = request
+        self.cornerRadius = cornerRadius
+        self.aspectRatio = aspectRatio
+        self.priority = priority
+        self.contrastConfiguration = contrastConfiguration
     }
     
     private var aspectRatioPolicy: AspectRatioPolicy {
@@ -84,7 +47,7 @@ internal struct ItemImage: View {
                             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                             .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     } else {
-                        placeholder
+                        Placeholder(cornerRadius: cornerRadius)
                     }
                 }
             } else {
@@ -109,7 +72,7 @@ internal struct ItemImage: View {
                                     }
                                 }
                             } else {
-                                placeholder
+                                Placeholder(cornerRadius: cornerRadius)
                             }
                         }
                     }
@@ -157,15 +120,70 @@ internal struct ItemImage: View {
     }
 }
 
+struct ItemImage: View {
+    let item: Item?
+    
+    var cornerRadius: CGFloat = 8
+    var aspectRatio: RequestImage.AspectRatioPolicy = .square
+    var priority: ImageRequest.Priority = .normal
+    var contrastConfiguration: RequestImage.ContrastConfiguration? = .init()
+    
+    @State private var request: ImageRequest?
+    
+    var body: some View {
+        if let request {
+            RequestImage(request: request, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority, contrastConfiguration: contrastConfiguration)
+        } else {
+            Placeholder(cornerRadius: cornerRadius)
+                .task {
+                    request = await item?.id.coverRequest
+                }
+        }
+    }
+}
+
+private struct Placeholder: View {
+    @Environment(\.library) private var library
+    
+    let cornerRadius: CGFloat
+    
+    private var fallbackIcon: String {
+        switch library?.type {
+        case .audiobooks:
+            "book"
+        case .podcasts:
+            "play.square.stack.fill"
+        default:
+            "bookmark"
+        }
+    }
+    
+    var body: some View {
+        ZStack {
+            Image(systemName: fallbackIcon)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: 100)
+                .foregroundStyle(.gray.opacity(0.5))
+                .padding(20)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.gray.opacity(0.1))
+        .aspectRatio(1, contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: cornerRadius))
+    }
+}
+
 private struct ContrastModifier: ViewModifier {
     @Environment(\.library) private var library
     
     let cornerRadius: CGFloat
-    let configuration: ItemImage.ContrastConfiguration?
+    let configuration: RequestImage.ContrastConfiguration?
     
     func body(content: Content) -> some View {
         if let configuration {
-            switch library!.type {
+            switch library?.type {
             case .audiobooks:
                 content
                     .secondaryShadow(radius: configuration.shadowRadius, opacity: configuration.shadowOpacity)
@@ -186,9 +204,10 @@ private struct ContrastModifier: ViewModifier {
 
 #if DEBUG
 #Preview {
-    ItemImage(cover: Audiobook.fixture.cover)
+    RequestImage(request: .init(url: .init(string: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmacjeux.fr%2Fwp-content%2Fuploads%2F2021%2F02%2Fsynd1.jpg&f=1&nofb=1&ipt=a414ab5944af23112c3d36713648379879e8fce234a20df58727c714645a11c5&ipo=images")!), cornerRadius: 0, aspectRatio: .none, contrastConfiguration: nil)
 }
+
 #Preview {
-    ItemImage(cover: nil)
+    ItemImage(item: Audiobook.fixture)
 }
 #endif
