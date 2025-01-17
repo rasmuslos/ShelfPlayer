@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-internal extension AudiobookView {
+extension AudiobookView {
     struct Header: View {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(AudiobookViewModel.self) private var viewModel
@@ -77,6 +77,15 @@ private struct Title: View {
             }
         
             HStack(spacing: 2) {
+                if viewModel.audiobook.explicit {
+                    Label("explicit", systemImage: "e.square.fill")
+                        .labelStyle(.iconOnly)
+                }
+                if viewModel.audiobook.abridged {
+                    Label("abridged", systemImage: "a.square.fill")
+                        .labelStyle(.iconOnly)
+                }
+                
                 if !viewModel.audiobook.narrators.isEmpty {
                     Group {
                         Text("audiobook.narrator")
@@ -85,15 +94,6 @@ private struct Title: View {
                     .font(.caption)
                     .lineLimit(1)
                     .foregroundStyle(.secondary)
-                }
-                
-                if viewModel.audiobook.explicit {
-                    Label("explicit", systemImage: "e.square.fill")
-                        .labelStyle(.iconOnly)
-                }
-                if viewModel.audiobook.abridged {
-                    Label("abridged", systemImage: "a.square.fill")
-                        .labelStyle(.iconOnly)
                 }
                 
                 Group {
@@ -119,16 +119,16 @@ private struct SeriesName: View {
         if !viewModel.audiobook.series.isEmpty, let seriesName = viewModel.audiobook.seriesName {
             Group {
                 if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
-                    NavigationLink(destination: SeriesLoadView(series: series)) {
+                    // NavigationLink(destination: SeriesLoadView(series: series)) {
                         seriesNameComponent(seriesName)
-                    }
+                    // }
                     .buttonStyle(.plain)
                 } else {
                     Menu {
                         ForEach(viewModel.audiobook.series, id: \.name) { series in
-                            NavigationLink(destination: SeriesLoadView(series: series)) {
+                            // NavigationLink(destination: SeriesLoadView(series: series)) {
                                 seriesNameComponent(series.name)
-                            }
+                            // }
                         }
                     } label: {
                         seriesNameComponent(seriesName)

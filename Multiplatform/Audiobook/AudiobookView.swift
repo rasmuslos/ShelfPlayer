@@ -14,8 +14,8 @@ struct AudiobookView: View {
     
     @State private var viewModel: AudiobookViewModel
     
-    internal init(_ audiobook: Audiobook) {
-        _viewModel = .init(initialValue: .init(audiobook: audiobook))
+    init(_ audiobook: Audiobook) {
+        _viewModel = .init(initialValue: .init(audiobook))
     }
     
     private let divider: some View = Divider()
@@ -74,16 +74,16 @@ struct AudiobookView: View {
         }
         // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
-        .sensoryFeedback(.error, trigger: viewModel.errorNotify)
+        .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .environment(viewModel)
         .onAppear {
             viewModel.library = library
         }
         .task {
-            await viewModel.load()
+            viewModel.load()
         }
         .refreshable {
-            await viewModel.load()
+            viewModel.load()
         }
         .userActivity("io.rfk.shelfPlayer.item") { activity in
             activity.title = viewModel.audiobook.name

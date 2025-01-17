@@ -3344,6 +3344,7 @@
       }
     },
     "error.unavailable.audiobook" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3456,6 +3457,7 @@
       }
     },
     "error.unavailable.series" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3735,6 +3737,9 @@
           }
         }
       }
+    },
+    "finished.ago" : {
+
     },
     "forwards" : {
       "extractionState" : "stale",
@@ -5522,7 +5527,6 @@
       }
     },
     "progress.finished.set" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5551,7 +5555,6 @@
       }
     },
     "progress.finished.unset" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

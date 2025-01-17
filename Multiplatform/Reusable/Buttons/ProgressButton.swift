@@ -14,29 +14,70 @@ internal struct ProgressButton: View {
     let tint: Bool
     let callback: (() -> Void)?
     
-    @State private var progressEntity: ProgressEntity?
+    @State private var notifyError = false
+    @State private var notifySuccess = false
+    
+    @State private var isLoading = false
+    @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
     
     init(item: PlayableItem, tint: Bool = false, callback: (() -> Void)? = nil) {
         self.item = item
         self.tint = tint
         self.callback = callback
-        
-        // _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: item))
+    }
+    
+    @ViewBuilder
+    private var markAsFinishedButton: some View {
+        Button("progress.finished.set", systemImage: "checkmark") {
+            Task {
+                isLoading = true
+                
+                do {
+                    try await PersistenceManager.shared.progress.markAsCompleted(item.id)
+                    notifySuccess.toggle()
+                } catch {
+                    notifyError.toggle()
+                }
+                
+                isLoading = false
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var markAsUnfinishedButton: some View {
+        Button {
+        } label: {
+            Label("progress.finished.unset", systemImage: "minus")
+            
+            if let finishedAt = progressEntity?.finishedAt {
+                Text("finished.ago") + Text(finishedAt, style: .relative)
+            }
+        }
     }
     
     var body: some View {
-        Button {
-            Task {
-                // try await item.finished(!progressEntity.isFinished)
-                callback?()
+        Group {
+            if isLoading {
+                ProgressIndicator()
+            } else if let progressEntity {
+                if progressEntity.isFinished {
+                    markAsUnfinishedButton
+                } else {
+                    markAsFinishedButton
+                }
+            } else {
+                ProgressIndicator()
             }
-        } label: {
-            /*
-            Label(progressEntity.isFinished ? "progress.finished.unset" : "progress.finished.set", systemImage: progressEntity.isFinished ? "minus" : "checkmark")
-                .contentTransition(.symbolEffect)
-                .symbolVariant(tint ? .none : .circle)
-                .tint(tint ? progressEntity.isFinished ? .red : .green : nil)
-            */
+        }
+        .disabled(isLoading)
+        .contentTransition(.symbolEffect)
+        .symbolVariant(tint ? .none : .circle)
+        .tint(tint ? progressEntity?.isFinished == true ? .red : .green : nil)
+        .sensoryFeedback(.error, trigger: notifyError)
+        .sensoryFeedback(.success, trigger: notifySuccess)
+        .task {
+            progressEntity = await PersistenceManager.shared.progress[item.id].updating
         }
     }
 }

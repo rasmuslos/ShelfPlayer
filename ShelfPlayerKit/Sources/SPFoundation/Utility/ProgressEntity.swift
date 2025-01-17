@@ -15,14 +15,14 @@ public struct ProgressEntity: Sendable {
     
     public let progress: Percentage
     
-    public let duration: TimeInterval
+    public let duration: TimeInterval?
     public let currentTime: TimeInterval
     
     public let startedAt: Date?
     public let lastUpdate: Date
     public let finishedAt: Date?
     
-    public init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
+    public init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
         self.id = id
         self.itemID = itemID
         
@@ -54,21 +54,23 @@ public struct ProgressEntity: Sendable {
     
     @Observable @MainActor
     public final class UpdatingProgressEntity {
-        public let id: String
+        public var id: String
         public let itemID: ItemIdentifier
         
         public var progress: Percentage
         
-        public var duration: TimeInterval
+        public var duration: TimeInterval?
         public var currentTime: TimeInterval
         
         public var startedAt: Date?
         public var lastUpdate: Date
         public var finishedAt: Date?
         
+        public var isValid: Bool
+        
         @ObservationIgnored nonisolated(unsafe) var marker: RFNotification.Marker?
         
-        init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
+        init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
             self.id = id
             self.itemID = itemID
             
@@ -81,15 +83,32 @@ public struct ProgressEntity: Sendable {
             self.lastUpdate = lastUpdate
             self.finishedAt = finishedAt
             
+            isValid = true
+            
             marker = RFNotification[.progressEntityUpdated].subscribe { [weak self] in
-                self?.progress = $0.progress
+                guard $0.0 == itemID else { return }
                 
-                self?.duration = $0.duration
-                self?.currentTime = $0.currentTime
+                guard let entity = $0.1 else {
+                    self?.progress = 0
+                    self?.currentTime = 0
+                    
+                    self?.startedAt = nil
+                    self?.finishedAt = nil
+                    
+                    self?.lastUpdate = .now
+                    self?.isValid = false
+                    
+                    return
+                }
                 
-                self?.startedAt = $0.startedAt
-                self?.lastUpdate = $0.lastUpdate
-                self?.finishedAt = $0.finishedAt
+                self?.progress = entity.progress
+                
+                self?.duration = entity.duration
+                self?.currentTime = entity.currentTime
+                
+                self?.startedAt = entity.startedAt
+                self?.lastUpdate = entity.lastUpdate
+                self?.finishedAt = entity.finishedAt
             }
         }
         
@@ -100,18 +119,5 @@ public struct ProgressEntity: Sendable {
         public var isFinished: Bool {
             progress >= 1
         }
-    }
-}
-
-public extension ProgressEntity {
-    static func missing(_ itemID: ItemIdentifier) -> ProgressEntity {
-        .init(id: UUID().uuidString,
-                     itemID: itemID,
-                     progress: 0,
-                     duration: 0,
-                     currentTime: 0,
-                     startedAt: nil,
-                     lastUpdate: .distantPast,
-                     finishedAt: nil)
     }
 }

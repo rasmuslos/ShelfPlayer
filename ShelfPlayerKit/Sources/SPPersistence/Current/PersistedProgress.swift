@@ -20,7 +20,7 @@ extension SchemaV2 {
         
         var progress: Percentage
         
-        var duration: TimeInterval
+        var duration: TimeInterval?
         var currentTime: TimeInterval
         
         var startedAt: Date?
@@ -29,7 +29,7 @@ extension SchemaV2 {
         
         var status: SyncStatus
         
-        init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: SyncStatus) {
+        init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: SyncStatus) {
             self.id = id
             _itemID = itemID.description
             

@@ -12,7 +12,7 @@ import SPFoundation
 import UIKit
 #endif
 
-public struct SessionPayload: Codable, Identifiable {
+public struct SessionPayload: Sendable, Codable, Identifiable {
     public let id: String
     let userId: String
     let libraryID: String?
@@ -55,7 +55,7 @@ public extension SessionPayload {
 }
 
 extension SessionPayload {
-    public struct DeviceInfo: Codable {
+    public struct DeviceInfo: Sendable, Codable {
         public let id: String?
         public let deviceId: String?
         public let osName: String?

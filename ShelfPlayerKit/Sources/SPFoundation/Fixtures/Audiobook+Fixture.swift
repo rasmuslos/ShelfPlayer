@@ -21,7 +21,7 @@ public extension Audiobook {
         duration: 60 * 60 * 12,
         subtitle: "Now your reality",
         narrators: ["Steven Fry"],
-        series: [Audiobook.SeriesFragment(id: "fixture", name: "George Orwell Collection", sequence: 1)],
+        series: [Audiobook.SeriesFragment(id: .init(primaryID: "fixture", groupingID: nil, libraryID: "fixture", connectionID: "fixture", type: .series), name: "George Orwell Collection", sequence: 1)],
         explicit: true,
         abridged: true)
 }
