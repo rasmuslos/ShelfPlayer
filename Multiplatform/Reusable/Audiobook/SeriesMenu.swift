@@ -34,9 +34,9 @@ internal struct SeriesMenu: View {
                 buildLabel(series)
             }
         } else {
-            NavigationLink(destination: SeriesLoadView(series: series)) {
+            // NavigationLink(destination: SeriesLoadView(series: series)) {
                 buildLabel(series)
-            }
+            // }
         }
     }
     

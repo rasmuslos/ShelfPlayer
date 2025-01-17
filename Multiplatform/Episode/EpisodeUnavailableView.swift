@@ -16,5 +16,5 @@ struct EpisodeUnavailableView: View {
 }
 
 #Preview {
-    AudiobookUnavailableView()
+    EpisodeUnavailableView()
 }

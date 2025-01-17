@@ -7,23 +7,29 @@
 
 import Foundation
 import SwiftUI
+import OSLog
 import RFVisuals
+import RFNotifications
 import ShelfPlayerKit
 import SPPlayback
 
 @Observable @MainActor
-internal final class AudiobookViewModel: Sendable {
-    private(set) var audiobook: Audiobook
-    var library: Library!
+final class AudiobookViewModel: Sendable {
+    let logger: Logger
+    let signposter: OSSignposter
     
-    private(set) var dominantColor: Color?
+    private(set) var audiobook: Audiobook
+    
+    var library: Library!
     
     var toolbarVisible: Bool
     var chaptersVisible: Bool
     var sessionsVisible: Bool
     
-    var chapters: [Chapter]
-    var supplementaryPDFs: [PlayableItem.SupplementaryPDF]
+    private(set) var dominantColor: Color?
+    
+    private(set) var chapters: [Chapter]
+    private(set) var supplementaryPDFs: [PlayableItem.SupplementaryPDF]
     
     private(set) var sameAuthor: [Author: [Audiobook]]
     private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
@@ -33,17 +39,21 @@ internal final class AudiobookViewModel: Sendable {
     private(set) var downloadTracker: DownloadTracker?
     
     private(set) var sessions: [SessionPayload]
-    private(set) var errorNotify: Bool
     
-    @MainActor
-    init(audiobook: Audiobook) {
-        self.audiobook = audiobook
+    private(set) var notifyError: Bool
+    private(set) var notifySuccess: Bool
+    
+    init(_ audiobook: Audiobook) {
+        logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "AudiobookViewModel")
+        signposter = OSSignposter(logger: logger)
         
-        dominantColor = nil
+        self.audiobook = audiobook
         
         toolbarVisible = false
         chaptersVisible = false
         sessionsVisible = false
+        
+        dominantColor = nil
         
         chapters = []
         supplementaryPDFs = []
@@ -53,11 +63,9 @@ internal final class AudiobookViewModel: Sendable {
         sameNarrator = [:]
         
         sessions = []
-        errorNotify = false
         
-        Task {
-            progressEntity = await PersistenceManager.shared.progress[audiobook.id].updating
-        }
+        notifyError = false
+        notifySuccess = false
     }
 }
 
@@ -74,30 +82,38 @@ extension AudiobookViewModel {
                 $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractColor() }
                 
+                $0.addTask {
+                    let progressEntity = await PersistenceManager.shared.progress[self.audiobook.id].updating
+                    
+                    await MainActor.withAnimation {
+                        self.progressEntity = progressEntity
+                    }
+                }
+                
                 await $0.waitForAll()
             }
         }
     }
     
-    func play() {
-        Task { [audiobook] in
+    nonisolated func play() {
+        Task {
             do {
                 try await AudioPlayer.shared.play(audiobook)
             } catch {
                 await MainActor.run {
-                    errorNotify.toggle()
+                    notifyError.toggle()
                 }
             }
         }
     }
     
-    func resetProgress() {
+    nonisolated func resetProgress() {
         Task {
             do {
-                // try await audiobook.resetProgress()
+                try await PersistenceManager.shared.progress.delete(itemID: audiobook.id)
             } catch {
                 await MainActor.run {
-                    errorNotify.toggle()
+                    notifyError.toggle()
                 }
             }
         }
@@ -105,7 +121,7 @@ extension AudiobookViewModel {
 }
 
 private extension AudiobookViewModel {
-    func loadAudiobook() async {
+    nonisolated func loadAudiobook() async {
         guard let (item, _, chapters, supplementaryPDFs) = try? await ABSClient[audiobook.id.connectionID].playableItem(itemID: audiobook.id) else {
             return
         }
@@ -117,17 +133,28 @@ private extension AudiobookViewModel {
         }
     }
     
-    func loadAuthors() async {
+    nonisolated func loadAuthors() async {
+        let current = await audiobook
         var resolved = [Author: [Audiobook]]()
         
         for author in await audiobook.authors {
             do {
-                // let authorID = try await AudiobookshelfClient.shared.authorID(name: author, libraryID: audiobook.libraryID)
-                // let (author, audiobooks, _) = try await AudiobookshelfClient.shared.author(authorId: authorID, libraryID: audiobook.libraryID)
+                let authorID = try await ABSClient[audiobook.id.connectionID].authorID(from: audiobook.id.libraryID, name: author)
+                var (author, audiobooks, _) = try await ABSClient[audiobook.id.connectionID].author(with: authorID)
                 
-                // resolved[author] = audiobooks
+                audiobooks = audiobooks.filter { $0 != current }
+                
+                guard !audiobooks.isEmpty else {
+                    continue
+                }
+                
+                resolved[author] = audiobooks
             } catch {
+                logger.warning("Failed to load author \(author): \(error)")
                 
+                await MainActor.run {
+                    notifyError.toggle()
+                }
             }
         }
         
@@ -136,23 +163,35 @@ private extension AudiobookViewModel {
         }
     }
     
-    func loadSeries() async {
+    nonisolated func loadSeries() async {
+        let current = await audiobook
         var resolved = [Audiobook.SeriesFragment: [Audiobook]]()
         
         for series in await audiobook.series {
             do {
-                let seriesID: String
+                let seriesID: ItemIdentifier
                 
                 if let id = series.id {
                     seriesID = id
                 } else {
-                    // seriesID = try await AudiobookshelfClient.shared.seriesID(name: series.name, libraryID: audiobook.libraryID)
+                    seriesID = try await ABSClient[audiobook.id.connectionID].seriesID(name: series.name, libraryID: audiobook.id.libraryID)
                 }
                 
-                // let audiobooks = try await AudiobookshelfClient.shared.audiobooks(seriesID: seriesID, libraryID: self.audiobook.libraryID).0
-                // resolved[series] = audiobooks
+                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(series: seriesID, limit: 200, page: 0)
+                
+                audiobooks = audiobooks.filter { $0 != current }
+                
+                guard !audiobooks.isEmpty else {
+                    continue
+                }
+                
+                resolved[series] = audiobooks
             } catch {
-                continue
+                logger.warning("Failed to load series \(series.name): \(error)")
+                
+                await MainActor.run {
+                    notifyError.toggle()
+                }
             }
         }
         
@@ -161,14 +200,27 @@ private extension AudiobookViewModel {
         }
     }
     
-    func loadNarrators() async {
+    nonisolated func loadNarrators() async {
+        let current = await audiobook
         var resolved = [String: [Audiobook]]()
         
         for narrator in await audiobook.narrators {
             do {
-                // resolved[narrator] = try await AudiobookshelfClient.shared.audiobooks(narratorName: narrator, libraryID: self.audiobook.libraryID)
+                var audiobooks = try await ABSClient[audiobook.id.connectionID].audiobooks(from: audiobook.id.libraryID, narratorName: narrator, page: 0, limit: 200)
+                
+                audiobooks = audiobooks.filter { $0 != current }
+                
+                guard !audiobooks.isEmpty else {
+                    continue
+                }
+                
+                resolved[narrator] = audiobooks
             } catch {
-                continue
+                logger.warning("Failed to load narrator \(narrator): \(error)")
+                
+                await MainActor.run {
+                    notifyError.toggle()
+                }
             }
         }
         
@@ -201,15 +253,17 @@ private extension AudiobookViewModel {
          */
     }
     
-    func loadSessions() async {
-        /*
-        guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: audiobook.id, episodeID: nil) else {
+    nonisolated func loadSessions() async {
+        guard let sessions = try? await ABSClient[audiobook.id.connectionID].listeningSessions(with: audiobook.id) else {
+            await MainActor.run {
+                notifyError.toggle()
+            }
+            
             return
         }
         
         await MainActor.withAnimation {
             self.sessions = sessions
         }
-         */
     }
 }

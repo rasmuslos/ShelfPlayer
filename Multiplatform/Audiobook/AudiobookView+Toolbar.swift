@@ -75,6 +75,12 @@ extension AudiobookView {
                             
                             Divider()
                             
+                            ProgressButton(item: viewModel.audiobook)
+                            
+                            if let progressEntity = viewModel.progressEntity, progressEntity.progress > 0 {
+                                Button("progress.reset", systemImage: "slash.circle", role: .destructive, action: viewModel.resetProgress)
+                            }
+                            
                             /*
                             if viewModel.offlineTracker.status == .none {
                                 ProgressButton(item: viewModel.audiobook)

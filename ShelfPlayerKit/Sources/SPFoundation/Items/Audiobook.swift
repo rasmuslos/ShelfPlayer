@@ -31,12 +31,12 @@ public final class Audiobook: PlayableItem, @unchecked Sendable {
 
 public extension Audiobook {
     struct SeriesFragment: Identifiable, Codable, Hashable, Sendable {
-        public var id: String?
+        public var id: ItemIdentifier?
         
         public let name: String
         public let sequence: Float?
         
-        public init(id: String?, name: String, sequence: Float?) {
+        public init(id: ItemIdentifier?, name: String, sequence: Float?) {
             self.id = id
             self.name = name
             self.sequence = sequence

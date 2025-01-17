@@ -21,7 +21,7 @@ extension PersistenceManager {
         
         let logger: Logger
         let signposter: OSSignposter
-
+        
         public init(modelContainer: SwiftData.ModelContainer) {
             let modelContext = ModelContext(modelContainer)
             
@@ -35,19 +35,108 @@ extension PersistenceManager {
 }
 
 extension PersistenceManager.ProgressSubsystem {
-    func delete(_ entity: PersistedProgress) async throws {
+    func entity(_ itemID: ItemIdentifier) -> PersistedProgress? {
+        let itemID = itemID
+        var fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+            $0._itemID == itemID.description
+        })
+        fetchDescriptor.includePendingChanges = true
+        
+        // Return existing
+        
         do {
-            try await ABSClient[entity.itemID.connectionID].delete(progressID: entity.id)
+            let entities = try modelContext.fetch(fetchDescriptor).filter { $0.status != .tombstone }
+            
+            if !entities.isEmpty {
+                if entities.count != 1 {
+                    logger.error("Found \(entities.count) progress entities for \(itemID)")
+                    
+                    var sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
+                    sorted.removeFirst()
+                    
+                    for entity in sorted {
+                        Task {
+                            try await delete(entity)
+                        }
+                    }
+                }
+                
+                return entities.first
+            }
+        } catch {
+            logger.error("Error fetching progress for \(itemID): \(error)")
         }
         
-        let id = entity.id
+        logger.warning("Missing progress for \(itemID)")
         
-        try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
-            $0.id == id
-        })
+        return nil
+    }
+    
+    func createEntity(id: String, itemID: ItemIdentifier, progress: Double, duration: Double?, currentTime: Double, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: PersistedProgress.SyncStatus) -> PersistedProgress {
+        let entity = PersistedProgress(id: id, itemID: itemID, progress: progress, duration: duration, currentTime: currentTime, startedAt: startedAt, lastUpdate: lastUpdate, finishedAt: finishedAt, status: status)
+        modelContext.insert(entity)
+        
+        return entity
+    }
+    
+    func delete(_ entity: PersistedProgress) async throws {
+        logger.info("Deleting progress entity \(entity.id) (\(entity.itemID)).")
+        
+        do {
+            try await ABSClient[entity.itemID.connectionID].delete(progressID: entity.id)
+        } catch {
+            entity.status = .tombstone
+        }
+        
+        modelContext.delete(entity)
+        
+        RFNotification[.progressEntityUpdated].send((entity.itemID, nil))
     }
 }
+
 public extension PersistenceManager.ProgressSubsystem {
+    func markAsCompleted(_ itemID: ItemIdentifier) async throws {
+        logger.info("Marking progress as completed for item \(itemID).")
+        
+        let pendingUpdate: PersistedProgress
+        
+        if let entity = entity(itemID) {
+            entity.progress = 1
+            
+            if let duration = entity.duration {
+                entity.currentTime = duration
+            }
+            
+            if entity.startedAt == nil {
+                entity.startedAt = .now
+            }
+            
+            entity.finishedAt = .now
+            entity.lastUpdate = .now
+            
+            entity.status = .desynchronized
+            
+            try modelContext.save()
+            
+            pendingUpdate = entity
+        } else {
+            pendingUpdate = createEntity(id: UUID().uuidString, itemID: itemID, progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now, status: .desynchronized)
+        }
+        
+        let entity = ProgressEntity(persistedEntity: pendingUpdate)
+        
+        do {
+            try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
+            
+            pendingUpdate.status = .synchronized
+            try modelContext.save()
+        } catch {
+            logger.info("Caching progress update because of: \(error.localizedDescription).")
+        }
+        
+        RFNotification[.progressEntityUpdated].send((itemID, entity))
+    }
+    
     /// Insert changes into the database and notify the connection of pending updates
     ///
     /// This function will:
@@ -104,7 +193,12 @@ public extension PersistenceManager.ProgressSubsystem {
                             return
                         }
                         
-                        entity.duration = payload.duration ?? 0
+                        if let duration = payload.duration, duration > 0 {
+                            entity.duration = duration
+                        } else {
+                            entity.duration = nil
+                        }
+                        
                         entity.currentTime = payload.currentTime ?? 0
                         
                         entity.progress = payload.progress ?? 0
@@ -160,24 +254,21 @@ public extension PersistenceManager.ProgressSubsystem {
             try Task.checkCancellation()
             
             // try modelContext.transaction {
-                for payload in payload {
-                    let entity = PersistedProgress(
-                        id: payload.id,
-                        itemID: .init(primaryID: payload.episodeId ?? payload.libraryItemId,
-                                      groupingID: payload.episodeId != nil ? payload.libraryItemId : nil,
-                                      libraryID: "_",
-                                      connectionID: connectionID,
-                                      type: payload.episodeId != nil ? .episode : .audiobook),
-                        progress: payload.progress ?? 0,
-                        duration: payload.duration ?? 0,
-                        currentTime: payload.currentTime ?? 0,
-                        startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
-                        lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
-                        finishedAt: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : nil,
-                        status: .synchronized)
-                    
-                    modelContext.insert(entity)
-                }
+            for payload in payload {
+                let _ = createEntity(id: payload.id,
+                             itemID: .init(primaryID: payload.episodeId ?? payload.libraryItemId,
+                                           groupingID: payload.episodeId != nil ? payload.libraryItemId : nil,
+                                           libraryID: "_",
+                                           connectionID: connectionID,
+                                           type: payload.episodeId != nil ? .episode : .audiobook),
+                             progress: payload.progress ?? 0,
+                             duration: payload.duration ?? 0,
+                             currentTime: payload.currentTime ?? 0,
+                             startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
+                             lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
+                             finishedAt: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : nil,
+                             status: .synchronized)
+            }
             // }
             
             signposter.emitEvent("cleanup", id: signpostID)
@@ -196,42 +287,26 @@ public extension PersistenceManager.ProgressSubsystem {
         }
     }
     
-    subscript(_ itemID: ItemIdentifier) -> ProgressEntity {
-        let itemID = itemID
-        var fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+    func delete(itemID: ItemIdentifier) async throws {
+        let entities = try modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
             $0._itemID == itemID.description
-        })
-        fetchDescriptor.includePendingChanges = true
+        }))
         
-        // Return existing
-        
-        do {
-            let entities = try modelContext.fetch(fetchDescriptor)
-            
-            if !entities.isEmpty {
-                if entities.count != 1 {
-                    logger.error("Found \(entities.count) progress entities for \(itemID)")
-                    
-                    var sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
-                    sorted.removeFirst()
-                    
-                    for entity in sorted {
-                        Task {
-                            try await delete(entity)
-                        }
-                    }
-                }
-                
-                return .init(persistedEntity: entities.first!)
-            }
-        } catch {
-            logger.error("Error fetching progress for \(itemID): \(error)")
+        for entity in entities {
+            try await delete(entity)
         }
+    }
+    
+    subscript(_ itemID: ItemIdentifier) -> ProgressEntity {
+        guard let entity = entity(itemID) else { return .init(id: UUID().uuidString,
+                                                              itemID: itemID,
+                                                              progress: 0,
+                                                              duration: nil,
+                                                              currentTime: 0,
+                                                              startedAt: nil,
+                                                              lastUpdate: .now,
+                                                              finishedAt: nil) }
         
-        // Create new
-        
-        logger.error("Missing progress for \(itemID)")
-        
-        return .missing(itemID)
+        return .init(persistedEntity: entity)
     }
 }

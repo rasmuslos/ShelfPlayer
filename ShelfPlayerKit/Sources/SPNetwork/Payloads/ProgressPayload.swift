@@ -16,6 +16,7 @@ public struct ProgressPayload: Sendable, Codable {
     public let progress: Double?
     public let currentTime: Double?
     
+    public let isFinished: Bool
     public let hideFromContinueListening: Bool?
     
     public let lastUpdate: Int64?
