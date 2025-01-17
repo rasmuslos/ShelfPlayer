@@ -8,11 +8,7 @@
 import Foundation
 
 public final class Series: Item, @unchecked Sendable {
-    public let covers: [Cover]
-    
-    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date, covers: [Cover]) {
-        self.covers = covers
-        
+    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date) {
         super.init(id: id, name: name, authors: authors, description: description, genres: [], addedAt: addedAt, released: nil)
     }
 }

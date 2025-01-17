@@ -99,7 +99,7 @@ private struct PodcastGridItem: View {
         NavigationLink(destination: PodcastLoadView(podcastID: "", zoom: true)) {
         // NavigationLink(destination: PodcastLoadView(podcastID: podcast.id, zoom: true)) {
             VStack(alignment: .leading, spacing: 4) {
-                ItemImage(cover: podcast.cover)
+                ItemImage(item: podcast)
                     .hoverEffect(.highlight)
                 
                 if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {

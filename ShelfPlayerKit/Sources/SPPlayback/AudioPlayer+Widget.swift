@@ -29,12 +29,14 @@ internal extension AudioPlayer {
         await updateLastBookmarkTime()
         
         Task {
+            /*
             if let image = await item.cover?.platformImage {
                 let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { _ -> UIImage in image })
                 // await nowPlayingInfo.set(MPMediaItemPropertyArtwork, value: artwork)
                 
                 // await updateNowPlayingInfo()
             }
+             */
         }
     }
     
