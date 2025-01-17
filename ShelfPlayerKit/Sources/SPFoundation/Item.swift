@@ -33,10 +33,6 @@ public class Item: Identifiable, @unchecked Sendable {
         self.addedAt = addedAt
         self.released = released
     }
-    
-    public var cover: Cover? {
-        nil
-    }
 }
 
 extension Item: Equatable {

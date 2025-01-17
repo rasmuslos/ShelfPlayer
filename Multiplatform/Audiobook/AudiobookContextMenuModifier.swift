@@ -50,7 +50,7 @@ internal extension AudiobookContextMenuModifier {
         
         var body: some View {
             VStack(alignment: .leading, spacing: 2) {
-                ItemStatusImage(item: audiobook, aspectRatio: .none)
+                ItemProgressIndicatorImage(item: audiobook, aspectRatio: .none)
                     .padding(.bottom, 12)
                 
                 Text(audiobook.name)

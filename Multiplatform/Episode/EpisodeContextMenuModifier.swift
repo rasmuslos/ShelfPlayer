@@ -63,7 +63,7 @@ internal extension EpisodeContextMenuModifier {
         var body: some View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 4) {
-                    ItemImage(cover: episode.cover)
+                    ItemImage(item: episode)
                         .frame(width: 50, height: 50)
                     
                     Group {

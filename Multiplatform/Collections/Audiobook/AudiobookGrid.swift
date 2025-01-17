@@ -91,7 +91,7 @@ internal struct AudiobookHGrid: View {
                 HStack(alignment: .bottom, spacing: 0) {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook)) {
-                            ItemStatusImage(item: audiobook, aspectRatio: .none)
+                            ItemProgressIndicatorImage(item: audiobook, aspectRatio: .none)
                                 .frame(width: size)
                                 .padding(.leading, gap)
                                 .modifier(AudiobookContextMenuModifier(audiobook: audiobook))

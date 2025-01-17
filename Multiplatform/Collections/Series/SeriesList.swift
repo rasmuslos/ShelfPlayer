@@ -28,17 +28,17 @@ internal struct SeriesList: View {
 internal extension SeriesList {
     struct ListItem: View {
         let name: String
-        let covers: [Cover]
+        let covers: [URL]
         let itemCount: Int
         
         init(series: Series) {
             self.name = series.name
-            self.covers = series.covers
+            self.covers = [] //series.covers
             
             itemCount = covers.count
         }
         
-        init(name: String, covers: [Cover], itemCount: Int) {
+        init(name: String, covers: [URL], itemCount: Int) {
             self.name = name
             self.covers = covers
             self.itemCount = itemCount
@@ -70,10 +70,12 @@ internal extension SeriesList {
                         let offset: CGFloat = index == 0 ? 0 : index == 1 ? 16  : index == 2 ? 30  : index == 3 ? 42  : 0
                         let radius: CGFloat = index == 0 ? 8 : index == 1 ? 7   : index == 2 ? 6    : index == 3 ? 5     : 0
                         
+                        /*
                         ItemImage(cover: covers[$0], cornerRadius: radius)
                             .frame(height: 60)
                             .scaleEffect(factor)
                             .offset(x: offset)
+                         */
                     }
                 }
                 .frame(height: 60)

@@ -16,13 +16,15 @@ internal extension SeriesView {
             if !viewModel.images.isEmpty {
                 VStack(spacing: 16) {
                     ZStack {
-                        ForEach(0..<viewModel.headerImageCount, id: \.hashValue) {
+                        /*
+                        ForEach(0..<viewModel.headerImageCount, id: \.description) {
                             let index = viewModel.headerImageCount - $0 - 1
                             
                             ItemImage(cover: viewModel.images[index])
                                 .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 180 : 160)
                                 .offset(x: index == 0 ? 0 : index == 1 ? -40 : index == 2 ? 40 : index == 3 ? -75 : 75)
                         }
+                         */
                     }
                     
                     Text(viewModel.series.name)

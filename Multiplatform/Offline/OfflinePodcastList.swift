@@ -40,7 +40,7 @@ internal extension OfflinePodcastList {
         
         var body: some View {
             HStack(spacing: 0) {
-                ItemImage(cover: podcast.cover)
+                ItemImage(item: podcast)
                     .frame(height: 60)
                     .padding(.trailing, 12)
                 

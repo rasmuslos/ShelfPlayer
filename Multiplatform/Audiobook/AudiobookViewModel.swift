@@ -178,9 +178,11 @@ private extension AudiobookViewModel {
     }
     
     func extractColor() async {
+        /*
         guard let image = await audiobook.cover?.platformImage else {
             return
         }
+         */
         
         /*
         guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {

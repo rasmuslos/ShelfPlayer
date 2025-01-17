@@ -10,18 +10,12 @@ import SPFoundation
 
 internal extension Series {
     convenience init(payload: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
-        let covers: [Cover] = (payload.books ?? payload.items ?? []).reduce([], {
-            print($1)
-            return $0 + []
-        })
-        
         self.init(
             id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId!, connectionID: connectionID, type: .series),
             name: payload.name!,
             authors: [],
             description: payload.description,
-            addedAt: Date(timeIntervalSince1970: (payload.addedAt ?? 0) / 1000),
-            covers: covers)
+            addedAt: Date(timeIntervalSince1970: (payload.addedAt ?? 0) / 1000))
     }
     
     convenience init(item: ItemPayload, audiobooks: [ItemPayload], connectionID: ItemIdentifier.ConnectionID) {

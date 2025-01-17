@@ -43,7 +43,7 @@ internal struct DownloadQueue: View {
                     let episodes = podcasts[podcast]!
                     
                     HStack(spacing: 12) {
-                        ItemImage(cover: podcast.cover)
+                        ItemImage(item: podcast)
                             .frame(width: 60)
                         
                         VStack(alignment: .leading, spacing: 0) {
@@ -98,7 +98,7 @@ private struct DownloadAudiobookRow: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            ItemImage(cover: audiobook.cover)
+            ItemImage(item: audiobook)
                 .frame(width: 60)
             
             VStack(alignment: .leading, spacing: 0) {

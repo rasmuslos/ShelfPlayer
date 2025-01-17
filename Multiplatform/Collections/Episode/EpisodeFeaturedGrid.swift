@@ -81,7 +81,7 @@ private struct EpisodeGridItem: View {
             }
             .foregroundStyle(.white)
             .colorScheme(.light)
-            .background(Background(cover: episode.cover))
+            .background(Background(episode: episode))
             .clipShape(.rect(cornerRadius: 16))
             .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16))
             .hoverEffect(.highlight)
@@ -145,16 +145,16 @@ private struct Title: View {
 }
 
 private struct Background: View {
-    let cover: Cover?
+    let episode: Episode
     
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
-                ItemImage(cover: cover, contrastConfiguration: nil)
+                ItemImage(item: episode, contrastConfiguration: nil)
                     .frame(width: geometry.size.height)
                     .blur(radius: 15)
                 
-                ItemImage(cover: cover, contrastConfiguration: nil)
+                ItemImage(item: episode, contrastConfiguration: nil)
                     .frame(height: geometry.size.width)
                     .mask {
                         LinearGradient(colors: [.black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)

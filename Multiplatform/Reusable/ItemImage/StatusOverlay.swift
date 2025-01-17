@@ -85,14 +85,12 @@ internal struct StatusOverlay: View {
     }
 }
 
-// MARK: Progress image
-
-internal struct ItemStatusImage: View {
+struct ItemProgressIndicatorImage: View {
     let item: PlayableItem
-    var aspectRatio = ItemImage.AspectRatioPolicy.square
+    var aspectRatio = RequestImage.AspectRatioPolicy.square
     
     var body: some View {
-        ItemImage(cover: item.cover, aspectRatio: aspectRatio)
+        ItemImage(item: item, aspectRatio: aspectRatio)
             .overlay {
                 StatusOverlay(item: item)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -102,6 +100,6 @@ internal struct ItemStatusImage: View {
 
 #if DEBUG
 #Preview {
-    ItemStatusImage(item: Audiobook.fixture)
+    ItemProgressIndicatorImage(item: Audiobook.fixture)
 }
 #endif

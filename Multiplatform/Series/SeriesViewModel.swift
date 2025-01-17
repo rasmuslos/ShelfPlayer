@@ -70,14 +70,10 @@ internal extension SeriesViewModel {
     }
     
     @MainActor
-    var images: [Cover?] {
-        if visible.isEmpty {
-            return series.covers
-        }
-        
+    var images: [URL?] {
         return visible.compactMap {
             if case .audiobook(let audiobook) = $0 {
-                return audiobook.cover
+                // return audiobook.id.coverURL
             }
             
             return nil

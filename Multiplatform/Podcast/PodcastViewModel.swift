@@ -113,7 +113,7 @@ internal extension PodcastViewModel {
 
 private extension PodcastViewModel {
     nonisolated func extractColor() async {
-        guard let image = await podcast.cover?.platformImage else {
+        guard let image = await podcast.id.platformCover else {
             return
         }
         
