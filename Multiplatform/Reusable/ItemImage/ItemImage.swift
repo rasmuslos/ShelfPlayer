@@ -121,12 +121,31 @@ struct RequestImage: View {
 }
 
 struct ItemImage: View {
-    let item: Item?
+    let itemID: ItemIdentifier?
     
-    var cornerRadius: CGFloat = 8
-    var aspectRatio: RequestImage.AspectRatioPolicy = .square
-    var priority: ImageRequest.Priority = .normal
-    var contrastConfiguration: RequestImage.ContrastConfiguration? = .init()
+    var cornerRadius: CGFloat
+    var aspectRatio: RequestImage.AspectRatioPolicy
+    var priority: ImageRequest.Priority
+    var contrastConfiguration: RequestImage.ContrastConfiguration?
+    
+    init(itemID: ItemIdentifier?,
+         cornerRadius: CGFloat = 8,
+         aspectRatio: RequestImage.AspectRatioPolicy = .square,
+         priority: ImageRequest.Priority = .normal,
+         contrastConfiguration: RequestImage.ContrastConfiguration? = .init()) {
+        self.itemID = itemID
+        self.cornerRadius = cornerRadius
+        self.aspectRatio = aspectRatio
+        self.priority = priority
+        self.contrastConfiguration = contrastConfiguration
+    }
+    init(item: Item?,
+         cornerRadius: CGFloat = 8,
+         aspectRatio: RequestImage.AspectRatioPolicy = .square,
+         priority: ImageRequest.Priority = .normal,
+         contrastConfiguration: RequestImage.ContrastConfiguration? = .init()) {
+        self.init(itemID: item?.id, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority)
+    }
     
     @State private var request: ImageRequest?
     
@@ -136,7 +155,7 @@ struct ItemImage: View {
         } else {
             Placeholder(cornerRadius: cornerRadius)
                 .task {
-                    request = await item?.id.coverRequest
+                    request = await itemID?.coverRequest
                 }
         }
     }

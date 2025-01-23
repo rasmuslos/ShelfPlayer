@@ -25,7 +25,7 @@ internal final class AuthorViewModel {
     }
     @MainActor internal var displayMode: ItemDisplayType {
         didSet {
-            Defaults[.audiobooksDisplay] = displayMode
+            Defaults[.audiobooksDisplayType] = displayMode
         }
     }
     
@@ -47,7 +47,7 @@ internal final class AuthorViewModel {
         sortOrder = .released
         
         filter = Defaults[.audiobooksFilter]
-        displayMode = Defaults[.audiobooksDisplay]
+        displayMode = Defaults[.audiobooksDisplayType]
         
         // Disabled
         collapseSeries = false

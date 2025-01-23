@@ -95,22 +95,28 @@ internal extension Chapters {
                     loading = false
                 }
             } label: {
-                HStack {
+                HStack(spacing: 0) {
+                    ZStack {
+                        Text(verbatim: "00:00:00")
+                            .hidden()
+                        
+                        if loading {
+                            ProgressIndicator()
+                                .scaleEffect(0.5)
+                        } else {
+                            Text(time, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                        }
+                    }
+                    .font(.footnote)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(Color.accentColor)
+                    .padding(.trailing, 12)
+                    
                     Text(title)
                         .bold(active)
                         .foregroundStyle(finished ? .secondary : .primary)
                     
-                    Spacer()
-                    
-                    if loading {
-                        ProgressIndicator()
-                            .scaleEffect(0.5)
-                    } else {
-                        Text(time, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-                            .font(.caption)
-                            .fontDesign(.monospaced)
-                            .foregroundStyle(.secondary)
-                    }
+                    Spacer(minLength: 0)
                 }
                 .lineLimit(1)
                 .contentShape(.hoverMenuInteraction, .rect)
@@ -134,5 +140,6 @@ internal extension Chapters {
             .init(id: 5, startOffset: 4001, endOffset: 5000, title: "Chapter 5"),
         ])
     }
+    .listStyle(.plain)
 }
 #endif

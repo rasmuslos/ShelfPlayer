@@ -8,88 +8,42 @@
 import Foundation
 import SwiftUI
 import Defaults
+import DefaultsMacros
 import ShelfPlayerKit
 
-@Observable
-internal final class SeriesViewModel {
-    @MainActor internal let series: Series
-    @MainActor private(set) internal var filteredSeriesIDs: [String]
+@Observable @MainActor
+final class SeriesViewModel {
+    let series: Series
     
-    @MainActor private(set) var lazyLoader: LazyLoadHelper<Audiobook, Void?>
+    let lazyLoader: LazyLoadHelper<Audiobook, Void?>
     
-    @MainActor internal var library: Library! {
+    @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
+    var displayType: ItemDisplayType
+    
+    var library: Library! {
         didSet {
             lazyLoader.library = library
         }
     }
     
-    @MainActor internal var filter: ItemFilter {
-        didSet {
-            Defaults[.audiobooksFilter] = filter
-        }
-    }
-    @MainActor internal var displayMode: ItemDisplayType {
-        didSet {
-            Defaults[.audiobooksDisplay] = displayMode
-        }
-    }
-    
-    @MainActor internal var ascending: Bool
-    
     @MainActor
-    init(series: Series, filteredSeriesIDs: [String]) {
+    init(series: Series) {
         self.series = series
-        self.filteredSeriesIDs = filteredSeriesIDs
+        lazyLoader = .audiobooks(seriesID: series.id)
+    }
+    
+    var audiobookIDs: [ItemIdentifier] {
+        guard !lazyLoader.items.isEmpty else {
+            return series.audiobooks.map(\.id)
+        }
         
-        lazyLoader = .audiobooks(seriesID: series.id.primaryID)
-        
-        filter = Defaults[.audiobooksFilter]
-        displayMode = Defaults[.audiobooksDisplay]
-        
-        ascending = true
+        return lazyLoader.items.map(\.id)
     }
 }
 
-internal extension SeriesViewModel {
+extension SeriesViewModel {
     @MainActor
-    var visible: [AudiobookSection] {
-        /*
-        var audiobooks = Audiobook.filterSort(lazyLoader.items, filter: filter, sortOrder: sortOrder, ascending: ascending)
-        
-        if audiobooks.isEmpty {
-            audiobooks = Audiobook.sort(lazyLoader.items, sortOrder: sortOrder, ascending: ascending)
-        }
-        
-        if !filteredSeriesIDs.isEmpty {
-            // audiobooks = audiobooks.filter { filteredSeriesIDs.contains($0.id) }
-        }
-         */
-        
-        // return audiobooks.map { .audiobook(audiobook: $0) }
-        return lazyLoader.items.map { .audiobook(audiobook: $0) }
-    }
-    
-    @MainActor
-    var images: [URL?] {
-        return visible.compactMap {
-            if case .audiobook(let audiobook) = $0 {
-                // return audiobook.id.coverURL
-            }
-            
-            return nil
-        }
-    }
-    
-    @MainActor
-    var headerImageCount: Int {
-        min(images.count, 5)
-    }
-    
-    func resetFilter() {
-        Task { @MainActor in
-            withAnimation(.smooth) {
-                // filteredSeriesIDs = []
-            }
-        }
+    var sections: [AudiobookSection] {
+        lazyLoader.items.map { .audiobook(audiobook: $0) }
     }
 }

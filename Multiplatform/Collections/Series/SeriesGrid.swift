@@ -36,30 +36,30 @@ internal struct SeriesGrid: View {
 extension SeriesGrid {
     struct SeriesGridItem: View {
         let name: String?
-        let covers: [URL]
+        let audiobookIDs: [ItemIdentifier]
         
         init(series: Series) {
             self.name = series.name
-            self.covers = [] // series.covers
+            self.audiobookIDs = series.audiobooks.map(\.id)
         }
         
-        init(name: String?, covers: [URL]) {
+        init(name: String?, audiobookIDs: [ItemIdentifier]) {
             self.name = name
-            self.covers = covers
+            self.audiobookIDs = audiobookIDs
         }
         
         private var flipped: Bool {
-            covers.count == 3
+            audiobookIDs.count == 3
         }
         
         var body: some View {
             VStack(spacing: 4) {
                 Group {
-                    if covers.isEmpty {
+                    if audiobookIDs.isEmpty {
                         ItemImage(item: nil)
-                    } else if covers.count == 1 {
-                        // RequestImage(request: <#T##ImageRequest?#>)
-                    } else if covers.count < 4 {
+                    } else if audiobookIDs.count == 1 {
+                        ItemImage(itemID: audiobookIDs.first)
+                    } else if audiobookIDs.count < 4 {
                         GeometryReader { proxy in
                             let width = proxy.size.width / 1.6
                             
@@ -69,11 +69,9 @@ extension SeriesGrid {
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 
                                 Group {
-                                    /*
-                                    ItemImage(cover: covers[0])
-                                    ItemImage(cover: covers[1])
+                                    ItemImage(itemID: audiobookIDs[0])
+                                    ItemImage(itemID: audiobookIDs[1])
                                         .offset(x: proxy.size.width - width, y: (proxy.size.height - width) * (flipped ? -1 : 1))
-                                     */
                                 }
                                 .frame(width: width)
                             }
@@ -81,16 +79,14 @@ extension SeriesGrid {
                         .aspectRatio(1, contentMode: .fill)
                     } else {
                         VStack(spacing: 8) {
-                            /*
                             HStack(spacing: 8) {
-                                ItemImage(cover: covers[0])
-                                ItemImage(cover: covers[1])
+                             ItemImage(itemID: audiobookIDs[0])
+                             ItemImage(itemID: audiobookIDs[1])
                             }
                             HStack(spacing: 8) {
-                                ItemImage(cover: covers[2])
-                                ItemImage(cover: covers[3])
+                             ItemImage(itemID: audiobookIDs[2])
+                             ItemImage(itemID: audiobookIDs[3])
                             }
-                             */
                         }
                     }
                 }

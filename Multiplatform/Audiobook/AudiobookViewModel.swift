@@ -25,6 +25,7 @@ final class AudiobookViewModel: Sendable {
     var toolbarVisible: Bool
     var chaptersVisible: Bool
     var sessionsVisible: Bool
+    var supplementaryPDFsVisible: Bool
     
     private(set) var dominantColor: Color?
     
@@ -52,6 +53,7 @@ final class AudiobookViewModel: Sendable {
         toolbarVisible = false
         chaptersVisible = false
         sessionsVisible = false
+        supplementaryPDFsVisible = false
         
         dominantColor = nil
         

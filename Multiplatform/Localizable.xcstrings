@@ -1679,6 +1679,9 @@
         }
       }
     },
+    "audiobooks.pdfs" : {
+
+    },
     "author.view" : {
       "localizations" : {
         "de" : {
@@ -6717,6 +6720,7 @@
       }
     },
     "series.filter.hidden %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -10,7 +10,7 @@ import SwiftUI
 import ShelfPlayerKit
 import SPPlayback
 
-internal struct QueueButton: View {
+struct QueueButton: View {
     let item: PlayableItem
     var hideLast: Bool = false
     
