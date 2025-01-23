@@ -9,7 +9,7 @@ import Foundation
 
 public enum AudiobookSection {
     case audiobook(audiobook: Audiobook)
-    case series(seriesID: String, seriesName: String, audiobookIDs: [ItemIdentifier])
+    case series(seriesID: ItemIdentifier, seriesName: String, audiobookIDs: [ItemIdentifier])
 }
 
 extension AudiobookSection: Hashable {}

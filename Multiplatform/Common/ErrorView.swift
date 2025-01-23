@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import ShelfPlayerKit
 
-internal struct ErrorView: View {
+struct ErrorView: View {
     var body: some View {
         UnavailableWrapper {
             ContentUnavailableView("error.unavailable.title", systemImage: "xmark", description: Text("error.unavailable.text"))

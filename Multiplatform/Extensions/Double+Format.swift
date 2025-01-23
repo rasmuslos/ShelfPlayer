@@ -7,13 +7,13 @@
 
 import Foundation
 
-internal extension Double {
+extension Double {
     func formatted<Style: FormatStyle>(_ style: Style) -> Style.FormatOutput where Style.FormatInput == Duration {
         Duration.seconds(self).formatted(style)
     }
 }
 
-internal struct DurationComponentsFormatter: FormatStyle {
+struct DurationComponentsFormatter: FormatStyle {
     var unitsStyle: DateComponentsFormatter.UnitsStyle
     var allowedUnits: NSCalendar.Unit
     var maximumUnitCount: Int
@@ -62,7 +62,7 @@ internal struct DurationComponentsFormatter: FormatStyle {
     }
 }
 
-internal extension FormatStyle where Self == DurationComponentsFormatter {
+extension FormatStyle where Self == DurationComponentsFormatter {
     static var duration: DurationComponentsFormatter {
         .init()
     }

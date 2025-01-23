@@ -14,7 +14,7 @@ internal struct AudiobookLibraryPanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.audiobooksFilter) private var filter
-    @Default(.audiobooksDisplay) private var display
+    @Default(.audiobooksDisplayType) private var display
     
     @Default(.audiobooksSortOrder) private var sortOrder
     @Default(.audiobooksAscending) private var ascending

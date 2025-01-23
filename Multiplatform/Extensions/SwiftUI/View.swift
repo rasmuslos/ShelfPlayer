@@ -8,8 +8,12 @@
 import Foundation
 import SwiftUI
 
-internal extension View {
+extension View {
     func modify<T: View>(@ViewBuilder _ modifier: (Self) -> T) -> some View {
-        return modifier(self)
+        modifier(self)
+    }
+    
+    func previewEnvironment() -> some View {
+        self
     }
 }

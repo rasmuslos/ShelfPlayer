@@ -9,7 +9,7 @@ import Foundation
 import Defaults
 import ShelfPlayerKit
 
-internal extension Defaults.Keys {
+extension Defaults.Keys {
     static let backgroundTaskFailCount = Key<Int>("backgroundTaskFailCount", default: 0)
     
     // MARK: Navigation
@@ -50,7 +50,7 @@ internal extension Defaults.Keys {
     static let offlineAudiobooksSortOrder = Key<AudiobookSortOrder>("offlineAudiobooksSortOrder", default: .lastPlayed)
     
     static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .all)
-    static let audiobooksDisplay = Key<ItemDisplayType>("audiobooksDisplay", default: .list)
+    static let audiobooksDisplayType = Key<ItemDisplayType>("audiobooksDisplayType", default: .list)
     
     static let seriesDisplayType = Key<ItemDisplayType>("seriesDisplay", default: .grid)
     static let podcastsDisplayType = Key<ItemDisplayType>("podcastsDisplay", default: .grid)

@@ -24,13 +24,12 @@ internal struct AudiobookVGrid: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 16) {
             ForEach(sections) { section in
                 VStack(spacing: 0) {
-                    /*
                     switch section {
                     case .audiobook(let audiobook):
                         NavigationLink {
                             AudiobookView(audiobook)
                         } label: {
-                            ItemStatusImage(item: audiobook, aspectRatio: .none)
+                            ItemProgressIndicatorImage(item: audiobook, aspectRatio: .none)
                                 .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
                                 .hoverEffect(.highlight)
                         }
@@ -38,9 +37,9 @@ internal struct AudiobookVGrid: View {
                         .onAppear {
                             onAppear?(section)
                         }
-                    case .series(let seriesName, let audiobooks):
-                        NavigationLink(destination: SeriesLoadView(seriesName: seriesName, filteredIDs: audiobooks.lazy.map { $0.id })) {
-                            SeriesGrid.SeriesGridItem(name: nil, covers: audiobooks.prefix(10).compactMap { $0.cover })
+                    case .series(let seriesID, let seriesName, let audiobookIDs):
+                        NavigationLink(destination: ItemLoadView(seriesID)) {
+                            SeriesGrid.SeriesGridItem(name: seriesName, audiobookIDs: audiobookIDs)
                         }
                         .buttonStyle(.plain)
                         .onAppear {
@@ -49,7 +48,6 @@ internal struct AudiobookVGrid: View {
                     }
                     
                     Spacer(minLength: 0)
-                     */
                 }
             }
         }
