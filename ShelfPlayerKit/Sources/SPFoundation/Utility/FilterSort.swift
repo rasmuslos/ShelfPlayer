@@ -15,6 +15,15 @@ public enum ItemDisplayType: Int, Identifiable, Hashable, Codable, Sendable, Cas
     public var id: Int {
         rawValue
     }
+    
+    public var next: Self {
+        switch self {
+        case .grid:
+                .list
+        case .list:
+                .grid
+        }
+    }
 }
 
 public enum ItemFilter: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {

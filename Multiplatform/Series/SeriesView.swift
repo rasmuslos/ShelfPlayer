@@ -9,40 +9,33 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct SeriesView: View {
+struct SeriesView: View {
     @Environment(\.library) private var library
     
     @State private var viewModel: SeriesViewModel
     
-    init(_ series: Series, filteredIDs: [String] = []) {
-        viewModel = .init(series: series, filteredSeriesIDs: filteredIDs)
+    init(_ series: Series) {
+        viewModel = .init(series: series)
     }
     
     @ViewBuilder
     private var rowTitle: some View {
         HStack(spacing: 0) {
             RowTitle(title: String(localized: "books"), fontDesign: .serif)
-            Spacer(minLength: 12)
-            
-            if !viewModel.filteredSeriesIDs.isEmpty && viewModel.filteredSeriesIDs.count != viewModel.lazyLoader.count {
-                Button {
-                    viewModel.resetFilter()
-                } label: {
-                    Text("series.filter.hidden \(viewModel.lazyLoader.count - viewModel.visible.count)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
-            }
+            Spacer(minLength: 0)
         }
     }
     
     var body: some View {
         Group {
-            if viewModel.images.isEmpty && viewModel.lazyLoader.items.isEmpty {
-                LoadingView()
+            if viewModel.lazyLoader.items.isEmpty {
+                if viewModel.lazyLoader.failed {
+                    ErrorView()
+                } else {
+                    LoadingView()
+                }
             } else {
-                switch viewModel.displayMode {
+                switch viewModel.displayType {
                 case .grid:
                     ScrollView {
                         Header()
@@ -50,8 +43,8 @@ internal struct SeriesView: View {
                         rowTitle
                             .padding(.horizontal, 20)
                         
-                        AudiobookVGrid(sections: viewModel.visible) {
-                            if $0 == viewModel.visible.last {
+                        AudiobookVGrid(sections: viewModel.sections) {
+                            if $0 == viewModel.sections.last {
                                 viewModel.lazyLoader.didReachEndOfLoadedContent()
                             }
                         }
@@ -67,8 +60,8 @@ internal struct SeriesView: View {
                             .listRowSeparator(.hidden, edges: .top)
                             .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
                         
-                        AudiobookList(sections: viewModel.visible) {
-                            if $0 == viewModel.visible[max(0, viewModel.visible.endIndex - 4)] {
+                        AudiobookList(sections: viewModel.sections) {
+                            if $0 == viewModel.sections[max(0, viewModel.sections.endIndex - 4)] {
                                 viewModel.lazyLoader.didReachEndOfLoadedContent()
                             }
                         }
@@ -81,14 +74,13 @@ internal struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                /*
-                AudiobookSortFilter(filter: $viewModel.filter, displayType: $viewModel.displayMode, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending) {
-                    viewModel.lazyLoader.sortOrder = viewModel.sortOrder
-                    viewModel.lazyLoader.ascending = viewModel.ascending
-                    
-                    await viewModel.lazyLoader.refresh()
+                Button {
+                    withAnimation(.snappy) {
+                        viewModel.displayType = viewModel.displayType.next
+                    }
+                } label: {
+                    Label(viewModel.displayType == .list ? "display.list" : "display.grid", systemImage: viewModel.displayType == .list ? "list.bullet" : "square.grid.2x2")
                 }
-                 */
             }
         }
         .environment(viewModel)
@@ -101,7 +93,7 @@ internal struct SeriesView: View {
         .refreshable {
             await viewModel.lazyLoader.refresh()
         }
-        .userActivity("io.rfk.shelfplayer.series") { activity in
+        .userActivity("io.rfk.shelfplayer.item") { activity in
             activity.title = viewModel.series.name
             activity.isEligibleForHandoff = true
             activity.persistentIdentifier = viewModel.series.id.description
@@ -116,7 +108,7 @@ internal struct SeriesView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        SeriesView(.fixture, filteredIDs: ["abc"])
+        SeriesView(.fixture)
     }
 }
 #endif

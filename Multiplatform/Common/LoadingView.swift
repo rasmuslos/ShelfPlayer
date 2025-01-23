@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-internal struct LoadingView: View {
+struct LoadingView: View {
     let symbols = ["pc", "server.rack", "cpu", "memorychip"]
     
     var body: some View {
@@ -18,19 +18,12 @@ internal struct LoadingView: View {
     }
 }
 
-internal struct ProgressIndicator: View {
+struct ProgressIndicator: View {
     var tint: Color = .gray
     
     var body: some View {
-        #if DEBUG
-        Image(systemName: "rainbow")
-            .font(.title3)
-            .symbolRenderingMode(.multicolor)
-            .symbolEffect(.variableColor.iterative.dimInactiveLayers)
-        #else
         ProgressView()
             .tint(tint)
-        #endif
     }
 }
 

@@ -105,10 +105,16 @@ public extension PersistenceManager.AuthorizationSubsystem {
             throw PersistenceError.keychainRetrieveFailed
         }
         
+        var exisiting = Array(connections.keys)
+        
         for item in items {
             do {
                 guard let connectionID = item[kSecAttrAccount as String] as? String else {
                     continue
+                }
+                
+                if let index = exisiting.firstIndex(of: connectionID) {
+                    exisiting.remove(at: index)
                 }
                 
                 connections[connectionID] = try fetchConnection(connectionID)
@@ -118,7 +124,33 @@ public extension PersistenceManager.AuthorizationSubsystem {
             }
         }
         
+        for connectionID in exisiting {
+            connections[connectionID] = nil
+        }
+        
         RFNotification[.connectionsChanged].send(connections)
+    }
+    
+    func fetchConnection(_ connectionID: ItemIdentifier.ConnectionID) throws -> Connection {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+            
+            kSecAttrService: service,
+            kSecAttrAccount: connectionID,
+            
+            kSecReturnData: kCFBooleanTrue as Any,
+        ]
+        
+        var data: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &data)
+        
+        guard status == errSecSuccess, let data = data as? Data else {
+            logger.fault("Error retrieving connection data from keychain: \(SecCopyErrorMessageString(status, nil))")
+            throw PersistenceError.keychainRetrieveFailed
+        }
+        
+        return try JSONDecoder().decode(Connection.self, from: data)
     }
     
     func addConnection(_ connection: Connection) throws {
@@ -152,28 +184,6 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
         
         try fetchConnections()
-    }
-    
-    func fetchConnection(_ connectionID: ItemIdentifier.ConnectionID) throws -> Connection {
-        let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrSynchronizable: kSecAttrSynchronizableAny,
-            
-            kSecAttrService: service,
-            kSecAttrAccount: connectionID,
-            
-            kSecReturnData: kCFBooleanTrue as Any,
-        ]
-        
-        var data: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &data)
-        
-        guard status == errSecSuccess, let data = data as? Data else {
-            logger.fault("Error retrieving connection data from keychain: \(SecCopyErrorMessageString(status, nil))")
-            throw PersistenceError.keychainRetrieveFailed
-        }
-        
-        return try JSONDecoder().decode(Connection.self, from: data)
     }
     
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, headers: [HTTPHeader]) throws {

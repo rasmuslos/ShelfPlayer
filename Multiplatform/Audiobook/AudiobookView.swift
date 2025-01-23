@@ -54,6 +54,19 @@ struct AudiobookView: View {
                 }
                 .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
                 
+                if !viewModel.supplementaryPDFs.isEmpty {
+                    DisclosureGroup("audiobooks.pdfs", isExpanded: $viewModel.supplementaryPDFsVisible) {
+                        List {
+                            ForEach(viewModel.supplementaryPDFs, id: \.ino) {
+                                Text($0.fileName)
+                            }
+                        }
+                        .listStyle(.plain)
+                        .frame(height: minimumHeight * CGFloat(viewModel.chapters.count))
+                    }
+                    .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
+                }
+                
                 VStack(spacing: 12) {
                     ForEach(Array(viewModel.sameSeries.keys), id: \.self) { series in
                         AudiobookRow(title: String(localized: "audiobook.similar.series \(series.name)"), small: true, audiobooks: viewModel.sameSeries[series]!)

@@ -47,6 +47,18 @@ internal struct ProgressButton: View {
     @ViewBuilder
     private var markAsUnfinishedButton: some View {
         Button {
+            Task {
+                isLoading = true
+                
+                do {
+                    try await PersistenceManager.shared.progress.markAsListening(item.id)
+                    notifySuccess.toggle()
+                } catch {
+                    notifyError.toggle()
+                }
+                
+                isLoading = false
+            }
         } label: {
             Label("progress.finished.unset", systemImage: "minus")
             

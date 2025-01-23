@@ -10,12 +10,15 @@ import SPFoundation
 
 internal extension Series {
     convenience init(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
+        let audiobooks = payload.books?.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) } ?? []
+        
         self.init(
             id: .init(primaryID: payload.id, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: .series),
             name: payload.name!,
             authors: [],
             description: payload.description,
-            addedAt: Date(timeIntervalSince1970: (payload.addedAt ?? 0) / 1000))
+            addedAt: Date(timeIntervalSince1970: (payload.addedAt ?? 0) / 1000),
+            audiobooks: audiobooks)
     }
     
     convenience init(item: ItemPayload, audiobooks: [ItemPayload], libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {

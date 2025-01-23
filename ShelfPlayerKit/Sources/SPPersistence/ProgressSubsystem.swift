@@ -89,6 +89,7 @@ extension PersistenceManager.ProgressSubsystem {
         }
         
         modelContext.delete(entity)
+        try modelContext.save()
         
         RFNotification[.progressEntityUpdated].send((entity.itemID, nil))
     }
@@ -125,6 +126,8 @@ public extension PersistenceManager.ProgressSubsystem {
         
         let entity = ProgressEntity(persistedEntity: pendingUpdate)
         
+        RFNotification[.progressEntityUpdated].send((itemID, entity))
+        
         do {
             try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
             
@@ -133,8 +136,38 @@ public extension PersistenceManager.ProgressSubsystem {
         } catch {
             logger.info("Caching progress update because of: \(error.localizedDescription).")
         }
+    }
+    
+    func markAsListening(_ itemID: ItemIdentifier) async throws {
+        logger.info("Marking progress as listening for item \(itemID).")
         
+        guard let persistedEntity = entity(itemID) else {
+            logger.warning("Could not mark progress as listening for item \(itemID) because it does not exist.")
+            return
+        }
+        
+        persistedEntity.progress = 0
+        persistedEntity.currentTime = 0
+        
+        persistedEntity.startedAt = nil
+        persistedEntity.finishedAt = nil
+        persistedEntity.lastUpdate = .now
+        
+        persistedEntity.status = .desynchronized
+        
+        try modelContext.save()
+        
+        let entity = ProgressEntity(persistedEntity: persistedEntity)
         RFNotification[.progressEntityUpdated].send((itemID, entity))
+        
+        do {
+            try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
+            
+            persistedEntity.status = .synchronized
+            try modelContext.save()
+        } catch {
+            logger.info("Caching progress update because of: \(error.localizedDescription).")
+        }
     }
     
     /// Insert changes into the database and notify the connection of pending updates
