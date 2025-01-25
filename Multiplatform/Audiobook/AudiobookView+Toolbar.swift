@@ -63,12 +63,20 @@ extension AudiobookView {
                 .toolbar {
                     ToolbarItemGroup(placement: .primaryAction) {
                         if !viewModel.supplementaryPDFs.isEmpty {
-                            if viewModel.supplementaryPDFs.count == 1 {
-                                if viewModel.loadingPDF {
-                                    ProgressIndicator()
-                                } else {
+                            if viewModel.loadingPDF {
+                                ProgressIndicator()
+                            } else {
+                                if viewModel.supplementaryPDFs.count == 1 {
                                     Button("supplementaryPDF.read", systemImage: "book.circle") {
                                         viewModel.presentPDF(viewModel.supplementaryPDFs[0])
+                                    }
+                                } else {
+                                    Menu("supplementaryPDF.read", systemImage: "book.circle") {
+                                        ForEach(viewModel.supplementaryPDFs) { pdf in
+                                            Button(pdf.name) {
+                                                viewModel.presentPDF(pdf)
+                                            }
+                                        }
                                     }
                                 }
                             }

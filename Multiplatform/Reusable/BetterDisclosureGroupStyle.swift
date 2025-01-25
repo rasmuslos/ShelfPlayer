@@ -25,7 +25,7 @@ internal struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
                     Image(systemName: "chevron.down")
                         .font(.subheadline)
                         .rotationEffect(.degrees(configuration.isExpanded ? 0 : -90))
-                        .animation(.linear, value: configuration.isExpanded)
+                        .animation(.linear(duration: 0.05), value: configuration.isExpanded)
                 }
                 .contentShape(.rect)
             }

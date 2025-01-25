@@ -58,11 +58,14 @@ struct AudiobookView: View {
                 if !viewModel.supplementaryPDFs.isEmpty {
                     DisclosureGroup("audiobooks.pdfs", isExpanded: $viewModel.supplementaryPDFsVisible) {
                         List {
-                            ForEach(viewModel.supplementaryPDFs, id: \.ino) {
-                                Text($0.fileName)
+                            ForEach(viewModel.supplementaryPDFs, id: \.ino) { pdf in
+                                Button(pdf.name) {
+                                    viewModel.presentPDF(pdf)
+                                }
                             }
                         }
                         .listStyle(.plain)
+                        .disabled(viewModel.loadingPDF)
                         .frame(height: minimumHeight * CGFloat(viewModel.supplementaryPDFs.count))
                     }
                     .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
