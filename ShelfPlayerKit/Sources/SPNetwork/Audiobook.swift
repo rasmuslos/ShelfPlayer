@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
     func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Author>]) {
-        let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
+        let response = try await response(for: ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
         
         var authors = [HomeRow<Author>]()
         var audiobooks = [HomeRow<Audiobook>]()
@@ -45,7 +45,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             query.append(.init(name: "limit", value: String(describing: limit)))
         }
         
-        let result = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
+        let result = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
         return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
 }

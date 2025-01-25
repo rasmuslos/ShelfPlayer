@@ -18,6 +18,14 @@ extension AudiobookView {
             horizontalSizeClass == .regular
         }
         
+        private var pdfBinding: Binding<Bool> {
+            .init { viewModel.presentedPDF != nil } set: {
+                if !$0 {
+                    viewModel.presentedPDF = nil
+                }
+            }
+        }
+        
         func body(content: Content) -> some View {
             content
                 .navigationTitle(viewModel.audiobook.name)
@@ -53,12 +61,22 @@ extension AudiobookView {
                     }
                 }
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
+                    ToolbarItemGroup(placement: .primaryAction) {
+                        if !viewModel.supplementaryPDFs.isEmpty {
+                            if viewModel.supplementaryPDFs.count == 1 {
+                                if viewModel.loadingPDF {
+                                    ProgressIndicator()
+                                } else {
+                                    Button("supplementaryPDF.read", systemImage: "book.circle") {
+                                        viewModel.presentPDF(viewModel.supplementaryPDFs[0])
+                                    }
+                                }
+                            }
+                        }
+                        
                         DownloadButton(item: viewModel.audiobook, downloadingLabel: false, progressIndicator: true)
                             .labelStyle(.iconOnly)
-                    }
-                    
-                    ToolbarItem(placement: .primaryAction) {
+                        
                         Menu {
                             Button {
                                 viewModel.play()
@@ -82,36 +100,49 @@ extension AudiobookView {
                             }
                             
                             /*
-                            if viewModel.offlineTracker.status == .none {
-                                ProgressButton(item: viewModel.audiobook)
-                                DownloadButton(item: viewModel.audiobook)
-                            } else {
-                                if !viewModel.progressEntity.isFinished {
-                                    ProgressButton(item: viewModel.audiobook)
-                                }
-                                
-                                Menu {
-                                    if viewModel.progressEntity.isFinished {
-                                        ProgressButton(item: viewModel.audiobook)
-                                    }
-                                    
-                                    if viewModel.progressEntity.startedAt != nil {
-                                        Button(role: .destructive) {
-                                            viewModel.resetProgress()
-                                        } label: {
-                                            Label("progress.reset", systemImage: "slash.circle")
-                                        }
-                                    }
-                                    
-                                    DownloadButton(item: viewModel.audiobook)
-                                } label: {
-                                    Text("toolbar.remove")
-                                }
-                            }
+                             if viewModel.offlineTracker.status == .none {
+                             ProgressButton(item: viewModel.audiobook)
+                             DownloadButton(item: viewModel.audiobook)
+                             } else {
+                             if !viewModel.progressEntity.isFinished {
+                             ProgressButton(item: viewModel.audiobook)
+                             }
+                             
+                             Menu {
+                             if viewModel.progressEntity.isFinished {
+                             ProgressButton(item: viewModel.audiobook)
+                             }
+                             
+                             if viewModel.progressEntity.startedAt != nil {
+                             Button(role: .destructive) {
+                             viewModel.resetProgress()
+                             } label: {
+                             Label("progress.reset", systemImage: "slash.circle")
+                             }
+                             }
+                             
+                             DownloadButton(item: viewModel.audiobook)
+                             } label: {
+                             Text("toolbar.remove")
+                             }
+                             }
                              */
                         } label: {
-                            Image(systemName: "ellipsis.circle")
+                            // Image(systemName: "ellipsis.circle")
+                            Label("more", systemImage: "ellipsis.circle")
                         }
+                    }
+                }
+                .fullScreenCover(isPresented: pdfBinding) {
+                    NavigationStack {
+                        PDFViewer(viewModel.presentedPDF!)
+                            .toolbar {
+                                ToolbarItem(placement: .primaryAction) {
+                                    Button("done") {
+                                        viewModel.presentedPDF = nil
+                                    }
+                                }
+                            }
                     }
                 }
         }

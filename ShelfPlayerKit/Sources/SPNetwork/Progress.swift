@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension APIClient {
     func finished(_ finished: Bool, itemID: ItemIdentifier) async throws {
-        try await request(ClientRequest<Empty>(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
+        try await response(for: ClientRequest<Empty>(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
             "isFinished": finished,
         ]))
     }
@@ -19,7 +19,7 @@ public extension APIClient {
 
 public extension APIClient {
     func batchUpdate(progress: [ProgressEntity]) async throws {
-        try await request(ClientRequest<Empty>(path: "me/progress/batch/update", method: .post, body: progress.map {
+        try await response(for: ClientRequest<Empty>(path: "me/progress/batch/update", method: .post, body: progress.map {
             ProgressPayload(id: $0.id,
                             libraryItemId: $0.itemID.apiItemID,
                             episodeId: $0.itemID.apiEpisodeID,
@@ -35,10 +35,10 @@ public extension APIClient {
     }
     
     func delete(progressID: String) async throws {
-        try await request(ClientRequest<Empty>(path: "api/me/progress/\(progressID)", method: .delete))
+        try await response(for: ClientRequest<Empty>(path: "api/me/progress/\(progressID)", method: .delete))
     }
     
     func listeningSessions(with itemID: ItemIdentifier) async throws -> [SessionPayload] {
-        try await request(ClientRequest<SessionsResponse>(path: "api/me/item/listening-sessions/\(itemID.pathComponent)", method: .get)).sessions
+        try await response(for: ClientRequest<SessionsResponse>(path: "api/me/item/listening-sessions/\(itemID.pathComponent)", method: .get)).sessions
     }
 }

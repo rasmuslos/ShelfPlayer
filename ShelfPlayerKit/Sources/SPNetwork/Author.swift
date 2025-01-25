@@ -11,11 +11,11 @@ import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
     func author(with identifier: ItemIdentifier) async throws -> Author {
-        Author(payload: try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), connectionID: connectionID)
+        Author(payload: try await response(for: ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), connectionID: connectionID)
     }
     
     func author(with identifier: ItemIdentifier) async throws -> (Author, [Audiobook], [Series]) {
-        let response = try await request(ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get, query: [
+        let response = try await response(for: ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get, query: [
             URLQueryItem(name: "library", value: identifier.libraryID),
             URLQueryItem(name: "include", value: "items,series"),
         ]))
@@ -28,11 +28,11 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
     }
     
     func authors(from libraryID: String) async throws -> [Author] {
-        try await request(ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: .get)).authors.map { Author(payload: $0, connectionID: connectionID) }
+        try await response(for: ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: .get)).authors.map { Author(payload: $0, connectionID: connectionID) }
     }
     
     func authorID(from libraryID: String, name: String) async throws -> ItemIdentifier {
-        let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
+        let response = try await response(for: ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "1"),
         ]))

@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension APIClient {
     func login(username: String, password: String) async throws -> String {
-        let response = try await request(ClientRequest<AuthorizationResponse>(path: "login", method: .post, body: [
+        let response = try await response(for: ClientRequest<AuthorizationResponse>(path: "login", method: .post, body: [
             "username": username,
             "password": password,
         ]))
@@ -20,16 +20,16 @@ public extension APIClient {
     }
     
     func status() async throws -> StatusResponse {
-        try await request(ClientRequest<StatusResponse>(path: "status", method: .get))
+        try await response(for: ClientRequest<StatusResponse>(path: "status", method: .get))
     }
     
     func me() async throws -> (String, String) {
-        let response = try await request(ClientRequest<MeResponse>(path: "api/me", method: .get))
+        let response = try await response(for: ClientRequest<MeResponse>(path: "api/me", method: .get))
         return (response.id, response.username)
     }
     
     func authorize() async throws -> ([ProgressPayload], [BookmarkPayload]) {
-        let response = try await request(ClientRequest<AuthorizationResponse>(path: "api/authorize", method: .post))
+        let response = try await response(for: ClientRequest<AuthorizationResponse>(path: "api/authorize", method: .post))
         return (response.user.mediaProgress, response.user.bookmarks)
     }
 }
@@ -79,7 +79,7 @@ public extension APIClient {
     }
     
     func openIDExchange(code: String, state: String, verifier: String) async throws -> String {
-        let response = try await request(ClientRequest<AuthorizationResponse>(path: "auth/openid/callback", method: .get, query: [
+        let response = try await response(for: ClientRequest<AuthorizationResponse>(path: "auth/openid/callback", method: .get, query: [
             .init(name: "code", value: code),
             .init(name: "state", value: state),
             .init(name: "code_verifier", value: verifier),

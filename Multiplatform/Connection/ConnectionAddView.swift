@@ -73,13 +73,10 @@ struct ConnectionAddView: View {
                                 SecureField("Password", text: $viewModel.password)
                                     .textContentType(.password)
                                 
-                                if viewModel.loading {
-                                    ProgressIndicator()
-                                } else {
-                                    Button("connection.login") {
-                                        viewModel.proceed()
-                                    }
+                                Button("connection.login") {
+                                    viewModel.proceed()
                                 }
+                                .disabled(viewModel.loading)
                             case .openID:
                                 ProgressIndicator()
                             }
@@ -238,6 +235,10 @@ private final class ViewModel: Sendable {
         }
         
         let client = APIClient(connectionID: "temporary", host: url, headers: headers.compactMap(\.materialized))
+        
+        #if DEBUG
+        client.verbose = true
+        #endif
         
         do {
             withAnimation {
