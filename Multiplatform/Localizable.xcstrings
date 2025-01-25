@@ -2804,7 +2804,6 @@
       }
     },
     "done" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4656,6 +4655,9 @@
           }
         }
       }
+    },
+    "more" : {
+
     },
     "Name" : {
 
@@ -7202,6 +7204,9 @@
           }
         }
       }
+    },
+    "supplementaryPDF.read" : {
+
     },
     "timeline" : {
       "localizations" : {

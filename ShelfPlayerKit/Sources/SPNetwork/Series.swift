@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
     func seriesID(name: String, libraryID: String) async throws -> ItemIdentifier {
-        let response = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
+        let response = try await response(for: ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "10"),
         ]))
@@ -35,7 +35,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
     }
     
     func series(with identifier: ItemIdentifier) async throws -> Series {
-        Series(payload: try await request(ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get)), libraryID: identifier.libraryID, connectionID: connectionID)
+        Series(payload: try await response(for: ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get)), libraryID: identifier.libraryID, connectionID: connectionID)
     }
     
     func series(in libraryID: String, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
@@ -53,7 +53,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query))
+        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query))
         return (response.results.map { Series(payload: $0, libraryID: libraryID, connectionID: connectionID) }, response.total)
     }
     
@@ -69,7 +69,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query))
+        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query))
         return (response.results.compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }, response.total)
     }
 }

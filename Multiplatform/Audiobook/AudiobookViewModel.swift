@@ -22,6 +22,8 @@ final class AudiobookViewModel: Sendable {
     
     var library: Library!
     
+    var presentedPDF: Data?
+    
     var toolbarVisible: Bool
     var chaptersVisible: Bool
     var sessionsVisible: Bool
@@ -38,6 +40,8 @@ final class AudiobookViewModel: Sendable {
     
     private(set) var progressEntity: ProgressEntity.UpdatingProgressEntity?
     private(set) var downloadTracker: DownloadTracker?
+    
+    private(set) var loadingPDF: Bool
     
     private(set) var sessions: [SessionPayload]
     
@@ -63,6 +67,8 @@ final class AudiobookViewModel: Sendable {
         sameAuthor = [:]
         sameSeries = [:]
         sameNarrator = [:]
+        
+        loadingPDF = false
         
         sessions = []
         
@@ -97,10 +103,21 @@ extension AudiobookViewModel {
         }
     }
     
+    func presentPDF(_ pdf: PlayableItem.SupplementaryPDF) {
+        presentedPDF = nil
+        loadingPDF = true
+        
+        loadPDF(pdf)
+    }
+    
     nonisolated func play() {
         Task {
             do {
                 try await AudioPlayer.shared.play(audiobook)
+                
+                await MainActor.run {
+                    notifySuccess.toggle()
+                }
             } catch {
                 await MainActor.run {
                     notifyError.toggle()
@@ -113,6 +130,10 @@ extension AudiobookViewModel {
         Task {
             do {
                 try await PersistenceManager.shared.progress.delete(itemID: audiobook.id)
+                
+                await MainActor.run {
+                    notifySuccess.toggle()
+                }
             } catch {
                 await MainActor.run {
                     notifyError.toggle()
@@ -123,6 +144,28 @@ extension AudiobookViewModel {
 }
 
 private extension AudiobookViewModel {
+    nonisolated func loadPDF(_ pdf: PlayableItem.SupplementaryPDF) {
+        Task {
+            let audiobookID = await audiobook.id
+            
+            do {
+                let data = try await ABSClient[audiobookID.connectionID].pdf(from: audiobookID, ino: pdf.ino)
+                
+                await MainActor.withAnimation {
+                    notifySuccess.toggle()
+                    
+                    self.loadingPDF = false
+                    self.presentedPDF = data
+                }
+            } catch {
+                await MainActor.run {
+                    loadingPDF = false
+                    notifyError.toggle()
+                }
+            }
+        }
+    }
+    
     nonisolated func loadAudiobook() async {
         guard let (item, _, chapters, supplementaryPDFs) = try? await ABSClient[audiobook.id.connectionID].playableItem(itemID: audiobook.id) else {
             return

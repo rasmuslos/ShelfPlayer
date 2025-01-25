@@ -14,7 +14,7 @@ public extension APIClient {
         var systemInfo = utsname()
         uname(&systemInfo)
         
-        let response = try await request(ClientRequest<ItemPayload>(path: "api/items/\(itemID.pathComponent)/play", method: .post, body: [
+        let response = try await response(for: ClientRequest<ItemPayload>(path: "api/items/\(itemID.pathComponent)/play", method: .post, body: [
             "deviceInfo": [
                 "deviceId": ShelfPlayerKit.clientID,
                 "clientName": "ShelfPlayer",
@@ -67,18 +67,18 @@ public extension APIClient {
             startedAt: started.timeIntervalSince1970 * 1000,
             updatedAt: updated.timeIntervalSince1970 * 1000)
         
-        try await request(ClientRequest<Empty>(path: "api/session/local", method: .post, body: session))
+        try await response(for: ClientRequest<Empty>(path: "api/session/local", method: .post, body: session))
     }
     
     func reportUpdate(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        try await request(ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/sync", method: .post, body: [
+        try await response(for: ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/sync", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
         ]))
     }
     func reportClose(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        try await request(ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/close", method: .post, body: [
+        try await response(for: ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/close", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,

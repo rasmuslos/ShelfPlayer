@@ -53,6 +53,7 @@ struct AudiobookView: View {
                         .padding(.top, 8)
                 }
                 .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
+                .padding(.bottom, 16)
                 
                 if !viewModel.supplementaryPDFs.isEmpty {
                     DisclosureGroup("audiobooks.pdfs", isExpanded: $viewModel.supplementaryPDFsVisible) {
@@ -62,7 +63,7 @@ struct AudiobookView: View {
                             }
                         }
                         .listStyle(.plain)
-                        .frame(height: minimumHeight * CGFloat(viewModel.chapters.count))
+                        .frame(height: minimumHeight * CGFloat(viewModel.supplementaryPDFs.count))
                     }
                     .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
                 }
