@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
     func audiobooks(from libraryID: String, narratorName: String, page: Int, limit: Int) async throws -> [Audiobook] {
-        try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: [
+        try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: [
             URLQueryItem(name: "page", value: String(describing: page)),
             URLQueryItem(name: "limit", value: String(describing: limit)),
             URLQueryItem(name: "filter", value: "narrators.\(Data(narratorName.utf8).base64EncodedString())"),

@@ -11,7 +11,7 @@ import SPFoundation
 
 extension APIClient {
     func item(itemID: ItemIdentifier) async throws -> ItemPayload {
-        try await request(ClientRequest(path: "api/items/\(itemID.apiItemID)", method: .get, query: [
+        try await response(for: ClientRequest(path: "api/items/\(itemID.apiItemID)", method: .get, query: [
             URLQueryItem(name: "expanded", value: "1"),
         ]))
     }
@@ -61,7 +61,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
     }
     
     func items(in library: Library, search: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {
-        let payload = try await request(ClientRequest<SearchResponse>(path: "api/libraries/\(library.id)/search", method: .get, query: [
+        let payload = try await response(for: ClientRequest<SearchResponse>(path: "api/libraries/\(library.id)/search", method: .get, query: [
             URLQueryItem(name: "q", value: search),
         ]))
         
@@ -71,5 +71,9 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
             payload.authors?.map { Author(payload: $0, connectionID: library.connectionID) } ?? [],
             payload.series?.map { Series(item: $0.series, audiobooks: $0.books, libraryID: library.id, connectionID: library.connectionID) } ?? []
         )
+    }
+    
+    func pdf(from itemID: ItemIdentifier, ino: String) async throws -> Data {
+        try await URLSession.shared.data(for: try await request(ClientRequest<Data>(path: "api/items/\(itemID.primaryID)/ebook/\(ino)", method: .get))).0
     }
 }

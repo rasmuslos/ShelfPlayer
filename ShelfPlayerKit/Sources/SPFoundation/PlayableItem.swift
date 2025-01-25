@@ -40,7 +40,7 @@ public extension PlayableItem {
         }
     }
     
-    struct SupplementaryPDF: Sendable {
+    struct SupplementaryPDF: Identifiable, Sendable {
         public let ino: String
         
         public let fileName: String
@@ -50,6 +50,10 @@ public extension PlayableItem {
             self.ino = ino
             self.fileName = fileName
             self.fileExtension = fileExtension
+        }
+        
+        public var id: String {
+            ino
         }
         
         public var name: String {

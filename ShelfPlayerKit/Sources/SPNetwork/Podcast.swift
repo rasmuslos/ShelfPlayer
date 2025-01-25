@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
     func home(for libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
-        let response = try await request(ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
+        let response = try await response(for: ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
         
         var episodes = [HomeRow<Episode>]()
         var podcasts = [HomeRow<Podcast>]()
@@ -32,7 +32,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
     }
     
     func podcast(with identifier: ItemIdentifier) async throws -> (Podcast, [Episode]) {
-        let item = try await request(ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: .get))
+        let item = try await response(for: ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: .get))
         let podcast = Podcast(payload: item, connectionID: connectionID)
         
         guard let episodes = item.media?.episodes else {
@@ -58,7 +58,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         
         query.append(.init(name: "include", value: "numEpisodesIncomplete"))
         
-        let response = try await request(ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
+        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
         return (response.results.map { Podcast(payload: $0, connectionID: connectionID) }, response.total)
     }
 }
