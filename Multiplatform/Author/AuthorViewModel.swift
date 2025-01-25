@@ -8,90 +8,56 @@
 import Foundation
 import SwiftUI
 import Defaults
+import DefaultsMacros
 import ShelfPlayerKit
 
-@Observable
-internal final class AuthorViewModel {
-    @MainActor private(set) var author: Author
-    @MainActor var library: Library!
+@Observable @MainActor
+final class AuthorViewModel {
+    let author: Author
     
-    @MainActor private(set) var _series: [Series]
-    @MainActor private(set) var _audiobooks: [Audiobook]
+    @ObservableDefault(.audiobooksFilter) @ObservationIgnored
+    var filter: ItemFilter
+    @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
+    var displayType: ItemDisplayType
     
-    @MainActor internal var filter: ItemFilter {
+    @ObservableDefault(.audiobooksSortOrder) @ObservationIgnored
+    var sortOrder: AudiobookSortOrder
+    @ObservableDefault(.audiobooksAscending) @ObservationIgnored
+    var ascending: Bool
+    
+    // let seriesLoader: LazyLoadHelper<Series, Void?>
+    var audiobooksLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder?>!
+    
+    var library: Library! {
         didSet {
-            Defaults[.audiobooksFilter] = filter
+            audiobooksLoader.library = library
         }
     }
-    @MainActor internal var displayMode: ItemDisplayType {
-        didSet {
-            Defaults[.audiobooksDisplayType] = displayMode
-        }
-    }
     
-    @MainActor var ascending: Bool
-    @MainActor var sortOrder: AudiobookSortOrder
-    
-    @MainActor private(set) var collapseSeries: Bool
-    
-    @MainActor var descriptionSheetVisible: Bool
-    @MainActor private(set) var errorNotify: Bool
+    var isDescriptionSheetVisible: Bool
+    private(set) var notifyError: Bool
     
     @MainActor
-    init(author: Author, series: [Series], audiobooks: [Audiobook]) {
+    init(author: Author) {
         self.author = author
-        _series = series
-        _audiobooks = audiobooks
         
-        ascending = false
-        sortOrder = .released
+        isDescriptionSheetVisible = false
+        notifyError = false
         
-        filter = Defaults[.audiobooksFilter]
-        displayMode = Defaults[.audiobooksDisplayType]
-        
-        // Disabled
-        collapseSeries = false
-        
-        errorNotify = false
-        descriptionSheetVisible = false
+        audiobooksLoader = .audiobooks(filtered: author.id, sortOrder: sortOrder, ascending: ascending)
     }
 }
 
-internal extension AuthorViewModel {
-    @MainActor
-    var audiobooks: [AudiobookSection] {
-        if collapseSeries {
-            // return AudiobookSection.filterSortGroup(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
-        }
-        
-        // return Audiobook.filterSort(_audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
-        return []
+extension AuthorViewModel {
+    var sections: [AudiobookSection] {
+        audiobooksLoader.items.map { .audiobook(audiobook: $0) }
     }
     
-    @MainActor
-    var series: [Series] {
-        guard !collapseSeries else {
-            return []
-        }
-        
-        return _series.sorted()
-    }
-    
-    func load() async {
-        /*
-        guard let (author, audiobooks, series) = try? await AudiobookshelfClient.shared.author(authorId: author.id, libraryID: library.id) else {
-            await MainActor.run {
-                errorNotify.toggle()
+    nonisolated func load() {
+        Task {
+            await withTaskGroup(of: Void.self) {
+                $0.addTask { await self.audiobooksLoader.initialLoad() }
             }
-            
-            return
         }
-        
-        await MainActor.withAnimation {
-            self.author = author
-            self._series = series
-            self._audiobooks = audiobooks
-        }
-         */
     }
 }

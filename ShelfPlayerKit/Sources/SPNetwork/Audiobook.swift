@@ -48,4 +48,37 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         let result = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
         return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
+    
+    func audiobooks(filtered identifier: ItemIdentifier, sortOrder: AudiobookSortOrder?, ascending: Bool?, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
+        let prefix: String
+        
+        if identifier.type == .author {
+            prefix = "authors"
+        } else if identifier.type == .series {
+            prefix = "series"
+        } else {
+            throw APIClientError.missing
+        }
+        
+        var query: [URLQueryItem] = [
+            .init(name: "filter", value: "\(prefix).\(Data(identifier.primaryID.utf8).base64EncodedString())"),
+        ]
+        
+        if let page {
+            query.append(.init(name: "page", value: String(page)))
+        }
+        if let limit {
+            query.append(.init(name: "limit", value: String(limit)))
+        }
+        
+        if let sortOrder {
+            query.append(.init(name: "sort", value: sortOrder.queryValue))
+        }
+        if let ascending {
+            query.append(.init(name: "desc", value: ascending ? "0" : "1"))
+        }
+        
+        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query))
+        return (response.results.compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }, response.total)
+    }
 }

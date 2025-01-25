@@ -27,25 +27,21 @@ internal struct SeriesList: View {
 
 internal extension SeriesList {
     struct ListItem: View {
-        let name: String
-        let covers: [URL]
-        let itemCount: Int
+        let name: String?
+        let audiobookIDs: [ItemIdentifier]
         
         init(series: Series) {
             self.name = series.name
-            self.covers = [] //series.covers
-            
-            itemCount = covers.count
+            self.audiobookIDs = series.audiobooks.map(\.id)
         }
         
-        init(name: String, covers: [URL], itemCount: Int) {
+        init(name: String?, audiobookIDs: [ItemIdentifier]) {
             self.name = name
-            self.covers = covers
-            self.itemCount = itemCount
+            self.audiobookIDs = audiobookIDs
         }
         
         private var coverCount: Int {
-            min(covers.count, 4)
+            min(audiobookIDs.count, 4)
         }
         private var leadingPadding: CGFloat {
             if coverCount > 3 {
@@ -70,21 +66,21 @@ internal extension SeriesList {
                         let offset: CGFloat = index == 0 ? 0 : index == 1 ? 16  : index == 2 ? 30  : index == 3 ? 42  : 0
                         let radius: CGFloat = index == 0 ? 8 : index == 1 ? 7   : index == 2 ? 6    : index == 3 ? 5     : 0
                         
-                        /*
-                        ItemImage(cover: covers[$0], cornerRadius: radius)
+                        ItemImage(itemID: audiobookIDs[$0], cornerRadius: radius)
                             .frame(height: 60)
                             .scaleEffect(factor)
                             .offset(x: offset)
-                         */
                     }
                 }
                 .frame(height: 60)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(name)
-                        .modifier(SerifModifier())
+                    if let name {
+                        Text(name)
+                            .modifier(SerifModifier())
+                    }
                     
-                    Text("series.count \(itemCount)")
+                    Text("series.count \(audiobookIDs.count)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

@@ -3375,6 +3375,7 @@
       }
     },
     "error.unavailable.author" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6624,6 +6625,7 @@
       }
     },
     "series" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

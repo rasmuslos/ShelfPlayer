@@ -14,22 +14,24 @@ struct AuthorView: View {
     
     @State private var viewModel: AuthorViewModel
     
-    init(_ author: Author, series: [Series] = [], audiobooks: [Audiobook] = []) {
-        viewModel = .init(author: author, series: series, audiobooks: audiobooks)
+    init(_ author: Author) {
+        viewModel = .init(author: author)
     }
     
-    var loadingPresentation: some View {
-        VStack(spacing: 0) {
-            Header()
-            LoadingView()
+    private var loadingPresentation: some View {
+        UnavailableWrapper {
+            VStack(spacing: 0) {
+                Header()
+                LoadingView.Inner()
+            }
         }
     }
     
-    var gridPresentation: some View {
+    private var gridPresentation: some View {
         ScrollView {
             Header()
             
-            if !viewModel.audiobooks.isEmpty {
+            if !viewModel.sections.isEmpty {
                 HStack(spacing: 0) {
                     RowTitle(title: String(localized: "books"), fontDesign: .serif)
                     Spacer()
@@ -37,10 +39,15 @@ struct AuthorView: View {
                 .padding(.top, 16)
                 .padding(.horizontal, 20)
                 
-                AudiobookVGrid(sections: viewModel.audiobooks)
-                    .padding(.horizontal, 20)
+                AudiobookVGrid(sections: viewModel.sections) {
+                    if $0 == viewModel.sections.last {
+                        viewModel.audiobooksLoader.didReachEndOfLoadedContent()
+                    }
+                }
+                .padding(.horizontal, 20)
             }
             
+            /*
             if !viewModel.series.isEmpty {
                 HStack(spacing: 0) {
                     RowTitle(title: String(localized: "series"), fontDesign: .serif)
@@ -52,22 +59,28 @@ struct AuthorView: View {
                 SeriesGrid(series: viewModel.series)
                     .padding(.horizontal, 20)
             }
+             */
         }
     }
-    var listPresentation: some View {
+    private var listPresentation: some View {
         List {
             Header()
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
-            if !viewModel.audiobooks.isEmpty {
+            if !viewModel.sections.isEmpty {
                 RowTitle(title: String(localized: "books"), fontDesign: .serif)
                     .listRowSeparator(.hidden, edges: .top)
                     .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
                 
-                AudiobookList(sections: viewModel.audiobooks)
+                AudiobookList(sections: viewModel.sections) {
+                    if $0 == viewModel.sections[max(0, viewModel.sections.endIndex - 4)] {
+                        viewModel.audiobooksLoader.didReachEndOfLoadedContent()
+                    }
+                }
             }
             
+            /*
             if !viewModel.series.isEmpty {
                 RowTitle(title: String(localized: "series"), fontDesign: .serif)
                     .listRowSeparator(.hidden, edges: .top)
@@ -75,16 +88,17 @@ struct AuthorView: View {
                 
                 SeriesList(series: viewModel.series)
             }
+             */
         }
         .listStyle(.plain)
     }
     
     var body: some View {
         Group {
-            if viewModel.audiobooks.isEmpty {
+            if viewModel.audiobooksLoader.items.isEmpty {
                 loadingPresentation
             } else {
-                switch viewModel.displayMode {
+                switch viewModel.displayType {
                     case .grid:
                         gridPresentation
                     case .list:
@@ -96,23 +110,23 @@ struct AuthorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobookSortFilter(filter: $viewModel.filter, displayType: $viewModel.displayMode, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                AudiobookSortFilter(filter: $viewModel.filter, displayType: $viewModel.displayType, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
             }
         }
         // .modifier(NowPlaying.SafeAreaModifier())
-        .sensoryFeedback(.error, trigger: viewModel.errorNotify)
+        .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .environment(viewModel)
         .environment(\.displayContext, .author(author: viewModel.author))
         .onAppear {
             viewModel.library = library
         }
         .task {
-            // await viewModel.load()
+            viewModel.load()
         }
         .refreshable {
-            // await viewModel.load()
+            viewModel.load()
         }
-        .sheet(isPresented: $viewModel.descriptionSheetVisible) {
+        .sheet(isPresented: $viewModel.isDescriptionSheetVisible) {
             NavigationStack {
                 ScrollView {
                     HStack(spacing: 0) {
@@ -131,16 +145,14 @@ struct AuthorView: View {
                 .presentationDragIndicator(.visible)
             }
         }
-        .userActivity("io.rfk.shelfplayer.author") {
-            $0.title = viewModel.author.name
-            $0.isEligibleForHandoff = true
-            // $0.persistentIdentifier = viewModel.author.id
-            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.author)
-            $0.userInfo = [:
-                // "libraryID": viewModel.author.libraryID,
-                // "authorID": viewModel.author.id,
-            ]
-            // $0.webpageURL = viewModel.author.url
+        .userActivity("io.rfk.shelfplayer.item") { activity in
+            activity.title = viewModel.author.name
+            activity.isEligibleForHandoff = true
+            activity.persistentIdentifier = viewModel.author.description
+            
+            Task {
+                activity.webpageURL = try await viewModel.author.id.url
+            }
         }
     }
 }

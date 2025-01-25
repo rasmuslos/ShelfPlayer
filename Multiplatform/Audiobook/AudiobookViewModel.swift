@@ -34,7 +34,7 @@ final class AudiobookViewModel: Sendable {
     private(set) var chapters: [Chapter]
     private(set) var supplementaryPDFs: [PlayableItem.SupplementaryPDF]
     
-    private(set) var sameAuthor: [Author: [Audiobook]]
+    private(set) var sameAuthor: [String: [Audiobook]]
     private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
     private(set) var sameNarrator: [String: [Audiobook]]
     
@@ -180,12 +180,12 @@ private extension AudiobookViewModel {
     
     nonisolated func loadAuthors() async {
         let current = await audiobook
-        var resolved = [Author: [Audiobook]]()
+        var resolved = [String: [Audiobook]]()
         
         for author in await audiobook.authors {
             do {
                 let authorID = try await ABSClient[audiobook.id.connectionID].authorID(from: audiobook.id.libraryID, name: author)
-                var (author, audiobooks, _) = try await ABSClient[audiobook.id.connectionID].author(with: authorID)
+                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: authorID, sortOrder: .released, ascending: true, limit: 20, page: 0)
                 
                 audiobooks = audiobooks.filter { $0 != current }
                 
@@ -222,7 +222,7 @@ private extension AudiobookViewModel {
                     seriesID = try await ABSClient[audiobook.id.connectionID].seriesID(name: series.name, libraryID: audiobook.id.libraryID)
                 }
                 
-                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(series: seriesID, limit: 200, page: 0)
+                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: 20, page: 0)
                 
                 audiobooks = audiobooks.filter { $0 != current }
                 

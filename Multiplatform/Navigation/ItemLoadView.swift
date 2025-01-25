@@ -36,8 +36,17 @@ struct ItemLoadView: View {
         } else {
             if failed {
                 ErrorView()
+                    .refreshable {
+                        load()
+                    }
             } else {
                 LoadingView()
+                    .task {
+                        load()
+                    }
+                    .refreshable {
+                        load()
+                    }
             }
         }
     }
@@ -60,6 +69,10 @@ struct ItemLoadView: View {
                     item = try await ABSClient[id.connectionID].series(with: id)
                 case .podcast:
                     (item, _) = try await ABSClient[id.connectionID].podcast(with: id)
+                }
+                
+                await MainActor.withAnimation {
+                    self.item = item
                 }
             } catch {
                 await MainActor.withAnimation {
