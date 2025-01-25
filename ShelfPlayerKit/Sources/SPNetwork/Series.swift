@@ -56,20 +56,4 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query))
         return (response.results.map { Series(payload: $0, libraryID: libraryID, connectionID: connectionID) }, response.total)
     }
-    
-    func audiobooks(series identifier: ItemIdentifier, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
-        var query: [URLQueryItem] = [
-            .init(name: "filter", value: "series.\(Data(identifier.primaryID.utf8).base64EncodedString())"),
-        ]
-        
-        if let page {
-            query.append(.init(name: "page", value: String(page)))
-        }
-        if let limit {
-            query.append(.init(name: "limit", value: String(limit)))
-        }
-        
-        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query))
-        return (response.results.compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }, response.total)
-    }
 }

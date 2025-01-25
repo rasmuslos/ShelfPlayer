@@ -14,19 +14,6 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         Author(payload: try await response(for: ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), connectionID: connectionID)
     }
     
-    func author(with identifier: ItemIdentifier) async throws -> (Author, [Audiobook], [Series]) {
-        let response = try await response(for: ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get, query: [
-            URLQueryItem(name: "library", value: identifier.libraryID),
-            URLQueryItem(name: "include", value: "items,series"),
-        ]))
-        
-        let author = Author(payload: response, connectionID: connectionID)
-        let audiobooks = (response.libraryItems ?? []).compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }
-        let series = (response.series ?? []).map { Series(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }
-        
-        return (author, audiobooks, series)
-    }
-    
     func authors(from libraryID: String) async throws -> [Author] {
         try await response(for: ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: .get)).authors.map { Author(payload: $0, connectionID: connectionID) }
     }

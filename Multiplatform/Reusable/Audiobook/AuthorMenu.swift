@@ -32,7 +32,7 @@ internal struct AuthorMenu: View {
                 buildLabel(authorName)
             }
         } else {
-            NavigationLink(destination: AuthorLoadView(authorName: authorName)) {
+            NavigationLink(destination: AuthorIDLoadView(authorName: authorName)) {
                 buildLabel(authorName)
             }
         }

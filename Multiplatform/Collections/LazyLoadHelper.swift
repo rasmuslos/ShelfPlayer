@@ -11,7 +11,7 @@ import Defaults
 import ShelfPlayerKit
 
 @Observable @MainActor
-final class LazyLoadHelper<T: Item, O: Sendable>: Sendable {
+final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
     private nonisolated static var PAGE_SIZE: Int { 100 }
     
     private(set) var items: [T]
@@ -108,9 +108,9 @@ extension LazyLoadHelper {
         })
     }
     
-    static func audiobooks(seriesID: ItemIdentifier) -> LazyLoadHelper<Audiobook, ()?> {
-        .init(sortOrder: nil, ascending: true, loadMore: { page, _, _, _ in
-            try await ABSClient[seriesID.connectionID].audiobooks(series: seriesID, limit: PAGE_SIZE, page: page)
+    static func audiobooks(filtered: ItemIdentifier, sortOrder: AudiobookSortOrder?, ascending: Bool?) -> LazyLoadHelper<Audiobook, AudiobookSortOrder?> {
+        .init(sortOrder: sortOrder, ascending: ascending ?? true, loadMore: { page, sortOrder, ascending, _ in
+            try await ABSClient[filtered.connectionID].audiobooks(filtered: filtered, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     

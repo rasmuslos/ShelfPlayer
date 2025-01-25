@@ -32,7 +32,7 @@ internal extension AuthorView {
                 
                 if let description = viewModel.author.description {
                     Button {
-                        viewModel.descriptionSheetVisible.toggle()
+                        viewModel.isDescriptionSheetVisible.toggle()
                     } label: {
                         Text(description)
                             .lineLimit(3)

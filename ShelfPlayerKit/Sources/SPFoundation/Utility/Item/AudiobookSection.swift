@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum AudiobookSection {
+public enum AudiobookSection: Sendable {
     case audiobook(audiobook: Audiobook)
     case series(seriesID: ItemIdentifier, seriesName: String, audiobookIDs: [ItemIdentifier])
 }

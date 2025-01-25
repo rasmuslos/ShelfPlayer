@@ -80,12 +80,12 @@ extension SeriesGrid {
                     } else {
                         VStack(spacing: 8) {
                             HStack(spacing: 8) {
-                             ItemImage(itemID: audiobookIDs[0])
-                             ItemImage(itemID: audiobookIDs[1])
+                                ItemImage(itemID: audiobookIDs[0])
+                                ItemImage(itemID: audiobookIDs[1])
                             }
                             HStack(spacing: 8) {
-                             ItemImage(itemID: audiobookIDs[2])
-                             ItemImage(itemID: audiobookIDs[3])
+                                ItemImage(itemID: audiobookIDs[2])
+                                ItemImage(itemID: audiobookIDs[3])
                             }
                         }
                     }

@@ -76,7 +76,7 @@ struct AudiobookView: View {
                         AudiobookRow(title: String(localized: "audiobook.similar.series \(series.name)"), small: true, audiobooks: viewModel.sameSeries[series]!)
                     }
                     ForEach(Array(viewModel.sameAuthor.keys), id: \.self) { author in
-                        AudiobookRow(title: String(localized: "audiobook.similar.author \(author.name)"), small: true, audiobooks: viewModel.sameAuthor[author]!)
+                        AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), small: true, audiobooks: viewModel.sameAuthor[author]!)
                     }
                     ForEach(Array(viewModel.sameNarrator.keys), id: \.self) { narrator in
                         AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator[narrator]!)

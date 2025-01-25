@@ -15,7 +15,7 @@ import ShelfPlayerKit
 final class SeriesViewModel {
     let series: Series
     
-    let lazyLoader: LazyLoadHelper<Audiobook, Void?>
+    let lazyLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder?>
     
     @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
     var displayType: ItemDisplayType
@@ -29,7 +29,7 @@ final class SeriesViewModel {
     @MainActor
     init(series: Series) {
         self.series = series
-        lazyLoader = .audiobooks(seriesID: series.id)
+        lazyLoader = .audiobooks(filtered: series.id, sortOrder: nil, ascending: nil)
     }
     
     var audiobookIDs: [ItemIdentifier] {

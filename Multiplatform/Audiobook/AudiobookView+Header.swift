@@ -69,7 +69,7 @@ private struct Title: View {
                 .buttonStyle(.plain)
             } else if let authorName = viewModel.audiobook.authors.first {
                 NavigationLink {
-                    AuthorLoadView(authorName: authorName)
+                    AuthorIDLoadView(authorName: authorName)
                 } label: {
                     authorLabel
                 }
