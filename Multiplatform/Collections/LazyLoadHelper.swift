@@ -7,11 +7,14 @@
 
 import Foundation
 import SwiftUI
+import OSLog
 import Defaults
 import ShelfPlayerKit
 
 @Observable @MainActor
 final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
+    private let logger: Logger
+    
     private nonisolated static var PAGE_SIZE: Int { 100 }
     
     private(set) var items: [T]
@@ -30,6 +33,8 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
     
     @MainActor
     init(sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ library: Library) async throws -> ([T], Int)) {
+        logger = .init(subsystem: "io.rfk.shelfPlayer", category: "LazyLoader")
+        
         self.sortOrder = sortOrder
         self.ascending = ascending
         
@@ -44,6 +49,7 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
     }
     
     nonisolated func initialLoad() {
+        logger.info("Begin lazy loading \(T.self)")
         didReachEndOfLoadedContent()
     }
     nonisolated func refresh() async {
@@ -77,6 +83,8 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
                     finished = true
                 }
                 
+                logger.info("Finished loading \(itemCount) \(T.self)s")
+                
                 return
             }
             
@@ -91,7 +99,11 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
                     
                     working = false
                 }
+                
+                logger.info("Received \(received.count) \(T.self)s out of \(totalCount) (had \(itemCount))")
             } catch {
+                logger.error("Error loading more \(T.self): \(error)")
+                
                 await MainActor.withAnimation { [self] in
                     failed = true
                 }
@@ -117,6 +129,12 @@ extension LazyLoadHelper {
     static var series: LazyLoadHelper<Series, SeriesSortOrder> {
         .init(sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: {
             try await ABSClient[$3.connectionID].series(in: $3.id, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
+        })
+    }
+    
+    static func series(filtered: ItemIdentifier, sortOrder: SeriesSortOrder, ascending: Bool) -> LazyLoadHelper<Series, SeriesSortOrder> {
+        .init(sortOrder: sortOrder, ascending: ascending, loadMore: { page, sortOrder, ascending, library in
+            try await ABSClient[filtered.connectionID].series(in: library.id, filtered: filtered, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     

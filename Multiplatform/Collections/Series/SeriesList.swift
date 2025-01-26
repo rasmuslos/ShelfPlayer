@@ -43,19 +43,6 @@ internal extension SeriesList {
         private var coverCount: Int {
             min(audiobookIDs.count, 4)
         }
-        private var leadingPadding: CGFloat {
-            if coverCount > 3 {
-                return 54
-            } else if coverCount > 2 {
-                return 42
-            } else if coverCount > 1 {
-                return 28
-            } else if coverCount > 0 {
-                return 12
-            }
-            
-            return 0
-        }
         
         var body: some View {
             HStack(spacing: 0) {
@@ -72,11 +59,12 @@ internal extension SeriesList {
                             .offset(x: offset)
                     }
                 }
-                .frame(height: 60)
+                .frame(width: 95, height: 60, alignment: .leading)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     if let name {
                         Text(name)
+                            .lineLimit(2)
                             .modifier(SerifModifier())
                     }
                     
@@ -84,7 +72,7 @@ internal extension SeriesList {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                .padding(.leading, leadingPadding)
+                .padding(.leading, 12)
             }
         }
     }

@@ -31,7 +31,23 @@ struct AuthorView: View {
         ScrollView {
             Header()
             
-            if !viewModel.sections.isEmpty {
+            if !viewModel.seriesLoader.items.isEmpty {
+                HStack(spacing: 0) {
+                    RowTitle(title: String(localized: "series"), fontDesign: .serif)
+                    Spacer()
+                }
+                .padding(.top, 16)
+                .padding(.horizontal, 20)
+                
+                SeriesGrid(series: viewModel.seriesLoader.items) {
+                    if $0 == viewModel.seriesLoader.items.last {
+                        viewModel.seriesLoader.didReachEndOfLoadedContent()
+                    }
+                }
+                .padding(.horizontal, 20)
+            }
+            
+            if !viewModel.sections.isEmpty || !viewModel.seriesLoader.items.isEmpty {
                 HStack(spacing: 0) {
                     RowTitle(title: String(localized: "books"), fontDesign: .serif)
                     Spacer()
@@ -46,20 +62,6 @@ struct AuthorView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            
-            /*
-            if !viewModel.series.isEmpty {
-                HStack(spacing: 0) {
-                    RowTitle(title: String(localized: "series"), fontDesign: .serif)
-                    Spacer()
-                }
-                .padding(.top, 16)
-                .padding(.horizontal, 20)
-                
-                SeriesGrid(series: viewModel.series)
-                    .padding(.horizontal, 20)
-            }
-             */
         }
     }
     private var listPresentation: some View {
@@ -67,6 +69,18 @@ struct AuthorView: View {
             Header()
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            
+            if !viewModel.seriesLoader.items.isEmpty {
+                RowTitle(title: String(localized: "series"), fontDesign: .serif)
+                    .listRowSeparator(.hidden, edges: .top)
+                    .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+                
+                SeriesList(series: viewModel.seriesLoader.items) {
+                    if $0 == viewModel.seriesLoader.items[max(0, viewModel.seriesLoader.items.endIndex - 4)] {
+                        viewModel.seriesLoader.didReachEndOfLoadedContent()
+                    }
+                }
+            }
             
             if !viewModel.sections.isEmpty {
                 RowTitle(title: String(localized: "books"), fontDesign: .serif)
@@ -79,16 +93,6 @@ struct AuthorView: View {
                     }
                 }
             }
-            
-            /*
-            if !viewModel.series.isEmpty {
-                RowTitle(title: String(localized: "series"), fontDesign: .serif)
-                    .listRowSeparator(.hidden, edges: .top)
-                    .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
-                
-                SeriesList(series: viewModel.series)
-            }
-             */
         }
         .listStyle(.plain)
     }
@@ -99,10 +103,10 @@ struct AuthorView: View {
                 loadingPresentation
             } else {
                 switch viewModel.displayType {
-                    case .grid:
-                        gridPresentation
-                    case .list:
-                        listPresentation
+                case .grid:
+                    gridPresentation
+                case .list:
+                    listPresentation
                 }
             }
         }
@@ -110,7 +114,13 @@ struct AuthorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AudiobookSortFilter(filter: $viewModel.filter, displayType: $viewModel.displayType, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                Button {
+                    withAnimation(.snappy) {
+                        viewModel.displayType = viewModel.displayType.next
+                    }
+                } label: {
+                    Label(viewModel.displayType == .list ? "display.list" : "display.grid", systemImage: viewModel.displayType == .list ? "list.bullet" : "square.grid.2x2")
+                }
             }
         }
         // .modifier(NowPlaying.SafeAreaModifier())

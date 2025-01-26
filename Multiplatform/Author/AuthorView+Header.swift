@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-internal extension AuthorView {
+extension AuthorView {
     struct Header: View {
         @Environment(AuthorViewModel.self) private var viewModel
         
