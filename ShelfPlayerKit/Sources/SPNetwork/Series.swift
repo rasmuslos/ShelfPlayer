@@ -38,13 +38,27 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         Series(payload: try await response(for: ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get)), libraryID: identifier.libraryID, connectionID: connectionID)
     }
     
-    func series(in libraryID: String, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
+    func series(in libraryID: String, filtered identifier: ItemIdentifier? = nil, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
         var query: [URLQueryItem] = [
-            .init(name: "filter", value: "all"),
-            
             .init(name: "sort", value: sortOrder.queryValue),
             .init(name: "desc", value: ascending ? "0" : "1"),
         ]
+        
+        if let identifier {
+            let prefix: String
+            
+            if identifier.type == .author {
+                prefix = "authors"
+            } else if identifier.type == .series {
+                prefix = "series"
+            } else {
+                throw APIClientError.missing
+            }
+            
+            query.append(.init(name: "filter", value: "\(prefix).\(Data(identifier.primaryID.utf8).base64EncodedString())"))
+        } else {
+            query.append(.init(name: "filter", value: "all"))
+        }
         
         if let page {
             query.append(.init(name: "page", value: String(page)))

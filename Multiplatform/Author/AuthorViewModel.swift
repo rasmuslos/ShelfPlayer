@@ -20,16 +20,12 @@ final class AuthorViewModel {
     @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
     var displayType: ItemDisplayType
     
-    @ObservableDefault(.audiobooksSortOrder) @ObservationIgnored
-    var sortOrder: AudiobookSortOrder
-    @ObservableDefault(.audiobooksAscending) @ObservationIgnored
-    var ascending: Bool
-    
-    // let seriesLoader: LazyLoadHelper<Series, Void?>
-    var audiobooksLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder?>!
+    private(set) var seriesLoader: LazyLoadHelper<Series, SeriesSortOrder>!
+    private(set) var audiobooksLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder?>!
     
     var library: Library! {
         didSet {
+            seriesLoader.library = library
             audiobooksLoader.library = library
         }
     }
@@ -44,7 +40,8 @@ final class AuthorViewModel {
         isDescriptionSheetVisible = false
         notifyError = false
         
-        audiobooksLoader = .audiobooks(filtered: author.id, sortOrder: sortOrder, ascending: ascending)
+        seriesLoader = .series(filtered: author.id, sortOrder: .sortName, ascending: true)
+        audiobooksLoader = .audiobooks(filtered: author.id, sortOrder: .released, ascending: true)
     }
 }
 
@@ -56,6 +53,7 @@ extension AuthorViewModel {
     nonisolated func load() {
         Task {
             await withTaskGroup(of: Void.self) {
+                $0.addTask { await self.seriesLoader.initialLoad() }
                 $0.addTask { await self.audiobooksLoader.initialLoad() }
             }
         }
