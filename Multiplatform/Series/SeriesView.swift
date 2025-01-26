@@ -28,7 +28,7 @@ struct SeriesView: View {
     
     var body: some View {
         Group {
-            if viewModel.lazyLoader.items.isEmpty {
+            if !viewModel.lazyLoader.didLoad {
                 if viewModel.lazyLoader.failed {
                     ErrorView()
                 } else {
@@ -44,9 +44,7 @@ struct SeriesView: View {
                             .padding(.horizontal, 20)
                         
                         AudiobookVGrid(sections: viewModel.sections) {
-                            if $0 == viewModel.sections.last {
-                                viewModel.lazyLoader.didReachEndOfLoadedContent()
-                            }
+                            viewModel.lazyLoader.performLoadIfRequired($0, in: viewModel.sections)
                         }
                         .padding(.horizontal, 20)
                     }
@@ -61,9 +59,7 @@ struct SeriesView: View {
                             .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
                         
                         AudiobookList(sections: viewModel.sections) {
-                            if $0 == viewModel.sections[max(0, viewModel.sections.endIndex - 4)] {
-                                viewModel.lazyLoader.didReachEndOfLoadedContent()
-                            }
+                            viewModel.lazyLoader.performLoadIfRequired($0, in: viewModel.sections)
                         }
                     }
                     .listStyle(.plain)
@@ -74,12 +70,14 @@ struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation(.snappy) {
-                        viewModel.displayType = viewModel.displayType.next
+                Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                    ItemDisplayTypePicker(displayType: $viewModel.displayType)
+                    
+                    Divider()
+                    
+                    Section("filter") {
+                        ItemFilterPicker(filter: $viewModel.filter)
                     }
-                } label: {
-                    Label(viewModel.displayType == .list ? "display.list" : "display.grid", systemImage: viewModel.displayType == .list ? "list.bullet" : "square.grid.2x2")
                 }
             }
         }
@@ -91,7 +89,10 @@ struct SeriesView: View {
             viewModel.lazyLoader.initialLoad()
         }
         .refreshable {
-            await viewModel.lazyLoader.refresh()
+            viewModel.lazyLoader.refresh()
+        }
+        .onChange(of: viewModel.filter) {
+            viewModel.lazyLoader.filter = viewModel.filter
         }
         .userActivity("io.rfk.shelfplayer.item") { activity in
             activity.title = viewModel.series.name

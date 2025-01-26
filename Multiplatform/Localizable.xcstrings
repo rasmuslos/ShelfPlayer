@@ -3572,6 +3572,12 @@
         }
       }
     },
+    "filter" : {
+
+    },
+    "filter.active" : {
+
+    },
     "filter.all" : {
       "localizations" : {
         "de" : {
@@ -3629,6 +3635,7 @@
       }
     },
     "filter.inProgress" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3656,7 +3663,11 @@
         }
       }
     },
+    "filter.notFinished" : {
+
+    },
     "filter.unfinished" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4863,6 +4874,9 @@
           }
         }
       }
+    },
+    "options" : {
+
     },
     "panel.authors" : {
       "localizations" : {
@@ -6513,6 +6527,7 @@
       }
     },
     "section.displayType" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

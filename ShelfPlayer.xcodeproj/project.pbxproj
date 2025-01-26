@@ -73,6 +73,8 @@
 		3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F12AD2C2C3009696D1 /* PodcastView.swift */; };
 		3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F62AD2CDE9009696D1 /* PodcastView+Header.swift */; };
 		3A8810FB2AD2CEE7009696D1 /* PodcastView+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810FA2AD2CEE7009696D1 /* PodcastView+Toolbar.swift */; };
+		3A8A11982D4638E0000075BE /* ItemFilterPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A11972D4638D8000075BE /* ItemFilterPicker.swift */; };
+		3A8A119A2D463A06000075BE /* ItemDisplayTypePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A11992D4639FF000075BE /* ItemDisplayTypePicker.swift */; };
 		3A91B4F42C83003C008D444C /* BetterDisclosureGroupStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */; };
 		3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9206FE2B6CD86400A5CAB0 /* Defaults */; };
 		3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9207042B6D018100A5CAB0 /* AudiobookViewModel.swift */; };
@@ -259,6 +261,8 @@
 		3A8810F12AD2C2C3009696D1 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
 		3A8810F62AD2CDE9009696D1 /* PodcastView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PodcastView+Header.swift"; sourceTree = "<group>"; };
 		3A8810FA2AD2CEE7009696D1 /* PodcastView+Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PodcastView+Toolbar.swift"; sourceTree = "<group>"; };
+		3A8A11972D4638D8000075BE /* ItemFilterPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemFilterPicker.swift; sourceTree = "<group>"; };
+		3A8A11992D4639FF000075BE /* ItemDisplayTypePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDisplayTypePicker.swift; sourceTree = "<group>"; };
 		3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetterDisclosureGroupStyle.swift; sourceTree = "<group>"; };
 		3A9207042B6D018100A5CAB0 /* AudiobookViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookViewModel.swift; sourceTree = "<group>"; };
 		3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+IsLight.swift"; sourceTree = "<group>"; };
@@ -451,6 +455,8 @@
 			isa = PBXGroup;
 			children = (
 				3A102EA92D45112F0075FA0B /* PDFViewer.swift */,
+				3A8A11972D4638D8000075BE /* ItemFilterPicker.swift */,
+				3A8A11992D4639FF000075BE /* ItemDisplayTypePicker.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -970,6 +976,7 @@
 				3A8810F02AD2C0E4009696D1 /* PodcastUnavailableView.swift in Sources */,
 				3AA19BA22AD6C80000C468EA /* EpisodeList.swift in Sources */,
 				3AA9541F2AD2925C0031C20D /* RowTitle.swift in Sources */,
+				3A8A11982D4638E0000075BE /* ItemFilterPicker.swift in Sources */,
 				3AA954302AD2AE520031C20D /* EpisodePlayButton.swift in Sources */,
 				3A8410532CDF92A700FC3FCB /* URL+AllocatedSize.swift in Sources */,
 				3AB695342ACF39F000823049 /* Array+Repeat.swift in Sources */,
@@ -1042,6 +1049,7 @@
 				3A91B4F42C83003C008D444C /* BetterDisclosureGroupStyle.swift in Sources */,
 				3A8810F72AD2CDE9009696D1 /* PodcastView+Header.swift in Sources */,
 				3A71290E2D32C17B00B70D7F /* NavigationStackWrapper.swift in Sources */,
+				3A8A119A2D463A06000075BE /* ItemDisplayTypePicker.swift in Sources */,
 				3AD6EA722CABE7B100B412DB /* IntentHelper.swift in Sources */,
 				3A9874272B599BA600B2704F /* Chapters.swift in Sources */,
 				3ADD43502CC3B6C50060E043 /* CarPlayNowPlayingController.swift in Sources */,

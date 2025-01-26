@@ -13,7 +13,7 @@ public extension Defaults.Keys {
     static let skipBackwardsInterval = Key<Int>("skipBackwardsInterval", default: 30)
     
     static func groupingFilter(_ itemID: ItemIdentifier) -> Defaults.Key<ItemFilter> {
-        .init("grouping-filter-\(itemID.groupingID ?? itemID.primaryID)", default: .unfinished)
+        .init("grouping-filter-\(itemID.groupingID ?? itemID.primaryID)", default: .notFinished)
     }
     
     static func groupingAscending(_ itemID: ItemIdentifier) -> Defaults.Key<Bool> {
