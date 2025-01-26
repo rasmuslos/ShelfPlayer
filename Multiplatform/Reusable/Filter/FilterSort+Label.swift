@@ -9,41 +9,6 @@ import Foundation
 import SwiftUI
 import ShelfPlayerKit
 
-internal extension ItemFilter {
-    var label: LocalizedStringKey {
-        switch self {
-            case .all:
-                "filter.all"
-            case .progress:
-                "filter.inProgress"
-            case .unfinished:
-                "filter.unfinished"
-            case .finished:
-                "filter.finished"
-        }
-    }
-}
-
-internal extension ItemDisplayType {
-    var label: LocalizedStringKey {
-        switch self {
-        case .grid:
-            "display.grid"
-        case .list:
-            "display.list"
-        }
-    }
-    
-    var icon: String {
-        switch self {
-        case .grid:
-            "square.grid.2x2"
-        case .list:
-            "list.bullet"
-        }
-    }
-}
-
 internal extension AudiobookSortOrder {
     var label: LocalizedStringKey {
         switch self {

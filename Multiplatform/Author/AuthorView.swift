@@ -114,12 +114,14 @@ struct AuthorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation(.snappy) {
-                        viewModel.displayType = viewModel.displayType.next
+                Menu("options", systemImage: "ellipsis.circle") {
+                    ItemDisplayTypePicker(displayType: $viewModel.displayType)
+                    
+                    Divider()
+                    
+                    Section("filter") {
+                        ItemFilterPicker(filter: $viewModel.filter)
                     }
-                } label: {
-                    Label(viewModel.displayType == .list ? "display.list" : "display.grid", systemImage: viewModel.displayType == .list ? "list.bullet" : "square.grid.2x2")
                 }
             }
         }
