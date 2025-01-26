@@ -17,6 +17,8 @@ final class SeriesViewModel {
     
     let lazyLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder?>
     
+    @ObservableDefault(.audiobooksFilter) @ObservationIgnored
+    var filter: ItemFilter
     @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
     var displayType: ItemDisplayType
     

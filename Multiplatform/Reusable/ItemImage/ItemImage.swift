@@ -47,7 +47,7 @@ struct RequestImage: View {
                             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                             .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     } else {
-                        Placeholder(cornerRadius: cornerRadius)
+                        Placeholder(itemID: nil, cornerRadius: cornerRadius)
                     }
                 }
             } else {
@@ -72,7 +72,7 @@ struct RequestImage: View {
                                     }
                                 }
                             } else {
-                                Placeholder(cornerRadius: cornerRadius)
+                                Placeholder(itemID: nil, cornerRadius: cornerRadius)
                             }
                         }
                     }
@@ -153,7 +153,7 @@ struct ItemImage: View {
         if let request {
             RequestImage(request: request, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority, contrastConfiguration: contrastConfiguration)
         } else {
-            Placeholder(cornerRadius: cornerRadius)
+            Placeholder(itemID: itemID, cornerRadius: cornerRadius)
                 .task {
                     request = await itemID?.coverRequest
                 }
@@ -164,16 +164,21 @@ struct ItemImage: View {
 private struct Placeholder: View {
     @Environment(\.library) private var library
     
+    let itemID: ItemIdentifier?
     let cornerRadius: CGFloat
     
     private var fallbackIcon: String {
-        switch library?.type {
-        case .audiobooks:
-            "book"
-        case .podcasts:
-            "play.square.stack.fill"
-        default:
-            "bookmark"
+        if let itemID, itemID.type == .author {
+            "person"
+        } else {
+            switch library?.type {
+            case .audiobooks:
+                "book"
+            case .podcasts:
+                "play.square.stack.fill"
+            default:
+                "bookmark"
+            }
         }
     }
     
