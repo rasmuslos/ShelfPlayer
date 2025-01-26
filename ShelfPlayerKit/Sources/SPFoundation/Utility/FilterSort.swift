@@ -28,9 +28,9 @@ public enum ItemDisplayType: Int, Identifiable, Hashable, Codable, Sendable, Cas
 
 public enum ItemFilter: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
     case all
-    case progress
-    case unfinished
+    case active
     case finished
+    case notFinished
     
     public var id: Int {
         rawValue

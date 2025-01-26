@@ -20,20 +20,6 @@ internal struct AudiobookSortFilter: View {
     
     var body: some View {
         Menu {
-            Section("section.displayType") {
-                ControlGroup {
-                    ForEach(ItemDisplayType.allCases) { displayType in
-                        Button {
-                            withAnimation {
-                                self.displayType = displayType
-                            }
-                        } label: {
-                            Label(displayType.label, systemImage: displayType.icon)
-                        }
-                    }
-                }
-            }
-            
             Section("section.filter") {
                 ForEach(ItemFilter.allCases, id: \.hashValue) { filter in
                     Toggle(filter.label, isOn: .init(get: { self.filter == filter }, set: {
