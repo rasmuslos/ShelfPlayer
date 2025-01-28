@@ -12,11 +12,11 @@ import SPFoundation
 extension SchemaV2 {
     @Model
     final class PersistedProgress {
-        #Index<PersistedProgress>([\.id], [\._itemID])
-        #Unique<PersistedProgress>([\.id], [\._itemID])
+        #Index<PersistedProgress>([\.id], [\.rawItemID])
+        #Unique<PersistedProgress>([\.id], [\.rawItemID])
         
         private(set) var id: String
-        private(set) var _itemID: String
+        private(set) var rawItemID: String
         
         var progress: Percentage
         
@@ -31,7 +31,7 @@ extension SchemaV2 {
         
         init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: SyncStatus) {
             self.id = id
-            _itemID = itemID.description
+            rawItemID = itemID.description
             
             self.progress = progress
             
@@ -52,7 +52,7 @@ extension SchemaV2 {
         }
         
         var itemID: ItemIdentifier {
-            .init(_itemID)
+            .init(rawItemID)
         }
     }
 }
