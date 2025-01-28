@@ -454,9 +454,14 @@
 		3A102EA82D4511280075FA0B /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */,
+				3A1EAB952ACC808A0064C80C /* ItemImage.swift */,
+				3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */,
 				3A102EA92D45112F0075FA0B /* PDFViewer.swift */,
 				3A8A11972D4638D8000075BE /* ItemFilterPicker.swift */,
 				3A8A11992D4639FF000075BE /* ItemDisplayTypePicker.swift */,
+				3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */,
+				3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -677,9 +682,7 @@
 		3A9206FA2B6CD77D00A5CAB0 /* Reusable */ = {
 			isa = PBXGroup;
 			children = (
-				3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */,
 				3A5A5B852BE6310D00481888 /* Item */,
-				3AE8E5852B6D807E0002D0FA /* ItemImage */,
 				3A9207002B6CD8A700A5CAB0 /* Filter */,
 				3AADC0382B6D104400C4088D /* Buttons */,
 				3A5891132CD3F1D5005C3289 /* Audiobook */,
@@ -713,7 +716,6 @@
 		3A9874212B5995CE00B2704F /* Collections */ = {
 			isa = PBXGroup;
 			children = (
-				3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */,
 				3AA0D9CC2BD6BF4900498546 /* Audiobook */,
 				3AA0D9C92BD6BF2B00498546 /* Author */,
 				3AA0D9C82BD6BF2100498546 /* Series */,
@@ -818,16 +820,6 @@
 				3ACD59722BE29B8E0060A841 /* Intents.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		3AE8E5852B6D807E0002D0FA /* ItemImage */ = {
-			isa = PBXGroup;
-			children = (
-				3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */,
-				3A1EAB952ACC808A0064C80C /* ItemImage.swift */,
-				3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */,
-			);
-			path = ItemImage;
 			sourceTree = "<group>";
 		};
 		3AF6A5292B603FA000770A1E /* Configuration */ = {

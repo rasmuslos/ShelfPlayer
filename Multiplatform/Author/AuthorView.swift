@@ -18,6 +18,7 @@ struct AuthorView: View {
         viewModel = .init(author: author)
     }
     
+    @ViewBuilder
     private var loadingPresentation: some View {
         UnavailableWrapper {
             VStack(spacing: 0) {
@@ -27,43 +28,31 @@ struct AuthorView: View {
         }
     }
     
+    @ViewBuilder
     private var gridPresentation: some View {
         ScrollView {
             Header()
             
             if !viewModel.seriesLoader.items.isEmpty {
-                HStack(spacing: 0) {
-                    RowTitle(title: String(localized: "series"), fontDesign: .serif)
-                    Spacer()
-                }
-                .padding(.top, 16)
-                .padding(.horizontal, 20)
+                gridTitle(.init(localized: "series"))
                 
                 SeriesGrid(series: viewModel.seriesLoader.items) {
-                    if $0 == viewModel.seriesLoader.items.last {
-                        viewModel.seriesLoader.didReachEndOfLoadedContent()
-                    }
+                    viewModel.seriesLoader.performLoadIfRequired($0)
                 }
                 .padding(.horizontal, 20)
             }
             
             if !viewModel.sections.isEmpty || !viewModel.seriesLoader.items.isEmpty {
-                HStack(spacing: 0) {
-                    RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                    Spacer()
-                }
-                .padding(.top, 16)
-                .padding(.horizontal, 20)
+                gridTitle(.init(localized: "books"))
                 
                 AudiobookVGrid(sections: viewModel.sections) {
-                    if $0 == viewModel.sections.last {
-                        viewModel.audiobooksLoader.didReachEndOfLoadedContent()
-                    }
+                    viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
                 }
                 .padding(.horizontal, 20)
             }
         }
     }
+    @ViewBuilder
     private var listPresentation: some View {
         List {
             Header()
@@ -71,30 +60,38 @@ struct AuthorView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
             if !viewModel.seriesLoader.items.isEmpty {
-                RowTitle(title: String(localized: "series"), fontDesign: .serif)
-                    .listRowSeparator(.hidden, edges: .top)
-                    .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+                listTitle(.init(localized: "series"))
                 
                 SeriesList(series: viewModel.seriesLoader.items) {
-                    if $0 == viewModel.seriesLoader.items[max(0, viewModel.seriesLoader.items.endIndex - 4)] {
-                        viewModel.seriesLoader.didReachEndOfLoadedContent()
-                    }
+                    viewModel.seriesLoader.performLoadIfRequired($0)
                 }
             }
             
             if !viewModel.sections.isEmpty {
-                RowTitle(title: String(localized: "books"), fontDesign: .serif)
-                    .listRowSeparator(.hidden, edges: .top)
-                    .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+                listTitle(.init(localized: "books"))
                 
                 AudiobookList(sections: viewModel.sections) {
-                    if $0 == viewModel.sections[max(0, viewModel.sections.endIndex - 4)] {
-                        viewModel.audiobooksLoader.didReachEndOfLoadedContent()
-                    }
+                    viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
                 }
             }
         }
         .listStyle(.plain)
+    }
+    
+    @ViewBuilder
+    private func gridTitle(_ title: String) -> some View {
+        HStack(spacing: 0) {
+            RowTitle(title: title, fontDesign: .serif)
+            Spacer()
+        }
+        .padding(.top, 16)
+        .padding(.horizontal, 20)
+    }
+    @ViewBuilder
+    private func listTitle(_ title: String) -> some View {
+        RowTitle(title: title, fontDesign: .serif)
+            .listRowSeparator(.hidden, edges: .top)
+            .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
     }
     
     var body: some View {
