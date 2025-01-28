@@ -36,17 +36,23 @@ extension PersistenceManager {
 
 extension PersistenceManager.ProgressSubsystem {
     func entity(_ itemID: ItemIdentifier) -> PersistedProgress? {
-        let itemID = itemID
-        var fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate {
-            $0._itemID == itemID.description
+        let type = itemID.type.rawValue
+        let connectionID = itemID.connectionID
+        let primaryID = itemID.primaryID
+        
+        let fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate { entity in
+            entity.rawItemID.contains(type)
+            && entity.rawItemID.contains(connectionID)
+            && entity.rawItemID.contains(primaryID)
+            // libraryID does not exist
+            // groupingID can be ignored
         })
-        fetchDescriptor.includePendingChanges = true
         
         // Return existing
         
         do {
-            let entities = try modelContext.fetch(fetchDescriptor).filter { $0.status != .tombstone }
-            
+            let entities = try modelContext.fetch(fetchDescriptor)//.filter { $0.status != .tombstone }
+            print(entities)
             if !entities.isEmpty {
                 if entities.count != 1 {
                     logger.error("Found \(entities.count) progress entities for \(itemID)")
@@ -321,24 +327,16 @@ public extension PersistenceManager.ProgressSubsystem {
     }
     
     func delete(itemID: ItemIdentifier) async throws {
-        let entities = try modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
-            $0._itemID == itemID.description
-        }))
-        
-        for entity in entities {
+        if let entity = entity(itemID) {
             try await delete(entity)
         }
     }
     
     subscript(_ itemID: ItemIdentifier) -> ProgressEntity {
-        guard let entity = entity(itemID) else { return .init(id: UUID().uuidString,
-                                                              itemID: itemID,
-                                                              progress: 0,
-                                                              duration: nil,
-                                                              currentTime: 0,
-                                                              startedAt: nil,
-                                                              lastUpdate: .now,
-                                                              finishedAt: nil) }
+        guard let entity = entity(itemID) else {
+            logger.warning("Creating new progress stub for \(itemID)")
+            return .init(id: UUID().uuidString, itemID: itemID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
+        }
         
         return .init(persistedEntity: entity)
     }

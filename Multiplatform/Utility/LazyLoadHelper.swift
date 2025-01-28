@@ -172,7 +172,8 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
         }
     }
     
-    func performLoadIfRequired<K>(_ t: K, in array: [K]) where K: Equatable {
+    func performLoadIfRequired<K>(_ t: K, in array: [K]? = nil) where K: Equatable {
+        let array = array ?? (items as! [K])
         guard let index = array.firstIndex(where: { $0 == t }) else { return }
         
         let thresholdIndex = array.index(items.endIndex, offsetBy: -10)
