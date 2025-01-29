@@ -17,7 +17,11 @@ extension AudiobookSection {
                                     connectionID: connectionID,
                                     type: .series),
                     seriesName: collapsedSeries.name,
-                    audiobookIDs: collapsedSeries.libraryItemIds.map { .init(primaryID: $0) })
+                    audiobookIDs: collapsedSeries.libraryItemIds.map { .init(primaryID: $0,
+                                                                             groupingID: nil,
+                                                                             libraryID: libraryID,
+                                                                             connectionID: connectionID,
+                                                                             type: .audiobook) })
         } else if let audiobook = Audiobook(payload: payload, libraryID: libraryID, connectionID: connectionID) {
             .audiobook(audiobook: audiobook)
         } else {

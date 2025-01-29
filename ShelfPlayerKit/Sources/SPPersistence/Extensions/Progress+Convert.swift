@@ -10,7 +10,9 @@ import SPFoundation
 extension ProgressEntity {
     init(persistedEntity: PersistedProgress) {
         self.init(id: persistedEntity.id,
-                  itemID: persistedEntity.itemID,
+                  connectionID: persistedEntity.connectionID,
+                  primaryID: persistedEntity.primaryID,
+                  groupingID: persistedEntity.groupingID,
                   progress: persistedEntity.progress,
                   duration: persistedEntity.duration,
                   currentTime: persistedEntity.currentTime,

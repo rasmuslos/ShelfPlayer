@@ -11,7 +11,11 @@ import RFNotifications
 
 public struct ProgressEntity: Sendable {
     public let id: String
-    public let itemID: ItemIdentifier
+    
+    public let connectionID: String
+    
+    public let primaryID: String
+    public let groupingID: String?
     
     public let progress: Percentage
     
@@ -22,9 +26,12 @@ public struct ProgressEntity: Sendable {
     public let lastUpdate: Date
     public let finishedAt: Date?
     
-    public init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
+    public init(id: String, connectionID: String, primaryID: String, groupingID: String?, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
         self.id = id
-        self.itemID = itemID
+        self.connectionID = connectionID
+        
+        self.primaryID = primaryID
+        self.groupingID = groupingID
         
         self.progress = progress
         
@@ -43,7 +50,9 @@ public struct ProgressEntity: Sendable {
     @MainActor
     public var updating: UpdatingProgressEntity {
         .init(id: id,
-              itemID: itemID,
+              connectionID: connectionID,
+              primaryID: primaryID,
+              groupingID: groupingID,
               progress: progress,
               duration: duration,
               currentTime: currentTime,
@@ -55,7 +64,10 @@ public struct ProgressEntity: Sendable {
     @Observable @MainActor
     public final class UpdatingProgressEntity {
         public var id: String
-        public let itemID: ItemIdentifier
+        public let connectionID: String
+        
+        public let primaryID: String
+        public let groupingID: String?
         
         public var progress: Percentage
         
@@ -70,9 +82,12 @@ public struct ProgressEntity: Sendable {
         
         @ObservationIgnored nonisolated(unsafe) var marker: RFNotification.Marker?
         
-        init(id: String, itemID: ItemIdentifier, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
+        init(id: String, connectionID: String, primaryID: String, groupingID: String?, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
             self.id = id
-            self.itemID = itemID
+            self.connectionID = connectionID
+            
+            self.primaryID = primaryID
+            self.groupingID = groupingID
             
             self.progress = progress
             
@@ -86,9 +101,9 @@ public struct ProgressEntity: Sendable {
             isValid = true
             
             marker = RFNotification[.progressEntityUpdated].subscribe { [weak self] in
-                guard $0.0 == itemID else { return }
+                guard $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID else { return }
                 
-                guard let entity = $0.1 else {
+                guard let entity = $0.3 else {
                     self?.progress = 0
                     self?.currentTime = 0
                     

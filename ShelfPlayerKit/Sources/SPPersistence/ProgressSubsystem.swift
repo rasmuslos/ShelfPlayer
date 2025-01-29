@@ -36,23 +36,23 @@ extension PersistenceManager {
 
 extension PersistenceManager.ProgressSubsystem {
     func entity(_ itemID: ItemIdentifier) -> PersistedProgress? {
-        let type = itemID.type.rawValue
         let connectionID = itemID.connectionID
         let primaryID = itemID.primaryID
+        let groupingID = itemID.groupingID
         
-        let fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate { entity in
-            entity.rawItemID.contains(type)
-            && entity.rawItemID.contains(connectionID)
-            && entity.rawItemID.contains(primaryID)
+        let fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+            $0.connectionID == connectionID
+            && $0.primaryID == primaryID
+            && $0.groupingID == groupingID
             // libraryID does not exist
-            // groupingID can be ignored
+            // type can be ignored
         })
         
         // Return existing
         
         do {
-            let entities = try modelContext.fetch(fetchDescriptor)//.filter { $0.status != .tombstone }
-            print(entities)
+            let entities = try modelContext.fetch(fetchDescriptor).filter { $0.status != .tombstone }
+            
             if !entities.isEmpty {
                 if entities.count != 1 {
                     logger.error("Found \(entities.count) progress entities for \(itemID)")
@@ -79,17 +79,17 @@ extension PersistenceManager.ProgressSubsystem {
     }
     
     func createEntity(id: String, itemID: ItemIdentifier, progress: Double, duration: Double?, currentTime: Double, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: PersistedProgress.SyncStatus) -> PersistedProgress {
-        let entity = PersistedProgress(id: id, itemID: itemID, progress: progress, duration: duration, currentTime: currentTime, startedAt: startedAt, lastUpdate: lastUpdate, finishedAt: finishedAt, status: status)
+        let entity = PersistedProgress(id: id, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: startedAt, lastUpdate: lastUpdate, finishedAt: finishedAt, status: status)
         modelContext.insert(entity)
         
         return entity
     }
     
     func delete(_ entity: PersistedProgress) async throws {
-        logger.info("Deleting progress entity \(entity.id) (\(entity.itemID)).")
+        logger.info("Deleting progress entity \(entity.id).")
         
         do {
-            try await ABSClient[entity.itemID.connectionID].delete(progressID: entity.id)
+            try await ABSClient[entity.connectionID].delete(progressID: entity.id)
         } catch {
             entity.status = .tombstone
         }
@@ -97,7 +97,11 @@ extension PersistenceManager.ProgressSubsystem {
         modelContext.delete(entity)
         try modelContext.save()
         
-        RFNotification[.progressEntityUpdated].send((entity.itemID, nil))
+        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, nil))
+    }
+    
+    nonisolated func progressEntityDidUpdate(_ entity: ProgressEntity) {
+        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
     }
 }
 
@@ -132,7 +136,7 @@ public extension PersistenceManager.ProgressSubsystem {
         
         let entity = ProgressEntity(persistedEntity: pendingUpdate)
         
-        RFNotification[.progressEntityUpdated].send((itemID, entity))
+        progressEntityDidUpdate(entity)
         
         do {
             try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
@@ -164,7 +168,7 @@ public extension PersistenceManager.ProgressSubsystem {
         try modelContext.save()
         
         let entity = ProgressEntity(persistedEntity: persistedEntity)
-        RFNotification[.progressEntityUpdated].send((itemID, entity))
+        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
         
         do {
             try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
@@ -262,7 +266,7 @@ public extension PersistenceManager.ProgressSubsystem {
                         
                         entity.status = .synchronized
                     case .tombstone:
-                        pendingDeletion.append((id, entity.itemID.connectionID))
+                        pendingDeletion.append((id, entity.connectionID))
                         modelContext.delete(entity)
                     }
                 }
@@ -281,7 +285,7 @@ public extension PersistenceManager.ProgressSubsystem {
             try Task.checkCancellation()
             
             let batch = pendingCreation + pendingUpdate
-            let grouped = Dictionary(batch.map { ($0.itemID.connectionID, [$0]) }, uniquingKeysWith: +)
+            let grouped = Dictionary(batch.map { ($0.connectionID, [$0]) }, uniquingKeysWith: +)
             
             logger.info("Batch updating \(batch.count) progress entities from \(grouped.count) servers")
             
@@ -335,7 +339,7 @@ public extension PersistenceManager.ProgressSubsystem {
     subscript(_ itemID: ItemIdentifier) -> ProgressEntity {
         guard let entity = entity(itemID) else {
             logger.warning("Creating new progress stub for \(itemID)")
-            return .init(id: UUID().uuidString, itemID: itemID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
+            return .init(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
         }
         
         return .init(persistedEntity: entity)

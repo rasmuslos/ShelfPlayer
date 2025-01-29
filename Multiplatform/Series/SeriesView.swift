@@ -22,7 +22,15 @@ struct SeriesView: View {
     private var rowTitle: some View {
         HStack(spacing: 0) {
             RowTitle(title: String(localized: "books"), fontDesign: .serif)
+            
             Spacer(minLength: 0)
+            
+            if viewModel.lazyLoader.count > 0 {
+                Text(viewModel.lazyLoader.count, format: .number)
+                    .font(.caption)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
     

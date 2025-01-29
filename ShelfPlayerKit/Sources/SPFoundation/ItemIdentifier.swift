@@ -25,8 +25,8 @@ public final class ItemIdentifier {
     public let primaryID: PrimaryID
     public let groupingID: GroupingID?
     
-    public let _libraryID: LibraryID!
-    public let _connectionID: ConnectionID!
+    public let libraryID: LibraryID
+    public let connectionID: ConnectionID
     
     public let type: ItemType
     
@@ -34,31 +34,10 @@ public final class ItemIdentifier {
         self.primaryID = primaryID
         self.groupingID = groupingID
         
-        _libraryID = libraryID
-        _connectionID = connectionID
+        self.libraryID = libraryID
+        self.connectionID = connectionID
         
         self.type = type
-    }
-    
-    /// Convenience initializer for an audiobook
-    public init(primaryID: String) {
-        self.primaryID = primaryID
-        self.groupingID = nil
-        
-        _libraryID = nil
-        _connectionID = nil
-        
-        type = .audiobook
-    }
-    /// Convenience initializer for an episode
-    public init(primaryID: String, groupingID: String?) {
-        self.primaryID = primaryID
-        self.groupingID = groupingID
-        
-        _libraryID = nil
-        _connectionID = nil
-        
-        type = .episode
     }
     
     public init(string identifier: String) {
@@ -68,19 +47,8 @@ public final class ItemIdentifier {
         case "1":
             type = ItemType(rawValue: String(parts[1]))!
             
-            let libraryID = String(parts[2])
-            let connectionID = String(parts[3])
-            
-            if libraryID == "_" {
-                _libraryID = nil
-            } else {
-                _libraryID = libraryID
-            }
-            if connectionID == "_" {
-                _connectionID = nil
-            } else {
-                _connectionID = connectionID
-            }
+            libraryID = String(parts[2])
+            connectionID = String(parts[3])
             
             primaryID = String(parts[4])
             
@@ -92,17 +60,6 @@ public final class ItemIdentifier {
         default:
             fatalError("Unknown identifier format: \(identifier)")
         }
-    }
-    
-    public var libraryID: LibraryID {
-        _libraryID ?? ""
-    }
-    public var connectionID: ConnectionID {
-        _connectionID ?? ""
-    }
-    
-    var shallow: Bool {
-        _libraryID == nil || _connectionID == nil
     }
     
     enum ParseError: Error {
@@ -160,7 +117,7 @@ extension ItemIdentifier: LosslessStringConvertible {
     }
     
     public var description: String {
-        let base = "1::\(type)::\(_connectionID ?? "_")::\(_libraryID ?? "_")::\(primaryID)"
+        let base = "1::\(type)::\(connectionID)::\(libraryID)::\(primaryID)"
         
         if let groupingID {
             return base + "::\(groupingID)"

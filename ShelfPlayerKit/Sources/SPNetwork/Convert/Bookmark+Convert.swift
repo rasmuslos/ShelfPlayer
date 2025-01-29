@@ -9,7 +9,12 @@ import Foundation
 import SPFoundation
 
 extension Bookmark {
-    init(payload: BookmarkPayload) {
-        self.init(itemID: .init(primaryID: payload.libraryItemId, groupingID: nil), time: .init(payload.time), note: payload.title, created: .init(timeIntervalSince1970: payload.createdAt))
+    init(payload: BookmarkPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
+        self.init(itemID: .init(primaryID: payload.libraryItemId,
+                                groupingID: nil,
+                                libraryID: libraryID,
+                                connectionID: connectionID,
+                                type: .audiobook),
+                  time: .init(payload.time), note: payload.title, created: .init(timeIntervalSince1970: payload.createdAt))
     }
 }
