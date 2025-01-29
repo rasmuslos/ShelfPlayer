@@ -20,7 +20,7 @@ internal struct SwipeActionsModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading) {
-                QueueButton(item: item, hideLast: true)
+                QueueLaterButton(item: item, hideLast: true)
                     .tint(tintColor.accent)
                     .labelStyle(.iconOnly)
             }

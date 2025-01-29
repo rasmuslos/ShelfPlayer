@@ -66,8 +66,6 @@ struct StatusOverlay: View {
                                 }
                         }
                         .frame(width: size, height: size)
-                    } else {
-                        Text(entity.progress.description)
                     }
                     /*
                      else if offlineTracker?.status == .downloaded {

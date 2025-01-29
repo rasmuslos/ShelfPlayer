@@ -9,11 +9,16 @@ import Foundation
 import SwiftUI
 
 extension View {
+    @ViewBuilder
     func modify<T: View>(@ViewBuilder _ modifier: (Self) -> T) -> some View {
         modifier(self)
     }
     
+    #if DEBUG
+    @ViewBuilder
     func previewEnvironment() -> some View {
         self
+            .environment(Satellite())
     }
+    #endif
 }

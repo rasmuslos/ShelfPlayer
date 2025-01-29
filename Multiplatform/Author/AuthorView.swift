@@ -124,6 +124,8 @@ struct AuthorView: View {
         }
         // .modifier(NowPlaying.SafeAreaModifier())
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .sensoryFeedback(.error, trigger: viewModel.seriesLoader.notifyError)
+        .sensoryFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)
         .environment(viewModel)
         .environment(\.displayContext, .author(author: viewModel.author))
         .onAppear {

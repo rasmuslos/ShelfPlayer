@@ -109,38 +109,6 @@ extension AudiobookViewModel {
         
         loadPDF(pdf)
     }
-    
-    nonisolated func play() {
-        Task {
-            do {
-                try await AudioPlayer.shared.play(audiobook)
-                
-                await MainActor.run {
-                    notifySuccess.toggle()
-                }
-            } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
-            }
-        }
-    }
-    
-    nonisolated func resetProgress() {
-        Task {
-            do {
-                try await PersistenceManager.shared.progress.delete(itemID: audiobook.id)
-                
-                await MainActor.run {
-                    notifySuccess.toggle()
-                }
-            } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
-            }
-        }
-    }
 }
 
 private extension AudiobookViewModel {
