@@ -3918,7 +3918,6 @@
 
     },
     "listen" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3947,7 +3946,6 @@
       }
     },
     "listen.again" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5049,7 +5047,6 @@
 
     },
     "pause" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5802,6 +5799,7 @@
       }
     },
     "queue.tip.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5830,6 +5828,7 @@
       }
     },
     "queue.tip.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5947,7 +5946,6 @@
       }
     },
     "resume" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

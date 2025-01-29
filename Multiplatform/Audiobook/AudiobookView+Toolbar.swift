@@ -86,13 +86,8 @@ extension AudiobookView {
                             .labelStyle(.iconOnly)
                         
                         Menu {
-                            Button {
-                                viewModel.play()
-                            } label: {
-                                Label("queue.play", systemImage: "play.fill")
-                            }
-                            
-                            QueueButton(item: viewModel.audiobook)
+                            QueuePlayButton(item: viewModel.audiobook)
+                            QueueLaterButton(item: viewModel.audiobook)
                             
                             Divider()
                             
@@ -104,7 +99,7 @@ extension AudiobookView {
                             ProgressButton(item: viewModel.audiobook)
                             
                             if let progressEntity = viewModel.progressEntity, progressEntity.progress > 0 {
-                                Button("progress.reset", systemImage: "slash.circle", role: .destructive, action: viewModel.resetProgress)
+                                ProgressResetButton(item: viewModel.audiobook)
                             }
                             
                             /*
