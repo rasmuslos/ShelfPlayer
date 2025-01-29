@@ -17,9 +17,9 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.tintColor) private var tintColor
-    @Default(.lastTabValue) private var lastTabValue
     
-    @State private var isOffline = false
+    @State private var satellite = Satellite()
+    
     @State private var connectionStore = ConnectionStore()
     
     // try? await OfflineManager.shared.attemptListeningTimeSync()
@@ -32,7 +32,7 @@ struct ContentView: View {
                 LoadingView()
             } else if connectionStore.flat.isEmpty {
                 WelcomeView()
-            } else if isOffline {
+            } else if satellite.isOffline {
                 NavigationStack {
                     List {
                         ConnectionManager()
@@ -40,17 +40,17 @@ struct ContentView: View {
                 }
                 .safeAreaInset(edge: .bottom) {
                     Button("offline.disable") {
-                        isOffline = false
+                        satellite.isOffline = false
                     }
                 }
             } else {
-                TabRouter(selection: $lastTabValue)
+                TabRouter(selection: $satellite.lastTabValue)
             }
         }
         .tint(tintColor.color)
-        .onReceive(RFNotification[.changeOfflineMode].publisher()) {
-            isOffline = $0
-        }
+        .sensoryFeedback(.error, trigger: satellite.notifyError)
+        .sensoryFeedback(.success, trigger: satellite.notifySuccess)
+        .environment(satellite)
         .onContinueUserActivity(CSSearchableItemActionType) {
             guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
                 return

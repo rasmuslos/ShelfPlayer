@@ -15,15 +15,8 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
-                Button {
-                    Task {
-                        try await AudioPlayer.shared.play(audiobook)
-                    }
-                } label: {
-                    Label("play", systemImage: "play.fill")
-                }
-                
-                QueueButton(item: audiobook)
+                QueuePlayButton(item: audiobook)
+                QueueLaterButton(item: audiobook)
                 
                 Divider()
                 

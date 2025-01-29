@@ -44,6 +44,8 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
     }
     
     private(set) var failed: Bool
+    private(set) var notifyError: Bool
+    
     private(set) var working: Bool
     private(set) var finished: Bool
     
@@ -64,6 +66,8 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
         count = 0
         
         failed = false
+        notifyError = false
+        
         working = false
         finished = false
         
@@ -166,6 +170,7 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
                 logger.error("Error loading more \(T.self): \(error)")
                 
                 await MainActor.withAnimation { [self] in
+                    notifyError.toggle()
                     failed = true
                 }
             }

@@ -68,6 +68,7 @@ struct SeriesView: View {
         }
         .navigationTitle(viewModel.series.name)
         .navigationBarTitleDisplayMode(.inline)
+        .sensoryFeedback(.error, trigger: viewModel.lazyLoader.notifyError)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
