@@ -10,6 +10,7 @@ import RFNetwork
 import SPFoundation
 
 public extension APIClient {
+    /*
     func createBookmark(itemId: String, position: UInt64, note: String) async throws -> Bookmark {
         Bookmark(payload: try await response(for: ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark", method: .post, body: [
             "title": note,
@@ -27,4 +28,5 @@ public extension APIClient {
     func deleteBookmark(itemId: String, position: UInt64) async throws {
         let _ = try await response(for: ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark/\(Int(position))", method: .delete))
     }
+     */
 }

@@ -24,8 +24,8 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                     Label("audiobook.view", systemImage: "book")
                 }
                 
-                AuthorMenu(authors: audiobook.authors, libraryID: nil)
-                SeriesMenu(series: audiobook.series, libraryID: nil)
+                ItemMenu(authors: audiobook.authors)
+                ItemMenu(series: audiobook.series)
                 
                 Divider()
                 

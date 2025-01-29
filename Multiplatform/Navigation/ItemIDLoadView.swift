@@ -6,36 +6,38 @@
 //
 
 import SwiftUI
+import RFNetwork
 import ShelfPlayerKit
 
-struct AuthorIDLoadView: View {
+struct ItemIDLoadView: View {
     @Environment(\.library) private var library
     
-    let authorName: String
+    let name: String
+    let type: ItemIdentifier.ItemType
     
     @State private var failed = false
-    @State private var authorID: ItemIdentifier?
+    @State private var itemID: ItemIdentifier?
     
     var body: some View {
-        if let authorID {
-            ItemLoadView(authorID)
+        if let itemID {
+            ItemLoadView(itemID)
         } else if failed {
             ErrorView()
                 .refreshable {
-                    loadAuthor()
+                    loadItem()
                 }
         } else {
             LoadingView()
                 .task {
-                    loadAuthor()
+                    loadItem()
                 }
                 .refreshable {
-                    loadAuthor()
+                    loadItem()
                 }
         }
     }
     
-    private nonisolated func loadAuthor() {
+    private nonisolated func loadItem() {
         Task {
             await MainActor.withAnimation {
                 failed = false
@@ -44,10 +46,19 @@ struct AuthorIDLoadView: View {
             do {
                 guard let library = await library else { return }
                 
-                let authorID = try await ABSClient[library.connectionID].authorID(from: library.id, name: authorName)
+                let itemID: ItemIdentifier
+                
+                switch type {
+                case .series:
+                    itemID = try await ABSClient[library.connectionID].seriesID(from: library.id, name: name)
+                case .author:
+                    itemID = try await ABSClient[library.connectionID].authorID(from: library.id, name: name)
+                default:
+                    throw LoadError.unsupporedItemType
+                }
                 
                 await MainActor.withAnimation {
-                    self.authorID = authorID
+                    self.itemID = itemID
                 }
             } catch {
                 await MainActor.withAnimation {
@@ -55,5 +66,9 @@ struct AuthorIDLoadView: View {
                 }
             }
         }
+    }
+    
+    private enum LoadError: Error {
+        case unsupporedItemType
     }
 }

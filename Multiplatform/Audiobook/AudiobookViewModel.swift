@@ -187,7 +187,7 @@ private extension AudiobookViewModel {
                 if let id = series.id {
                     seriesID = id
                 } else {
-                    seriesID = try await ABSClient[audiobook.id.connectionID].seriesID(name: series.name, libraryID: audiobook.id.libraryID)
+                    seriesID = try await ABSClient[audiobook.id.connectionID].seriesID(from: library.id, name: series.name)
                 }
                 
                 var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: 20, page: 0)

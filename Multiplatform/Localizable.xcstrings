@@ -5455,7 +5455,6 @@
       }
     },
     "podcast.view" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
