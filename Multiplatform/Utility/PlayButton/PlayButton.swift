@@ -115,7 +115,10 @@ struct PlayButton: View {
             }
             
             ProgressButton(item: item)
-            ProgressResetButton(item: item)
+            
+            if let progressEntity, progressEntity.progress > 0 {
+                ProgressResetButton(item: item)
+            }
         } label: {
             playButtonStyle.makeLabel(configuration: .init(progress: progressEntity?.progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
@@ -130,7 +133,7 @@ struct PlayButton: View {
             .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
             .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
             .onAppear {
-                
+                loadProgressEntity()
             }
     }
     

@@ -61,7 +61,7 @@ private struct Title: View {
             
             if viewModel.audiobook.authors.count > 1 {
                 Menu {
-                    AuthorMenu.AuthorsMenu(authors: viewModel.audiobook.authors, libraryID: nil)
+                    ItemMenu.MenuInner(authors: viewModel.audiobook.authors)
                 } label: {
                     authorLabel
                 }
@@ -69,7 +69,7 @@ private struct Title: View {
                 .buttonStyle(.plain)
             } else if let authorName = viewModel.audiobook.authors.first {
                 NavigationLink {
-                    AuthorIDLoadView(authorName: authorName)
+                    ItemIDLoadView(name: authorName, type: .author)
                 } label: {
                     authorLabel
                 }

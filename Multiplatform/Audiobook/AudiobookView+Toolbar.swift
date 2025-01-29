@@ -91,8 +91,8 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            AuthorMenu(authors: viewModel.audiobook.authors, libraryID: nil)
-                            SeriesMenu(series: viewModel.audiobook.series, libraryID: nil)
+                            ItemMenu(authors: viewModel.audiobook.authors)
+                            ItemMenu(series: viewModel.audiobook.series)
                             
                             Divider()
                             

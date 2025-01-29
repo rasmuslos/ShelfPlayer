@@ -34,7 +34,7 @@ struct AuthorView: View {
             Header()
             
             if !viewModel.seriesLoader.items.isEmpty {
-                gridTitle(.init(localized: "series"))
+                gridTitle(.init(localized: "series"), count: viewModel.seriesLoader.count)
                 
                 SeriesGrid(series: viewModel.seriesLoader.items) {
                     viewModel.seriesLoader.performLoadIfRequired($0)
@@ -43,7 +43,7 @@ struct AuthorView: View {
             }
             
             if !viewModel.sections.isEmpty || !viewModel.seriesLoader.items.isEmpty {
-                gridTitle(.init(localized: "books"))
+                gridTitle(.init(localized: "books"), count: viewModel.audiobooksLoader.count)
                 
                 AudiobookVGrid(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
@@ -60,7 +60,7 @@ struct AuthorView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
             if !viewModel.seriesLoader.items.isEmpty {
-                listTitle(.init(localized: "series"))
+                listTitle(.init(localized: "series"), count: viewModel.seriesLoader.count)
                 
                 SeriesList(series: viewModel.seriesLoader.items) {
                     viewModel.seriesLoader.performLoadIfRequired($0)
@@ -68,7 +68,7 @@ struct AuthorView: View {
             }
             
             if !viewModel.sections.isEmpty {
-                listTitle(.init(localized: "books"))
+                listTitle(.init(localized: "books"), count: viewModel.audiobooksLoader.count)
                 
                 AudiobookList(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
@@ -79,19 +79,38 @@ struct AuthorView: View {
     }
     
     @ViewBuilder
-    private func gridTitle(_ title: String) -> some View {
+    private func gridTitle(_ title: String, count: Int) -> some View {
         HStack(spacing: 0) {
             RowTitle(title: title, fontDesign: .serif)
+            
             Spacer()
+            
+            if count > 0 {
+                Text(count, format: .number)
+                    .font(.caption)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(.top, 16)
         .padding(.horizontal, 20)
     }
     @ViewBuilder
-    private func listTitle(_ title: String) -> some View {
-        RowTitle(title: title, fontDesign: .serif)
-            .listRowSeparator(.hidden, edges: .top)
-            .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+    private func listTitle(_ title: String, count: Int) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+            RowTitle(title: title, fontDesign: .serif)
+            
+            Spacer()
+            
+            if count > 0 {
+                Text(count, format: .number)
+                    .font(.caption)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .listRowSeparator(.hidden, edges: .top)
+        .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
     }
     
     var body: some View {
@@ -111,7 +130,7 @@ struct AuthorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("options", systemImage: "ellipsis.circle") {
+                Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
                     ItemDisplayTypePicker(displayType: $viewModel.displayType)
                     
                     Divider()

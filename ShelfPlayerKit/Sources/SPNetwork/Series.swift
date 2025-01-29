@@ -10,7 +10,7 @@ import RFNetwork
 import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
-    func seriesID(name: String, libraryID: String) async throws -> ItemIdentifier {
+    func seriesID(from libraryID: String, name: String) async throws -> ItemIdentifier {
         let response = try await response(for: ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "10"),
