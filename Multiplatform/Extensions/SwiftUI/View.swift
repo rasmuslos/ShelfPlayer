@@ -17,8 +17,11 @@ extension View {
     #if DEBUG
     @ViewBuilder
     func previewEnvironment() -> some View {
+        @Namespace var namespace
+        
         self
             .environment(Satellite())
+            .environment(\.namespace, namespace)
     }
     #endif
 }

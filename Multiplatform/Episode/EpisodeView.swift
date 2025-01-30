@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct EpisodeView: View {
-    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    @Environment(\.namespace) private var namespace
     @Environment(\.library) private var library
     
     let zoomID: UUID?
@@ -38,7 +38,7 @@ struct EpisodeView: View {
         .ignoresSafeArea(edges: .top)
         .modify {
             if #available(iOS 18, *), let zoomID {
-                $0.navigationTransition(.zoom(sourceID: zoomID, in: namespaceWrapper()))
+                $0.navigationTransition(.zoom(sourceID: zoomID, in: namespace!))
             } else { $0 }
         }
         .sensoryFeedback(.error, trigger: viewModel.errorNotify)
@@ -71,11 +71,9 @@ struct EpisodeView: View {
 
 #if DEBUG
 #Preview {
-    @Previewable @Namespace var namespace
-    
     NavigationStack {
         EpisodeView(.fixture, zoomID: .init())
     }
-    .environment(NamespaceWrapper(namespace))
+    .previewEnvironment()
 }
 #endif
