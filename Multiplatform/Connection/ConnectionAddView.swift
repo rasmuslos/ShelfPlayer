@@ -227,6 +227,10 @@ private final class ViewModel: Sendable {
     }
     
     func validateEndpoint() async {
+        while endpoint.last == "/" {
+            endpoint.removeLast()
+        }
+        
         url = URL(string: endpoint)
         
         guard let url else {

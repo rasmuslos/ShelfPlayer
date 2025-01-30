@@ -14,12 +14,13 @@ import RFNotifications
 import ShelfPlayerKit
 
 struct ContentView: View {
+    @Namespace private var namespace
+    
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.tintColor) private var tintColor
     
     @State private var satellite = Satellite()
-    
     @State private var connectionStore = ConnectionStore()
     
     // try? await OfflineManager.shared.attemptListeningTimeSync()
@@ -51,6 +52,7 @@ struct ContentView: View {
         .sensoryFeedback(.error, trigger: satellite.notifyError)
         .sensoryFeedback(.success, trigger: satellite.notifySuccess)
         .environment(satellite)
+        .environment(\.namespace, namespace)
         .onContinueUserActivity(CSSearchableItemActionType) {
             guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
                 return
@@ -67,6 +69,10 @@ struct ContentView: View {
         }
         .environment(connectionStore)
     }
+}
+
+extension EnvironmentValues {
+    @Entry var namespace: Namespace.ID?
 }
 
 #Preview {

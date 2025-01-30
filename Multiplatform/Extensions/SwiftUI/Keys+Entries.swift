@@ -14,7 +14,7 @@ extension EnvironmentValues {
     @Entry var libraries = [Library]()
     @Entry var displayContext: DisplayContext = .unknown
     
-    @Entry var namespace: NamespaceWrapper!
+    // @Entry var namespace: NamespaceWrapper!
 }
 
 enum DisplayContext {

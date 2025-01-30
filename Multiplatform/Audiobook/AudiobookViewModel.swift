@@ -242,15 +242,9 @@ private extension AudiobookViewModel {
         }
     }
     
-    func extractColor() async {
-        /*
-        guard let image = await audiobook.cover?.platformImage else {
-            return
-        }
-         */
-        
-        /*
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
+    nonisolated func extractColor() async {
+        guard let image = await audiobook.id.platformCover,
+              let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
             return
         }
         
@@ -263,7 +257,6 @@ private extension AudiobookViewModel {
         await MainActor.withAnimation {
             self.dominantColor = result
         }
-         */
     }
     
     nonisolated func loadSessions() async {

@@ -119,5 +119,6 @@ struct AudiobookView: View {
     NavigationStack {
         AudiobookView(.fixture)
     }
+    .previewEnvironment()
 }
 #endif
