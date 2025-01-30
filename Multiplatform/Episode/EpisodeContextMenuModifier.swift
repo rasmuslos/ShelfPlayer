@@ -14,10 +14,6 @@ struct EpisodeContextMenuModifier: ViewModifier {
     
     let episode: Episode
     
-    private var isOffline: Bool {
-        library!.type == .offline
-    }
-    
     func body(content: Content) -> some View {
         content
             .contextMenu {
@@ -36,7 +32,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 NavigationLink(destination: EpisodeView(episode, zoomID: nil)) {
                     Label("episode.view", systemImage: "play.square.stack")
                 }
-                .disabled(isOffline)
+                // .disabled(isOffline)
                 
                 /*
                 NavigationLink(destination: PodcastLoadView(podcastID: episode.podcastId, zoom: false)) {

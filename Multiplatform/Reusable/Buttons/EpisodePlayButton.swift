@@ -161,7 +161,7 @@ private final class EpisodePlayButtonViewModel {
             // for some inexplicable reason library is nil if highlighted it set to true
             // i have no idea why, maybe i will use one of my code level assistance credits for this
             // but only when you use the release configuration
-            withoutPlaybackSession = library.type == .offline
+            // withoutPlaybackSession = library.type == .offline
         } else {
             withoutPlaybackSession = false
         }
