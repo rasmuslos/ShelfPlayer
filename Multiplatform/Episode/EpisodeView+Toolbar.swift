@@ -9,7 +9,7 @@ import SwiftUI
 import SPFoundation
 import SPPersistence
 
-internal extension EpisodeView {
+extension EpisodeView {
     struct ToolbarModifier: ViewModifier {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(EpisodeViewModel.self) private var viewModel
@@ -44,23 +44,51 @@ internal extension EpisodeView {
                     
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
+                            QueuePlayButton(item: viewModel.episode)
+                            QueueLaterButton(item: viewModel.episode)
+                            
+                            Divider()
+                            
+                            ItemLoadLink(itemID: viewModel.episode.podcastID)
+                            
+                            Divider()
+                            
                             ProgressButton(item: viewModel.episode)
                             
-                            Button(role: .destructive) {
-                                viewModel.resetProgress()
-                            } label: {
-                                Label("progress.reset", systemImage: "slash.circle")
+                            if let progressEntity = viewModel.progressEntity, progressEntity.progress > 0 {
+                                ProgressResetButton(item: viewModel.episode)
                             }
-                        } label: {
+                            
                             /*
-                                if viewModel.progressEntity.isFinished {
-                                    Image(systemName: "minus.circle")
-                                } else {
-                                    Image(systemName: "checkmark.circle")
-                                }
+                             if viewModel.offlineTracker.status == .none {
+                             ProgressButton(item: viewModel.audiobook)
+                             DownloadButton(item: viewModel.audiobook)
+                             } else {
+                             if !viewModel.progressEntity.isFinished {
+                             ProgressButton(item: viewModel.audiobook)
+                             }
+                             
+                             Menu {
+                             if viewModel.progressEntity.isFinished {
+                             ProgressButton(item: viewModel.audiobook)
+                             }
+                             
+                             if viewModel.progressEntity.startedAt != nil {
+                             Button(role: .destructive) {
+                             viewModel.resetProgress()
+                             } label: {
+                             Label("progress.reset", systemImage: "slash.circle")
+                             }
+                             }
+                             
+                             DownloadButton(item: viewModel.audiobook)
+                             } label: {
+                             Text("toolbar.remove")
+                             }
+                             }
                              */
-                        } primaryAction: {
-                            viewModel.toggleFinished()
+                        } label: {
+                            Label("more", systemImage: "ellipsis.circle")
                         }
                     }
                 }
