@@ -39,9 +39,11 @@ struct EpisodeView: View {
         .modify {
             if #available(iOS 18, *), let zoomID {
                 $0.navigationTransition(.zoom(sourceID: zoomID, in: namespace!))
-            } else { $0 }
+            } else {
+                $0
+            }
         }
-        .sensoryFeedback(.error, trigger: viewModel.errorNotify)
+        .sensoryFeedback(.error, trigger: viewModel.notifyError)
         // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
         .environment(viewModel)
@@ -49,22 +51,19 @@ struct EpisodeView: View {
             viewModel.library = library
         }
         .task {
-            // await viewModel.load()
+            viewModel.load()
         }
         .refreshable {
-            // await viewModel.load()
+            viewModel.load()
         }
-        .userActivity("io.rfk.shelfplayer.episode") {
-            $0.title = viewModel.episode.name
-            $0.isEligibleForHandoff = true
-            // $0.persistentIdentifier = convertIdentifier(item: viewModel.episode)
-            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.episode)
-            $0.userInfo = [:
-                // "libraryID": viewModel.episode.libraryID,
-                // "episodeID": viewModel.episode.id,
-                // "podcastID": viewModel.episode.podcastId,
-            ]
-            // $0.webpageURL = viewModel.episode.url
+        .userActivity("io.rfk.shelfPlayer.item") { activity in
+            activity.title = viewModel.episode.name
+            activity.isEligibleForHandoff = true
+            activity.persistentIdentifier = viewModel.episode.id.description
+            
+            Task {
+                try await activity.webpageURL = viewModel.episode.id.url
+            }
         }
     }
 }

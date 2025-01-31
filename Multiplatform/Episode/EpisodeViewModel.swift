@@ -10,79 +10,60 @@ import SwiftUI
 import RFVisuals
 import ShelfPlayerKit
 
-@Observable
-internal final class EpisodeViewModel {
-    @MainActor let episode: Episode
-    @MainActor var library: Library!
+@Observable @MainActor
+final class EpisodeViewModel {
+    let episode: Episode
+    var library: Library!
     
-    @MainActor private(set) var dominantColor: Color?
+    var toolbarVisible: Bool
+    var sessionsVisible: Bool
     
-    @MainActor var toolbarVisible: Bool
-    @MainActor var sessionsVisible: Bool
+    private(set) var dominantColor: Color?
     
-    @MainActor private(set) var sessions: [SessionPayload]
-    @MainActor private(set) var errorNotify: Bool
+    private(set) var sessions: [SessionPayload]
+    private(set) var notifyError: Bool
     
-    @MainActor var progressEntity: ProgressEntity?
+    private(set) var progressEntity: ProgressEntity.UpdatingProgressEntity?
     
-    @MainActor
     init(episode: Episode) {
         self.episode = episode
         library = nil
         
-        dominantColor = nil
-        
         toolbarVisible = false
         sessionsVisible = false
         
-        sessions = []
-        errorNotify = false
+        dominantColor = nil
         
-        // progressEntity = OfflineManager.shared.progressEntity(item: episode)
+        sessions = []
+        notifyError = false
     }
 }
 
-internal extension EpisodeViewModel {
-    func load() async {
-        await withTaskGroup(of: Void.self) {
-            // $0.addTask { await self.loadSessions() }
-            // $0.addTask { await self.extractDominantColor() }
-            
-            await $0.waitForAll()
-        }
-    }
-    
-    func toggleFinished() {
+extension EpisodeViewModel {
+    nonisolated func load() {
         Task {
-            do {
-                // try await episode.finished(progressEntity.progress < 1)
-            } catch {
-                await MainActor.run {
-                    // errorNotify.toggle()
+            await withTaskGroup(of: Void.self) {
+                $0.addTask { await self.loadSessions() }
+                $0.addTask { await self.extractDominantColor() }
+                
+                $0.addTask {
+                    let progressEntity = await PersistenceManager.shared.progress[self.episode.id].updating
+                    
+                    await MainActor.withAnimation {
+                        self.progressEntity = progressEntity
+                    }
                 }
-            }
-        }
-    }
-    func resetProgress() {
-        Task {
-            do {
-                // try await episode.resetProgress()
-            } catch {
-                await MainActor.run {
-                    // errorNotify.toggle()
-                }
+                
+                await $0.waitForAll()
             }
         }
     }
 }
 
 private extension EpisodeViewModel {
-    func extractDominantColor() async {
-        guard let image = await episode.id.platformCover else {
-            return
-        }
-        
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
+    nonisolated func extractDominantColor() async {
+        guard let image = await episode.id.platformCover,
+              let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
             return
         }
         
@@ -93,22 +74,21 @@ private extension EpisodeViewModel {
         }
         
         await MainActor.withAnimation {
-            // self.dominantColor = result
+            self.dominantColor = result
         }
     }
-    func loadSessions() async {
-        /*
-        if await library.type == .offline {
-            return
-        }
-        
-        guard let sessions = try? await AudiobookshelfClient.shared.listeningSessions(for: episode.podcastId, episodeID: episode.id) else {
+    
+    nonisolated func loadSessions() async {
+        guard let sessions = try? await ABSClient[episode.id.connectionID].listeningSessions(with: episode.id) else {
+            await MainActor.run {
+                notifyError.toggle()
+            }
+            
             return
         }
         
         await MainActor.withAnimation {
             self.sessions = sessions
         }
-         */
     }
 }

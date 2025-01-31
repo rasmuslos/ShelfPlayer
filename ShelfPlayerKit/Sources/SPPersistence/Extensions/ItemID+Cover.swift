@@ -17,6 +17,12 @@ public extension ItemIdentifier {
     }
     
     func coverURL(size: CoverSize) async -> URL? {
+        #if DEBUG
+        if primaryID == "fixture" {
+            return URL(string: "https://yt3.ggpht.com/-lwlGXn90heE/AAAAAAAAAAI/AAAAAAAAAAA/FmCv96eMMNE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
+        }
+        #endif
+        
         guard let connection = await PersistenceManager.shared.authorization[connectionID] else { return nil }
         var base = connection.host
         
@@ -35,7 +41,7 @@ public extension ItemIdentifier {
     
     var coverRequest: ImageRequest? {
         get async {
-            guard let coverURL = await coverURL, let connection = await PersistenceManager.shared.authorization[connectionID] else { return nil }
+            guard let coverURL = await coverURL else { return nil }
             
             if coverURL.isFileURL {
                 return .init(url: coverURL)
@@ -43,8 +49,10 @@ public extension ItemIdentifier {
             
             var request = URLRequest(url: coverURL)
             
-            for header in connection.headers {
-                request.addValue(header.value, forHTTPHeaderField: header.key)
+            if let connection = await PersistenceManager.shared.authorization[connectionID] {
+                for header in connection.headers {
+                    request.addValue(header.value, forHTTPHeaderField: header.key)
+                }
             }
             
             return ImageRequest(urlRequest: request)
