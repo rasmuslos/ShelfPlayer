@@ -48,8 +48,6 @@ public struct Library {
     public enum MediaType: Int, Hashable, Codable, Sendable, Defaults.Serializable {
         case audiobooks = 1
         case podcasts = 2
-        
-        case offline = 0
     }
 }
 

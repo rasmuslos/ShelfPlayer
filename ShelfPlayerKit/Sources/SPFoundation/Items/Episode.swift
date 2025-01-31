@@ -47,6 +47,14 @@ extension Episode.EpisodeIndex: Comparable {
 }
 
 public extension Episode {
+    var podcastID: ItemIdentifier {
+        .init(primaryID: id.groupingID!,
+              groupingID: nil,
+              libraryID: id.libraryID,
+              connectionID: id.connectionID,
+              type: .podcast)
+    }
+    
     var releaseDate: Date? {
         guard let released = released, let milliseconds = Double(released) else {
             return nil
