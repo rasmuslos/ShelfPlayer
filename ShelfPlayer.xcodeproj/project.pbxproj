@@ -406,9 +406,9 @@
 				3A77B6FB2ACDE2DA00F22C7F /* Author */,
 				3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */,
 				3A8810EC2AD2C061009696D1 /* Episode */,
+				3A8810FC2AD2D2B3009696D1 /* Podcast */,
 				3AAE5A6F2D33DCA10097DB77 /* DONE */,
 				3A5210042B6D2A9F00F59101 /* Common */,
-				3A8810FC2AD2D2B3009696D1 /* Podcast */,
 				3A98246A2B6EAB0A0098C06A /* Offline */,
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
@@ -576,13 +576,6 @@
 			path = Fullscreen;
 			sourceTree = "<group>";
 		};
-		3A5891132CD3F1D5005C3289 /* Audiobook */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Audiobook;
-			sourceTree = "<group>";
-		};
 		3A5A5B852BE6310D00481888 /* Item */ = {
 			isa = PBXGroup;
 			children = (
@@ -683,7 +676,6 @@
 				3A5A5B852BE6310D00481888 /* Item */,
 				3A9207002B6CD8A700A5CAB0 /* Filter */,
 				3AADC0382B6D104400C4088D /* Buttons */,
-				3A5891132CD3F1D5005C3289 /* Audiobook */,
 				3A5210052B6D2AD600F59101 /* Fullscreen */,
 			);
 			path = Reusable;

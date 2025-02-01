@@ -39,14 +39,13 @@ final class PodcastViewModel {
         }
     }
     
-    var toolbarVisible: Bool
+    var isToolbarVisible: Bool
     var settingsSheetPresented: Bool
     var descriptionSheetPresented: Bool
     
     private(set) var dominantColor: Color?
     
     var search: String
-    private(set) var downloadConfiguration: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration?
     
     private(set) var notifyError: Bool
     
@@ -61,14 +60,13 @@ final class PodcastViewModel {
         ascending = Defaults[.groupingAscending(podcast.id)]
         sortOrder = Defaults[.groupingSortOrder(podcast.id)]
         
-        toolbarVisible = false
+        isToolbarVisible = false
         settingsSheetPresented = false
         descriptionSheetPresented = false
         
         dominantColor = nil
         
         search = ""
-        downloadConfiguration = nil
         
         notifyError = false
         
@@ -89,22 +87,11 @@ extension PodcastViewModel {
         return episodes.count
     }
     
-    var settingsIcon: String {
-        if downloadConfiguration?.enableNotifications == true {
-            "gear.badge"
-        } else if downloadConfiguration?.enabled == true {
-            "gear.badge.checkmark"
-        } else {
-            "gear.badge.xmark"
-        }
-    }
-    
     nonisolated func load() {
         Task {
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await self.extractColor() }
                 $0.addTask { await self.fetchEpisodes() }
-                $0.addTask { await self.fetchDownloadConfiguration() }
                 
                 await $0.waitForAll()
             }
@@ -193,14 +180,6 @@ private extension PodcastViewModel {
             await MainActor.run {
                 notifyError.toggle()
             }
-        }
-    }
-    
-    nonisolated func fetchDownloadConfiguration() async {
-        let configuration = await PersistenceManager.shared.podcasts[podcast.id]
-        
-        await MainActor.withAnimation {
-            self.downloadConfiguration = configuration
         }
     }
 }
