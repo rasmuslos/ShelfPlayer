@@ -72,11 +72,7 @@
 	</dict>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>io.rfk.shelfplayer.audiobook</string>
-		<string>io.rfk.shelfplayer.author</string>
-		<string>io.rfk.shelfplayer.episode</string>
-		<string>io.rfk.shelfplayer.podcast</string>
-		<string>io.rfk.shelfplayer.series</string>
+		<string>io.rfk.shelfPlayer.item</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

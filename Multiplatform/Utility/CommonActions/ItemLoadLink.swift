@@ -16,7 +16,7 @@ struct ItemLoadLink: View {
     
     @ViewBuilder
     private var labelContent: some View {
-        Label(itemID.type.label, systemImage: itemID.type.icon)
+        Label(itemID.type.viewLabel, systemImage: itemID.type.icon)
         
         if let footer {
             Text(footer)
@@ -39,7 +39,7 @@ struct ItemLoadLink: View {
 }
 
 extension ItemIdentifier.ItemType {
-    var label: LocalizedStringKey {
+    var viewLabel: LocalizedStringKey {
         switch self {
         case .audiobook:
             "audiobook.view"
@@ -51,6 +51,20 @@ extension ItemIdentifier.ItemType {
             "podcast.view"
         case .episode:
             "episode.view"
+        }
+    }
+    var errorLabel: LocalizedStringKey {
+        switch self {
+        case .audiobook:
+            "error.unavailable.audiobook"
+        case .author:
+            "error.unavailable.author"
+        case .series:
+            "error.unavailable.series"
+        case .podcast:
+            "error.unavailable.podcast"
+        case .episode:
+            "error.unavailable.episode"
         }
     }
     

@@ -27,18 +27,3 @@ internal extension AudiobookSortOrder {
         }
     }
 }
-
-internal extension EpisodeSortOrder {
-    var label: LocalizedStringKey {
-        switch self {
-            case .name:
-                "sort.name"
-            case .index:
-                "sort.index"
-            case .released:
-                "sort.released"
-            case .duration:
-                "sort.duration"
-        }
-    }
-}

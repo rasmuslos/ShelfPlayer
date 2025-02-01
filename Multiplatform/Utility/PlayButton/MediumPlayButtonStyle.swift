@@ -9,19 +9,17 @@ import SwiftUI
 
 struct MediumPlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {
-        configuration.content
-            .bold()
-            .font(.footnote)
-            .frame(maxWidth: 280)
-            .background((configuration.background.isLight ?? false) ? .white : .black)
+            configuration.content
+                .bold()
+                .font(.footnote)
+                .background((configuration.background.isLight ?? false) ? .white : .black)
     }
     
     func makeLabel(configuration: Configuration) -> some View {
         configuration.content
             .foregroundStyle((configuration.background.isLight ?? false) ? .black : .white)
             .padding(.vertical, 16)
-            .padding(.horizontal, 8)
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 20)
     }
     
     var cornerRadius: CGFloat {

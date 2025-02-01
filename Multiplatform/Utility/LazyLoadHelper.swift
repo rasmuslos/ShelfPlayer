@@ -136,21 +136,7 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
                     var filtered = [PlayableItem]()
                     
                     for item in items {
-                        let included: Bool
-                        let entity = await PersistenceManager.shared.progress[item.id]
-                        
-                        switch filter {
-                        case .all:
-                            included = true
-                        case .active:
-                            included = entity.progress > 0 && entity.progress < 1
-                        case .finished:
-                            included = entity.isFinished
-                        case .notFinished:
-                            included = !entity.isFinished
-                        }
-                        
-                        if included {
+                        if await item.isIncluded(in: filter) {
                             filtered.append(item)
                         }
                     }

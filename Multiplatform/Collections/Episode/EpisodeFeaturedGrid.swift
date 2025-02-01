@@ -62,7 +62,7 @@ struct EpisodeFeaturedGrid: View {
 
 private struct EpisodeGridItem: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    @Environment(\.namespace) private var namespace
     
     let episode: Episode
     
@@ -88,12 +88,7 @@ private struct EpisodeGridItem: View {
             .modifier(EpisodeContextMenuModifier(episode: episode))
             .frame(width: size)
             .padding(.leading, gap)
-            .modify {
-                if #available(iOS 18, *) {
-                    $0
-                        .matchedTransitionSource(id: zoomID, in: namespaceWrapper())
-                } else { $0 }
-            }
+            .matchedTransitionSource(id: zoomID, in: namespace!)
             .secondaryShadow(radius: 8, opacity: 0.4)
         }
         .buttonStyle(.plain)

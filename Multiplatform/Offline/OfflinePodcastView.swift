@@ -29,7 +29,8 @@ struct OfflinePodcastView: View {
     }
     
     private var sorted: [Episode] {
-        Episode.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSortOrder, ascending: episodesAscending)
+        // Episode.filterSort(episodes: episodes, filter: episodeFilter, sortOrder: episodesSortOrder, ascending: episodesAscending)
+        episodes
     }
     
     var body: some View {

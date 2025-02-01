@@ -6,7 +6,6 @@
 //
 
 @_exported import SPFoundation
-@_exported import SPExtension
 
 @_exported import SPNetwork
 @_exported import SPPersistence

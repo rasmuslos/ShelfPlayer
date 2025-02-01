@@ -14,13 +14,12 @@ struct ItemDisplayTypePicker: View {
     var body: some View {
         ControlGroup {
             ForEach(ItemDisplayType.allCases) { displayType in
-                Button {
+                Button(displayType.label, systemImage: displayType.icon) {
                     withAnimation {
                         self.displayType = displayType
                     }
-                } label: {
-                    Label(displayType.label, systemImage: displayType.icon)
                 }
+                .tag(displayType)
             }
         }
     }

@@ -9,9 +9,19 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct ItemFilterPicker: View {
+    @Environment(\.library) private var library
+    
     @Binding var filter: ItemFilter
     
-    func binding(for filter: ItemFilter) -> Binding<Bool> {
+    private var options: [ItemFilter] {
+        if library?.type == .podcasts {
+            [.finished, .active, .notFinished]
+        } else {
+            [.finished, .active]
+        }
+    }
+    
+    private func binding(for filter: ItemFilter) -> Binding<Bool> {
         .init() { self.filter == filter } set: {
             if $0 {
                 self.filter = filter
@@ -22,9 +32,9 @@ struct ItemFilterPicker: View {
     }
     
     var body: some View {
-        ForEach([ItemFilter]([.finished, .active])) { filter in
-            Toggle(filter.label, systemImage: filter.icon, isOn: binding(for: filter))
-                .tag(filter)
+        ForEach(options) {
+            Toggle($0.label, systemImage: $0.icon, isOn: binding(for: $0))
+                .tag($0)
         }
     }
 }
@@ -60,6 +70,7 @@ extension ItemFilter {
     @Previewable @State var filter: ItemFilter = .all
     
     ItemFilterPicker(filter: $filter)
+        .environment(\.library, .init(id: "fixture", connectionID: "fixture", name: "Fixture", type: .podcasts, index: -1))
 }
 
 #Preview {
