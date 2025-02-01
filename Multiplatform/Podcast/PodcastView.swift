@@ -35,7 +35,10 @@ struct PodcastView: View {
                     Text("episodes")
                         .bold()
                     
-                    NavigationLink(destination: PodcastEpisodesView(viewModel: $viewModel)) {
+                    NavigationLink {
+                        PodcastEpisodesView()
+                            .environment(viewModel)
+                    } label: {
                         HStack {
                             Spacer()
                             Text("episodes.all")
@@ -80,7 +83,7 @@ struct PodcastView: View {
             }
         }
         .sheet(isPresented: $viewModel.settingsSheetPresented) {
-            // PodcastSettingsSheet(podcast: viewModel.podcast, configuration: viewModel.fetchConfiguration)
+            PodcastSettingsSheet(podcastID: viewModel.podcast.id)
         }
         .userActivity("io.rfk.shelfPlayer.item") { activity in
             activity.title = viewModel.podcast.name

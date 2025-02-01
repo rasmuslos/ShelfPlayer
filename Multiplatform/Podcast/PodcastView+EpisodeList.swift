@@ -10,9 +10,11 @@ import Defaults
 import ShelfPlayerKit
 
 struct PodcastEpisodesView: View {
-    @Binding var viewModel: PodcastViewModel
+    @Environment(PodcastViewModel.self) private var viewModel
     
     var body: some View {
+        @Bindable var viewModel = viewModel
+        
         List {
             EpisodeSingleList(episodes: viewModel.visible)
         }
@@ -23,18 +25,12 @@ struct PodcastEpisodesView: View {
         // .modifier(NowPlaying.SafeAreaModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                EpisodeSortFilter(filter: $viewModel.filter, sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                PodcastView.ToolbarModifier.OptionsMenu()
             }
+        }
+        .environment(viewModel)
+        .onDisappear {
+            viewModel.search = ""
         }
     }
 }
-
-#if DEBUG
-#Preview {
-    @Previewable @State var viewModel: PodcastViewModel = .init(podcast: .fixture, episodes: .init(repeating: .fixture, count: 7))
-    
-    NavigationStack {
-        PodcastEpisodesView(viewModel: $viewModel)
-    }
-}
-#endif

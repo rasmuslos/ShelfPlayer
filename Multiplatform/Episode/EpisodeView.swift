@@ -36,7 +36,14 @@ struct EpisodeView: View {
             .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
         }
         .ignoresSafeArea(edges: .top)
-        .navigationTransition(.zoom(sourceID: zoomID, in: namespace!))
+        .modify {
+            if let zoomID {
+                $0
+                    .navigationTransition(.zoom(sourceID: zoomID, in: namespace!))
+            } else {
+                $0
+            }
+        }
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
