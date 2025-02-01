@@ -10,8 +10,8 @@ import Defaults
 import ShelfPlayerKit
 
 struct PodcastView: View {
-    @Environment(NamespaceWrapper.self) private var namespaceWrapper
     @Environment(\.library) private var library
+    @Environment(\.namespace) private var namespace
     
     let zoom: Bool
     
@@ -50,23 +50,15 @@ struct PodcastView: View {
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
-        .modify {
-            if #available(iOS 18, *), zoom {
-                $0
-                    .navigationTransition(.zoom(sourceID: "podcast_\(viewModel.podcast.id)", in: namespaceWrapper()))
-            } else { $0 }
-        }
+        .navigationTransition(.zoom(sourceID: "item_\(viewModel.podcast.id)", in: namespace!))
         .modifier(ToolbarModifier())
         // .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)
-        .onAppear {
-            viewModel.library = library
-        }
         .task {
-            await viewModel.load()
+            viewModel.load()
         }
         .refreshable {
-            await viewModel.load()
+            viewModel.load()
         }
         .sheet(isPresented: $viewModel.descriptionSheetPresented) {
             NavigationStack {
@@ -90,27 +82,23 @@ struct PodcastView: View {
         .sheet(isPresented: $viewModel.settingsSheetPresented) {
             // PodcastSettingsSheet(podcast: viewModel.podcast, configuration: viewModel.fetchConfiguration)
         }
-        .userActivity("io.rfk.shelfplayer.podcast") {
-            $0.title = viewModel.podcast.name
-            $0.isEligibleForHandoff = true
-            // $0.persistentIdentifier = viewModel.podcast.id
-            // $0.targetContentIdentifier = convertIdentifier(item: viewModel.podcast)
-            $0.userInfo = [
-                // "libraryID": viewModel.podcast.libraryID,
-                "podcastID": viewModel.podcast.id,
-            ]
-            // $0.webpageURL = viewModel.podcast.url
+        .userActivity("io.rfk.shelfPlayer.item") { activity in
+            activity.title = viewModel.podcast.name
+            activity.isEligibleForHandoff = true
+            activity.persistentIdentifier = viewModel.podcast.id.description
+            
+            Task {
+                try await activity.webpageURL = viewModel.podcast.id.url
+            }
         }
     }
 }
 
 #if DEBUG
 #Preview {
-    @Previewable @Namespace var namespace
-    
     NavigationStack {
         PodcastView(Podcast.fixture, episodes: .init(repeating: .fixture, count: 7), zoom: true)
     }
-    .environment(NamespaceWrapper(namespace))
+    .previewEnvironment()
 }
 #endif

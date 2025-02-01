@@ -87,7 +87,7 @@ internal struct PodcastHGrid: View {
 }
 
 private struct PodcastGridItem: View {
-    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    @Environment(\.namespace) private var namespace
     
     let podcast: Podcast
     
@@ -96,8 +96,7 @@ private struct PodcastGridItem: View {
     }
     
     var body: some View {
-        NavigationLink(destination: PodcastLoadView(podcastID: "", zoom: true)) {
-        // NavigationLink(destination: PodcastLoadView(podcastID: podcast.id, zoom: true)) {
+        NavigationLink(destination: ItemLoadView(podcast.id)) {
             VStack(alignment: .leading, spacing: 4) {
                 ItemImage(item: podcast)
                     .hoverEffect(.highlight)
@@ -117,12 +116,7 @@ private struct PodcastGridItem: View {
                     .padding(4)
             }
              */
-            .modify {
-                if #available(iOS 18, *) {
-                    $0
-                        .matchedTransitionSource(id: "podcast_\(podcast.id)", in: namespaceWrapper())
-                } else { $0 }
-            }
+            .matchedTransitionSource(id: "item_\(podcast.id)", in: namespace!)
         }
         .buttonStyle(.plain)
     }

@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-internal extension PodcastView {
+extension PodcastView {
     struct Header: View {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(\.colorScheme) private var colorScheme

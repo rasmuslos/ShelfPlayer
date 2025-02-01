@@ -29,6 +29,8 @@ public extension ItemIdentifier {
         switch type {
         case .author:
             base.append(path: "api/authors/\(primaryID)/image")
+        case .episode:
+            base.append(path: "api/items/\(groupingID!)/cover")
         default:
             base.append(path: "api/items/\(primaryID)/cover")
         }
