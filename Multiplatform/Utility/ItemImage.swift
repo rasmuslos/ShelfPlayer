@@ -44,7 +44,7 @@ struct RequestImage: View {
                         image
                             .resizable()
                             .scaledToFit()
-                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                            .clipShape(.rect(cornerRadius: cornerRadius))
                             .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     } else {
                         Placeholder(itemID: nil, cornerRadius: cornerRadius)
@@ -77,12 +77,12 @@ struct RequestImage: View {
                         }
                     }
                     .aspectRatio(1, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    .clipShape(.rect(cornerRadius: cornerRadius))
                     .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     .padding(0)
             }
         }
-        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: cornerRadius))
+        .contentShape(.hoverMenuInteraction, .rect(cornerRadius: cornerRadius))
     }
     
     enum AspectRatioPolicy {

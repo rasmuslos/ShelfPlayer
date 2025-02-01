@@ -18,16 +18,14 @@ extension PodcastView {
         }
         
         func body(content: Content) -> some View {
-            @Bindable var viewModel = viewModel
-            
             content
                 .navigationTitle(viewModel.podcast.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(isRegularPresentation ? .automatic : viewModel.toolbarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!viewModel.toolbarVisible && !isRegularPresentation)
+                .toolbarBackground(isRegularPresentation ? .automatic : viewModel.isToolbarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!viewModel.isToolbarVisible && !isRegularPresentation)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        if viewModel.toolbarVisible {
+                        if viewModel.isToolbarVisible {
                             VStack {
                                 Text(viewModel.podcast.name)
                                     .font(.headline)
@@ -43,61 +41,41 @@ extension PodcastView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
-                            Section("filter") {
-                                ItemFilterPicker(filter: $viewModel.filter)
-                            }
-                            Section("sort") {
-                                EpisodeSortPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
-                            }
-                        }
+                        OptionsMenu()
                     }
-                    
-                    /*
-                    ToolbarItem(placement: .topBarTrailing) {
-                        @Bindable var viewModel = viewModel
-                        
-                        Menu {
-                            // PodcastSettingsSheet.DownloadSettings(maxEpisodes: $viewModel.fetchConfiguration.maxEpisodes, autoDownloadEnabled: $viewModel.fetchConfiguration.autoDownload)
-                            // PodcastSettingsSheet.NotificationToggle(autoDownloadEnabled: viewModel.fetchConfiguration.autoDownload, notificationsEnabled: $viewModel.fetchConfiguration.notifications)
-                            
-                            Divider()
-                            
-                            ControlGroup {
-                                Button {
-                                    viewModel.fetchConfiguration.maxEpisodes -= 1
-                                } label: {
-                                    Image(systemName: "minus")
-                                }
-                                
-                                Text(String(viewModel.fetchConfiguration.maxEpisodes))
-                                
-                                Button {
-                                    viewModel.fetchConfiguration.maxEpisodes -= 1
-                                } label: {
-                                    Image(systemName: "plus")
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "arrow.down.to.line.circle")
-                                .labelStyle(.iconOnly)
-                        } primaryAction: {
-                            // viewModel.settingsSheetPresented.toggle()
-                        }
-                        .menuActionDismissBehavior(.disabled)
-                        // .onChange(of: viewModel.fetchConfiguration) {
-                            // try? viewModel.fetchConfiguration.modelContext?.save()
-                        // }
-                    }
-                     */
                 }
                 .toolbar {
-                    if !viewModel.toolbarVisible && !isRegularPresentation {
+                    if !viewModel.isToolbarVisible && !isRegularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.toolbarVisible)
+                            FullscreenBackButton(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.isToolbarVisible)
                         }
                     }
                 }
+        }
+    }
+}
+
+extension PodcastView.ToolbarModifier {
+    struct OptionsMenu: View {
+        @Environment(PodcastViewModel.self) private var viewModel
+        
+        var body: some View {
+            @Bindable var viewModel = viewModel
+            
+            Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                Section("filter") {
+                    ItemFilterPicker(filter: $viewModel.filter)
+                }
+                
+                Section("sort") {
+                    EpisodeSortPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                }
+                
+                Button("podcast.settings.title", systemImage: "arrow.down.to.line.circle") {
+                    viewModel.settingsSheetPresented.toggle()
+                }
+            }
+            .menuActionDismissBehavior(.disabled)
         }
     }
 }
