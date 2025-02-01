@@ -14,7 +14,7 @@ struct PodcastEpisodesView: View {
     
     var body: some View {
         List {
-            EpisodeSingleList(episodes: viewModel.filtered)
+            EpisodeSingleList(episodes: viewModel.visible)
         }
         .listStyle(.plain)
         .navigationTitle("episodes")

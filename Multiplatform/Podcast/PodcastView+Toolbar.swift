@@ -18,6 +18,8 @@ extension PodcastView {
         }
         
         func body(content: Content) -> some View {
+            @Bindable var viewModel = viewModel
+            
             content
                 .navigationTitle(viewModel.podcast.name)
                 .navigationBarTitleDisplayMode(.inline)
@@ -37,6 +39,17 @@ extension PodcastView {
                             }
                         } else {
                             Text(verbatim: "")
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                            Section("filter") {
+                                ItemFilterPicker(filter: $viewModel.filter)
+                            }
+                            Section("sort") {
+                                EpisodeSortPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                            }
                         }
                     }
                     

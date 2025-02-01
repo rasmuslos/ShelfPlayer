@@ -24,7 +24,6 @@ let package = Package(
         // Umbrella library
         .target(name: "ShelfPlayerKit", dependencies: [
             .targetItem(name: "SPFoundation", condition: .none),
-            .targetItem(name: "SPExtension", condition: .none),
             .targetItem(name: "SPNetwork", condition: .none),
             .targetItem(name: "SPPersistence", condition: .none),
         ]),
@@ -39,10 +38,6 @@ let package = Package(
                 .byName(name: "SwiftSoup"),
             ]
         ),
-        .target(name: "SPExtension", dependencies: [
-            .targetItem(name: "SPFoundation", condition: .none),
-            .targetItem(name: "SPPersistence", condition: .none),
-        ]),
         
         // Network
         .target(name: "SPNetwork", dependencies: [
@@ -52,7 +47,7 @@ let package = Package(
             .targetItem(name: "SPFoundation", condition: .none),
         ]),
         
-        // Offline
+        // Persistence
         .target(name: "SPPersistence", dependencies: [
             .byName(name: "RFKit"),
             .byName(name: "Defaults"),
@@ -67,7 +62,6 @@ let package = Package(
             .byName(name: "Defaults"),
             
             .targetItem(name: "SPFoundation", condition: .none),
-            .targetItem(name: "SPExtension", condition: .none),
             .targetItem(name: "SPPersistence", condition: .none),
         ]),
     ]

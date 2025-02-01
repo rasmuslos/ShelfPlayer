@@ -21,7 +21,7 @@ internal struct EpisodeList: View {
 
 
 private struct Row: View {
-    @Environment(NamespaceWrapper.self) private var namespaceWrapper
+    @Environment(\.namespace) private var namespace
     
     let episode: Episode
     let zoom: Bool
@@ -36,12 +36,7 @@ private struct Row: View {
                     .frame(width: 104)
                     .padding(.trailing, 12)
                     .hoverEffect(.highlight)
-                    .modify {
-                        if #available(iOS 18, *) {
-                            $0
-                                .matchedTransitionSource(id: zoomID, in: namespaceWrapper())
-                        } else { $0 }
-                    }
+                    .matchedTransitionSource(id: zoomID, in: namespace!)
                 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(episode.name)

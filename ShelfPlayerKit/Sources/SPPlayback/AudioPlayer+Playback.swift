@@ -11,7 +11,6 @@ import Intents
 import AVKit
 import Defaults
 import SPFoundation
-import SPExtension
 import SPPersistence
 
 public extension AudioPlayer {

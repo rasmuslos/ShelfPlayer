@@ -49,14 +49,7 @@ internal struct SearchView: View {
         }
         .navigationTitle("panel.search")
         .searchable(text: $viewModel.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.placeholder")
-        .modify {
-            if #available(iOS 18, *) {
-                $0
-                    .searchFocused($focused)
-            } else {
-                $0
-            }
-        }
+        .searchFocused($focused)
         .autocorrectionDisabled()
         // .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)

@@ -26,7 +26,7 @@ struct ItemMenu: View {
         if items.count == 1, let item = items.first {
             link(item, type: type)
         } else if !items.isEmpty {
-            Menu(type.label, systemImage: ItemIdentifier.ItemType.series.icon) {
+            Menu(type.viewLabel, systemImage: ItemIdentifier.ItemType.series.icon) {
                 MenuInner(items: items, type: type)
             }
         }

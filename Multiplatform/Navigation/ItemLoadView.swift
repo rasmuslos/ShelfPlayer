@@ -9,46 +9,55 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct ItemLoadView: View {
-    let id: ItemIdentifier
+    @Environment(\.namespace) private var namespace
     
-    init(_ id: ItemIdentifier) {
+    let id: ItemIdentifier
+    let zoom: Bool
+    
+    init(_ id: ItemIdentifier, zoom: Bool = false) {
         self.id = id
+        self.zoom = zoom
     }
     
     @State private var item: Item? = nil
+    @State private var contained = [Item]()
+    
     @State private var failed = false
     
     var body: some View {
-        if let item {
-            if let audiobook = item as? Audiobook {
-                AudiobookView(audiobook)
-            } else if let series = item as? Series {
-                SeriesView(series)
-            } else if let author = item as? Author {
-                AuthorView(author)
-            } else if let podcast = item as? Podcast {
-                PodcastView(podcast, zoom: false)
-            } else if let episode = item as? Episode {
-                EpisodeView(episode, zoomID: nil)
+        Group {
+            if let item {
+                if let audiobook = item as? Audiobook {
+                    AudiobookView(audiobook)
+                } else if let series = item as? Series {
+                    SeriesView(series)
+                } else if let author = item as? Author {
+                    AuthorView(author)
+                } else if let podcast = item as? Podcast, let episodes = contained as? [Episode] {
+                    PodcastView(podcast, episodes: episodes, zoom: false)
+                } else if let episode = item as? Episode {
+                    EpisodeView(episode, zoomID: nil)
+                } else {
+                    ErrorView()
+                }
             } else {
-                ErrorView()
-            }
-        } else {
-            if failed {
-                ErrorView()
-                    .refreshable {
-                        load()
-                    }
-            } else {
-                LoadingView()
-                    .task {
-                        load()
-                    }
-                    .refreshable {
-                        load()
-                    }
+                if failed {
+                    ErrorView(itemID: id)
+                        .refreshable {
+                            load()
+                        }
+                } else {
+                    LoadingView()
+                        .task {
+                            load()
+                        }
+                        .refreshable {
+                            load()
+                        }
+                }
             }
         }
+        .navigationTransition(.zoom(sourceID: "item_\(id)", in: namespace!))
     }
     
     private nonisolated func load() {
@@ -58,6 +67,7 @@ struct ItemLoadView: View {
             }
             
             let item: Item
+            var contained = [Item]()
             
             do {
                 switch id.type {
@@ -68,11 +78,12 @@ struct ItemLoadView: View {
                 case .series:
                     item = try await ABSClient[id.connectionID].series(with: id)
                 case .podcast:
-                    (item, _) = try await ABSClient[id.connectionID].podcast(with: id)
+                    (item, contained) = try await ABSClient[id.connectionID].podcast(with: id)
                 }
                 
                 await MainActor.withAnimation {
                     self.item = item
+                    self.contained = contained
                 }
             } catch {
                 await MainActor.withAnimation {
@@ -89,6 +100,8 @@ struct ItemLoadView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     ItemLoadView(.fixture)
 }
+#endif

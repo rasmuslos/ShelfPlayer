@@ -8,78 +8,77 @@
 import Foundation
 import SwiftUI
 import Defaults
+import DefaultsMacros
 import RFVisuals
 import ShelfPlayerKit
 
 @Observable @MainActor
-internal final class PodcastViewModel {
+final class PodcastViewModel {
     let podcast: Podcast
-    var episodes: [Episode]
     
-    var library: Library!
-    
-    var dominantColor: Color?
-    var toolbarVisible: Bool
-    
-    var settingsSheetPresented: Bool
-    var descriptionSheetPresented: Bool
+    private(set) var episodes: [Episode]
+    private(set) var visible: [Episode]
     
     var filter: ItemFilter {
         didSet {
             Defaults[.groupingFilter(podcast.id)] = filter
+            updateVisible()
         }
     }
     
     var ascending: Bool {
         didSet {
             Defaults[.groupingAscending(podcast.id)] = ascending
+            updateVisible()
         }
     }
     var sortOrder: EpisodeSortOrder {
         didSet {
             Defaults[.groupingSortOrder(podcast.id)] = sortOrder
+            updateVisible()
         }
     }
     
-    var search: String
-    var downloadConfiguration: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration?
+    var toolbarVisible: Bool
+    var settingsSheetPresented: Bool
+    var descriptionSheetPresented: Bool
     
-    var errorNotify: Bool
+    private(set) var dominantColor: Color?
+    
+    var search: String
+    private(set) var downloadConfiguration: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration?
+    
+    private(set) var notifyError: Bool
     
     init(podcast: Podcast, episodes: [Episode]) {
         self.podcast = podcast
+        
         self.episodes = episodes
-        
-        dominantColor = nil
-        toolbarVisible = false
-        
-        settingsSheetPresented = false
-        descriptionSheetPresented = false
+        visible = []
         
         filter = Defaults[.groupingFilter(podcast.id)]
         
         ascending = Defaults[.groupingAscending(podcast.id)]
         sortOrder = Defaults[.groupingSortOrder(podcast.id)]
         
-        search = ""
+        toolbarVisible = false
+        settingsSheetPresented = false
+        descriptionSheetPresented = false
         
-        errorNotify = false
+        dominantColor = nil
+        
+        search = ""
+        downloadConfiguration = nil
+        
+        notifyError = false
+        
+        updateVisible()
     }
 }
 
-internal extension PodcastViewModel {
-    var visible: [Episode] {
-        return Array(Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending).prefix(15))
-    }
-    var filtered: [Episode] {
-        let search = search.trimmingCharacters(in: .whitespacesAndNewlines)
-        let sorted = Episode.filterSort(episodes: episodes, filter: filter, sortOrder: sortOrder, ascending: ascending)
-        
-        if search.isEmpty {
-            return sorted
-        }
-        
-        return sorted.filter { $0.sortName.localizedStandardContains(search) || $0.descriptionText?.localizedStandardContains(search) == true }
+extension PodcastViewModel {
+    var preview: [Episode] {
+        Array(visible.prefix(17))
     }
     
     var episodeCount: Int {
@@ -100,18 +99,67 @@ internal extension PodcastViewModel {
         }
     }
     
-    nonisolated func load() async {
-        await withTaskGroup(of: Void.self) {
-            $0.addTask { await self.extractColor() }
-            $0.addTask { await self.fetchEpisodes() }
-            $0.addTask { await self.fetchDownloadConfiguration() }
-            
-            await $0.waitForAll()
+    nonisolated func load() {
+        Task {
+            await withTaskGroup(of: Void.self) {
+                $0.addTask { await self.extractColor() }
+                $0.addTask { await self.fetchEpisodes() }
+                $0.addTask { await self.fetchDownloadConfiguration() }
+                
+                await $0.waitForAll()
+            }
         }
     }
 }
 
 private extension PodcastViewModel {
+    nonisolated func updateVisible() {
+        Task {
+            var episodes = await episodes
+            
+            // MARK: Filter
+            
+            let filter = await filter
+            
+            if filter != .all {
+                var included = [Episode]()
+                
+                for episode in episodes {
+                    if await episode.isIncluded(in: filter) {
+                        included.append(episode)
+                    }
+                }
+                
+                episodes = included
+            }
+            
+            // MARK: Search
+            
+            let search = await search.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            if !search.isEmpty {
+                episodes = episodes.filter { $0.sortName.localizedStandardContains(search) || $0.descriptionText?.localizedStandardContains(search) == true }
+            }
+            
+            // MARK: Sort
+            
+            let sortOrder = await sortOrder
+            let ascending = await ascending
+            
+            episodes.sort { $0.compare(other: $1, sortOrder: sortOrder, ascending: ascending) }
+            
+            if !ascending {
+                episodes.reverse()
+            }
+            
+            // MARK: Update view
+            
+            await MainActor.withAnimation {
+                self.visible = episodes
+            }
+        }
+    }
+    
     nonisolated func extractColor() async {
         guard let image = await podcast.id.platformCover else {
             return
@@ -133,16 +181,18 @@ private extension PodcastViewModel {
     }
     
     nonisolated func fetchEpisodes() async {
-        guard let episodes = try? await ABSClient[podcast.id.connectionID].episodes(from: podcast.id) else {
-            await MainActor.run {
-                errorNotify.toggle()
+        do {
+            let episodes = try await ABSClient[podcast.id.connectionID].episodes(from: podcast.id)
+            
+            await MainActor.withAnimation {
+                self.episodes = episodes
             }
             
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.episodes = episodes
+            updateVisible()
+        } catch {
+            await MainActor.run {
+                notifyError.toggle()
+            }
         }
     }
     

@@ -3346,7 +3346,6 @@
       }
     },
     "error.unavailable.audiobook" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3375,7 +3374,6 @@
       }
     },
     "error.unavailable.author" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3460,7 +3458,6 @@
       }
     },
     "error.unavailable.series" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6905,6 +6902,9 @@
           }
         }
       }
+    },
+    "sort" : {
+
     },
     "sort.added" : {
       "localizations" : {

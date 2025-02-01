@@ -8,13 +8,15 @@
 import SwiftUI
 import ShelfPlayerKit
 
-protocol PlayButtonStyle {
+protocol PlayButtonStyle: Sendable {
     associatedtype MenuBody: View
     associatedtype LabelBody: View
     
     typealias Configuration = PlayButtonConfiguration
     
+    @ViewBuilder
     func makeMenu(configuration: Self.Configuration) -> Self.MenuBody
+    @ViewBuilder
     func makeLabel(configuration: Self.Configuration) -> Self.LabelBody
     
     var cornerRadius: CGFloat { get }
@@ -28,8 +30,8 @@ extension PlayButtonStyle where Self == MediumPlayButtonStyle {
 }
 
 struct AnyLargePlayButtonStyle: PlayButtonStyle {
-    private var _makeMenu: (Configuration) -> AnyView
-    private var _makeLabel: (Configuration) -> AnyView
+    private var _makeMenu: @Sendable (Configuration) -> AnyView
+    private var _makeLabel: @Sendable (Configuration) -> AnyView
     
     private var _cornerRadius: CGFloat
     private var _hideRemainingWhenUnplayed: Bool
