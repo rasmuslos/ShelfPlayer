@@ -25,8 +25,8 @@ struct SeriesView: View {
             
             Spacer(minLength: 0)
             
-            if viewModel.lazyLoader.count > 0 {
-                Text(viewModel.lazyLoader.count, format: .number)
+            if viewModel.lazyLoader.totalCount > 0 {
+                Text(viewModel.lazyLoader.totalCount, format: .number)
                     .font(.caption)
                     .fontDesign(.rounded)
                     .foregroundStyle(.secondary)

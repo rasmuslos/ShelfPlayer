@@ -59,7 +59,7 @@ internal extension SeriesList {
                             .offset(x: offset)
                     }
                 }
-                .frame(width: 95, height: 60, alignment: .leading)
+                .frame(width: 94, height: 60, alignment: .leading)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     if let name {

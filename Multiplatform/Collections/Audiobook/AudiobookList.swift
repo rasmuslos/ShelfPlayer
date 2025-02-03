@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 import SPPlayback
 
-internal struct AudiobookList: View {
+struct AudiobookList: View {
     let sections: [AudiobookSection]
     var onAppear: ((_ section: AudiobookSection) -> Void)? = nil
     
@@ -21,18 +21,14 @@ internal struct AudiobookList: View {
                     .onAppear {
                         onAppear?(section)
                     }
-                /*
-            case .series(let seriesName, let audiobooks):
-                NavigationLink(destination: SeriesLoadView(seriesName: seriesName, filteredIDs: audiobooks.lazy.map { $0.id })) {
-                    SeriesList.ListItem(name: seriesName, covers: audiobooks.prefix(10).compactMap { $0.cover }, itemCount: audiobooks.count)
+            case .series(let seriesID, let seriesName, let audiobookIDs):
+                NavigationLink(destination: ItemLoadView(seriesID)) {
+                    SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
                 }
                 .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
                 .onAppear {
                     onAppear?(section)
                 }
-                 */
-            default:
-                Text("abc")
             }
         }
     }
@@ -116,7 +112,7 @@ private struct Row: View {
                     }
                 } label: {
                     ItemProgressIndicatorImage(item: audiobook, aspectRatio: .none)
-                        .frame(width: 88)
+                        .frame(width: 94)
                         .overlay {
                             if loading {
                                 ZStack {

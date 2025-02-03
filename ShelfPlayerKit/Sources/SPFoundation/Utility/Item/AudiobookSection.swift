@@ -10,6 +10,15 @@ import Foundation
 public enum AudiobookSection: Sendable {
     case audiobook(audiobook: Audiobook)
     case series(seriesID: ItemIdentifier, seriesName: String, audiobookIDs: [ItemIdentifier])
+    
+    public var audiobook: Audiobook? {
+        switch self {
+        case .audiobook(let audiobook):
+            audiobook
+        case .series:
+            nil
+        }
+    }
 }
 
 extension AudiobookSection: Hashable {}

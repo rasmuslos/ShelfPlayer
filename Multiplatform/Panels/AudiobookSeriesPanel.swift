@@ -22,7 +22,7 @@ struct AudiobookSeriesPanel: View {
                 if lazyLoader.failed {
                     ErrorView()
                         .refreshable {
-                            await lazyLoader.refresh()
+                            lazyLoader.refresh()
                         }
                 } else {
                     LoadingView()
@@ -30,7 +30,7 @@ struct AudiobookSeriesPanel: View {
                             lazyLoader.initialLoad()
                         }
                         .refreshable {
-                            await lazyLoader.refresh()
+                            lazyLoader.refresh()
                         }
                 }
             } else {
@@ -39,18 +39,14 @@ struct AudiobookSeriesPanel: View {
                         case .grid:
                             ScrollView {
                                 SeriesGrid(series: lazyLoader.items) {
-                                    if $0 == lazyLoader.items.last {
-                                        lazyLoader.didReachEndOfLoadedContent()
-                                    }
+                                    lazyLoader.performLoadIfRequired($0)
                                 }
                                 .padding(20)
                             }
                         case .list:
                             List {
                                 SeriesList(series: lazyLoader.items) {
-                                    if $0 == lazyLoader.items[max(0, lazyLoader.items.endIndex - 4)] {
-                                        lazyLoader.didReachEndOfLoadedContent()
-                                    }
+                                    lazyLoader.performLoadIfRequired($0)
                                 }
                             }
                             .listStyle(.plain)
@@ -68,7 +64,7 @@ struct AudiobookSeriesPanel: View {
                     }
                 }
                 .refreshable {
-                    await lazyLoader.refresh()
+                    lazyLoader.refresh()
                 }
             }
         }
