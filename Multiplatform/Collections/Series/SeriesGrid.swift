@@ -8,18 +8,18 @@
 import SwiftUI
 import SPFoundation
 
-internal struct SeriesGrid: View {
+struct SeriesGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let series: [Series]
     var onAppear: ((_ audiobook: Series) -> Void)? = nil
     
     private var minimumWidth: CGFloat {
-        horizontalSizeClass == .compact ? 160.0 : 200.0
+        horizontalSizeClass == .compact ? 110.0 : 200.0
     }
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 12)], spacing: 16) {
             ForEach(series) { item in
                 NavigationLink(destination: SeriesView(item)) {
                     SeriesGridItem(series: item)
@@ -48,6 +48,9 @@ extension SeriesGrid {
             self.audiobookIDs = audiobookIDs
         }
         
+        private var spacing: CGFloat {
+            4
+        }
         private var flipped: Bool {
             audiobookIDs.count == 3
         }
@@ -78,12 +81,12 @@ extension SeriesGrid {
                         }
                         .aspectRatio(1, contentMode: .fill)
                     } else {
-                        VStack(spacing: 8) {
-                            HStack(spacing: 8) {
+                        VStack(spacing: spacing) {
+                            HStack(spacing: spacing) {
                                 ItemImage(itemID: audiobookIDs[0])
                                 ItemImage(itemID: audiobookIDs[1])
                             }
-                            HStack(spacing: 8) {
+                            HStack(spacing: spacing) {
                                 ItemImage(itemID: audiobookIDs[2])
                                 ItemImage(itemID: audiobookIDs[3])
                             }

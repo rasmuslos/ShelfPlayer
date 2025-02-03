@@ -408,7 +408,6 @@
 				3A8810EC2AD2C061009696D1 /* Episode */,
 				3A8810FC2AD2D2B3009696D1 /* Podcast */,
 				3AAE5A6F2D33DCA10097DB77 /* DONE */,
-				3A5210042B6D2A9F00F59101 /* Common */,
 				3A98246A2B6EAB0A0098C06A /* Offline */,
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
@@ -467,6 +466,7 @@
 				3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */,
 				3A102EA92D45112F0075FA0B /* PDFViewer.swift */,
 				3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */,
+				3A98246D2B6EAC7F0098C06A /* CircularProgressIndicator.swift */,
 				3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */,
 				3A9825E42D4A2D1900A65826 /* Picker */,
 				3A9825D82D4A11E700A65826 /* PlayButton */,
@@ -557,14 +557,6 @@
 				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
 			);
 			path = UIKit;
-			sourceTree = "<group>";
-		};
-		3A5210042B6D2A9F00F59101 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				3A98246D2B6EAC7F0098C06A /* CircularProgressIndicator.swift */,
-			);
-			path = Common;
 			sourceTree = "<group>";
 		};
 		3A5210052B6D2AD600F59101 /* Fullscreen */ = {

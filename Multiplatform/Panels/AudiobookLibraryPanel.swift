@@ -14,7 +14,7 @@ internal struct AudiobookLibraryPanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.audiobooksFilter) private var filter
-    @Default(.audiobooksDisplayType) private var display
+    @Default(.audiobooksDisplayType) private var displayType
     
     @Default(.audiobooksSortOrder) private var sortOrder
     @Default(.audiobooksAscending) private var ascending
@@ -29,44 +29,23 @@ internal struct AudiobookLibraryPanel: View {
         var genres = Set<String>()
         
         for audiobook in lazyLoader.items {
-            for genre in audiobook.genres {
-                genres.insert(genre)
-            }
+            /*
+             for genre in audiobook.genres {
+             genres.insert(genre)
+             }
+             */
         }
         
         return Array(genres)
     }
-    private var visible: [AudiobookSection] {
-        let audiobooks: [Audiobook]
-        
-        if selected.isEmpty {
-            audiobooks = lazyLoader.items
-        } else {
-            audiobooks = lazyLoader.items.filter {
-                let matches = $0.genres.reduce(0, { result, genre in
-                    selected.contains(where: { $0 == genre }) ? result + 1 : result
-                })
-                
-                return matches == selected.count
-            }
-        }
-        
-        if collapseSeries {
-            // return AudiobookSection.filterSortGroup(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending)
-        }
-        
-        // return Audiobook.filterSort(audiobooks, filter: filter, sortOrder: sortOrder, ascending: ascending).map { .audiobook(audiobook: $0) }
-        
-        return audiobooks.map { .audiobook(audiobook: $0) }
-    }
     
     var body: some View {
         Group {
-            if lazyLoader.count == 0 {
+            if !lazyLoader.didLoad {
                 if lazyLoader.failed {
                     ErrorView()
                         .refreshable {
-                            await lazyLoader.refresh()
+                            lazyLoader.refresh()
                         }
                 } else {
                     LoadingView()
@@ -74,30 +53,26 @@ internal struct AudiobookLibraryPanel: View {
                             lazyLoader.initialLoad()
                         }
                         .refreshable {
-                            await lazyLoader.refresh()
+                            lazyLoader.refresh()
                         }
                 }
             } else {
                 Group {
-                    switch display {
-                        case .grid:
-                            ScrollView {
-                                AudiobookVGrid(sections: visible) {
-                                    if $0 == visible.last {
-                                        lazyLoader.didReachEndOfLoadedContent()
-                                    }
-                                }
-                                .padding(.horizontal, 20)
+                    switch displayType {
+                    case .grid:
+                        ScrollView {
+                            AudiobookVGrid(sections: lazyLoader.items) {
+                                lazyLoader.performLoadIfRequired($0)
                             }
-                        case .list:
-                            List {
-                                AudiobookList(sections: visible) {
-                                    if $0 == visible.last {
-                                        lazyLoader.didReachEndOfLoadedContent()
-                                    }
-                                }
+                            .padding(.horizontal, 20)
+                        }
+                    case .list:
+                        List {
+                            AudiobookList(sections: lazyLoader.items) {
+                                lazyLoader.performLoadIfRequired($0)
                             }
-                            .listStyle(.plain)
+                        }
+                        .listStyle(.plain)
                     }
                 }
                 .toolbar {
@@ -109,22 +84,34 @@ internal struct AudiobookLibraryPanel: View {
                                 .labelStyle(.iconOnly)
                         }
                         
-                        AudiobookSortFilter(filter: $filter, displayType: $display, sortOrder: $sortOrder, ascending: $ascending) {
-                            lazyLoader.sortOrder = sortOrder
-                            lazyLoader.ascending = ascending
+                        Menu("options", systemImage: filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                            ItemDisplayTypePicker(displayType: $displayType)
                             
-                            await lazyLoader.refresh()
+                            Divider()
+                            
+                            Section("filter") {
+                                ItemFilterPicker(filter: $filter)
+                            }
                         }
                     }
                 }
                 .refreshable {
-                    await lazyLoader.refresh()
+                    lazyLoader.refresh()
                 }
             }
         }
         .navigationTitle("panel.library")
         // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
+        .onChange(of: filter) {
+            lazyLoader.filter = filter
+        }
+        .onChange(of: sortOrder) {
+            lazyLoader.sortOrder = sortOrder
+        }
+        .onChange(of: ascending) {
+            lazyLoader.ascending = ascending
+        }
         .onAppear {
             lazyLoader.library = library
         }

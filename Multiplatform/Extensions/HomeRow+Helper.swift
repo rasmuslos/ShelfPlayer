@@ -38,23 +38,18 @@ extension HomeRow {
     }
     
     // TODO: Hide from continue listening
-    static func prepareForPresentation<S>(_ rows: [HomeRow<S>]) -> [HomeRow<S>] {
+    static func prepareForPresentation<S>(_ rows: [HomeRow<S>], connectionID: ItemIdentifier.ConnectionID) async -> [HomeRow<S>] {
         let disableDiscoverRow = Defaults[.disableDiscoverRow]
-        // let hideFromContinueListening = Defaults[.hideFromContinueListening]
+        let hiddenIDs = await PersistenceManager.shared.progress.hiddenFromContinueListening(connectionID: connectionID)
         
         return rows.compactMap { (row: HomeRow<S>) -> HomeRow<S>? in
             if row.id == "discover" && disableDiscoverRow {
-                return nil
+                nil
+            } else if row.id != "continue-listening" {
+                row
+            } else {
+                .init(id: row.id, label: row.label, entities: row.entities.filter { !hiddenIDs.contains($0.id.primaryID) })
             }
-            
-            guard row.id == "continue-listening" else {
-                return row
-            }
-            
-            return .init(id: row.id, label: row.label, entities: row.entities.filter { item in
-                // !hideFromContinueListening.contains { $0.itemId == item.identifiers.itemID && $0.episodeId == item.identifiers.episodeID }
-                true
-            })
         }
     }
 }

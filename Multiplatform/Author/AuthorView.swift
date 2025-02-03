@@ -34,7 +34,7 @@ struct AuthorView: View {
             Header()
             
             if !viewModel.seriesLoader.items.isEmpty {
-                gridTitle(.init(localized: "series"), count: viewModel.seriesLoader.count)
+                gridTitle(.init(localized: "series"), count: viewModel.seriesLoader.totalCount)
                 
                 SeriesGrid(series: viewModel.seriesLoader.items) {
                     viewModel.seriesLoader.performLoadIfRequired($0)
@@ -43,7 +43,7 @@ struct AuthorView: View {
             }
             
             if !viewModel.sections.isEmpty || !viewModel.seriesLoader.items.isEmpty {
-                gridTitle(.init(localized: "books"), count: viewModel.audiobooksLoader.count)
+                gridTitle(.init(localized: "books"), count: viewModel.audiobooksLoader.totalCount)
                 
                 AudiobookVGrid(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
@@ -60,7 +60,7 @@ struct AuthorView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
             if !viewModel.seriesLoader.items.isEmpty {
-                listTitle(.init(localized: "series"), count: viewModel.seriesLoader.count)
+                listTitle(.init(localized: "series"), count: viewModel.seriesLoader.totalCount)
                 
                 SeriesList(series: viewModel.seriesLoader.items) {
                     viewModel.seriesLoader.performLoadIfRequired($0)
@@ -68,7 +68,7 @@ struct AuthorView: View {
             }
             
             if !viewModel.sections.isEmpty {
-                listTitle(.init(localized: "books"), count: viewModel.audiobooksLoader.count)
+                listTitle(.init(localized: "books"), count: viewModel.audiobooksLoader.totalCount)
                 
                 AudiobookList(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)

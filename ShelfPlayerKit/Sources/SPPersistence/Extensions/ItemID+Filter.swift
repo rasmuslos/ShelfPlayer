@@ -8,10 +8,10 @@
 import Foundation
 import SPFoundation
 
-public extension PlayableItem {
+public extension ItemIdentifier {
     func isIncluded(in filter: ItemFilter) async -> Bool {
         let included: Bool
-        let entity = await PersistenceManager.shared.progress[id]
+        let entity = await PersistenceManager.shared.progress[self]
         
         switch filter {
         case .all:
