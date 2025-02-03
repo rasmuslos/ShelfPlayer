@@ -12,7 +12,7 @@ import ShelfPlayerKit
 struct CircularProgressIndicator: View {
     @Default(.tintColor) private var tintColor
     
-    let entity: ProgressEntity
+    let entity: ProgressEntity.UpdatingProgressEntity
     
     var body: some View {
         if entity.progress < 0 {

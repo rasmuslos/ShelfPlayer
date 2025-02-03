@@ -112,7 +112,7 @@ private extension PodcastViewModel {
                 var included = [Episode]()
                 
                 for episode in episodes {
-                    if await episode.isIncluded(in: filter) {
+                    if await episode.id.isIncluded(in: filter) {
                         included.append(episode)
                     }
                 }

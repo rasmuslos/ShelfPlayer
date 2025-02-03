@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 import OSLog
+import SPFoundation
 
 typealias KeyValueEntity = SchemaV2.PersistedKeyValueEntity
 
@@ -78,10 +79,7 @@ extension PersistenceManager {
 }
 
 public extension PersistenceManager.KeyValueSubsystem.Key {
-    static var secretCreated: Key<Date> { .init("secretCreated") }
-    static var secretCreator: Key<UUID> { .init("secretCreator") }
-    
-    static func activeEndpoints(for keyHolder: UUID) -> Key<Set<UUID>> {
-        .init("activeEndpoints_\(keyHolder)")
+    static func hideFromContinueListening(connectionID: ItemIdentifier.ConnectionID) -> Key<Set<String>> {
+        .init("hideFromContinueListening_\(connectionID)")
     }
 }

@@ -21,6 +21,7 @@ extension View {
         
         self
             .environment(Satellite())
+            .environment(ConnectionStore())
             .environment(\.namespace, namespace)
     }
     #endif

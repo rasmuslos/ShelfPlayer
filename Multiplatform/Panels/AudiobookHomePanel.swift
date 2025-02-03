@@ -10,28 +10,21 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-internal struct AudiobookHomePanel: View {
+struct AudiobookHomePanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.library) private var library
     
     @Default(.showAuthorsRow) private var showAuthorsRow
     
     @State private var _authors = [HomeRow<Author>]()
-    @State private var _audiobooks = [HomeRow<Audiobook>]()
+    @State private var audiobooks = [HomeRow<Audiobook>]()
     
-    @State private var downloaded = [Audiobook]()
+    // @State private var downloaded = [Audiobook]()
     
     @State private var failed = false
     
     private var authors: [HomeRow<Author>] {
-        if !showAuthorsRow {
-            return []
-        }
-        
-        return _authors
-    }
-    private var audiobooks: [HomeRow<Audiobook>] {
-        HomeRow.prepareForPresentation(_audiobooks)
+        showAuthorsRow ? _authors : []
     }
     
     var body: some View {
@@ -40,15 +33,15 @@ internal struct AudiobookHomePanel: View {
                 if failed {
                     ErrorView()
                         .refreshable {
-                            await fetchItems()
+                            fetchItems()
                         }
                 } else {
                     LoadingView()
                         .task {
-                            await fetchItems()
+                            fetchItems()
                         }
                         .refreshable {
-                            await fetchItems()
+                            fetchItems()
                         }
                 }
             } else {
@@ -76,7 +69,7 @@ internal struct AudiobookHomePanel: View {
                     }
                 }
                 .refreshable {
-                    await fetchItems()
+                    fetchItems()
                 }
                 /*
                  .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
@@ -87,7 +80,8 @@ internal struct AudiobookHomePanel: View {
                  */
             }
         }
-        .navigationTitle(library!.name)
+        .navigationTitle(library?.name ?? "error.unavailable.title")
+        .sensoryFeedback(.error, trigger: failed)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("library.change", systemImage: "books.vertical.fill") {
@@ -97,41 +91,44 @@ internal struct AudiobookHomePanel: View {
         }
         // .modifier(NowPlaying.SafeAreaModifier())
     }
-    
-    private nonisolated func fetchItems() async {
-        await MainActor.withAnimation {
-            failed = false
+}
+
+private extension AudiobookHomePanel {
+    nonisolated func fetchItems() {
+        Task {
+            await MainActor.withAnimation {
+                failed = false
+            }
+            
+            await withTaskGroup(of: Void.self) {
+                $0.addTask { await fetchRemoteItems() }
+            }
+        }
+    }
+    nonisolated func fetchRemoteItems() async {
+        guard let library = await library else {
+            return
         }
         
-        await withTaskGroup(of: Void.self) {
-            $0.addTask {
-                let libraryID = await library!.id
-                /*
-                 let downloaded = try OfflineManager.shared.audiobooks().filter { $0.libraryID == libraryID }
-                 
-                 await MainActor.withAnimation {
-                 self.downloaded = downloaded
-                 }
-                 */
+        do {
+            let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await ABSClient[library.connectionID].home(for: library.id)
+            let audiobooks = await HomeRow.prepareForPresentation(home.0, connectionID: library.connectionID)
+            
+            await MainActor.withAnimation {
+                _authors = home.1
+                self.audiobooks = audiobooks
             }
-            $0.addTask {
-                do {
-                    let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await ABSClient[library!.connectionID].home(for: library!.id)
-                    
-                    await MainActor.withAnimation {
-                        _authors = home.1
-                        _audiobooks = home.0
-                    }
-                } catch {
-                    await MainActor.withAnimation {
-                        failed = true
-                    }
-                }
+        } catch {
+            await MainActor.withAnimation {
+                failed = true
             }
         }
     }
 }
 
+#if DEBUG
 #Preview {
     AudiobookHomePanel()
+        .previewEnvironment()
 }
+#endif

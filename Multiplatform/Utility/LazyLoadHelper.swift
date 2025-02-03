@@ -24,7 +24,9 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
     }
     
     private(set) var items: [T]
-    private(set) var count: Int
+    
+    private(set) var totalCount: Int
+    private(set) var loadedCount: Int
     
     var filter: ItemFilter {
         didSet {
@@ -43,6 +45,12 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
         }
     }
     
+    private(set) var collapseSeries: Bool {
+        didSet {
+            refresh()
+        }
+    }
+    
     private(set) var failed: Bool
     private(set) var notifyError: Bool
     
@@ -51,10 +59,10 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
     
     var library: Library?
     
-    private let loadMore: @Sendable (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ library: Library) async throws -> ([T], Int)
+    private let loadMore: @Sendable (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ collapseSeries: Bool, _ library: Library) async throws -> ([T], Int)
     
     @MainActor
-    init(filter: ItemFilter, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ library: Library) async throws -> ([T], Int)) {
+    init(filter: ItemFilter, sortOrder: O, ascending: Bool, collapseSeries: Bool, loadMore: @Sendable @escaping (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ collapseSeries: Bool, _ library: Library) async throws -> ([T], Int)) {
         logger = .init(subsystem: "io.rfk.shelfPlayer", category: "LazyLoader")
         
         self.filter = filter
@@ -62,8 +70,12 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
         self.sortOrder = sortOrder
         self.ascending = ascending
         
+        self.collapseSeries = collapseSeries
+        
         items = []
-        count = 0
+        
+        totalCount = 0
+        loadedCount = 0
         
         failed = false
         notifyError = false
@@ -75,7 +87,7 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
     }
     
     var didLoad: Bool {
-        count > 0
+        totalCount > 0
     }
     
     nonisolated func initialLoad() {
@@ -85,8 +97,10 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
         Task { @MainActor in
             items = []
             
+            loadedCount = 0
+            
             if resetCount {
-                count = 0
+                totalCount = 0
             }
             
             failed = false
@@ -108,50 +122,96 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
                 working = true
             }
             
-            let itemCount = await items.count
+            let loadedCount = await loadedCount
             
-            guard itemCount % Self.PAGE_SIZE == 0 else {
+            guard loadedCount % Self.PAGE_SIZE == 0 else {
                 await MainActor.withAnimation { [self] in
                     finished = true
                 }
                 
-                logger.info("Finished loading \(itemCount) items of type \(T.self)")
+                logger.info("Finished loading \(loadedCount) items of type \(T.self)")
                 
                 return
             }
             
-            let page = itemCount / Self.PAGE_SIZE
+            let page = loadedCount / Self.PAGE_SIZE
             
             do {
-                var (received, totalCount) = try await loadMore(page, sortOrder, ascending, library)
+                var (received, totalCount) = try await loadMore(page, sortOrder, ascending, collapseSeries, library)
                 
                 await Task.yield()
+                
                 let filter = await filter
+                let receivedCount = received.count
                 
                 if filter != .all {
-                    guard let items = received as? [PlayableItem] else {
+                    if let items = received as? [PlayableItem] {
+                        var filtered = [PlayableItem]()
+                        
+                        for item in items {
+                            if await item.id.isIncluded(in: filter) {
+                                filtered.append(item)
+                            }
+                        }
+                        
+                        received = filtered as! [T]
+                    } else if let sections = received as? [AudiobookSection] {
+                        var filtered = [AudiobookSection]()
+                        
+                        for section in sections {
+                            switch section {
+                            case .audiobook(let audiobook):
+                                if await audiobook.id.isIncluded(in: filter) {
+                                    filtered.append(section)
+                                }
+                            case .series(_, _, let audiobookIDs):
+                                var progress = [Percentage]()
+                                
+                                for audiobookID in audiobookIDs {
+                                    progress.append(await PersistenceManager.shared.progress[audiobookID].progress)
+                                }
+                                
+                                let passed: Bool
+                                
+                                switch filter {
+                                case .all:
+                                    passed = true
+                                case .active:
+                                    passed = progress.reduce(false) { $0 || ($1 > 0 && $1 < 1) }
+                                case .finished:
+                                    passed = progress.allSatisfy { $0 >= 1 }
+                                case .notFinished:
+                                    passed = progress.reduce(false) { $0 || $1 < 1 }
+                                }
+                                
+                                if passed {
+                                    filtered.append(section)
+                                }
+                            }
+                        }
+                        
+                        received = filtered as! [T]
+                    } else {
                         throw FilterError.unsupportedItemType
                     }
-                    
-                    var filtered = [PlayableItem]()
-                    
-                    for item in items {
-                        if await item.isIncluded(in: filter) {
-                            filtered.append(item)
-                        }
-                    }
-                    
-                    received = filtered as! [T]
                 }
                 
                 await MainActor.withAnimation { [self] in
-                    items += received
-                    count = totalCount
-                    
                     working = false
+                    
+                    self.totalCount = totalCount
+                    self.loadedCount += receivedCount
+                    
+                    items += received
                 }
                 
-                logger.info("Received \(received.count)/\(totalCount) items of type \(T.self) (had \(itemCount))")
+                // The filter has removed all new items so the method will not be called from the view
+                
+                if received.isEmpty && receivedCount > 0 {
+                    didReachEndOfLoadedContent()
+                }
+                
+                logger.info("Now at \(loadedCount)/\(totalCount) items of type \(T.self) (received \(receivedCount))")
             } catch {
                 logger.error("Error loading more \(T.self): \(error)")
                 
@@ -169,7 +229,7 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
         
         let thresholdIndex = array.index(items.endIndex, offsetBy: -10)
         
-        if index != thresholdIndex {
+        if index < thresholdIndex {
             return
         }
         
@@ -182,33 +242,32 @@ final class LazyLoadHelper<T: Sendable, O: Sendable>: Sendable {
 }
 
 extension LazyLoadHelper {
-    static var audiobooks: LazyLoadHelper<Audiobook, AudiobookSortOrder> {
-        .init(filter: Defaults[.audiobooksFilter], sortOrder: Defaults[.audiobooksSortOrder], ascending: Defaults[.audiobooksAscending], loadMore: { _, _, _, _ in
-            // try await AudiobookshelfClient.shared.audiobooks(libraryID: $3, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
-            ([], 0)
+    static var audiobooks: LazyLoadHelper<AudiobookSection, AudiobookSortOrder> {
+        .init(filter: Defaults[.audiobooksFilter], sortOrder: Defaults[.audiobooksSortOrder], ascending: Defaults[.audiobooksAscending], collapseSeries: Defaults[.collapseSeries], loadMore: {
+            try await ABSClient[$4.connectionID].audiobooks(from: $4.id, sortOrder: $1, ascending: $2, groupSeries: $3, limit: PAGE_SIZE, page: $0)
         })
     }
     
     static func audiobooks(filtered: ItemIdentifier, sortOrder: AudiobookSortOrder?, ascending: Bool?) -> LazyLoadHelper<Audiobook, AudiobookSortOrder?> {
-        .init(filter: Defaults[.audiobooksFilter], sortOrder: sortOrder, ascending: ascending ?? true, loadMore: { page, sortOrder, ascending, _ in
+        .init(filter: Defaults[.audiobooksFilter], sortOrder: sortOrder, ascending: ascending ?? true, collapseSeries: false, loadMore: { page, sortOrder, ascending, _, _ in
             try await ABSClient[filtered.connectionID].audiobooks(filtered: filtered, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     
     static var series: LazyLoadHelper<Series, SeriesSortOrder> {
-        .init(filter: .all, sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: {
-            try await ABSClient[$3.connectionID].series(in: $3.id, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
+        .init(filter: .all, sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], collapseSeries: false, loadMore: {
+            try await ABSClient[$4.connectionID].series(in: $4.id, sortOrder: $1, ascending: $2, limit: PAGE_SIZE, page: $0)
         })
     }
     
     static func series(filtered: ItemIdentifier, sortOrder: SeriesSortOrder, ascending: Bool) -> LazyLoadHelper<Series, SeriesSortOrder> {
-        .init(filter: .all, sortOrder: sortOrder, ascending: ascending, loadMore: { page, sortOrder, ascending, library in
+        .init(filter: .all, sortOrder: sortOrder, ascending: ascending, collapseSeries: false, loadMore: { page, sortOrder, ascending, _, library in
             try await ABSClient[filtered.connectionID].series(in: library.id, filtered: filtered, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     
     static var podcasts: LazyLoadHelper<Podcast, Never?> {
-        .init(filter: .all, sortOrder: nil, ascending: Defaults[.podcastsAscending], loadMore: { _, _, _, _ in
+        .init(filter: .all, sortOrder: nil, ascending: Defaults[.podcastsAscending], collapseSeries: false, loadMore: { _, _, _, _, _ in
             // try await AudiobookshelfClient.shared.podcasts(libraryID: $3, limit: PAGE_SIZE, page: $0)
             ([], 0)
         })

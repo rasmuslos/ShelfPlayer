@@ -77,14 +77,12 @@ extension PersistenceManager.ProgressSubsystem {
         
         return nil
     }
-    
     func createEntity(id: String, itemID: ItemIdentifier, progress: Double, duration: Double?, currentTime: Double, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: PersistedProgress.SyncStatus) -> PersistedProgress {
         let entity = PersistedProgress(id: id, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: startedAt, lastUpdate: lastUpdate, finishedAt: finishedAt, status: status)
         modelContext.insert(entity)
         
         return entity
     }
-    
     func delete(_ entity: PersistedProgress) async throws {
         logger.info("Deleting progress entity \(entity.id).")
         
@@ -106,6 +104,10 @@ extension PersistenceManager.ProgressSubsystem {
 }
 
 public extension PersistenceManager.ProgressSubsystem {
+    nonisolated func hiddenFromContinueListening(connectionID: ItemIdentifier.ConnectionID) async -> Set<String> {
+        await PersistenceManager.shared.keyValue[.hideFromContinueListening(connectionID: connectionID)] ?? []
+    }
+    
     func markAsCompleted(_ itemID: ItemIdentifier) async throws {
         logger.info("Marking progress as completed for item \(itemID).")
         
@@ -203,9 +205,12 @@ public extension PersistenceManager.ProgressSubsystem {
             var pendingCreation = [ProgressEntity]()
             var pendingUpdate = [ProgressEntity]()
             
+            var hiddenIDs = [(ItemIdentifier.ConnectionID, String)]()
+            
             try modelContext.transaction {
                 try modelContext.enumerate(FetchDescriptor<PersistedProgress>()) { entity in
                     let id = entity.id
+                    
                     guard let index = payload.firstIndex(where: { $0.id == id }) else {
                         if entity.status == .desynchronized {
                             pendingCreation.append(.init(persistedEntity: entity))
@@ -217,6 +222,10 @@ public extension PersistenceManager.ProgressSubsystem {
                     }
                     
                     let payload = payload.remove(at: index)
+                    
+                    if payload.hideFromContinueListening == true {
+                        hiddenIDs.insert((connectionID, payload.episodeId ?? payload.libraryItemId), at: 0)
+                    }
                     
                     switch entity.status {
                     case .synchronized, .desynchronized:
@@ -270,6 +279,11 @@ public extension PersistenceManager.ProgressSubsystem {
                         modelContext.delete(entity)
                     }
                 }
+            }
+            
+            for (connectionID, ids) in Dictionary(hiddenIDs.map { ($0.0, [$0.1]) }, uniquingKeysWith: +) {
+                logger.info("\(ids.count) progress entities hidden from Continue Listening for connection \(connectionID)")
+                await PersistenceManager.shared.keyValue.set(.hideFromContinueListening(connectionID: connectionID), .init(ids))
             }
             
             signposter.emitEvent("transaction", id: signpostID)
