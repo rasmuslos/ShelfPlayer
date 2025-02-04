@@ -63,6 +63,13 @@ struct LibrariesResponse: Codable {
     }
 }
 
+struct LibraryResponse: Codable {
+    let filterdata: Filterdata
+}
+struct Filterdata: Codable {
+    let genres: [String]
+}
+
 struct SearchResponse: Codable {
     let book: [SearchLibraryItem]?
     let podcast: [SearchLibraryItem]?

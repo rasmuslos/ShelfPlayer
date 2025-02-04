@@ -37,9 +37,9 @@ internal struct AudiobookVGrid: View {
                         .onAppear {
                             onAppear?(section)
                         }
-                    case .series(let seriesID, let seriesName, let audiobookIDs):
+                    case .series(let seriesID, _, let audiobookIDs):
                         NavigationLink(destination: ItemLoadView(seriesID)) {
-                            SeriesGrid.SeriesGridItem(name: seriesName, audiobookIDs: audiobookIDs)
+                            SeriesGrid.SeriesGridItem(name: nil, audiobookIDs: audiobookIDs)
                         }
                         .buttonStyle(.plain)
                         .onAppear {

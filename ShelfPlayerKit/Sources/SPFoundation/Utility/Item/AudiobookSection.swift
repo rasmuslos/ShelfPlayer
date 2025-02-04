@@ -23,7 +23,12 @@ public enum AudiobookSection: Sendable {
 
 extension AudiobookSection: Hashable {}
 extension AudiobookSection: Identifiable {
-    public var id: Int {
-        self.hashValue
+    public var id: ItemIdentifier {
+        switch self {
+        case .audiobook(let audiobook):
+            audiobook.id
+        case .series(let seriesID, _, _):
+            seriesID
+        }
     }
 }
