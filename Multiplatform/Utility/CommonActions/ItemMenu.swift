@@ -58,8 +58,11 @@ private func link(_ item: (id: ItemIdentifier?, name: String), type: ItemIdentif
     if let id = item.id {
         ItemLoadLink(itemID: id, footer: item.name)
     } else {
-        Button(item.name, systemImage: type.icon) {
+        Button {
             
+        } label: {
+            Label(type.viewLabel, systemImage: type.icon)
+            Text(item.name)
         }
     }
 }
