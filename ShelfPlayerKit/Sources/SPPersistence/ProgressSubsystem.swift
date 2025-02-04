@@ -73,8 +73,6 @@ extension PersistenceManager.ProgressSubsystem {
             logger.error("Error fetching progress for \(itemID): \(error)")
         }
         
-        logger.warning("Missing progress for \(itemID)")
-        
         return nil
     }
     func createEntity(id: String, itemID: ItemIdentifier, progress: Double, duration: Double?, currentTime: Double, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: PersistedProgress.SyncStatus) -> PersistedProgress {
@@ -351,11 +349,10 @@ public extension PersistenceManager.ProgressSubsystem {
     }
     
     subscript(_ itemID: ItemIdentifier) -> ProgressEntity {
-        guard let entity = entity(itemID) else {
-            logger.warning("Creating new progress stub for \(itemID)")
-            return .init(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
+        if let entity = entity(itemID) {
+            .init(persistedEntity: entity)
+        } else {
+            .init(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
         }
-        
-        return .init(persistedEntity: entity)
     }
 }

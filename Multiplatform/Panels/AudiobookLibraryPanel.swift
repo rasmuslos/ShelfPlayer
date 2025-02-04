@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Defaults
+import RFNetwork
 import ShelfPlayerKit
 
 internal struct AudiobookLibraryPanel: View {
@@ -19,25 +20,12 @@ internal struct AudiobookLibraryPanel: View {
     @Default(.audiobooksSortOrder) private var sortOrder
     @Default(.audiobooksAscending) private var ascending
     
-    @Default(.collapseSeries) private var collapseSeries
-    
+    @State private var genres: [String]? = nil
     @State private var selected = [String]()
     @State private var genreFilterPresented = false
-    @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortOrder>.audiobooks
     
-    private var genres: [String] {
-        var genres = Set<String>()
-        
-        for audiobook in lazyLoader.items {
-            /*
-             for genre in audiobook.genres {
-             genres.insert(genre)
-             }
-             */
-        }
-        
-        return Array(genres)
-    }
+    @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortOrder>.audiobooks
+    @State private var notifyError = false
     
     var body: some View {
         Group {
@@ -45,14 +33,17 @@ internal struct AudiobookLibraryPanel: View {
                 if lazyLoader.failed {
                     ErrorView()
                         .refreshable {
+                            loadGenres()
                             lazyLoader.refresh()
                         }
                 } else {
                     LoadingView()
                         .task {
+                            loadGenres()
                             lazyLoader.initialLoad()
                         }
                         .refreshable {
+                            loadGenres()
                             lazyLoader.refresh()
                         }
                 }
@@ -77,11 +68,13 @@ internal struct AudiobookLibraryPanel: View {
                 }
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button {
-                            genreFilterPresented.toggle()
-                        } label: {
-                            Label("genres", systemImage: "tag")
-                                .labelStyle(.iconOnly)
+                        if let genres, !genres.isEmpty {
+                            Button("genres", systemImage: "tag") {
+                                genreFilterPresented.toggle()
+                            }
+                            .labelStyle(.iconOnly)
+                        } else if genres == nil {
+                            ProgressIndicator()
                         }
                         
                         Menu("options", systemImage: filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
@@ -92,17 +85,23 @@ internal struct AudiobookLibraryPanel: View {
                             Section("filter") {
                                 ItemFilterPicker(filter: $filter)
                             }
+                            
+                            Section("sort") {
+                                AudiobookSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
+                            }
                         }
                     }
                 }
                 .refreshable {
+                    loadGenres()
                     lazyLoader.refresh()
                 }
             }
         }
         .navigationTitle("panel.library")
         // .modifier(NowPlaying.SafeAreaModifier())
-        .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
+        // .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
+        .sensoryFeedback(.error, trigger: notifyError)
         .onChange(of: filter) {
             lazyLoader.filter = filter
         }
@@ -114,6 +113,27 @@ internal struct AudiobookLibraryPanel: View {
         }
         .onAppear {
             lazyLoader.library = library
+        }
+    }
+    
+    nonisolated private func loadGenres() {
+        Task {
+            guard let library = await library else {
+                return
+            }
+            
+            do {
+                let genres = try await ABSClient[library.connectionID].genres(from: library.id)
+                
+                await MainActor.withAnimation {
+                    self.genres = genres
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError.toggle()
+                    genres = []
+                }
+            }
         }
     }
 }
