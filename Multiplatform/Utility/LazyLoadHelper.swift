@@ -18,7 +18,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     
     private nonisolated static var PAGE_SIZE: Int {
         #if DEBUG
-        10
+        30
         #else
         100
         #endif
@@ -56,7 +56,6 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     
     var library: Library?
     
-    private var lastTriggerIndex: Int?
     private let loadMore: @Sendable (_ page: Int, _ sortOrder: O, _ ascending: Bool, _ collapseSeries: Bool, _ library: Library) async throws -> ([T], Int)
     
     @MainActor
@@ -150,10 +149,10 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 await Task.yield()
                 
-                received = received.filter { !existingIDs.contains($0.id) }
-                
                 let filter = await filter
                 let receivedCount = received.count
+                
+                received = received.filter { !existingIDs.contains($0.id) }
                 
                 if filter != .all {
                     if let items = received as? [PlayableItem] {
@@ -239,14 +238,6 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     func performLoadIfRequired<K>(_ t: K, in array: [K]? = nil) where K: Equatable {
         let array = array ?? (items as! [K])
         guard let index = array.firstIndex(where: { $0 == t }) else { return }
-        
-        if let lastTriggerIndex {
-            if index < lastTriggerIndex + Int(Double(Self.PAGE_SIZE) * 0.7) {
-                return
-            }
-        }
-        
-        lastTriggerIndex = index
         
         let thresholdIndex = array.index(items.endIndex, offsetBy: -10)
         
