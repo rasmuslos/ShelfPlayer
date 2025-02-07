@@ -42,7 +42,7 @@ struct OfflinePodcastView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                EpisodeSortFilter(filter: $episodeFilter, sortOrder: $episodesSortOrder, ascending: $episodesAscending)
+                // EpisodeSortFilter(filter: $episodeFilter, sortOrder: $episodesSortOrder, ascending: $episodesAscending)
             }
         }
         // .modifier(NowPlaying.SafeAreaModifier())

@@ -31,11 +31,40 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         return (audiobooks, authors)
     }
     
-    func audiobooks(from libraryID: String, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
+    func audiobooks(from libraryID: String, filter: ItemFilter, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
         var query: [URLQueryItem] = [
             .init(name: "sort", value: sortOrder.queryValue),
             .init(name: "desc", value: ascending ? "0" : "1"),
             .init(name: "collapseseries", value: groupSeries ? "1" : "0"),
+        ]
+        
+        switch filter {
+        case .all:
+            let _ = 0
+        case .active:
+            query.append(.init(name: "filter", value: "progress.aW4tcHJvZ3Jlc3M%3D"))
+        case .finished:
+            query.append(.init(name: "filter", value: "progress.ZmluaXNoZWQ%3D"))
+        case .notFinished:
+            query.append(.init(name: "filter", value: "progress.bm90LWZpbmlzaGVk"))
+        }
+        
+        if let page {
+            query.append(.init(name: "page", value: String(describing: page)))
+        }
+        if let limit {
+            query.append(.init(name: "limit", value: String(describing: limit)))
+        }
+        
+        let result = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
+        return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
+    }
+    func audiobooks(from libraryID: String, filtered genre: String, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
+        var query: [URLQueryItem] = [
+            .init(name: "sort", value: sortOrder.queryValue),
+            .init(name: "desc", value: ascending ? "0" : "1"),
+            .init(name: "collapseseries", value: groupSeries ? "1" : "0"),
+            .init(name: "filter", value: "genres.\(Data(genre.utf8).base64EncodedString())"),
         ]
         
         if let page {

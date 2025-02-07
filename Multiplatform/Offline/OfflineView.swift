@@ -66,9 +66,9 @@ internal struct OfflineView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 Menu {
-                    AudiobookSortFilter.SortOrders(options: AudiobookSortOrder.allCases,
-                                                   sortOrder: $offlineAudiobooksSortOrder,
-                                                   ascending: $offlineAudiobooksAscending)
+                    // AudiobookSortFilter.SortOrders(options: AudiobookSortOrder.allCases,
+                                                   // sortOrder: $offlineAudiobooksSortOrder,
+                                                   // ascending: $offlineAudiobooksAscending)
                 } label: {
                     Label("filterSort", systemImage: "arrowshape.\(offlineAudiobooksAscending ? "up" : "down").circle")
                         .contentTransition(.symbolEffect(.replace.upUp))

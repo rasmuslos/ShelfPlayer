@@ -10,7 +10,7 @@ import Defaults
 import RFNetwork
 import ShelfPlayerKit
 
-internal struct AudiobookLibraryPanel: View {
+struct AudiobookLibraryPanel: View {
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -21,11 +21,20 @@ internal struct AudiobookLibraryPanel: View {
     @Default(.audiobooksAscending) private var ascending
     
     @State private var genres: [String]? = nil
-    @State private var selected = [String]()
-    @State private var genreFilterPresented = false
+    @State private var isGenreFilterPresented = false
     
     @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortOrder>.audiobooks
     @State private var notifyError = false
+    
+    private func binding(for genre: String) -> Binding<Bool> {
+        .init(get: { lazyLoader.filteredGenre == genre }, set: {
+            if $0 {
+                lazyLoader.filteredGenre = genre
+            } else {
+                lazyLoader.filteredGenre = nil
+            }
+        })
+    }
     
     var body: some View {
         Group {
@@ -66,32 +75,6 @@ internal struct AudiobookLibraryPanel: View {
                         .listStyle(.plain)
                     }
                 }
-                .toolbar {
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        if let genres, !genres.isEmpty {
-                            Button("genres", systemImage: "tag") {
-                                genreFilterPresented.toggle()
-                            }
-                            .labelStyle(.iconOnly)
-                        } else if genres == nil {
-                            ProgressIndicator()
-                        }
-                        
-                        Menu("options", systemImage: filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
-                            ItemDisplayTypePicker(displayType: $displayType)
-                            
-                            Divider()
-                            
-                            Section("filter") {
-                                ItemFilterPicker(filter: $filter)
-                            }
-                            
-                            Section("sort") {
-                                AudiobookSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
-                            }
-                        }
-                    }
-                }
                 .refreshable {
                     loadGenres()
                     lazyLoader.refresh()
@@ -99,8 +82,36 @@ internal struct AudiobookLibraryPanel: View {
             }
         }
         .navigationTitle("panel.library")
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if let genres, !genres.isEmpty {
+                    Menu("genres", systemImage: "tag") {
+                        ForEach(genres.sorted(by: <), id: \.hashValue) {
+                            Toggle($0, isOn: binding(for: $0))
+                        }
+                    }
+                    .labelStyle(.iconOnly)
+                    .symbolVariant(lazyLoader.filteredGenre != nil ? .fill : .none)
+                } else if genres == nil {
+                    ProgressIndicator()
+                }
+                
+                Menu("options", systemImage: filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                    ItemDisplayTypePicker(displayType: $displayType)
+                    
+                    Divider()
+                    
+                    Section("filter") {
+                        ItemFilterPicker(filter: $filter)
+                    }
+                    
+                    Section("sort") {
+                        AudiobookSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
+                    }
+                }
+            }
+        }
         // .modifier(NowPlaying.SafeAreaModifier())
-        // .modifier(GenreFilterSheet(genres: genres, selected: $selected, isPresented: $genreFilterPresented))
         .sensoryFeedback(.error, trigger: notifyError)
         .onChange(of: filter) {
             lazyLoader.filter = filter

@@ -153,7 +153,7 @@ private extension AudiobookViewModel {
         for author in await audiobook.authors {
             do {
                 let authorID = try await ABSClient[audiobook.id.connectionID].authorID(from: audiobook.id.libraryID, name: author)
-                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: authorID, sortOrder: .released, ascending: true, limit: 20, page: 0)
+                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: authorID, sortOrder: .released, ascending: true, limit: 100, page: 0)
                 
                 audiobooks = audiobooks.filter { $0 != current }
                 
