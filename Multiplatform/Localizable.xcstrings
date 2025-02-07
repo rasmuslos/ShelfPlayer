@@ -3809,6 +3809,7 @@
       }
     },
     "genres.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6549,6 +6550,7 @@
       }
     },
     "section.filter" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6605,6 +6607,7 @@
       }
     },
     "section.sortOrder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6935,6 +6938,7 @@
       }
     },
     "sort.ascending" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
