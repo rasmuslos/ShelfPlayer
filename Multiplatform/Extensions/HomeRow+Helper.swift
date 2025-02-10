@@ -39,11 +39,11 @@ extension HomeRow {
     
     // TODO: Hide from continue listening
     static func prepareForPresentation<S>(_ rows: [HomeRow<S>], connectionID: ItemIdentifier.ConnectionID) async -> [HomeRow<S>] {
-        let disableDiscoverRow = Defaults[.disableDiscoverRow]
+        let hideDiscoverRow = Defaults[.hideDiscoverRow]
         let hiddenIDs = await PersistenceManager.shared.progress.hiddenFromContinueListening(connectionID: connectionID)
         
         return rows.compactMap { (row: HomeRow<S>) -> HomeRow<S>? in
-            if row.id == "discover" && disableDiscoverRow {
+            if row.id == "discover" && hideDiscoverRow {
                 nil
             } else if row.id != "continue-listening" {
                 row

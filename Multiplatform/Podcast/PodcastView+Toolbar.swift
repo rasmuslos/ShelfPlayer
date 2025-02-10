@@ -68,7 +68,7 @@ extension PodcastView.ToolbarModifier {
                 }
                 
                 Section("sort") {
-                    EpisodeSortPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                    ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                 }
                 
                 Button("podcast.settings.title", systemImage: "arrow.down.to.line.circle") {

@@ -10,6 +10,7 @@ import SPFoundation
 
 internal struct AuthorList: View {
     let authors: [Author]
+    let onAppear: ((_ author: Author) -> Void)
     
     var body: some View {
         ForEach(authors) { author in
@@ -28,6 +29,9 @@ internal struct AuthorList: View {
                 }
             }
             .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
+            .onAppear {
+                onAppear(author)
+            }
         }
     }
 }
@@ -36,7 +40,7 @@ internal struct AuthorList: View {
 #Preview {
     NavigationStack {
         List {
-            AuthorList(authors: .init(repeating: .fixture, count: 7))
+            AuthorList(authors: .init(repeating: .fixture, count: 7)) { _ in }
         }
         .listStyle(.plain)
     }

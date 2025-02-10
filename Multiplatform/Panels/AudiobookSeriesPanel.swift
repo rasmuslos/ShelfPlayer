@@ -12,6 +12,8 @@ import ShelfPlayerKit
 struct AudiobookSeriesPanel: View {
     @Environment(\.library) private var library
     
+    @Default(.seriesAscending) private var seriesAscending
+    @Default(.seriesSortOrder) private var seriesSortOrder
     @Default(.seriesDisplayType) private var seriesDisplayType
     
     @State private var lazyLoader = LazyLoadHelper<Series, Void>.series
@@ -52,26 +54,29 @@ struct AudiobookSeriesPanel: View {
                             .listStyle(.plain)
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            withAnimation {
-                                seriesDisplayType = seriesDisplayType == .list ? .grid : .list
-                            }
-                        } label: {
-                            Label(seriesDisplayType == .list ? "display.list" : "display.grid", systemImage: seriesDisplayType == .list ? "list.bullet" : "square.grid.2x2")
-                        }
-                    }
-                }
                 .refreshable {
                     lazyLoader.refresh()
                 }
             }
         }
         .navigationTitle("panel.series")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu("options", systemImage: "ellipsis.circle") {
+                    ItemDisplayTypePicker(displayType: $seriesDisplayType)
+                    ItemSortOrderPicker(sortOrder: $seriesSortOrder, ascending: $seriesAscending)
+                }
+            }
+        }
         // .modifier(NowPlaying.SafeAreaModifier())
         .onAppear {
             lazyLoader.library = library
+        }
+        .onChange(of: seriesAscending) {
+            lazyLoader.ascending = seriesAscending
+        }
+        .onChange(of: seriesSortOrder) {
+            lazyLoader.sortOrder = seriesSortOrder
         }
     }
 }

@@ -115,7 +115,7 @@ struct AuthorView: View {
     
     var body: some View {
         Group {
-            if viewModel.audiobooksLoader.items.isEmpty {
+            if !viewModel.audiobooksLoader.didLoad && !viewModel.seriesLoader.didLoad {
                 loadingPresentation
             } else {
                 switch viewModel.displayType {
@@ -141,21 +141,6 @@ struct AuthorView: View {
                 }
             }
         }
-        // .modifier(NowPlaying.SafeAreaModifier())
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
-        .sensoryFeedback(.error, trigger: viewModel.seriesLoader.notifyError)
-        .sensoryFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)
-        .environment(viewModel)
-        .environment(\.displayContext, .author(author: viewModel.author))
-        .onAppear {
-            viewModel.library = library
-        }
-        .task {
-            viewModel.load()
-        }
-        .refreshable {
-            viewModel.load()
-        }
         .sheet(isPresented: $viewModel.isDescriptionSheetVisible) {
             NavigationStack {
                 ScrollView {
@@ -174,6 +159,25 @@ struct AuthorView: View {
                 .navigationTitle(viewModel.author.name)
                 .presentationDragIndicator(.visible)
             }
+        }
+        // .modifier(NowPlaying.SafeAreaModifier())
+        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .sensoryFeedback(.error, trigger: viewModel.seriesLoader.notifyError)
+        .sensoryFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)
+        .environment(viewModel)
+        .environment(\.displayContext, .author(author: viewModel.author))
+        .onAppear {
+            viewModel.library = library
+        }
+        .task {
+            viewModel.load()
+        }
+        .refreshable {
+            viewModel.load()
+        }
+        .onChange(of: viewModel.filter) {
+            viewModel.seriesLoader.filter = viewModel.filter
+            viewModel.audiobooksLoader.filter = viewModel.filter
         }
         .userActivity("io.rfk.shelfplayer.item") { activity in
             activity.title = viewModel.author.name

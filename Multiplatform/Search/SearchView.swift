@@ -28,19 +28,19 @@ internal struct SearchView: View {
                 List {
                     if !viewModel.authors.isEmpty {
                         Section("section.authors") {
-                            AuthorList(authors: viewModel.authors)
+                            AuthorList(authors: viewModel.authors) { _ in }
                         }
                     }
                     
                     if !viewModel.series.isEmpty {
                         Section("section.series") {
-                            SeriesList(series: viewModel.series)
+                            SeriesList(series: viewModel.series) { _ in }
                         }
                     }
                     
                     if !viewModel.audiobooks.isEmpty {
                         Section("section.audiobooks") {
-                            AudiobookList(sections: viewModel.audiobooks.map { .audiobook(audiobook: $0) })
+                            AudiobookList(sections: viewModel.audiobooks.map { .audiobook(audiobook: $0) }) { _ in }
                         }
                     }
                 }

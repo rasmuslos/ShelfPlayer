@@ -13,8 +13,12 @@ import ShelfPlayerKit
 import SPPlayback
 
 internal struct OfflineView: View {
+    /*
     @Default(.offlineAudiobooksSortOrder) private var offlineAudiobooksSortOrder
     @Default(.offlineAudiobooksAscending) private var offlineAudiobooksAscending
+     */
+    private var offlineAudiobooksSortOrder: AudiobookSortOrder = .sortName
+    private var offlineAudiobooksAscending = false
     
     @State private var accountSheetPresented = false
     

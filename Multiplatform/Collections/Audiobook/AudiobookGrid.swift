@@ -14,7 +14,7 @@ internal struct AudiobookVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let sections: [AudiobookSection]
-    var onAppear: ((_ section: AudiobookSection) -> Void)? = nil
+    let onAppear: ((_ section: AudiobookSection) -> Void)
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 100.0 : 200.0
@@ -35,7 +35,7 @@ internal struct AudiobookVGrid: View {
                         }
                         .buttonStyle(.plain)
                         .onAppear {
-                            onAppear?(section)
+                            onAppear(section)
                         }
                     case .series(let seriesID, _, let audiobookIDs):
                         NavigationLink(destination: ItemLoadView(seriesID)) {
@@ -43,7 +43,7 @@ internal struct AudiobookVGrid: View {
                         }
                         .buttonStyle(.plain)
                         .onAppear {
-                            onAppear?(section)
+                            onAppear(section)
                         }
                     }
                     
@@ -112,7 +112,7 @@ internal struct AudiobookHGrid: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookVGrid(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7))
+            AudiobookVGrid(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7)) { _ in }
         }
         .padding(.horizontal, 20)
     }

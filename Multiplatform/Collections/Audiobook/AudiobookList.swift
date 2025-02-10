@@ -11,7 +11,7 @@ import SPPlayback
 
 struct AudiobookList: View {
     let sections: [AudiobookSection]
-    var onAppear: ((_ section: AudiobookSection) -> Void)? = nil
+    let onAppear: ((_ section: AudiobookSection) -> Void)
     
     var body: some View {
         ForEach(sections) { section in
@@ -19,7 +19,7 @@ struct AudiobookList: View {
             case .audiobook(let audiobook):
                 Row(audiobook: audiobook)
                     .onAppear {
-                        onAppear?(section)
+                        onAppear(section)
                     }
             case .series(let seriesID, let seriesName, let audiobookIDs):
                 NavigationLink(destination: ItemLoadView(seriesID)) {
@@ -27,7 +27,7 @@ struct AudiobookList: View {
                 }
                 .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
                 .onAppear {
-                    onAppear?(section)
+                    onAppear(section)
                 }
             }
         }
@@ -164,7 +164,7 @@ private struct Row: View {
 #Preview {
     NavigationStack {
         List {
-            AudiobookList(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7))
+            AudiobookList(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7)) { _ in }
         }
         .listStyle(.plain)
     }

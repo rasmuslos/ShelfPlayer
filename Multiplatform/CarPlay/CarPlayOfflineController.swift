@@ -128,9 +128,11 @@ private extension CarPlayOfflineController {
         }
         
         Task {
+            /*
             for await _ in Defaults.updates([.offlineAudiobooksAscending, .offlineAudiobooksSortOrder]) {
                 // updateAudiobooksSection()
             }
+             */
         }
         
         // TODO: Update progress

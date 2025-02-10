@@ -1508,6 +1508,7 @@
       }
     },
     "ascending" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6994,6 +6995,9 @@
         }
       }
     },
+    "sort.bookCount" : {
+
+    },
     "sort.duration" : {
       "localizations" : {
         "de" : {
@@ -7105,6 +7109,12 @@
           }
         }
       }
+    },
+    "sort.name.firstLast" : {
+
+    },
+    "sort.name.lastFirst" : {
+
     },
     "sort.released" : {
       "localizations" : {
