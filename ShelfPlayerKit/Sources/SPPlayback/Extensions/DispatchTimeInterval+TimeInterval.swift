@@ -8,7 +8,7 @@
 import Foundation
 
 public extension DispatchTimeInterval {
-    var timeInterval: TimeInterval? {
+    var seconds: TimeInterval? {
         switch self {
             case .seconds(let value):
                 TimeInterval(value)

@@ -12,7 +12,7 @@ struct SeriesGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let series: [Series]
-    var onAppear: ((_ audiobook: Series) -> Void)? = nil
+    let onAppear: ((_ audiobook: Series) -> Void)
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 110.0 : 200.0
@@ -26,7 +26,7 @@ struct SeriesGrid: View {
                 }
                 .buttonStyle(.plain)
                 .onAppear {
-                    onAppear?(item)
+                    onAppear(item)
                 }
             }
         }
@@ -109,7 +109,7 @@ extension SeriesGrid {
 #Preview {
     NavigationStack {
         ScrollView {
-            SeriesGrid(series: .init(repeating: .fixture, count: 7))
+            SeriesGrid(series: .init(repeating: .fixture, count: 7)) { _ in }
                 .padding(20)
         }
     }

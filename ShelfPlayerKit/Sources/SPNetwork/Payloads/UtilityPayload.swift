@@ -94,7 +94,3 @@ struct ResultResponse: Codable {
 struct EpisodesResponse: Codable {
     let episodes: [EpisodePayload]
 }
-
-struct AuthorsResponse: Codable {
-    let authors: [ItemPayload]
-}

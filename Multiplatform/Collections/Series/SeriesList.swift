@@ -10,7 +10,7 @@ import SPFoundation
 
 internal struct SeriesList: View {
     let series: [Series]
-    var onAppear: ((_ audiobook: Series) -> Void)? = nil
+    let onAppear: ((_ audiobook: Series) -> Void)
     
     var body: some View {
         ForEach(series) { item in
@@ -19,7 +19,7 @@ internal struct SeriesList: View {
             }
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .onAppear {
-                onAppear?(item)
+                onAppear(item)
             }
         }
     }
@@ -82,7 +82,7 @@ internal extension SeriesList {
 #Preview {
     NavigationStack {
         List {
-            SeriesList(series: .init(repeating: .fixture, count: 7))
+            SeriesList(series: .init(repeating: .fixture, count: 7)) { _ in }
         }
         .listStyle(.plain)
     }

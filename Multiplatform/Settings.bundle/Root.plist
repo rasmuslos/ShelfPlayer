@@ -10,31 +10,11 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Delete finished downloads</string>
+			<string>Remove finished downloads</string>
 			<key>Key</key>
-			<string>deleteFinishedDownloads</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Enable serif titles</string>
-			<key>Key</key>
-			<string>useSerifFont</string>
+			<string>removeFinishedDownloads</string>
 			<key>DefaultValue</key>
 			<true/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Show progress in %</string>
-			<key>Key</key>
-			<string>itemImageStatusPercentageText</string>
-			<key>DefaultValue</key>
-			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -52,7 +32,7 @@
 			<key>Title</key>
 			<string>Group audiobooks in series</string>
 			<key>Key</key>
-			<string>collapseSeries</string>
+			<string>groupAudiobooksInSeries</string>
 			<key>DefaultValue</key>
 			<true/>
 		</dict>
@@ -78,7 +58,7 @@
 			<key>Title</key>
 			<string>Hide &quot;discover&quot;</string>
 			<key>Key</key>
-			<string>disableDiscoverRow</string>
+			<string>hideDiscoverRow</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
@@ -105,11 +85,20 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Lock seek bar</string>
+			<string>Smart rewind</string>
 			<key>Key</key>
-			<string>lockSeekBar</string>
+			<string>enableSmartRewind</string>
 			<key>DefaultValue</key>
-			<false/>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Sleep timer</string>
+			<key>FooterText</key>
+			<string>The Sleep-Timer will be extended if you press play up to 15 seconds after it expires.
+Smart rewind will skip back ten seconds when playback was inactive for longer than ten minutes.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -129,7 +118,7 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 			<key>Key</key>
 			<string>shakeExtendsSleepTimer</string>
 			<key>DefaultValue</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -139,17 +128,31 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 			<key>Key</key>
 			<string>extendSleepTimerOnPlay</string>
 			<key>DefaultValue</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
+			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Smart rewind</string>
+			<string>Sleep-Timer adjustment</string>
 			<key>Key</key>
-			<string>smartRewind</string>
+			<string>sleepTimerAdjustment</string>
 			<key>DefaultValue</key>
-			<false/>
+			<string>60</string>
+			<key>Titles</key>
+			<array>
+				<string>30 seconds</string>
+				<string>60 seconds</string>
+				<string>90 seconds</string>
+				<string>2 minutes</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>30</string>
+				<string>60</string>
+				<string>90</string>
+				<string>120</string>
+			</array>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -239,30 +242,6 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Sleep-Timer adjustment</string>
-			<key>Key</key>
-			<string>sleepTimerAdjustment</string>
-			<key>DefaultValue</key>
-			<string>60</string>
-			<key>Titles</key>
-			<array>
-				<string>30 seconds</string>
-				<string>60 seconds</string>
-				<string>90 seconds</string>
-				<string>2 minutes</string>
-			</array>
-			<key>Values</key>
-			<array>
-				<string>30</string>
-				<string>60</string>
-				<string>90</string>
-				<string>120</string>
-			</array>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Title</key>
 			<string>Stop playback after</string>
 			<key>Key</key>
 			<string>endPlaybackTimeout</string>
@@ -308,6 +287,42 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 			<string>Queue audiobook series</string>
 			<key>Key</key>
 			<string>queueNextAudiobooksInSeries</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Advanced</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Serif font</string>
+			<key>Key</key>
+			<string>enableSerifFont</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Show progress in %</string>
+			<key>Key</key>
+			<string>itemImageStatusPercentageText</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Lock seek bar</string>
+			<key>Key</key>
+			<string>lockSeekBar</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>

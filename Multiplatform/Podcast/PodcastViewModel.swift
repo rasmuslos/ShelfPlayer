@@ -21,20 +21,20 @@ final class PodcastViewModel {
     
     var filter: ItemFilter {
         didSet {
-            Defaults[.groupingFilter(podcast.id)] = filter
+            Defaults[.episodesFilter(podcast.id)] = filter
             updateVisible()
         }
     }
     
     var ascending: Bool {
         didSet {
-            Defaults[.groupingAscending(podcast.id)] = ascending
+            Defaults[.episodesAscending(podcast.id)] = ascending
             updateVisible()
         }
     }
     var sortOrder: EpisodeSortOrder {
         didSet {
-            Defaults[.groupingSortOrder(podcast.id)] = sortOrder
+            Defaults[.episodesSortOrder(podcast.id)] = sortOrder
             updateVisible()
         }
     }
@@ -55,10 +55,10 @@ final class PodcastViewModel {
         self.episodes = episodes
         visible = []
         
-        filter = Defaults[.groupingFilter(podcast.id)]
+        filter = Defaults[.episodesFilter(podcast.id)]
         
-        ascending = Defaults[.groupingAscending(podcast.id)]
-        sortOrder = Defaults[.groupingSortOrder(podcast.id)]
+        ascending = Defaults[.episodesAscending(podcast.id)]
+        sortOrder = Defaults[.episodesSortOrder(podcast.id)]
         
         isToolbarVisible = false
         settingsSheetPresented = false
@@ -112,7 +112,7 @@ private extension PodcastViewModel {
                 var included = [Episode]()
                 
                 for episode in episodes {
-                    if await episode.id.isIncluded(in: filter) {
+                    if await episode.isIncluded(in: filter) {
                         included.append(episode)
                     }
                 }

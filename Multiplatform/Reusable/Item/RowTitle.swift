@@ -10,7 +10,7 @@ import Defaults
 import SPFoundation
 
 internal struct RowTitle: View {
-    @Default(.useSerifFont) private var useSerifFont
+    @Default(.enableSerifFont) private var enableSerifFont
     
     let title: String
     var fontDesign: Font.Design? = nil
@@ -18,7 +18,7 @@ internal struct RowTitle: View {
     var body: some View {
         Text(title)
             .font(.headline)
-            .fontDesign(fontDesign == .serif && !useSerifFont ? nil : fontDesign)
+            .fontDesign(fontDesign == .serif && !enableSerifFont ? nil : fontDesign)
     }
 }
 
@@ -33,7 +33,7 @@ internal struct AudiobookRow: View {
                 if audiobooks.count > 5 {
                     NavigationLink {
                         ScrollView {
-                            AudiobookVGrid(sections: audiobooks.map { .audiobook(audiobook: $0)})
+                            AudiobookVGrid(sections: audiobooks.map { .audiobook(audiobook: $0)}) { _ in }
                                 .padding(.horizontal, 20)
                         }
                         .navigationTitle(title)

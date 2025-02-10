@@ -9,10 +9,10 @@ import SwiftUI
 import Defaults
 
 internal struct SerifModifier: ViewModifier {
-    @Default(.useSerifFont) private var useSerifFont
+    @Default(.enableSerifFont) private var enableSerifFont
     
     func body(content: Content) -> some View {
-        if useSerifFont {
+        if enableSerifFont {
             content
                 .fontDesign(.serif)
         } else {

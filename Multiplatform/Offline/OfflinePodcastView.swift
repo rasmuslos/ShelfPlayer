@@ -22,10 +22,10 @@ struct OfflinePodcastView: View {
         self.podcast = podcast
         _episodes = .init(initialValue: episodes)
         
-        _episodesSortOrder = .init(.groupingSortOrder(podcast.id))
-        _episodesAscending = .init(.groupingAscending(podcast.id))
+        _episodesSortOrder = .init(.episodesSortOrder(podcast.id))
+        _episodesAscending = .init(.episodesAscending(podcast.id))
         
-        _episodeFilter = .init(.groupingFilter(podcast.id))
+        _episodeFilter = .init(.episodesFilter(podcast.id))
     }
     
     private var sorted: [Episode] {
