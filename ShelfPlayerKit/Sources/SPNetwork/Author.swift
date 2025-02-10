@@ -14,8 +14,15 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         Author(payload: try await response(for: ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), connectionID: connectionID)
     }
     
-    func authors(from libraryID: String) async throws -> [Author] {
-        try await response(for: ClientRequest<AuthorsResponse>(path: "api/libraries/\(libraryID)/authors", method: .get)).authors.map { Author(payload: $0, connectionID: connectionID) }
+    func authors(from libraryID: String, sortOrder: AuthorSortOrder, ascending: Bool, limit: Int, page: Int) async throws -> ([Author], Int) {
+        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/authors", method: .get, query: [
+            .init(name: "sort", value: sortOrder.queryValue),
+            .init(name: "desc", value: ascending ? "0" : "1"),
+            .init(name: "limit", value: String(limit)),
+            .init(name: "page", value: String(page)),
+        ]))
+        
+        return (response.results.map { Author(payload: $0, connectionID: connectionID) }, response.total)
     }
     
     func authorID(from libraryID: String, name: String) async throws -> ItemIdentifier {

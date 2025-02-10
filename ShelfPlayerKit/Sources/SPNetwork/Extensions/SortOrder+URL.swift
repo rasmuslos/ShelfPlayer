@@ -27,6 +27,21 @@ extension AudiobookSortOrder {
     }
 }
 
+extension AuthorSortOrder {
+    var queryValue: String {
+        switch self {
+        case .firstNameLastName:
+            "name"
+        case .lastNameFirstName:
+            "lastFirst"
+        case .bookCount:
+            "numBooks"
+        case .added:
+            "addedAt"
+        }
+    }
+}
+
 extension SeriesSortOrder {
     var queryValue: String {
         switch self {

@@ -46,7 +46,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         }
     }
     
-    private var collapseSeries: Bool
+    private var groupAudiobooksInSeries: Bool
     private let filterLocally: Bool
     
     var filteredGenre: String? {
@@ -74,7 +74,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         self.sortOrder = sortOrder
         self.ascending = ascending
         
-        collapseSeries = Defaults[.collapseSeries]
+        groupAudiobooksInSeries = Defaults[.groupAudiobooksInSeries]
         self.filterLocally = filterLocally
         
         items = []
@@ -93,12 +93,12 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         self.loadMore = loadMore
         
         Task {
-            for await collapseSeries in Defaults.updates(.collapseSeries) {
-                guard self.collapseSeries != collapseSeries else {
+            for await groupAudiobooksInSeries in Defaults.updates(.groupAudiobooksInSeries) {
+                guard self.groupAudiobooksInSeries != groupAudiobooksInSeries else {
                     return
                 }
                 
-                self.collapseSeries = collapseSeries
+                self.groupAudiobooksInSeries = groupAudiobooksInSeries
                 refresh()
             }
         }
@@ -149,9 +149,9 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 if let filteredGenre {
                     // Fuck you, this only needs to happen once, and this code is bloated already
-                    (received, totalCount) = try await ABSClient[library.connectionID].audiobooks(from: library.id, filtered: filteredGenre, sortOrder: sortOrder as! AudiobookSortOrder, ascending: ascending, groupSeries: collapseSeries, limit: Self.PAGE_SIZE, page: page) as! ([T], Int)
+                    (received, totalCount) = try await ABSClient[library.connectionID].audiobooks(from: library.id, filtered: filteredGenre, sortOrder: sortOrder as! AudiobookSortOrder, ascending: ascending, groupSeries: groupAudiobooksInSeries, limit: Self.PAGE_SIZE, page: page) as! ([T], Int)
                 } else {
-                    (received, totalCount) = try await loadMore(page, filter, sortOrder, ascending, collapseSeries, library)
+                    (received, totalCount) = try await loadMore(page, filter, sortOrder, ascending, groupAudiobooksInSeries, library)
                 }
                 
                 guard !received.isEmpty else {
@@ -185,8 +185,18 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         var filtered = [PlayableItem]()
                         
                         for item in items {
-                            if await item.id.isIncluded(in: filter) {
+                            if await item.isIncluded(in: filter) {
                                 filtered.append(item)
+                            }
+                        }
+                        
+                        received = filtered as! [T]
+                    } else if let series = received as? [Series] {
+                        var filtered = [Series]()
+                        
+                        for series in series {
+                            if await series.isIncluded(in: filter) {
+                                filtered.append(series)
                             }
                         }
                         
@@ -197,7 +207,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         for section in sections {
                             switch section {
                             case .audiobook(let audiobook):
-                                if await audiobook.id.isIncluded(in: filter) {
+                                if await audiobook.isIncluded(in: filter) {
                                     filtered.append(section)
                                 }
                             case .series(_, _, let audiobookIDs):
@@ -296,14 +306,20 @@ extension LazyLoadHelper {
         })
     }
     
+    static var authors: LazyLoadHelper<Author, AuthorSortOrder> {
+        .init(filterLocally: false, filter: .all, sortOrder: Defaults[.authorsSortOrder], ascending: Defaults[.authorsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
+            try await ABSClient[library.connectionID].authors(from: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
+        })
+    }
+    
     static var series: LazyLoadHelper<Series, SeriesSortOrder> {
         .init(filterLocally: false, filter: .all, sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].series(in: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     
-    static func series(filtered: ItemIdentifier, sortOrder: SeriesSortOrder, ascending: Bool) -> LazyLoadHelper<Series, SeriesSortOrder> {
-        .init(filterLocally: false, filter: .all, sortOrder: sortOrder, ascending: ascending, loadMore: { page, _, sortOrder, ascending, _, library in
+    static func series(filtered: ItemIdentifier, filter: ItemFilter, sortOrder: SeriesSortOrder, ascending: Bool) -> LazyLoadHelper<Series, SeriesSortOrder> {
+        .init(filterLocally: true, filter: filter, sortOrder: sortOrder, ascending: ascending, loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].series(in: library.id, filtered: filtered, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }

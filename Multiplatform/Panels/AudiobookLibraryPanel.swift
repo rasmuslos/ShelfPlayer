@@ -106,7 +106,7 @@ struct AudiobookLibraryPanel: View {
                     }
                     
                     Section("sort") {
-                        AudiobookSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
+                        ItemSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
                     }
                 }
             }

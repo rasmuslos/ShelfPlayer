@@ -9,70 +9,61 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct AudiobookAuthorsPanel: View {
+struct AudiobookAuthorsPanel: View {
     @Environment(\.library) private var library
+    
     @Default(.authorsAscending) private var authorsAscending
+    @Default(.authorsSortOrder) private var authorsSortOrder
     
-    @State private var failed = false
-    @State private var authors = [Author]()
-    
-    private var sorted: [Author] {
-        authors.sorted {
-            $0.name.localizedStandardCompare($1.name) == (authorsAscending ? .orderedDescending : .orderedAscending)
-        }
-    }
+    @State private var lazyLoader = LazyLoadHelper<Author, Void>.authors
     
     var body: some View {
-        if authors.isEmpty {
-            if failed {
-                ErrorView()
-                    .refreshable {
-                        await loadAuthors()
-                    }
+        Group {
+            if lazyLoader.items.isEmpty {
+                if lazyLoader.failed {
+                    ErrorView()
+                        .refreshable {
+                            lazyLoader.refresh()
+                        }
+                } else {
+                    LoadingView()
+                        .onAppear {
+                            lazyLoader.initialLoad()
+                        }
+                        .refreshable {
+                            lazyLoader.refresh()
+                        }
+                }
             } else {
-                LoadingView()
-                    .task {
-                        await loadAuthors()
+                List {
+                    AuthorList(authors: lazyLoader.items) {
+                        lazyLoader.performLoadIfRequired($0)
                     }
-                    .refreshable {
-                        await loadAuthors()
-                    }
-            }
-        } else {
-            List {
-                AuthorList(authors: sorted)
-            }
-            .listStyle(.plain)
-            .navigationTitle("panel.authors")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Toggle("ascending", systemImage: authorsAscending ? "arrowshape.up.circle" : "arrowshape.down.circle", isOn: $authorsAscending)
-                        .foregroundStyle(Color.accentColor)
-                        .contentTransition(.symbolEffect(.replace))
-                        .toggleStyle(.button)
-                        .buttonStyle(.plain)
+                }
+                .listStyle(.plain)
+                .refreshable {
+                    lazyLoader.refresh()
                 }
             }
-            .refreshable {
-                await loadAuthors()
+        }
+        .navigationTitle("panel.authors")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu("options", systemImage: "arrow.up.arrow.down.circle") {
+                    ItemSortOrderPicker(sortOrder: $authorsSortOrder, ascending: $authorsAscending)
+                }
             }
         }
-    }
-    
-    private nonisolated func loadAuthors() async {
-        /*
-        guard let authors = try? await AudiobookshelfClient.shared.authors(libraryID: library.id) else {
-            await MainActor.withAnimation {
-                failed = true
-            }
-            
-            return
+        // .modifier(NowPlaying.SafeAreaModifier())
+        .onAppear {
+            lazyLoader.library = library
         }
-        
-        await MainActor.withAnimation {
-            self.authors = authors
+        .onChange(of: authorsSortOrder) {
+            lazyLoader.sortOrder = authorsSortOrder
         }
-         */
+        .onChange(of: authorsAscending) {
+            lazyLoader.ascending = authorsAscending
+        }
     }
 }
 

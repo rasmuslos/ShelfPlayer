@@ -76,7 +76,7 @@ private extension SleepTimer {
         
         let delta = DispatchTime.now().distance(to: expiresAt)
         
-        guard let timeInterval = delta.timeInterval, timeInterval <= 10 else {
+        guard let timeInterval = delta.seconds, timeInterval <= 10 else {
             return nil
         }
         

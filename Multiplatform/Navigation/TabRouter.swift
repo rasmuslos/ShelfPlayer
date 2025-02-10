@@ -133,7 +133,7 @@ struct TabRouter: View {
         .onChange(of: current) {
             let appearance = UINavigationBarAppearance()
             
-            if current?.type == .audiobooks && Defaults[.useSerifFont] {
+            if current?.type == .audiobooks && Defaults[.enableSerifFont] {
                 appearance.titleTextAttributes = [.font: UIFont(descriptor: UIFont.systemFont(ofSize: 17, weight: .bold).fontDescriptor.withDesign(.serif)!, size: 0)]
                 appearance.largeTitleTextAttributes = [.font: UIFont(descriptor: UIFont.systemFont(ofSize: 34, weight: .bold).fontDescriptor.withDesign(.serif)!, size: 0)]
             }

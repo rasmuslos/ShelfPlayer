@@ -51,6 +51,17 @@ public enum AudiobookSortOrder: String, Identifiable, Hashable, Codable, Sendabl
     }
 }
 
+public enum AuthorSortOrder: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
+    case firstNameLastName
+    case lastNameFirstName
+    case bookCount
+    case added
+    
+    public var id: Int {
+        rawValue
+    }
+}
+
 public enum SeriesSortOrder: String, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
     case sortName
     case bookCount

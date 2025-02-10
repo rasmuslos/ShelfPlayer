@@ -19,7 +19,7 @@ public final actor SleepTimer {
                 expiresAtChapterEnd = nil
                 setupTimer()
                 
-                if let timeInterval = expiresAt?.distance(to: .now()).timeInterval {
+                if let timeInterval = expiresAt?.distance(to: .now()).seconds {
                     let amount = min(-timeInterval, 60 * 60 * 6)
                     lastSetting = .time(interval: amount)
                 }

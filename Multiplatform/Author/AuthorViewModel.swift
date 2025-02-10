@@ -40,7 +40,7 @@ final class AuthorViewModel {
         isDescriptionSheetVisible = false
         notifyError = false
         
-        seriesLoader = .series(filtered: author.id, sortOrder: .sortName, ascending: true)
+        seriesLoader = .series(filtered: author.id, filter: Defaults[.audiobooksFilter], sortOrder: .sortName, ascending: true)
         audiobooksLoader = .audiobooks(filtered: author.id, sortOrder: .released, ascending: true)
     }
 }
