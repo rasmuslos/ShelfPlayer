@@ -390,22 +390,24 @@
 			isa = PBXGroup;
 			children = (
 				3A102EA82D4511280075FA0B /* Utility */,
-				3A102EAB2D4511A20075FA0B /* Control */,
 				3A1EAB972ACC822F0064C80C /* Extensions */,
-				3A31299F2D2413F000D143B4 /* Connection */,
+				3A102EAB2D4511A20075FA0B /* Control */,
 				3AADC0352B6D0D3D00C4088D /* Navigation */,
+				3A31299F2D2413F000D143B4 /* Connection */,
 				3A77B7002ACDF00100F22C7F /* Series */,
 				3A77B6FB2ACDE2DA00F22C7F /* Author */,
 				3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */,
 				3A8810EC2AD2C061009696D1 /* Episode */,
 				3A8810FC2AD2D2B3009696D1 /* Podcast */,
+				3ABC462F2D5A2F7F00E21956 /* Panels */,
+				3ABC46302D5A2FAB00E21956 /* Collections */,
 				3AAE5A6F2D33DCA10097DB77 /* DONE */,
 				3A98246A2B6EAB0A0098C06A /* Offline */,
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
-				3A9874212B5995CE00B2704F /* Collections */,
+				3A9874212B5995CE00B2704F /* _Collections */,
 				3AB418D02CE7E0E9009D9442 /* Search */,
-				3A2BE47A2C98205100259001 /* Panels */,
+				3A2BE47A2C98205100259001 /* _Panels */,
 				3A64B3732CAACF4900446871 /* Intents */,
 				3A83B8712B88933500A05957 /* CarPlay */,
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
@@ -497,18 +499,14 @@
 			path = Products;
 			sourceTree = "<group>";
 		};
-		3A2BE47A2C98205100259001 /* Panels */ = {
+		3A2BE47A2C98205100259001 /* _Panels */ = {
 			isa = PBXGroup;
 			children = (
-				3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */,
-				3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */,
-				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */,
-				3AE31DCD2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift */,
 				3AB8BBBC2BD7B7290012023A /* PodcastHomePanel.swift */,
 				3AB8BBBE2BD7B76B0012023A /* PodcastLatestPanel.swift */,
 				3AB8BBC02BD7B7B30012023A /* PodcastLibraryPanel.swift */,
 			);
-			path = Panels;
+			path = _Panels;
 			sourceTree = "<group>";
 		};
 		3A31299F2D2413F000D143B4 /* Connection */ = {
@@ -707,7 +705,7 @@
 			path = Picker;
 			sourceTree = "<group>";
 		};
-		3A9874212B5995CE00B2704F /* Collections */ = {
+		3A9874212B5995CE00B2704F /* _Collections */ = {
 			isa = PBXGroup;
 			children = (
 				3AA0D9CC2BD6BF4900498546 /* Audiobook */,
@@ -716,7 +714,7 @@
 				3AA0D9CB2BD6BF3E00498546 /* Episode */,
 				3AA0D9CA2BD6BF3500498546 /* Podcast */,
 			);
-			path = Collections;
+			path = _Collections;
 			sourceTree = "<group>";
 		};
 		3AA0D9C82BD6BF2100498546 /* Series */ = {
@@ -806,6 +804,24 @@
 				3AF240E72ADA853A0065C0A4 /* SearchView.swift */,
 			);
 			path = Search;
+			sourceTree = "<group>";
+		};
+		3ABC462F2D5A2F7F00E21956 /* Panels */ = {
+			isa = PBXGroup;
+			children = (
+				3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */,
+				3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */,
+				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */,
+				3AE31DCD2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift */,
+			);
+			path = Panels;
+			sourceTree = "<group>";
+		};
+		3ABC46302D5A2FAB00E21956 /* Collections */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Collections;
 			sourceTree = "<group>";
 		};
 		3AE3E9672B1E37D3005FBFA6 /* Frameworks */ = {

@@ -41,7 +41,7 @@ extension Episode {
     
     convenience init(episode: EpisodePayload, connectionID: ItemIdentifier.ConnectionID) {
         self.init(
-            id: .init(primaryID: episode.id!, groupingID: episode.podcast!.id, libraryID: episode.libraryId!, connectionID: connectionID, type: .episode),
+            id: .init(primaryID: episode.id!, groupingID: episode.libraryItemId, libraryID: episode.libraryId!, connectionID: connectionID, type: .episode),
             name: episode.title!,
             authors: episode.podcast?.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: episode.description,

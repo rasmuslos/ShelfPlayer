@@ -20,7 +20,7 @@ struct AudiobookSeriesPanel: View {
     
     var body: some View {
         Group {
-            if lazyLoader.items.isEmpty {
+            if !lazyLoader.didLoad {
                 if lazyLoader.failed {
                     ErrorView()
                         .refreshable {

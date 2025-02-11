@@ -80,7 +80,7 @@ struct AudiobookHomePanel: View {
                  */
             }
         }
-        .navigationTitle(library?.name ?? "error.unavailable.title")
+        .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
         .sensoryFeedback(.error, trigger: failed)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
