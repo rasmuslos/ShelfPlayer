@@ -26,15 +26,15 @@ struct PodcastHomePanel: View {
                 if failed {
                     ErrorView()
                         .refreshable {
-                            await fetchItems()
+                            fetchItems()
                         }
                 } else {
                     LoadingView()
                         .task {
-                            await fetchItems()
+                            fetchItems()
                         }
                         .refreshable {
-                            await fetchItems()
+                            fetchItems()
                         }
                 }
             } else {
@@ -47,10 +47,7 @@ struct PodcastHomePanel: View {
                                     .padding(.horizontal, 20)
                                 
                                 if row.id == "continue-listening" {
-                                    EpisodeFeaturedGrid(episodes: row.entities.filter { episode in
-                                        // !hideFromContinueListening.contains { $0.itemId == episode.podcastId && $0.episodeId == episode.id }
-                                        true
-                                    })
+                                    EpisodeFeaturedGrid(episodes: row.entities)
                                 } else {
                                     EpisodeGrid(episodes: row.entities)
                                 }
@@ -69,7 +66,7 @@ struct PodcastHomePanel: View {
                     }
                 }
                 .refreshable {
-                    await fetchItems()
+                    fetchItems()
                 }
                 /*
                 .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
@@ -80,7 +77,8 @@ struct PodcastHomePanel: View {
                  */
             }
         }
-        .navigationTitle(library!.name)
+        .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
+        .sensoryFeedback(.error, trigger: failed)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("library.change", systemImage: "books.vertical.fill") {
@@ -90,18 +88,32 @@ struct PodcastHomePanel: View {
         }
         // .modifier(NowPlaying.SafeAreaModifier())
     }
-    
-    private nonisolated func fetchItems() async {
-        await MainActor.withAnimation {
-            failed = false
+}
+
+private extension PodcastHomePanel {
+    nonisolated func fetchItems() {
+        Task {
+            await MainActor.withAnimation {
+                failed = false
+            }
+            
+            await withTaskGroup(of: Void.self) {
+                $0.addTask { await fetchRemoteItems() }
+            }
+        }
+    }
+    nonisolated func fetchRemoteItems() async {
+        guard let library = await library else {
+            return
         }
         
         do {
-            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library!.connectionID].home(for: library!.id)
+            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library.connectionID].home(for: library.id)
+            let episodes = await HomeRow.prepareForPresentation(home.1, connectionID: library.connectionID)
             
             await MainActor.withAnimation {
-                self.episodes = home.1
-                self.podcasts = home.0
+                self.episodes = episodes
+                podcasts = home.0
             }
         } catch {
             await MainActor.withAnimation {
@@ -115,4 +127,5 @@ struct PodcastHomePanel: View {
     NavigationStack {
         PodcastHomePanel()
     }
+    .previewEnvironment()
 }

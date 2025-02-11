@@ -9,7 +9,7 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-internal struct PodcastLatestPanel: View {
+struct PodcastLatestPanel: View {
     @Environment(\.library) private var library
     
     @State private var failed = false
@@ -21,15 +21,15 @@ internal struct PodcastLatestPanel: View {
                 if failed {
                     ErrorView()
                         .refreshable {
-                            await fetchItems()
+                            fetchItems()
                         }
                 } else {
                     LoadingView()
                         .task {
-                            await fetchItems()
+                            fetchItems()
                         }
                         .refreshable {
-                            await fetchItems()
+                            fetchItems()
                         }
                 }
             } else {
@@ -38,7 +38,7 @@ internal struct PodcastLatestPanel: View {
                 }
                 .listStyle(.plain)
                 .refreshable {
-                    await fetchItems()
+                    fetchItems()
                 }
             }
         }
@@ -46,25 +46,34 @@ internal struct PodcastLatestPanel: View {
         // .modifier(NowPlaying.SafeAreaModifier())
     }
 
-    private nonisolated func fetchItems() async {
-        await MainActor.withAnimation {
-            failed = false
-        }
-        
-        guard let episodes = try? await ABSClient[library!.connectionID].recentEpisodes(from: library!.id, limit: 20) else {
-            await MainActor.withAnimation {
-                failed = true
+    private nonisolated func fetchItems() {
+        Task {
+            guard let library = await library else {
+                return
             }
             
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.episodes = episodes
+            await MainActor.withAnimation {
+                failed = false
+            }
+            
+            guard let episodes = try? await ABSClient[library.connectionID].recentEpisodes(from: library.id, limit: 20) else {
+                await MainActor.withAnimation {
+                    failed = true
+                }
+                
+                return
+            }
+            
+            await MainActor.withAnimation {
+                self.episodes = episodes
+            }
         }
     }
 }
 
 #Preview {
-    PodcastLatestPanel()
+    NavigationStack {
+        PodcastLatestPanel()
+    }
+    .previewEnvironment()
 }

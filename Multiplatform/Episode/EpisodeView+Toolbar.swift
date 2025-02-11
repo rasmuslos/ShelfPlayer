@@ -49,7 +49,7 @@ extension EpisodeView {
                             
                             Divider()
                             
-                            ItemLoadLink(itemID: viewModel.episode.podcastID, footer: viewModel.episode.name)
+                            ItemLoadLink(itemID: viewModel.episode.podcastID, footer: viewModel.episode.podcastName)
                             
                             Divider()
                             
