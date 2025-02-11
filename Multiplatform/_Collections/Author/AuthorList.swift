@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-internal struct AuthorList: View {
+struct AuthorList: View {
     let authors: [Author]
     let onAppear: ((_ author: Author) -> Void)
     
