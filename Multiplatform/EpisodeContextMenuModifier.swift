@@ -44,8 +44,8 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ProgressButton(item: episode)
-                DownloadButton(item: episode)
+                ProgressButton(item: episode, tint: false)
+                DownloadButton(item: episode, tint: false)
             } preview: {
                 Preview(episode: episode)
             }
@@ -59,7 +59,7 @@ internal extension EpisodeContextMenuModifier {
         var body: some View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 4) {
-                    ItemImage(item: episode)
+                    ItemImage(item: episode, size: .small)
                         .frame(width: 50, height: 50)
                     
                     Group {

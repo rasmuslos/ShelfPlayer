@@ -114,7 +114,7 @@ struct PlayButton: View {
                 QueueLaterButton(item: item, hideLast: true)
             }
             
-            ProgressButton(item: item)
+            ProgressButton(item: item, tint: false)
             
             if let progressEntity, progressEntity.progress > 0 {
                 ProgressResetButton(item: item)

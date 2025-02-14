@@ -53,7 +53,7 @@ internal extension SeriesList {
                         let offset: CGFloat = index == 0 ? 0 : index == 1 ? 16  : index == 2 ? 30  : index == 3 ? 42  : 0
                         let radius: CGFloat = index == 0 ? 8 : index == 1 ? 7   : index == 2 ? 6    : index == 3 ? 5     : 0
                         
-                        ItemImage(itemID: audiobookIDs[$0], cornerRadius: radius)
+                        ItemImage(itemID: audiobookIDs[$0], size: .tiny, cornerRadius: radius)
                             .frame(height: 60)
                             .scaleEffect(factor)
                             .offset(x: offset)

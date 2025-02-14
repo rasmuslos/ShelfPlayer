@@ -98,7 +98,7 @@ private struct PodcastGridItem: View {
     var body: some View {
         NavigationLink(destination: ItemLoadView(podcast.id)) {
             VStack(alignment: .leading, spacing: 4) {
-                ItemImage(item: podcast)
+                ItemImage(item: podcast, size: .small)
                     .hoverEffect(.highlight)
                 
                 if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {

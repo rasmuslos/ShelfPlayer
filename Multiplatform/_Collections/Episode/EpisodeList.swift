@@ -32,7 +32,7 @@ private struct Row: View {
     var body: some View {
         NavigationLink(destination: EpisodeView(episode, zoomID: zoom ? zoomID : nil)) {
             HStack(spacing: 0) {
-                ItemImage(item: episode)
+                ItemImage(item: episode, size: .small)
                     .frame(width: 104)
                     .padding(.trailing, 12)
                     .hoverEffect(.highlight)

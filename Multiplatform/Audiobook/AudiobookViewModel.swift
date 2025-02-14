@@ -38,9 +38,6 @@ final class AudiobookViewModel: Sendable {
     private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
     private(set) var sameNarrator: [String: [Audiobook]]
     
-    private(set) var progressEntity: ProgressEntity.UpdatingProgressEntity?
-    private(set) var downloadTracker: DownloadTracker?
-    
     private(set) var loadingPDF: Bool
     
     private(set) var sessions: [SessionPayload]
@@ -89,14 +86,6 @@ extension AudiobookViewModel {
                 
                 $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractColor() }
-                
-                $0.addTask {
-                    let progressEntity = await PersistenceManager.shared.progress[self.audiobook.id].updating
-                    
-                    await MainActor.withAnimation {
-                        self.progressEntity = progressEntity
-                    }
-                }
                 
                 await $0.waitForAll()
             }
@@ -243,7 +232,7 @@ private extension AudiobookViewModel {
     }
     
     nonisolated func extractColor() async {
-        guard let image = await audiobook.id.platformCover,
+        guard let image = await audiobook.id.platformCover(size: .small),
               let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
             return
         }

@@ -59,9 +59,9 @@ extension SeriesGrid {
             VStack(spacing: 4) {
                 Group {
                     if audiobookIDs.isEmpty {
-                        ItemImage(item: nil)
+                        ItemImage(item: nil, size: .small)
                     } else if audiobookIDs.count == 1 {
-                        ItemImage(itemID: audiobookIDs.first)
+                        ItemImage(itemID: audiobookIDs.first, size: .small)
                     } else if audiobookIDs.count < 4 {
                         GeometryReader { proxy in
                             let width = proxy.size.width / 1.6
@@ -72,8 +72,8 @@ extension SeriesGrid {
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 
                                 Group {
-                                    ItemImage(itemID: audiobookIDs[0])
-                                    ItemImage(itemID: audiobookIDs[1])
+                                    ItemImage(itemID: audiobookIDs[0], size: .tiny)
+                                    ItemImage(itemID: audiobookIDs[1], size: .tiny)
                                         .offset(x: proxy.size.width - width, y: (proxy.size.height - width) * (flipped ? -1 : 1))
                                 }
                                 .frame(width: width)
@@ -83,12 +83,12 @@ extension SeriesGrid {
                     } else {
                         VStack(spacing: spacing) {
                             HStack(spacing: spacing) {
-                                ItemImage(itemID: audiobookIDs[0])
-                                ItemImage(itemID: audiobookIDs[1])
+                                ItemImage(itemID: audiobookIDs[0], size: .tiny)
+                                ItemImage(itemID: audiobookIDs[1], size: .tiny)
                             }
                             HStack(spacing: spacing) {
-                                ItemImage(itemID: audiobookIDs[2])
-                                ItemImage(itemID: audiobookIDs[3])
+                                ItemImage(itemID: audiobookIDs[2], size: .tiny)
+                                ItemImage(itemID: audiobookIDs[3], size: .tiny)
                             }
                         }
                     }

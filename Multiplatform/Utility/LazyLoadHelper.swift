@@ -49,11 +49,24 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     private var groupAudiobooksInSeries: Bool
     private let filterLocally: Bool
     
+    var search: String {
+        didSet {
+            searchTask?.cancel()
+            searchTask = Task {
+                try await Task.sleep(for: .milliseconds(750))
+                try Task.checkCancellation()
+                
+                refresh()
+            }
+        }
+    }
     var filteredGenre: String? {
         didSet {
             refresh()
         }
     }
+    
+    var searchTask: Task<Void, Error>?
     
     private(set) var failed: Bool
     private(set) var notifyError: Bool
@@ -82,6 +95,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         totalCount = 0
         loadedCount = 0
         
+        search = ""
         filteredGenre = nil
         
         failed = false
@@ -144,6 +158,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
             let filteredGenre = await filteredGenre
             
             do {
+                // MARK: Load
+                
                 var received: [T]
                 let totalCount: Int
                 
@@ -179,6 +195,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     
                     logger.info("Finished loading items of type \(T.self)")
                 }
+                
+                // MARK: Local filter & search
                 
                 if filterLocally && filter != .all {
                     if let items = received as? [PlayableItem] {
@@ -241,6 +259,21 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         throw FilterError.unsupportedItemType
                     }
                 }
+                
+                let search = await search.trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                if !search.isEmpty {
+                    if let items = received as? [Item] {
+                        received = items.filter {
+                            $0.sortName.localizedCaseInsensitiveContains(search)
+                            || $0.authors.reduce(false) { $0 || $1.localizedCaseInsensitiveContains(search) }
+                        } as! [T]
+                    } else {
+                        throw FilterError.unsupportedItemType
+                    }
+                }
+                
+                // MARK: Update
                 
                 await MainActor.withAnimation { [self] in
                     working = false
@@ -324,10 +357,9 @@ extension LazyLoadHelper {
         })
     }
     
-    static var podcasts: LazyLoadHelper<Podcast, Never?> {
-        .init(filterLocally: false, filter: .all, sortOrder: nil, ascending: Defaults[.podcastsAscending], loadMore: { _, _, _, _, _, _ in
-            // try await AudiobookshelfClient.shared.podcasts(libraryID: $3, limit: PAGE_SIZE, page: $0)
-            ([], 0)
+    static var podcasts: LazyLoadHelper<Podcast, PodcastSortOrder> {
+        .init(filterLocally: false, filter: .all, sortOrder: Defaults[.podcastsSortOrder], ascending: Defaults[.podcastsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
+            try await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
 }

@@ -18,35 +18,61 @@ extension SchemaV2 {
         
         @Attribute(.unique)
         private(set) var id = UUID()
-        private var _itemID: String
-        
-        private(set) var index: Int
+        private(set) var _itemID: String
         
         private(set) var fileType: FileType
         
-        private(set) var offset: TimeInterval
-        private(set) var duration: TimeInterval
-        
+        var isDownloaded: Bool
         var downloadTaskID: Int?
         
-        init(id: UUID, itemID: ItemIdentifier, index: Int, fileType: FileType, offset: TimeInterval, duration: TimeInterval) {
-            self.id = id
-            _itemID = itemID.description
-            self.index = index
-            self.fileType = fileType
-            self.offset = offset
-            self.duration = duration
+        var progressWeight: Percentage
+        
+        init(itemID: ItemIdentifier, fileType: FileType, progressWeight: Percentage) {
+            self.id = .init()
             
+            _itemID = itemID.description
+            self.fileType = fileType
+            
+            isDownloaded = false
             downloadTaskID = nil
+            
+            self.progressWeight = progressWeight
         }
         
         var itemID: ItemIdentifier {
             .init(_itemID)
         }
+        var path: URL {
+            var base: URL
+            
+            if ShelfPlayerKit.enableCentralized {
+                base = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.io.rfk.shelfplayer")!.appending(path: "DownloadV2")
+            } else {
+                base = URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
+            }
+            
+            base.append(path: itemID.connectionID.replacing("/", with: "_"))
+            base.append(path: itemID.libraryID)
+            base.append(path: itemID.primaryID)
+            
+            try! FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
+            
+            switch fileType {
+            case .audio(_, _, let ino, let fileExtension):
+                base.append(path: "\(ino).\(fileExtension)")
+            case .pdf(let ino):
+                base.append(path: "\(ino).pdf")
+            case .image(let size):
+                base.append(path: "\(size).png")
+            }
+            
+            return base
+        }
         
         enum FileType: Codable {
-            case audio(fileExtension: String)
-            case pdf
+            case audio(offset: TimeInterval, duration: TimeInterval, ino: String, fileExtension: String)
+            case pdf(ino: String)
+            case image(size: ItemIdentifier.CoverSize)
         }
     }
 }

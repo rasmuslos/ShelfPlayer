@@ -38,7 +38,7 @@ extension EpisodeView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        DownloadButton(item: viewModel.episode, downloadingLabel: false, progressIndicator: true)
+                        DownloadButton(item: viewModel.episode, tint: false)
                             .labelStyle(.iconOnly)
                     }
                     
@@ -53,40 +53,9 @@ extension EpisodeView {
                             
                             Divider()
                             
-                            ProgressButton(item: viewModel.episode)
-                            
-                            if let progressEntity = viewModel.progressEntity, progressEntity.progress > 0 {
-                                ProgressResetButton(item: viewModel.episode)
-                            }
-                            
-                            /*
-                             if viewModel.offlineTracker.status == .none {
-                             ProgressButton(item: viewModel.audiobook)
-                             DownloadButton(item: viewModel.audiobook)
-                             } else {
-                             if !viewModel.progressEntity.isFinished {
-                             ProgressButton(item: viewModel.audiobook)
-                             }
-                             
-                             Menu {
-                             if viewModel.progressEntity.isFinished {
-                             ProgressButton(item: viewModel.audiobook)
-                             }
-                             
-                             if viewModel.progressEntity.startedAt != nil {
-                             Button(role: .destructive) {
-                             viewModel.resetProgress()
-                             } label: {
-                             Label("progress.reset", systemImage: "slash.circle")
-                             }
-                             }
-                             
-                             DownloadButton(item: viewModel.audiobook)
-                             } label: {
-                             Text("toolbar.remove")
-                             }
-                             }
-                             */
+                            DownloadButton(item: viewModel.episode, tint: false)
+                            ProgressButton(item: viewModel.episode, tint: false)
+                            ProgressResetButton(item: viewModel.episode)
                         } label: {
                             Label("more", systemImage: "ellipsis.circle")
                         }

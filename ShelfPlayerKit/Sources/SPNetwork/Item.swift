@@ -73,7 +73,37 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
         )
     }
     
+    func coverRequest(from itemID: ItemIdentifier, width: Int) async throws -> URLRequest {
+        #if DEBUG
+        if itemID.primaryID == "fixture" {
+            return URLRequest(url: URL(string: "https://yt3.ggpht.com/-lwlGXn90heE/AAAAAAAAAAI/AAAAAAAAAAA/FmCv96eMMNE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")!)
+        }
+        #endif
+        
+        let path: String
+        
+        switch itemID.type {
+        case .author:
+            path = "api/authors/\(itemID.primaryID)/image"
+        case .episode:
+            path = "api/items/\(itemID.groupingID!)/cover"
+        default:
+            path = "api/items/\(itemID.primaryID)/cover"
+        }
+        
+        return try await request(ClientRequest<Data>(path: path, method: .get, query: [
+            .init(name: "width", value: width.description),
+        ]))
+    }
+    
+    func pdfRequest(from itemID: ItemIdentifier, ino: String) async throws -> URLRequest {
+        try await request(ClientRequest<Data>(path: "api/items/\(itemID.primaryID)/ebook/\(ino)", method: .get))
+    }
     func pdf(from itemID: ItemIdentifier, ino: String) async throws -> Data {
-        try await URLSession.shared.data(for: try await request(ClientRequest<Data>(path: "api/items/\(itemID.primaryID)/ebook/\(ino)", method: .get))).0
+        try await URLSession.shared.data(for: pdfRequest(from: itemID, ino: ino)).0
+    }
+    
+    func audioTrackRequest(from itemID: ItemIdentifier, ino: String) async throws -> URLRequest {
+        try await request(ClientRequest<Data>(path: "api/items/\(itemID.primaryID)/file/\(ino)", method: .get))
     }
 }

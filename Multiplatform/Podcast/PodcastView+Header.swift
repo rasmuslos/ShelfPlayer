@@ -148,7 +148,7 @@ private struct CompactPresentation: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ItemImage(item: viewModel.podcast, contrastConfiguration: nil)
+            ItemImage(item: viewModel.podcast, size: .regular, contrastConfiguration: nil)
                 .frame(width: 240)
             
             VStack(spacing: 4) {
@@ -185,7 +185,7 @@ private struct RegularPresentation: View {
     
     var body: some View {
         HStack(spacing: 40) {
-            ItemImage(item: viewModel.podcast, contrastConfiguration: nil)
+            ItemImage(item: viewModel.podcast, size: .large, contrastConfiguration: nil)
                 .frame(height: 300)
                 .hoverEffect(.highlight)
             

@@ -82,7 +82,7 @@ extension AudiobookView {
                             }
                         }
                         
-                        DownloadButton(item: viewModel.audiobook, downloadingLabel: false, progressIndicator: true)
+                        DownloadButton(item: viewModel.audiobook, tint: false)
                             .labelStyle(.iconOnly)
                         
                         Menu {
@@ -96,40 +96,10 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            ProgressButton(item: viewModel.audiobook)
+                            DownloadButton(item: viewModel.audiobook, tint: false)
+                            ProgressButton(item: viewModel.audiobook, tint: false)
                             
-                            if let progressEntity = viewModel.progressEntity, progressEntity.progress > 0 {
-                                ProgressResetButton(item: viewModel.audiobook)
-                            }
-                            
-                            /*
-                             if viewModel.offlineTracker.status == .none {
-                             ProgressButton(item: viewModel.audiobook)
-                             DownloadButton(item: viewModel.audiobook)
-                             } else {
-                             if !viewModel.progressEntity.isFinished {
-                             ProgressButton(item: viewModel.audiobook)
-                             }
-                             
-                             Menu {
-                             if viewModel.progressEntity.isFinished {
-                             ProgressButton(item: viewModel.audiobook)
-                             }
-                             
-                             if viewModel.progressEntity.startedAt != nil {
-                             Button(role: .destructive) {
-                             viewModel.resetProgress()
-                             } label: {
-                             Label("progress.reset", systemImage: "slash.circle")
-                             }
-                             }
-                             
-                             DownloadButton(item: viewModel.audiobook)
-                             } label: {
-                             Text("toolbar.remove")
-                             }
-                             }
-                             */
+                            ProgressResetButton(item: viewModel.audiobook)
                         } label: {
                             Label("more", systemImage: "ellipsis.circle")
                         }

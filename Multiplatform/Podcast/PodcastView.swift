@@ -53,7 +53,14 @@ struct PodcastView: View {
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
-        .navigationTransition(.zoom(sourceID: "item_\(viewModel.podcast.id)", in: namespace!))
+        .modify {
+            if zoom {
+                $0
+                    .navigationTransition(.zoom(sourceID: "item_\(viewModel.podcast.id)", in: namespace!))
+            } else {
+                $0
+            }
+        }
         .modifier(ToolbarModifier())
         // .modifier(NowPlaying.SafeAreaModifier())
         .environment(viewModel)

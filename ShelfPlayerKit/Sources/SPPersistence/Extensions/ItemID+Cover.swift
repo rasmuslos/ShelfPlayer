@@ -10,79 +10,44 @@ import SPFoundation
 import Nuke
 
 public extension ItemIdentifier {
-    var coverURL: URL? {
-        get async {
-            await coverURL(size: .regular)
-        }
-    }
-    
-    func coverURL(size: CoverSize) async -> URL? {
-        #if DEBUG
-        if primaryID == "fixture" {
-            return URL(string: "https://yt3.ggpht.com/-lwlGXn90heE/AAAAAAAAAAI/AAAAAAAAAAA/FmCv96eMMNE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
-        }
-        #endif
-        
-        guard let connection = await PersistenceManager.shared.authorization[connectionID] else { return nil }
-        var base = connection.host
-        
-        switch type {
-        case .author:
-            base.append(path: "api/authors/\(primaryID)/image")
-        case .episode:
-            base.append(path: "api/items/\(groupingID!)/cover")
-        default:
-            base.append(path: "api/items/\(primaryID)/cover")
+    func coverRequest(size: CoverSize) async -> ImageRequest? {
+        if let downloaded = await PersistenceManager.shared.download.cover(for: self, size: size) {
+            return ImageRequest(url: downloaded)
         }
         
-        return base.appending(queryItems: [
-            .init(name: "token", value: connection.token),
-            .init(name: "width", value: size.width.description),
-        ])
-    }
-    
-    var coverRequest: ImageRequest? {
-        get async {
-            guard let coverURL = await coverURL else { return nil }
-            
-            if coverURL.isFileURL {
-                return .init(url: coverURL)
-            }
-            
-            var request = URLRequest(url: coverURL)
-            
-            if let connection = await PersistenceManager.shared.authorization[connectionID] {
-                for header in connection.headers {
-                    request.addValue(header.value, forHTTPHeaderField: header.key)
-                }
-            }
-            
-            return ImageRequest(urlRequest: request)
+        if let urlRequest = try? await ABSClient[connectionID].coverRequest(from: self, width: size.width) {
+            return ImageRequest(urlRequest: urlRequest)
         }
+        
+        return nil
     }
     
-    var data: Data? {
-        get async {
-            guard let coverRequest = await coverRequest else { return nil }
-            
-            return try? await ImagePipeline.shared.data(for: coverRequest).0
+    func data(size: CoverSize) async -> Data? {
+        guard let coverRequest = await coverRequest(size: size) else {
+            return nil
         }
+        
+        return try? await ImagePipeline.shared.data(for: coverRequest).0
     }
     
-    var platformCover: Nuke.PlatformImage? {
-        get async {
-            guard let coverRequest = await coverRequest else { return nil }
-            
-            return try? await ImagePipeline.shared.image(for: coverRequest)
+    func platformCover(size: CoverSize) async -> Nuke.PlatformImage? {
+        guard let coverRequest = await coverRequest(size: size) else {
+            return nil
         }
+        
+        return try? await ImagePipeline.shared.image(for: coverRequest)
     }
     
     
-    enum CoverSize {
+    enum CoverSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIterable {
         case tiny
         case small
         case regular
         case large
+        
+        public var id: Int {
+            rawValue
+        }
         
         var width: Int {
             #if os(iOS)

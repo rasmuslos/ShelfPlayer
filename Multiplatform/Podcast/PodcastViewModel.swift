@@ -148,7 +148,7 @@ private extension PodcastViewModel {
     }
     
     nonisolated func extractColor() async {
-        guard let image = await podcast.id.platformCover else {
+        guard let image = await podcast.id.platformCover(size: .small) else {
             return
         }
         

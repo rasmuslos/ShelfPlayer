@@ -111,7 +111,7 @@ private struct Row: View {
                         loading = false
                     }
                 } label: {
-                    ItemProgressIndicatorImage(item: audiobook, aspectRatio: .none)
+                    ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
                         .frame(width: 94)
                         .overlay {
                             if loading {

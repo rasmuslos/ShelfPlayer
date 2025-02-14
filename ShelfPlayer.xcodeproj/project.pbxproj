@@ -407,7 +407,6 @@
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
 				3A9874212B5995CE00B2704F /* _Collections */,
 				3AB418D02CE7E0E9009D9442 /* Search */,
-				3A2BE47A2C98205100259001 /* _Panels */,
 				3A64B3732CAACF4900446871 /* Intents */,
 				3A83B8712B88933500A05957 /* CarPlay */,
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
@@ -497,16 +496,6 @@
 				3AA36E502B0A97FD0036038D /* ShelfPlayer.app */,
 			);
 			path = Products;
-			sourceTree = "<group>";
-		};
-		3A2BE47A2C98205100259001 /* _Panels */ = {
-			isa = PBXGroup;
-			children = (
-				3AB8BBBC2BD7B7290012023A /* PodcastHomePanel.swift */,
-				3AB8BBBE2BD7B76B0012023A /* PodcastLatestPanel.swift */,
-				3AB8BBC02BD7B7B30012023A /* PodcastLibraryPanel.swift */,
-			);
-			path = _Panels;
 			sourceTree = "<group>";
 		};
 		3A31299F2D2413F000D143B4 /* Connection */ = {
@@ -688,9 +677,11 @@
 			children = (
 				3A5891142CD3F1E9005C3289 /* ItemMenu.swift */,
 				3A9825E52D4A3C1900A65826 /* ItemLoadLink.swift */,
+				3A2B93342B00D71B00638AE9 /* ProgressButton.swift */,
+				3A9825E22D4A2C1E00A65826 /* ProgressResetButton.swift */,
+				3ADD29612B6D88EF0060248E /* DownloadButton.swift */,
 				3A9825E02D4A2AD200A65826 /* QueuePlayButton.swift */,
 				3A0E42ED2C819FE80034873F /* QueueLaterButton.swift */,
-				3A9825E22D4A2C1E00A65826 /* ProgressResetButton.swift */,
 			);
 			path = CommonActions;
 			sourceTree = "<group>";
@@ -780,8 +771,6 @@
 		3AADC0382B6D104400C4088D /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
-				3A2B93342B00D71B00638AE9 /* ProgressButton.swift */,
-				3ADD29612B6D88EF0060248E /* DownloadButton.swift */,
 				3A82864C2AEC104400384BC9 /* SleepTimerButton.swift */,
 				3AA9542F2AD2AE520031C20D /* EpisodePlayButton.swift */,
 				3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */,
@@ -813,6 +802,9 @@
 				3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */,
 				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */,
 				3AE31DCD2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift */,
+				3AB8BBBC2BD7B7290012023A /* PodcastHomePanel.swift */,
+				3AB8BBBE2BD7B76B0012023A /* PodcastLatestPanel.swift */,
+				3AB8BBC02BD7B7B30012023A /* PodcastLibraryPanel.swift */,
 			);
 			path = Panels;
 			sourceTree = "<group>";
