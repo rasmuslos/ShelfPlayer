@@ -75,7 +75,7 @@ private struct Title: View {
                 }
                 .buttonStyle(.plain)
             }
-        
+            
             HStack(spacing: 2) {
                 if viewModel.audiobook.explicit {
                     Label("explicit", systemImage: "e.square.fill")
@@ -119,16 +119,16 @@ private struct SeriesName: View {
         if !viewModel.audiobook.series.isEmpty, let seriesName = viewModel.audiobook.seriesName {
             Group {
                 if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
-                    // NavigationLink(destination: SeriesLoadView(series: series)) {
-                        seriesNameComponent(seriesName)
-                    // }
+                    NavigationLink(destination: ItemIDLoadView(name: series.name, type: .series)) {
+                        seriesNameComponent(series.name)
+                    }
                     .buttonStyle(.plain)
                 } else {
                     Menu {
                         ForEach(viewModel.audiobook.series, id: \.name) { series in
-                            // NavigationLink(destination: SeriesLoadView(series: series)) {
+                            NavigationLink(destination: ItemIDLoadView(name: series.name, type: .series)) {
                                 seriesNameComponent(series.name)
-                            // }
+                            }
                         }
                     } label: {
                         seriesNameComponent(seriesName)
@@ -146,7 +146,7 @@ private struct CompactPresentation: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ItemImage(item: viewModel.audiobook, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 30, shadowOpacity: 0.2))
+            ItemImage(item: viewModel.audiobook, size: .regular, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 30, shadowOpacity: 0.2))
                 .padding(.horizontal, 40)
             
             SeriesName()
@@ -177,7 +177,7 @@ private struct RegularPresentation: View {
             .frame(height: 0)
             
             HStack(spacing: 40) {
-                ItemImage(item: viewModel.audiobook, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 40, shadowOpacity: 0.6))
+                ItemImage(item: viewModel.audiobook, size: .large, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 40, shadowOpacity: 0.6))
                     .frame(width: max(0, min(400, (availableWidth - 40) / 2)))
                     .hoverEffect(.highlight)
                 

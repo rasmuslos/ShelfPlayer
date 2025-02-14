@@ -122,29 +122,33 @@ struct RequestImage: View {
 
 struct ItemImage: View {
     let itemID: ItemIdentifier?
+    let size: ItemIdentifier.CoverSize
     
-    var cornerRadius: CGFloat
-    var aspectRatio: RequestImage.AspectRatioPolicy
-    var priority: ImageRequest.Priority
-    var contrastConfiguration: RequestImage.ContrastConfiguration?
+    let cornerRadius: CGFloat
+    let aspectRatio: RequestImage.AspectRatioPolicy
+    let priority: ImageRequest.Priority
+    let contrastConfiguration: RequestImage.ContrastConfiguration?
     
     init(itemID: ItemIdentifier?,
+         size: ItemIdentifier.CoverSize,
          cornerRadius: CGFloat = 8,
          aspectRatio: RequestImage.AspectRatioPolicy = .square,
          priority: ImageRequest.Priority = .normal,
          contrastConfiguration: RequestImage.ContrastConfiguration? = .init()) {
         self.itemID = itemID
+        self.size = size
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
         self.priority = priority
         self.contrastConfiguration = contrastConfiguration
     }
     init(item: Item?,
+         size: ItemIdentifier.CoverSize,
          cornerRadius: CGFloat = 8,
          aspectRatio: RequestImage.AspectRatioPolicy = .square,
          priority: ImageRequest.Priority = .normal,
          contrastConfiguration: RequestImage.ContrastConfiguration? = .init()) {
-        self.init(itemID: item?.id, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority)
+        self.init(itemID: item?.id, size: size, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority)
     }
     
     @State private var request: ImageRequest?
@@ -155,7 +159,7 @@ struct ItemImage: View {
         } else {
             Placeholder(itemID: itemID, cornerRadius: cornerRadius)
                 .task {
-                    request = await itemID?.coverRequest
+                    request = await itemID?.coverRequest(size: size)
                 }
         }
     }
@@ -232,6 +236,6 @@ private struct ContrastModifier: ViewModifier {
 }
 
 #Preview {
-    ItemImage(item: Audiobook.fixture)
+    ItemImage(item: Audiobook.fixture, size: .large)
 }
 #endif

@@ -14,6 +14,7 @@ public final class PersistenceManager: Sendable {
     public let authorization: AuthorizationSubsystem
     
     public let progress: ProgressSubsystem
+    public let download: DownloadSubsystem
     
     public let podcasts: PodcastSubsystem
     
@@ -35,12 +36,16 @@ public final class PersistenceManager: Sendable {
         authorization = .init(modelContainer: container)
         
         progress = .init(modelContainer: container)
+        download = .init(modelContainer: container)
         
         podcasts = .init()
     }
 }
 
 enum PersistenceError: Error {
+    case missing
+    case existing
+    
     case unsupportedDownloadItemType
     
     case serverNotFound

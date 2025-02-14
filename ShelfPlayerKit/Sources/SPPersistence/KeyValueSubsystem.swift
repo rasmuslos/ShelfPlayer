@@ -82,4 +82,15 @@ public extension PersistenceManager.KeyValueSubsystem.Key {
     static func hideFromContinueListening(connectionID: ItemIdentifier.ConnectionID) -> Key<Set<String>> {
         .init("hideFromContinueListening_\(connectionID)")
     }
+    
+    static func assetFailedAttempts(assetID: UUID) -> Key<Int> {
+        .init("assetFailedAttempts_\(assetID)")
+    }
+    static func cachedDownloadStatus(itemID: ItemIdentifier) -> Key<PersistenceManager.DownloadSubsystem.DownloadStatus> {
+        .init("cachedDownloadStatus_\(itemID)")
+    }
+    
+    static func coverURLCache(itemID: ItemIdentifier) -> Key<URL> {
+        .init("coverURLCache_\(itemID)")
+    }
 }

@@ -43,7 +43,7 @@ struct AuthorGrid: View {
                     ForEach(authors) { author in
                         NavigationLink(destination: AuthorView(author)) {
                             VStack(spacing: 0) {
-                                ItemImage(item: author, cornerRadius: .infinity)
+                                ItemImage(item: author, size: .small, cornerRadius: .infinity)
                                     .padding(.bottom, 4)
                                     .hoverEffect(.highlight)
                                 

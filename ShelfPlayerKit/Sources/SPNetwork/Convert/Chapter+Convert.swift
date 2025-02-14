@@ -16,10 +16,17 @@ extension Chapter {
 
 extension PlayableItem.AudioTrack {
     init(track: AudiobookshelfAudioTrack) {
-        self.init(
-            index: track.index!,
-            offset: track.startOffset,
-            duration: track.duration,
-            contentUrl: track.contentUrl)
+        var ext = track.metadata.ext
+        
+        if ext.starts(with: ".") {
+            ext.removeFirst()
+        }
+        
+        self.init(index: track.index,
+                  ino: track.ino,
+                  fileExtension: ext,
+                  offset: track.startOffset,
+                  duration: track.duration,
+                  contentUrl: track.contentUrl)
     }
 }

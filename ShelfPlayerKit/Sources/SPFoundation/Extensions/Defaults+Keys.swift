@@ -80,5 +80,6 @@ public extension Defaults.Keys {
     }
     
     static let podcastsAscending = Key("podcastsAscending", default: true, iCloud: true)
+    static let podcastsSortOrder = Key<PodcastSortOrder>("podcastsSortOrder", default: .name, iCloud: true)
     static let podcastsDisplayType = Key<ItemDisplayType>("podcastsDisplayType", default: .grid, iCloud: true)
 }

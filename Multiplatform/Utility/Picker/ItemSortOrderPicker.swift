@@ -134,6 +134,38 @@ extension SeriesSortOrder: ItemSortOrder {
     }
 }
 
+extension PodcastSortOrder: ItemSortOrder {
+    var label: LocalizedStringKey {
+        switch self {
+        case .name:
+            "sort.name"
+        case .author:
+            "sort.author"
+        case .episodeCount:
+            "sort.episodeCount"
+        case .addedAt:
+            "sort.added"
+        case .duration:
+            "sort.duration"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .name:
+            "text.quote"
+        case .author:
+            "person"
+        case .episodeCount:
+            "number"
+        case .addedAt:
+            "document.badge.plus"
+        case .duration:
+            "clock"
+        }
+    }
+}
+
 extension EpisodeSortOrder: ItemSortOrder {
     var label: LocalizedStringKey {
         switch self {

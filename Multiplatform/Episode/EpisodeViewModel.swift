@@ -23,8 +23,6 @@ final class EpisodeViewModel {
     private(set) var sessions: [SessionPayload]
     private(set) var notifyError: Bool
     
-    private(set) var progressEntity: ProgressEntity.UpdatingProgressEntity?
-    
     init(episode: Episode) {
         self.episode = episode
         library = nil
@@ -46,14 +44,6 @@ extension EpisodeViewModel {
                 $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractDominantColor() }
                 
-                $0.addTask {
-                    let progressEntity = await PersistenceManager.shared.progress[self.episode.id].updating
-                    
-                    await MainActor.withAnimation {
-                        self.progressEntity = progressEntity
-                    }
-                }
-                
                 await $0.waitForAll()
             }
         }
@@ -62,7 +52,7 @@ extension EpisodeViewModel {
 
 private extension EpisodeViewModel {
     nonisolated func extractDominantColor() async {
-        guard let image = await episode.id.platformCover,
+        guard let image = await episode.id.platformCover(size: .small),
               let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
             return
         }
