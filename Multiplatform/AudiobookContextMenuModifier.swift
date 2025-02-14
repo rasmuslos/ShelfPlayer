@@ -29,8 +29,8 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ProgressButton(item: audiobook)
-                DownloadButton(item: audiobook)
+                ProgressButton(item: audiobook, tint: false)
+                DownloadButton(item: audiobook, tint: false)
             } preview: {
                 Preview(audiobook: audiobook)
             }
@@ -43,7 +43,7 @@ internal extension AudiobookContextMenuModifier {
         
         var body: some View {
             VStack(alignment: .leading, spacing: 2) {
-                ItemProgressIndicatorImage(item: audiobook, aspectRatio: .none)
+                ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
                     .padding(.bottom, 12)
                 
                 Text(audiobook.name)

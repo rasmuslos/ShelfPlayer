@@ -2860,8 +2860,10 @@
         }
       }
     },
+    "download.loading" : {
+
+    },
     "download.remove" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2917,6 +2919,9 @@
           }
         }
       }
+    },
+    "download.working" : {
+
     },
     "downloaded" : {
       "comment" : "Unclear if it's \"an item was downloaded\" or \"a downloaded item\"",
@@ -5482,6 +5487,7 @@
       }
     },
     "podcasts.loadMore" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7025,6 +7031,9 @@
           }
         }
       }
+    },
+    "sort.episodeCount" : {
+
     },
     "sort.index" : {
       "localizations" : {

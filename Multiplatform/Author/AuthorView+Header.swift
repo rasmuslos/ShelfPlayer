@@ -14,7 +14,7 @@ extension AuthorView {
         
         var body: some View {
             VStack(spacing: 0) {
-                ItemImage(item: viewModel.author, cornerRadius: .infinity)
+                ItemImage(item: viewModel.author, size: .small, cornerRadius: .infinity)
                     .frame(width: 100, height: 100)
                 
                 Text(viewModel.author.name)

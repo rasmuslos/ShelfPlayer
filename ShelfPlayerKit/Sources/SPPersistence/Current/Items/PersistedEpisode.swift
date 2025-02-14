@@ -15,7 +15,7 @@ extension SchemaV2 {
         #Index<PersistedEpisode>([\._id], [\.name])
         #Unique<PersistedEpisode>([\._id])
         
-        private var _id: String
+        var _id: String
         
         private(set) var name: String
         private(set) var authors: [String]
@@ -33,13 +33,10 @@ extension SchemaV2 {
         @Relationship(deleteRule: .deny, minimumModelCount: 1, maximumModelCount: 1)
         private(set) var podcast: PersistedPodcast
         
-        @Relationship(deleteRule: .deny, minimumModelCount: 1)
-        private(set) var assets: [PersistedAsset]
-        
         @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
         private(set) var searchIndexEntry: PersistedSearchIndexEntry
         
-        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, podcast: PersistedPodcast, index: Episode.EpisodeIndex, assets: [PersistedAsset]) {
+        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, podcast: PersistedPodcast, index: Episode.EpisodeIndex) {
             _id = id.description
             
             self.name = name
@@ -55,8 +52,6 @@ extension SchemaV2 {
             
             self.podcast = podcast
             self.index = index
-            
-            self.assets = assets
             
             searchIndexEntry = .init(itemID: id, primaryName: name, secondaryName: podcast.name, authors: authors)
         }

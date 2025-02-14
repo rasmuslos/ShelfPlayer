@@ -9,26 +9,19 @@ import SwiftUI
 import SPFoundation
 import SPPersistence
 
-internal struct ProgressButton: View {
+struct ProgressButton: View {
     let item: PlayableItem
     let tint: Bool
-    let callback: (() -> Void)?
-    
-    @State private var notifyError = false
-    @State private var notifySuccess = false
     
     @State private var isLoading = false
     @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
     
-    init(item: PlayableItem, tint: Bool = false, callback: (() -> Void)? = nil) {
-        self.item = item
-        self.tint = tint
-        self.callback = callback
-    }
+    @State private var notifyError = false
+    @State private var notifySuccess = false
     
     @ViewBuilder
     private var markAsFinishedButton: some View {
-        Button("progress.finished.set", systemImage: "checkmark") {
+        Button("progress.finished.set", systemImage: "checkmark.circle") {
             Task {
                 isLoading = true
                 
@@ -60,7 +53,7 @@ internal struct ProgressButton: View {
                 isLoading = false
             }
         } label: {
-            Label("progress.finished.unset", systemImage: "minus")
+            Label("progress.finished.unset", systemImage: "minus.circle")
             
             if let finishedAt = progressEntity?.finishedAt {
                 Text("finished.ago") + Text(finishedAt, style: .relative)
@@ -84,18 +77,37 @@ internal struct ProgressButton: View {
         }
         .disabled(isLoading)
         .contentTransition(.symbolEffect)
-        .symbolVariant(tint ? .none : .circle)
-        .tint(tint ? progressEntity?.isFinished == true ? .red : .green : nil)
+        .modify {
+            if tint {
+                $0
+                    .tint(progressEntity?.isFinished == true ? .red : .green)
+            } else {
+                $0
+            }
+        }
         .sensoryFeedback(.error, trigger: notifyError)
         .sensoryFeedback(.success, trigger: notifySuccess)
         .task {
-            progressEntity = await PersistenceManager.shared.progress[item.id].updating
+            loadProgressEntity()
+        }
+    }
+    
+    private nonisolated func loadProgressEntity() {
+        Task {
+            let entity = await PersistenceManager.shared.progress[item.id].updating
+            
+            await MainActor.withAnimation {
+                self.progressEntity = entity
+            }
         }
     }
 }
 
 #if DEBUG
 #Preview {
-    ProgressButton(item: Episode.fixture)
+    ProgressButton(item: Episode.fixture, tint: false)
+}
+#Preview {
+    ProgressButton(item: Episode.fixture, tint: true)
 }
 #endif

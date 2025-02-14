@@ -38,6 +38,9 @@ struct TabRouter: View {
         Group {
             if importedConnectionIDs.contains(tab.library.connectionID) {
                 tab.content
+                    .task {
+                        PersistenceManager.shared.download.scheduleUpdateTask()
+                    }
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
                 ContentUnavailableView("import.failed", systemImage: "circle.badge.xmark", description: Text("import.failed.description"))
                     .symbolRenderingMode(.multicolor)

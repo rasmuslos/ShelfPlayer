@@ -15,7 +15,7 @@ extension SchemaV2 {
         #Index<PersistedAudiobook>([\._id], [\.name])
         #Unique<PersistedAudiobook>([\._id])
         
-        private var _id: String
+        var _id: String
         
         private(set) var name: String
         private(set) var authors: [String]
@@ -37,13 +37,10 @@ extension SchemaV2 {
         private(set) var explicit: Bool
         private(set) var abridged: Bool
         
-        @Relationship(deleteRule: .deny, minimumModelCount: 1)
-        private(set) var tracks: [PersistedAsset]
-        
         @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
         private(set) var searchIndexEntry: PersistedSearchIndexEntry
         
-        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, subtitle: String? = nil, narrators: [String], series: [Audiobook.SeriesFragment], explicit: Bool, abridged: Bool, tracks: [PersistedAsset]) {
+        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, subtitle: String? = nil, narrators: [String], series: [Audiobook.SeriesFragment], explicit: Bool, abridged: Bool) {
             _id = id.description
             
             self.name = name
@@ -65,8 +62,6 @@ extension SchemaV2 {
             
             self.explicit = explicit
             self.abridged = abridged
-            
-            self.tracks = tracks
             
             searchIndexEntry = .init(itemID: id, primaryName: name, secondaryName: subtitle, authors: authors)
         }

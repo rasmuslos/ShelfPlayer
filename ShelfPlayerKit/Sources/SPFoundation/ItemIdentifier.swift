@@ -47,8 +47,8 @@ public final class ItemIdentifier {
         case "1":
             type = ItemType(rawValue: String(parts[1]))!
             
-            libraryID = String(parts[2])
-            connectionID = String(parts[3])
+            connectionID = String(parts[2])
+            libraryID = String(parts[3])
             
             primaryID = String(parts[4])
             
