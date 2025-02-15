@@ -104,6 +104,6 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
     }
     
     func audioTrackRequest(from itemID: ItemIdentifier, ino: String) async throws -> URLRequest {
-        try await request(ClientRequest<Data>(path: "api/items/\(itemID.primaryID)/file/\(ino)", method: .get))
+        try await request(ClientRequest<Data>(path: "api/items/\(itemID.groupingID ?? itemID.primaryID)/file/\(ino)", method: .get))
     }
 }

@@ -17,53 +17,72 @@ extension PersistenceManager {
     public final actor KeyValueSubsystem: Sendable {
         private let logger = Logger(subsystem: "SatelliteGuardKit", category: "KeyValue")
         
-        public func set<Value>(_ key: Key<Value>, _ value: Value?) {
-            self[key] = value
+        public subscript<Value: Codable>(_ key: Key<Value>) -> Value? {
+            let identifier = key.identifier
+            
+            guard let entity = entity(for: key) else {
+                return nil
+            }
+            
+            do {
+                return try JSONDecoder().decode(Value.self, from: entity.value)
+            } catch {
+                logger.error("Failed to decode \(Value.self): \(error)")
+                return nil
+            }
         }
         
-        public subscript<Value: Codable>(_ key: Key<Value>) -> Value? {
-            get {
-                let identifier = key.identifier
-                
-                guard let entity = try? modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.key == identifier })).first else {
-                    return nil
-                }
-                
+        public func set<Value>(_ key: Key<Value>, _ value: Value?) throws {
+            let identifier = key.identifier
+            
+            let predicate = #Predicate<KeyValueEntity> { $0.key == identifier }
+            let descriptor = FetchDescriptor<KeyValueEntity>(predicate: predicate)
+            
+            let existing = try? modelContext.fetch(descriptor).first
+            
+            if let value {
                 do {
-                    return try JSONDecoder().decode(Value.self, from: entity.value)
-                } catch {
-                    logger.error("Failed to decode \(Value.self): \(error)")
-                    return nil
-                }
-            }
-            set {
-                let identifier = key.identifier
-                
-                if let newValue {
-                    do {
-                        let data = try JSONEncoder().encode(newValue)
-                        
-                        if let existing = try? modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.key == identifier })).first {
-                            existing.value = data
-                        } else {
-                            let entity = KeyValueEntity(key: key.identifier, value: data)
-                            modelContext.insert(entity)
-                        }
-                        
-                        try modelContext.save()
-                    } catch {
-                        logger.error("Failed to encode \(Value.self) or save: \(error)")
-                        return
+                    let data = try JSONEncoder().encode(value)
+                    
+                    if let existing {
+                        existing.value = data
+                    } else {
+                        let entity = KeyValueEntity(key: key.identifier, value: data)
+                        modelContext.insert(entity)
                     }
-                } else {
-                    try? modelContext.delete(model: KeyValueEntity.self, where: #Predicate { $0.key == identifier })
-                    try? modelContext.save()
+                    
+                    try modelContext.save()
+                } catch {
+                    logger.error("Failed to encode \(Value.self) or save: \(error)")
+                    throw error
+                }
+            } else {
+                if existing != nil {
+                    try modelContext.delete(model: KeyValueEntity.self, where: #Predicate { $0.key == identifier })
+                    try modelContext.save()
                 }
             }
+        }
+        
+        public func bulkDelete<T>(keys: [Key<T>]) throws where T: Decodable {
+            for key in keys {
+                guard let entity = entity(for: key) else {
+                    continue
+                }
+                
+                modelContext.delete(entity)
+            }
+            
+            try modelContext.save()
         }
         
         func reset() throws {
             try modelContext.delete(model: KeyValueEntity.self)
+        }
+        
+        private func entity<T>(for key: Key<T>) -> KeyValueEntity? where T: Decodable {
+            let identifier = key.identifier
+            return try? modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.key == identifier })).first
         }
         
         public struct Key<Value: Codable>: Sendable {
