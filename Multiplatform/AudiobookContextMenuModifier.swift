@@ -29,8 +29,8 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ProgressButton(item: audiobook, tint: false)
-                DownloadButton(item: audiobook, tint: false)
+                ProgressButton(item: audiobook)
+                DownloadButton(item: audiobook)
             } preview: {
                 Preview(audiobook: audiobook)
             }

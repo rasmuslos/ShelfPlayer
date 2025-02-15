@@ -22,7 +22,7 @@ struct ProgressResetButton: View {
                     progressEntity = await PersistenceManager.shared.progress[item.id].updating
                 }
         } else if let progressEntity, progressEntity.progress > 0 {
-            Button("progress.reset", systemImage: "slash.circle", role: .destructive) {
+            Button("progress.reset", systemImage: "square.slash", role: .destructive) {
                 satellite.deleteProgress(item)
             }
             .disabled(satellite.isLoading)

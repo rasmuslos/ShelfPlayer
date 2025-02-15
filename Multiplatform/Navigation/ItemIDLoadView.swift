@@ -54,7 +54,7 @@ struct ItemIDLoadView: View {
                 case .author:
                     itemID = try await ABSClient[library.connectionID].authorID(from: library.id, name: name)
                 default:
-                    throw LoadError.unsupporedItemType
+                    throw LoadError.unsupportedItemType
                 }
                 
                 await MainActor.withAnimation {
@@ -69,6 +69,6 @@ struct ItemIDLoadView: View {
     }
     
     private enum LoadError: Error {
-        case unsupporedItemType
+        case unsupportedItemType
     }
 }
