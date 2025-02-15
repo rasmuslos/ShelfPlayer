@@ -1,28 +1,14 @@
 //
-//  RowTitle.swift
-//  Audiobooks
+//  AudiobookRow.swift
+//  Multiplatform
 //
-//  Created by Rasmus Krämer on 08.10.23.
+//  Created by Rasmus Krämer on 15.02.25.
 //
 
 import SwiftUI
-import Defaults
-import SPFoundation
+import ShelfPlayerKit
 
-internal struct RowTitle: View {
-    @Default(.enableSerifFont) private var enableSerifFont
-    
-    let title: String
-    var fontDesign: Font.Design? = nil
-    
-    var body: some View {
-        Text(title)
-            .font(.headline)
-            .fontDesign(fontDesign == .serif && !enableSerifFont ? nil : fontDesign)
-    }
-}
-
-internal struct AudiobookRow: View {
+struct AudiobookRow: View {
     let title: String
     let small: Bool
     let audiobooks: [Audiobook]
@@ -62,14 +48,6 @@ internal struct AudiobookRow: View {
 }
 
 #if DEBUG
-#Preview {
-    RowTitle(title: "Title")
-}
-
-#Preview {
-    RowTitle(title: "Title", fontDesign: .serif)
-}
-
 #Preview {
     AudiobookRow(title: "Title", small: true, audiobooks: .init(repeating: .fixture, count: 7))
 }

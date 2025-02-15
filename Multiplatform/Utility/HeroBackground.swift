@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-internal struct FullscreenBackground: View {
+struct HeroBackground: View {
     let threshold: CGFloat
     let backgroundColor: Color?
     
@@ -28,8 +28,12 @@ internal struct FullscreenBackground: View {
             Color.clear
                 .frame(width: 0, height: 0)
                 .onChange(of: offset) {
-                    withAnimation(.spring) {
-                        isToolbarVisible = offset < threshold
+                    let expected = offset < threshold
+                    
+                    if expected != isToolbarVisible {
+                        withAnimation(.spring) {
+                            isToolbarVisible = expected
+                        }
                     }
                 }
         }

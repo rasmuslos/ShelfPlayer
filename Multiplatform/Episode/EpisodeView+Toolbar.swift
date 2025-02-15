@@ -32,7 +32,7 @@ extension EpisodeView {
                         
                         if !isRegularPresentation {
                             ToolbarItem(placement: .navigation) {
-                                FullscreenBackButton(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: false)
+                                HeroBackButton()
                             }
                         }
                     }

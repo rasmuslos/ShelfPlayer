@@ -145,11 +145,11 @@ private struct Background: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
-                ItemImage(item: episode, size: .small, contrastConfiguration: nil)
+                ItemImage(item: episode, size: .tiny, contrastConfiguration: nil)
                     .frame(width: geometry.size.height)
                     .blur(radius: 15)
                 
-                ItemImage(item: episode, size: .tiny, contrastConfiguration: nil)
+                ItemImage(item: episode, size: .regular, contrastConfiguration: nil)
                     .frame(height: geometry.size.width)
                     .mask {
                         LinearGradient(colors: [.black, .black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
