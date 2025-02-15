@@ -239,9 +239,3 @@ public extension PersistenceManager.AuthorizationSubsystem {
         connections[id]
     }
 }
-
-extension RFNotification.Notification {
-    public static var connectionsChanged: Notification<[ItemIdentifier.ConnectionID: PersistenceManager.AuthorizationSubsystem.Connection]> {
-        .init("io.rfk.ShelfPlayer.connectionsChanged")
-    }
-}

@@ -38,7 +38,7 @@ extension EpisodeView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        DownloadButton(item: viewModel.episode, tint: false)
+                        DownloadButton(item: viewModel.episode, showProgress: true)
                             .labelStyle(.iconOnly)
                     }
                     
@@ -53,8 +53,8 @@ extension EpisodeView {
                             
                             Divider()
                             
-                            DownloadButton(item: viewModel.episode, tint: false)
-                            ProgressButton(item: viewModel.episode, tint: false)
+                            DownloadButton(item: viewModel.episode)
+                            ProgressButton(item: viewModel.episode)
                             ProgressResetButton(item: viewModel.episode)
                         } label: {
                             Label("more", systemImage: "ellipsis.circle")
