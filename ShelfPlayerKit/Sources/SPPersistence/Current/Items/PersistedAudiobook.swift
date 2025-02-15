@@ -15,7 +15,7 @@ extension SchemaV2 {
         #Index<PersistedAudiobook>([\._id], [\.name])
         #Unique<PersistedAudiobook>([\._id])
         
-        var _id: String
+        private(set) var _id: String
         
         private(set) var name: String
         private(set) var authors: [String]

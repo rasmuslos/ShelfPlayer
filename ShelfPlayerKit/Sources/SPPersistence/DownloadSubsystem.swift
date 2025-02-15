@@ -21,7 +21,7 @@ typealias PersistedAsset = SchemaV2.PersistedAsset
 extension PersistenceManager {
     @ModelActor
     public final actor DownloadSubsystem {
-        let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "DownloadSubsystem")
+        let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Download")
         
         var busyItemIDs = Set<ItemIdentifier>()
         
@@ -102,10 +102,6 @@ private extension PersistenceManager.DownloadSubsystem {
         await urlSession.tasks.2.first(where: { $0.taskIdentifier == identifier })
     }
     
-    func assets(for itemID: ItemIdentifier) throws -> [PersistedAsset] {
-        try modelContext.fetch(FetchDescriptor<PersistedAsset>(predicate: #Predicate { $0._itemID == itemID.description }))
-    }
-    
     func asset(for identifier: UUID) -> PersistedAsset? {
         var descriptor = FetchDescriptor<PersistedAsset>(predicate: #Predicate { $0.id == identifier })
         descriptor.fetchLimit = 1
@@ -117,6 +113,23 @@ private extension PersistenceManager.DownloadSubsystem {
         descriptor.fetchLimit = 1
         
         return (try? modelContext.fetch(descriptor))?.first
+    }
+    
+    func assets(for itemID: ItemIdentifier) throws -> [PersistedAsset] {
+        try modelContext.fetch(FetchDescriptor<PersistedAsset>(predicate: #Predicate { $0._itemID == itemID.description }))
+    }
+    func removeAssets(_ assets: [PersistedAsset]) async throws {
+        let tasks = await urlSession.allTasks
+        
+        for asset in assets {
+            if asset.isDownloaded {
+                try? FileManager.default.removeItem(at: asset.path)
+            } else if let taskID = asset.downloadTaskID {
+                tasks.first(where: { $0.taskIdentifier == taskID })?.cancel()
+            }
+            
+            modelContext.delete(asset)
+        }
     }
     
     func handleCompletion(taskIdentifier: Int) async {
@@ -141,7 +154,7 @@ private extension PersistenceManager.DownloadSubsystem {
         
         Task {
             if await status(of: asset.itemID) == .completed {
-                await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: asset.itemID), .completed)
+                try? await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: asset.itemID), .completed)
                 
                 let itemID = asset.itemID
                 await MainActor.run {
@@ -206,10 +219,10 @@ private extension PersistenceManager.DownloadSubsystem {
                 if failedAttempts > 3 {
                     
                 } else {
-                    await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID), failedAttempts + 1)
+                    try? await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID), failedAttempts + 1)
                 }
             } else {
-                await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID), 1)
+                try? await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID), 1)
             }
         }
         
@@ -312,7 +325,7 @@ private extension PersistenceManager.DownloadSubsystem {
         }
     }
     
-    func removeEmptyPodcasts() {
+    func removeEmptyPodcasts() async {
         guard let podcasts = try? modelContext.fetch(FetchDescriptor<PersistedPodcast>(predicate: #Predicate { $0.episodes.isEmpty })) else {
             return
         }
@@ -321,8 +334,14 @@ private extension PersistenceManager.DownloadSubsystem {
             modelContext.delete(podcast)
             
             let podcastID = podcast.id
-            Task {
-                await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: podcastID), nil)
+            
+            do {
+                let assets = try assets(for: podcastID)
+                
+                try await removeAssets(assets)
+                try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: podcastID), nil)
+            } catch {
+                logger.error("Error removing podcast \(podcastID): \(error)")
             }
         }
         
@@ -362,6 +381,10 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     
     func status(of itemID: ItemIdentifier) async -> DownloadStatus {
+        guard itemID.type == .audiobook || itemID.type == .episode else {
+            return .none
+        }
+        
         if let status = await PersistenceManager.shared.keyValue[.cachedDownloadStatus(itemID: itemID)] {
             return status
         }
@@ -370,7 +393,7 @@ public extension PersistenceManager.DownloadSubsystem {
             let assets = try assets(for: itemID)
             
             if assets.isEmpty {
-                await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), DownloadStatus.none)
+                try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), DownloadStatus.none)
                 return .none
             }
             
@@ -407,7 +430,7 @@ public extension PersistenceManager.DownloadSubsystem {
             return nil
         }
         
-        await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), path)
+        try? await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), path)
         return path
     }
     
@@ -429,121 +452,132 @@ public extension PersistenceManager.DownloadSubsystem {
         
         busyItemIDs.insert(itemID)
         
-        await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
-        
-        // Download progress completed = all assets downloaded to 100%
-        // Otherwise: 10% shared between pdfs
-        // Otherwise: 10% shared between images
-        // Otherwise: 80% shared between audio
-        
-        // Formula: category base * (1/n) where n = count of assets in category
-        
-        let (item, audioTracks, chapters, supplementaryPDFs) = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID)
-        
-        var podcast: PersistedPodcast?
-        
-        if let episode = item as? Episode {
-            podcast = persistedPodcast(for: episode.podcastID)
+        do {
+            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
             
-            if podcast == nil {
-                let podcastItem = try await ABSClient[itemID.connectionID].podcast(with: episode.podcastID).0
+            // Download progress completed = all assets downloaded to 100%
+            // Otherwise: 10% shared between pdfs
+            // Otherwise: 10% shared between images
+            // Otherwise: 80% shared between audio
+            
+            // Formula: category base * (1/n) where n = count of assets in category
+            
+            let (item, audioTracks, chapters, supplementaryPDFs) = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID)
+            
+            var podcast: PersistedPodcast?
+            
+            if let episode = item as? Episode {
+                podcast = persistedPodcast(for: episode.podcastID)
                 
-                podcast = .init(id: podcastItem.id,
-                                name: podcastItem.name,
-                                authors: podcastItem.authors,
-                                overview: podcastItem.description,
-                                genres: podcastItem.genres,
-                                addedAt: podcastItem.addedAt,
-                                released: podcastItem.released,
-                                explicit: podcastItem.explicit,
-                                publishingType: podcastItem.publishingType,
-                                episodes: [])
+                if podcast == nil {
+                    let podcastItem = try await ABSClient[itemID.connectionID].podcast(with: episode.podcastID).0
+                    
+                    podcast = .init(id: podcastItem.id,
+                                    name: podcastItem.name,
+                                    authors: podcastItem.authors,
+                                    overview: podcastItem.description,
+                                    genres: podcastItem.genres,
+                                    addedAt: podcastItem.addedAt,
+                                    released: podcastItem.released,
+                                    explicit: podcastItem.explicit,
+                                    publishingType: podcastItem.publishingType,
+                                    episodes: [])
+                    
+                    let podcastAssets = ItemIdentifier.CoverSize.allCases.map { PersistedAsset(itemID: podcastItem.id, fileType: .image(size: $0), progressWeight: 0) }
+                    
+                    for asset in podcastAssets {
+                        modelContext.insert(asset)
+                    }
+                    
+                    modelContext.insert(podcast!)
+                    try modelContext.save()
+                    
+                    logger.info("Created podcast \(podcast!.name) for episode \(episode.name)")
+                }
+            }
+            
+            var assets = [PersistedAsset]()
+            
+            let individualCoverWeight = 0.1 * (1 / Double(ItemIdentifier.CoverSize.allCases.count))
+            let individualPDFWeight = 0.1 * (1 / Double(supplementaryPDFs.count))
+            let individualAudioTrackWeight = 0.8 * (1 / Double(audioTracks.count))
+            
+            assets += ItemIdentifier.CoverSize.allCases.map { .init(itemID: itemID, fileType: .image(size: $0), progressWeight: individualCoverWeight) }
+            assets += supplementaryPDFs.map { .init(itemID: itemID, fileType: .pdf(name: $0.fileName, ino: $0.ino), progressWeight: individualPDFWeight) }
+            assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
+            
+            let model: any PersistentModel
+            
+            switch item {
+            case is Audiobook:
+                let audiobook = item as! Audiobook
+                model = PersistedAudiobook(id: itemID,
+                                           name: item.name,
+                                           authors: item.authors,
+                                           overview: item.description,
+                                           genres: item.genres,
+                                           addedAt: item.addedAt,
+                                           released: item.released,
+                                           size: item.size,
+                                           duration: item.duration,
+                                           subtitle: audiobook.subtitle,
+                                           narrators: audiobook.narrators,
+                                           series: audiobook.series,
+                                           explicit: audiobook.explicit,
+                                           abridged: audiobook.abridged)
+            case is Episode:
+                let episode = item as! Episode
                 
-                let podcastAssets = ItemIdentifier.CoverSize.allCases.map { PersistedAsset(itemID: podcastItem.id, fileType: .image(size: $0), progressWeight: 0) }
+                model = PersistedEpisode(id: itemID,
+                                         name: item.name,
+                                         authors: item.authors,
+                                         overview: item.description,
+                                         addedAt: item.addedAt,
+                                         released: item.released,
+                                         size: item.size,
+                                         duration: item.duration,
+                                         podcast: podcast!,
+                                         index: episode.index)
                 
-                for asset in podcastAssets {
+                podcast?.episodes.append(model as! PersistedEpisode)
+            default:
+                fatalError("Unsupported item type: \(type(of: item))")
+            }
+            
+            try modelContext.transaction {
+                for chapter in chapters {
+                    modelContext.insert(SchemaV2.PersistedChapter(id: .init(), itemID: itemID, name: chapter.title, start: chapter.startOffset, end: chapter.endOffset))
+                }
+                
+                for asset in assets {
                     modelContext.insert(asset)
                 }
                 
-                modelContext.insert(podcast!)
-                try modelContext.save()
-                
-                logger.info("Created podcast \(podcast!.name) for episode \(episode.name)")
+                modelContext.insert(model)
             }
-        }
-        
-        var assets = [PersistedAsset]()
-        
-        let individualCoverWeight = 0.1 * (1 / Double(ItemIdentifier.CoverSize.allCases.count))
-        let individualPDFWeight = 0.1 * (1 / Double(supplementaryPDFs.count))
-        let individualAudioTrackWeight = 0.8 * (1 / Double(audioTracks.count))
-        
-        assets += ItemIdentifier.CoverSize.allCases.map { .init(itemID: itemID, fileType: .image(size: $0), progressWeight: individualCoverWeight) }
-        assets += supplementaryPDFs.map { .init(itemID: itemID, fileType: .pdf(name: $0.fileName, ino: $0.ino), progressWeight: individualPDFWeight) }
-        assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
-        
-        let model: any PersistentModel
-        
-        switch item {
-        case is Audiobook:
-            let audiobook = item as! Audiobook
-            model = PersistedAudiobook(id: itemID,
-                                       name: item.name,
-                                       authors: item.authors,
-                                       overview: item.description,
-                                       genres: item.genres,
-                                       addedAt: item.addedAt,
-                                       released: item.released,
-                                       size: item.size,
-                                       duration: item.duration,
-                                       subtitle: audiobook.subtitle,
-                                       narrators: audiobook.narrators,
-                                       series: audiobook.series,
-                                       explicit: audiobook.explicit,
-                                       abridged: audiobook.abridged)
-        case is Episode:
-            let episode = item as! Episode
+            try modelContext.save()
             
-            model = PersistedEpisode(id: itemID,
-                                     name: item.name,
-                                     authors: item.authors,
-                                     overview: item.description,
-                                     addedAt: item.addedAt,
-                                     released: item.released,
-                                     size: item.size,
-                                     duration: item.duration,
-                                     podcast: podcast!,
-                                     index: episode.index)
+            busyItemIDs.remove(itemID)
             
-            podcast?.episodes.append(model as! PersistedEpisode)
-        default:
-            fatalError("Unsupported item type: \(type(of: item))")
-        }
-        
-        try modelContext.transaction {
-            for chapter in chapters {
-                modelContext.insert(SchemaV2.PersistedChapter(id: .init(), itemID: itemID, name: chapter.title, start: chapter.startOffset, end: chapter.endOffset))
+            logger.info("Created download for \(itemID)")
+            
+            await MainActor.run {
+                RFNotification[.downloadStatusChanged].send((itemID, .downloading))
             }
             
-            for asset in assets {
-                modelContext.insert(asset)
-            }
+            scheduleUpdateTask()
+        } catch {
+            logger.error("Error creating download: \(error)")
+            busyItemIDs.remove(itemID)
             
-            modelContext.insert(model)
+            throw error
         }
-        try modelContext.save()
-        
-        busyItemIDs.remove(itemID)
-        
-        logger.info("Created download for \(itemID)")
-        
-        await MainActor.run {
-            RFNotification[.downloadStatusChanged].send((itemID, .downloading))
-        }
-        
-        scheduleUpdateTask()
     }
     func remove(_ itemID: ItemIdentifier) async throws {
+        if itemID.type == .podcast {
+            // TODO:
+        }
+        
         guard itemID.type == .audiobook || itemID.type == .episode else {
             throw PersistenceError.unsupportedDownloadItemType
         }
@@ -552,47 +586,42 @@ public extension PersistenceManager.DownloadSubsystem {
             throw PersistenceError.busy
         }
         
-        if itemID.type == .podcast {
-            // TODO: this
-        }
+        busyItemIDs.insert(itemID)
         
-        let assets = try assets(for: itemID)
-        
-        guard !assets.isEmpty else {
-            busyItemIDs.remove(itemID)
-            throw PersistenceError.missing
-        }
-        
-        let tasks = await urlSession.allTasks
-        
-        for asset in assets {
-            if asset.isDownloaded {
-                try FileManager.default.removeItem(at: asset.path)
-            } else if let taskID = asset.downloadTaskID {
-                tasks.first(where: { $0.taskIdentifier == taskID })?.cancel()
+        do {
+            let assets = try assets(for: itemID)
+            
+            guard !assets.isEmpty else {
+                throw PersistenceError.missing
             }
             
-            await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: asset.id), nil)
-            modelContext.delete(asset)
+            try await removeAssets(assets)
+            
+            try await PersistenceManager.shared.keyValue.bulkDelete(keys: assets.map { .assetFailedAttempts(assetID: $0.id) })
+            
+            try modelContext.delete(model: SchemaV2.PersistedChapter.self, where: #Predicate { $0._itemID == itemID.description })
+            
+            let model: any PersistentModel = persistedAudiobook(for: itemID) ?? persistedEpisode(for: itemID)!
+            modelContext.delete(model)
+            
+            try modelContext.save()
+            
+            try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), nil)
+            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
+            
+            await MainActor.run {
+                RFNotification[.downloadStatusChanged].send((itemID, .none))
+            }
+            
+            busyItemIDs.remove(itemID)
+            
+            await removeEmptyPodcasts()
+        } catch {
+            logger.error("Error removing download: \(error)")
+            busyItemIDs.remove(itemID)
+            
+            throw error
         }
-        
-        try modelContext.delete(model: SchemaV2.PersistedChapter.self)
-        
-        let model: any PersistentModel = persistedAudiobook(for: itemID) ?? persistedEpisode(for: itemID)!
-        modelContext.delete(model)
-        
-        try modelContext.save()
-        
-        await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), nil)
-        await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
-        
-        await MainActor.run {
-            RFNotification[.downloadStatusChanged].send((itemID, .none))
-        }
-        
-        busyItemIDs.remove(itemID)
-        
-        removeEmptyPodcasts()
     }
 }
 

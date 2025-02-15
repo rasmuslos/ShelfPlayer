@@ -19,14 +19,14 @@ extension PersistenceManager {
                 }
                 
                 let configuration = PodcastAutoDownloadConfiguration(itemID: id, enabled: false, amount: 5, enableNotifications: false)
-                await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(id), configuration)
+                try? await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(id), configuration)
                 
                 return configuration
             }
         }
         
-        public func set(_ id: ItemIdentifier, _ configuration: PodcastAutoDownloadConfiguration) async {
-            await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(id), configuration)
+        public func set(_ id: ItemIdentifier, _ configuration: PodcastAutoDownloadConfiguration) async throws {
+            try await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(id), configuration)
         }
         
         public struct PodcastAutoDownloadConfiguration: Codable, Sendable {

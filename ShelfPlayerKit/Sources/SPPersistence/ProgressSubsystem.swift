@@ -281,7 +281,7 @@ public extension PersistenceManager.ProgressSubsystem {
             
             for (connectionID, ids) in Dictionary(hiddenIDs.map { ($0.0, [$0.1]) }, uniquingKeysWith: +) {
                 logger.info("\(ids.count) progress entities hidden from Continue Listening for connection \(connectionID)")
-                await PersistenceManager.shared.keyValue.set(.hideFromContinueListening(connectionID: connectionID), .init(ids))
+                try await PersistenceManager.shared.keyValue.set(.hideFromContinueListening(connectionID: connectionID), .init(ids))
             }
             
             signposter.emitEvent("transaction", id: signpostID)

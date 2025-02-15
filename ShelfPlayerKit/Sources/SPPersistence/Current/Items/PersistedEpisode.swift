@@ -15,7 +15,7 @@ extension SchemaV2 {
         #Index<PersistedEpisode>([\._id], [\.name])
         #Unique<PersistedEpisode>([\._id])
         
-        var _id: String
+        private(set) var _id: String
         
         private(set) var name: String
         private(set) var authors: [String]
