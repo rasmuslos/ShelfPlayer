@@ -82,7 +82,7 @@ extension AudiobookView {
                             }
                         }
                         
-                        DownloadButton(item: viewModel.audiobook, tint: false)
+                        DownloadButton(item: viewModel.audiobook, showProgress: true)
                             .labelStyle(.iconOnly)
                         
                         Menu {
@@ -96,8 +96,8 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            DownloadButton(item: viewModel.audiobook, tint: false)
-                            ProgressButton(item: viewModel.audiobook, tint: false)
+                            DownloadButton(item: viewModel.audiobook)
+                            ProgressButton(item: viewModel.audiobook)
                             
                             ProgressResetButton(item: viewModel.audiobook)
                         } label: {

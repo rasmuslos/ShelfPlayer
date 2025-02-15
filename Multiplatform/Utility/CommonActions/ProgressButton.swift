@@ -11,7 +11,8 @@ import SPPersistence
 
 struct ProgressButton: View {
     let item: PlayableItem
-    let tint: Bool
+    
+    var tint = false
     
     @State private var isLoading = false
     @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
@@ -21,7 +22,7 @@ struct ProgressButton: View {
     
     @ViewBuilder
     private var markAsFinishedButton: some View {
-        Button("progress.finished.set", systemImage: "checkmark.circle") {
+        Button("progress.finished.set", systemImage: "checkmark.square") {
             Task {
                 isLoading = true
                 
@@ -53,7 +54,7 @@ struct ProgressButton: View {
                 isLoading = false
             }
         } label: {
-            Label("progress.finished.unset", systemImage: "minus.circle")
+            Label("progress.finished.unset", systemImage: "minus.square")
             
             if let finishedAt = progressEntity?.finishedAt {
                 Text("finished.ago") + Text(finishedAt, style: .relative)

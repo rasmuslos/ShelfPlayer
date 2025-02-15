@@ -44,8 +44,8 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ProgressButton(item: episode, tint: false)
-                DownloadButton(item: episode, tint: false)
+                ProgressButton(item: episode)
+                DownloadButton(item: episode)
             } preview: {
                 Preview(episode: episode)
             }

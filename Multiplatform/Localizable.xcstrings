@@ -351,9 +351,6 @@
         }
       }
     },
-    "abc" : {
-
-    },
     "abridged" : {
       "localizations" : {
         "de" : {
@@ -2860,6 +2857,9 @@
         }
       }
     },
+    "download.cancel" : {
+
+    },
     "download.loading" : {
 
     },
@@ -2919,9 +2919,6 @@
           }
         }
       }
-    },
-    "download.working" : {
-
     },
     "downloaded" : {
       "comment" : "Unclear if it's \"an item was downloaded\" or \"a downloaded item\"",

@@ -74,7 +74,7 @@ extension PersistenceManager {
     }
 }
 
-extension PersistenceManager.DownloadSubsystem {
+private extension PersistenceManager.DownloadSubsystem {
     var nextAsset: (UUID, ItemIdentifier, PersistedAsset.FileType)? {
         var descriptor = FetchDescriptor<PersistedAsset>(predicate: #Predicate { $0.isDownloaded == false && $0.downloadTaskID == nil })
         descriptor.fetchLimit = 1
@@ -153,6 +153,20 @@ extension PersistenceManager.DownloadSubsystem {
         scheduleUpdateTask()
     }
     
+    func reportProgress(taskID: Int, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        guard let asset = asset(taskIdentifier: taskID) else {
+            return
+        }
+        
+        let id = asset.id
+        let itemID = asset.itemID
+        let progressWeight = asset.progressWeight
+        
+        Task { @MainActor in
+            RFNotification[.downloadProgressChanged(itemID)].send((id, progressWeight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite))
+        }
+    }
+    
     func beganDownloading(assetID: UUID, taskID: Int) throws {
         guard let asset = asset(for: assetID) else {
             throw PersistenceError.missing
@@ -223,6 +237,8 @@ extension PersistenceManager.DownloadSubsystem {
         
         try modelContext.save()
         
+        logger.info("Finished downloading asset \(asset.id) for \(asset.itemID)")
+        
         scheduleUpdateTask()
     }
     
@@ -272,6 +288,8 @@ extension PersistenceManager.DownloadSubsystem {
         case .image(let size):
             guard let coverRequest = try? await ABSClient[itemID.connectionID].coverRequest(from: itemID, width: size.width) else {
                 try await finishedDownloading(assetID: id)
+                scheduleUpdateTask()
+                
                 return
             }
             
@@ -359,6 +377,9 @@ public extension PersistenceManager.DownloadSubsystem {
         } catch {}
         
         return .none
+    }
+    func downloadProgress(of itemID: ItemIdentifier) -> Percentage {
+        (try? assets(for: itemID).filter { $0.isDownloaded }.reduce(0) { $0 + $1.progressWeight }) ?? 0
     }
     
     func cover(for itemID: ItemIdentifier, size: ItemIdentifier.CoverSize) async -> URL? {
@@ -590,7 +611,10 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        print(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
+        Task {
+            await PersistenceManager.shared.download.reportProgress(taskID: downloadTask.taskIdentifier, bytesWritten: bytesWritten, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
+        }
+        
     }
     
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
