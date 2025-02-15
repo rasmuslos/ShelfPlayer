@@ -23,6 +23,8 @@ extension PersistenceManager {
     public final actor DownloadSubsystem {
         let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "DownloadSubsystem")
         
+        var busyItemIDs = Set<ItemIdentifier>()
+        
         nonisolated(unsafe) var updateTask: Task<Void, Never>?
         
         private nonisolated lazy var urlSession: URLSession = {
@@ -283,7 +285,7 @@ private extension PersistenceManager.DownloadSubsystem {
         let request: URLRequest
         
         switch fileType {
-        case .pdf(let ino):
+        case .pdf(_, let ino):
             request = try await ABSClient[itemID.connectionID].pdfRequest(from: itemID, ino: ino)
         case .image(let size):
             guard let coverRequest = try? await ABSClient[itemID.connectionID].coverRequest(from: itemID, width: size.width) else {
@@ -421,6 +423,12 @@ public extension PersistenceManager.DownloadSubsystem {
             throw PersistenceError.existing
         }
         
+        guard !busyItemIDs.contains(itemID) else {
+            throw PersistenceError.busy
+        }
+        
+        busyItemIDs.insert(itemID)
+        
         await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
         
         // Download progress completed = all assets downloaded to 100%
@@ -471,7 +479,7 @@ public extension PersistenceManager.DownloadSubsystem {
         let individualAudioTrackWeight = 0.8 * (1 / Double(audioTracks.count))
         
         assets += ItemIdentifier.CoverSize.allCases.map { .init(itemID: itemID, fileType: .image(size: $0), progressWeight: individualCoverWeight) }
-        assets += supplementaryPDFs.map { .init(itemID: itemID, fileType: .pdf(ino: $0.ino), progressWeight: individualPDFWeight) }
+        assets += supplementaryPDFs.map { .init(itemID: itemID, fileType: .pdf(name: $0.fileName, ino: $0.ino), progressWeight: individualPDFWeight) }
         assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
         
         let model: any PersistentModel
@@ -525,6 +533,8 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         try modelContext.save()
         
+        busyItemIDs.remove(itemID)
+        
         logger.info("Created download for \(itemID)")
         
         await MainActor.run {
@@ -538,6 +548,10 @@ public extension PersistenceManager.DownloadSubsystem {
             throw PersistenceError.unsupportedDownloadItemType
         }
         
+        guard !busyItemIDs.contains(itemID) else {
+            throw PersistenceError.busy
+        }
+        
         if itemID.type == .podcast {
             // TODO: this
         }
@@ -545,6 +559,7 @@ public extension PersistenceManager.DownloadSubsystem {
         let assets = try assets(for: itemID)
         
         guard !assets.isEmpty else {
+            busyItemIDs.remove(itemID)
             throw PersistenceError.missing
         }
         
@@ -574,6 +589,8 @@ public extension PersistenceManager.DownloadSubsystem {
         await MainActor.run {
             RFNotification[.downloadStatusChanged].send((itemID, .none))
         }
+        
+        busyItemIDs.remove(itemID)
         
         removeEmptyPodcasts()
     }
