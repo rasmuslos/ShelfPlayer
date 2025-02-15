@@ -42,6 +42,17 @@ extension SchemaV2 {
         var itemID: ItemIdentifier {
             .init(_itemID)
         }
+        
+        var fileExtension: String {
+            switch fileType {
+            case .audio(_, _,_ , let fileExtension):
+                fileExtension
+            case .pdf:
+                "pdf"
+            case .image:
+                "png"
+            }
+        }
         var path: URL {
             var base: URL
             
@@ -57,21 +68,14 @@ extension SchemaV2 {
             
             try! FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
             
-            switch fileType {
-            case .audio(_, _, let ino, let fileExtension):
-                base.append(path: "\(ino).\(fileExtension)")
-            case .pdf(let ino):
-                base.append(path: "\(ino).pdf")
-            case .image(let size):
-                base.append(path: "\(size).png")
-            }
+            base.append(path: "\(id).\(fileExtension)")
             
             return base
         }
         
         enum FileType: Codable {
             case audio(offset: TimeInterval, duration: TimeInterval, ino: String, fileExtension: String)
-            case pdf(ino: String)
+            case pdf(name: String, ino: String)
             case image(size: ItemIdentifier.CoverSize)
         }
     }

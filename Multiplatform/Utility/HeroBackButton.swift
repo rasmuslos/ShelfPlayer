@@ -7,11 +7,8 @@
 
 import SwiftUI
 
-internal struct FullscreenBackButton: View {
+struct HeroBackButton: View {
     @Environment(\.presentationMode) private var presentationMode
-    
-    var isLight: Bool? = nil
-    let isToolbarVisible: Bool
     
     var body: some View {
         if presentationMode.wrappedValue.isPresented {

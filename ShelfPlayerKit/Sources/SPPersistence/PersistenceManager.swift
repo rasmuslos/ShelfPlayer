@@ -46,6 +46,8 @@ enum PersistenceError: Error {
     case missing
     case existing
     
+    case busy
+    
     case unsupportedDownloadItemType
     
     case serverNotFound

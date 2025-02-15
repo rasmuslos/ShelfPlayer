@@ -47,7 +47,7 @@ extension PodcastView {
                 .toolbar {
                     if !viewModel.isToolbarVisible && !isRegularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(isLight: viewModel.dominantColor?.isLight, isToolbarVisible: viewModel.isToolbarVisible)
+                            HeroBackButton()
                         }
                     }
                 }

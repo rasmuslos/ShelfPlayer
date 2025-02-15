@@ -56,7 +56,7 @@ extension AudiobookView {
                 .toolbar {
                     if !viewModel.toolbarVisible && !regularPresentation {
                         ToolbarItem(placement: .navigation) {
-                            FullscreenBackButton(isToolbarVisible: viewModel.toolbarVisible)
+                            HeroBackButton()
                         }
                     }
                 }
