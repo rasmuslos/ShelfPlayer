@@ -132,6 +132,7 @@ struct DownloadButton: View {
                 }
             }
         }
+        .animation(.smooth, value: current)
         .sensoryFeedback(.error, trigger: notifyError)
         .sensoryFeedback(.success, trigger: notifySuccess)
         .task {

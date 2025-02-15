@@ -17,7 +17,7 @@ extension SchemaV2 {
         
         @Attribute(.unique)
         private(set) var id: UUID
-        private var _itemID: String
+        private(set) var _itemID: String
         
         private(set) var name: String
         

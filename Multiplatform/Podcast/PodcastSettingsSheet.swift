@@ -14,10 +14,12 @@ struct PodcastSettingsSheet: View {
     
     let podcastID: ItemIdentifier
     
-    @State private var loading = false
-    
     @State private var configuration: PodcastAutoDownloadConfigurationShadow?
     @State private var notificationPermission: UNAuthorizationStatus? = nil
+    
+    @State private var loading = false
+    @State private var notifyError = false
+    @State private var notifySuccess = false
     
     var body: some View {
         NavigationStack {
@@ -71,6 +73,8 @@ struct PodcastSettingsSheet: View {
                 .disabled(loading)
                 .navigationTitle("podcast.settings.title")
                 .navigationBarTitleDisplayMode(.inline)
+                .sensoryFeedback(.error, trigger: notifyError)
+                .sensoryFeedback(.success, trigger: notifySuccess)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         if loading {
@@ -79,7 +83,19 @@ struct PodcastSettingsSheet: View {
                             Button("save") {
                                 Task {
                                     loading = true
-                                    await PersistenceManager.shared.podcasts.set(podcastID, configuration.materialized)
+                                    
+                                    do {
+                                        try await PersistenceManager.shared.podcasts.set(podcastID, configuration.materialized)
+                                        
+                                        await MainActor.run {
+                                            notifySuccess.toggle()
+                                        }
+                                    } catch {
+                                        await MainActor.run {
+                                            notifyError.toggle()
+                                        }
+                                    }
+                                    
                                     loading = false
                                     
                                     dismiss()
