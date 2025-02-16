@@ -1,8 +1,8 @@
 //
-//  ProgressIndicator.swift
-//  iOS
+//  CircularProgressIndicator.swift
+//  Multiplatform
 //
-//  Created by Rasmus Krämer on 03.02.24.
+//  Created by Rasmus Krämer on 16.02.25.
 //
 
 import SwiftUI
@@ -10,39 +10,21 @@ import Defaults
 import ShelfPlayerKit
 
 struct CircularProgressIndicator: View {
-    @Default(.tintColor) private var tintColor
+    let completed: Percentage
     
-    let entity: ProgressEntity.UpdatingProgressEntity
+    let background: Color
+    let tint: Color
     
     var body: some View {
-        if entity.progress < 0 {
-            EmptyView()
-        } else {
-            ZStack {
-                if entity.isFinished {
-                    Circle()
-                        .fill(Color.accentColor.quaternary)
-                    
-                    Label("progress.completed", systemImage: "checkmark")
-                        .labelStyle(.iconOnly)
-                        .font(.caption)
-                        .foregroundStyle(tintColor.accent)
-                } else {
-                    Circle()
-                        .fill(Color.accentColor.quaternary)
-                        .stroke(Color.accentColor.secondary, lineWidth: 1)
-                    
-                    GeometryReader { proxy in
-                        Circle()
-                            .inset(by: proxy.size.width / 4)
-                            .trim(from: 0, to: CGFloat(entity.progress))
-                            .stroke(tintColor.accent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
-                            .rotationEffect(.degrees(-90))
-                            .animation(.spring, value: entity.progress)
-                    }
-                    .padding(2)
-                }
-            }
+        ZStack {
+            Circle()
+                .trim(from: CGFloat(completed), to: 360 - CGFloat(completed))
+                .stroke(background, lineWidth: 3)
+            
+            Circle()
+                .trim(from: 0, to: CGFloat(completed))
+                .stroke(tint, style: .init(lineWidth: 3, lineCap: .round))
         }
+        .rotationEffect(.degrees(-90))
     }
 }

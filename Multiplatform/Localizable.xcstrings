@@ -2922,7 +2922,6 @@
     },
     "downloaded" : {
       "comment" : "Unclear if it's \"an item was downloaded\" or \"a downloaded item\"",
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

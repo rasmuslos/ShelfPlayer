@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import Defaults
+import RFNotifications
 import SPFoundation
 import SPPersistence
 
@@ -17,11 +18,23 @@ struct StatusOverlay: View {
     
     let item: PlayableItem
     
-    @State private var offlineTracker: DownloadTracker?
-    @State private var entity: ProgressEntity.UpdatingProgressEntity? = nil
+    @State private var progressEntity: ProgressEntity.UpdatingProgressEntity? = nil
+    @State private var downloadStatus: PersistenceManager.DownloadSubsystem.DownloadStatus? = nil
+    
+    private var showTriangle: Bool {
+        if downloadStatus == .downloading {
+            return true
+        }
+        
+        if let progressEntity {
+            return progressEntity.progress > 0
+        }
+        
+        return false
+    }
     
     var body: some View {
-        if let entity {
+        if let progressEntity {
             GeometryReader { geometry in
                 let size = geometry.size.width / 2.5
                 let fontSize = size * 0.23
@@ -29,29 +42,21 @@ struct StatusOverlay: View {
                 HStack(alignment: .top, spacing: 0) {
                     Spacer()
                     
-                    if entity.progress > 0 {
+                    if showTriangle {
                         ZStack {
                             Triangle()
-                                // .foregroundStyle(offlineTracker?.status == .downloaded && Defaults[.tintColor] != .purple ? tintColor.accent : Color.accentColor)
-                                .foregroundStyle(.accent)
+                                .foregroundStyle(downloadStatus == PersistenceManager.DownloadSubsystem.DownloadStatus.none ? Defaults[.tintColor].color : Defaults[.tintColor].accent)
                                 .overlay(alignment: .topTrailing) {
                                     Group {
-                                        if entity.progress < 1 {
+                                        if downloadStatus == .downloading {
+                                            DownloadButton(item: item, progressVisibility: .triangle)
+                                        } else if progressEntity.progress < 1 {
                                             if itemImageStatusPercentageText {
-                                                Text(verbatim: "\(Int(entity.progress * 100))")
+                                                Text(verbatim: "\(Int(progressEntity.progress * 100))")
                                                     .font(.system(size: fontSize))
                                                     .fontWeight(.heavy)
                                             } else {
-                                                ZStack {
-                                                    Circle()
-                                                        .trim(from: CGFloat(entity.progress), to: 360 - CGFloat(entity.progress))
-                                                        .stroke(Color.white.opacity(0.3), lineWidth: 3)
-                                                    
-                                                    Circle()
-                                                        .trim(from: 0, to: CGFloat(entity.progress))
-                                                        .stroke(Color.white, style: .init(lineWidth: 3, lineCap: .round))
-                                                }
-                                                .rotationEffect(.degrees(-90))
+                                                CircularProgressIndicator(completed: progressEntity.progress, background: .white.opacity(0.3), tint: .white)
                                             }
                                         } else {
                                             Label("finished", systemImage: "checkmark")
@@ -66,17 +71,21 @@ struct StatusOverlay: View {
                                 }
                         }
                         .frame(width: size, height: size)
+                    } else if downloadStatus == .completed {
+                        Label("downloaded", systemImage: "arrow.down.circle.fill")
+                            .labelStyle(.iconOnly)
+                            .font(.system(size: fontSize))
+                            .foregroundStyle(.ultraThickMaterial)
+                            .padding(size / 7)
                     }
-                    /*
-                     else if offlineTracker?.status == .downloaded {
-                     Label("downloaded", systemImage: "arrow.down.circle.fill")
-                     .labelStyle(.iconOnly)
-                     .font(.caption)
-                     .foregroundStyle(.ultraThickMaterial)
-                     .padding(4)
-                     }
-                     */
                 }
+            }
+            .onReceive(RFNotification[.downloadStatusChanged].publisher()) { (itemID, status) in
+                guard itemID == item.id else {
+                    return
+                }
+                
+                self.downloadStatus = status
             }
         } else {
             Color.clear
@@ -89,10 +98,12 @@ struct StatusOverlay: View {
     
     private nonisolated func load() {
         Task {
-            let entity = await PersistenceManager.shared.progress[item.id]
+            let progressEntity = await PersistenceManager.shared.progress[item.id]
+            let downloadStatus = await PersistenceManager.shared.download.status(of: item.id)
             
             await MainActor.withAnimation {
-                self.entity = entity.updating
+                self.progressEntity = progressEntity.updating
+                self.downloadStatus = downloadStatus
             }
         }
     }
