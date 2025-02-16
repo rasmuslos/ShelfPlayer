@@ -82,7 +82,7 @@ extension AudiobookView {
                             }
                         }
                         
-                        DownloadButton(item: viewModel.audiobook, showProgress: true)
+                        DownloadButton(item: viewModel.audiobook, progressVisibility: .toolbar)
                             .labelStyle(.iconOnly)
                         
                         Menu {

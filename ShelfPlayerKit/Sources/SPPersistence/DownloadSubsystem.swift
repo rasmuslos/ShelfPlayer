@@ -142,12 +142,7 @@ private extension PersistenceManager.DownloadSubsystem {
         
         do {
             try FileManager.default.moveItem(at: current, to: asset.path)
-            
-            try modelContext.transaction {
-                asset.downloadTaskID = nil
-                asset.isDownloaded = true
-            }
-            try modelContext.save()
+            try finishedDownloading(asset: asset)
         } catch {
             assetDownloadFailed(taskIdentifier: taskIdentifier)
         }
@@ -164,8 +159,6 @@ private extension PersistenceManager.DownloadSubsystem {
                 logger.info("Cached download status for item \(asset.itemID)")
             }
         }
-        
-        scheduleUpdateTask()
     }
     
     func reportProgress(taskID: Int, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {

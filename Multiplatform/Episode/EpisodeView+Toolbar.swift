@@ -38,7 +38,7 @@ extension EpisodeView {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        DownloadButton(item: viewModel.episode, showProgress: true)
+                        DownloadButton(item: viewModel.episode, progressVisibility: .toolbar)
                             .labelStyle(.iconOnly)
                     }
                     
