@@ -13,7 +13,8 @@ struct DownloadButton: View {
     let item: PlayableItem
     
     var tint = false
-    var showProgress = false
+    var progressVisibility = ProgressVisibility.never
+    var isPercentageTextVisible = false
     
     @State private var isWorking = false
     
@@ -26,22 +27,7 @@ struct DownloadButton: View {
     @State private var notifyError = false
     @State private var notifySuccess = false
     
-    private var isLoading: Bool {
-        if isWorking {
-            return true
-        }
-        
-        guard let status else {
-            return true
-        }
-        
-        if status == .downloading {
-            return baseProgress == nil
-        }
-        
-        return false
-    }
-    var current: Percentage? {
+    private var current: Percentage? {
         guard let baseProgress else {
             return nil
         }
@@ -64,6 +50,20 @@ struct DownloadButton: View {
         }
         
         return result
+    }
+    private var text: Percentage? {
+        guard isPercentageTextVisible else {
+            return nil
+        }
+        
+        if let current {
+            return current
+        }
+        if status == .completed {
+            return 1
+        }
+        
+        return 0
     }
     
     private var label: LocalizedStringKey {
@@ -95,10 +95,44 @@ struct DownloadButton: View {
         }
     }
     
+    private var progressBackgroundColor: Color {
+        if progressVisibility == .triangle {
+            .white.opacity(0.3)
+        } else {
+            .gray.opacity(0.5)
+        }
+    }
+    private var progressTintColor: Color {
+        if progressVisibility == .triangle {
+            .white
+        } else {
+            .accentColor
+        }
+    }
+    
+    private var isLoading: Bool {
+        if isWorking {
+            return true
+        }
+        
+        guard let status else {
+            return true
+        }
+        
+        if status == .downloading {
+            return baseProgress == nil
+        }
+        
+        return false
+    }
+    
     var body: some View {
         Group {
-            if isLoading && showProgress {
+            if isLoading && progressVisibility != .never {
                 ProgressIndicator()
+            } else if let text {
+                Text(text, format: .percent.notation(.compactName))
+                    .contentTransition(.numericText())
             } else {
                 Button {
                     if status == PersistenceManager.DownloadSubsystem.DownloadStatus.none {
@@ -108,16 +142,15 @@ struct DownloadButton: View {
                     }
                 } label: {
                     if let current {
-                        ZStack {
-                            Circle()
-                                .stroke(Color.gray.opacity(0.5), lineWidth: 4)
-                            
-                            Circle()
-                                .trim(from: 0, to: current)
-                                .stroke(Color.accentColor, style: .init(lineWidth: 4, lineCap: .round))
-                                .rotationEffect(.degrees(-90))
-                        }
-                        .frame(width: 16)
+                        CircularProgressIndicator(completed: current, background: progressBackgroundColor, tint: progressTintColor)
+                            .modify {
+                                if progressVisibility == .toolbar {
+                                    $0
+                                        .frame(width: 18)
+                                } else {
+                                    $0
+                                }
+                            }
                     } else {
                         Label(label, systemImage: icon)
                             .modify {
@@ -148,12 +181,12 @@ struct DownloadButton: View {
                 return
             }
             
-            if showProgress {
+            if progressVisibility != .never {
                 loadProgress()
             }
         }
         .onReceive(RFNotification[.downloadProgressChanged(item.id)].publisher()) { (assetID, weight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
-            guard showProgress else {
+            guard progressVisibility != .never else {
                 return
             }
             
@@ -172,6 +205,12 @@ struct DownloadButton: View {
             
             self.status = status
         }
+    }
+    
+    enum ProgressVisibility {
+        case never
+        case toolbar
+        case triangle
     }
 }
 
