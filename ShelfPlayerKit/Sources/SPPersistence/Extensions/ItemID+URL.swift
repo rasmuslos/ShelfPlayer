@@ -14,7 +14,8 @@ public extension ItemIdentifier {
             guard let connection = await PersistenceManager.shared.authorization[connectionID] else {
                 throw PersistenceError.serverNotFound
             }
-            var base = connection.host
+            
+            let base = connection.host
             
             switch type {
             case .author:
