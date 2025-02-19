@@ -18,8 +18,6 @@ extension PersistenceManager {
         private let logger = Logger(subsystem: "SatelliteGuardKit", category: "KeyValue")
         
         public subscript<Value: Codable>(_ key: Key<Value>) -> Value? {
-            let identifier = key.identifier
-            
             guard let entity = entity(for: key) else {
                 return nil
             }

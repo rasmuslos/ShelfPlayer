@@ -78,6 +78,9 @@ public extension Defaults.Keys {
     static func episodesFilter(_ itemID: ItemIdentifier) -> Defaults.Key<ItemFilter> {
         .init("episodes-filter-\(itemID.groupingID ?? itemID.primaryID)", default: .notFinished)
     }
+    static func episodesSeasonFilter(_ itemID: ItemIdentifier) -> Defaults.Key<String?> {
+        .init("episodes-season-filter-\(itemID.groupingID ?? itemID.primaryID)", default: nil)
+    }
     
     static let podcastsAscending = Key("podcastsAscending", default: true, iCloud: true)
     static let podcastsSortOrder = Key<PodcastSortOrder>("podcastsSortOrder", default: .name, iCloud: true)

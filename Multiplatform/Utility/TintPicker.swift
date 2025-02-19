@@ -12,7 +12,7 @@ struct TintPicker: View {
     @Default(.tintColor) private var tintColor
     
     var body: some View {
-        Picker(selection: $tintColor) {
+        Picker("account.tint", systemImage: "circle.dashed", selection: $tintColor) {
             Row(tint: .shelfPlayer)
             
             Divider()
@@ -20,8 +20,6 @@ struct TintPicker: View {
             ForEach(TintColor.allCases.filter { $0 != .shelfPlayer }) {
                 Row(tint: $0)
             }
-        } label: {
-            Label("account.tint", systemImage: "circle.dashed")
         }
     }
     
@@ -31,15 +29,13 @@ struct TintPicker: View {
         let tint: TintPicker.TintColor
         
         var body: some View {
-            Button {
+            Button(tint.title, systemImage: "circle.fill") {
                 Defaults[.tintColor] = tint
-            } label: {
-                Label(tint.title, systemImage: "circle.fill")
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(tint.color)
             }
             .buttonStyle(.plain)
             .tag(tint)
+            .foregroundStyle(tint.color)
+            .symbolRenderingMode(.palette)
         }
     }
     

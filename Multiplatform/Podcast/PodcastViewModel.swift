@@ -19,13 +19,6 @@ final class PodcastViewModel {
     private(set) var episodes: [Episode]
     private(set) var visible: [Episode]
     
-    var filter: ItemFilter {
-        didSet {
-            Defaults[.episodesFilter(podcast.id)] = filter
-            updateVisible()
-        }
-    }
-    
     var ascending: Bool {
         didSet {
             Defaults[.episodesAscending(podcast.id)] = ascending
@@ -35,6 +28,19 @@ final class PodcastViewModel {
     var sortOrder: EpisodeSortOrder {
         didSet {
             Defaults[.episodesSortOrder(podcast.id)] = sortOrder
+            updateVisible()
+        }
+    }
+    
+    var filter: ItemFilter {
+        didSet {
+            Defaults[.episodesFilter(podcast.id)] = filter
+            updateVisible()
+        }
+    }
+    var seasonFilter: String? {
+        didSet {
+            Defaults[.episodesSeasonFilter(podcast.id)] = seasonFilter
             updateVisible()
         }
     }
@@ -55,10 +61,11 @@ final class PodcastViewModel {
         self.episodes = episodes
         visible = []
         
-        filter = Defaults[.episodesFilter(podcast.id)]
-        
         ascending = Defaults[.episodesAscending(podcast.id)]
         sortOrder = Defaults[.episodesSortOrder(podcast.id)]
+        
+        filter = Defaults[.episodesFilter(podcast.id)]
+        seasonFilter = Defaults[.episodesSeasonFilter(podcast.id)]
         
         isToolbarVisible = false
         settingsSheetPresented = false
@@ -87,6 +94,35 @@ extension PodcastViewModel {
         return episodes.count
     }
     
+    var seasons: [String] {
+        var seasons = Set<String>()
+        
+        for episode in episodes where episode.index.season != nil {
+            seasons.insert(episode.index.season!)
+        }
+        
+        if let seasonFilter, !seasons.contains(seasonFilter) {
+            self.seasonFilter = nil
+        }
+        
+        guard seasons.count > 1 else {
+            self.seasonFilter = nil
+            return []
+        }
+        
+        return seasons.sorted {
+            $0.localizedStandardCompare($1) == .orderedAscending
+        }
+    }
+    
+    func seasonLabel(of season: String) -> String {
+        if let number = Int(season) {
+            return String(localized: "season \(number)")
+        }
+        
+        return season
+    }
+    
     nonisolated func load() {
         Task {
             await withTaskGroup(of: Void.self) {
@@ -103,6 +139,10 @@ private extension PodcastViewModel {
     nonisolated func updateVisible() {
         Task {
             var episodes = await episodes
+            
+            if let seasonFilter = await seasonFilter {
+                episodes = episodes.filter { $0.index.season == seasonFilter }
+            }
             
             // MARK: Filter
             
