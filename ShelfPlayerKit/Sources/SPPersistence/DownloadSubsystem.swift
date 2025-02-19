@@ -278,7 +278,7 @@ private extension PersistenceManager.DownloadSubsystem {
         }
         
         guard activeTaskCount < 2 else {
-            logger.info("There are \(activeTaskCount) active downloads. Skipping...")
+            logger.info("There are \(activeTaskCount) active downloads. Skipping.")
             return
         }
         
@@ -353,13 +353,19 @@ private extension PersistenceManager.DownloadSubsystem {
 public extension PersistenceManager.DownloadSubsystem {
     subscript(itemID: ItemIdentifier) -> Item? {
         switch itemID.type {
-        // case .audiobook:
-            // persistedAudiobook(for: itemID)
-        // case .episode:
-            // persistedEpisode(for: itemID)
+        case .audiobook:
+            if let audiobook = persistedAudiobook(for: itemID) {
+                return Audiobook(downloaded: audiobook)
+            }
+        case .episode:
+            if let episode = persistedEpisode(for: itemID) {
+                return Episode(downloaded: episode)
+            }
         default:
-            nil
+            break
         }
+        
+        return nil
     }
     
     nonisolated func scheduleUpdateTask() {

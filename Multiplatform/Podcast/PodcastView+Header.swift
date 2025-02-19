@@ -41,7 +41,7 @@ extension PodcastView {
                                 .fill(dominantColor.gradient)
                                 .rotationEffect(.degrees(180))
                         } else {
-                            $0.fill(Color(UIColor.tertiarySystemBackground))
+                            $0.fill(Color(UIColor.secondarySystemBackground))
                         }
                     }
                     .animation(.smooth, value: viewModel.dominantColor)

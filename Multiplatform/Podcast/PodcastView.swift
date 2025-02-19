@@ -32,8 +32,35 @@ struct PodcastView: View {
                 ProgressIndicator()
             } else {
                 HStack {
-                    Text("episodes")
-                        .bold()
+                    Menu {
+                        ForEach(viewModel.seasons, id: \.hashValue) { season in
+                            Toggle(viewModel.seasonLabel(of: season), isOn: .init { viewModel.seasonFilter == season } set: {
+                                if $0 {
+                                    viewModel.seasonFilter = season
+                                } else {
+                                    viewModel.seasonFilter = nil
+                                }
+                            })
+                        }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Group {
+                                if let season = viewModel.seasonFilter {
+                                    Text(viewModel.seasonLabel(of: season))
+                                } else {
+                                    Text("episodes")
+                                }
+                            }
+                            .bold()
+                            
+                            if !viewModel.seasons.isEmpty {
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
                     
                     NavigationLink {
                         PodcastEpisodesView()
@@ -47,6 +74,7 @@ struct PodcastView: View {
                 }
                 .padding(.horizontal, 20)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .alignmentGuide(.listRowSeparatorLeading) { _ in 20 }
                 
                 EpisodeSingleList(episodes: viewModel.visible)
             }
