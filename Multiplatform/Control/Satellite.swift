@@ -10,6 +10,7 @@ import Defaults
 import DefaultsMacros
 import RFNotifications
 import ShelfPlayerKit
+import SPPlayback
 
 @Observable @MainActor
 final class Satellite {
@@ -81,7 +82,7 @@ extension Satellite {
             }
             
             do {
-                // TODO: PLAY
+                try await AudioPlayer.shared.start(item.id)
                 
                 await MainActor.run {
                     loading -= 1
@@ -103,7 +104,7 @@ extension Satellite {
             }
             
             do {
-                // TODO: QUEUE
+                // try await AudioPlayer.shared.queue([.init(itemID: item.id, startWithoutListeningSession: <#T##Bool#>, origin: <#T##QueueItem.QueueItemOrigin#>)])
                 
                 await MainActor.run {
                     loading -= 1

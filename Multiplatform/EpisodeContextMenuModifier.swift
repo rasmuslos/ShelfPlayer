@@ -19,7 +19,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
             .contextMenu {
                 Button {
                     Task {
-                        try await AudioPlayer.shared.play(episode)
+                        // try await AudioPlayer.shared.play(episode)
                     }
                 } label: {
                     Label("play", systemImage: "play")

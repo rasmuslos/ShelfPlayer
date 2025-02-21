@@ -25,6 +25,7 @@ internal class CarPlayNowPlayingController: NSObject {
         queueController = .init(interfaceController: interfaceController)
         
         rateButton = CPNowPlayingPlaybackRateButton { _ in
+            /*
             var rate = AudioPlayer.shared.playbackRate + Defaults[.playbackSpeedAdjustment]
             
             if rate > 2 {
@@ -32,10 +33,11 @@ internal class CarPlayNowPlayingController: NSObject {
             }
             
             AudioPlayer.shared.playbackRate = rate
+             */
         }
         nextButton = CPNowPlayingImageButton(image: .init(systemName: "forward.end.fill")!) { _ in
             Task {
-                try await AudioPlayer.shared.advance(to: 0)
+                // try await AudioPlayer.shared.advance(to: 0)
             }
         }
         
@@ -56,6 +58,7 @@ extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
         }
     }
     func nowPlayingTemplateAlbumArtistButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
+        /*
         if let audiobook = AudioPlayer.shared.item as? Audiobook {
             Task {
                 // let controller = CarPlayChaptersController(interfaceController: interfaceController, audiobook: audiobook)
@@ -71,11 +74,13 @@ extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
                  */
             }
         }
+         */
     }
 }
 
 private extension CarPlayNowPlayingController {
     func update() {
+        /*
         if AudioPlayer.shared.queue.isEmpty {
             template.updateNowPlayingButtons([rateButton])
         } else {
@@ -84,13 +89,16 @@ private extension CarPlayNowPlayingController {
         
         template.isUpNextButtonEnabled = true
         template.isAlbumArtistButtonEnabled = true
+         */
     }
     
     func setupObservers() {
+        /*
         template.add(self)
         
         NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.update()
         }
+         */
     }
 }

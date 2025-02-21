@@ -107,7 +107,7 @@ private struct Row: View {
                 Button {
                     Task {
                         loading = true
-                        try? await AudioPlayer.shared.play(audiobook)
+                        // try? await AudioPlayer.shared.play(audiobook)
                         loading = false
                     }
                 } label: {
