@@ -28,7 +28,7 @@ internal struct SwipeActionsModifier: ViewModifier {
                 Button {
                     Task {
                         loading = true
-                        try await AudioPlayer.shared.play(item)
+                        // try await AudioPlayer.shared.play(item)
                         loading = false
                     }
                 } label: {

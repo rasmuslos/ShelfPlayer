@@ -54,11 +54,13 @@ internal struct Chapters: View {
     var body: some View {
         ForEach(Array(chapters.enumerated()), id: \.element.id) { (offset, chapter) in
             Row(id: "\(chapter.id)", title: chapter.title, time: chapter.startOffset, active: activeIndex == offset, finished: finished.contains { $0 == offset }) {
+                /*
                 if AudioPlayer.shared.item?.id == item.id {
                     await AudioPlayer.shared.seek(to: chapter.startOffset)
                 } else {
                     try await AudioPlayer.shared.play(item, at: chapter.startOffset)
                 }
+                 */
             }
         }
     }

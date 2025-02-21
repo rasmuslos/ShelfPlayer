@@ -122,10 +122,12 @@ private extension CarPlayOfflineController {
         }
          */
         
+        /*
         NotificationCenter.default.addObserver(forName: AudioPlayer.itemDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.updateAudiobooksSection()
             self?.updatePodcastsSection()
         }
+         */
         
         Task {
             /*

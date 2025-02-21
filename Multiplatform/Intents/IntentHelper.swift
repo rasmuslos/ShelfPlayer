@@ -42,6 +42,7 @@ internal struct IntentHelper {
             return nil
         }
         
+        /*
         let intent = INPlayMediaIntent(
             mediaItems: [mediaItem],
             mediaContainer: nil,
@@ -53,6 +54,8 @@ internal struct IntentHelper {
             mediaSearch: nil)
         
         return intent
+         */
+        return nil
     }
     
     private static func convert(type: ItemIdentifier.ItemType) -> INMediaItemType? {

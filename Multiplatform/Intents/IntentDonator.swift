@@ -31,6 +31,7 @@ final class IntentDonator: Sendable {
 
 private extension IntentDonator {
     func setupObservers() {
+        /*
         NotificationCenter.default.addObserver(forName: AudioPlayer.itemDidChangeNotification, object: nil, queue: nil) { [unowned self] _ in
             Task {
                 guard AudioPlayer.shared.item != self.lastDonatedItem else {
@@ -55,5 +56,6 @@ private extension IntentDonator {
                 lastDonatedItem = AudioPlayer.shared.item
             }
         }
+         */
     }
 }

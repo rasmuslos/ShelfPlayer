@@ -29,15 +29,15 @@ public extension PlayableItem {
         public let offset: TimeInterval
         public let duration: TimeInterval
         
-        public let contentUrl: String
+        public let resource: URL
         
-        public init(index: Int, ino: String, fileExtension: String, offset: TimeInterval, duration: TimeInterval, contentUrl: String) {
+        public init(index: Int, ino: String, fileExtension: String, offset: TimeInterval, duration: TimeInterval, resource: URL) {
             self.index = index
             self.ino = ino
             self.fileExtension = fileExtension
             self.offset = offset
             self.duration = duration
-            self.contentUrl = contentUrl
+            self.resource = resource
         }
         
         public static func <(lhs: PlayableItem.AudioTrack, rhs: PlayableItem.AudioTrack) -> Bool {

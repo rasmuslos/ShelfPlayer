@@ -48,7 +48,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
                 throw APIClientError.invalidResponse
             }
             
-            return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init), supplementaryPDFs)
+            return (episode, [.init(track: audioTrack, base: host)], chapters.map(Chapter.init), supplementaryPDFs)
         }
         
         guard let audiobook = Audiobook(payload: payload, libraryID: itemID.libraryID, connectionID: itemID.connectionID),
@@ -57,7 +57,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
             throw APIClientError.invalidResponse
         }
         
-        return (audiobook, tracks.map(PlayableItem.AudioTrack.init), chapters.map(Chapter.init), supplementaryPDFs)
+        return (audiobook, tracks.map { .init(track: $0, base: host) }, chapters.map(Chapter.init), supplementaryPDFs)
     }
     
     func items(in library: Library, search: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {

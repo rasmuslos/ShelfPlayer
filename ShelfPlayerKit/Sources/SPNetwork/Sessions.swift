@@ -14,7 +14,15 @@ public extension APIClient {
         var systemInfo = utsname()
         uname(&systemInfo)
         
-        let response = try await response(for: ClientRequest<ItemPayload>(path: "api/items/\(itemID.pathComponent)/play", method: .post, body: [
+        var path = "api/items"
+        
+        if let groupingID = itemID.groupingID {
+            path.append("/\(groupingID)/play/\(itemID.primaryID)")
+        } else {
+            path.append("/\(itemID.primaryID)/play")
+        }
+        
+        let response = try await response(for: ClientRequest<ItemPayload>(path: path, method: .post, body: [
             "deviceInfo": [
                 "deviceId": ShelfPlayerKit.clientID,
                 "clientName": "ShelfPlayer",
@@ -38,7 +46,7 @@ public extension APIClient {
         let startTime = response.startTime ?? 0
         let playbackSessionID = response.id
         
-        return (tracks.map(PlayableItem.AudioTrack.init), chapters.map(Chapter.init), startTime, playbackSessionID)
+        return (tracks.map { .init(track: $0, base: host) }, chapters.map(Chapter.init), startTime, playbackSessionID)
     }
     
     func createListeningSession(itemID: ItemIdentifier, id: UUID, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
