@@ -44,11 +44,13 @@ internal extension OfflineAudiobookList {
         @State private var loading = false
         
         private var overlay: Overlay? {
+            /*
             if loading {
                 return .loading
             } else if AudioPlayer.shared.item == audiobook {
                 return .playing(active: true)
             }
+             */
             
             return nil
         }
@@ -56,7 +58,7 @@ internal extension OfflineAudiobookList {
         var body: some View {
             Button {
                 Task {
-                    try await AudioPlayer.shared.play(audiobook, withoutPlaybackSession: true)
+                    // try await AudioPlayer.shared.play(audiobook, withoutPlaybackSession: true)
                 }
             } label: {
                 HStack(spacing: 0) {

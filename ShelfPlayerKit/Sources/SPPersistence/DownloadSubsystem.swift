@@ -16,7 +16,9 @@ import SPNetwork
 typealias PersistedAudiobook = SchemaV2.PersistedAudiobook
 typealias PersistedEpisode = SchemaV2.PersistedEpisode
 typealias PersistedPodcast = SchemaV2.PersistedPodcast
+
 typealias PersistedAsset = SchemaV2.PersistedAsset
+typealias PersistedChapter = SchemaV2.PersistedChapter
 
 extension PersistenceManager {
     @ModelActor
@@ -302,7 +304,7 @@ private extension PersistenceManager.DownloadSubsystem {
             }
             
             request = coverRequest
-        case .audio(_, _, let ino, _):
+        case .audio(_, _, _, let ino, _):
             request = try await ABSClient[itemID.connectionID].audioTrackRequest(from: itemID, ino: ino)
         }
         
@@ -432,6 +434,25 @@ public extension PersistenceManager.DownloadSubsystem {
         try? await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), path)
         return path
     }
+    func audioTracks(for itemID: ItemIdentifier) throws -> [PlayableItem.AudioTrack] {
+        try assets(for: itemID).compactMap {
+            switch $0.fileType {
+            case .audio(let offset, let duration, let index, let ino, let fileExtension):
+                    .init(index: index, ino: ino, fileExtension: fileExtension, offset: offset, duration: duration, resource: $0.path)
+            default:
+                nil
+            }
+        }
+    }
+    func chapters(itemID: ItemIdentifier) -> [Chapter] {
+        do {
+            return try modelContext.fetch(FetchDescriptor<PersistedChapter>(predicate: #Predicate {
+                $0._itemID == itemID.description
+            })).map { .init(id: $0.id, startOffset: $0.startOffset, endOffset: $0.endOffset, title: $0.name) }
+        } catch {
+            return []
+        }
+    }
     
     /// Performs the necessary work to add an item to the download queue.
     ///
@@ -503,7 +524,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             assets += ItemIdentifier.CoverSize.allCases.map { .init(itemID: itemID, fileType: .image(size: $0), progressWeight: individualCoverWeight) }
             assets += supplementaryPDFs.map { .init(itemID: itemID, fileType: .pdf(name: $0.fileName, ino: $0.ino), progressWeight: individualPDFWeight) }
-            assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
+            assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, index: $0.index, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
             
             let model: any PersistentModel
             
@@ -545,7 +566,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             try modelContext.transaction {
                 for chapter in chapters {
-                    modelContext.insert(SchemaV2.PersistedChapter(id: .init(), itemID: itemID, name: chapter.title, start: chapter.startOffset, end: chapter.endOffset))
+                    modelContext.insert(PersistedChapter(id: .init(), itemID: itemID, name: chapter.title, startOffset: chapter.startOffset, endOffset: chapter.endOffset))
                 }
                 
                 for asset in assets {

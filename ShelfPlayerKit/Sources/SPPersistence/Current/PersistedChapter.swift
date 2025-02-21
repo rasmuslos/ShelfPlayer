@@ -13,23 +13,23 @@ extension SchemaV2 {
     @Model
     final class PersistedChapter {
         #Index<PersistedChapter>([\.id], [\._itemID])
-        #Unique<PersistedChapter>([\.id], [\._itemID, \.start])
+        #Unique<PersistedChapter>([\.id], [\._itemID, \.startOffset])
         
         @Attribute(.unique)
-        private(set) var id: UUID
+        private(set) var id: Int
         private(set) var _itemID: String
         
         private(set) var name: String
         
-        private(set) var start: TimeInterval
-        private(set) var end: TimeInterval
+        private(set) var startOffset: TimeInterval
+        private(set) var endOffset: TimeInterval
         
-        init(id: UUID, itemID: ItemIdentifier, name: String, start: TimeInterval, end: TimeInterval) {
+        init(id: Int, itemID: ItemIdentifier, name: String, startOffset: TimeInterval, endOffset: TimeInterval) {
             self.id = id
             _itemID = itemID.description
             self.name = name
-            self.start = start
-            self.end = end
+            self.startOffset = startOffset
+            self.endOffset = endOffset
         }
         
         var itemID: ItemIdentifier {

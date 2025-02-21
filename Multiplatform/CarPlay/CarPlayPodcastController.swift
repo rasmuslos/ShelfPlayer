@@ -56,9 +56,11 @@ private extension CarPlayPodcastController {
     }
     
     func setupObservers() {
+        /*
         NotificationCenter.default.addObserver(forName: AudioPlayer.itemDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.updateSections()
         }
+         */
         
         // TODO: Update progress
     }

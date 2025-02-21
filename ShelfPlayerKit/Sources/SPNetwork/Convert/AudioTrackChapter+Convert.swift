@@ -15,7 +15,7 @@ extension Chapter {
 }
 
 extension PlayableItem.AudioTrack {
-    init(track: AudiobookshelfAudioTrack) {
+    init(track: AudiobookshelfAudioTrack, base: URL) {
         var ext = track.metadata.ext
         
         if ext.starts(with: ".") {
@@ -27,6 +27,6 @@ extension PlayableItem.AudioTrack {
                   fileExtension: ext,
                   offset: track.startOffset,
                   duration: track.duration,
-                  contentUrl: track.contentUrl)
+                  resource: base.appending(path: track.contentUrl))
     }
 }

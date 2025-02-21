@@ -26,6 +26,7 @@ internal class CarPlayChaptersController {
 
 private extension CarPlayChaptersController {
     func updateSections() {
+        /*
         let chapters = AudioPlayer.shared.chapters
         
         let items = chapters.map { chapter in
@@ -48,5 +49,6 @@ private extension CarPlayChaptersController {
         
         let section = CPListSection(items: items, header: nil, sectionIndexTitle: nil)
         self.template.updateSections([section])
+         */
     }
 }

@@ -30,6 +30,7 @@ private extension CarPlayQueueController {
     func updateSections() {
         updateTask?.cancel()
         updateTask = .detached {
+            /*
             let items = AudioPlayer.shared.queue.enumerated().map { index, item in
                 let listItem: CPListItem
                 
@@ -43,7 +44,7 @@ private extension CarPlayQueueController {
                 
                 listItem.handler = { _, completion in
                     Task {
-                        try await AudioPlayer.shared.advance(to: index)
+                        // try await AudioPlayer.shared.advance(to: index)
                         // completion()
                     }
                 }
@@ -57,12 +58,15 @@ private extension CarPlayQueueController {
             
             let section = CPListSection(items: items)
             // self.template.updateSections([section])
+             */
         }
     }
     
     func setupObservers() {
+        /*
         NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
             self?.updateSections()
         }
+         */
     }
 }

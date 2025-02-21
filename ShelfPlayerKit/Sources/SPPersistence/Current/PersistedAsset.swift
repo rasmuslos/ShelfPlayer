@@ -45,7 +45,7 @@ extension SchemaV2 {
         
         var fileExtension: String {
             switch fileType {
-            case .audio(_, _,_ , let fileExtension):
+            case .audio(_, _,_ , _, let fileExtension):
                 fileExtension
             case .pdf:
                 "pdf"
@@ -74,7 +74,7 @@ extension SchemaV2 {
         }
         
         enum FileType: Codable {
-            case audio(offset: TimeInterval, duration: TimeInterval, ino: String, fileExtension: String)
+            case audio(offset: TimeInterval, duration: TimeInterval, index: Int, ino: String, fileExtension: String)
             case pdf(name: String, ino: String)
             case image(size: ItemIdentifier.CoverSize)
         }

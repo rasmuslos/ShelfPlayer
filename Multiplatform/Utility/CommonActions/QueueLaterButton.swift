@@ -22,9 +22,12 @@ struct QueueLaterButton: View {
         } label: {
             Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
             
-            if !hideLast, let last = AudioPlayer.shared.queue.last {
+            // TODO: queue
+            /*
+            if !hideLast, let last = AudioPlayer.shared.queue.last.itemID {
                 Text(last.name)
             }
+             */
         }
         .disabled(satellite.isLoading)
     }
