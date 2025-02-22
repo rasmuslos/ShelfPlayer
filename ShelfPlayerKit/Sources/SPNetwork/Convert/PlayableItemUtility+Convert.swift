@@ -14,17 +14,24 @@ extension Chapter {
     }
 }
 
-extension PlayableItem.AudioTrack {
-    init(track: AudiobookshelfAudioTrack, base: URL) {
-        var ext = track.metadata.ext
+extension PlayableItem.AudioFile {
+    init(track: AudiobookshelfAudioTrack) {
+        var ext = track.metadata!.ext
         
         if ext.starts(with: ".") {
             ext.removeFirst()
         }
         
         self.init(index: track.index,
-                  ino: track.ino,
+                  ino: track.ino!,
                   fileExtension: ext,
+                  offset: track.startOffset,
+                  duration: track.duration)
+    }
+}
+extension PlayableItem.AudioTrack {
+    init(track: AudiobookshelfAudioTrack, base: URL) {
+        self.init(index: track.index,
                   offset: track.startOffset,
                   duration: track.duration,
                   resource: base.appending(path: track.contentUrl))

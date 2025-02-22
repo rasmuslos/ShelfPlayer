@@ -20,7 +20,7 @@ public class PlayableItem: Item, @unchecked Sendable {
 }
 
 public extension PlayableItem {
-    struct AudioTrack: Sendable, Comparable {
+    struct AudioFile: Sendable {
         public let index: Int
         
         public let ino: String
@@ -29,12 +29,24 @@ public extension PlayableItem {
         public let offset: TimeInterval
         public let duration: TimeInterval
         
-        public let resource: URL
-        
-        public init(index: Int, ino: String, fileExtension: String, offset: TimeInterval, duration: TimeInterval, resource: URL) {
+        public init(index: Int, ino: String, fileExtension: String, offset: TimeInterval, duration: TimeInterval) {
             self.index = index
             self.ino = ino
             self.fileExtension = fileExtension
+            self.offset = offset
+            self.duration = duration
+        }
+    }
+    struct AudioTrack: Sendable, Comparable {
+        public let index: Int
+        
+        public let offset: TimeInterval
+        public let duration: TimeInterval
+        
+        public let resource: URL
+        
+        public init(index: Int, offset: TimeInterval, duration: TimeInterval, resource: URL) {
+            self.index = index
             self.offset = offset
             self.duration = duration
             self.resource = resource

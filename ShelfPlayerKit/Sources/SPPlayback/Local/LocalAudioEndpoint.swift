@@ -89,18 +89,19 @@ extension LocalAudioEndpoint {
     }
     
     func play() {
-        
+        audioPlayer.play()
+        isPlaying = true
     }
     
     func pause() {
         
     }
     
-    func seek(to time: TimeInterval) async {
+    func seek(to time: TimeInterval) async throws {
         logger.info("Seeking to \(time)")
         
         guard time >= 0 else {
-            await seek(to: 0)
+            try await seek(to: 0)
             return
         }
         
@@ -126,7 +127,7 @@ extension LocalAudioEndpoint {
             } else {
                 audioPlayer.removeAllItems()
                 
-                let headers = Dictionary(uniqueKeysWithValues: try! await ABSClient[currentItemID.connectionID].headers.map { ($0.key, $0.value) })
+                let headers = Dictionary(uniqueKeysWithValues: try await ABSClient[currentItemID.connectionID].headers.map { ($0.key, $0.value) })
                 
                 for audioTrack in audioTracks[index..<audioTracks.endIndex] {
                     let asset = AVURLAsset(url: audioTrack.resource, options: [
@@ -232,7 +233,9 @@ private extension LocalAudioEndpoint {
         self.audioTracks = audioTracks
         self.chapters = chapters
         
-        await seek(to: startTime)
+        try await seek(to: startTime)
+        
+        play()
         
         activeOperationCount -= 1
         
