@@ -48,6 +48,7 @@ enum PersistenceError: Error {
     
     case busy
     
+    case unsupportedDownloadCodec
     case unsupportedDownloadItemType
     
     case serverNotFound

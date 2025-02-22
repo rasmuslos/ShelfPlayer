@@ -203,7 +203,7 @@ struct AudiobookshelfItemSeries: Codable {
 
 struct AudiobookshelfAudioTrack: Codable {
     let index: Int
-    let ino: String
+    let ino: String?
     
     let startOffset: Double
     let duration: Double
@@ -213,7 +213,7 @@ struct AudiobookshelfAudioTrack: Codable {
     let mimeType: String
     let codec: String?
     
-    let metadata: AudioTrackMetadata
+    let metadata: AudioTrackMetadata?
     
     struct AudioTrackMetadata: Codable {
         let ext: String

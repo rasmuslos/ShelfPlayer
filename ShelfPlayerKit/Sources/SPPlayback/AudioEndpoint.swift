@@ -33,5 +33,5 @@ protocol AudioEndpoint: Identifiable, Sendable {
     func play()
     func pause()
     
-    func seek(to time: TimeInterval) async
+    func seek(to time: TimeInterval) async throws
 }
