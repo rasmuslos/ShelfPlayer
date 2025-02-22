@@ -85,9 +85,9 @@ public extension AudioPlayer {
         current?.pause()
     }
     
-    func seek(to time: TimeInterval) async {
+    func seek(to time: TimeInterval) async throws {
         if let current {
-            await current.seek(to: time)
+            try await current.seek(to: time)
         }
     }
 }

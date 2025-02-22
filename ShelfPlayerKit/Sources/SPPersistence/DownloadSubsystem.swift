@@ -437,8 +437,8 @@ public extension PersistenceManager.DownloadSubsystem {
     func audioTracks(for itemID: ItemIdentifier) throws -> [PlayableItem.AudioTrack] {
         try assets(for: itemID).compactMap {
             switch $0.fileType {
-            case .audio(let offset, let duration, let index, let ino, let fileExtension):
-                    .init(index: index, ino: ino, fileExtension: fileExtension, offset: offset, duration: duration, resource: $0.path)
+            case .audio(let offset, let duration, let index, _, _):
+                    .init(index: index, offset: offset, duration: duration, resource: $0.path)
             default:
                 nil
             }
