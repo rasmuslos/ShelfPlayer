@@ -10,7 +10,7 @@ import SPFoundation
 import SPPersistence
 import SPPlayback
 
-internal struct AudiobookVGrid: View {
+struct AudiobookVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let sections: [AudiobookSection]
@@ -33,46 +33,49 @@ internal struct AudiobookVGrid: View {
                                 .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
                                 .hoverEffect(.highlight)
                         }
-                        .buttonStyle(.plain)
-                        .onAppear {
-                            onAppear(section)
-                        }
                     case .series(let seriesID, _, let audiobookIDs):
                         NavigationLink(destination: ItemLoadView(seriesID)) {
                             SeriesGrid.SeriesGridItem(name: nil, audiobookIDs: audiobookIDs)
                         }
-                        .buttonStyle(.plain)
-                        .onAppear {
-                            onAppear(section)
-                        }
                     }
                     
                     Spacer(minLength: 0)
+                }
+                .buttonStyle(.plain)
+                .onAppear {
+                    onAppear(section)
                 }
             }
         }
     }
 }
 
-internal struct AudiobookHGrid: View {
+struct AudiobookHGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    
-    let audiobooks: [Audiobook]
-    var small = false
-    
-    @State private var width: CGFloat = .zero
     
     private let gap: CGFloat = 8
     private let padding: CGFloat = 20
     
+    let audiobooks: [Audiobook]
+    let small: Bool
+    
+    @State private var width: CGFloat = .zero
+    
+    private var minimumSize: CGFloat {
+        if horizontalSizeClass == .compact {
+            small ? 80.0 : 100.0
+        } else {
+            small ? 120.0 : 160.0
+        }
+    }
     private var size: CGFloat {
-        let minimum = horizontalSizeClass == .compact ? small ? 90.0 : 120.0 : small ? 120.0 : 160.0
-        
         let usable = width - padding * 2
-        let amount = CGFloat(Int(usable / minimum))
+        let paddedSize = minimumSize + gap
+        
+        let amount = CGFloat(Int(usable / paddedSize))
         let available = usable - gap * (amount - 1)
         
-        return max(minimum, available / amount)
+        return max(minimumSize, available / amount)
     }
     
     var body: some View {
@@ -86,7 +89,7 @@ internal struct AudiobookHGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(alignment: .bottom, spacing: 0) {
+                LazyHStack(alignment: .bottom, spacing: 0) {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook)) {
                             ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
@@ -121,7 +124,7 @@ internal struct AudiobookHGrid: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            AudiobookHGrid(audiobooks: .init(repeating: .fixture, count: 7), small: true)
+            AudiobookHGrid(audiobooks: .init(repeating: .fixture, count: 77), small: true)
         }
     }
 }

@@ -22,8 +22,7 @@ extension PlayableItem.AudioFile {
             ext.removeFirst()
         }
         
-        self.init(index: track.index,
-                  ino: track.ino!,
+        self.init(ino: track.ino!,
                   fileExtension: ext,
                   offset: track.startOffset,
                   duration: track.duration)
@@ -31,8 +30,7 @@ extension PlayableItem.AudioFile {
 }
 extension PlayableItem.AudioTrack {
     init(track: AudiobookshelfAudioTrack, base: URL) {
-        self.init(index: track.index,
-                  offset: track.startOffset,
+        self.init(offset: track.startOffset,
                   duration: track.duration,
                   resource: base.appending(path: track.contentUrl))
     }

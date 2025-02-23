@@ -49,11 +49,14 @@ extension EpisodeView {
                             
                             Divider()
                             
+                            DownloadButton(item: viewModel.episode)
+                            
+                            Divider()
+                            
                             ItemLoadLink(itemID: viewModel.episode.podcastID, footer: viewModel.episode.podcastName)
                             
                             Divider()
                             
-                            DownloadButton(item: viewModel.episode)
                             ProgressButton(item: viewModel.episode)
                             ProgressResetButton(item: viewModel.episode)
                         } label: {

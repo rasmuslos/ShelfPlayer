@@ -21,16 +21,13 @@ public class PlayableItem: Item, @unchecked Sendable {
 
 public extension PlayableItem {
     struct AudioFile: Sendable {
-        public let index: Int
-        
         public let ino: String
         public let fileExtension: String
         
         public let offset: TimeInterval
         public let duration: TimeInterval
         
-        public init(index: Int, ino: String, fileExtension: String, offset: TimeInterval, duration: TimeInterval) {
-            self.index = index
+        public init(ino: String, fileExtension: String, offset: TimeInterval, duration: TimeInterval) {
             self.ino = ino
             self.fileExtension = fileExtension
             self.offset = offset
@@ -38,22 +35,20 @@ public extension PlayableItem {
         }
     }
     struct AudioTrack: Sendable, Comparable {
-        public let index: Int
-        
         public let offset: TimeInterval
         public let duration: TimeInterval
         
         public let resource: URL
         
-        public init(index: Int, offset: TimeInterval, duration: TimeInterval, resource: URL) {
-            self.index = index
+        public init(offset: TimeInterval, duration: TimeInterval, resource: URL) {
             self.offset = offset
             self.duration = duration
+            
             self.resource = resource
         }
         
         public static func <(lhs: PlayableItem.AudioTrack, rhs: PlayableItem.AudioTrack) -> Bool {
-            lhs.index < rhs.index
+            lhs.offset < rhs.offset
         }
     }
     

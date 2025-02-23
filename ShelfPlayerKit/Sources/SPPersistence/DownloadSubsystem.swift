@@ -304,7 +304,7 @@ private extension PersistenceManager.DownloadSubsystem {
             }
             
             request = coverRequest
-        case .audio(_, _, _, let ino, _):
+        case .audio(_, _, let ino, _):
             request = try await ABSClient[itemID.connectionID].audioTrackRequest(from: itemID, ino: ino)
         }
         
@@ -437,8 +437,8 @@ public extension PersistenceManager.DownloadSubsystem {
     func audioTracks(for itemID: ItemIdentifier) throws -> [PlayableItem.AudioTrack] {
         try assets(for: itemID).compactMap {
             switch $0.fileType {
-            case .audio(let offset, let duration, let index, _, _):
-                    .init(index: index, offset: offset, duration: duration, resource: $0.path)
+            case .audio(let offset, let duration, _, _):
+                    .init(offset: offset, duration: duration, resource: $0.path)
             default:
                 nil
             }
@@ -452,6 +452,12 @@ public extension PersistenceManager.DownloadSubsystem {
         } catch {
             return []
         }
+    }
+    
+    func audiobooks(in libraryID: String) throws -> [Audiobook] {
+        return try modelContext.fetch(FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
+            $0._id.contains(libraryID)
+        })).filter { $0.id.libraryID == libraryID }.map(Audiobook.init)
     }
     
     /// Performs the necessary work to add an item to the download queue.
@@ -524,7 +530,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             assets += ItemIdentifier.CoverSize.allCases.map { .init(itemID: itemID, fileType: .image(size: $0), progressWeight: individualCoverWeight) }
             assets += supplementaryPDFs.map { .init(itemID: itemID, fileType: .pdf(name: $0.fileName, ino: $0.ino), progressWeight: individualPDFWeight) }
-            assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, index: $0.index, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
+            assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
             
             let model: any PersistentModel
             
@@ -649,8 +655,9 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let destination = PersistenceManager.DownloadSubsystem.temporaryLocation(taskIdentifier: downloadTask.taskIdentifier)
         
+        try? FileManager.default.removeItem(at: destination)
+        
         do {
-            try? FileManager.default.removeItem(at: destination)
             try FileManager.default.moveItem(at: location, to: destination)
         } catch {
             PersistenceManager.shared.download.logger.error("Error moving downloaded file: \(error)")
