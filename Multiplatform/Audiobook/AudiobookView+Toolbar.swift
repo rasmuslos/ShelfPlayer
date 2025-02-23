@@ -91,12 +91,15 @@ extension AudiobookView {
                             
                             Divider()
                             
+                            DownloadButton(item: viewModel.audiobook)
+                            
+                            Divider()
+                            
                             ItemMenu(authors: viewModel.audiobook.authors)
                             ItemMenu(series: viewModel.audiobook.series)
                             
                             Divider()
                             
-                            DownloadButton(item: viewModel.audiobook)
                             ProgressButton(item: viewModel.audiobook)
                             
                             ProgressResetButton(item: viewModel.audiobook)

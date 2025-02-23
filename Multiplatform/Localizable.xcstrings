@@ -2554,6 +2554,12 @@
         }
       }
     },
+    "collection.empty" : {
+
+    },
+    "collection.empty.description" : {
+
+    },
     "configuration.strategy.change" : {
 
     },
@@ -3006,7 +3012,6 @@
       }
     },
     "downloads" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

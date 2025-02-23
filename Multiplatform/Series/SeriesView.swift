@@ -42,6 +42,8 @@ struct SeriesView: View {
                 } else {
                     LoadingView()
                 }
+            } else if viewModel.sections.isEmpty {
+                EmptyCollectionView()
             } else {
                 switch viewModel.displayType {
                 case .grid:

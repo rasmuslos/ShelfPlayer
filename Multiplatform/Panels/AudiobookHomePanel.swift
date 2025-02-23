@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Defaults
+import RFNotifications
 import ShelfPlayerKit
 import SPPlayback
 
@@ -19,9 +20,10 @@ struct AudiobookHomePanel: View {
     @State private var _authors = [HomeRow<Author>]()
     @State private var audiobooks = [HomeRow<Audiobook>]()
     
-    // @State private var downloaded = [Audiobook]()
+    @State private var downloaded = [Audiobook]()
     
     @State private var failed = false
+    @State private var notifyError = false
     
     private var authors: [HomeRow<Author>] {
         showAuthorsRow ? _authors : []
@@ -61,15 +63,22 @@ struct AudiobookHomePanel: View {
                             }
                         }
                         
-                        /*
                          if !downloaded.isEmpty {
-                         AudiobookRow(title: String(localized: "downloads"), small: false, audiobooks: downloaded)
+                             AudiobookRow(title: String(localized: "downloads"), small: false, audiobooks: downloaded)
                          }
-                         */
                     }
                 }
                 .refreshable {
                     fetchItems()
+                }
+                .onReceive(RFNotification[.downloadStatusChanged].publisher()) { itemID, _ in
+                    guard itemID.libraryID == library?.id else {
+                        return
+                    }
+                    
+                    Task {
+                        await fetchLocalItems()
+                    }
                 }
                 /*
                  .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
@@ -81,7 +90,7 @@ struct AudiobookHomePanel: View {
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
-        .sensoryFeedback(.error, trigger: failed)
+        .sensoryFeedback(.error, trigger: notifyError)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("library.change", systemImage: "books.vertical.fill") {
@@ -101,7 +110,25 @@ private extension AudiobookHomePanel {
             }
             
             await withTaskGroup(of: Void.self) {
+                $0.addTask { await fetchLocalItems() }
                 $0.addTask { await fetchRemoteItems() }
+            }
+        }
+    }
+    nonisolated func fetchLocalItems() async {
+        guard let library = await library else {
+            return
+        }
+        
+        do {
+            let audiobooks = try await PersistenceManager.shared.download.audiobooks(in: library.id)
+            
+            await MainActor.withAnimation {
+                downloaded = audiobooks
+            }
+        } catch {
+            await MainActor.withAnimation {
+                notifyError.toggle()
             }
         }
     }
@@ -121,6 +148,7 @@ private extension AudiobookHomePanel {
         } catch {
             await MainActor.withAnimation {
                 failed = true
+                notifyError.toggle()
             }
         }
     }
