@@ -15,39 +15,33 @@ struct AudiobookList: View {
     
     var body: some View {
         ForEach(sections) { section in
-            switch section {
-            case .audiobook(let audiobook):
-                Row(audiobook: audiobook)
-                    .onAppear {
-                        onAppear(section)
+            Group {
+                switch section {
+                case .audiobook(let audiobook):
+                    Row(audiobook: audiobook)
+                case .series(let seriesID, let seriesName, let audiobookIDs):
+                    NavigationLink(destination: ItemLoadView(seriesID)) {
+                        SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
                     }
-            case .series(let seriesID, let seriesName, let audiobookIDs):
-                NavigationLink(destination: ItemLoadView(seriesID)) {
-                    SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
+                    .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
                 }
-                .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
-                .onAppear {
-                    onAppear(section)
-                }
+            }
+            .onAppear {
+                onAppear(section)
             }
         }
     }
 }
 
 private struct Row: View {
-    // @Environment(NowPlaying.ViewModel.self) private var nowPlayingViewModel
+    @Environment(Satellite.self) private var satellite
+    
     @Environment(\.displayContext) private var displayContext
     @Environment(\.colorScheme) private var colorScheme
     
     let audiobook: Audiobook
     
-    @State private var loading = false
-    @State private var progressEntity: ProgressEntity?
-    
-    init(audiobook: Audiobook) {
-        self.audiobook = audiobook
-        // _progressEntity = .init(initialValue: OfflineManager.shared.progressEntity(item: audiobook))
-    }
+    @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
     
     private var icon: String {
         /*
@@ -84,19 +78,27 @@ private struct Row: View {
             parts.append(released)
         }
         
-        /*
-        if progressEntity.isFinished {
-            parts.append(String(localized: "finished"))
-        } else if progressEntity.progress <= 0 {
+        func appendDuration() {
             parts.append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
-        } else if nowPlayingViewModel.item == audiobook, nowPlayingViewModel.itemDuration > 0 {
-            parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
-            parts.append((nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
-        } else {
-            parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
-            parts.append((progressEntity.duration - progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         }
-         */
+        
+        if let progressEntity {
+            if progressEntity.isFinished {
+                parts.append(String(localized: "finished"))
+            } else if progressEntity.progress <= 0 {
+                appendDuration()
+                /*
+            } else if nowPlayingViewModel.item == audiobook, nowPlayingViewModel.itemDuration > 0 {
+                parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
+                parts.append((nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
+                 */
+            } else {
+                parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
+                parts.append(((progressEntity.duration ?? audiobook.duration) - progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
+            }
+        } else {
+            appendDuration()
+        }
         
         return parts
     }
@@ -105,16 +107,12 @@ private struct Row: View {
         NavigationLink(destination: AudiobookView(audiobook)) {
             HStack(spacing: 12) {
                 Button {
-                    Task {
-                        loading = true
-                        // try? await AudioPlayer.shared.play(audiobook)
-                        loading = false
-                    }
+                    satellite.play(audiobook)
                 } label: {
                     ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
                         .frame(width: 94)
                         .overlay {
-                            if loading {
+                            if satellite.isLoading {
                                 ZStack {
                                     Color.black
                                         .opacity(0.2)
@@ -126,6 +124,7 @@ private struct Row: View {
                         }
                 }
                 .buttonStyle(.plain)
+                .disabled(satellite.isLoading)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(audiobook.name)
@@ -155,8 +154,21 @@ private struct Row: View {
             }
         }
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
-        .modifier(SwipeActionsModifier(item: audiobook, loading: $loading))
+        .modifier(SwipeActionsModifier(item: audiobook, loading: .constant(false)))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .onAppear {
+            fetchProgressEntity()
+        }
+    }
+    
+    private nonisolated func fetchProgressEntity() {
+        Task {
+            let entity = await PersistenceManager.shared.progress[audiobook.id].updating
+            
+            await MainActor.withAnimation {
+                self.progressEntity = entity
+            }
+        }
     }
 }
 
@@ -168,5 +180,6 @@ private struct Row: View {
         }
         .listStyle(.plain)
     }
+    .previewEnvironment()
 }
 #endif

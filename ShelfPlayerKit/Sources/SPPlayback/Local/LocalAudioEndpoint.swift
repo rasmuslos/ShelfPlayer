@@ -85,7 +85,6 @@ extension LocalAudioEndpoint {
     }
     
     func stop() {
-        
     }
     
     func play() {
@@ -94,7 +93,6 @@ extension LocalAudioEndpoint {
     }
     
     func pause() {
-        
     }
     
     func seek(to time: TimeInterval) async throws {

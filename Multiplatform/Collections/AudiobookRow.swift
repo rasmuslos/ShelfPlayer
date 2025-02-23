@@ -17,21 +17,13 @@ struct AudiobookRow: View {
         VStack(alignment: .leading, spacing: 0) {
             Group {
                 if audiobooks.count > 5 {
-                    NavigationLink {
-                        ScrollView {
-                            AudiobookVGrid(sections: audiobooks.map { .audiobook(audiobook: $0)}) { _ in }
-                                .padding(.horizontal, 20)
-                        }
-                        .navigationTitle(title)
-                        .navigationBarTitleDisplayMode(.inline)
-                        // .modifier(NowPlaying.SafeAreaModifier())
-                    } label: {
-                        HStack(alignment: .firstTextBaseline) {
+                    NavigationLink(destination: RowGridView(title: title, audiobooks: audiobooks)) {
+                        HStack(spacing: 8) {
                             RowTitle(title: title, fontDesign: .serif)
                             
                             Image(systemName: "chevron.right")
                                 .symbolVariant(.circle.fill)
-                                .imageScale(.small)
+                                .font(.caption)
                         }
                     }
                     .buttonStyle(.plain)
@@ -44,6 +36,25 @@ struct AudiobookRow: View {
             
             AudiobookHGrid(audiobooks: audiobooks, small: small)
         }
+    }
+}
+
+private struct RowGridView: View {
+    let title: String
+    let audiobooks: [Audiobook]
+    
+    private var sections: [AudiobookSection] {
+        audiobooks.map { .audiobook(audiobook: $0)}
+    }
+    
+    var body: some View {
+        ScrollView {
+            AudiobookVGrid(sections: sections) { _ in }
+                .padding(.horizontal, 20)
+        }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
+        // .modifier(NowPlaying.SafeAreaModifier())
     }
 }
 

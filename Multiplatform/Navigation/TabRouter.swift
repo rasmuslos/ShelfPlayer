@@ -13,6 +13,8 @@ import ShelfPlayerKit
 
 struct TabRouter: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    @Environment(Satellite.self) private var satellite
     @Environment(ConnectionStore.self) private var connectionStore
     
     @Binding var selection: TabValue?
@@ -83,6 +85,10 @@ struct TabRouter: View {
                         importedConnectionIDs.append(tab.library.connectionID)
                     } else {
                         importFailedConnectionIDs.append(tab.library.connectionID)
+                    }
+                    
+                    if importFailedConnectionIDs.count == connectionStore.connections.count {
+                        satellite.isOffline = true
                     }
                 }
                 .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
@@ -178,5 +184,5 @@ struct TabRouter: View {
     @Previewable @State var selection: TabValue? = nil
     
     TabRouter(selection: $selection)
-        .environment(ConnectionStore())
+        .previewEnvironment()
 }
