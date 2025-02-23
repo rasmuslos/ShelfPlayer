@@ -27,14 +27,14 @@ public extension AudiobookshelfClient {
                 throw ClientError.invalidResponse
             }
             
-            return (episode, [.init(track: audioTrack)], chapters.map(PlayableItem.Chapter.init))
+            return (episode, [.init(track: audioTrack, fallbackIndex: 0)], chapters.map(PlayableItem.Chapter.init))
         }
         
         guard let audiobook = Audiobook(item: response), let tracks = response.media?.tracks, let chapters = response.media?.chapters else {
             throw ClientError.invalidResponse
         }
         
-        return (audiobook, tracks.map(PlayableItem.AudioTrack.init), chapters.map(PlayableItem.Chapter.init))
+        return (audiobook, tracks.enumerated().map { .init(track: $0.element, fallbackIndex: $0.offset) }, chapters.map(PlayableItem.Chapter.init))
     }
     
     func items(search: String, libraryID: String) async throws -> ([Audiobook], [Podcast], [Author], [Series]) {

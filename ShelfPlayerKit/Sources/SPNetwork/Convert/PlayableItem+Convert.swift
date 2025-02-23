@@ -9,9 +9,9 @@ import Foundation
 import SPFoundation
 
 internal extension PlayableItem.AudioTrack {
-    init(track: AudiobookshelfAudioTrack) {
+    init(track: AudiobookshelfAudioTrack, fallbackIndex: Int) {
         self.init(
-            index: track.index ?? 0, 
+            index: track.index ?? fallbackIndex,
             offset: track.startOffset,
             duration: track.duration,
             codec: track.codec,
