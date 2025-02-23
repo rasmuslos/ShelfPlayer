@@ -11,7 +11,7 @@ import SPFoundation
 internal extension PlayableItem.AudioTrack {
     init(track: AudiobookshelfAudioTrack) {
         self.init(
-            index: track.index!,
+            index: track.index ?? 0, 
             offset: track.startOffset,
             duration: track.duration,
             codec: track.codec,
