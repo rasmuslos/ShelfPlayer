@@ -60,7 +60,7 @@ public extension AudiobookshelfClient {
         let startTime = response.startTime ?? 0
         let playbackSessionId = response.id
         
-        return (tracks.map(PlayableItem.AudioTrack.init), chapters.map(PlayableItem.Chapter.init), startTime, playbackSessionId)
+        return (tracks.enumerated().map { .init(track: $0.element, fallbackIndex: $0.offset) }, chapters.map(PlayableItem.Chapter.init), startTime, playbackSessionId)
     }
     
     func reportUpdate(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
