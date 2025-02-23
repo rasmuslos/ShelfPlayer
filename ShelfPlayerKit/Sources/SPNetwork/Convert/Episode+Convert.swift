@@ -39,7 +39,7 @@ extension Episode {
         self.init(payload: item, connectionID: connectionID)
     }
     
-    convenience init(episode: EpisodePayload, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init(episode: EpisodePayload, fallbackIndex: Int, connectionID: ItemIdentifier.ConnectionID) {
         self.init(
             id: .init(primaryID: episode.id!, groupingID: episode.libraryItemId, libraryID: episode.libraryId!, connectionID: connectionID, type: .episode),
             name: episode.title!,
@@ -50,6 +50,6 @@ extension Episode {
             size: episode.size ?? 0,
             duration: episode.audioFile?.duration ?? 0,
             podcastName: episode.podcast!.metadata.title!,
-            index: .init(season: episode.season, episode: String(episode.index ?? 0)))
+            index: .init(season: episode.season, episode: String(episode.index ?? fallbackIndex)))
     }
 }
