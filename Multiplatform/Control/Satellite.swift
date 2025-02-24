@@ -8,7 +8,6 @@
 import SwiftUI
 import Defaults
 import DefaultsMacros
-import RFNotifications
 import ShelfPlayerKit
 import SPPlayback
 

@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import RFNotifications
 import ShelfPlayerKit
 
 @Observable @MainActor

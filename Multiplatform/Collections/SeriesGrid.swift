@@ -6,16 +6,16 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct SeriesGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let series: [Series]
-    let onAppear: ((_ audiobook: Series) -> Void)
+    let onAppear: ((_: Series) -> Void)
     
     private var minimumWidth: CGFloat {
-        horizontalSizeClass == .compact ? 110.0 : 200.0
+        horizontalSizeClass == .compact ? 112.0 : 200.0
     }
     
     var body: some View {

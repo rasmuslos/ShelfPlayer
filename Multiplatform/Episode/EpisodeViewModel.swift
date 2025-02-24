@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import RFVisuals
 import ShelfPlayerKit
 
 @Observable @MainActor

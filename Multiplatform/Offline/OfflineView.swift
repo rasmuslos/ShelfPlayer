@@ -8,7 +8,6 @@
 import SwiftUI
 import TipKit
 import Defaults
-import RFNotifications
 import ShelfPlayerKit
 import SPPlayback
 

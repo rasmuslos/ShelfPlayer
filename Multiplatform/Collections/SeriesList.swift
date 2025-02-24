@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
-internal struct SeriesList: View {
+struct SeriesList: View {
     let series: [Series]
-    let onAppear: ((_ audiobook: Series) -> Void)
+    let onAppear: ((_: Series) -> Void)
     
     var body: some View {
         ForEach(series) { item in
@@ -25,7 +25,7 @@ internal struct SeriesList: View {
     }
 }
 
-internal extension SeriesList {
+extension SeriesList {
     struct ListItem: View {
         let name: String?
         let audiobookIDs: [ItemIdentifier]
@@ -51,7 +51,7 @@ internal extension SeriesList {
                         let index = (coverCount - 1) - $0
                         let factor: CGFloat = index == 0 ? 1 : index == 1 ? 0.9 : index == 2 ? 0.8 : index == 3 ? 0.7 : 0
                         let offset: CGFloat = index == 0 ? 0 : index == 1 ? 16  : index == 2 ? 30  : index == 3 ? 42  : 0
-                        let radius: CGFloat = index == 0 ? 8 : index == 1 ? 7   : index == 2 ? 6    : index == 3 ? 5     : 0
+                        let radius: CGFloat = index == 0 ? 8 : index == 1 ? 7   : index == 2 ? 6   : index == 3 ? 5   : 0
                         
                         ItemImage(itemID: audiobookIDs[$0], size: .tiny, cornerRadius: radius)
                             .frame(height: 60)

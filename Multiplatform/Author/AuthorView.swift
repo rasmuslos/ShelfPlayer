@@ -117,6 +117,13 @@ struct AuthorView: View {
         Group {
             if !viewModel.audiobooksLoader.didLoad && !viewModel.seriesLoader.didLoad {
                 loadingPresentation
+            } else if viewModel.sections.isEmpty && viewModel.seriesLoader.items.isEmpty {
+                UnavailableWrapper {
+                    VStack(spacing: 0) {
+                        Header()
+                        EmptyCollectionView()
+                    }
+                }
             } else {
                 switch viewModel.displayType {
                 case .grid:

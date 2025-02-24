@@ -13,15 +13,15 @@ struct ProgressResetButton: View {
     
     let item: PlayableItem
     
-    @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
+    let progress: ProgressTracker
+    
+    init(item: PlayableItem) {
+        self.item = item
+        progress = .init(itemID: item.id)
+    }
     
     var body: some View {
-        if progressEntity == nil {
-            Color.clear
-                .task {
-                    progressEntity = await PersistenceManager.shared.progress[item.id].updating
-                }
-        } else if let progressEntity, progressEntity.progress > 0 {
+        if let entity = progress.entity, entity.progress > 0 {
             Button("progress.reset", systemImage: "square.slash", role: .destructive) {
                 satellite.deleteProgress(item)
             }

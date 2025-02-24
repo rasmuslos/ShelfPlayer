@@ -10,7 +10,6 @@ import Intents
 import CoreSpotlight
 import SwiftData
 import Defaults
-import RFNotifications
 import ShelfPlayerKit
 
 struct ContentView: View {

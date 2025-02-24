@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import TipKit
-import RFVisuals
 import ShelfPlayerKit
 import SPPlayback
 
@@ -22,7 +21,14 @@ struct PlayButton: View {
     let item: PlayableItem
     let color: Color?
     
-    @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
+    let progress: ProgressTracker
+    
+    init(item: PlayableItem, color: Color?) {
+        self.item = item
+        self.color = color
+        
+        progress = .init(itemID: item.id)
+    }
     
     private var background: Color {
         if let color {
@@ -39,8 +45,8 @@ struct PlayButton: View {
     private var remaining: TimeInterval? {
         if isItemPlaying && satellite.duration > 0 {
             satellite.duration - satellite.currentTime
-        } else if let progressEntity, let duration = progressEntity.duration, duration > 0 {
-            duration - progressEntity.currentTime
+        } else if let entity = progress.entity, let duration = entity.duration, duration > 0 {
+            duration - entity.currentTime
         } else if playButtonStyle.hideRemainingWhenUnplayed {
             nil
         } else {
@@ -53,10 +59,10 @@ struct PlayButton: View {
             return satellite.playing ? "pause" : "resume"
         }
         
-        if let progressEntity {
-            if progressEntity.isFinished {
+        if let entity = progress.entity {
+            if entity.isFinished {
                 return "listen.again"
-            } else if progressEntity.progress > 0 {
+            } else if entity.progress > 0 {
                 return "resume"
             }
         }
@@ -103,7 +109,7 @@ struct PlayButton: View {
         }
         .contentShape(.rect)
         .transition(.opacity)
-        .animation(.smooth, value: progressEntity?.progress)
+        .animation(.smooth, value: progress.entity?.progress)
     }
     
     @ViewBuilder
@@ -116,11 +122,11 @@ struct PlayButton: View {
             
             ProgressButton(item: item, tint: false)
             
-            if let progressEntity, progressEntity.progress > 0 {
+            if let entity = progress.entity, entity.progress > 0 {
                 ProgressResetButton(item: item)
             }
         } label: {
-            playButtonStyle.makeLabel(configuration: .init(progress: progressEntity?.progress, background: background, content: .init(content: labelContent)))
+            playButtonStyle.makeLabel(configuration: .init(progress: progress.entity?.progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
             satellite.play(item)
         }
@@ -129,27 +135,14 @@ struct PlayButton: View {
     }
     
     var body: some View {
-        playButtonStyle.makeMenu(configuration: .init(progress: progressEntity?.progress, background: background, content: .init(content: menuContent)))
+        playButtonStyle.makeMenu(configuration: .init(progress: progress.entity?.progress, background: background, content: .init(content: menuContent)))
             .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
             .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
-            .onAppear {
-                loadProgressEntity()
-            }
     }
     
     public func playButtonSize(_ playButtonStyle: any PlayButtonStyle) -> some View {
         self
             .environment(\.playButtonStyle, .init(style: playButtonStyle))
-    }
-    
-    private nonisolated func loadProgressEntity() {
-        Task {
-            let entity = await PersistenceManager.shared.progress[item.id]
-            
-            await MainActor.withAnimation {
-                self.progressEntity = entity.updating
-            }
-        }
     }
 }
 

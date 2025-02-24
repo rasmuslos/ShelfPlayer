@@ -11,7 +11,7 @@ import SPPlayback
 
 struct AudiobookList: View {
     let sections: [AudiobookSection]
-    let onAppear: ((_ section: AudiobookSection) -> Void)
+    let onAppear: ((_: AudiobookSection) -> Void)
     
     var body: some View {
         ForEach(sections) { section in
@@ -40,23 +40,11 @@ private struct Row: View {
     @Environment(\.colorScheme) private var colorScheme
     
     let audiobook: Audiobook
+    let progress: ProgressTracker
     
-    @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
-    
-    private var icon: String {
-        /*
-        if audiobook == nowPlayingViewModel.item {
-            return nowPlayingViewModel.playing ? "waveform.circle.fill" : "pause.circle.fill"
-        } else {
-            return "play.circle.fill"
-        }
-         */
-        ""
-    }
-    
-    private var progressVisible: Bool {
-        // progressEntity.progress > 0 && progressEntity.progress < 1
-        true
+    init(audiobook: Audiobook) {
+        self.audiobook = audiobook
+        progress = .init(itemID: audiobook.id)
     }
     
     private var additional: [String] {
@@ -82,10 +70,10 @@ private struct Row: View {
             parts.append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         }
         
-        if let progressEntity {
-            if progressEntity.isFinished {
+        if let entity = progress.entity {
+            if entity.isFinished {
                 parts.append(String(localized: "finished"))
-            } else if progressEntity.progress <= 0 {
+            } else if entity.progress <= 0 {
                 appendDuration()
                 /*
             } else if nowPlayingViewModel.item == audiobook, nowPlayingViewModel.itemDuration > 0 {
@@ -93,8 +81,8 @@ private struct Row: View {
                 parts.append((nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
                  */
             } else {
-                parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
-                parts.append(((progressEntity.duration ?? audiobook.duration) - progressEntity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
+                parts.append(entity.progress.formatted(.percent.notation(.compactName)))
+                parts.append(((entity.duration ?? audiobook.duration) - entity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
             }
         } else {
             appendDuration()
@@ -149,6 +137,7 @@ private struct Row: View {
                             .font(.caption.smallCaps())
                             .foregroundStyle(.secondary)
                             .padding(.top, 6)
+                            .contentTransition(.numericText(countsDown: true))
                     }
                 }
             }
@@ -156,19 +145,6 @@ private struct Row: View {
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
         .modifier(SwipeActionsModifier(item: audiobook, loading: .constant(false)))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
-        .onAppear {
-            fetchProgressEntity()
-        }
-    }
-    
-    private nonisolated func fetchProgressEntity() {
-        Task {
-            let entity = await PersistenceManager.shared.progress[audiobook.id].updating
-            
-            await MainActor.withAnimation {
-                self.progressEntity = entity
-            }
-        }
     }
 }
 
