@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import RFVisuals
+import ShelfPlayerKit
 
 struct LargePlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {

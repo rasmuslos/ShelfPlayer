@@ -159,10 +159,10 @@ private struct CompactPresentation: View {
             
             Group {
                 if let first = viewModel.visible.first {
-                    PlayButton(item: first, color: nil)
+                    PlayButton(item: first, color: viewModel.dominantColor)
                         .playButtonSize(.medium)
                 } else if viewModel.episodes.isEmpty {
-                    PlayButton(item: Episode.placeholder, color: nil)
+                    PlayButton(item: Episode.placeholder, color: viewModel.dominantColor)
                         .playButtonSize(.medium)
                         .disabled(true)
                 }

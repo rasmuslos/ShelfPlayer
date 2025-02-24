@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 import Defaults
 import DefaultsMacros
-import RFVisuals
 import ShelfPlayerKit
 
 @Observable @MainActor
@@ -106,7 +105,10 @@ extension PodcastViewModel {
         }
         
         guard seasons.count > 1 else {
-            self.seasonFilter = nil
+            if self.seasonFilter != nil {
+                self.seasonFilter = nil
+            }
+            
             return []
         }
         

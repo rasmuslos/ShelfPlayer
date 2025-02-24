@@ -76,7 +76,7 @@ struct PodcastView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .alignmentGuide(.listRowSeparatorLeading) { _ in 20 }
                 
-                EpisodeSingleList(episodes: viewModel.visible)
+                EpisodeList(episodes: viewModel.visible, context: .podcast)
             }
         }
         .listStyle(.plain)

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Defaults
-import RFNotifications
 import ShelfPlayerKit
 import SPPlayback
 

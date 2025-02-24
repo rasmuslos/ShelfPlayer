@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import Defaults
-import RFNotifications
 import ShelfPlayerKit
 
 struct TabRouter: View {

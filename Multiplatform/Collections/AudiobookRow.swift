@@ -60,6 +60,8 @@ private struct RowGridView: View {
 
 #if DEBUG
 #Preview {
-    AudiobookRow(title: "Title", small: true, audiobooks: .init(repeating: .fixture, count: 7))
+    ScrollView {
+        AudiobookRow(title: "Title", small: true, audiobooks: .init(repeating: .fixture, count: 7))
+    }
 }
 #endif
