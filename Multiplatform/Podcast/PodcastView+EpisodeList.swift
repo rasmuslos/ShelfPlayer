@@ -31,7 +31,7 @@ struct PodcastEpisodesView: View {
         @Bindable var viewModel = viewModel
         
         List {
-            EpisodeSingleList(episodes: viewModel.visible)
+            EpisodeList(episodes: viewModel.visible, context: .podcast)
         }
         .listStyle(.plain)
         .navigationTitle("episodes")

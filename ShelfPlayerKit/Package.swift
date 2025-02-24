@@ -26,6 +26,8 @@ let package = Package(
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPNetwork", condition: .none),
             .targetItem(name: "SPPersistence", condition: .none),
+            
+            .byName(name: "RFKit"),
         ]),
         
         // Foundation

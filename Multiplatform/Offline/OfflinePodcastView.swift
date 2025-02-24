@@ -35,7 +35,7 @@ struct OfflinePodcastView: View {
     
     var body: some View {
         List {
-            EpisodeSingleList(episodes: sorted)
+            EpisodeList(episodes: sorted, context: .podcast)
         }
         .listStyle(.plain)
         .navigationTitle(podcast.name)

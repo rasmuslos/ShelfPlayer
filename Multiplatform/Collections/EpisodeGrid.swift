@@ -8,7 +8,7 @@
 import SwiftUI
 import SPFoundation
 
-internal struct EpisodeGrid: View {
+struct EpisodeGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let episodes: [Episode]
@@ -20,13 +20,15 @@ internal struct EpisodeGrid: View {
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimum = horizontalSizeClass == .compact ? 300 : 450.0
+        let minimumSize = horizontalSizeClass == .compact ? 300 : 450.0
         
-        let usable = width - (padding + gap)
-        let amount = CGFloat(Int(usable / minimum))
+        let usable = width - padding * 2
+        let paddedSize = minimumSize + gap
+        
+        let amount = CGFloat(Int(usable / paddedSize))
         let available = usable - gap * (amount - 1)
         
-        return max(minimum, available / amount)
+        return max(minimumSize, available / amount)
     }
     
     var body: some View {
@@ -41,7 +43,7 @@ internal struct EpisodeGrid: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHGrid(rows: .init(repeating: GridItem(.flexible(), spacing: 8), count: amount), spacing: 0) {
-                    EpisodeList(episodes: episodes, zoom: true)
+                    EpisodeList(episodes: episodes, context: .grid)
                         .padding(.leading, gap)
                         .frame(width: size)
                 }
@@ -59,5 +61,6 @@ internal struct EpisodeGrid: View {
     NavigationStack {
         EpisodeGrid(episodes: .init(repeating: .fixture, count: 7))
     }
+    .previewEnvironment()
 }
 #endif

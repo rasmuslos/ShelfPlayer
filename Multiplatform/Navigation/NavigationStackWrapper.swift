@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import RFNotifications
 import ShelfPlayerKit
 
 struct NavigationStackWrapper<Content: View>: View {

@@ -11,8 +11,16 @@ import SPPersistence
 
 struct ProgressButton: View {
     let item: PlayableItem
+    let tint: Bool
     
-    var tint = false
+    let progress: ProgressTracker
+    
+    init(item: PlayableItem, tint: Bool = false) {
+        self.item = item
+        self.tint = tint
+        
+        progress = .init(itemID: item.id)
+    }
     
     @State private var isLoading = false
     @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
@@ -66,8 +74,8 @@ struct ProgressButton: View {
         Group {
             if isLoading {
                 ProgressIndicator()
-            } else if let progressEntity {
-                if progressEntity.isFinished {
+            } else if let entity = progress.entity {
+                if entity.isFinished {
                     markAsUnfinishedButton
                 } else {
                     markAsFinishedButton
@@ -81,26 +89,13 @@ struct ProgressButton: View {
         .modify {
             if tint {
                 $0
-                    .tint(progressEntity?.isFinished == true ? .red : .green)
+                    .tint(progress.entity?.isFinished == true ? .red : .green)
             } else {
                 $0
             }
         }
         .sensoryFeedback(.error, trigger: notifyError)
         .sensoryFeedback(.success, trigger: notifySuccess)
-        .task {
-            loadProgressEntity()
-        }
-    }
-    
-    private nonisolated func loadProgressEntity() {
-        Task {
-            let entity = await PersistenceManager.shared.progress[item.id].updating
-            
-            await MainActor.withAnimation {
-                self.progressEntity = entity
-            }
-        }
     }
 }
 

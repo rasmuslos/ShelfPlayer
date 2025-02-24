@@ -6,18 +6,18 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct AuthorList: View {
     let authors: [Author]
-    let onAppear: ((_ author: Author) -> Void)
+    let onAppear: ((_: Author) -> Void)
     
     var body: some View {
         ForEach(authors) { author in
             NavigationLink(destination: AuthorView(author)) {
-                HStack(spacing: 12) {
+                HStack(spacing: 8) {
                     ItemImage(item: author, size: .tiny, cornerRadius: .infinity)
-                        .frame(width: 60)
+                        .frame(width: 52)
                     
                     VStack(alignment: .leading, spacing: 2) {
                         Text(author.name)
@@ -28,7 +28,7 @@ struct AuthorList: View {
                     }
                 }
             }
-            .listRowInsets(.init(top: 4, leading: 20, bottom: 4, trailing: 20))
+            .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
             .onAppear {
                 onAppear(author)
             }
@@ -44,5 +44,6 @@ struct AuthorList: View {
         }
         .listStyle(.plain)
     }
+    .previewEnvironment()
 }
 #endif

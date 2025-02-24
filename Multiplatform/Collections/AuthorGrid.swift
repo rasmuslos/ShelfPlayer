@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct AuthorGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -19,13 +19,15 @@ struct AuthorGrid: View {
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimum = horizontalSizeClass == .compact ? 80.0 : 120.0
+        let minimumSize = horizontalSizeClass == .compact ? 72.0 : 100.0
         
         let usable = width - padding * 2
-        let amount = CGFloat(Int(usable / minimum))
+        let paddedSize = minimumSize + gap
+        
+        let amount = CGFloat(Int(usable / paddedSize))
         let available = usable - gap * (amount - 1)
         
-        return max(minimum, available / amount)
+        return max(minimumSize, available / amount)
     }
     
     var body: some View {

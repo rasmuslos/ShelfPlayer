@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import RFNetwork
+import ShelfPlayerKit
 
 struct HeaderEditor: View {
     @Binding var headers: [HeaderShadow]

@@ -98,8 +98,6 @@ private struct EpisodeGridItem: View {
 private struct Title: View {
     let episode: Episode
     
-    @State private var loading = false
-    
     var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
@@ -116,7 +114,7 @@ private struct Title: View {
                 }
                 
                 HStack(spacing: 0) {
-                    EpisodePlayButton(episode: episode, loading: $loading, highlighted: true)
+                    EpisodePlayButton(episode: episode, highlighted: true)
                         .fixedSize()
                     
                     if let releaseDate = episode.releaseDate {

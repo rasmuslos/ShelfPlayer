@@ -6,15 +6,14 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPPersistence
+import ShelfPlayerKit
 import SPPlayback
 
 struct AudiobookVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let sections: [AudiobookSection]
-    let onAppear: ((_ section: AudiobookSection) -> Void)
+    let onAppear: ((_: AudiobookSection) -> Void)
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 100.0 : 200.0
@@ -65,7 +64,7 @@ struct AudiobookHGrid: View {
         if horizontalSizeClass == .compact {
             small ? 80.0 : 100.0
         } else {
-            small ? 120.0 : 160.0
+            small ? 100.0 : 120.0
         }
     }
     private var size: CGFloat {

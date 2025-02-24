@@ -10,3 +10,7 @@
 @_exported import SPNetwork
 @_exported import SPPersistence
 
+@_exported import RFVisuals
+@_exported import RFNetwork
+@_exported import RFNotifications
+

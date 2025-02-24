@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 import OSLog
-import RFVisuals
-import RFNotifications
 import ShelfPlayerKit
 import SPPlayback
 

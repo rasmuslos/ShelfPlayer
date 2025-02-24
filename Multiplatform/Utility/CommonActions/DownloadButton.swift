@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import RFNotifications
 import ShelfPlayerKit
 
 struct DownloadButton: View {
@@ -144,11 +143,17 @@ struct DownloadButton: View {
                     if let current {
                         CircularProgressIndicator(completed: current, background: progressBackgroundColor, tint: progressTintColor)
                             .modify {
-                                if progressVisibility == .toolbar {
+                                switch progressVisibility {
+                                case .never:
+                                    EmptyView()
+                                case .toolbar:
                                     $0
                                         .frame(width: 18)
-                                } else {
+                                case .triangle:
                                     $0
+                                case .episode:
+                                    $0
+                                        .frame(width: 12)
                                 }
                             }
                     } else {
@@ -211,6 +216,7 @@ struct DownloadButton: View {
         case never
         case toolbar
         case triangle
+        case episode
     }
 }
 
