@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OSLog
 import Defaults
 import DefaultsMacros
 import ShelfPlayerKit
@@ -13,6 +14,8 @@ import SPPlayback
 
 @Observable @MainActor
 final class Satellite {
+    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Satellite")
+    
     // MARK: Navigation
     
     var isOffline: Bool
@@ -22,8 +25,10 @@ final class Satellite {
     
     // MARK: Playback
     
-    private(set) var item: PlayableItem?
-    private(set) var playing: Bool
+    private(set) var currentItem: PlayableItem?
+    
+    private(set) var isPlaying: Bool
+    private(set) var isBuffering: Bool
     
     private(set) var currentTime: TimeInterval
     private(set) var currentChapterTime: TimeInterval
@@ -33,7 +38,8 @@ final class Satellite {
     
     // MARK: Playback helper
     
-    private(set) var loading: Int
+    private(set) var totalLoading: Int
+    private(set) var busy: [ItemIdentifier: Int]
     
     // MARK: Utility
     
@@ -45,8 +51,10 @@ final class Satellite {
     init() {
         isOffline = false
         
-        item = nil
-        playing = false
+        currentItem = Audiobook.fixture
+        
+        isPlaying = false
+        isBuffering = true
         
         currentTime = 0
         currentChapterTime = 0
@@ -54,7 +62,8 @@ final class Satellite {
         duration = 0
         chapterDuration = 0
         
-        loading = 0
+        totalLoading = 0
+        busy = [:]
         
         notifyError = false
         notifySuccess = false
@@ -62,80 +71,112 @@ final class Satellite {
         stash = .init()
         setupObservers()
     }
+    
+    private func startWorking(on itemID: ItemIdentifier) {
+        withAnimation {
+            let current = busy[itemID]
+            
+            if current == nil {
+                busy[itemID] = 1
+            } else {
+                busy[itemID]! += 1
+            }
+        }
+    }
+    private func endWorking(on itemID: ItemIdentifier, successfully: Bool?) {
+        withAnimation {
+            guard let current = busy[itemID] else {
+                logger.warning("Ending work on \(itemID) but no longer busy")
+                return
+            }
+            
+            busy[itemID] = current - 1
+            
+            if let successfully {
+                if successfully {
+                    notifySuccess.toggle()
+                } else {
+                    notifyError.toggle()
+                }
+            }
+        }
+    }
 }
 
 extension Satellite {
-    var isLoading: Bool {
-        loading > 0
+    func isLoading(observing: ItemIdentifier) -> Bool {
+        totalLoading > 0 || busy[observing] ?? 0 > 0
     }
     
-    nonisolated func play(_ item: PlayableItem) {
+    nonisolated func play() {
+    }
+    nonisolated func pause() {
+    }
+    
+    nonisolated func start(_ item: PlayableItem) {
         Task {
-            guard await self.item != item else {
+            guard await self.currentItem != item else {
                 // TODO: PAUSE
                 return
             }
             
-            await MainActor.withAnimation {
-                loading += 1
-            }
+            await startWorking(on: item.id)
             
             do {
                 try await AudioPlayer.shared.start(item.id)
-                
-                await MainActor.run {
-                    loading -= 1
-                    notifySuccess.toggle()
-                }
+                await endWorking(on: item.id, successfully: true)
             } catch {
-                await MainActor.withAnimation {
-                    loading -= 1
-                    notifyError.toggle()
-                }
+                await endWorking(on: item.id, successfully: false)
             }
         }
     }
     
     nonisolated func queue(_ item: PlayableItem) {
         Task {
-            await MainActor.withAnimation {
-                loading += 1
-            }
+            await startWorking(on: item.id)
             
             do {
                 // try await AudioPlayer.shared.queue([.init(itemID: item.id, startWithoutListeningSession: <#T##Bool#>, origin: <#T##QueueItem.QueueItemOrigin#>)])
-                
-                await MainActor.run {
-                    loading -= 1
-                    notifySuccess.toggle()
-                }
+                await endWorking(on: item.id, successfully: true)
             } catch {
-                await MainActor.withAnimation {
-                    loading -= 1
-                    notifyError.toggle()
-                }
+                await endWorking(on: item.id, successfully: false)
             }
         }
     }
     
+    nonisolated func markAsFinished(_ item: PlayableItem) {
+        Task {
+            await startWorking(on: item.id)
+            
+            do {
+                try await PersistenceManager.shared.progress.markAsCompleted(item.id)
+                await endWorking(on: item.id, successfully: true)
+            } catch {
+                await endWorking(on: item.id, successfully: false)
+            }
+        }
+    }
+    nonisolated func markAsUnfinished(_ item: PlayableItem) {
+        Task {
+            await startWorking(on: item.id)
+            
+            do {
+                try await PersistenceManager.shared.progress.markAsListening(item.id)
+                await endWorking(on: item.id, successfully: true)
+            } catch {
+                await endWorking(on: item.id, successfully: false)
+            }
+        }
+    }
     nonisolated func deleteProgress(_ item: PlayableItem) {
         Task {
-            await MainActor.withAnimation {
-                loading += 1
-            }
+            await startWorking(on: item.id)
             
             do {
                 try await PersistenceManager.shared.progress.delete(itemID: item.id)
-                
-                await MainActor.run {
-                    loading -= 1
-                    notifySuccess.toggle()
-                }
+                await endWorking(on: item.id, successfully: true)
             } catch {
-                await MainActor.run {
-                    loading -= 1
-                    notifyError.toggle()
-                }
+                await endWorking(on: item.id, successfully: false)
             }
         }
     }

@@ -10,57 +10,37 @@ import SPFoundation
 import SPPersistence
 
 struct ProgressButton: View {
+    @Environment(Satellite.self) private var satellite
+    
     let item: PlayableItem
     let tint: Bool
     
-    let progress: ProgressTracker
+    @State private var progress: ProgressTracker
     
     init(item: PlayableItem, tint: Bool = false) {
         self.item = item
         self.tint = tint
         
-        progress = .init(itemID: item.id)
+        _progress = .init(initialValue: .init(itemID: item.id))
     }
     
-    @State private var isLoading = false
     @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
     
-    @State private var notifyError = false
-    @State private var notifySuccess = false
+    private var isLoading: Bool {
+        satellite.isLoading(observing: item.id)
+    }
     
     @ViewBuilder
     private var markAsFinishedButton: some View {
         Button("progress.finished.set", systemImage: "checkmark.square") {
-            Task {
-                isLoading = true
-                
-                do {
-                    try await PersistenceManager.shared.progress.markAsCompleted(item.id)
-                    notifySuccess.toggle()
-                } catch {
-                    notifyError.toggle()
-                }
-                
-                isLoading = false
-            }
+            satellite.markAsFinished(item)
         }
     }
     
     @ViewBuilder
     private var markAsUnfinishedButton: some View {
         Button {
-            Task {
-                isLoading = true
-                
-                do {
-                    try await PersistenceManager.shared.progress.markAsListening(item.id)
-                    notifySuccess.toggle()
-                } catch {
-                    notifyError.toggle()
-                }
-                
-                isLoading = false
-            }
+            satellite.markAsUnfinished(item)
         } label: {
             Label("progress.finished.unset", systemImage: "minus.square")
             
@@ -72,9 +52,7 @@ struct ProgressButton: View {
     
     var body: some View {
         Group {
-            if isLoading {
-                ProgressIndicator()
-            } else if let entity = progress.entity {
+            if !isLoading, let entity = progress.entity {
                 if entity.isFinished {
                     markAsUnfinishedButton
                 } else {
@@ -94,8 +72,6 @@ struct ProgressButton: View {
                 $0
             }
         }
-        .sensoryFeedback(.error, trigger: notifyError)
-        .sensoryFeedback(.success, trigger: notifySuccess)
     }
 }
 
