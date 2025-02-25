@@ -15,8 +15,8 @@ struct QueuePlayButton: View {
     
     var body: some View {
         Button("queue.play", systemImage: "play.fill") {
-            satellite.play(item)
+            satellite.start(item)
         }
-        .disabled(satellite.isLoading)
+        .disabled(satellite.isLoading(observing: item.id))
     }
 }

@@ -15,17 +15,20 @@ struct EpisodePlayButton: View {
     let episode: Episode
     let highlighted: Bool
     
-    let progress: ProgressTracker
+    @State private var progress: ProgressTracker
     
     init(episode: Episode, highlighted: Bool = false) {
         self.episode = episode
         self.highlighted = highlighted
         
-        progress = .init(itemID: episode.id)
+        _progress = .init(initialValue: .init(itemID: episode.id))
     }
     
     private var isPlaying: Bool {
-        satellite.item == episode
+        satellite.currentItem == episode
+    }
+    private var isLoading: Bool {
+        satellite.isLoading(observing: episode.id)
     }
     
     private var label: String {
@@ -48,7 +51,7 @@ struct EpisodePlayButton: View {
         }
     }
     private var icon: String {
-        if isPlaying && satellite.playing {
+        if isPlaying && satellite.isPlaying {
             return "pause.fill"
         }
         
@@ -76,10 +79,10 @@ struct EpisodePlayButton: View {
                 
                 Image(systemName: icon)
                     .contentTransition(.symbolEffect(.replace.downUp.byLayer))
-                    .opacity(satellite.isLoading ? 0 : 1)
+                    .opacity(isLoading ? 0 : 1)
             }
             .overlay {
-                if satellite.isLoading {
+                if isLoading {
                     ProgressIndicator()
                 }
             }
@@ -108,7 +111,7 @@ struct EpisodePlayButton: View {
     
     var body: some View {
         Button {
-            satellite.play(episode)
+            satellite.start(episode)
         } label: {
             text()
                 .opacity(highlighted ? 0 : 1)
@@ -130,6 +133,7 @@ struct EpisodePlayButton: View {
                 }
         }
         .buttonStyle(.plain)
+        .disabled(isLoading)
         .clipShape(.rect(cornerRadius: .infinity))
         .modifier(ButtonHoverEffectModifier(cornerRadius: .infinity, hoverEffect: .lift))
     }

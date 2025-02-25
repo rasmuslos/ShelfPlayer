@@ -40,11 +40,11 @@ private struct Row: View {
     @Environment(\.colorScheme) private var colorScheme
     
     let audiobook: Audiobook
-    let progress: ProgressTracker
+    @State private var progress: ProgressTracker
     
     init(audiobook: Audiobook) {
         self.audiobook = audiobook
-        progress = .init(itemID: audiobook.id)
+        _progress = .init(initialValue: .init(itemID: audiobook.id))
     }
     
     private var additional: [String] {
@@ -95,12 +95,12 @@ private struct Row: View {
         NavigationLink(destination: AudiobookView(audiobook)) {
             HStack(spacing: 12) {
                 Button {
-                    satellite.play(audiobook)
+                    satellite.start(audiobook)
                 } label: {
                     ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
                         .frame(width: 94)
                         .overlay {
-                            if satellite.isLoading {
+                            if satellite.isLoading(observing: audiobook.id) {
                                 ZStack {
                                     Color.black
                                         .opacity(0.2)
@@ -112,7 +112,7 @@ private struct Row: View {
                         }
                 }
                 .buttonStyle(.plain)
-                .disabled(satellite.isLoading)
+                .disabled(satellite.isLoading(observing: audiobook.id))
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(audiobook.name)

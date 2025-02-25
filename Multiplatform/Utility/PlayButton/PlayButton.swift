@@ -21,13 +21,13 @@ struct PlayButton: View {
     let item: PlayableItem
     let color: Color?
     
-    let progress: ProgressTracker
+    @State private var progress: ProgressTracker
     
     init(item: PlayableItem, color: Color?) {
         self.item = item
         self.color = color
         
-        progress = .init(itemID: item.id)
+        _progress = .init(initialValue: .init(itemID: item.id))
     }
     
     private var background: Color {
@@ -38,12 +38,15 @@ struct PlayButton: View {
         return colorScheme == .dark ? .white : .black
     }
     
-    private var isItemPlaying: Bool {
-        satellite.item == item
+    private var isPlaying: Bool {
+        satellite.currentItem == item
+    }
+    private var isLoading: Bool {
+        satellite.isLoading(observing: item.id)
     }
     
     private var remaining: TimeInterval? {
-        if isItemPlaying && satellite.duration > 0 {
+        if isPlaying && satellite.duration > 0 {
             satellite.duration - satellite.currentTime
         } else if let entity = progress.entity, let duration = entity.duration, duration > 0 {
             duration - entity.currentTime
@@ -55,8 +58,8 @@ struct PlayButton: View {
     }
     
     private var label: LocalizedStringKey {
-        if isItemPlaying {
-            return satellite.playing ? "pause" : "resume"
+        if isPlaying {
+            return satellite.isPlaying ? "pause" : "resume"
         }
         
         if let entity = progress.entity {
@@ -75,7 +78,7 @@ struct PlayButton: View {
     }
     
     private var icon: String {
-        if isItemPlaying && satellite.playing {
+        if isPlaying && satellite.isPlaying {
             "pause.fill"
         } else {
             "play.fill"
@@ -87,7 +90,7 @@ struct PlayButton: View {
         ZStack {
             HStack(spacing: 4) {
                 Group {
-                    if satellite.isLoading {
+                    if isLoading {
                         ProgressIndicator()
                     } else {
                         Label(label, systemImage: icon)
@@ -128,8 +131,9 @@ struct PlayButton: View {
         } label: {
             playButtonStyle.makeLabel(configuration: .init(progress: progress.entity?.progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
-            satellite.play(item)
+            satellite.start(item)
         }
+        .disabled(isLoading)
         .foregroundColor((background.isLight ?? false) ? .black : .white)
         .animation(.smooth, value: color)
     }

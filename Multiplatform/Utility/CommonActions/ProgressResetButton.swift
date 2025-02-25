@@ -13,11 +13,11 @@ struct ProgressResetButton: View {
     
     let item: PlayableItem
     
-    let progress: ProgressTracker
+    @State private var progress: ProgressTracker
     
     init(item: PlayableItem) {
         self.item = item
-        progress = .init(itemID: item.id)
+        _progress = .init(initialValue: .init(itemID: item.id))
     }
     
     var body: some View {
@@ -25,7 +25,7 @@ struct ProgressResetButton: View {
             Button("progress.reset", systemImage: "square.slash", role: .destructive) {
                 satellite.deleteProgress(item)
             }
-            .disabled(satellite.isLoading)
+            .disabled(satellite.isLoading(observing: item.id))
         }
     }
 }
