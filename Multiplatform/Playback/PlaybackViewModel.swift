@@ -18,6 +18,16 @@ final class PlaybackViewModel {
         didSet {
             if isExpanded {
                 _dragOffset = 0
+            } else if _dragOffset == 0 {
+                // this is stupid
+                // this will trigger an view update
+                // because the scaleEffect depends on this variable
+                // and we need the NavigationStack to update
+                // so it will not do so after the animation finishes, causing a ugly mess
+                // if the user is dragging this already happens, so we trigger an update only when
+                // the user isn't dragging (dragOffset == 0) by setting it to the same value (0)
+                // If you are reading this, hire me
+                _dragOffset = 0
             }
         }
     }
@@ -59,7 +69,7 @@ final class PlaybackViewModel {
     }
     var pushAmount: Percentage {
         // technically a CGFloat
-        let dragHeight: Percentage = 400
+        let dragHeight: Percentage = 300
         
         if dragOffset > 0 {
             return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.1

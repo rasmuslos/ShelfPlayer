@@ -52,7 +52,6 @@ private struct Row: View {
                     } label: {
                         ItemImage(item: episode, size: .small)
                             .frame(width: 104)
-                            .padding(.trailing, 12)
                             .hoverEffect(.highlight)
                             .matchedTransitionSource(id: zoomID, in: namespace!)
                             .overlay {
@@ -66,6 +65,7 @@ private struct Row: View {
                                     }
                                 }
                             }
+                            .padding(.trailing, 12)
                     }
                     .buttonStyle(.plain)
                     .disabled(satellite.isLoading(observing: episode.id))
