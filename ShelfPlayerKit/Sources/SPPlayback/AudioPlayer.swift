@@ -13,6 +13,18 @@ import SPFoundation
 public final actor AudioPlayer: Sendable {
     var current: (any AudioEndpoint)?
     
+    init() {
+        RFNotification[.downloadStatusChanged].subscribe(queue: .current) { [weak self] (itemID, status) in
+            self?.assumeIsolated { isolated in
+                guard isolated.current?.currentItemID == itemID else {
+                    return
+                }
+                
+                isolated.stop()
+            }
+        }
+    }
+    
     public static let shared = AudioPlayer()
 }
 
@@ -52,6 +64,8 @@ public extension AudioPlayer {
     }
     
     func start(_ itemID: ItemIdentifier, withoutListeningSession: Bool = false) async throws {
+        stop()
+        
         do {
             current = try await LocalAudioEndpoint(itemID: itemID, withoutListeningSession: withoutListeningSession)
         } catch {
