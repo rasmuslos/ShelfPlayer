@@ -29,6 +29,6 @@ struct QueueLaterButton: View {
             }
              */
         }
-        .disabled(satellite.isLoading)
+        .disabled(satellite.isLoading(observing: item.id))
     }
 }

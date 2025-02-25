@@ -16,14 +16,14 @@ struct StatusOverlay: View {
     
     let item: PlayableItem
     
-    let progress: ProgressTracker
-    let download: DownloadStatusTracker
+    @State private var progress: ProgressTracker
+    @State private var download: DownloadStatusTracker
     
     init(item: PlayableItem) {
         self.item = item
         
-        progress = .init(itemID: item.id)
-        download = .init(itemID: item.id)
+        _progress = .init(initialValue: .init(itemID: item.id))
+        _download = .init(initialValue: .init(itemID: item.id))
     }
     
     private var showTriangle: Bool {

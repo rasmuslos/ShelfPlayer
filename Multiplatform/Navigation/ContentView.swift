@@ -20,6 +20,8 @@ struct ContentView: View {
     @Default(.tintColor) private var tintColor
     
     @State private var satellite = Satellite()
+    @State private var playbackViewModel = PlaybackViewModel()
+    
     @State private var connectionStore = ConnectionStore()
     
     // try? await OfflineManager.shared.attemptListeningTimeSync()
@@ -51,6 +53,8 @@ struct ContentView: View {
         .sensoryFeedback(.error, trigger: satellite.notifyError)
         .sensoryFeedback(.success, trigger: satellite.notifySuccess)
         .environment(satellite)
+        .environment(playbackViewModel)
+        .environment(connectionStore)
         .environment(\.namespace, namespace)
         .onContinueUserActivity(CSSearchableItemActionType) {
             guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
@@ -66,7 +70,6 @@ struct ContentView: View {
             
             ""
         }
-        .environment(connectionStore)
     }
 }
 

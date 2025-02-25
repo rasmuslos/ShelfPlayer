@@ -48,15 +48,27 @@ private struct Row: View {
             HStack(spacing: 0) {
                 if context != .podcast {
                     Button {
-                        satellite.play(episode)
+                        satellite.start(episode)
                     } label: {
                         ItemImage(item: episode, size: .small)
                             .frame(width: 104)
                             .padding(.trailing, 12)
                             .hoverEffect(.highlight)
                             .matchedTransitionSource(id: zoomID, in: namespace!)
+                            .overlay {
+                                if satellite.isLoading(observing: episode.id) {
+                                    ZStack {
+                                        Color.black
+                                            .opacity(0.2)
+                                            .clipShape(.rect(cornerRadius: 8))
+                                        
+                                        ProgressIndicator(tint: .white)
+                                    }
+                                }
+                            }
                     }
                     .buttonStyle(.plain)
+                    .disabled(satellite.isLoading(observing: episode.id))
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
@@ -93,13 +105,13 @@ struct EpisodeItemActions: View {
     let episode: Episode
     let context: EpisodeList.PresentationContext
     
-    let download: DownloadStatusTracker
+    @State private var download: DownloadStatusTracker
     
     init(episode: Episode, context: EpisodeList.PresentationContext) {
         self.episode = episode
         self.context = context
         
-        download = .init(itemID: episode.id)
+        _download = .init(initialValue: .init(itemID: episode.id))
     }
     
     var body: some View {

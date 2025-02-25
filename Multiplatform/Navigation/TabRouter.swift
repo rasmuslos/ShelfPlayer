@@ -33,6 +33,13 @@ struct TabRouter: View {
             selection = $0
         }
     }
+    var isReady: Bool {
+        guard let selection else {
+            return false
+        }
+        
+        return importedConnectionIDs.contains(selection.library.connectionID)
+    }
     
     @ViewBuilder
     private func content(for tab: TabValue) -> some View {
@@ -137,6 +144,7 @@ struct TabRouter: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .id(current)
+        .modifier(CompactPlaybackModifier(ready: isReady, bottomOffset: 88))
         .sensoryFeedback(.error, trigger: importFailedConnectionIDs)
         .onChange(of: current) {
             let appearance = UINavigationBarAppearance()
@@ -173,15 +181,13 @@ struct TabRouter: View {
             selection = .audiobookHome(library)
         case .podcasts:
             selection = .podcastHome(library)
-        default:
-            return
         }
     }
 }
 
 #Preview {
     @Previewable @State var selection: TabValue? = nil
-    
+
     TabRouter(selection: $selection)
         .previewEnvironment()
 }

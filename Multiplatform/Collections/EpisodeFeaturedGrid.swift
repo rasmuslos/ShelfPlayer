@@ -99,11 +99,11 @@ private struct EpisodeGridItem: View {
 
 private struct Title: View {
     let episode: Episode
-    let download: DownloadStatusTracker
+    @State private var download: DownloadStatusTracker
     
     init(episode: Episode) {
         self.episode = episode
-        download = .init(itemID: episode.id)
+        _download = .init(initialValue: .init(itemID: episode.id))
     }
     
     var body: some View {
