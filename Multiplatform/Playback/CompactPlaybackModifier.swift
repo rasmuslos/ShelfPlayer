@@ -19,15 +19,6 @@ struct CompactPlaybackModifier: ViewModifier {
     let ready: Bool
     let bottomOffset: CGFloat
     
-    @ViewBuilder
-    private func rect(geometryProxy: GeometryProxy) -> some View {
-        RoundedRectangle(cornerRadius: UIScreen.main.displayCornerRadius, style: .continuous)
-            .fill(.background)
-            .frame(width: geometryProxy.size.width * (viewModel.isPushing ? (viewModel.pushAmount + 0.01) : 1))
-            .padding(.top, viewModel.isPushing ? 0.5 * geometryProxy.size.height * (1 - viewModel.pushAmount) : 0)
-            .ignoresSafeArea()
-    }
-    
     private var isPushing: Bool {
         viewModel.isPushing
     }
@@ -41,20 +32,22 @@ struct CompactPlaybackModifier: ViewModifier {
                 ZStack(alignment: .bottom) {
                     Rectangle()
                         .fill(.black)
-                        .ignoresSafeArea(edges: .all)
                     
-                    rect(geometryProxy: geometryProxy)
-                    
-                    content
-                        .allowsHitTesting(!viewModel.isExpanded)
-                        .padding(.top, 0.17)
-                        .visualEffect { [isPushing, pushAmount] content, _ in
-                            content
-                                .scaleEffect(isPushing ? pushAmount : 1, anchor: .center)
-                        }
-                        .mask {
-                            rect(geometryProxy: geometryProxy)
-                        }
+                    Group {
+                        content
+                            .allowsHitTesting(!viewModel.isExpanded)
+                            .visualEffect { [isPushing, pushAmount] content, _ in
+                                content
+                                    .scaleEffect(isPushing ? pushAmount : 1, anchor: .center)
+                            }
+                            .mask {
+                                RoundedRectangle(cornerRadius: viewModel.pushContainerCornerRadius, style: .continuous)
+                                    .fill(.background)
+                                    .frame(width: (geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing) * (viewModel.isPushing ? viewModel.pushAmount : 1),
+                                           height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * (viewModel.isPushing ? viewModel.pushAmount : 1))
+                            }
+                    }
+                    .animation(.smooth, value: viewModel.pushAmount)
                     
                     if satellite.isNowPlayingVisible {
                         ZStack {
@@ -135,8 +128,6 @@ struct CompactPlaybackModifier: ViewModifier {
                                 ExpandedForeground()
                             }
                         }
-                        .ignoresSafeArea(.all)
-                        .ignoresSafeArea(edges: .all)
                         .frame(height: viewModel.isExpanded ? nil : 56)
                         .padding(.horizontal, viewModel.isExpanded ? 0 : 12)
                         .padding(.bottom, viewModel.isExpanded ? 0 : bottomOffset)
@@ -146,14 +137,15 @@ struct CompactPlaybackModifier: ViewModifier {
                     }
                     
                 }
-                .ignoresSafeArea(edges: .all)
-                .animation(.smooth, value: viewModel.pushAmount)
+                .frame(width: geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing,
+                       height: geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom)
                 /*
                  .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _, _, _ in
                  viewModel.expanded = false
                  })
                  */
             }
+            .ignoresSafeArea()
         } else {
             content
         }
@@ -173,6 +165,7 @@ private struct ExpandedForeground: View {
                 Spacer(minLength: 12)
                 
                 ItemImage(itemID: satellite.currentItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
+                    .id(satellite.currentItemID)
                     .shadow(color: .black.opacity(0.4), radius: 20)
                     .scaleEffect(satellite.isPlaying ? 1 : 0.8)
                     .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
@@ -182,6 +175,10 @@ private struct ExpandedForeground: View {
                 Spacer(minLength: 12)
                 
                 VStack(spacing: 0) {
+                    Text(satellite.currentTime.description)
+                    Text(satellite.duration.description)
+                    Text(satellite.currentChapterTime.description)
+                    Text(satellite.chapterDuration.description)
                     /*
                     NowPlaying.Title(item: item)
                         .modifier(PlaybackDragGestureCatcher(active: true))

@@ -78,4 +78,7 @@ final class PlaybackViewModel {
             16
         }
     }
+    var pushContainerCornerRadius: CGFloat {
+        max(20, UIScreen.main.displayCornerRadius * (1 - ((1 - pushAmount) * 6)))
+    }
 }

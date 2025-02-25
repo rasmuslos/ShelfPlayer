@@ -32,6 +32,29 @@ extension AudioPlayer {
         
         RFNotification[.bufferHealthChanged].send(isBuffering)
     }
+    
+    func durationsDidChange(endpointID: UUID, itemDuration: TimeInterval?, chapterDuration: TimeInterval?) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        RFNotification[.durationsChanged].send((itemDuration, chapterDuration))
+    }
+    func currentTimesDidChange(endpointID: UUID, itemCurrentTime: TimeInterval?, chapterCurrentTime: TimeInterval?) {
+        guard current?.id == endpointID else {
+            return
+        }
+        
+        RFNotification[.currentTimesChanged].send((itemCurrentTime, chapterCurrentTime))
+    }
+    
+    func chapterDidChange(endpointID: UUID, currentChapterIndex: Int?) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        RFNotification[.chapterChanged].send(currentChapterIndex)
+    }
 }
 
 public extension RFNotification.Notification {
@@ -48,5 +71,16 @@ public extension RFNotification.Notification {
     
     static var bufferHealthChanged: Notification<(Bool)> {
         .init("io.rfk.shelfPlayerKit.bufferHealthChanged")
+    }
+    
+    static var durationsChanged: Notification<(itemDuration: TimeInterval?, chapterDuration: TimeInterval?)> {
+        .init("io.rfk.shelfPlayerKit.durationsChanged")
+    }
+    static var currentTimesChanged: Notification<(itemDuration: TimeInterval?, chapterDuration: TimeInterval?)> {
+        .init("io.rfk.shelfPlayerKit.currentTimesChanged")
+    }
+    
+    static var chapterChanged: Notification<Int?> {
+        .init("io.rfk.shelfPlayerKit.chapterChanged")
     }
 }

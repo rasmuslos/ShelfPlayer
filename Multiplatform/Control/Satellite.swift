@@ -287,5 +287,14 @@ private extension Satellite {
         RFNotification[.bufferHealthChanged].subscribe { [weak self] isBuffering in
             self?.isBuffering = isBuffering
         }.store(in: &stash)
+        
+        RFNotification[.durationsChanged].subscribe { [weak self] durations in
+            self?.duration = durations.0 ?? 0
+            self?.chapterDuration = durations.1 ?? self?.duration ?? 0
+        }.store(in: &stash)
+        RFNotification[.currentTimesChanged].subscribe { [weak self] currentTimes in
+            self?.currentTime = currentTimes.0 ?? 0
+            self?.currentChapterTime = currentTimes.1 ?? self?.currentTime ?? 0
+        }.store(in: &stash)
     }
 }

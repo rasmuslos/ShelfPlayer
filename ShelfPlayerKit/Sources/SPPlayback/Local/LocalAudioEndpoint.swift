@@ -40,6 +40,8 @@ final class LocalAudioEndpoint: AudioEndpoint {
     nonisolated(unsafe) var chapterDuration: TimeInterval?
     nonisolated(unsafe) var chapterCurrentTime: TimeInterval?
     
+    nonisolated(unsafe) private var chapterValidUntil: TimeInterval
+    
     init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws {
         logger.info("Starting up local audio endpoint with item ID \(itemID) (without listening session: \(withoutListeningSession))")
         
@@ -67,6 +69,8 @@ final class LocalAudioEndpoint: AudioEndpoint {
         
         chapterDuration = nil
         chapterCurrentTime = nil
+        
+        chapterValidUntil = -1
         
         setupObservers()
         
@@ -236,13 +240,14 @@ private extension LocalAudioEndpoint {
             throw error
         }
         
-        self.audioTracks = audioTracks
-        self.chapters = chapters
+        self.audioTracks = audioTracks.sorted()
+        self.chapters = chapters.sorted()
         
         try await seek(to: startTime)
         
         await AudioPlayer.shared.didStartPlaying(endpointID: id, itemID: currentItemID, at: startTime)
         
+        await updateDuration()
         await play()
         
         activeOperationCount -= 1
@@ -273,23 +278,73 @@ private extension LocalAudioEndpoint {
         return chapters.firstIndex(where: { time >= $0.startOffset && time < $0.endOffset })
     }
     
+    func updateDuration() async {
+        if let last = audioTracks.last {
+            duration = last.offset + last.duration
+        }
+        
+        if let activeChapterIndex {
+            chapterDuration = chapters[activeChapterIndex].endOffset - chapters[activeChapterIndex].startOffset
+        } else {
+            chapterDuration = duration
+        }
+        
+        await AudioPlayer.shared.durationsDidChange(endpointID: id, itemDuration: duration, chapterDuration: chapterDuration)
+    }
+    
     func setupObservers() {
         audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: nil) { [weak self] _ in
-            let isBuffering: Bool
-            
-            if let item = self?.audioPlayer.currentItem {
-                isBuffering = !(item.status == .readyToPlay && item.isPlaybackLikelyToKeepUp)
-            } else {
-                isBuffering = true
-            }
-            
-            if self?.isBuffering != isBuffering {
-                self?.isBuffering = isBuffering
+            Task {
+                // MARK: Buffering
                 
-                if let id = self?.id {
-                    Task {
+                let isBuffering: Bool
+                
+                if let item = self?.audioPlayer.currentItem {
+                    isBuffering = !(item.status == .readyToPlay && item.isPlaybackLikelyToKeepUp)
+                } else {
+                    isBuffering = true
+                }
+                
+                if self?.isBuffering != isBuffering {
+                    self?.isBuffering = isBuffering
+                    
+                    if let id = self?.id {
                         await AudioPlayer.shared.bufferHealthDidChange(endpointID: id, isBuffering: isBuffering)
                     }
+                }
+                
+                // MARK: Current time
+                
+                if let activeAudioTrackIndex = self?.activeAudioTrackIndex, activeAudioTrackIndex >= 0, let audioTrack = self?.audioTracks[activeAudioTrackIndex], let seconds = self?.audioPlayer.currentTime().seconds {
+                    self?.currentTime = audioTrack.offset + seconds
+                }
+                
+                // MARK: Chapter
+                
+                if let chapters = self?.chapters, !chapters.isEmpty, let currentTime = self?.chapterCurrentTime, let chapterValidUntil = self?.chapterValidUntil, chapterValidUntil < currentTime {
+                    self?.activeChapterIndex = self?.chapterIndex(at: currentTime)
+                    
+                    if let activeChapterIndex = self?.activeChapterIndex {
+                        self?.chapterValidUntil = self?.chapters[activeChapterIndex].endOffset ?? -1
+                    }
+                    
+                    if let id = self?.id {
+                        await AudioPlayer.shared.chapterDidChange(endpointID: id, currentChapterIndex: self?.activeChapterIndex)
+                    }
+                    
+                    await self?.updateDuration()
+                }
+                
+                // MARK: Chapter current time
+                
+                if let currentTime = self?.currentTime, let activeChapterIndex = self?.activeChapterIndex, let chapter = self?.chapters[activeChapterIndex] {
+                    self?.chapterCurrentTime = currentTime - chapter.startOffset
+                } else {
+                    self?.chapterCurrentTime = self?.currentTime
+                }
+                
+                if let id = self?.id {
+                    await AudioPlayer.shared.currentTimesDidChange(endpointID: id, itemCurrentTime: self?.currentTime, chapterCurrentTime: self?.chapterCurrentTime)
                 }
             }
         }
