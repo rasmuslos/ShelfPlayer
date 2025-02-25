@@ -255,6 +255,7 @@ private struct CollapsedForeground: View {
                     satellite.skip(forwards: false)
                 }
                 .labelStyle(.iconOnly)
+                .imageScale(.large)
                 .symbolEffect(.bounce.up, value: viewModel.notifySkipBackwards)
                 
                 ZStack {
