@@ -11,6 +11,7 @@ enum AudioPlayerError: Error {
     case offline
     case downloading
     
+    case invalidTime
     case missingAudioTrack
     
     case loadFailed

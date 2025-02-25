@@ -21,19 +21,19 @@ struct PlaybackDragGestureCatcher: ViewModifier {
                             return
                         }
                         
-                        if $0.velocity.height > 4000 {
+                        if $0.velocity.height > 5000 {
                             viewModel.isExpanded = false
-                        } else {
-                            viewModel.dragOffset = min(1000, max(0, $0.translation.height))
                         }
+                        
+                        viewModel.dragOffset = min(1000, max(0, $0.translation.height))
                     }
                     .onEnded {
                         if $0.translation.height > 200 {
                             viewModel.isExpanded = false
-                        } else {
-                            withAnimation {
-                                viewModel.dragOffset = 0
-                            }
+                        }
+                        
+                        withAnimation {
+                            viewModel.dragOffset = 0
                         }
                     }
             )

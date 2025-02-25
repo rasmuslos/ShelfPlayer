@@ -147,7 +147,7 @@ struct EpisodeItemActions: View {
                     DownloadButton(item: episode, progressVisibility: .episode)
                 case .completed:
                     Image(systemName: "arrow.down.circle.fill")
-                        .font(.system(size: 14))
+                        .font(.system(size: 10))
                         .foregroundStyle(.secondary)
                 default:
                     EmptyView()
