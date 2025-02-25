@@ -16,6 +16,8 @@ final class DownloadStatusTracker {
     init(itemID: ItemIdentifier) {
         self.itemID = itemID
         
+        load()
+        
         RFNotification[.downloadStatusChanged].subscribe { [weak self] (itemID, status) in
             guard self?.itemID == itemID else {
                 return
@@ -23,6 +25,16 @@ final class DownloadStatusTracker {
             
             withAnimation {
                 self?.status = status
+            }
+        }
+    }
+    
+    private nonisolated func load() {
+        Task {
+            let status = await PersistenceManager.shared.download.status(of: itemID)
+            
+            await MainActor.withAnimation {
+                self.status = status
             }
         }
     }

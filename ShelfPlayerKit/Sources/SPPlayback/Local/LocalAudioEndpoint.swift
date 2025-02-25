@@ -68,6 +68,8 @@ final class LocalAudioEndpoint: AudioEndpoint {
         chapterDuration = nil
         chapterCurrentTime = nil
         
+        setupObservers()
+        
         try await start(withoutListeningSession: withoutListeningSession)
     }
     
@@ -87,12 +89,18 @@ extension LocalAudioEndpoint {
     func stop() {
     }
     
-    func play() {
+    func play() async {
         audioPlayer.play()
         isPlaying = true
+        
+        await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: true)
     }
     
-    func pause() {
+    func pause() async {
+        audioPlayer.pause()
+        isPlaying = false
+        
+        await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: false)
     }
     
     func seek(to time: TimeInterval) async throws {
@@ -233,7 +241,9 @@ private extension LocalAudioEndpoint {
         
         try await seek(to: startTime)
         
-        play()
+        await AudioPlayer.shared.didStartPlaying(endpointID: id, itemID: currentItemID, at: startTime)
+        
+        await play()
         
         activeOperationCount -= 1
         
@@ -261,5 +271,27 @@ private extension LocalAudioEndpoint {
         }
         
         return chapters.firstIndex(where: { time >= $0.startOffset && time < $0.endOffset })
+    }
+    
+    func setupObservers() {
+        audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: nil) { [weak self] _ in
+            let isBuffering: Bool
+            
+            if let item = self?.audioPlayer.currentItem {
+                isBuffering = !(item.status == .readyToPlay && item.isPlaybackLikelyToKeepUp)
+            } else {
+                isBuffering = true
+            }
+            
+            if self?.isBuffering != isBuffering {
+                self?.isBuffering = isBuffering
+                
+                if let id = self?.id {
+                    Task {
+                        await AudioPlayer.shared.bufferHealthDidChange(endpointID: id, isBuffering: isBuffering)
+                    }
+                }
+            }
+        }
     }
 }

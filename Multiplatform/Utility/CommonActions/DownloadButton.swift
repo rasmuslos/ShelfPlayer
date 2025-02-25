@@ -153,7 +153,7 @@ struct DownloadButton: View {
                                     $0
                                 case .episode:
                                     $0
-                                        .frame(width: 12)
+                                        .frame(width: 8)
                                 }
                             }
                     } else {

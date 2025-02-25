@@ -30,8 +30,8 @@ protocol AudioEndpoint: Identifiable, Sendable {
     func queue(_ items: [QueueItem]) async throws
     func stop()
 
-    func play()
-    func pause()
+    func play() async
+    func pause() async
     
     func seek(to time: TimeInterval) async throws
 }

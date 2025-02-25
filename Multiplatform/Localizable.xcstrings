@@ -1737,7 +1737,6 @@
       }
     },
     "backwards" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3759,6 +3758,7 @@
 
     },
     "forwards" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5136,7 +5136,6 @@
       }
     },
     "playback.toggle" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
