@@ -8,11 +8,11 @@
 import SwiftUI
 import SPFoundation
 
-internal struct PodcastVGrid: View {
+struct PodcastVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let podcasts: [Podcast]
-    var onAppear: ((_ audiobook: Podcast) -> Void)? = nil
+    let onAppear: ((_: Podcast) -> Void)
     
     private var minimumWidth: CGFloat {
         horizontalSizeClass == .compact ? 160.0 : 200.0
@@ -22,23 +22,18 @@ internal struct PodcastVGrid: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 20) {
             ForEach(podcasts) { podcast in
                 VStack(spacing: 0) {
-                    if let onAppear {
-                        PodcastGridItem(podcast: podcast)
-                            .onAppear {
-                                onAppear(podcast)
-                            }
-                    } else {
-                        PodcastGridItem(podcast: podcast)
-                    }
-                    
+                    PodcastGridItem(podcast: podcast)
                     Spacer(minLength: 0)
+                }
+                .onAppear {
+                    onAppear(podcast)
                 }
             }
         }
     }
 }
 
-internal struct PodcastHGrid: View {
+struct PodcastHGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let podcasts: [Podcast]
@@ -49,13 +44,15 @@ internal struct PodcastHGrid: View {
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimum = horizontalSizeClass == .compact ? 160 : 200.0
+        let minimumSize = horizontalSizeClass == .compact ? 160 : 200.0
         
         let usable = width - padding * 2
-        let amount = CGFloat(Int(usable / minimum))
+        let paddedSize = minimumSize + gap
+        
+        let amount = CGFloat(Int(usable / paddedSize))
         let available = usable - gap * (amount - 1)
         
-        return max(minimum, available / amount)
+        return max(minimumSize, available / amount)
     }
     
     var body: some View {
@@ -108,14 +105,6 @@ private struct PodcastGridItem: View {
                 }
             }
             .contentShape(.hoverMenuInteraction, .rect)
-            /*
-            .overlay(alignment: .topTrailing) {
-                Image(systemName: "arrow.down.circle.fill")
-                    .font(.caption)
-                    .foregroundStyle(.ultraThickMaterial)
-                    .padding(4)
-            }
-             */
             .matchedTransitionSource(id: "item_\(podcast.id)", in: namespace!)
         }
         .buttonStyle(.plain)
@@ -124,22 +113,19 @@ private struct PodcastGridItem: View {
 
 #if DEBUG
 #Preview {
-    @Previewable @Namespace var namespace
-    
     NavigationStack {
         ScrollView {
-            PodcastVGrid(podcasts: .init(repeating: .fixture, count: 7))
+            PodcastVGrid(podcasts: .init(repeating: .fixture, count: 7)) { _ in }
                 .padding(.horizontal, 20)
         }
     }
-    .environment(NamespaceWrapper(namespace))
+    .previewEnvironment()
 }
     
 #Preview {
-    @Previewable @Namespace var namespace
     NavigationStack {
         PodcastHGrid(podcasts: .init(repeating: .fixture, count: 7))
     }
-    .environment(NamespaceWrapper(namespace))
+    .previewEnvironment()
 }
 #endif

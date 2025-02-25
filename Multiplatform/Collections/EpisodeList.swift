@@ -22,6 +22,7 @@ struct EpisodeList: View {
         case latest
         case podcast
         case grid
+        case featured
     }
 }
 
@@ -32,15 +33,6 @@ private struct Row: View {
     
     let episode: Episode
     let context: EpisodeList.PresentationContext
-    
-    let download: DownloadStatusTracker
-    
-    init(episode: Episode, context: EpisodeList.PresentationContext) {
-        self.episode = episode
-        self.context = context
-        
-        download = .init(itemID: episode.id)
-    }
     
     private let _zoomID = UUID()
     private var zoomID: UUID? {
@@ -75,45 +67,14 @@ private struct Row: View {
                     
                     if let description = episode.descriptionText {
                         Text(description)
-                            .lineLimit(context == .podcast ? 3 : 2)
+                            .lineLimit(context.lineLimit)
                             .multilineTextAlignment(.leading)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .padding(.top, 4)
                     }
                     
-                    HStack(spacing: 0) {
-                        EpisodePlayButton(episode: episode)
-                        
-                        if let releaseDate = episode.releaseDate {
-                            Group {
-                                switch context {
-                                case .podcast:
-                                    Text(releaseDate, style: .date)
-                                default:
-                                    Text(releaseDate, format: .dateTime.day(.twoDigits).month(.twoDigits))
-                                }
-                            }
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .padding(.leading, 8)
-                        }
-                        
-                        Spacer(minLength: 12)
-                        
-                        if let status = download.status {
-                            switch status {
-                            case .downloading:
-                                DownloadButton(item: episode, progressVisibility: .episode)
-                            case .completed:
-                                Image(systemName: "arrow.down.circle.fill")
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(.secondary)
-                            default:
-                                EmptyView()
-                            }
-                        }
-                    }
+                    EpisodeItemActions(episode: episode, context: context)
                     .padding(.top, 8)
                 }
                 
@@ -125,6 +86,90 @@ private struct Row: View {
         .modifier(SwipeActionsModifier(item: episode, loading: .constant(false)))
         .modifier(EpisodeContextMenuModifier(episode: episode))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+    }
+}
+
+struct EpisodeItemActions: View {
+    let episode: Episode
+    let context: EpisodeList.PresentationContext
+    
+    let download: DownloadStatusTracker
+    
+    init(episode: Episode, context: EpisodeList.PresentationContext) {
+        self.episode = episode
+        self.context = context
+        
+        download = .init(itemID: episode.id)
+    }
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            EpisodePlayButton(episode: episode, highlighted: context.isHighlighted)
+                .modify {
+                    if context.isHighlighted {
+                        $0
+                            .fixedSize()
+                    } else {
+                        $0
+                    }
+                }
+            
+            if let releaseDate = episode.releaseDate {
+                Group {
+                    if context.usesShortDateStyle {
+                        Text(releaseDate, format: .dateTime.day(.twoDigits).month(.twoDigits))
+                    } else {
+                        Text(releaseDate, style: .date)
+                    }
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 8)
+            }
+            
+            Spacer(minLength: 12)
+            
+            if let status = download.status {
+                switch status {
+                case .downloading:
+                    DownloadButton(item: episode, progressVisibility: .episode)
+                case .completed:
+                    Image(systemName: "arrow.down.circle.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                default:
+                    EmptyView()
+                }
+            }
+        }
+    }
+}
+
+private extension EpisodeList.PresentationContext {
+    var usesShortDateStyle: Bool {
+        switch self {
+        case .latest, .grid, .featured:
+            true
+        case .podcast:
+            false
+        }
+    }
+    var isHighlighted: Bool {
+        switch self {
+        case .featured:
+            true
+        case .grid, .latest, .podcast:
+            false
+        }
+    }
+    
+    var lineLimit: Int {
+        switch self {
+        case .latest, .grid, .featured:
+            2
+        case .podcast:
+            3
+        }
     }
 }
 
