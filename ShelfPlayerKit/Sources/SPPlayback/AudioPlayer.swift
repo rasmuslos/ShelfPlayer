@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Defaults
+import RFNotifications
 import SPFoundation
 
 public final actor AudioPlayer: Sendable {
@@ -78,16 +80,33 @@ public extension AudioPlayer {
         current = nil
     }
     
-    func play() {
-        current?.play()
+    func play() async {
+        await current?.play()
     }
-    func pause() {
-        current?.pause()
+    func pause() async {
+        await current?.pause()
     }
     
     func seek(to time: TimeInterval) async throws {
         if let current {
             try await current.seek(to: time)
         }
+    }
+    func skip(forwards: Bool) async throws {
+        guard let currentTime else {
+            throw AudioPlayerError.invalidTime
+        }
+        
+        let amount: TimeInterval
+        
+        if forwards {
+            amount = .init(Defaults[.skipForwardsInterval])
+        } else {
+            amount = -.init(Defaults[.skipBackwardsInterval])
+        }
+        
+        try await seek(to: currentTime + amount)
+        
+        RFNotification[.skipped].send(forwards)
     }
 }

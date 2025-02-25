@@ -25,6 +25,7 @@ final class Satellite {
     
     // MARK: Playback
     
+    private(set) var currentItemID: ItemIdentifier?
     private(set) var currentItem: PlayableItem?
     
     private(set) var isPlaying: Bool
@@ -51,7 +52,7 @@ final class Satellite {
     init() {
         isOffline = false
         
-        currentItem = Audiobook.fixture
+        currentItem = nil
         
         isPlaying = false
         isBuffering = true
@@ -101,22 +102,93 @@ final class Satellite {
             }
         }
     }
+    
+    private nonisolated func resolvePlayingItem() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                await MainActor.withAnimation {
+                    self.currentItem = nil
+                }
+                
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            
+            do {
+                let item = try await ABSClient[currentItemID.connectionID].playableItem(itemID: currentItemID).0
+                
+                await MainActor.withAnimation {
+                    self.currentItem = item
+                }
+                await endWorking(on: currentItemID, successfully: nil)
+            } catch {
+                await endWorking(on: currentItemID, successfully: false)
+            }
+        }
+    }
 }
 
 extension Satellite {
+    var isNowPlayingVisible: Bool {
+        currentItemID != nil
+    }
+    
     func isLoading(observing: ItemIdentifier) -> Bool {
         totalLoading > 0 || busy[observing] ?? 0 > 0
     }
     
     nonisolated func play() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.play()
+            await endWorking(on: currentItemID, successfully: nil)
+        }
     }
     nonisolated func pause() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.pause()
+            await endWorking(on: currentItemID, successfully: nil)
+        }
+    }
+    func togglePlaying() {
+        if isPlaying {
+            pause()
+        } else {
+            play()
+        }
+    }
+    
+    nonisolated func skip(forwards: Bool) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            
+            do {
+                try await AudioPlayer.shared.skip(forwards: forwards)
+                await endWorking(on: currentItemID, successfully: nil)
+            } catch {
+                await endWorking(on: currentItemID, successfully: false)
+            }
+        }
     }
     
     nonisolated func start(_ item: PlayableItem) {
         Task {
             guard await self.currentItem != item else {
-                // TODO: PAUSE
+                await togglePlaying()
                 return
             }
             
@@ -186,6 +258,34 @@ private extension Satellite {
     private func setupObservers() {
         RFNotification[.changeOfflineMode].subscribe { [weak self] in
             self?.isOffline = $0
+        }.store(in: &stash)
+        
+        RFNotification[.playbackItemChanged].subscribe { [weak self] in
+            self?.currentItemID = $0.0
+            
+            self?.isPlaying = false
+            self?.isBuffering = true
+            
+            self?.currentTime = $0.1
+            self?.currentChapterTime = 0
+            
+            self?.duration = 0
+            self?.chapterDuration = 0
+            
+            self?.resolvePlayingItem()
+        }.store(in: &stash)
+        
+        RFNotification[.playStateChanged].subscribe { [weak self] isPlaying in
+            self?.notifySuccess.toggle()
+            self?.isPlaying = isPlaying
+        }.store(in: &stash)
+        
+        RFNotification[.skipped].subscribe { [weak self] _ in
+            self?.notifySuccess.toggle()
+        }.store(in: &stash)
+        
+        RFNotification[.bufferHealthChanged].subscribe { [weak self] isBuffering in
+            self?.isBuffering = isBuffering
         }.store(in: &stash)
     }
 }

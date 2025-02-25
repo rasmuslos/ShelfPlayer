@@ -56,7 +56,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             rect(geometryProxy: geometryProxy)
                         }
                     
-                    if let currentItem = satellite.currentItem {
+                    if satellite.isNowPlayingVisible {
                         ZStack {
                             // Background
                             ZStack {
@@ -121,7 +121,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             
                             // Foreground
                             VStack(spacing: 0) {
-                                CollapsedForeground(item: currentItem)
+                                CollapsedForeground()
                                     .opacity(viewModel.isExpanded ? 0 : 1)
                                     .highPriorityGesture(DragGesture()
                                         .onChanged {
@@ -132,16 +132,16 @@ struct CompactPlaybackModifier: ViewModifier {
                                     )
                                     .allowsHitTesting(!viewModel.isExpanded)
                                 
-                                ExpandedForeground(item: currentItem)
+                                ExpandedForeground()
                             }
                         }
-                        .offset(x: 0, y: viewModel.dragOffset)
                         .ignoresSafeArea(.all)
                         .ignoresSafeArea(edges: .all)
-                        .toolbarBackground(.hidden, for: .tabBar)
                         .frame(height: viewModel.isExpanded ? nil : 56)
                         .padding(.horizontal, viewModel.isExpanded ? 0 : 12)
                         .padding(.bottom, viewModel.isExpanded ? 0 : bottomOffset)
+                        .offset(x: 0, y: viewModel.dragOffset)
+                        .toolbarBackground(.hidden, for: .tabBar)
                         .animation(.snappy(duration: 0.6), value: viewModel.isExpanded)
                     }
                     
@@ -165,8 +165,6 @@ private struct ExpandedForeground: View {
     @Environment(Satellite.self) private var satellite
     @Environment(\.namespace) private var namespace
     
-    let item: PlayableItem
-    
     var body: some View {
         @Bindable var viewModel = viewModel
         
@@ -174,7 +172,7 @@ private struct ExpandedForeground: View {
             if viewModel.isExpanded {
                 Spacer(minLength: 12)
                 
-                ItemImage(item: item, size: .large, aspectRatio: .none, contrastConfiguration: nil)
+                ItemImage(itemID: satellite.currentItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
                     .shadow(color: .black.opacity(0.4), radius: 20)
                     .scaleEffect(satellite.isPlaying ? 1 : 0.8)
                     .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
@@ -230,15 +228,13 @@ private struct CollapsedForeground: View {
     @Environment(Satellite.self) private var satellite
     @Environment(\.namespace) private var namespace
     
-    let item: PlayableItem
-    
     var body: some View {
         Button {
             viewModel.isExpanded.toggle()
         } label: {
             HStack(spacing: 8) {
                 if !viewModel.isExpanded {
-                    ItemImage(item: item, size: .small, cornerRadius: 8)
+                    ItemImage(itemID: satellite.currentItemID, size: .small, cornerRadius: 8)
                         .frame(width: 40, height: 40)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: .topLeading)
                 } else {
@@ -248,18 +244,37 @@ private struct CollapsedForeground: View {
                 }
                 
                 // Text(viewModel.chapter?.title ?? item.name)
-                Text(item.name)
-                    .lineLimit(1)
+                if let currentItem = satellite.currentItem {
+                    Text(currentItem.name)
+                        .lineLimit(1)
+                } else {
+                    Text("loading")
+                        .foregroundStyle(.secondary)
+                }
                 
                 Spacer()
                 
-                Group {
+                Button("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)") {
+                    satellite.skip(forwards: false)
+                }
+                .labelStyle(.iconOnly)
+                .symbolEffect(.bounce.up, value: viewModel.notifySkipBackwards)
+                
+                ZStack {
                     Group {
-                        if satellite.isLoading(observing: item.id) && satellite.isBuffering {
+                        Image(systemName: "play.fill")
+                        Image(systemName: "pause.fill")
+                    }
+                    .hidden()
+                    
+                    Group {
+                        if let currentItemID = satellite.currentItemID, satellite.isLoading(observing: currentItemID) {
+                            ProgressIndicator()
+                        } else if satellite.isBuffering || satellite.currentItemID == nil {
                             ProgressIndicator()
                         } else {
                             Button {
-                                satellite.play()
+                                satellite.togglePlaying()
                             } label: {
                                 Label("playback.toggle", systemImage: satellite.isPlaying ? "pause.fill" : "play.fill")
                                     .labelStyle(.iconOnly)
@@ -269,18 +284,9 @@ private struct CollapsedForeground: View {
                         }
                     }
                     .transition(.blurReplace)
-                    
-                    Button {
-                        // AudioPlayer.shared.skipForwards()
-                    } label: {
-                        // Label("forwards", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
-                        Label("forwards", systemImage: "goforward.\(30)")
-                            .labelStyle(.iconOnly)
-                            // .symbolEffect(.bounce.up, value: viewModel.notifyForwards)
-                    }
-                    .padding(.horizontal, 8)
                 }
                 .imageScale(.large)
+                .padding(.horizontal, 8)
             }
             .contentShape(.rect)
         }
@@ -296,6 +302,10 @@ private struct CollapsedForeground: View {
 
 #Preview {
     TabView {
+        Tab(String(":)"), systemImage: "command") {
+            Image(systemName: "command")
+                .toolbarVisibility(.hidden, for: .tabBar)
+        }
     }
     .modifier(CompactPlaybackModifier(ready: true, bottomOffset: 88))
     .previewEnvironment()

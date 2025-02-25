@@ -6,30 +6,63 @@
 //
 
 import SwiftUI
+import Defaults
+import DefaultsMacros
 import ShelfPlayerKit
 
 @Observable @MainActor
 final class PlaybackViewModel {
-    var dragOffset: CGFloat
+    private var _dragOffset: CGFloat
     
     var isExpanded: Bool {
         didSet {
-            dragOffset = .zero
+            if isExpanded {
+                _dragOffset = 0
+            }
         }
     }
     
+    @ObservableDefault(.skipBackwardsInterval) @ObservationIgnored
+    var skipBackwardsInterval: Int
+    
+    private(set) var notifySkipBackwards = false
+    private(set) var notifySkipForwards = false
+    
     init() {
-        dragOffset = .zero
+        _dragOffset = .zero
         isExpanded = false
+        
+        RFNotification[.skipped].subscribe { [weak self] forwards in
+            if forwards {
+                self?.notifySkipForwards.toggle()
+            } else {
+                self?.notifySkipBackwards.toggle()
+            }
+        }
     }
     
     var areSlidersInUse: Bool {
         false
     }
     
+    var dragOffset: CGFloat {
+        get {
+            if isExpanded {
+                return _dragOffset
+            }
+            
+            return 0
+        }
+        set {
+            _dragOffset = newValue
+        }
+    }
     var pushAmount: Percentage {
+        // technically a CGFloat
+        let dragHeight: Percentage = 400
+        
         if dragOffset > 0 {
-            return 1 - (1 - min(300, max(0, dragOffset)) / Percentage(300)) * 0.1
+            return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.1
         }
         
         return isExpanded ? 0.9 : 1

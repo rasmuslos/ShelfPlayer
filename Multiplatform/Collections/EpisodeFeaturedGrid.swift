@@ -122,7 +122,7 @@ private struct Title: View {
                 }
                 
                 EpisodeItemActions(episode: episode, context: .featured)
-                .padding(.top, 8)
+                    .padding(.top, 8)
             }
             
             Spacer()
