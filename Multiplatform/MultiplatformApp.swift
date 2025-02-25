@@ -13,7 +13,6 @@ import ShelfPlayerKit
 @main
 struct MultiplatformApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @Namespace private var namespace
     
     init() {
         #if !ENABLE_ALL_FEATURES
@@ -31,7 +30,6 @@ struct MultiplatformApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(NamespaceWrapper(namespace))
         }
     }
 }

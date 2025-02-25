@@ -413,7 +413,6 @@
 				3A98246A2B6EAB0A0098C06A /* Offline */,
 				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
-				3A9874212B5995CE00B2704F /* _Collections */,
 				3AB418D02CE7E0E9009D9442 /* Search */,
 				3A64B3732CAACF4900446871 /* Intents */,
 				3A83B8712B88933500A05957 /* CarPlay */,
@@ -594,6 +593,9 @@
 				3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */,
 				3AA19BA12AD6C80000C468EA /* EpisodeList.swift */,
 				3AA954242AD29A0A0031C20D /* EpisodeGrid.swift */,
+				3AA9542A2AD2A87E0031C20D /* EpisodeFeaturedGrid.swift */,
+				3AA9541A2AD290380031C20D /* PodcastList.swift */,
+				3AA19BA52AD6E94B00C468EA /* PodcastGrid.swift */,
 			);
 			path = Collections;
 			sourceTree = "<group>";
@@ -715,32 +717,6 @@
 				3ABC462D2D5A25F300E21956 /* ItemSortOrderPicker.swift */,
 			);
 			path = Picker;
-			sourceTree = "<group>";
-		};
-		3A9874212B5995CE00B2704F /* _Collections */ = {
-			isa = PBXGroup;
-			children = (
-				3AA0D9CB2BD6BF3E00498546 /* Episode */,
-				3AA0D9CA2BD6BF3500498546 /* Podcast */,
-			);
-			path = _Collections;
-			sourceTree = "<group>";
-		};
-		3AA0D9CA2BD6BF3500498546 /* Podcast */ = {
-			isa = PBXGroup;
-			children = (
-				3AA9541A2AD290380031C20D /* PodcastList.swift */,
-				3AA19BA52AD6E94B00C468EA /* PodcastGrid.swift */,
-			);
-			path = Podcast;
-			sourceTree = "<group>";
-		};
-		3AA0D9CB2BD6BF3E00498546 /* Episode */ = {
-			isa = PBXGroup;
-			children = (
-				3AA9542A2AD2A87E0031C20D /* EpisodeFeaturedGrid.swift */,
-			);
-			path = Episode;
 			sourceTree = "<group>";
 		};
 		3AADC0352B6D0D3D00C4088D /* Navigation */ = {

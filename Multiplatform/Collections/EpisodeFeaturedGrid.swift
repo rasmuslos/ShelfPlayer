@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 struct EpisodeFeaturedGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -28,7 +28,9 @@ struct EpisodeFeaturedGrid: View {
         }
         
         let usable = width - padding * 2
-        let amount = CGFloat(Int(usable / 250))
+        let paddedSize = 250 + gap
+        
+        let amount = CGFloat(Int(usable / paddedSize))
         let available = usable - gap * (amount - 1)
         
         return max(250, available / amount)
@@ -46,8 +48,8 @@ struct EpisodeFeaturedGrid: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 0) {
-                    ForEach(episodes) { episode in
-                        EpisodeGridItem(episode: episode, gap: gap, size: size)
+                    ForEach(episodes) {
+                        EpisodeGridItem(episode: $0, gap: gap, size: size)
                     }
                 }
                 .scrollTargetLayout()
@@ -97,6 +99,12 @@ private struct EpisodeGridItem: View {
 
 private struct Title: View {
     let episode: Episode
+    let download: DownloadStatusTracker
+    
+    init(episode: Episode) {
+        self.episode = episode
+        download = .init(itemID: episode.id)
+    }
     
     var body: some View {
         HStack(spacing: 0) {
@@ -113,21 +121,7 @@ private struct Title: View {
                         .padding(.top, 4)
                 }
                 
-                HStack(spacing: 0) {
-                    EpisodePlayButton(episode: episode, highlighted: true)
-                        .fixedSize()
-                    
-                    if let releaseDate = episode.releaseDate {
-                        Text(releaseDate, format: .dateTime.day(.twoDigits).month(.twoDigits))
-                            .font(.caption.smallCaps())
-                            .foregroundStyle(.secondary)
-                            .padding(.leading, 8)
-                    }
-                    
-                    Spacer(minLength: 12)
-                    
-                    // DownloadIndicator(item: episode)
-                }
+                EpisodeItemActions(episode: episode, context: .featured)
                 .padding(.top, 8)
             }
             
@@ -160,13 +154,11 @@ private struct Background: View {
 
 #if DEBUG
 #Preview {
-    @Previewable @Namespace var namespace
-    
     NavigationStack {
         ScrollView {
             EpisodeFeaturedGrid(episodes: .init(repeating: .fixture, count: 7))
         }
     }
-    .environment(NamespaceWrapper(namespace))
+    .previewEnvironment()
 }
 #endif
