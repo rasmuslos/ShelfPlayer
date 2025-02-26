@@ -12,11 +12,40 @@ import ShelfPlayerKit
 
 @Observable @MainActor
 final class PlaybackViewModel {
+    private var _isExpanded: Bool
     private var _dragOffset: CGFloat
     
+    var seeking: Percentage?
+    
+    @ObservableDefault(.skipBackwardsInterval) @ObservationIgnored
+    var skipBackwardsInterval: Int
+    @ObservableDefault(.skipForwardsInterval) @ObservationIgnored
+    var skipForwardsInterval: Int
+    
+    private(set) var notifySkipBackwards = false
+    private(set) var notifySkipForwards = false
+    
+    init() {
+        _dragOffset = .zero
+        _isExpanded = false
+        
+        RFNotification[.skipped].subscribe { [weak self] forwards in
+            if forwards {
+                self?.notifySkipForwards.toggle()
+            } else {
+                self?.notifySkipBackwards.toggle()
+            }
+        }
+    }
+    
     var isExpanded: Bool {
-        didSet {
-            if isExpanded {
+        get {
+            _isExpanded
+        }
+        set {
+            _isExpanded = newValue
+            
+            if newValue {
                 _dragOffset = 0
             } else if _dragOffset == 0 {
                 // this is stupid
@@ -30,29 +59,6 @@ final class PlaybackViewModel {
                 _dragOffset = 0
             }
         }
-    }
-    
-    @ObservableDefault(.skipBackwardsInterval) @ObservationIgnored
-    var skipBackwardsInterval: Int
-    
-    private(set) var notifySkipBackwards = false
-    private(set) var notifySkipForwards = false
-    
-    init() {
-        _dragOffset = .zero
-        isExpanded = false
-        
-        RFNotification[.skipped].subscribe { [weak self] forwards in
-            if forwards {
-                self?.notifySkipForwards.toggle()
-            } else {
-                self?.notifySkipBackwards.toggle()
-            }
-        }
-    }
-    
-    var areSlidersInUse: Bool {
-        false
     }
     
     var dragOffset: CGFloat {
@@ -72,13 +78,14 @@ final class PlaybackViewModel {
         let dragHeight: Percentage = 300
         
         if dragOffset > 0 {
-            return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.1
+            return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.15
         }
         
-        return isExpanded ? 0.9 : 1
+        return isExpanded ? 0.85 : 1
     }
-    var isPushing: Bool {
-        pushAmount < 1
+    
+    var areSlidersInUse: Bool {
+        seeking != nil
     }
     
     var backgroundCornerRadius: CGFloat {
@@ -88,7 +95,7 @@ final class PlaybackViewModel {
             16
         }
     }
-    var pushContainerCornerRadius: CGFloat {
-        max(20, UIScreen.main.displayCornerRadius * (1 - ((1 - pushAmount) * 6)))
+    func pushContainerCornerRadius(leadingOffset: CGFloat) -> CGFloat {
+        max(16, UIScreen.main.displayCornerRadius - leadingOffset)
     }
 }

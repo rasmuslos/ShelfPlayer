@@ -363,6 +363,11 @@ public extension PersistenceManager.DownloadSubsystem {
             if let episode = persistedEpisode(for: itemID) {
                 return Episode(downloaded: episode)
             }
+            
+        case .podcast:
+            if let podcast = persistedPodcast(for: itemID) {
+                return Podcast(downloaded: podcast)
+            }
         default:
             break
         }
@@ -507,6 +512,7 @@ public extension PersistenceManager.DownloadSubsystem {
                                     released: podcastItem.released,
                                     explicit: podcastItem.explicit,
                                     publishingType: podcastItem.publishingType,
+                                    totalEpisodeCount: podcastItem.episodeCount,
                                     episodes: [])
                     
                     let podcastAssets = ItemIdentifier.CoverSize.allCases.map { PersistedAsset(itemID: podcastItem.id, fileType: .image(size: $0), progressWeight: 0) }

@@ -15,4 +15,5 @@ enum AudioPlayerError: Error {
     case missingAudioTrack
     
     case loadFailed
+    case itemMissing
 }

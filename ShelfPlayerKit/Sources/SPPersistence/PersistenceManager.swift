@@ -28,6 +28,10 @@ public final class PersistenceManager: Sendable {
                            groupContainer: ShelfPlayerKit.enableCentralized ? .identifier(ShelfPlayerKit.groupContainer) : .none,
                            cloudKitDatabase: .none)
         
+        #if DEBUG
+        // try! FileManager.default.removeItem(at: modelConfiguration.url)
+        #endif
+        
         let container = try! ModelContainer(for: schema, migrationPlan: nil, configurations: [
             modelConfiguration,
         ])

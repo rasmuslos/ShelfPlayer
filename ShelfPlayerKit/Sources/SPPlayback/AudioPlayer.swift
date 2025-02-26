@@ -6,14 +6,35 @@
 //
 
 import Foundation
+import AVKit
+import MediaPlayer
+import OSLog
 import Defaults
 import RFNotifications
 import SPFoundation
 
 public final actor AudioPlayer: Sendable {
+    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "AudioPlayer")
+    
     var current: (any AudioEndpoint)?
     
+    let audioSession = AVAudioSession.sharedInstance()
+    let widgetManager = NowPlayingWidgetManager()
+    
     init() {
+        addRemoteCommandTargets()
+        
+        Task {
+            for await interval in Defaults.updates(.skipBackwardsInterval) {
+                MPRemoteCommandCenter.shared().skipBackwardCommand.preferredIntervals = [NSNumber(value: interval)]
+            }
+        }
+        Task {
+            for await interval in Defaults.updates(.skipForwardsInterval) {
+                MPRemoteCommandCenter.shared().skipForwardCommand.preferredIntervals = [NSNumber(value: interval)]
+            }
+        }
+        
         RFNotification[.downloadStatusChanged].subscribe(queue: .current) { [weak self] (itemID, status) in
             self?.assumeIsolated { isolated in
                 guard isolated.current?.currentItemID == itemID else {
@@ -36,6 +57,10 @@ public extension AudioPlayer {
         get async {
             await current?.queue.elements ?? []
         }
+    }
+    
+    var chapters: [Chapter] {
+        current?.chapters ?? []
     }
     
     var isBusy: Bool {
@@ -92,6 +117,10 @@ public extension AudioPlayer {
     func stop() {
         current?.stop()
         current = nil
+        
+        Task {
+            await widgetManager.invalidate()
+        }
     }
     
     func play() async {
@@ -101,9 +130,9 @@ public extension AudioPlayer {
         await current?.pause()
     }
     
-    func seek(to time: TimeInterval) async throws {
+    func seek(to time: TimeInterval, insideChapter: Bool) async throws {
         if let current {
-            try await current.seek(to: time)
+            try await current.seek(to: time, insideChapter: insideChapter)
         }
     }
     func skip(forwards: Bool) async throws {
@@ -119,8 +148,111 @@ public extension AudioPlayer {
             amount = -.init(Defaults[.skipBackwardsInterval])
         }
         
-        try await seek(to: currentTime + amount)
+        try await seek(to: currentTime + amount, insideChapter: false)
         
         RFNotification[.skipped].send(forwards)
+    }
+}
+
+private extension AudioPlayer {
+    nonisolated func addRemoteCommandTargets() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        
+        commandCenter.playCommand.isEnabled = true
+        commandCenter.playCommand.addTarget { _ in
+            Task {
+                await self.play()
+            }
+            
+            return .success
+        }
+        commandCenter.pauseCommand.isEnabled = true
+        commandCenter.pauseCommand.addTarget { _ in
+            Task {
+                await self.pause()
+            }
+            
+            return .success
+        }
+        commandCenter.togglePlayPauseCommand.isEnabled = true
+        commandCenter.togglePlayPauseCommand.addTarget { _ in
+            Task {
+                if await self.isPlaying {
+                    await self.pause()
+                } else {
+                    await self.play()
+                }
+            }
+            
+            return .success
+        }
+        
+        commandCenter.changePlaybackPositionCommand.isEnabled = true
+        commandCenter.changePlaybackPositionCommand.addTarget { [unowned self] event in
+            if Defaults[.lockSeekBar] {
+                return .commandFailed
+            }
+            
+            guard let changePlaybackPositionCommandEvent = event as? MPChangePlaybackPositionCommandEvent else {
+                return .commandFailed
+            }
+            
+            let positionTime = changePlaybackPositionCommandEvent.positionTime
+            
+            Task {
+                try await seek(to: positionTime, insideChapter: true)
+            }
+            
+            return .success
+        }
+        
+        commandCenter.previousTrackCommand.addTarget { _ in
+            Task {
+                try await self.skip(forwards: false)
+            }
+            
+            return .success
+        }
+        commandCenter.nextTrackCommand.addTarget { _ in
+            Task {
+                try await self.skip(forwards: true)
+            }
+            
+            return .success
+        }
+        
+        commandCenter.seekBackwardCommand.addTarget { _ in
+            Task {
+                try await self.skip(forwards: false)
+            }
+            
+            return .success
+        }
+        commandCenter.seekForwardCommand.addTarget { _ in
+            Task {
+                try await self.skip(forwards: true)
+            }
+            
+            return .success
+        }
+        
+        commandCenter.skipBackwardCommand.isEnabled = true
+        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: Defaults[.skipBackwardsInterval])]
+        commandCenter.skipBackwardCommand.addTarget { _ in
+            Task {
+                try await self.skip(forwards: false)
+            }
+            
+            return .success
+        }
+        commandCenter.skipForwardCommand.isEnabled = true
+        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: Defaults[.skipForwardsInterval])]
+        commandCenter.skipForwardCommand.addTarget { _ in
+            Task {
+                try await self.skip(forwards: true)
+            }
+            
+            return .success
+        }
     }
 }
