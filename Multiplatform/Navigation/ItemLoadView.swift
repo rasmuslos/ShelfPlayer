@@ -20,7 +20,6 @@ struct ItemLoadView: View {
     }
     
     @State private var item: Item? = nil
-    @State private var contained = [Item]()
     
     @State private var failed = false
     
@@ -33,8 +32,8 @@ struct ItemLoadView: View {
                     SeriesView(series)
                 } else if let author = item as? Author {
                     AuthorView(author)
-                } else if let podcast = item as? Podcast, let episodes = contained as? [Episode] {
-                    PodcastView(podcast, episodes: episodes, zoom: false)
+                } else if let podcast = item as? Podcast {
+                    PodcastView(podcast, zoom: false)
                 } else if let episode = item as? Episode {
                     EpisodeView(episode, zoomID: nil)
                 } else {
@@ -73,35 +72,16 @@ struct ItemLoadView: View {
                 failed = false
             }
             
-            let item: Item
-            var contained = [Item]()
-            
             do {
-                switch id.type {
-                case .audiobook, .episode:
-                    (item, _, _, _) = try await ABSClient[id.connectionID].playableItem(itemID: id)
-                case .author:
-                    item = try await ABSClient[id.connectionID].author(with: id)
-                case .series:
-                    item = try await ABSClient[id.connectionID].series(with: id)
-                case .podcast:
-                    (item, contained) = try await ABSClient[id.connectionID].podcast(with: id)
-                }
+                let item = try await id.resolved
                 
                 await MainActor.withAnimation {
                     self.item = item
-                    self.contained = contained
                 }
             } catch {
                 await MainActor.withAnimation {
                     failed = false
                 }
-                
-                return
-            }
-            
-            await MainActor.withAnimation {
-                self.item = item
             }
         }
     }

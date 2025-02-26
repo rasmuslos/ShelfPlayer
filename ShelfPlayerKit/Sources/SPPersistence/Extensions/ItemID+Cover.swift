@@ -55,7 +55,7 @@ public extension ItemIdentifier {
             #endif
         }
         
-        private var base: Int {
+        public var base: Int {
             switch self {
             case .tiny:
                 100
