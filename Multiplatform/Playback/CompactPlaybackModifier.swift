@@ -19,9 +19,6 @@ struct CompactPlaybackModifier: ViewModifier {
     let ready: Bool
     let bottomOffset: CGFloat
     
-    private var isPushing: Bool {
-        viewModel.isPushing
-    }
     private var pushAmount: CGFloat {
         viewModel.pushAmount
     }
@@ -33,21 +30,28 @@ struct CompactPlaybackModifier: ViewModifier {
                     Rectangle()
                         .fill(.black)
                     
-                    Group {
-                        content
-                            .allowsHitTesting(!viewModel.isExpanded)
-                            .visualEffect { [isPushing, pushAmount] content, _ in
-                                content
-                                    .scaleEffect(isPushing ? pushAmount : 1, anchor: .center)
-                            }
-                            .mask {
-                                RoundedRectangle(cornerRadius: viewModel.pushContainerCornerRadius, style: .continuous)
-                                    .fill(.background)
-                                    .frame(width: (geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing) * (viewModel.isPushing ? viewModel.pushAmount : 1),
-                                           height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * (viewModel.isPushing ? viewModel.pushAmount : 1))
-                            }
-                    }
-                    .animation(.smooth, value: viewModel.pushAmount)
+                    content
+                        .allowsHitTesting(!viewModel.isExpanded)
+                        .overlay {
+                            Color.white.opacity(viewModel.isExpanded && colorScheme == .dark ? 0.1 : 0)
+                                .animation(.smooth, value: viewModel.isExpanded)
+                        }
+                        .visualEffect { [pushAmount] content, _ in
+                            content
+                                .scaleEffect(pushAmount, anchor: .top)
+                        }
+                        .mask(alignment: .top) {
+                            let totalWidth = geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing
+                            let width = totalWidth * viewModel.pushAmount
+                            let leadingOffset = (totalWidth - width) / 2
+                            
+                            RoundedRectangle(cornerRadius: viewModel.pushContainerCornerRadius(leadingOffset: leadingOffset), style: .continuous)
+                                .fill(.background)
+                                .frame(width: width,
+                                       height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * viewModel.pushAmount)
+                                .padding(.top, leadingOffset)
+                        }
+                        .animation(.smooth, value: viewModel.pushAmount)
                     
                     if satellite.isNowPlayingVisible {
                         ZStack {
@@ -174,6 +178,13 @@ private struct ExpandedForeground: View {
                 
                 Spacer(minLength: 12)
                 
+                PlaybackTitle()
+                
+                Spacer(minLength: 12)
+                
+                PlaybackControls()
+                
+                /*
                 VStack(spacing: 0) {
                     Text(satellite.currentTime.description)
                     Text(satellite.duration.description)
@@ -192,6 +203,9 @@ private struct ExpandedForeground: View {
                      */
                 }
                 .transition(.move(edge: .bottom))
+                 */
+                
+                Spacer(minLength: 12)
             }
         }
         .overlay(alignment: .top) {
@@ -211,6 +225,7 @@ private struct ExpandedForeground: View {
                 .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.3)), removal: .identity))
             }
         }
+        .border(.blue)
         .padding(.horizontal, 28)
         // .sensoryFeedback(.success, trigger: viewModel.notifyBookmark)
         /*
@@ -301,8 +316,12 @@ private struct CollapsedForeground: View {
 #Preview {
     TabView {
         Tab(String(":)"), systemImage: "command") {
-            Image(systemName: "command")
-                .toolbarVisibility(.hidden, for: .tabBar)
+            Rectangle()
+                .fill(.yellow)
+                .ignoresSafeArea(edges: .top)
+                .overlay {
+                    Image(systemName: "command")
+                }
         }
     }
     .modifier(CompactPlaybackModifier(ready: true, bottomOffset: 88))

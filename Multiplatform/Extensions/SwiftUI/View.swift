@@ -20,7 +20,7 @@ extension View {
         @Namespace var namespace
         
         self
-            .environment(Satellite())
+            .environment(Satellite().debugPlayback())
             .environment(PlaybackViewModel())
             .environment(ConnectionStore())
             .environment(\.namespace, namespace)

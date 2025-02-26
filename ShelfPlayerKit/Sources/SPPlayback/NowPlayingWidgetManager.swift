@@ -7,45 +7,148 @@
 
 import Foundation
 import OSLog
+import MediaPlayer
 import SPFoundation
+import SPPersistence
 
 final actor NowPlayingWidgetManager: Sendable {
     let logger = Logger(subsystem: "io.rfk.shelfPlayewrKit", category: "NowPlayingWidgetManager")
     
-    var activeID: UUID?
+    var item: PlayableItem?
+    var chapter: Chapter?
+    
+    var isPlaying: Bool?
+    var isBuffering: Bool?
+
+    var chapterDuration: TimeInterval?
+    var chapterCurrentTime: TimeInterval?
+    
     var metadata = [String: Any]()
     
-    func suggestUpdate(from id: UUID, item: PlayableItem) {
-        guard isActive(id: id) else {
-            return
+    nonisolated func update(itemID: ItemIdentifier) {
+        Task {
+            do {
+                guard let item = try await itemID.resolved as? PlayableItem else {
+                    throw AudioPlayerError.itemMissing
+                }
+                
+                await update(item: item)
+            } catch {
+                logger.error("Failed to fetch item: \(error)")
+            }
         }
+    }
+    func update(item: PlayableItem) {
+        self.item = item
         
+        metadata[MPMediaItemPropertyArtist] = item.authors.formatted(.list(type: .and, width: .narrow))
+        metadata[MPMediaItemPropertyReleaseDate] = item.released
+        
+        updateTitle()
+        updateArtwork()
+    }
+    nonisolated func update(chapterIndex: Int?) {
+        Task {
+            if let chapterIndex {
+                await update(chapter: AudioPlayer.shared.chapters[chapterIndex])
+            } else {
+                await update(chapter: nil)
+            }
+        }
+    }
+    func update(chapter: Chapter?) {
+        self.chapter = chapter
+        updateTitle()
+    }
+    
+    func update(isPlaying: Bool) {
+        self.isPlaying = isPlaying
+        updatePlaybackState()
+    }
+    func update(isBuffering: Bool) {
+        self.isBuffering = isBuffering
+        updatePlaybackState()
+    }
+    
+    func update(chapterDuration: TimeInterval?) {
+        self.chapterDuration = chapterDuration
+        
+        metadata[MPMediaItemPropertyPlaybackDuration] = chapterDuration
         updateWidget()
     }
-    func suggestUpdate(from id: UUID, duration: TimeInterval, currentTime: TimeInterval) {
+    func update(chapterCurrentTime: TimeInterval?) {
+        self.chapterCurrentTime = chapterCurrentTime
+        
+        metadata[MPNowPlayingInfoPropertyElapsedPlaybackTime] = chapterCurrentTime
         updateWidget()
     }
     
     func invalidate() {
-        activeID = nil
+        item = nil
+        chapter = nil
+        
+        isPlaying = false
+        
+        chapterDuration = nil
+        chapterCurrentTime = nil
+        
         metadata = [:]
+        
+        updateWidget()
+        MPNowPlayingInfoCenter.default().playbackState = .stopped
     }
 }
 
 private extension NowPlayingWidgetManager {
-    func isActive(id: UUID) -> Bool {
-        guard activeID == nil || activeID == id else {
-            logger.warning("Ignoring update request from \(id) for now playing widget, as another player (\(self.activeID?.uuidString ?? "?")) is already active")
-            return false
+    func updateTitle() {
+        guard let item else {
+            return
         }
         
-        if activeID == nil {
-            activeID = id
+        if let chapter {
+            metadata[MPMediaItemPropertyTitle] = chapter.title
+            metadata[MPMediaItemPropertyAlbumTitle] = item.name
+        } else {
+            metadata[MPMediaItemPropertyTitle] = item.name
+            metadata[MPMediaItemPropertyAlbumTitle] = nil
         }
         
-        return true
+        updateWidget()
     }
+    nonisolated func updateArtwork() {
+        Task {
+            guard let item = await item else {
+                await abortImageLoad()
+                return
+            }
+            
+            guard let image = await item.id.platformCover(size: .large) else {
+                await abortImageLoad()
+                return
+            }
+            
+            let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: { _ in image })
+            await updateArtwork(artwork)
+        }
+    }
+    
+    func abortImageLoad() {
+        metadata[MPMediaItemPropertyArtwork] = nil
+        updateWidget()
+    }
+    func updateArtwork(_ artwork: MPMediaItemArtwork) {
+        metadata[MPMediaItemPropertyArtwork] = artwork
+        updateWidget()
+    }
+    
     func updateWidget() {
-        
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = metadata
+    }
+    func updatePlaybackState() {
+        if isBuffering == false, let isPlaying {
+            MPNowPlayingInfoCenter.default().playbackState = isPlaying ? .playing : .paused
+        } else {
+            MPNowPlayingInfoCenter.default().playbackState = .interrupted
+        }
     }
 }

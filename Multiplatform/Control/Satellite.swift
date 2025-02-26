@@ -28,6 +28,8 @@ final class Satellite {
     private(set) var currentItemID: ItemIdentifier?
     private(set) var currentItem: PlayableItem?
     
+    private(set) var chapter: Chapter?
+    
     private(set) var isPlaying: Bool
     private(set) var isBuffering: Bool
     
@@ -73,6 +75,10 @@ final class Satellite {
         setupObservers()
     }
     
+    enum SatelliteError: Error {
+        case missingItem
+    }
+    
     private func startWorking(on itemID: ItemIdentifier) {
         withAnimation {
             let current = busy[itemID]
@@ -116,7 +122,9 @@ final class Satellite {
             await startWorking(on: currentItemID)
             
             do {
-                let item = try await ABSClient[currentItemID.connectionID].playableItem(itemID: currentItemID).0
+                guard let item = try await currentItemID.resolved as? PlayableItem else {
+                    throw SatelliteError.missingItem
+                }
                 
                 await MainActor.withAnimation {
                     self.currentItem = item
@@ -132,6 +140,10 @@ final class Satellite {
 extension Satellite {
     var isNowPlayingVisible: Bool {
         currentItemID != nil
+    }
+    
+    var played: Percentage {
+        min(1, max(0, currentChapterTime / chapterDuration))
     }
     
     func isLoading(observing: ItemIdentifier) -> Bool {
@@ -179,6 +191,24 @@ extension Satellite {
             do {
                 try await AudioPlayer.shared.skip(forwards: forwards)
                 await endWorking(on: currentItemID, successfully: nil)
+            } catch {
+                await endWorking(on: currentItemID, successfully: false)
+            }
+        }
+    }
+    nonisolated func seek(to time: TimeInterval, insideChapter: Bool, completion: (@Sendable @escaping () -> Void)) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            
+            do {
+                try await AudioPlayer.shared.seek(to: time, insideChapter: insideChapter)
+                await endWorking(on: currentItemID, successfully: nil)
+                
+                completion()
             } catch {
                 await endWorking(on: currentItemID, successfully: false)
             }
@@ -262,6 +292,9 @@ private extension Satellite {
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.currentItemID = $0.0
+            self?.currentItem = nil
+            
+            self?.chapter = nil
             
             self?.isPlaying = false
             self?.isBuffering = true
@@ -296,5 +329,36 @@ private extension Satellite {
             self?.currentTime = currentTimes.0 ?? 0
             self?.currentChapterTime = currentTimes.1 ?? self?.currentTime ?? 0
         }.store(in: &stash)
+        
+        RFNotification[.chapterChanged].subscribe { [weak self] chapterIndex in
+            guard let chapterIndex else {
+                self?.chapter = nil
+                return
+            }
+            
+            Task {
+                self?.chapter = await AudioPlayer.shared.chapters[chapterIndex]
+            }
+        }.store(in: &stash)
     }
 }
+
+#if DEBUG
+extension Satellite {
+    func debugPlayback() -> Self {
+        currentItemID = .fixture
+        currentItem = Audiobook.fixture
+        
+        isPlaying = true
+        isBuffering = false
+        
+        currentTime = 30
+        duration = 60
+        
+        currentChapterTime = 5
+        chapterDuration = 10
+        
+        return self
+    }
+}
+#endif

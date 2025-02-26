@@ -121,18 +121,7 @@ internal extension IntentHelper {
         if let identifier = mediaSearch.mediaIdentifier {
             let itemID = ItemIdentifier(string: identifier)
             
-            let item: Item
-            
-            switch itemID.type {
-            case .audiobook, .episode:
-                item = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID).0
-            case .author:
-                item = try await ABSClient[itemID.connectionID].author(with: itemID)
-            case .series:
-                return [.unsupported()]
-            case .podcast:
-                item = try await ABSClient[itemID.connectionID].podcast(with: itemID).0
-            }
+            let item = try await itemID.resolved
             
             guard let mediaItem = await convert(item: item) else {
                 return [.unsupported()]

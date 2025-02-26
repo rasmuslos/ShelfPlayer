@@ -107,11 +107,11 @@ extension LocalAudioEndpoint {
         await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: false)
     }
     
-    func seek(to time: TimeInterval) async throws {
+    func seek(to time: TimeInterval, insideChapter: Bool) async throws {
         logger.info("Seeking to \(time)")
         
         guard time >= 0 else {
-            try await seek(to: 0)
+            try await seek(to: 0, insideChapter: insideChapter)
             return
         }
         
@@ -243,7 +243,7 @@ private extension LocalAudioEndpoint {
         self.audioTracks = audioTracks.sorted()
         self.chapters = chapters.sorted()
         
-        try await seek(to: startTime)
+        try await seek(to: startTime, insideChapter: false)
         
         await AudioPlayer.shared.didStartPlaying(endpointID: id, itemID: currentItemID, at: startTime)
         

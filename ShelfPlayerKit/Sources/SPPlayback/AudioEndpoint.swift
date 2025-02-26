@@ -16,6 +16,8 @@ protocol AudioEndpoint: Identifiable, Sendable {
     var currentItemID: ItemIdentifier { get }
     var queue: ActorArray<QueueItem> { get }
     
+    var chapters: [Chapter] { get }
+    
     var isBusy: Bool { get }
     var isPlaying: Bool { get }
     
@@ -33,5 +35,5 @@ protocol AudioEndpoint: Identifiable, Sendable {
     func play() async
     func pause() async
     
-    func seek(to time: TimeInterval) async throws
+    func seek(to time: TimeInterval, insideChapter: Bool) async throws
 }
