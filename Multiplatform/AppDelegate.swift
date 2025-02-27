@@ -7,6 +7,8 @@
 
 import UIKit
 import Intents
+import RFNotifications
+import ShelfPlayerKit
 
 // MARK: Background Downloads
 
@@ -64,5 +66,9 @@ internal extension AppDelegate {
         default:
             nil
         }
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        RFNotification[.finalizePlaybackReporting].send()
     }
 }

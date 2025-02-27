@@ -51,10 +51,10 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.bufferHealthChanged].send(isBuffering)
+        RFNotification[.bufferHealthChanged].send(isBusy)
         
         Task {
-            await widgetManager.update(isBuffering: isBuffering)
+            await widgetManager.update(isBuffering: isBusy)
         }
     }
     
@@ -90,6 +90,34 @@ extension AudioPlayer {
         
         widgetManager.update(chapterIndex: currentChapterIndex)
     }
+    
+    func volumeDidChange(endpointID: UUID, volume: Percentage) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        RFNotification[.volumeChanged].send(volume)
+    }
+    func playbackRateDidChange(endpointID: UUID, playbackRate: Percentage) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        RFNotification[.playbackRateChanged].send(playbackRate)
+    }
+    
+    func didStopPlaying(endpointID: UUID) async {
+        guard current?.id == endpointID else {
+            return
+        }
+        
+        await widgetManager.invalidate()
+        RFNotification[.playbackStopped].send()
+    }
+    
+    func isBusyDidChange() async {
+        RFNotification[.bufferHealthChanged].send(isBusy)
+    }
 }
 
 public extension RFNotification.Notification {
@@ -117,5 +145,16 @@ public extension RFNotification.Notification {
     
     static var chapterChanged: Notification<Int?> {
         .init("io.rfk.shelfPlayerKit.chapterChanged")
+    }
+    
+    static var volumeChanged: Notification<Percentage> {
+        .init("io.rfk.shelfPlayerKit.volumeChanged")
+    }
+    static var playbackRateChanged: Notification<Percentage> {
+        .init("io.rfk.shelfPlayerKit.playbackRateChanged")
+    }
+    
+    static var playbackStopped: Notification<RFNotificationEmptyPayload> {
+        .init("io.rfk.shelfPlayerKit.playbackStopped")
     }
 }

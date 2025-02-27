@@ -11,4 +11,7 @@ public extension RFNotification.Notification {
     static var progressEntityUpdated: Notification<(connectionID: String, primaryID: String, groupingID: String?, ProgressEntity?)> {
         .init("io.rfk.shelfPlayerKit.progressEntity.updated")
     }
+    static var finalizePlaybackReporting: Notification<RFNotificationEmptyPayload> {
+        .init("io.rfk.shelfPlayerKit.finalizePlaybackReporting")
+    }
 }

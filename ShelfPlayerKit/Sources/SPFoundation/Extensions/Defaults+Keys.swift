@@ -53,7 +53,8 @@ public extension Defaults.Keys {
     static let customSleepTimer = Key<Int>("customSleepTimer", default: 0)
     static let customPlaybackSpeed = Key<Percentage>("customPlaybackSpeed", default: 1)
     
-    static let defaultPlaybackSpeed = Key<Percentage>("defaultPlaybackSpeed", default: 1)
+    static let playbackRates = Key<[Percentage]>("playbackRates", default: [0.5, 0.75, 1, 1.25, 1.5, 2])
+    static let defaultPlaybackRate = Key<Percentage>("defaultPlaybackRate", default: 1)
     
     // MARK: Filtering & Sorting
     

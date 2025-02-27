@@ -21,7 +21,8 @@ protocol AudioEndpoint: Identifiable, Sendable {
     var isBusy: Bool { get }
     var isPlaying: Bool { get }
     
-    var volume: Percentage { get }
+    var volume: Percentage { get set }
+    var playbackRate: Percentage { get set }
     
     var duration: TimeInterval? { get }
     var currentTime: TimeInterval? { get }
@@ -30,7 +31,7 @@ protocol AudioEndpoint: Identifiable, Sendable {
     var chapterCurrentTime: TimeInterval? { get }
     
     func queue(_ items: [QueueItem]) async throws
-    func stop()
+    func stop() async
 
     func play() async
     func pause() async

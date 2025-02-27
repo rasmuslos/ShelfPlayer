@@ -22,6 +22,7 @@ public final actor AudioPlayer: Sendable {
     let widgetManager = NowPlayingWidgetManager()
     
     init() {
+        setupObservers()
         addRemoteCommandTargets()
         
         Task {
@@ -32,16 +33,6 @@ public final actor AudioPlayer: Sendable {
         Task {
             for await interval in Defaults.updates(.skipForwardsInterval) {
                 MPRemoteCommandCenter.shared().skipForwardCommand.preferredIntervals = [NSNumber(value: interval)]
-            }
-        }
-        
-        RFNotification[.downloadStatusChanged].subscribe(queue: .current) { [weak self] (itemID, status) in
-            self?.assumeIsolated { isolated in
-                guard isolated.current?.currentItemID == itemID else {
-                    return
-                }
-                
-                isolated.stop()
             }
         }
     }
@@ -73,6 +64,9 @@ public extension AudioPlayer {
     var volume: Percentage {
         current?.volume ?? 0
     }
+    var playbackRate: Percentage {
+        current?.playbackRate ?? 0
+    }
     
     var duration: TimeInterval? {
         current?.duration
@@ -89,12 +83,12 @@ public extension AudioPlayer {
     }
     
     func start(_ itemID: ItemIdentifier, withoutListeningSession: Bool = false) async throws {
-        stop()
+        await stop()
         
         do {
             current = try await LocalAudioEndpoint(itemID: itemID, withoutListeningSession: withoutListeningSession)
         } catch {
-            stop()
+            await stop()
             throw error
         }
     }
@@ -114,13 +108,16 @@ public extension AudioPlayer {
         try await start(item.itemID, withoutListeningSession: item.startWithoutListeningSession)
         try await current!.queue(items)
     }
-    func stop() {
-        current?.stop()
+    func stop() async {
+        await current?.stop()
         current = nil
-        
-        Task {
-            await widgetManager.invalidate()
+    }
+    func stop(endpointID: UUID) async {
+        guard current?.id == endpointID else {
+            return
         }
+        
+        await stop()
     }
     
     func play() async {
@@ -152,9 +149,27 @@ public extension AudioPlayer {
         
         RFNotification[.skipped].send(forwards)
     }
+    
+    func setVolume(_ volume: Percentage) {
+        current?.volume = volume
+    }
+    func setPlaybackRate(_ rate: Percentage) {
+        current?.playbackRate = rate
+    }
 }
 
 private extension AudioPlayer {
+    nonisolated func setupObservers() {
+        RFNotification[.downloadStatusChanged].subscribe(queue: .current) { [weak self] (itemID, status) in
+            Task {
+                guard await self?.current?.currentItemID == itemID else {
+                    return
+                }
+                
+                await self?.stop()
+            }
+        }
+    }
     nonisolated func addRemoteCommandTargets() {
         let commandCenter = MPRemoteCommandCenter.shared()
         

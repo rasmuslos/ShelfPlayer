@@ -70,22 +70,6 @@ struct AudiobookHomePanel: View {
                 .refreshable {
                     fetchItems()
                 }
-                .onReceive(RFNotification[.downloadStatusChanged].publisher()) { itemID, _ in
-                    guard itemID.libraryID == library?.id else {
-                        return
-                    }
-                    
-                    Task {
-                        await fetchLocalItems()
-                    }
-                }
-                /*
-                 .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
-                 Task {
-                 await fetchItems()
-                 }
-                 }
-                 */
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
@@ -95,6 +79,18 @@ struct AudiobookHomePanel: View {
                 Menu("library.change", systemImage: "books.vertical.fill") {
                     LibraryPicker()
                 }
+            }
+        }
+        .onReceive(RFNotification[.playbackStopped].publisher()) {
+            fetchItems()
+        }
+        .onReceive(RFNotification[.downloadStatusChanged].publisher()) { itemID, _ in
+            guard itemID.libraryID == library?.id else {
+                return
+            }
+            
+            Task {
+                await fetchLocalItems()
             }
         }
         // .modifier(NowPlaying.SafeAreaModifier())

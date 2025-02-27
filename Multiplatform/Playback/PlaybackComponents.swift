@@ -6,7 +6,10 @@
 //
 
 import SwiftUI
+import AVKit
+import Defaults
 import ShelfPlayerKit
+import SPPlayback
 
 struct PlaybackTitle: View {
     @Environment(Satellite.self) private var satellite
@@ -14,15 +17,31 @@ struct PlaybackTitle: View {
     var body: some View {
         HStack(spacing: 0) {
             Menu {
+                if let currentItem = satellite.currentItem {
+                    if let audiobook = currentItem as? Audiobook {
+                        ItemMenu(authors: audiobook.authors)
+                        ItemMenu(series: audiobook.series)
+                    } else if let episode = currentItem as? Episode {
+                        ItemLoadLink(itemID: episode.id)
+                        ItemLoadLink(itemID: episode.podcastID)
+                    }
+                    
+                    Divider()
+                    
+                    ProgressButton(item: currentItem)
+                    StopPlaybackButton()
+                }
             } label: {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 4) {
                     if let currentItem = satellite.currentItem {
                         Text(currentItem.name)
                             .lineLimit(2)
                             .font(.headline)
                         
                         Text(currentItem.authors, format: .list(type: .and, width: .short))
+                            .lineLimit(1)
                             .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     } else {
                         Text("loading")
                             .font(.headline)
@@ -100,6 +119,29 @@ struct PlaybackControls: View {
         .symbolEffect(.rotate.clockwise.byLayer, value: viewModel.notifySkipForwards)
     }
     
+    private var currentTime: TimeInterval {
+        if let seeking = viewModel.seeking {
+            satellite.chapterDuration * seeking
+        } else {
+            satellite.currentChapterTime
+        }
+    }
+    private var duration: TimeInterval {
+        if viewModel.seeking != nil {
+            satellite.chapterDuration - currentTime
+        } else {
+            satellite.chapterDuration
+        }
+    }
+    
+    private var remaining: TimeInterval {
+        if viewModel.seeking != nil {
+            duration * (1 / satellite.playbackRate)
+        } else {
+            (satellite.chapterDuration - satellite.currentChapterTime) * (1 / satellite.playbackRate)
+        }
+    }
+    
     var body: some View {
         @Bindable var viewModel = viewModel
         
@@ -112,20 +154,17 @@ struct PlaybackControls: View {
                 }
             }
             
-            HStack(spacing: 0) {
-                Text(satellite.currentChapterTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+            LazyVGrid(columns: [.init(alignment: .leading), .init(alignment: .center), .init(alignment: .trailing)]) {
+                Text(currentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
                 
-                Spacer(minLength: 8)
-                
-                if let chapter = satellite.chapter {
+                if viewModel.seeking == nil, let chapter = satellite.chapter {
                     Text(chapter.title)
                 } else {
-                    Text("ABC")
+                    Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                        .contentTransition(.numericText())
                 }
                 
-                Spacer(minLength: 8)
-                
-                Text(satellite.chapterDuration, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                Text(duration, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
             }
             .font(.caption2)
             .foregroundStyle(.secondary)
@@ -145,11 +184,103 @@ struct PlaybackControls: View {
                 .padding(.bottom, 6)
                 .hidden()
             
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.yellow)
-                .frame(height: 8)
+            PlaybackSlider(percentage: satellite.volume, seeking: $viewModel.volumePreview) { _ in
+                viewModel.volumePreview = nil
+            }
+            .onChange(of: viewModel.volumePreview) {
+                if let volume = viewModel.volumePreview {
+                    Task {
+                        await AudioPlayer.shared.setVolume(volume)
+                    }
+                }
+            }
         }
         .aspectRatio(2, contentMode: .fit)
+    }
+}
+
+struct PlaybackActions: View {
+    @Environment(Satellite.self) private var satellite
+    @Default(.playbackRates) private var playbackRates
+    
+    private let routePickerView = AVRoutePickerView()
+    
+    @ViewBuilder
+    private var playbackSpeedButton: some View {
+        Menu {
+            ForEach(playbackRates, id: \.hashValue) { value in
+                Toggle(isOn: .init { satellite.playbackRate == value } set: {
+                    if $0 {
+                        satellite.setPlaybackRate(value)
+                    }
+                    
+                }) {
+                    Text(value, format: .percent.notation(.compactName))
+                }
+            }
+        } label: {
+            Text(satellite.playbackRate, format: .percent.notation(.compactName))
+                .contentTransition(.numericText())
+        } primaryAction: {
+            guard let index = playbackRates.firstIndex(of: satellite.playbackRate) else {
+                if let rate = playbackRates.first {
+                    satellite.setPlaybackRate(rate)
+                }
+                
+                return
+            }
+            
+            if index + 1 < playbackRates.count {
+                satellite.setPlaybackRate(playbackRates[index + 1])
+            } else if let rate = playbackRates.first {
+                satellite.setPlaybackRate(rate)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var sleepTimerButton: some View {
+        Button("sleepTimer", systemImage: "moon.zzz.fill") {
+            
+        }
+    }
+    
+    @ViewBuilder
+    private var airPlayButton: some View {
+        Button("airPlay", systemImage: "airplay.audio") {
+            for view in routePickerView.subviews {
+                guard let button = view as? UIButton else {
+                    continue
+                }
+                
+                button.sendActions(for: .touchUpInside)
+                break
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var queueButton: some View {
+        Button("queue", systemImage: "list.number") {
+            
+        }
+    }
+    
+    var body: some View {
+        LazyVGrid(columns: .init(repeating: .init(alignment: .centerFirstTextBaseline), count: 4)) {
+            Group {
+                playbackSpeedButton
+                sleepTimerButton
+                airPlayButton
+                queueButton
+            }
+            .padding(12)
+            .contentShape(.rect)
+            .padding(-12)
+        }
+        .buttonStyle(.plain)
+        .labelStyle(.iconOnly)
+        .font(.system(size: 17, weight: .bold, design: .rounded))
     }
 }
 
@@ -212,7 +343,7 @@ private struct PlaybackSlider: View {
                     }
                     
                     let modifier = moved * acceleration
-                    seeking = dragStartValue! + modifier
+                    seeking = min(1, max(0, dragStartValue! + modifier))
                 }
                 .onEnded { _ in
                     if let seeking {
@@ -224,5 +355,14 @@ private struct PlaybackSlider: View {
         }
         .frame(height: hitTargetPadding * 2 + height)
         .padding(.vertical, -hitTargetPadding)
+    }
+}
+private struct StopPlaybackButton: View {
+    @Environment(Satellite.self) private var satellite
+    
+    var body: some View {
+        Button("playback.stop", systemImage: "stop.fill") {
+            satellite.stop()
+        }
     }
 }
