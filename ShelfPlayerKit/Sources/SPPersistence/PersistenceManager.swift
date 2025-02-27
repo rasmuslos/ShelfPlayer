@@ -14,6 +14,8 @@ public final class PersistenceManager: Sendable {
     public let authorization: AuthorizationSubsystem
     
     public let progress: ProgressSubsystem
+    public let session: SessionSubsystem
+    
     public let download: DownloadSubsystem
     
     public let podcasts: PodcastSubsystem
@@ -40,6 +42,8 @@ public final class PersistenceManager: Sendable {
         authorization = .init(modelContainer: container)
         
         progress = .init(modelContainer: container)
+        session = .init(modelContainer: container)
+        
         download = .init(modelContainer: container)
         
         podcasts = .init()

@@ -33,8 +33,8 @@ struct CompactPlaybackModifier: ViewModifier {
                     content
                         .allowsHitTesting(!viewModel.isExpanded)
                         .overlay {
-                            Color.white.opacity(viewModel.isExpanded && colorScheme == .dark ? 0.1 : 0)
-                                .animation(.smooth, value: viewModel.isExpanded)
+                            Color.white.opacity(min(0.1, (1 - viewModel.pushAmount)))
+                                .animation(.smooth(duration: 0.4), value: viewModel.isExpanded)
                         }
                         .visualEffect { [pushAmount] content, _ in
                             content
@@ -85,6 +85,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                     }
                                 }
                                 .opacity(viewModel.isExpanded ? 1 : 0)
+                                .animation(.smooth(duration: 0.1), value: viewModel.isExpanded)
                             }
                             .allowsHitTesting(false)
                             .mask {
@@ -170,6 +171,7 @@ private struct ExpandedForeground: View {
                 
                 ItemImage(itemID: satellite.currentItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
                     .id(satellite.currentItemID)
+                    .padding(.horizontal, -8)
                     .shadow(color: .black.opacity(0.4), radius: 20)
                     .scaleEffect(satellite.isPlaying ? 1 : 0.8)
                     .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
@@ -183,6 +185,10 @@ private struct ExpandedForeground: View {
                 Spacer(minLength: 12)
                 
                 PlaybackControls()
+                
+                Spacer(minLength: 12)
+                
+                PlaybackActions()
                 
                 /*
                 VStack(spacing: 0) {
@@ -220,12 +226,12 @@ private struct ExpandedForeground: View {
                 }
                 .buttonStyle(.plain)
                 .padding(40)
+                .contentShape(.rect)
                 .modifier(PlaybackDragGestureCatcher(active: true))
                 .padding(-40)
                 .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.3)), removal: .identity))
             }
         }
-        .border(.blue)
         .padding(.horizontal, 28)
         // .sensoryFeedback(.success, trigger: viewModel.notifyBookmark)
         /*
@@ -317,7 +323,7 @@ private struct CollapsedForeground: View {
     TabView {
         Tab(String(":)"), systemImage: "command") {
             Rectangle()
-                .fill(.yellow)
+                .fill(.black)
                 .ignoresSafeArea(edges: .top)
                 .overlay {
                     Image(systemName: "command")
