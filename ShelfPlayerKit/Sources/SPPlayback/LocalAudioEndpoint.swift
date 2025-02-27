@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import Combine
 @preconcurrency import AVKit
-import Defaults
+import MediaPlayer
 import OSLog
+import Defaults
 import SPFoundation
 import SPPersistence
 
@@ -17,6 +19,8 @@ final class LocalAudioEndpoint: AudioEndpoint {
     let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "LocalAudioEndpoint")
     
     let audioPlayer: AVQueuePlayer
+    
+    nonisolated(unsafe) var playbackReporter: PlaybackReporter!
     
     nonisolated(unsafe) var currentItemID: ItemIdentifier
     nonisolated(unsafe) var queue: ActorArray<QueueItem>
@@ -30,7 +34,13 @@ final class LocalAudioEndpoint: AudioEndpoint {
     nonisolated(unsafe) var isPlaying: Bool
     
     nonisolated(unsafe) var isBuffering: Bool
-    nonisolated(unsafe) var activeOperationCount: Int
+    nonisolated(unsafe) var activeOperationCount: Int {
+        didSet {
+            Task {
+                await AudioPlayer.shared.isBusyDidChange()
+            }
+        }
+    }
     
     nonisolated(unsafe) var systemVolume: Percentage
     
@@ -41,10 +51,12 @@ final class LocalAudioEndpoint: AudioEndpoint {
     nonisolated(unsafe) var chapterCurrentTime: TimeInterval?
     
     nonisolated(unsafe) private var chapterValidUntil: TimeInterval
+    nonisolated(unsafe) private var volumeSubscription: AnyCancellable?
     
     init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws {
         logger.info("Starting up local audio endpoint with item ID \(itemID) (without listening session: \(withoutListeningSession))")
         
+        playbackReporter = nil
         audioPlayer = .init()
         
         currentItemID = itemID
@@ -81,7 +93,30 @@ final class LocalAudioEndpoint: AudioEndpoint {
         isBuffering || activeOperationCount > 0
     }
     var volume: Percentage {
-        systemVolume
+        get {
+            systemVolume
+        }
+        set {
+            Task {
+                await MPVolumeView.setVolume(Float(newValue))
+            }
+        }
+    }
+    var playbackRate: Percentage {
+        get {
+            .init(audioPlayer.defaultRate)
+        }
+        set {
+            audioPlayer.defaultRate = Float(newValue)
+            
+            if audioPlayer.rate > 0 {
+                audioPlayer.rate = audioPlayer.defaultRate
+            }
+            
+            Task {
+                await AudioPlayer.shared.playbackRateDidChange(endpointID: id, playbackRate: newValue)
+            }
+        }
     }
 }
 
@@ -90,13 +125,18 @@ extension LocalAudioEndpoint {
         
     }
     
-    func stop() {
+    func stop() async {
+        await playbackReporter.finalize()
+        audioPlayer.removeAllItems()
+        
+        await AudioPlayer.shared.didStopPlaying(endpointID: id)
     }
     
     func play() async {
         audioPlayer.play()
         isPlaying = true
         
+        await playbackReporter.didChangePlayState(isPlaying: true)
         await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: true)
     }
     
@@ -104,6 +144,7 @@ extension LocalAudioEndpoint {
         audioPlayer.pause()
         isPlaying = false
         
+        await playbackReporter.didChangePlayState(isPlaying: false)
         await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: false)
     }
     
@@ -116,7 +157,10 @@ extension LocalAudioEndpoint {
         }
         
         if let duration, time >= duration {
-            // TODO: Played until end
+            await playbackReporter.update(currentTime: duration)
+            await playbackReporter.finalize()
+            
+            await AudioPlayer.shared.stop(endpointID: id)
             return
         }
         
@@ -243,16 +287,24 @@ private extension LocalAudioEndpoint {
         self.audioTracks = audioTracks.sorted()
         self.chapters = chapters.sorted()
         
-        try await seek(to: startTime, insideChapter: false)
+        playbackReporter = .init(itemID: currentItemID, sessionID: sessionID)
+        
+        do {
+            try await seek(to: startTime, insideChapter: false)
+        } catch {
+            logger.error("Failed to seek to start time: \(error)")
+        }
         
         await AudioPlayer.shared.didStartPlaying(endpointID: id, itemID: currentItemID, at: startTime)
         
         await updateDuration()
+        
+        // TODO: override
+        playbackRate = Defaults[.defaultPlaybackRate]
+        
         await play()
         
         activeOperationCount -= 1
-        
-        // TODO: Init reporter
     }
     
     func updateChapterIndex() {
@@ -289,10 +341,44 @@ private extension LocalAudioEndpoint {
             chapterDuration = duration
         }
         
+        if let duration {
+            await playbackReporter.update(duration: duration)
+        }
+        
         await AudioPlayer.shared.durationsDidChange(endpointID: id, itemDuration: duration, chapterDuration: chapterDuration)
     }
     
     func setupObservers() {
+        volumeSubscription = AVAudioSession.sharedInstance().publisher(for: \.outputVolume).sink { [weak self] volume in
+            self?.systemVolume = .init(volume)
+            
+            guard let id = self?.id, let systemVolume = self?.systemVolume else {
+                return
+            }
+            
+            Task {
+                await AudioPlayer.shared.volumeDidChange(endpointID: id, volume: systemVolume)
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { [weak self] _ in
+            guard let self else {
+                return
+            }
+            
+            print(audioTracks.endIndex)
+            
+            if activeAudioTrackIndex == audioTracks.endIndex - 1 {
+                // TODO: queue
+                
+                Task {
+                    await AudioPlayer.shared.stop(endpointID: id)
+                }
+            } else {
+                activeAudioTrackIndex += 1
+            }
+        }
+        
         audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: nil) { [weak self] _ in
             Task {
                 // MARK: Buffering
@@ -341,6 +427,10 @@ private extension LocalAudioEndpoint {
                     self?.chapterCurrentTime = currentTime - chapter.startOffset
                 } else {
                     self?.chapterCurrentTime = self?.currentTime
+                }
+                
+                if let currentTime = self?.currentTime {
+                    await self?.playbackReporter.update(currentTime: currentTime)
                 }
                 
                 if let id = self?.id {

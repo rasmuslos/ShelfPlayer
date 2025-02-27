@@ -351,9 +351,6 @@
         }
       }
     },
-    "ABC" : {
-
-    },
     "abridged" : {
       "localizations" : {
         "de" : {
@@ -467,6 +464,7 @@
       }
     },
     "account.defaultPlaybackSpeed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -915,6 +913,7 @@
       }
     },
     "account.playbackSpeed %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1479,6 +1478,9 @@
         }
       }
     },
+    "add" : {
+
+    },
     "added %@" : {
       "localizations" : {
         "de" : {
@@ -1506,6 +1508,9 @@
           }
         }
       }
+    },
+    "airPlay" : {
+
     },
     "ascending" : {
       "extractionState" : "stale",
@@ -5109,7 +5114,6 @@
       }
     },
     "playback.stop" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5164,6 +5168,9 @@
           }
         }
       }
+    },
+    "playbackRate.default" : {
+
     },
     "playing" : {
       "localizations" : {
@@ -5631,6 +5638,9 @@
         }
       }
     },
+    "queue" : {
+
+    },
     "queue.bottom" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5949,6 +5959,9 @@
           }
         }
       }
+    },
+    "reset" : {
+
     },
     "resume" : {
       "localizations" : {
@@ -6892,7 +6905,6 @@
       }
     },
     "sleepTimer" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

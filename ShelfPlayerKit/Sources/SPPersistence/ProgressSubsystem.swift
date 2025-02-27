@@ -147,7 +147,6 @@ public extension PersistenceManager.ProgressSubsystem {
             logger.info("Caching progress update because of: \(error.localizedDescription).")
         }
     }
-    
     func markAsListening(_ itemID: ItemIdentifier) async throws {
         logger.info("Marking progress as listening for item \(itemID).")
         
@@ -177,6 +176,47 @@ public extension PersistenceManager.ProgressSubsystem {
             try modelContext.save()
         } catch {
             logger.info("Caching progress update because of: \(error.localizedDescription).")
+        }
+    }
+    
+    func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double, notifyServer: Bool) async throws {
+        guard let persistedEntity = entity(itemID) else {
+            logger.warning("Could not update progress as listening for item \(itemID) because it does not exist.")
+            return
+        }
+        
+        persistedEntity.progress = currentTime / duration
+        persistedEntity.duration = duration
+        persistedEntity.currentTime = currentTime
+        
+        if persistedEntity.startedAt == nil {
+            persistedEntity.startedAt = nil
+        }
+        
+        if persistedEntity.progress >= 1 {
+            persistedEntity.finishedAt = .now
+        } else {
+            persistedEntity.finishedAt = nil
+        }
+        
+        persistedEntity.lastUpdate = .now
+        
+        persistedEntity.status = .desynchronized
+        
+        try modelContext.save()
+        
+        let entity = ProgressEntity(persistedEntity: persistedEntity)
+        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        
+        if notifyServer {
+            do {
+                try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
+                
+                persistedEntity.status = .synchronized
+                try modelContext.save()
+            } catch {
+                logger.info("Caching progress update because of: \(error.localizedDescription).")
+            }
         }
     }
     

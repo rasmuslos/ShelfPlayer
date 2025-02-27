@@ -68,13 +68,6 @@ struct PodcastHomePanel: View {
                 .refreshable {
                     fetchItems()
                 }
-                /*
-                .onReceive(NotificationCenter.default.publisher(for: PlayableItem.finishedNotification)) { _ in
-                    Task {
-                        await fetchItems()
-                    }
-                }
-                 */
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
@@ -85,6 +78,9 @@ struct PodcastHomePanel: View {
                     LibraryPicker()
                 }
             }
+        }
+        .onReceive(RFNotification[.playbackStopped].publisher()) {
+            fetchItems()
         }
         // .modifier(NowPlaying.SafeAreaModifier())
     }

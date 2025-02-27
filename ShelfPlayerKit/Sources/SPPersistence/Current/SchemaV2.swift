@@ -23,6 +23,8 @@ enum SchemaV2: VersionedSchema {
         
         PersistedProgress.self,
         
+        PersistedPlaybackSession.self,
+        
         PersistedKeyValueEntity.self,
         PersistedSearchIndexEntry.self,
         

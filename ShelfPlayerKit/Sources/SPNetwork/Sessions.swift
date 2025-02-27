@@ -78,15 +78,15 @@ public extension APIClient {
         try await response(for: ClientRequest<Empty>(path: "api/session/local", method: .post, body: session))
     }
     
-    func reportUpdate(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/sync", method: .post, body: [
+    func syncSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
+        try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)/sync", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
         ]))
     }
-    func reportClose(playbackSessionId: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/session/\(playbackSessionId)/close", method: .post, body: [
+    func closeSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
+        try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)/close", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,

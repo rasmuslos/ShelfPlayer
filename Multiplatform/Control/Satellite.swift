@@ -39,6 +39,9 @@ final class Satellite {
     private(set) var duration: TimeInterval
     private(set) var chapterDuration: TimeInterval
     
+    private(set) var volume: Percentage
+    private(set) var playbackRate: Percentage
+    
     // MARK: Playback helper
     
     private(set) var totalLoading: Int
@@ -64,6 +67,9 @@ final class Satellite {
         
         duration = 0
         chapterDuration = 0
+        
+        volume = 0
+        playbackRate = 0
         
         totalLoading = 0
         busy = [:]
@@ -232,6 +238,17 @@ extension Satellite {
             }
         }
     }
+    nonisolated func stop() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.stop()
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
     
     nonisolated func queue(_ item: PlayableItem) {
         Task {
@@ -245,13 +262,29 @@ extension Satellite {
             }
         }
     }
+    nonisolated func setPlaybackRate(_ rate: Percentage) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.setPlaybackRate(rate)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
     
     nonisolated func markAsFinished(_ item: PlayableItem) {
         Task {
             await startWorking(on: item.id)
             
             do {
-                try await PersistenceManager.shared.progress.markAsCompleted(item.id)
+                if await currentItemID == item.id {
+                    try await AudioPlayer.shared.seek(to: duration, insideChapter: false)
+                } else {
+                    try await PersistenceManager.shared.progress.markAsCompleted(item.id)
+                }
+                
                 await endWorking(on: item.id, successfully: true)
             } catch {
                 await endWorking(on: item.id, successfully: false)
@@ -305,6 +338,8 @@ private extension Satellite {
             self?.duration = 0
             self?.chapterDuration = 0
             
+            self?.playbackRate = 0
+            
             self?.resolvePlayingItem()
         }.store(in: &stash)
         
@@ -339,6 +374,31 @@ private extension Satellite {
             Task {
                 self?.chapter = await AudioPlayer.shared.chapters[chapterIndex]
             }
+        }.store(in: &stash)
+        
+        RFNotification[.volumeChanged].subscribe { [weak self] volume in
+            self?.volume = volume
+        }.store(in: &stash)
+        RFNotification[.playbackRateChanged].subscribe { [weak self] playbackRate in
+            self?.playbackRate = playbackRate
+        }.store(in: &stash)
+        
+        RFNotification[.playbackStopped].subscribe { [weak self] in
+            self?.currentItemID = nil
+            self?.currentItem = nil
+            
+            self?.chapter = nil
+            
+            self?.isPlaying = false
+            self?.isBuffering = true
+            
+            self?.currentTime = 0
+            self?.currentChapterTime = 0
+            
+            self?.duration = 0
+            self?.chapterDuration = 0
+            
+            self?.playbackRate = 0
         }.store(in: &stash)
     }
 }

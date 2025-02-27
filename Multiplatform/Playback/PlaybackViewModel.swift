@@ -16,6 +16,7 @@ final class PlaybackViewModel {
     private var _dragOffset: CGFloat
     
     var seeking: Percentage?
+    var volumePreview: Percentage?
     
     @ObservableDefault(.skipBackwardsInterval) @ObservationIgnored
     var skipBackwardsInterval: Int
@@ -35,6 +36,10 @@ final class PlaybackViewModel {
             } else {
                 self?.notifySkipBackwards.toggle()
             }
+        }
+        RFNotification[.playbackStopped].subscribe { [weak self] in
+            self?.isExpanded = false
+            self?.dragOffset = 0
         }
     }
     
@@ -75,7 +80,7 @@ final class PlaybackViewModel {
     }
     var pushAmount: Percentage {
         // technically a CGFloat
-        let dragHeight: Percentage = 300
+        let dragHeight: Percentage = 500
         
         if dragOffset > 0 {
             return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.15
@@ -85,7 +90,7 @@ final class PlaybackViewModel {
     }
     
     var areSlidersInUse: Bool {
-        seeking != nil
+        seeking != nil || volumePreview != nil
     }
     
     var backgroundCornerRadius: CGFloat {
