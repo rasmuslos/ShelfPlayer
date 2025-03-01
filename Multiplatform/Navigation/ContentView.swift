@@ -56,6 +56,11 @@ struct ContentView: View {
         .environment(playbackViewModel)
         .environment(connectionStore)
         .environment(\.namespace, namespace)
+        .onAppear {
+            Task.detached {
+                await PersistenceManager.shared.download.invalidateActiveDownloads()
+            }
+        }
         .onContinueUserActivity(CSSearchableItemActionType) {
             guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
                 return

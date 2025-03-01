@@ -56,38 +56,6 @@ internal struct AccountSheet: View {
                 
                 Section {
                     Group {
-                        Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
-                            Label("account.settings", systemImage: "gear")
-                        }
-                        
-                        switch notificationPermission {
-                        case .notDetermined:
-                            Button {
-                                Task {
-                                    /*
-                                    try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
-                                    notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                                     */
-                                }
-                            } label: {
-                                Label("account.notifications.request", systemImage: "bell.badge.waveform.fill")
-                            }
-                            .task {
-                                // notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                            }
-                        case .denied:
-                            Link(destination: URL(string: UIApplication.openNotificationSettingsURLString)!) {
-                                Label("account.notifications.denied", systemImage: "bell.slash.fill")
-                            }
-                            .foregroundStyle(.red)
-                        case .authorized:
-                            Label("account.notifications.granted", systemImage: "bell.badge.fill")
-                                .foregroundStyle(.secondary)
-                        default:
-                            Label("account.notifications.unknown", systemImage: "bell.and.waves.left.and.right.fill")
-                                .foregroundStyle(.red)
-                        }
-                        
                         Button {
                             Task {
                                 // try? await BackgroundTaskHandler.updateDownloads()
@@ -104,23 +72,6 @@ internal struct AccountSheet: View {
                 DownloadQueue()
                 
                 Section {
-                    /*
-                    Picker("account.defaultPlaybackSpeed", selection: $defaultPlaybackSpeed) {
-                        // PlaybackSpeedButton.Options(selected: $defaultPlaybackSpeed)
-                    }
-                    .tint(.primary)
-                     */
-                } header: {
-                    Text("account.defaults")
-                } footer: {
-                    Text("account.defaults.text")
-                }
-                
-                Section {
-                    /*
-                    Stepper("account.playbackSpeed \(playbackSpeedText)", value: $customPlaybackSpeed, in: 0.25...4, step: 0.05)
-                     */
-                    
                     let hours = customSleepTimer / 60
                     let minutes = customSleepTimer % 60
                     
@@ -208,21 +159,6 @@ internal struct AccountSheet: View {
                 } footer: {
                     Text("account.delete.footer")
                 }
-                
-                Section {
-                    Button {
-                        UIApplication.shared.open(URL(string: "https://github.com/rasmuslos/ShelfPlayer")!)
-                    } label: {
-                        Label("account.github", systemImage: "chevron.left.forwardslash.chevron.right")
-                    }
-                    
-                    Button {
-                        UIApplication.shared.open(URL(string: "https://rfk.io/support.htm")!)
-                    } label: {
-                        Label("account.support", systemImage: "lifepreserver")
-                    }
-                }
-                .foregroundStyle(.primary)
                 
                 Group {
                     Section {

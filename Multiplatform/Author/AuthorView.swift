@@ -36,7 +36,7 @@ struct AuthorView: View {
             if !viewModel.seriesLoader.items.isEmpty {
                 gridTitle(.init(localized: "series"), count: viewModel.seriesLoader.totalCount)
                 
-                SeriesGrid(series: viewModel.seriesLoader.items) {
+                SeriesGrid(series: viewModel.seriesLoader.items, showName: true) {
                     viewModel.seriesLoader.performLoadIfRequired($0)
                 }
                 .padding(.horizontal, 20)

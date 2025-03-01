@@ -12,6 +12,7 @@ import OSLog
 import Defaults
 import RFNotifications
 import SPFoundation
+import SPPersistence
 
 public final actor AudioPlayer: Sendable {
     let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "AudioPlayer")
@@ -155,6 +156,16 @@ public extension AudioPlayer {
     }
     func setPlaybackRate(_ rate: Percentage) {
         current?.playbackRate = rate
+        
+        if let itemID = current?.currentItemID {
+            Task {
+                do {
+                    try await PersistenceManager.shared.item.setPlaybackRate(rate, for: itemID)
+                } catch {
+                    logger.error("Failed to store playback rate: \(error)")
+                }
+            }
+        }
     }
 }
 

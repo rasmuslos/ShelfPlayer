@@ -82,7 +82,7 @@ private struct PodcastDescription: View {
     var body: some View {
         if let description = viewModel.podcast.description {
             Button {
-                viewModel.descriptionSheetPresented.toggle()
+                viewModel.isDescriptionSheetPresented.toggle()
             } label: {
                 HStack {
                     Text(description)

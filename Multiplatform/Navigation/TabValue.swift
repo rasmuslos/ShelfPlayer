@@ -15,12 +15,11 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     case audiobookSeries(Library)
     case audiobookAuthors(Library)
     case audiobookLibrary(Library)
+    case audiobookSearch(Library)
     
     case podcastHome(Library)
     case podcastLatest(Library)
     case podcastLibrary(Library)
-    
-    case search(Library)
     
     var id: Self {
         self
@@ -36,13 +35,13 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             library
         case .audiobookLibrary(let library):
             library
+        case .audiobookSearch(let library):
+            library
         case .podcastHome(let library):
             library
         case .podcastLatest(let library):
             library
         case .podcastLibrary(let library):
-            library
-        case .search(let library):
             library
         }
     }
@@ -57,6 +56,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             "panel.authors"
         case .audiobookLibrary:
             "panel.library"
+        case .audiobookSearch:
+            "panel.search"
             
         case .podcastHome:
             "panel.home"
@@ -64,9 +65,6 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             "panel.latest"
         case .podcastLibrary:
             "panel.library"
-            
-        case .search:
-            "panel.search"
         }
     }
     
@@ -80,6 +78,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             "person.2.fill"
         case .audiobookLibrary:
             "books.vertical.fill"
+        case .audiobookSearch:
+            "magnifyingglass"
             
         case .podcastHome:
             "house.fill"
@@ -87,9 +87,6 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             "calendar.badge.clock"
         case .podcastLibrary:
             "square.split.2x2.fill"
-            
-        case .search:
-            "magnifyingglass"
         }
     }
     
@@ -103,19 +100,17 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 AudiobookSeriesPanel()
             case .audiobookAuthors:
                 AudiobookAuthorsPanel()
+            case .podcastLibrary:
+                PodcastLibraryPanel()
+            case .audiobookSearch:
+                SearchView()
                 
             case .podcastHome:
                 PodcastHomePanel()
             case .podcastLatest:
                 PodcastLatestPanel()
-                
             case .audiobookLibrary:
                 AudiobookLibraryPanel()
-            case .podcastLibrary:
-                PodcastLibraryPanel()
-                
-            case .search:
-                SearchView()
             }
         }
     }
@@ -125,7 +120,7 @@ internal extension TabValue {
     static func tabs(for library: Library) -> [TabValue] {
         switch library.type {
         case .audiobooks:
-            [.audiobookHome(library), .audiobookSeries(library), .audiobookAuthors(library), .audiobookLibrary(library), .search(library)]
+            [.audiobookHome(library), .audiobookSeries(library), .audiobookAuthors(library), .audiobookLibrary(library), .audiobookSearch(library)]
         case .podcasts:
             [.podcastHome(library), .podcastLatest(library), .podcastLibrary(library)]
         default:

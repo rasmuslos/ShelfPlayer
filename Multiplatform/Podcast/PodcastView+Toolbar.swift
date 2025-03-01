@@ -71,8 +71,8 @@ extension PodcastView.ToolbarModifier {
                     ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                 }
                 
-                Button("podcast.settings.title", systemImage: "arrow.down.to.line.circle") {
-                    viewModel.settingsSheetPresented.toggle()
+                Button("podcast.configure", systemImage: "gearshape") {
+                    viewModel.isConfigureSheetPresented.toggle()
                 }
             }
             .menuActionDismissBehavior(.disabled)

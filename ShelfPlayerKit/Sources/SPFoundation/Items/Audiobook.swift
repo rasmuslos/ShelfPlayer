@@ -16,7 +16,7 @@ public final class Audiobook: PlayableItem, @unchecked Sendable {
     public let explicit: Bool
     public let abridged: Bool
     
-    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: TimeInterval, subtitle: String?, narrators: [String], series: [SeriesFragment], explicit: Bool, abridged: Bool) {
+    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?, size: Int64?, duration: TimeInterval, subtitle: String?, narrators: [String], series: [SeriesFragment], explicit: Bool, abridged: Bool) {
         self.subtitle = subtitle
         
         self.narrators = narrators

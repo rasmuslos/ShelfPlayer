@@ -26,8 +26,12 @@ struct TabRouter: View {
     
     var selectionProxy: Binding<TabValue?> {
         .init() { selection } set: {
-            if $0 == selection, case .search = $0 {
-                // NotificationCenter.default.post(name: SearchView.focusNotification, object: nil)
+            if $0 == selection {
+                if case .audiobookSearch = $0 {
+                    RFNotification[.focusSearchField].send()
+                } else if case .podcastLibrary = $0 {
+                    RFNotification[.focusSearchField].send()
+                }
             }
             
             selection = $0

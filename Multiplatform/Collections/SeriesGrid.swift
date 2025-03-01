@@ -12,6 +12,7 @@ struct SeriesGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let series: [Series]
+    let showName: Bool
     let onAppear: ((_: Series) -> Void)
     
     private var minimumWidth: CGFloat {
@@ -22,7 +23,7 @@ struct SeriesGrid: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 12)], spacing: 16) {
             ForEach(series) { item in
                 NavigationLink(destination: SeriesView(item)) {
-                    SeriesGridItem(series: item)
+                    SeriesGridItem(series: item, showName: showName)
                 }
                 .buttonStyle(.plain)
                 .onAppear {
@@ -38,8 +39,8 @@ extension SeriesGrid {
         let name: String?
         let audiobookIDs: [ItemIdentifier]
         
-        init(series: Series) {
-            self.name = series.name
+        init(series: Series, showName: Bool) {
+            self.name = showName ? series.name : nil
             self.audiobookIDs = series.audiobooks.map(\.id)
         }
         
@@ -109,7 +110,7 @@ extension SeriesGrid {
 #Preview {
     NavigationStack {
         ScrollView {
-            SeriesGrid(series: .init(repeating: .fixture, count: 7)) { _ in }
+            SeriesGrid(series: .init(repeating: .fixture, count: 7), showName: true) { _ in }
                 .padding(20)
         }
     }
