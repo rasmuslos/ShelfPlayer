@@ -26,7 +26,7 @@ extension SchemaV2 {
         private(set) var addedAt: Date
         private(set) var released: String?
         
-        private(set) var size: Int64
+        private(set) var size: Int64?
         private(set) var duration: TimeInterval
         
         private(set) var subtitle: String?
@@ -40,7 +40,7 @@ extension SchemaV2 {
         @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
         private(set) var searchIndexEntry: PersistedSearchIndexEntry
         
-        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, size: Int64, duration: TimeInterval, subtitle: String? = nil, narrators: [String], series: [Audiobook.SeriesFragment], explicit: Bool, abridged: Bool) {
+        init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String? = nil, size: Int64?, duration: TimeInterval, subtitle: String? = nil, narrators: [String], series: [Audiobook.SeriesFragment], explicit: Bool, abridged: Bool) {
             _id = id.description
             
             self.name = name

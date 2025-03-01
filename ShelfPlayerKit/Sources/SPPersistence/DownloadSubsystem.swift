@@ -31,7 +31,6 @@ extension PersistenceManager {
         
         private nonisolated lazy var urlSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: "io.rfk.shelfPlayerKit.download")
-            config.isDiscretionary = true
             config.sessionSendsLaunchEvents = true
             
             if ShelfPlayerKit.enableCentralized {
@@ -252,24 +251,6 @@ private extension PersistenceManager.DownloadSubsystem {
         scheduleUpdateTask()
     }
     
-    func invalidateActiveDownloads() {
-        logger.info("Invalidating active downloads...")
-        
-        guard let active = try? active else {
-            return
-        }
-        
-        for asset in active {
-            asset.downloadTaskID = nil
-        }
-        
-        do {
-            try modelContext.save()
-        } catch {
-            logger.error("Failed to save context: \(error)")
-        }
-    }
-    
     nonisolated func scheduleUnfinishedForCompletion() async throws {
         var activeTaskCount = try await activeTaskCount
         let downloadTasks = await urlSession.tasks.2
@@ -309,6 +290,8 @@ private extension PersistenceManager.DownloadSubsystem {
         }
         
         let task = urlSession.downloadTask(with: request)
+        
+        print(request)
         
         try await beganDownloading(assetID: id, taskID: task.taskIdentifier)
         task.resume()
@@ -653,6 +636,24 @@ public extension PersistenceManager.DownloadSubsystem {
             busyItemIDs.remove(itemID)
             
             throw error
+        }
+    }
+    
+    func invalidateActiveDownloads() {
+        logger.info("Invalidating active downloads...")
+        
+        guard let active = try? active else {
+            return
+        }
+        
+        for asset in active {
+            asset.downloadTaskID = nil
+        }
+        
+        do {
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to save context: \(error)")
         }
     }
 }

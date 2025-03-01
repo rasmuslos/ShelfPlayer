@@ -20,3 +20,9 @@ enum DisplayContext {
     case author(author: Author)
     case series(series: Series)
 }
+
+extension RFNotification.Notification {
+    static var focusSearchField: RFNotification.Notification<RFNotificationEmptyPayload> {
+        .init("io.rfk.shelfPlayer.focusSearchField")
+    }
+}

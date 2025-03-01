@@ -13,7 +13,7 @@ public final class Episode: PlayableItem, @unchecked Sendable {
     
     public let index: EpisodeIndex
     
-    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date, released: String?, size: Int64, duration: TimeInterval, podcastName: String, index: EpisodeIndex) {
+    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date, released: String?, size: Int64?, duration: TimeInterval, podcastName: String, index: EpisodeIndex) {
         self.podcastName = podcastName
         self.index = index
         

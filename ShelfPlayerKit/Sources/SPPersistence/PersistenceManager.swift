@@ -17,7 +17,7 @@ public final class PersistenceManager: Sendable {
     public let session: SessionSubsystem
     
     public let download: DownloadSubsystem
-    
+    public let item: ItemSubsystem
     public let podcasts: PodcastSubsystem
     
     private init() {
@@ -45,7 +45,7 @@ public final class PersistenceManager: Sendable {
         session = .init(modelContainer: container)
         
         download = .init(modelContainer: container)
-        
+        item = .init()
         podcasts = .init()
     }
 }

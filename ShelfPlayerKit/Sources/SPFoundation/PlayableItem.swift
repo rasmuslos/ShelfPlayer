@@ -8,10 +8,10 @@
 import Foundation
 
 public class PlayableItem: Item, @unchecked Sendable {
-    public let size: Int64
+    public let size: Int64?
     public let duration: TimeInterval
     
-    init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?, size: Int64, duration: TimeInterval) {
+    init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?, size: Int64?, duration: TimeInterval) {
         self.size = size
         self.duration = duration
         

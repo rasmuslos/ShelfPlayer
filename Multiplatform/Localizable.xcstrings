@@ -493,6 +493,7 @@
       }
     },
     "account.defaults" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -521,6 +522,7 @@
       }
     },
     "account.defaults.text" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -661,6 +663,7 @@
       }
     },
     "account.github" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -885,6 +888,7 @@
       }
     },
     "account.notifications.unknown" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1057,6 +1061,7 @@
       }
     },
     "account.support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2645,6 +2650,9 @@
     "connection.versionHint %@" : {
 
     },
+    "connections" : {
+
+    },
     "decrease" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3849,6 +3857,9 @@
           }
         }
       }
+    },
+    "github" : {
+
     },
     "import.failed" : {
 
@@ -5172,6 +5183,9 @@
     "playbackRate.default" : {
 
     },
+    "playbackRates" : {
+
+    },
     "playing" : {
       "localizations" : {
         "de" : {
@@ -5199,6 +5213,9 @@
           }
         }
       }
+    },
+    "podcast.configure" : {
+
     },
     "podcast.episodic" : {
       "localizations" : {
@@ -5522,6 +5539,9 @@
           }
         }
       }
+    },
+    "prefrences" : {
+
     },
     "proceed" : {
 
@@ -7260,6 +7280,9 @@
       }
     },
     "supplementaryPDF.read" : {
+
+    },
+    "support" : {
 
     },
     "timeline" : {

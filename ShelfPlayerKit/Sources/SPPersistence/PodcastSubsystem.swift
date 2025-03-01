@@ -12,23 +12,6 @@ import SPFoundation
 
 extension PersistenceManager {
     public struct PodcastSubsystem: Sendable {
-        public subscript(id: ItemIdentifier) -> PodcastAutoDownloadConfiguration {
-            get async {
-                if let configuration = await PersistenceManager.shared.keyValue[.podcastAutoDownloadConfiguration(id)] {
-                    return configuration
-                }
-                
-                let configuration = PodcastAutoDownloadConfiguration(itemID: id, enabled: false, amount: 5, enableNotifications: false)
-                try? await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(id), configuration)
-                
-                return configuration
-            }
-        }
-        
-        public func set(_ id: ItemIdentifier, _ configuration: PodcastAutoDownloadConfiguration) async throws {
-            try await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(id), configuration)
-        }
-        
         public struct PodcastAutoDownloadConfiguration: Codable, Sendable {
             public let itemID: ItemIdentifier
             public let enabled: Bool
@@ -45,8 +28,34 @@ extension PersistenceManager {
     }
 }
 
+public extension PersistenceManager.PodcastSubsystem {
+    func configuration(for itemID: ItemIdentifier) async -> PodcastAutoDownloadConfiguration {
+        if let configuration = await PersistenceManager.shared.keyValue[.podcastAutoDownloadConfiguration(for: itemID)] {
+            return configuration
+        }
+        
+        let configuration = PodcastAutoDownloadConfiguration(itemID: itemID, enabled: false, amount: 5, enableNotifications: false)
+        try? await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(for: itemID), configuration)
+        
+        return configuration
+    }
+    func set(configuration: PodcastAutoDownloadConfiguration, for itemID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(for: itemID), configuration)
+    }
+    
+    func playbackRate(for itemID: ItemIdentifier) async -> Percentage? {
+        await PersistenceManager.shared.keyValue[.podcastPlaybackRate(for: itemID)]
+    }
+    func setPlaybackRate(_ rate: Percentage?, for itemID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.podcastPlaybackRate(for: itemID), rate)
+    }
+}
+
 private extension PersistenceManager.KeyValueSubsystem.Key {
-    static func podcastAutoDownloadConfiguration(_ itemID: ItemIdentifier) -> Key<PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration> {
+    static func podcastAutoDownloadConfiguration(for itemID: ItemIdentifier) -> Key<PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration> {
         .init("podcastAutoDownloadConfiguration-\(itemID.groupingID ?? itemID.primaryID)")
+    }
+    static func podcastPlaybackRate(for itemID: ItemIdentifier) -> Key<Percentage> {
+        .init("podcastPlaybackRate-\(itemID.groupingID ?? itemID.primaryID)")
     }
 }

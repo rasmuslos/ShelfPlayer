@@ -32,6 +32,9 @@ struct PodcastEpisodesView: View {
         
         List {
             EpisodeList(episodes: viewModel.visible, context: .podcast)
+                .refreshable {
+                    viewModel.load()
+                }
         }
         .listStyle(.plain)
         .navigationTitle("episodes")

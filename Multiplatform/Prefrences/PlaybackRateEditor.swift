@@ -58,16 +58,7 @@ struct PlaybackRateEditor: View {
             }
             
             Section {
-                Picker("playbackRate.default", selection: $defaultPlaybackRate) {
-                    ForEach(playbackRates, id: \.hashValue) { value in
-                        Button {
-                            defaultPlaybackRate = value
-                        } label: {
-                            Text(value, format: .percent.notation(.compactName))
-                        }
-                        .tag(value)
-                    }
-                }
+                PlaybackRatePicker(label: "playbackRate.default", selection: $defaultPlaybackRate)
             }
             
             Section {
@@ -77,6 +68,27 @@ struct PlaybackRateEditor: View {
             }
         }
         .environment(\.editMode, .constant(.active))
+        .navigationTitle("playbackRates")
+    }
+}
+
+struct PlaybackRatePicker: View {
+    @Default(.playbackRates) private var playbackRates
+    
+    let label: LocalizedStringKey
+    @Binding var selection: Percentage
+    
+    var body: some View {
+        Picker(label, selection: $selection) {
+            ForEach(playbackRates, id: \.hashValue) { value in
+                Button {
+                    selection = value
+                } label: {
+                    Text(value, format: .percent.notation(.compactName))
+                }
+                .tag(value)
+            }
+        }
     }
 }
 
