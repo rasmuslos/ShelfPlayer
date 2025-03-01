@@ -9,15 +9,16 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-struct PodcastSettingsSheet: View {
+struct PodcastConfigurationSheet: View {
     @Environment(\.dismiss) private var dismiss
     
     let podcastID: ItemIdentifier
     
+    @State private var playbackRate: Percentage = -1
     @State private var configuration: PodcastAutoDownloadConfigurationShadow?
     @State private var notificationPermission: UNAuthorizationStatus? = nil
     
-    @State private var loading = false
+    @State private var isLoading = false
     @State private var notifyError = false
     @State private var notifySuccess = false
     
@@ -40,6 +41,14 @@ struct PodcastSettingsSheet: View {
                             .disabled(notificationPermission != .authorized || !configuration.enabled)
                     } footer: {
                         Text("podcast.settings.notificationFooter")
+                    }
+                    
+                    Section {
+                        if playbackRate > 0 {
+                            PlaybackRatePicker(label: "playbackRate.default", selection: $playbackRate)
+                        } else {
+                            ProgressIndicator()
+                        }
                     }
                     
                     if let notificationPermission {
@@ -70,39 +79,18 @@ struct PodcastSettingsSheet: View {
                             }
                     }
                 }
-                .disabled(loading)
                 .navigationTitle("podcast.settings.title")
                 .navigationBarTitleDisplayMode(.inline)
                 .sensoryFeedback(.error, trigger: notifyError)
                 .sensoryFeedback(.success, trigger: notifySuccess)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
-                        if loading {
+                        if isLoading {
                             ProgressIndicator()
                         } else {
                             Button("save") {
-                                Task {
-                                    loading = true
-                                    
-                                    do {
-                                        try await PersistenceManager.shared.podcasts.set(podcastID, configuration.materialized)
-                                        
-                                        await MainActor.run {
-                                            notifySuccess.toggle()
-                                        }
-                                    } catch {
-                                        await MainActor.run {
-                                            notifyError.toggle()
-                                        }
-                                    }
-                                    
-                                    loading = false
-                                    
-                                    dismiss()
-                                    // try await BackgroundTaskHandler.(configuration: configuration)
-                                }
+                                save()
                             }
-                            .disabled(loading)
                         }
                     }
                     
@@ -110,23 +98,57 @@ struct PodcastSettingsSheet: View {
                         Button("cancel") {
                             dismiss()
                         }
-                        .disabled(loading)
                     }
                 }
+                .disabled(isLoading)
             } else {
                 LoadingView()
                     .task {
-                        await fetchConfiguration()
+                        await load()
                     }
                     .refreshable {
-                        await fetchConfiguration()
+                        await load()
                     }
             }
         }
+        .interactiveDismissDisabled()
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.hidden)
     }
     
-    private func fetchConfiguration() async {
-        self.configuration = .init(await PersistenceManager.shared.podcasts[podcastID])
+    private func load() async {
+        self.playbackRate = await PersistenceManager.shared.podcasts.playbackRate(for: podcastID) ?? Defaults[.defaultPlaybackRate]
+        self.configuration = .init(await PersistenceManager.shared.podcasts.configuration(for: podcastID))
+    }
+    private func save() {
+        Task {
+            isLoading = true
+            
+            do {
+                if playbackRate != Defaults[.defaultPlaybackRate] {
+                    try await PersistenceManager.shared.podcasts.setPlaybackRate(playbackRate, for: podcastID)
+                } else {
+                    try await PersistenceManager.shared.podcasts.setPlaybackRate(nil, for: podcastID)
+                }
+                
+                if let configuration {
+                    try await PersistenceManager.shared.podcasts.set(configuration: configuration.materialized, for: podcastID)
+                }
+                
+                await MainActor.run {
+                    notifySuccess.toggle()
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError.toggle()
+                }
+            }
+            
+            isLoading = false
+            
+            dismiss()
+            // try await BackgroundTaskHandler.(configuration: configuration)
+        }
     }
 }
 
@@ -151,7 +173,7 @@ private final class PodcastAutoDownloadConfigurationShadow: Sendable {
     }
 }
 
-extension PodcastSettingsSheet {
+extension PodcastConfigurationSheet {
     struct EnabledToggle: View {
         @Binding var enabled: Bool
         
@@ -189,7 +211,7 @@ extension PodcastSettingsSheet {
 #Preview {
     Text(verbatim: ":)")
         .sheet(isPresented: .constant(true)) {
-            PodcastSettingsSheet(podcastID: .fixture)
+            PodcastConfigurationSheet(podcastID: .fixture)
         }
 }
 #endif

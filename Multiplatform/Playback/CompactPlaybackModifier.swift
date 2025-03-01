@@ -45,14 +45,14 @@ struct CompactPlaybackModifier: ViewModifier {
                             let width = totalWidth * viewModel.pushAmount
                             let leadingOffset = (totalWidth - width) / 2
                             
-                            RoundedRectangle(cornerRadius: viewModel.pushContainerCornerRadius(leadingOffset: leadingOffset), style: .continuous)
+                            RoundedRectangle(cornerRadius: satellite.isNowPlayingVisible ? viewModel.pushContainerCornerRadius(leadingOffset: leadingOffset) : 0, style: .continuous)
                                 .fill(.background)
                                 .frame(width: width,
                                        height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * viewModel.pushAmount)
                                 .padding(.top, leadingOffset)
                         }
                         .animation(.smooth, value: viewModel.pushAmount)
-                    
+                            
                     if satellite.isNowPlayingVisible {
                         ZStack {
                             // Background

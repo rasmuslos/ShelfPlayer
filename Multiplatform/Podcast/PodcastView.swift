@@ -98,7 +98,7 @@ struct PodcastView: View {
         .refreshable {
             viewModel.load()
         }
-        .sheet(isPresented: $viewModel.descriptionSheetPresented) {
+        .sheet(isPresented: $viewModel.isDescriptionSheetPresented) {
             NavigationStack {
                 ScrollView {
                     HStack(spacing: 0) {
@@ -117,8 +117,8 @@ struct PodcastView: View {
                 .presentationDragIndicator(.visible)
             }
         }
-        .sheet(isPresented: $viewModel.settingsSheetPresented) {
-            PodcastSettingsSheet(podcastID: viewModel.podcast.id)
+        .sheet(isPresented: $viewModel.isConfigureSheetPresented) {
+            PodcastConfigurationSheet(podcastID: viewModel.podcast.id)
         }
         .userActivity("io.rfk.shelfPlayer.item") { activity in
             activity.title = viewModel.podcast.name

@@ -37,12 +37,10 @@ extension EpisodeView {
                         }
                     }
                     
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
                         DownloadButton(item: viewModel.episode, progressVisibility: .toolbar)
                             .labelStyle(.iconOnly)
-                    }
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
+                        
                         Menu {
                             QueuePlayButton(item: viewModel.episode)
                             QueueLaterButton(item: viewModel.episode)

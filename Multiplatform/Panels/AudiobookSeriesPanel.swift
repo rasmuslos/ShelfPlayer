@@ -40,7 +40,7 @@ struct AudiobookSeriesPanel: View {
                     switch seriesDisplayType {
                         case .grid:
                             ScrollView {
-                                SeriesGrid(series: lazyLoader.items) {
+                                SeriesGrid(series: lazyLoader.items, showName: true) {
                                     lazyLoader.performLoadIfRequired($0)
                                 }
                                 .padding(20)

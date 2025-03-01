@@ -299,8 +299,17 @@ private extension LocalAudioEndpoint {
         
         await updateDuration()
         
-        // TODO: override
-        playbackRate = Defaults[.defaultPlaybackRate]
+        let playbackRate: Percentage
+        
+        if let itemPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: currentItemID) {
+            playbackRate = itemPlaybackRate
+        } else if let podcastPlaybackRate = await PersistenceManager.shared.podcasts.playbackRate(for: currentItemID) {
+            playbackRate = podcastPlaybackRate
+        } else {
+            playbackRate = Defaults[.defaultPlaybackRate]
+        }
+        
+        self.playbackRate = playbackRate
         
         await play()
         

@@ -61,7 +61,7 @@ extension Audiobook {
             genres: media.metadata.genres,
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             released: media.metadata.publishedYear,
-            size: payload.size!,
+            size: payload.size,
             duration: duration,
             subtitle: media.metadata.subtitle,
             narrators: media.metadata.narratorName?
