@@ -43,6 +43,7 @@ final actor PlaybackReporter {
     
     func didStartPlaying(at time: TimeInterval) {
         self.currentTime = time
+        update()
     }
     
     func update(duration: TimeInterval) {

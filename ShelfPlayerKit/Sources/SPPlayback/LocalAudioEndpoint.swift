@@ -37,6 +37,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
     nonisolated(unsafe) var activeOperationCount: Int {
         didSet {
             Task {
+                await updateBufferingCheckTaskSchedule()
                 await AudioPlayer.shared.isBusyDidChange()
             }
         }
@@ -50,8 +51,12 @@ final class LocalAudioEndpoint: AudioEndpoint {
     nonisolated(unsafe) var chapterDuration: TimeInterval?
     nonisolated(unsafe) var chapterCurrentTime: TimeInterval?
     
+    nonisolated(unsafe) var route: AudioRoute?
+    
     nonisolated(unsafe) private var chapterValidUntil: TimeInterval
     nonisolated(unsafe) private var volumeSubscription: AnyCancellable?
+    
+    nonisolated(unsafe) private var bufferCheckTimer: Timer?
     
     init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws {
         logger.info("Starting up local audio endpoint with item ID \(itemID) (without listening session: \(withoutListeningSession))")
@@ -87,6 +92,10 @@ final class LocalAudioEndpoint: AudioEndpoint {
         setupObservers()
         
         try await start(withoutListeningSession: withoutListeningSession)
+    }
+    deinit {
+        bufferCheckTimer?.invalidate()
+        logger.info("Deinitializing local audio endpoint: \(self.id)")
     }
     
     var isBusy: Bool {
@@ -128,6 +137,8 @@ extension LocalAudioEndpoint {
     func stop() async {
         await playbackReporter.finalize()
         audioPlayer.removeAllItems()
+        
+        await cancelUpdateBufferingCheck()
         
         await AudioPlayer.shared.didStopPlaying(endpointID: id)
     }
@@ -313,6 +324,10 @@ private extension LocalAudioEndpoint {
         
         await play()
         
+        if let output = AVAudioSession.sharedInstance().currentRoute.outputs.first {
+            route = .init(name: output.portName, port: output.portType)
+        }
+        
         activeOperationCount -= 1
     }
     
@@ -357,6 +372,41 @@ private extension LocalAudioEndpoint {
         await AudioPlayer.shared.durationsDidChange(endpointID: id, itemDuration: duration, chapterDuration: chapterDuration)
     }
     
+    @MainActor
+    func updateBufferingCheckTaskSchedule() {
+        if !isBuffering, let bufferCheckTimer {
+            cancelUpdateBufferingCheck()
+        } else if isBuffering && bufferCheckTimer == nil {
+            bufferCheckTimer = Timer(timeInterval: 1, repeats: true) { _ in
+                Task {
+                    await self.checkBufferHealth()
+                }
+            }
+            
+            RunLoop.main.add(bufferCheckTimer!, forMode: .common)
+        }
+    }
+    @MainActor
+    func cancelUpdateBufferingCheck() {
+        bufferCheckTimer?.invalidate()
+        bufferCheckTimer = nil
+    }
+    func checkBufferHealth() async {
+        let isBuffering: Bool
+        
+        if let item = audioPlayer.currentItem {
+            isBuffering = !(item.status == .readyToPlay && item.isPlaybackLikelyToKeepUp)
+        } else {
+            isBuffering = true
+        }
+        
+        if self.isBuffering != isBuffering {
+            self.isBuffering = isBuffering
+            
+            await AudioPlayer.shared.bufferHealthDidChange(endpointID: id, isBuffering: isBuffering)
+        }
+    }
+    
     func setupObservers() {
         volumeSubscription = AVAudioSession.sharedInstance().publisher(for: \.outputVolume).sink { [weak self] volume in
             self?.systemVolume = .init(volume)
@@ -370,12 +420,49 @@ private extension LocalAudioEndpoint {
             }
         }
         
+        NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { [weak self] notification in
+            guard let userInfo = notification.userInfo, let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt, let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+                return
+            }
+            
+            let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt
+            
+            Task {
+                switch type {
+                case .began:
+                    await self?.pause()
+                case .ended:
+                    guard let optionsValue else {
+                        return
+                    }
+                    
+                    let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                    
+                    if options.contains(.shouldResume) {
+                        await self?.play()
+                    }
+                default:
+                    break
+                }
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: nil) { [weak self] _ in
+            if let id = self?.id, let output = AVAudioSession.sharedInstance().currentRoute.outputs.first {
+                let route = AudioRoute(name: output.portName, port: output.portType)
+                
+                self?.route = route
+                
+                Task {
+                    await AudioPlayer.shared.routeDidChange(endpointID: id, route: route)
+                }
+            }
+        }
+        
         NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: nil) { [weak self] _ in
             guard let self else {
                 return
             }
-            
-            print(audioTracks.endIndex)
             
             if activeAudioTrackIndex == audioTracks.endIndex - 1 {
                 // TODO: queue
@@ -392,21 +479,7 @@ private extension LocalAudioEndpoint {
             Task {
                 // MARK: Buffering
                 
-                let isBuffering: Bool
-                
-                if let item = self?.audioPlayer.currentItem {
-                    isBuffering = !(item.status == .readyToPlay && item.isPlaybackLikelyToKeepUp)
-                } else {
-                    isBuffering = true
-                }
-                
-                if self?.isBuffering != isBuffering {
-                    self?.isBuffering = isBuffering
-                    
-                    if let id = self?.id {
-                        await AudioPlayer.shared.bufferHealthDidChange(endpointID: id, isBuffering: isBuffering)
-                    }
-                }
+                await self?.checkBufferHealth()
                 
                 // MARK: Current time
                 

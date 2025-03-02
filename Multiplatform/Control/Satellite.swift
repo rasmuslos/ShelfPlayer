@@ -42,6 +42,8 @@ final class Satellite {
     private(set) var volume: Percentage
     private(set) var playbackRate: Percentage
     
+    private(set) var route: AudioRoute?
+    
     // MARK: Playback helper
     
     private(set) var totalLoading: Int
@@ -70,6 +72,8 @@ final class Satellite {
         
         volume = 0
         playbackRate = 0
+        
+        route = nil
         
         totalLoading = 0
         busy = [:]
@@ -340,6 +344,8 @@ private extension Satellite {
             
             self?.playbackRate = 0
             
+            self?.route = nil
+            
             self?.resolvePlayingItem()
         }.store(in: &stash)
         
@@ -399,6 +405,8 @@ private extension Satellite {
             self?.chapterDuration = 0
             
             self?.playbackRate = 0
+            
+            self?.route = nil
         }.store(in: &stash)
     }
 }
