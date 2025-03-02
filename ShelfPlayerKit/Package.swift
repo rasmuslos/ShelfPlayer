@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "SPPlayback", targets: ["SPPlayback"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/rasmuslos/RFKit", branch: "main"),
+        .package(url: "https://git.sr.ht/~rasmuslos/RFKit", branch: "main"),
         
         .package(url: "https://github.com/kean/Nuke", from: .init(12, 1, 6)),
         .package(url: "https://github.com/scinfu/SwiftSoup", from: .init(2, 6, 0)),

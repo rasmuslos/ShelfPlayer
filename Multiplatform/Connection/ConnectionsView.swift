@@ -57,7 +57,6 @@ struct ConnectionManager: View {
             }
             .foregroundStyle(.red)
         }
-        .navigationTitle("connection.manage.multiple")
         .refreshable {
             connectionStore.update()
         }

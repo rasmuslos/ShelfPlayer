@@ -34,7 +34,7 @@ private struct Row: View {
     let episode: Episode
     let context: EpisodeList.PresentationContext
     
-    private let _zoomID = UUID()
+    @State private var _zoomID = UUID()
     private var zoomID: UUID? {
         if context == .grid {
             return _zoomID
@@ -46,14 +46,13 @@ private struct Row: View {
     var body: some View {
         NavigationLink(destination: EpisodeView(episode, zoomID: zoomID)) {
             HStack(spacing: 0) {
-                if context != .podcast {
+                if context.isImageVisible {
                     Button {
                         satellite.start(episode)
                     } label: {
                         ItemImage(item: episode, size: .small)
                             .frame(width: 104)
                             .hoverEffect(.highlight)
-                            .matchedTransitionSource(id: zoomID, in: namespace!)
                             .overlay {
                                 if satellite.isLoading(observing: episode.id) {
                                     ZStack {
@@ -69,6 +68,7 @@ private struct Row: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(satellite.isLoading(observing: episode.id))
+                    .matchedTransitionSource(id: zoomID, in: namespace!)
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
@@ -171,6 +171,14 @@ private extension EpisodeList.PresentationContext {
         case .featured:
             true
         case .grid, .latest, .podcast:
+            false
+        }
+    }
+    var isImageVisible: Bool {
+        switch self {
+        case .latest, .grid, .featured:
+            true
+        case .podcast:
             false
         }
     }

@@ -43,6 +43,7 @@ struct ConnectionManageView: View {
                 Button("connection.test") {
                     test()
                 }
+                .disabled(hasUnsavedChanges)
                 
                 Button("connection.remove") {
                     remove()
@@ -93,7 +94,6 @@ struct ConnectionManageView: View {
             
             do {
                 try await PersistenceManager.shared.authorization.updateConnection(connection.id, headers: headers.compactMap(\.materialized))
-                dismiss()
             } catch {
                 notifyError.toggle()
                 loading = false
