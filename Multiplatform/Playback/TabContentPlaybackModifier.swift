@@ -17,7 +17,7 @@ struct TabContentPlaybackModifier: ViewModifier {
             // 32 is at the middle axis of the pill
             let additionalHeight: CGFloat = 44
             let height = geometryProxy.safeAreaInsets.bottom + additionalHeight
-            let startPoint = additionalHeight / height
+            let startPoint = (additionalHeight / height) / 2
             
             ZStack(alignment: .bottom) {
                 content

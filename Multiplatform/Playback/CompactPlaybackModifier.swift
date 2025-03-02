@@ -49,7 +49,6 @@ struct CompactPlaybackModifier: ViewModifier {
                                 .fill(.background)
                                 .frame(width: width,
                                        height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * viewModel.pushAmount)
-                                // .padding(.top, leadingOffset)
                         }
                         .animation(.smooth, value: viewModel.pushAmount)
                             
@@ -58,7 +57,6 @@ struct CompactPlaybackModifier: ViewModifier {
                             // Background
                             ZStack {
                                 // Prevent content from shining through
-                                /*
                                 if viewModel.isExpanded {
                                     Rectangle()
                                         .foregroundStyle(.background)
@@ -69,7 +67,6 @@ struct CompactPlaybackModifier: ViewModifier {
                                             }
                                         }
                                 }
-                                 */
                                 
                                 // Now playing bar background
                                 Rectangle()
