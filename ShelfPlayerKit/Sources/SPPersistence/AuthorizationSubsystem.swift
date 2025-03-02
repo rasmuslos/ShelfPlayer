@@ -203,6 +203,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
             kSecValueData: try JSONEncoder().encode(updated) as CFData,
         ] as! [String: Any] as CFDictionary)
         
+        Task {
+            await ABSClient.invalidate(connectionID)
+        }
+        
         try fetchConnections()
     }
     

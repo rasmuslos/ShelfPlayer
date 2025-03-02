@@ -221,6 +221,9 @@ struct PlaybackActions: View {
         } label: {
             Text(satellite.playbackRate, format: .percent.notation(.compactName))
                 .contentTransition(.numericText())
+                .padding(12)
+                .contentShape(.rect)
+                .padding(-12)
         } primaryAction: {
             guard let index = playbackRates.firstIndex(of: satellite.playbackRate) else {
                 if let rate = playbackRates.first {
@@ -268,15 +271,10 @@ struct PlaybackActions: View {
     
     var body: some View {
         LazyVGrid(columns: .init(repeating: .init(alignment: .centerFirstTextBaseline), count: 4)) {
-            Group {
-                playbackSpeedButton
-                sleepTimerButton
-                airPlayButton
-                queueButton
-            }
-            .padding(12)
-            .contentShape(.rect)
-            .padding(-12)
+            playbackSpeedButton
+            sleepTimerButton
+            airPlayButton
+            queueButton
         }
         .buttonStyle(.plain)
         .labelStyle(.iconOnly)

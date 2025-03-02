@@ -50,6 +50,7 @@ struct TabRouter: View {
         Group {
             if importedConnectionIDs.contains(tab.library.connectionID) {
                 tab.content
+                    .modifier(TabContentPlaybackModifier())
                     .task {
                         PersistenceManager.shared.download.scheduleUpdateTask()
                     }

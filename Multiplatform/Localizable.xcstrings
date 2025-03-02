@@ -2611,9 +2611,6 @@
     "connection.manage" : {
 
     },
-    "connection.manage.multiple" : {
-
-    },
     "connection.offline %lld" : {
 
     },

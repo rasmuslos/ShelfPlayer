@@ -43,7 +43,7 @@ public extension Defaults.Keys {
     
     // Advanced
     
-    static let enableSerifFont = Key("enableSerifFont", default: false)
+    static let enableSerifFont = Key("enableSerifFont", default: true)
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
     static let lockSeekBar = Key("lockSeekBar", default: false)
     
