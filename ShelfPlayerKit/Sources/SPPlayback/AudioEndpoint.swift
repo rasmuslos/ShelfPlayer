@@ -30,6 +30,8 @@ protocol AudioEndpoint: Identifiable, Sendable {
     var chapterDuration: TimeInterval? { get }
     var chapterCurrentTime: TimeInterval? { get }
     
+    var route: AudioRoute? { get }
+    
     func queue(_ items: [QueueItem]) async throws
     func stop() async
 

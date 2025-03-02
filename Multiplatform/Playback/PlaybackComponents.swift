@@ -88,7 +88,7 @@ struct PlaybackControls: View {
     }
     @ViewBuilder
     private var togglePlayButton: some View {
-        Button("backwards", systemImage: satellite.isPlaying ? "pause" : "play") {
+        Button(satellite.isPlaying ? "pause" : "play", systemImage: satellite.isPlaying ? "pause" : "play") {
             satellite.togglePlaying()
         }
         .contentShape(.rect)
@@ -97,7 +97,6 @@ struct PlaybackControls: View {
         .font(.largeTitle)
         .imageScale(.large)
         .symbolVariant(.fill)
-        .symbolEffect(.rotate.counterClockwise.byLayer, value: viewModel.notifySkipBackwards)
         .contentTransition(.symbolEffect(.replace.byLayer.downUp))
         .opacity(isLoading ? 0 : 1)
         .overlay {
@@ -146,29 +145,21 @@ struct PlaybackControls: View {
         @Bindable var viewModel = viewModel
         
         VStack(spacing: 0) {
-            PlaybackSlider(percentage: satellite.played, seeking: $viewModel.seeking) {
+            PlaybackSlider(percentage: satellite.played, seeking: $viewModel.seeking, currentTime: currentTime, duration: duration, textFirst: false) {
+                if viewModel.seeking == nil, let chapter = satellite.chapter {
+                    Text(chapter.title)
+                } else {
+                    Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                        .contentTransition(.numericText())
+                        .animation(.smooth, value: remaining)
+                }
+            } complete: {
                 satellite.seek(to: satellite.chapterDuration * $0, insideChapter: true) {
                     Task { @MainActor in
                         viewModel.seeking = nil
                     }
                 }
             }
-            
-            LazyVGrid(columns: [.init(alignment: .leading), .init(alignment: .center), .init(alignment: .trailing)]) {
-                Text(currentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-                
-                if viewModel.seeking == nil, let chapter = satellite.chapter {
-                    Text(chapter.title)
-                } else {
-                    Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
-                        .contentTransition(.numericText())
-                }
-                
-                Text(duration, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-            }
-            .font(.caption2)
-            .foregroundStyle(.secondary)
-            .padding(.top, 6)
             
             Spacer(minLength: 8)
             
@@ -179,12 +170,9 @@ struct PlaybackControls: View {
             }
             Spacer(minLength: 8)
             
-            Text(String("PLACEHOLDER"))
-                .font(.caption2)
-                .padding(.bottom, 6)
-                .hidden()
-            
-            PlaybackSlider(percentage: satellite.volume, seeking: $viewModel.volumePreview) { _ in
+            PlaybackSlider(percentage: satellite.volume, seeking: $viewModel.volumePreview, currentTime: nil, duration: nil, textFirst: true) {
+                Spacer()
+            } complete: { _ in
                 viewModel.volumePreview = nil
             }
             .onChange(of: viewModel.volumePreview) {
@@ -250,7 +238,7 @@ struct PlaybackActions: View {
     
     @ViewBuilder
     private var airPlayButton: some View {
-        Button("airPlay", systemImage: "airplay.audio") {
+        Button {
             for view in routePickerView.subviews {
                 guard let button = view as? UIButton else {
                     continue
@@ -259,7 +247,15 @@ struct PlaybackActions: View {
                 button.sendActions(for: .touchUpInside)
                 break
             }
+        } label: {
+            Label("airPlay", systemImage: satellite.route?.icon ?? "airPlay.audio")
+                .padding(12)
+                .contentShape(.rect)
+                .padding(-12)
+                .foregroundStyle(satellite.route?.isHighlighted == true ? Color.accentColor : Color.primary)
+                .contentTransition(.symbolEffect(.replace))
         }
+        .symbolRenderingMode(.palette)
     }
     
     @ViewBuilder
@@ -282,77 +278,118 @@ struct PlaybackActions: View {
     }
 }
 
-private struct PlaybackSlider: View {
+private struct PlaybackSlider<MiddleContent: View>: View {
     @Environment(\.colorScheme) private var colorScheme
     
     let percentage: Percentage
     @Binding var seeking: Percentage?
     
+    let currentTime: TimeInterval?
+    let duration: TimeInterval?
+    
+    let textFirst: Bool
+    
+    @ViewBuilder let middleContent: () -> MiddleContent
     let complete: (_: Percentage) -> Void
     
     @State private var dragStartValue: Percentage?
     
+    @ScaledMetric private var mutedHeight = 11
+    @ScaledMetric private var activeHeight = 14
+    
     private let height: CGFloat = 6
     private let hitTargetPadding: CGFloat = 12
     
-    var body: some View {
-        GeometryReader { geometry in
-            let width = geometry.size.width * min(1, max(0, CGFloat(seeking ?? percentage)))
-            
-            ZStack(alignment: .leading) {
-                if colorScheme == .dark {
-                    Rectangle()
-                        .fill(.background.tertiary)
-                        .saturation(1.6)
-                } else {
-                    Rectangle()
-                        .fill(.background.secondary)
-                        .saturation(1.6)
+    @ViewBuilder
+    private var text: some View {
+        Group {
+            if let currentTime, let duration {
+                LazyVGrid(columns: [.init(alignment: .leading), .init(alignment: .center), .init(alignment: .trailing)]) {
+                    Text(currentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                    
+                    middleContent()
+                    
+                    Text(duration, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
                 }
-                
-                Rectangle()
-                    .frame(width: width)
-                    .foregroundStyle(.primary)
-                    .animation(.smooth, value: width)
+            } else {
+                Text(String("PLACEHOLDER"))
+                    .hidden()
             }
-            .frame(height: height)
-            .clipShape(.rect(cornerRadius: 8))
-            .padding(.vertical, hitTargetPadding)
-            .contentShape(.rect)
-            .highPriorityGesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
-                .onChanged {
-                    if dragStartValue == nil {
-                        dragStartValue = percentage
-                    }
-                    
-                    let width = geometry.size.width
-                    let offset = min(width, max(-width, $0.translation.width))
-                    
-                    let moved: Percentage = .init(offset / width)
-                    let velocity = abs($0.velocity.width)
-                    let acceleration: Percentage
-                    
-                    if velocity < 500 {
-                        acceleration = 0.8
-                    } else if velocity < 1000 {
-                        acceleration = 1
-                    } else {
-                        acceleration = 1.2
-                    }
-                    
-                    let modifier = moved * acceleration
-                    seeking = min(1, max(0, dragStartValue! + modifier))
-                }
-                .onEnded { _ in
-                    if let seeking {
-                        complete(seeking)
-                    }
-                    
-                    dragStartValue = nil
-                })
         }
-        .frame(height: hitTargetPadding * 2 + height)
-        .padding(.vertical, -hitTargetPadding)
+        .font(seeking == nil ? .system(size: mutedHeight, design: .rounded) : .system(size: activeHeight, design: .rounded))
+        .foregroundStyle(seeking == nil ? .secondary : .primary)
+    }
+    
+    var body: some View {
+        VStack(spacing: seeking == nil ? 6 : 12) {
+            if textFirst {
+                text
+            }
+            
+            GeometryReader { geometry in
+                let width = geometry.size.width * min(1, max(0, CGFloat(seeking ?? percentage)))
+                
+                ZStack(alignment: .leading) {
+                    if colorScheme == .dark {
+                        Rectangle()
+                            .fill(.background.tertiary)
+                            .saturation(1.6)
+                    } else {
+                        Rectangle()
+                            .fill(.background.secondary)
+                            .saturation(1.6)
+                    }
+                    
+                    Rectangle()
+                        .frame(width: width)
+                        .foregroundStyle(.primary)
+                        .animation(.smooth, value: width)
+                }
+                .frame(height: seeking == nil ? height : height * 2)
+                .clipShape(.rect(cornerRadius: 8))
+                .padding(.vertical, hitTargetPadding)
+                .contentShape(.rect)
+                .highPriorityGesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
+                    .onChanged {
+                        if dragStartValue == nil {
+                            dragStartValue = percentage
+                        }
+                        
+                        let width = geometry.size.width
+                        let offset = min(width, max(-width, $0.translation.width))
+                        
+                        let moved: Percentage = .init(offset / width)
+                        let velocity = abs($0.velocity.width)
+                        let acceleration: Percentage
+                        
+                        if velocity < 500 {
+                            acceleration = 0.8
+                        } else if velocity < 1000 {
+                            acceleration = 1
+                        } else {
+                            acceleration = 1.2
+                        }
+                        
+                        let modifier = moved * acceleration
+                        seeking = min(1, max(0, dragStartValue! + modifier))
+                    }
+                    .onEnded { _ in
+                        if let seeking {
+                            complete(seeking)
+                        }
+                        
+                        dragStartValue = nil
+                    })
+            }
+            .frame(height: hitTargetPadding * 2 + height)
+            .padding(.vertical, -hitTargetPadding)
+            
+            if !textFirst {
+                text
+            }
+        }
+        .frame(height: height * 2 + activeHeight + 12)
+        .animation(.smooth, value: seeking)
     }
 }
 private struct StopPlaybackButton: View {
@@ -362,5 +399,21 @@ private struct StopPlaybackButton: View {
         Button("playback.stop", systemImage: "stop.fill") {
             satellite.stop()
         }
+    }
+}
+
+#Preview {
+    @Previewable @State var seeking: Percentage? = nil
+    
+    VStack(spacing: 20) {
+        PlaybackSlider(percentage: 0.5, seeking: $seeking, currentTime: 10, duration: 20, textFirst: false) {
+            Text("ABC")
+        } complete: { _ in
+            seeking = nil
+        }
+        
+        PlaybackSlider(percentage: 0.5, seeking: .constant(0.75), currentTime: nil, duration: nil, textFirst: true) {
+            Spacer()
+        } complete: { _ in }
     }
 }

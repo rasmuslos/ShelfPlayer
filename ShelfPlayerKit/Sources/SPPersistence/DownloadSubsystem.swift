@@ -690,6 +690,24 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
         }
     }
     
+    func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+        let protectiveMethod = challenge.protectionSpace.authenticationMethod
+        
+        guard protectiveMethod == NSURLAuthenticationMethodClientCertificate else {
+            return (.performDefaultHandling, nil)
+        }
+        
+        /*
+        let crendential = URLCredential(identity: <#T##SecIdentity#>,
+                                        certificates: nil,
+                                        persistence: .forSession)
+        
+        return (.useCredential, crendential)
+         */
+        
+        return (.performDefaultHandling, nil)
+    }
+    
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         Task {
             await PersistenceManager.shared.download.reportProgress(taskID: downloadTask.taskIdentifier, bytesWritten: bytesWritten, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)

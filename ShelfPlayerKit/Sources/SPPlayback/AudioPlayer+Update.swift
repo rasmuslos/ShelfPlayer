@@ -106,6 +106,14 @@ extension AudioPlayer {
         RFNotification[.playbackRateChanged].send(playbackRate)
     }
     
+    func routeDidChange(endpointID: UUID, route: AudioRoute) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        RFNotification[.routeChanged].send(route)
+    }
+    
     func didStopPlaying(endpointID: UUID) async {
         guard current?.id == endpointID else {
             return
@@ -152,6 +160,10 @@ public extension RFNotification.Notification {
     }
     static var playbackRateChanged: Notification<Percentage> {
         .init("io.rfk.shelfPlayerKit.playbackRateChanged")
+    }
+    
+    static var routeChanged: Notification<AudioRoute> {
+        .init("io.rfk.shelfPlayerKit.routeChanged")
     }
     
     static var playbackStopped: Notification<RFNotificationEmptyPayload> {
