@@ -40,7 +40,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             content
                                 .scaleEffect(pushAmount, anchor: .top)
                         }
-                        .mask(alignment: .top) {
+                        .mask(alignment: .center) {
                             let totalWidth = geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing
                             let width = totalWidth * viewModel.pushAmount
                             let leadingOffset = (totalWidth - width) / 2
@@ -49,7 +49,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                 .fill(.background)
                                 .frame(width: width,
                                        height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * viewModel.pushAmount)
-                                .padding(.top, leadingOffset)
+                                // .padding(.top, leadingOffset)
                         }
                         .animation(.smooth, value: viewModel.pushAmount)
                             
@@ -58,6 +58,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             // Background
                             ZStack {
                                 // Prevent content from shining through
+                                /*
                                 if viewModel.isExpanded {
                                     Rectangle()
                                         .foregroundStyle(.background)
@@ -68,6 +69,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                             }
                                         }
                                 }
+                                 */
                                 
                                 // Now playing bar background
                                 Rectangle()
@@ -81,7 +83,11 @@ struct CompactPlaybackModifier: ViewModifier {
                                             .foregroundStyle(.background.secondary)
                                     } else {
                                         Rectangle()
+                                        #if DEBUG && false
+                                            .foregroundStyle(.background.opacity(0.8))
+                                        #else
                                             .foregroundStyle(.background)
+                                        #endif
                                     }
                                 }
                                 .opacity(viewModel.isExpanded ? 1 : 0)
@@ -131,6 +137,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                     .allowsHitTesting(!viewModel.isExpanded)
                                 
                                 ExpandedForeground()
+                                    .allowsHitTesting(viewModel.isExpanded)
                             }
                         }
                         .frame(height: viewModel.isExpanded ? nil : 56)
@@ -322,12 +329,19 @@ private struct CollapsedForeground: View {
 #Preview {
     TabView {
         Tab(String(":)"), systemImage: "command") {
-            Rectangle()
-                .fill(.black)
-                .ignoresSafeArea(edges: .top)
-                .overlay {
+            NavigationStack {
+                ZStack {
+                    Rectangle()
+                        .fill(.blue.opacity(0.6))
+                        .ignoresSafeArea()
+                    
+                    Rectangle()
+                        .fill(.yellow)
+                    
                     Image(systemName: "command")
                 }
+            }
+            .modifier(TabContentPlaybackModifier())
         }
     }
     .modifier(CompactPlaybackModifier(ready: true, bottomOffset: 88))

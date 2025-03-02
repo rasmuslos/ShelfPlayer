@@ -1,5 +1,5 @@
 {
-  "originHash" : "060941bfac8a3f87ec4e98420b0df599f0a8f3b6758d1bdbff5acd2e740a2b6b",
+  "originHash" : "66db7d0dcc280cfaa6e57f9b73e46dde1bf185e047630db22ad8851fd42f624b",
   "pins" : [
     {
       "identity" : "bettersafariview",
@@ -31,10 +31,10 @@
     {
       "identity" : "rfkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/rasmuslos/RFKit",
+      "location" : "https://git.sr.ht/~rasmuslos/RFKit",
       "state" : {
         "branch" : "main",
-        "revision" : "530d1d09e7c4fd5819e25f523f40e65af5b8da69"
+        "revision" : "470ab3bdb4e1ade83ee96bb35cb0b65b1517d1c3"
       }
     },
     {
