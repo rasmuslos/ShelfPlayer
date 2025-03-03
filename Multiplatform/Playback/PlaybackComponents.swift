@@ -248,7 +248,7 @@ struct PlaybackActions: View {
                 break
             }
         } label: {
-            Label("airPlay", systemImage: satellite.route?.icon ?? "airPlay.audio")
+            Label("airPlay", systemImage: satellite.route?.icon ?? "airplay.audio")
                 .padding(12)
                 .contentShape(.rect)
                 .padding(-12)
@@ -280,6 +280,7 @@ struct PlaybackActions: View {
 
 private struct PlaybackSlider<MiddleContent: View>: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Default(.lockSeekBar) private var lockSeekBar
     
     let percentage: Percentage
     @Binding var seeking: Percentage?
@@ -320,8 +321,12 @@ private struct PlaybackSlider<MiddleContent: View>: View {
         .foregroundStyle(seeking == nil ? .secondary : .primary)
     }
     
+    private var adjustedHeight: CGFloat {
+        height * (seeking == nil ? 1 : 2)
+    }
+    
     var body: some View {
-        VStack(spacing: seeking == nil ? 6 : 12) {
+        VStack(spacing: 6) {
             if textFirst {
                 text
             }
@@ -345,12 +350,16 @@ private struct PlaybackSlider<MiddleContent: View>: View {
                         .foregroundStyle(.primary)
                         .animation(.smooth, value: width)
                 }
-                .frame(height: seeking == nil ? height : height * 2)
+                .frame(height: adjustedHeight, alignment: textFirst ? .bottom : .top)
                 .clipShape(.rect(cornerRadius: 8))
                 .padding(.vertical, hitTargetPadding)
                 .contentShape(.rect)
                 .highPriorityGesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
                     .onChanged {
+                        guard !lockSeekBar else {
+                            return
+                        }
+                        
                         if dragStartValue == nil {
                             dragStartValue = percentage
                         }
@@ -363,11 +372,11 @@ private struct PlaybackSlider<MiddleContent: View>: View {
                         let acceleration: Percentage
                         
                         if velocity < 500 {
-                            acceleration = 0.8
+                            acceleration = 0.7
                         } else if velocity < 1000 {
                             acceleration = 1
                         } else {
-                            acceleration = 1.2
+                            acceleration = 1.3
                         }
                         
                         let modifier = moved * acceleration
@@ -381,14 +390,14 @@ private struct PlaybackSlider<MiddleContent: View>: View {
                         dragStartValue = nil
                     })
             }
-            .frame(height: hitTargetPadding * 2 + height)
+            .frame(height: hitTargetPadding * 2 + adjustedHeight)
             .padding(.vertical, -hitTargetPadding)
             
             if !textFirst {
                 text
             }
         }
-        .frame(height: height * 2 + activeHeight + 12)
+        .frame(height: height * 2 + activeHeight + 6)
         .animation(.smooth, value: seeking)
     }
 }
@@ -412,8 +421,10 @@ private struct StopPlaybackButton: View {
             seeking = nil
         }
         
-        PlaybackSlider(percentage: 0.5, seeking: .constant(0.75), currentTime: nil, duration: nil, textFirst: true) {
+        PlaybackSlider(percentage: 0.5, seeking: $seeking, currentTime: nil, duration: nil, textFirst: true) {
             Spacer()
-        } complete: { _ in }
+        } complete: { _ in
+            seeking = nil
+        }
     }
 }

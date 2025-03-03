@@ -23,7 +23,7 @@ struct PlaybackRateEditor: View {
     var body: some View {
         List {
             Section {
-                ForEach(Array(playbackRates.enumerated()), id: \.offset) {
+                ForEach(Array(playbackRates.enumerated()), id: \.element.hashValue) {
                     row(index: $0.offset)
                 }
                 .onDelete {

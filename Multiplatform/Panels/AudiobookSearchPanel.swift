@@ -13,8 +13,7 @@ internal struct SearchView: View {
     @Environment(\.library) private var library
     @FocusState private var focused
     
-    @State private var isPrefrenceSheetPresented = false
-    
+    @State private var isPreferenceSheetPresented = false
     @State private var viewModel: SearchViewModel = .init()
     
     var body: some View {
@@ -52,10 +51,10 @@ internal struct SearchView: View {
         }
         .navigationTitle("panel.search")
         .searchable(text: $viewModel.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.placeholder")
+        .autocorrectionDisabled()
         .searchFocused($focused)
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
-        .autocorrectionDisabled()
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)
         .refreshable {
             viewModel.load()
@@ -82,13 +81,13 @@ internal struct SearchView: View {
             if horizontalSizeClass == .compact {
                 $0
                     .toolbar {
-                        Button("prefrences") {
-                            isPrefrenceSheetPresented.toggle()
+                        Button("preferences") {
+                            isPreferenceSheetPresented.toggle()
                         }
                     }
-                    .sheet(isPresented: $isPrefrenceSheetPresented) {
+                    .sheet(isPresented: $isPreferenceSheetPresented) {
                         NavigationStack {
-                            PrefrencesView()
+                            PreferencesView()
                         }
                     }
             } else {

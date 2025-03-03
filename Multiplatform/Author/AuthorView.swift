@@ -167,7 +167,7 @@ struct AuthorView: View {
                 .presentationDragIndicator(.visible)
             }
         }
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .sensoryFeedback(.error, trigger: viewModel.seriesLoader.notifyError)
         .sensoryFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)

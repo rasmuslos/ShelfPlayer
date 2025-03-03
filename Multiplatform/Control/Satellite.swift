@@ -389,6 +389,10 @@ private extension Satellite {
             self?.playbackRate = playbackRate
         }.store(in: &stash)
         
+        RFNotification[.routeChanged].subscribe { [weak self] route in
+            self?.route = route
+        }.store(in: &stash)
+        
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.currentItemID = nil
             self?.currentItem = nil

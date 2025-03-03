@@ -54,7 +54,7 @@ private struct RowGridView: View {
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
     }
 }
 

@@ -1,20 +1,21 @@
 //
-//  PrefrencesView.swift
+//  PreferencesView.swift
 //  Multiplatform
 //
 //  Created by Rasmus Krämer on 01.03.25.
 //
 
 import SwiftUI
+import ShelfPlayerKit
 
-struct PrefrencesView: View {
+struct PreferencesView: View {
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
     var body: some View {
         List {
             Section {
                 NavigationLink {
-                    ConnectionPrefrences()
+                    ConnectionPreferences()
                 } label: {
                     Label("connections", systemImage: "server.rack")
                 }
@@ -67,24 +68,35 @@ struct PrefrencesView: View {
                     Label("support", systemImage: "lifepreserver")
                 }
             }
+            
+            Section {
+                Text("version \(ShelfPlayerKit.clientVersion) \(ShelfPlayerKit.clientBuild) \(ShelfPlayerKit.enableCentralized ? "C" : "L")")
+                Text("version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
+            }
+            .foregroundStyle(.secondary)
+            .font(.caption)
         }
-        .navigationTitle("prefrences")
+        .navigationTitle("preferences")
+        .navigationBarTitleDisplayMode(.inline)
         .foregroundStyle(.primary)
     }
 }
 
-private struct ConnectionPrefrences: View {
+private struct ConnectionPreferences: View {
     var body: some View {
         List {
             ConnectionManager()
         }
         .navigationTitle("connections")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
-        PrefrencesView()
+        PreferencesView()
     }
     .previewEnvironment()
 }
+#endif
