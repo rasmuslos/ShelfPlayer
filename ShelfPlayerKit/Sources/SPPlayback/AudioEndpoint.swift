@@ -14,7 +14,9 @@ protocol AudioEndpoint: Identifiable, Sendable {
     init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws
     
     var currentItemID: ItemIdentifier { get }
+    
     var queue: ActorArray<QueueItem> { get }
+    var upNextQueue: ActorArray<QueueItem> { get }
     
     var chapters: [Chapter] { get }
     
@@ -39,4 +41,6 @@ protocol AudioEndpoint: Identifiable, Sendable {
     func pause() async
     
     func seek(to time: TimeInterval, insideChapter: Bool) async throws
+    
+    func clearUpNextQueue() async
 }

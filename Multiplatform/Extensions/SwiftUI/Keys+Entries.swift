@@ -13,6 +13,9 @@ import ShelfPlayerKit
 extension EnvironmentValues {
     @Entry var libraries = [Library]()
     @Entry var displayContext: DisplayContext = .unknown
+    
+    @Entry var playbackBottomOffset: CGFloat = 0
+    @Entry var playbackBottomSafeAreaPadding: CGFloat = 0
 }
 
 enum DisplayContext {

@@ -68,7 +68,7 @@ struct AudiobookSeriesPanel: View {
                 }
             }
         }
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .onAppear {
             lazyLoader.library = library
         }

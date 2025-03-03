@@ -151,6 +151,10 @@ public extension AudioPlayer {
         RFNotification[.skipped].send(forwards)
     }
     
+    func clearUpNextQueue() async {
+        await current?.clearUpNextQueue()
+    }
+    
     func setVolume(_ volume: Percentage) {
         current?.volume = volume
     }

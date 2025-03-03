@@ -110,7 +110,7 @@ struct AudiobookLibraryPanel: View {
                 }
             }
         }
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: notifyError)
         .onChange(of: filter) {
             lazyLoader.filter = filter

@@ -45,8 +45,8 @@ struct EpisodeView: View {
             }
         }
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
-        // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)
         .onAppear {
             viewModel.library = library

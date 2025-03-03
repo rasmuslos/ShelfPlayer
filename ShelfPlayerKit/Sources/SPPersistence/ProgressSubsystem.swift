@@ -372,6 +372,8 @@ public extension PersistenceManager.ProgressSubsystem {
             try modelContext.save()
             
             signposter.endInterval("sync", signpostState)
+            
+            RFNotification[.invalidateProgressEntities].send(connectionID)
         } catch {
             logger.error("Error while syncing progress: \(error)")
             

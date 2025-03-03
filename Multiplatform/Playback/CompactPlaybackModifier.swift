@@ -10,6 +10,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 struct CompactPlaybackModifier: ViewModifier {
+    @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
@@ -17,11 +18,12 @@ struct CompactPlaybackModifier: ViewModifier {
     @Environment(PlaybackViewModel.self) private var viewModel
     
     let ready: Bool
-    let bottomOffset: CGFloat
     
     private var pushAmount: CGFloat {
         viewModel.pushAmount
     }
+    
+    static let height: CGFloat = 56
     
     func body(content: Content) -> some View {
         if ready && horizontalSizeClass == .compact {
@@ -137,9 +139,9 @@ struct CompactPlaybackModifier: ViewModifier {
                                     .allowsHitTesting(viewModel.isExpanded)
                             }
                         }
-                        .frame(height: viewModel.isExpanded ? nil : 56)
+                        .frame(height: viewModel.isExpanded ? nil : Self.height)
                         .padding(.horizontal, viewModel.isExpanded ? 0 : 12)
-                        .padding(.bottom, viewModel.isExpanded ? 0 : bottomOffset)
+                        .padding(.bottom, viewModel.isExpanded ? 0 : playbackBottomOffset)
                         .offset(x: 0, y: viewModel.dragOffset)
                         .toolbarBackground(.hidden, for: .tabBar)
                         .animation(.snappy(duration: 0.6), value: viewModel.isExpanded)
@@ -323,6 +325,7 @@ private struct CollapsedForeground: View {
     }
 }
 
+#if DEBUG
 #Preview {
     TabView {
         Tab(String(":)"), systemImage: "command") {
@@ -341,6 +344,8 @@ private struct CollapsedForeground: View {
             .modifier(TabContentPlaybackModifier())
         }
     }
-    .modifier(CompactPlaybackModifier(ready: true, bottomOffset: 88))
+    .modifier(CompactPlaybackModifier(ready: true))
+    .environment(\.playbackBottomOffset, 88)
     .previewEnvironment()
 }
+#endif

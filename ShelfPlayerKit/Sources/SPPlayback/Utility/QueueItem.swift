@@ -11,11 +11,4 @@ import SPFoundation
 public struct QueueItem: Sendable {
     public let itemID: ItemIdentifier
     let startWithoutListeningSession: Bool
-    
-    public let origin: QueueItemOrigin
-    
-    public enum QueueItemOrigin: Sendable {
-        case user
-        case automaticQueue
-    }
 }

@@ -5537,7 +5537,7 @@
         }
       }
     },
-    "prefrences" : {
+    "preferences" : {
 
     },
     "proceed" : {
@@ -7391,6 +7391,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除"
+          }
+        }
+      }
+    },
+    "version %@ %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "version %1$@ %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "version.database %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "version.database %1$@ %2$@"
           }
         }
       }
