@@ -77,14 +77,20 @@ struct PlaybackControls: View {
     
     @ViewBuilder
     private var backwardButton: some View {
-        Button("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)") {
-            satellite.skip(forwards: false)
-        }
-        .buttonStyle(.plain)
-        .labelStyle(.iconOnly)
-        .disabled(isLoading)
-        .font(.title)
-        .symbolEffect(.rotate.counterClockwise.byLayer, value: viewModel.notifySkipBackwards)
+        Label("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
+            .labelStyle(.iconOnly)
+            .font(.title)
+            .padding(12)
+            .contentShape(.rect)
+            .onTapGesture {
+                satellite.skip(forwards: false)
+            }
+            .onLongPressGesture {
+                satellite.seek(to: 0, insideChapter: true) {}
+            }
+            .padding(-12)
+            .disabled(isLoading)
+            .symbolEffect(.rotate.counterClockwise.byLayer, value: viewModel.notifySkipBackwards)
     }
     @ViewBuilder
     private var togglePlayButton: some View {
@@ -108,14 +114,20 @@ struct PlaybackControls: View {
     }
     @ViewBuilder
     private var forwardButton: some View {
-        Button("forwards", systemImage: "goforward.\(viewModel.skipBackwardsInterval)") {
-            satellite.skip(forwards: true)
-        }
-        .buttonStyle(.plain)
-        .labelStyle(.iconOnly)
-        .disabled(isLoading)
-        .font(.title)
-        .symbolEffect(.rotate.clockwise.byLayer, value: viewModel.notifySkipForwards)
+        Label("forwards", systemImage: "goforward.\(viewModel.skipBackwardsInterval)")
+            .labelStyle(.iconOnly)
+            .font(.title)
+            .padding(12)
+            .contentShape(.rect)
+            .onTapGesture {
+                satellite.skip(forwards: true)
+            }
+            .onLongPressGesture {
+                satellite.seek(to: satellite.chapterDuration, insideChapter: true) {}
+            }
+            .padding(-12)
+            .disabled(isLoading)
+            .symbolEffect(.rotate.clockwise.byLayer, value: viewModel.notifySkipForwards)
     }
     
     private var currentTime: TimeInterval {

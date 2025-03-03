@@ -17,13 +17,15 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.playbackItemChanged].send((itemID, time))
-        
         do {
             try audioSession.setCategory(.playback, mode: .spokenAudio, policy: .longFormAudio)
             try audioSession.setActive(true)
         } catch {
             logger.error("Failed to set audio session category: \(error)")
+        }
+        
+        Task { @MainActor in
+            RFNotification[.playbackItemChanged].send((itemID, time))
         }
         
         widgetManager.update(itemID: itemID)
@@ -33,12 +35,14 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.playStateChanged].send(isPlaying)
-        
         do {
             try audioSession.setActive(true)
         } catch {
             logger.error("Failed to activate audio session: \(error)")
+        }
+        
+        Task { @MainActor in
+            RFNotification[.playStateChanged].send(isPlaying)
         }
         
         Task {
@@ -51,7 +55,9 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.bufferHealthChanged].send(isBusy)
+        Task { @MainActor in
+            await RFNotification[.bufferHealthChanged].send(isBusy)
+        }
         
         Task {
             await widgetManager.update(isBuffering: isBusy)
@@ -63,7 +69,9 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.durationsChanged].send((itemDuration, chapterDuration))
+        Task { @MainActor in
+            RFNotification[.durationsChanged].send((itemDuration, chapterDuration))
+        }
         
         Task {
             await widgetManager.update(chapterDuration: chapterDuration)
@@ -74,7 +82,9 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.currentTimesChanged].send((itemCurrentTime, chapterCurrentTime))
+        Task { @MainActor in
+            RFNotification[.currentTimesChanged].send((itemCurrentTime, chapterCurrentTime))
+        }
         
         Task {
             await widgetManager.update(chapterCurrentTime: chapterCurrentTime)
@@ -86,7 +96,9 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.chapterChanged].send(currentChapterIndex)
+        Task { @MainActor in
+            RFNotification[.chapterChanged].send(currentChapterIndex)
+        }
         
         widgetManager.update(chapterIndex: currentChapterIndex)
     }
@@ -96,14 +108,18 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.volumeChanged].send(volume)
+        Task { @MainActor in
+            RFNotification[.volumeChanged].send(volume)
+        }
     }
     func playbackRateDidChange(endpointID: UUID, playbackRate: Percentage) {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        RFNotification[.playbackRateChanged].send(playbackRate)
+        Task { @MainActor in
+            RFNotification[.playbackRateChanged].send(playbackRate)
+        }
     }
     
     func routeDidChange(endpointID: UUID, route: AudioRoute) {
@@ -111,7 +127,9 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.routeChanged].send(route)
+        Task { @MainActor in
+            RFNotification[.routeChanged].send(route)
+        }
     }
     
     func queueDidChange(endpointID: UUID, queue: [ItemIdentifier]) {
@@ -119,14 +137,18 @@ extension AudioPlayer {
             return
         }
         
-        RFNotification[.queueChanged].send(queue)
+        Task { @MainActor in
+            RFNotification[.queueChanged].send(queue)
+        }
     }
     func upNextQueueDidChange(endpointID: UUID, upNextQueue: [ItemIdentifier]) {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        RFNotification[.upNextQueueChanged].send(upNextQueue)
+        Task { @MainActor in
+            RFNotification[.upNextQueueChanged].send(upNextQueue)
+        }
     }
     
     func didStopPlaying(endpointID: UUID) async {
@@ -135,7 +157,10 @@ extension AudioPlayer {
         }
         
         await widgetManager.invalidate()
-        RFNotification[.playbackStopped].send()
+        
+        await MainActor.run {
+            RFNotification[.playbackStopped].send()
+        }
     }
     
     func isBusyDidChange() async {
