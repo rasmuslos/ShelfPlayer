@@ -162,3 +162,9 @@ private extension PlaybackReporter {
         }
     }
 }
+
+public extension RFNotification.Notification {
+    static var finalizePlaybackReporting: Notification<RFNotificationEmptyPayload> {
+        .init("io.rfk.shelfPlayerKit.finalizePlaybackReporting")
+    }
+}

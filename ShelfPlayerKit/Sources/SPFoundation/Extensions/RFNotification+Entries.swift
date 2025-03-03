@@ -14,8 +14,4 @@ public extension RFNotification.Notification {
     static var invalidateProgressEntities: Notification<String?> {
         .init("io.rfk.shelfPlayerKit.progressEntity.invalidate")
     }
-    
-    static var finalizePlaybackReporting: Notification<RFNotificationEmptyPayload> {
-        .init("io.rfk.shelfPlayerKit.finalizePlaybackReporting")
-    }
 }
