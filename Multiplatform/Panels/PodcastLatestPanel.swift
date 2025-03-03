@@ -43,7 +43,7 @@ struct PodcastLatestPanel: View {
             }
         }
         .navigationTitle("panel.latest")
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
     }
 
     private nonisolated func fetchItems() {
@@ -71,9 +71,11 @@ struct PodcastLatestPanel: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         PodcastLatestPanel()
     }
     .previewEnvironment()
 }
+#endif

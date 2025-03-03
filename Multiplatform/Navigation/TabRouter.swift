@@ -149,7 +149,8 @@ struct TabRouter: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .id(current)
-        .modifier(CompactPlaybackModifier(ready: isReady, bottomOffset: 88))
+        .modifier(CompactPlaybackModifier(ready: isReady))
+        .environment(\.playbackBottomOffset, 88)
         .sensoryFeedback(.error, trigger: importFailedConnectionIDs)
         .onChange(of: current) {
             let appearance = UINavigationBarAppearance()
@@ -190,9 +191,11 @@ struct TabRouter: View {
     }
 }
 
+#if DEBUG
 #Preview {
     @Previewable @State var selection: TabValue? = nil
 
     TabRouter(selection: $selection)
         .previewEnvironment()
 }
+#endif

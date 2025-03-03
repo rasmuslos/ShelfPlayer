@@ -90,7 +90,7 @@ struct PodcastView: View {
             }
         }
         .modifier(ToolbarModifier())
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)
         .task {
             viewModel.load()

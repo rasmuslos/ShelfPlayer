@@ -73,6 +73,7 @@ struct AudiobookHomePanel: View {
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: notifyError)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -93,7 +94,6 @@ struct AudiobookHomePanel: View {
                 await fetchLocalItems()
             }
         }
-        // .modifier(NowPlaying.SafeAreaModifier())
     }
 }
 

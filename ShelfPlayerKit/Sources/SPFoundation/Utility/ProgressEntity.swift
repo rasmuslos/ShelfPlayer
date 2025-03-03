@@ -80,8 +80,6 @@ public struct ProgressEntity: Sendable {
         
         public var isValid: Bool
         
-        @ObservationIgnored nonisolated(unsafe) var marker: RFNotification.Marker?
-        
         init(id: String, connectionID: String, primaryID: String, groupingID: String?, progress: Percentage, duration: TimeInterval?, currentTime: TimeInterval, startedAt: Date?, lastUpdate: Date, finishedAt: Date?) {
             self.id = id
             self.connectionID = connectionID
@@ -100,7 +98,7 @@ public struct ProgressEntity: Sendable {
             
             isValid = true
             
-            marker = RFNotification[.progressEntityUpdated].subscribe { [weak self] in
+            RFNotification[.progressEntityUpdated].subscribe { [weak self] in
                 guard $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID else { return }
                 
                 guard let entity = $0.3 else {
@@ -125,10 +123,15 @@ public struct ProgressEntity: Sendable {
                 self?.lastUpdate = entity.lastUpdate
                 self?.finishedAt = entity.finishedAt
             }
-        }
-        
-        deinit {
-            marker?()
+            RFNotification[.invalidateProgressEntities].subscribe { [weak self] in
+                guard $0 == nil || connectionID == $0 else {
+                    return
+                }
+                
+                Task {
+                    let entity = try await PersistenceManager.s
+                }
+            }
         }
         
         public var isFinished: Bool {

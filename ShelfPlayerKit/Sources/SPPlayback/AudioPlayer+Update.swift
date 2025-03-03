@@ -114,6 +114,21 @@ extension AudioPlayer {
         RFNotification[.routeChanged].send(route)
     }
     
+    func queueDidChange(endpointID: UUID, queue: [ItemIdentifier]) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        RFNotification[.queueChanged].send(queue)
+    }
+    func upNextQueueDidChange(endpointID: UUID, upNextQueue: [ItemIdentifier]) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        RFNotification[.upNextQueueChanged].send(upNextQueue)
+    }
+    
     func didStopPlaying(endpointID: UUID) async {
         guard current?.id == endpointID else {
             return
@@ -164,6 +179,13 @@ public extension RFNotification.Notification {
     
     static var routeChanged: Notification<AudioRoute> {
         .init("io.rfk.shelfPlayerKit.routeChanged")
+    }
+    
+    static var queueChanged: Notification<[ItemIdentifier]> {
+        .init("io.rfk.shelfPlayerKit.queueChanged")
+    }
+    static var upNextQueueChanged: Notification<[ItemIdentifier]> {
+        .init("io.rfk.shelfPlayerKit.upNextQueueChanged")
     }
     
     static var playbackStopped: Notification<RFNotificationEmptyPayload> {

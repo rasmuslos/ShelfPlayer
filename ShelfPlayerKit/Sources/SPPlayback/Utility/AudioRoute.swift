@@ -33,7 +33,7 @@ public struct AudioRoute: Sendable {
         } else if port == .HDMI || port == .displayPort {
             "tv.and.hifispeaker.fill"
         } else if port == .airPlay {
-            "airPlay.audio"
+            "airplay.audio"
         } else if port == .bluetoothA2DP || port == .bluetoothHFP || port == .bluetoothLE {
             "hifispeaker.fill"
         } else if port == .headphones {
@@ -43,7 +43,7 @@ public struct AudioRoute: Sendable {
         } else if port == .thunderbolt || port == .usbAudio {
             "cable.connector"
         } else {
-            "airPlay.audio"
+            "airplay.audio"
         }
     }
     public var isHighlighted: Bool {

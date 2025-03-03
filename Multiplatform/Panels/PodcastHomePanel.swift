@@ -79,10 +79,10 @@ struct PodcastHomePanel: View {
                 }
             }
         }
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .onReceive(RFNotification[.playbackStopped].publisher()) {
             fetchItems()
         }
-        // .modifier(NowPlaying.SafeAreaModifier())
     }
 }
 
@@ -119,9 +119,11 @@ private extension PodcastHomePanel {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         PodcastHomePanel()
     }
     .previewEnvironment()
 }
+#endif

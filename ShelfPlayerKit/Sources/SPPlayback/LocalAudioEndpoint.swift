@@ -16,25 +16,27 @@ import SPPersistence
 
 final class LocalAudioEndpoint: AudioEndpoint {
     let id = UUID()
-    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "LocalAudioEndpoint")
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "LocalAudioEndpoint")
     
-    let audioPlayer: AVQueuePlayer
+    private let audioPlayer: AVQueuePlayer
     
-    nonisolated(unsafe) var playbackReporter: PlaybackReporter!
+    nonisolated(unsafe) private(set) var playbackReporter: PlaybackReporter!
     
-    nonisolated(unsafe) var currentItemID: ItemIdentifier
-    nonisolated(unsafe) var queue: ActorArray<QueueItem>
+    nonisolated(unsafe) private(set) var currentItemID: ItemIdentifier
     
-    nonisolated(unsafe) var audioTracks: [PlayableItem.AudioTrack]
-    nonisolated(unsafe) var activeAudioTrackIndex: Int
+    nonisolated(unsafe) private(set) var queue: ActorArray<QueueItem>
+    nonisolated(unsafe) private(set) var upNextQueue: ActorArray<QueueItem>
     
-    nonisolated(unsafe) var chapters: [Chapter]
-    nonisolated(unsafe) var activeChapterIndex: Int?
+    nonisolated(unsafe) private(set) var audioTracks: [PlayableItem.AudioTrack]
+    nonisolated(unsafe) private(set) var activeAudioTrackIndex: Int
     
-    nonisolated(unsafe) var isPlaying: Bool
+    nonisolated(unsafe) private(set) var chapters: [Chapter]
+    nonisolated(unsafe) private(set) var activeChapterIndex: Int?
     
-    nonisolated(unsafe) var isBuffering: Bool
-    nonisolated(unsafe) var activeOperationCount: Int {
+    nonisolated(unsafe) private(set) var isPlaying: Bool
+    
+    nonisolated(unsafe) private(set) var isBuffering: Bool
+    nonisolated(unsafe) private(set) var activeOperationCount: Int {
         didSet {
             Task {
                 await updateBufferingCheckTaskSchedule()
@@ -51,11 +53,20 @@ final class LocalAudioEndpoint: AudioEndpoint {
     nonisolated(unsafe) var chapterDuration: TimeInterval?
     nonisolated(unsafe) var chapterCurrentTime: TimeInterval?
     
-    nonisolated(unsafe) var route: AudioRoute?
+    nonisolated(unsafe) var route: AudioRoute? {
+        didSet {
+            if let route {
+                Task {
+                    await AudioPlayer.shared.routeDidChange(endpointID: id, route: route)
+                }
+            }
+        }
+    }
     
+    nonisolated(unsafe) private var allowUpNextGeneration: Bool
     nonisolated(unsafe) private var chapterValidUntil: TimeInterval
-    nonisolated(unsafe) private var volumeSubscription: AnyCancellable?
     
+    nonisolated(unsafe) private var volumeSubscription: AnyCancellable?
     nonisolated(unsafe) private var bufferCheckTimer: Timer?
     
     init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws {
@@ -67,6 +78,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
         currentItemID = itemID
         
         queue = .init()
+        upNextQueue = .init()
         
         audioTracks = []
         activeAudioTrackIndex = -1
@@ -87,6 +99,9 @@ final class LocalAudioEndpoint: AudioEndpoint {
         chapterDuration = nil
         chapterCurrentTime = nil
         
+        route = nil
+        
+        allowUpNextGeneration = true
         chapterValidUntil = -1
         
         setupObservers()
@@ -131,7 +146,11 @@ final class LocalAudioEndpoint: AudioEndpoint {
 
 extension LocalAudioEndpoint {
     func queue(_ items: [QueueItem]) async throws {
+        for item in items {
+            await queue.append(item)
+        }
         
+        await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.elements.map(\.itemID))
     }
     
     func stop() async {
@@ -217,6 +236,13 @@ extension LocalAudioEndpoint {
         }
         
         activeOperationCount -= 1
+    }
+    
+    func clearUpNextQueue() async {
+        await upNextQueue.removeAll()
+        await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: [])
+        
+        allowUpNextGeneration = false
     }
 }
 
@@ -452,10 +478,6 @@ private extension LocalAudioEndpoint {
                 let route = AudioRoute(name: output.portName, port: output.portType)
                 
                 self?.route = route
-                
-                Task {
-                    await AudioPlayer.shared.routeDidChange(endpointID: id, route: route)
-                }
             }
         }
         

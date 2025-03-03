@@ -52,12 +52,12 @@ struct PodcastEpisodesView: View {
             }
         }
         .searchable(text: $viewModel.search, placement: .toolbar)
-        // .modifier(NowPlaying.SafeAreaModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 PodcastView.ToolbarModifier.OptionsMenu()
             }
         }
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)
         .onDisappear {
             viewModel.search = ""
@@ -65,6 +65,7 @@ struct PodcastEpisodesView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         PodcastEpisodesView()
@@ -72,3 +73,4 @@ struct PodcastEpisodesView: View {
     .environment(PodcastViewModel(podcast: .fixture, episodes: .init(repeating: .fixture, count: 7)))
     .previewEnvironment()
 }
+#endif

@@ -14,7 +14,7 @@ internal struct UserContext {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "Intents & SpotLight")
     
     static func run() async throws {
-        #if ENABLE_ALL_FEATURES
+        #if ENABLE_CENTRALIZED
         INPreferences.requestSiriAuthorization { _ in }
         #endif
 

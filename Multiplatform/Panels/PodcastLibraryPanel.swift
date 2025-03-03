@@ -63,7 +63,6 @@ struct PodcastLibraryPanel: View {
         .navigationTitle("panel.library")
         .searchable(text: $lazyLoader.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.podcasts")
         .searchFocused($focused)
-        // .modifier(NowPlaying.SafeAreaModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("options", systemImage: "ellipsis.circle") {
@@ -73,6 +72,7 @@ struct PodcastLibraryPanel: View {
             }
         }
         .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .onAppear {
             lazyLoader.library = library
         }

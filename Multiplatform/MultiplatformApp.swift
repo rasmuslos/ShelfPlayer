@@ -15,8 +15,8 @@ struct MultiplatformApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
-        #if !ENABLE_ALL_FEATURES
-        SPKit_ENABLE_ALL_FEATURES = false
+        #if !ENABLE_CENTRALIZED
+        ShelfPlayerKit.enableCentralized = false
         #endif
         
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)

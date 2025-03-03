@@ -10,6 +10,8 @@ import SwiftData
 import SPFoundation
 
 public final class PersistenceManager: Sendable {
+    public let modelContainer: ModelContainer
+    
     public let keyValue: KeyValueSubsystem
     public let authorization: AuthorizationSubsystem
     
@@ -34,17 +36,17 @@ public final class PersistenceManager: Sendable {
         // try! FileManager.default.removeItem(at: modelConfiguration.url)
         #endif
         
-        let container = try! ModelContainer(for: schema, migrationPlan: nil, configurations: [
+        modelContainer = try! ModelContainer(for: schema, migrationPlan: nil, configurations: [
             modelConfiguration,
         ])
         
-        keyValue = .init(modelContainer: container)
-        authorization = .init(modelContainer: container)
+        keyValue = .init(modelContainer: modelContainer)
+        authorization = .init(modelContainer: modelContainer)
         
-        progress = .init(modelContainer: container)
-        session = .init(modelContainer: container)
+        progress = .init(modelContainer: modelContainer)
+        session = .init(modelContainer: modelContainer)
         
-        download = .init(modelContainer: container)
+        download = .init(modelContainer: modelContainer)
         item = .init()
         podcasts = .init()
     }

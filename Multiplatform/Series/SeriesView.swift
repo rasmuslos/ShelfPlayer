@@ -94,7 +94,7 @@ struct SeriesView: View {
         }
         .environment(viewModel)
         .environment(\.displayContext, .series(series: viewModel.series))
-        // .modifier(NowPlaying.SafeAreaModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .onAppear {
             viewModel.library = library
             viewModel.lazyLoader.initialLoad()

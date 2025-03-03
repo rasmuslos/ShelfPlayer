@@ -89,8 +89,8 @@ struct AudiobookView: View {
                 Spacer()
             }
         }
-        // .modifier(NowPlaying.SafeAreaModifier())
         .modifier(ToolbarModifier())
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .environment(viewModel)
         .onAppear {
