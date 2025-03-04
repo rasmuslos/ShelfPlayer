@@ -36,16 +36,14 @@ struct EpisodePlayButton: View {
             episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute], maximumUnitCount: 1))
         }
         
-        if let entity = progress.entity {
-            if entity.isFinished {
-                return String(localized: "listen.again")
-            } else if entity.progress <= 0 {
-                return formatDuration()
-            } else if isPlaying, satellite.duration > 0 {
-                return (satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
-            } else {
-                return ((entity.duration ?? episode.duration) - entity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
-            }
+        if let isFinished = progress.isFinished, isFinished {
+            return String(localized: "listen.again")
+        } else if let progress = progress.progress, progress <= 0 {
+            return formatDuration()
+        } else if isPlaying, satellite.duration > 0 {
+            return (satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+        } else if let currentTime = progress.currentTime, let progress = progress.progress, progress > 0 {
+            return ((self.progress.duration ?? episode.duration) - currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
         } else {
             return formatDuration()
         }
@@ -63,8 +61,8 @@ struct EpisodePlayButton: View {
             return true
         }
         
-        if let entity = progress.entity {
-            return entity.progress > 0 && entity.progress < 1
+        if let progress = progress.progress {
+            return progress > 0 && progress < 1
         }
         
         return false
@@ -92,9 +90,9 @@ struct EpisodePlayButton: View {
             Rectangle()
                 .fill(.gray.opacity(0.25))
                 .overlay(alignment: .leading) {
-                    if let entity = progress.entity {
+                    if let progress = progress.progress {
                         Rectangle()
-                            .frame(width: progressVisible ? max(40 * entity.progress, 5) : 0)
+                            .frame(width: progressVisible ? max(40 * progress, 5) : 0)
                     }
                 }
                 .frame(width: progressVisible ? 40 : 0, height: 5)

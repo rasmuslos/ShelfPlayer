@@ -12,14 +12,14 @@ import ShelfPlayerKit
 struct CircleProgressIndicator: View {
     @Default(.tintColor) private var tintColor
     
-    let entity: ProgressEntity.UpdatingProgressEntity
+    let progress: Percentage
     
     var body: some View {
-        if entity.progress < 0 {
+        if progress < 0 {
             EmptyView()
         } else {
             ZStack {
-                if entity.isFinished {
+                if progress >= 1 {
                     Circle()
                         .fill(Color.accentColor.quaternary)
                     
@@ -35,10 +35,10 @@ struct CircleProgressIndicator: View {
                     GeometryReader { proxy in
                         Circle()
                             .inset(by: proxy.size.width / 4)
-                            .trim(from: 0, to: CGFloat(entity.progress))
+                            .trim(from: 0, to: CGFloat(progress))
                             .stroke(tintColor.accent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
                             .rotationEffect(.degrees(-90))
-                            .animation(.spring, value: entity.progress)
+                            .animation(.spring, value: progress)
                     }
                     .padding(2)
                 }

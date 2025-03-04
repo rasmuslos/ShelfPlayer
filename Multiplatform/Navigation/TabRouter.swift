@@ -52,7 +52,7 @@ struct TabRouter: View {
                 tab.content
                     .modifier(TabContentPlaybackModifier())
                     .task {
-                        PersistenceManager.shared.download.scheduleUpdateTask()
+                        ShelfPlayer.updateUIHook()
                     }
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
                 ContentUnavailableView("import.failed", systemImage: "circle.badge.xmark", description: Text("import.failed.description"))
