@@ -46,23 +46,23 @@ struct PlayButton: View {
     }
     
     private var remaining: TimeInterval? {
-        if isPlaying && satellite.duration > 0 {
-            satellite.duration - satellite.currentTime
-        } else if isPlaying, satellite.duration > 0 {
-            (satellite.duration - satellite.currentTime)
-        } else if let duration = tracker.duration, duration > 0, let currentTime = tracker.currentTime {
-            duration - currentTime
-        } else if playButtonStyle.hideRemainingWhenUnplayed {
-            nil
-        } else {
-            item.duration
-        }
-    }
-    private var progress: Percentage? {
         guard tracker.isFinished != true else {
             return nil
         }
         
+        if isPlaying && satellite.duration > 0 {
+            return satellite.duration - satellite.currentTime
+        } else if isPlaying, satellite.duration > 0 {
+            return (satellite.duration - satellite.currentTime)
+        } else if let duration = tracker.duration, duration > 0, let currentTime = tracker.currentTime {
+            return duration - currentTime
+        } else if playButtonStyle.hideRemainingWhenUnplayed {
+            return nil
+        } else {
+            return item.duration
+        }
+    }
+    private var progress: Percentage? {
         if isPlaying, satellite.duration > 0 {
             return satellite.currentTime / satellite.duration
         } else {

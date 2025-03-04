@@ -12,15 +12,16 @@ import ShelfPlayerKit
 import SPPlayback
 
 struct PlaybackTitle: View {
+    @Environment(PlaybackViewModel.self) private var playbackViewModel
     @Environment(Satellite.self) private var satellite
     
     var body: some View {
         HStack(spacing: 0) {
             Menu {
                 if let currentItem = satellite.currentItem {
-                    if let audiobook = currentItem as? Audiobook {
-                        ItemMenu(authors: audiobook.authors)
-                        ItemMenu(series: audiobook.series)
+                    if currentItem as? Audiobook != nil {
+                        ItemMenu(authors: playbackViewModel.authorIDs)
+                        ItemMenu(series: playbackViewModel.seriesIDs)
                     } else if let episode = currentItem as? Episode {
                         ItemLoadLink(itemID: episode.id)
                         ItemLoadLink(itemID: episode.podcastID)
@@ -182,18 +183,7 @@ struct PlaybackControls: View {
             }
             Spacer(minLength: 8)
             
-            PlaybackSlider(percentage: satellite.volume, seeking: $viewModel.volumePreview, currentTime: nil, duration: nil, textFirst: true) {
-                Spacer()
-            } complete: { _ in
-                viewModel.volumePreview = nil
-            }
-            .onChange(of: viewModel.volumePreview) {
-                if let volume = viewModel.volumePreview {
-                    Task {
-                        await AudioPlayer.shared.setVolume(volume)
-                    }
-                }
-            }
+            BottomSlider()
         }
         .aspectRatio(2, contentMode: .fit)
     }
@@ -413,6 +403,67 @@ private struct PlaybackSlider<MiddleContent: View>: View {
         .animation(.smooth, value: seeking)
     }
 }
+private struct BottomSlider: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+    
+    @Default(.replaceVolumeWithTotalProgresss) private var replaceVolumeWithTotalProgresss
+    
+    private var currentTime: TimeInterval {
+        if let seekingTotal = viewModel.seekingTotal {
+            satellite.duration * seekingTotal
+        } else {
+            satellite.currentTime
+        }
+    }
+    private var duration: TimeInterval {
+        if viewModel.seekingTotal != nil {
+            satellite.duration - currentTime
+        } else {
+            satellite.duration
+        }
+    }
+    
+    private var remaining: TimeInterval {
+        if viewModel.seekingTotal != nil {
+            duration * (1 / satellite.playbackRate)
+        } else {
+            (satellite.duration - satellite.currentTime) * (1 / satellite.playbackRate)
+        }
+    }
+    
+    var body: some View {
+        @Bindable var viewModel = viewModel
+        
+        if true, satellite.chapter != nil {
+            PlaybackSlider(percentage: satellite.playedTotal, seeking: $viewModel.seekingTotal, currentTime: currentTime, duration: duration, textFirst: true) {
+                Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                    .contentTransition(.numericText())
+                    .animation(.smooth, value: remaining)
+            } complete: {
+                satellite.seek(to: satellite.duration * $0, insideChapter: false) {
+                    Task { @MainActor in
+                        viewModel.seekingTotal = nil
+                    }
+                }
+            }
+        } else {
+            PlaybackSlider(percentage: satellite.volume, seeking: $viewModel.volumePreview, currentTime: nil, duration: nil, textFirst: true) {
+                Spacer()
+            } complete: { _ in
+                viewModel.volumePreview = nil
+            }
+            .onChange(of: viewModel.volumePreview) {
+                if let volume = viewModel.volumePreview {
+                    Task {
+                        await AudioPlayer.shared.setVolume(volume)
+                    }
+                }
+            }
+        }
+    }
+}
+
 private struct StopPlaybackButton: View {
     @Environment(Satellite.self) private var satellite
     

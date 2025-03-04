@@ -11,8 +11,10 @@ import Defaults
 import ShelfPlayerKit
 
 extension EnvironmentValues {
-    @Entry var libraries = [Library]()
+    @Entry var library: Library? = nil    
     @Entry var displayContext: DisplayContext = .unknown
+    
+    @Entry var connectionID: ItemIdentifier.ConnectionID? = nil
     
     @Entry var playbackBottomOffset: CGFloat = 0
     @Entry var playbackBottomSafeAreaPadding: CGFloat = 0
@@ -27,5 +29,12 @@ enum DisplayContext {
 extension RFNotification.Notification {
     static var focusSearchField: RFNotification.Notification<RFNotificationEmptyPayload> {
         .init("io.rfk.shelfPlayer.focusSearchField")
+    }
+    
+    static var navigateNotification: Notification<ItemIdentifier> {
+        .init("io.rfk.shelfPlayer.navigate.one")
+    }
+    static var _navigateNotification: Notification<ItemIdentifier> {
+        .init("io.rfk.shelfPlayer.navigate.two")
     }
 }

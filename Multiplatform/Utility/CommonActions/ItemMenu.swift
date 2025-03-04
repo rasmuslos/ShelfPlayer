@@ -22,6 +22,15 @@ struct ItemMenu: View {
         type = .author
     }
     
+    init(series: [(id: ItemIdentifier, name: String)]) {
+        items = series
+        type = .author
+    }
+    init(authors: [(id: ItemIdentifier, name: String)]) {
+        items = authors
+        type = .author
+    }
+    
     var body: some View {
         if items.count == 1, let item = items.first {
             link(item, type: type)

@@ -155,6 +155,9 @@ extension Satellite {
     var played: Percentage {
         min(1, max(0, currentChapterTime / chapterDuration))
     }
+    var playedTotal: Percentage {
+        min(1, max(0, currentTime / duration))
+    }
     
     func isLoading(observing: ItemIdentifier) -> Bool {
         totalLoading > 0 || busy[observing] ?? 0 > 0

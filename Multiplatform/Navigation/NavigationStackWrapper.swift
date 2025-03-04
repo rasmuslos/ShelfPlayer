@@ -19,9 +19,9 @@ struct NavigationStackWrapper<Content: View>: View {
         NavigationStack(path: $path) {
             content()
                 .navigationDestination(for: ItemLoadDestination.self) { destination in
-                    Text(destination.itemID.description)
+                    ItemLoadView(destination.itemID)
                 }
-                .onReceive(RFNotification[.navigateNotification].publisher()) {
+                .onReceive(RFNotification[._navigateNotification].publisher()) {
                     let libraryID: String?
                     
                     if case .audiobookLibrary(let library) = tab {
@@ -32,7 +32,9 @@ struct NavigationStackWrapper<Content: View>: View {
                         libraryID = nil
                     }
                     
-                    guard let libraryID, $0.libraryID == libraryID else { return }
+                    guard let libraryID, $0.libraryID == libraryID else {
+                        return
+                    }
                     
                     path.append(ItemLoadDestination(itemID: $0))
                 }
@@ -43,14 +45,4 @@ struct NavigationStackWrapper<Content: View>: View {
     struct ItemLoadDestination: Hashable {
         let itemID: ItemIdentifier
     }
-}
-
-extension RFNotification.Notification {
-    static var navigateNotification: Notification<ItemIdentifier> {
-        .init("io.rfk.shelfPlayer.navigate")
-    }
-}
-
-extension EnvironmentValues {
-    @Entry var library: Library? = nil
 }

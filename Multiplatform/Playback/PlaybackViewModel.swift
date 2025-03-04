@@ -16,12 +16,16 @@ final class PlaybackViewModel {
     private var _dragOffset: CGFloat
     
     var seeking: Percentage?
+    var seekingTotal: Percentage?
     var volumePreview: Percentage?
     
     @ObservableDefault(.skipBackwardsInterval) @ObservationIgnored
     var skipBackwardsInterval: Int
     @ObservableDefault(.skipForwardsInterval) @ObservationIgnored
     var skipForwardsInterval: Int
+    
+    var seriesIDs: [(ItemIdentifier, String)]
+    var authorIDs: [(ItemIdentifier, String)]
     
     private(set) var notifySkipBackwards = false
     private(set) var notifySkipForwards = false
@@ -30,6 +34,9 @@ final class PlaybackViewModel {
         _dragOffset = .zero
         _isExpanded = false
         
+        seriesIDs = []
+        authorIDs = []
+        
         RFNotification[.skipped].subscribe { [weak self] forwards in
             if forwards {
                 self?.notifySkipForwards.toggle()
@@ -37,9 +44,20 @@ final class PlaybackViewModel {
                 self?.notifySkipBackwards.toggle()
             }
         }
+        
+        RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _) in
+            self?.isExpanded = true
+            self?.loadAuthorIDs(itemID: itemID)
+        }
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.isExpanded = false
             self?.dragOffset = 0
+            
+            self?.authorIDs = []
+        }
+        
+        RFNotification[.navigateNotification].subscribe { [weak self] _ in
+            self?.isExpanded = false
         }
     }
     
@@ -90,7 +108,7 @@ final class PlaybackViewModel {
     }
     
     var areSlidersInUse: Bool {
-        seeking != nil || volumePreview != nil
+        seeking != nil || seekingTotal != nil || volumePreview != nil
     }
     
     var backgroundCornerRadius: CGFloat {
@@ -102,5 +120,28 @@ final class PlaybackViewModel {
     }
     func pushContainerCornerRadius(leadingOffset: CGFloat) -> CGFloat {
         max(8, UIScreen.main.displayCornerRadius - leadingOffset)
+    }
+}
+
+private extension PlaybackViewModel {
+    func loadAuthorIDs(itemID: ItemIdentifier) {
+        Task {
+            guard let item = try? await itemID.resolved else {
+                return
+            }
+            
+            var authorIDs = [(ItemIdentifier, String)]()
+            
+            for author in item.authors {
+                do {
+                    let authorID = try await ABSClient[itemID.connectionID].authorID(from: itemID.libraryID, name: author)
+                    authorIDs.append((authorID, author))
+                } catch {}
+            }
+            
+            await MainActor.withAnimation {
+                self.authorIDs = authorIDs
+            }
+        }
     }
 }

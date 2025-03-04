@@ -19,6 +19,7 @@ public extension Defaults.Keys {
     
     static let showAuthorsRow = Key("showAuthorsRow", default: false)
     static let hideDiscoverRow = Key("hideDiscoverRow", default: false)
+    static let replaceVolumeWithTotalProgresss = Key("replaceVolumeWithTotalProgresss", default: false)
     
     // Playback
     
