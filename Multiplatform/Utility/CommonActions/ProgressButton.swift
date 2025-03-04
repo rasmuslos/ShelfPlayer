@@ -24,8 +24,6 @@ struct ProgressButton: View {
         _progress = .init(initialValue: .init(itemID: item.id))
     }
     
-    @State private var progressEntity: ProgressEntity.UpdatingProgressEntity?
-    
     private var isLoading: Bool {
         satellite.isLoading(observing: item.id)
     }
@@ -44,7 +42,7 @@ struct ProgressButton: View {
         } label: {
             Label("progress.finished.unset", systemImage: "minus.square")
             
-            if let finishedAt = progressEntity?.finishedAt {
+            if let finishedAt = progress.finishedAt {
                 Text("finished.ago") + Text(finishedAt, style: .relative)
             }
         }
@@ -52,8 +50,8 @@ struct ProgressButton: View {
     
     var body: some View {
         Group {
-            if !isLoading, let entity = progress.entity {
-                if entity.isFinished {
+            if !isLoading, let isFinished = progress.isFinished {
+                if isFinished {
                     markAsUnfinishedButton
                 } else {
                     markAsFinishedButton
@@ -67,7 +65,7 @@ struct ProgressButton: View {
         .modify {
             if tint {
                 $0
-                    .tint(progress.entity?.isFinished == true ? .red : .green)
+                    .tint(progress.isFinished == true ? .red : .green)
             } else {
                 $0
             }

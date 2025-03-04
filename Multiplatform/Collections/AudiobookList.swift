@@ -70,20 +70,15 @@ private struct Row: View {
             parts.append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         }
         
-        if let entity = progress.entity {
-            if entity.isFinished {
-                parts.append(String(localized: "finished"))
-            } else if entity.progress <= 0 {
-                appendDuration()
-                /*
-            } else if nowPlayingViewModel.item == audiobook, nowPlayingViewModel.itemDuration > 0 {
-                parts.append(progressEntity.progress.formatted(.percent.notation(.compactName)))
-                parts.append((nowPlayingViewModel.itemDuration - nowPlayingViewModel.itemCurrentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
-                 */
-            } else {
-                parts.append(entity.progress.formatted(.percent.notation(.compactName)))
-                parts.append(((entity.duration ?? audiobook.duration) - entity.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
-            }
+        if let isFinished = progress.isFinished, isFinished {
+            parts.append(String(localized: "finished"))
+        } else if satellite.currentItemID == audiobook.id, satellite.duration > 0 {
+            parts.append((satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1)))
+        } else if let progress = progress.progress, progress <= 0 {
+            appendDuration()
+        } else if let progress = progress.progress, let currentTime = self.progress.currentTime {
+            parts.append(progress.formatted(.percent.notation(.compactName)))
+            parts.append(((self.progress.duration ?? audiobook.duration) - currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
         } else {
             appendDuration()
         }

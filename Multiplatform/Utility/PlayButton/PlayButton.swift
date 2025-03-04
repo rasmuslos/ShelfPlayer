@@ -21,13 +21,13 @@ struct PlayButton: View {
     let item: PlayableItem
     let color: Color?
     
-    @State private var progress: ProgressTracker
+    @State private var tracker: ProgressTracker
     
     init(item: PlayableItem, color: Color?) {
         self.item = item
         self.color = color
         
-        _progress = .init(initialValue: .init(itemID: item.id))
+        _tracker = .init(initialValue: .init(itemID: item.id))
     }
     
     private var background: Color {
@@ -48,12 +48,25 @@ struct PlayButton: View {
     private var remaining: TimeInterval? {
         if isPlaying && satellite.duration > 0 {
             satellite.duration - satellite.currentTime
-        } else if let entity = progress.entity, let duration = entity.duration, duration > 0 {
-            duration - entity.currentTime
+        } else if isPlaying, satellite.duration > 0 {
+            (satellite.duration - satellite.currentTime)
+        } else if let duration = tracker.duration, duration > 0, let currentTime = tracker.currentTime {
+            duration - currentTime
         } else if playButtonStyle.hideRemainingWhenUnplayed {
             nil
         } else {
             item.duration
+        }
+    }
+    private var progress: Percentage? {
+        guard tracker.isFinished != true else {
+            return nil
+        }
+        
+        if isPlaying, satellite.duration > 0 {
+            return satellite.currentTime / satellite.duration
+        } else {
+            return tracker.progress
         }
     }
     
@@ -62,12 +75,10 @@ struct PlayButton: View {
             return satellite.isPlaying ? "pause" : "resume"
         }
         
-        if let entity = progress.entity {
-            if entity.isFinished {
-                return "listen.again"
-            } else if entity.progress > 0 {
-                return "resume"
-            }
+        if let isFinished = tracker.isFinished, isFinished {
+            return "listen.again"
+        } else if let progress = tracker.progress, progress > 0 {
+            return "resume"
         }
         
         if item.id.type == .audiobook {
@@ -112,7 +123,7 @@ struct PlayButton: View {
         }
         .contentShape(.rect)
         .transition(.opacity)
-        .animation(.smooth, value: progress.entity?.progress)
+        .animation(.smooth, value: tracker.progress)
     }
     
     @ViewBuilder
@@ -125,11 +136,11 @@ struct PlayButton: View {
             
             ProgressButton(item: item, tint: false)
             
-            if let entity = progress.entity, entity.progress > 0 {
+            if let progress = tracker.progress, progress > 0 {
                 ProgressResetButton(item: item)
             }
         } label: {
-            playButtonStyle.makeLabel(configuration: .init(progress: progress.entity?.progress, background: background, content: .init(content: labelContent)))
+            playButtonStyle.makeLabel(configuration: .init(progress: progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
             satellite.start(item)
         }
@@ -139,7 +150,7 @@ struct PlayButton: View {
     }
     
     var body: some View {
-        playButtonStyle.makeMenu(configuration: .init(progress: progress.entity?.progress, background: background, content: .init(content: menuContent)))
+        playButtonStyle.makeMenu(configuration: .init(progress: progress, background: background, content: .init(content: menuContent)))
             .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
             .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
     }

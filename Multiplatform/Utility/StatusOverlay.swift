@@ -31,15 +31,15 @@ struct StatusOverlay: View {
             return true
         }
         
-        if let entity = progress.entity {
-            return entity.progress > 0
+        if let progress = progress.progress {
+            return progress > 0
         }
         
         return false
     }
     
     var body: some View {
-        if let entity = progress.entity {
+        if let progress = progress.progress {
             GeometryReader { geometry in
                 let size = geometry.size.width / 2.5
                 let fontSize = size * 0.23
@@ -55,13 +55,13 @@ struct StatusOverlay: View {
                                     Group {
                                         if download.status == .downloading {
                                             DownloadButton(item: item, progressVisibility: .triangle)
-                                        } else if entity.progress < 1 {
+                                        } else if progress < 1 {
                                             if itemImageStatusPercentageText {
-                                                Text(verbatim: "\(Int(entity.progress * 100))")
+                                                Text(verbatim: "\(Int(progress * 100))")
                                                     .font(.system(size: fontSize))
                                                     .fontWeight(.heavy)
                                             } else {
-                                                CircularProgressIndicator(completed: entity.progress, background: .white.opacity(0.3), tint: .white)
+                                                CircularProgressIndicator(completed: progress, background: .white.opacity(0.3), tint: .white)
                                             }
                                         } else {
                                             Label("finished", systemImage: "checkmark")

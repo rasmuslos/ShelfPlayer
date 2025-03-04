@@ -57,9 +57,7 @@ struct ContentView: View {
         .environment(connectionStore)
         .environment(\.namespace, namespace)
         .onAppear {
-            Task.detached {
-                await PersistenceManager.shared.download.invalidateActiveDownloads()
-            }
+            ShelfPlayer.initializeHook()
         }
         .onContinueUserActivity(CSSearchableItemActionType) {
             guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
