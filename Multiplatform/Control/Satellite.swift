@@ -378,7 +378,9 @@ private extension Satellite {
             }
             
             Task {
-                self?.chapter = await AudioPlayer.shared.chapters[chapterIndex]
+                if await AudioPlayer.shared.chapters.count > chapterIndex {
+                    self?.chapter = await AudioPlayer.shared.chapters[chapterIndex]
+                }
             }
         }.store(in: &stash)
         

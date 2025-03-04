@@ -79,6 +79,12 @@ final actor PlaybackReporter {
         update()
         isFinished = true
         
+        if let duration, let currentTime {
+            if duration - currentTime < 10 {
+                self.currentTime = duration
+            }
+        }
+        
         Task {
             if let localSessionID {
                 do {

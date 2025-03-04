@@ -49,7 +49,7 @@ final actor NowPlayingWidgetManager: Sendable {
     }
     nonisolated func update(chapterIndex: Int?) {
         Task {
-            if let chapterIndex {
+            if let chapterIndex, await AudioPlayer.shared.chapters.count > chapterIndex {
                 await update(chapter: AudioPlayer.shared.chapters[chapterIndex])
             } else {
                 await update(chapter: nil)

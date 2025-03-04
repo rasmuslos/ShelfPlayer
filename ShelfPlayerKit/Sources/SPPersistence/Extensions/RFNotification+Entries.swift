@@ -14,6 +14,13 @@ public extension RFNotification.Notification {
         .init("io.rfk.ShelfPlayer.connectionsChanged")
     }
     
+    static var progressEntityUpdated: Notification<(connectionID: String, primaryID: String, groupingID: String?, ProgressEntity?)> {
+        .init("io.rfk.shelfPlayerKit.progressEntity.updated")
+    }
+    static var invalidateProgressEntities: Notification<String?> {
+        .init("io.rfk.shelfPlayerKit.progressEntity.invalidate")
+    }
+    
     static var downloadStatusChanged: Notification<(itemID: ItemIdentifier, status: PersistenceManager.DownloadSubsystem.DownloadStatus)> {
         .init("io.rfk.shelfPlayerKit.progressEntity.updated")
     }
