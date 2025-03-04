@@ -246,7 +246,9 @@ public extension PersistenceManager.ProgressSubsystem {
             var hiddenIDs = [(ItemIdentifier.ConnectionID, String)]()
             
             try modelContext.transaction {
-                try modelContext.enumerate(FetchDescriptor<PersistedProgress>()) { entity in
+                try modelContext.enumerate(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+                    $0.connectionID == connectionID
+                })) { entity in
                     let id = entity.id
                     
                     guard let index = payload.firstIndex(where: { $0.id == id }) else {
