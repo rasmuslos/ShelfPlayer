@@ -26,7 +26,7 @@ struct ItemLoadLink: View {
     var body: some View {
         if library == nil {
             Button {
-                
+                itemID.navigate()
             } label: {
                 labelContent
             }

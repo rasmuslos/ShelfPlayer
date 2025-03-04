@@ -26,11 +26,7 @@ struct ItemIDLoadLink: View {
     
     var body: some View {
         if library == nil {
-            Button {
-                
-            } label: {
-                labelContent
-            }
+            let _ = fatalError("Unsupported display context")
         } else {
             NavigationLink(destination: ItemIDLoadView(name: name, type: type)) {
                 labelContent

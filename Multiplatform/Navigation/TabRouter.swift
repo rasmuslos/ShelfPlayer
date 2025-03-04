@@ -24,6 +24,8 @@ struct TabRouter: View {
     @State private var importedConnectionIDs = [String]()
     @State private var importFailedConnectionIDs = [String]()
     
+    @State private var navigateToWhenReady: ItemIdentifier? = nil
+    
     var selectionProxy: Binding<TabValue?> {
         .init() { selection } set: {
             if $0 == selection {
@@ -43,6 +45,20 @@ struct TabRouter: View {
         }
         
         return importedConnectionIDs.contains(selection.library.connectionID)
+    }
+    
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+    private var current: Library? {
+        guard isCompact else {
+            return nil
+        }
+        
+        return selection?.library
+    }
+    private var connectionID: ItemIdentifier.ConnectionID? {
+        selection?.library.connectionID
     }
     
     @ViewBuilder
@@ -101,26 +117,14 @@ struct TabRouter: View {
                     if importFailedConnectionIDs.count == connectionStore.connections.count {
                         satellite.isOffline = true
                     }
+                    
+                    navigateIfRequired(withDelay: true)
                 }
                 .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
             }
         }
         .animation(.smooth, value: importedConnectionIDs)
         .animation(.smooth, value: importFailedConnectionIDs)
-    }
-    
-    private var isCompact: Bool {
-        horizontalSizeClass == .compact
-    }
-    private var current: Library? {
-        guard isCompact else {
-            return nil
-        }
-        
-        return selection?.library
-    }
-    private var connectionID: ItemIdentifier.ConnectionID? {
-        selection?.library.connectionID
     }
     
     var body: some View {
@@ -166,6 +170,9 @@ struct TabRouter: View {
             appearance.configureWithDefaultBackground()
             UINavigationBar.appearance().compactAppearance = appearance
         }
+        .onChange(of: selection) {
+            navigateIfRequired(withDelay: true)
+        }
         .onChange(of: selection?.library) {
             while !libraryPath.isEmpty {
                 libraryPath.removeLast()
@@ -179,6 +186,10 @@ struct TabRouter: View {
         .onReceive(RFNotification[.changeLibrary].publisher()) {
             select($0)
         }
+        .onReceive(RFNotification[.navigateNotification].publisher()) {
+            navigateToWhenReady = $0
+            navigateIfRequired(withDelay: false)
+        }
     }
     
     private func select(_ library: Library) {
@@ -188,6 +199,52 @@ struct TabRouter: View {
         case .podcasts:
             selection = .podcastHome(library)
         }
+    }
+    private func navigateIfRequired(withDelay: Bool) {
+        guard let navigateToWhenReady else {
+            return
+        }
+        
+        guard !satellite.isOffline else {
+            self.navigateToWhenReady = nil
+            return
+        }
+        
+        guard let library = connectionStore.libraries[navigateToWhenReady.connectionID]?.first(where: { $0.id == navigateToWhenReady.libraryID }) else {
+            self.navigateToWhenReady = nil
+            return
+        }
+        
+        switch navigateToWhenReady.type {
+        case .audiobook, .author, .series:
+            guard case .audiobookLibrary(_) = selection else {
+                selection = .audiobookHome(library)
+                return
+            }
+        case .podcast, .episode:
+            guard case .podcastLibrary(_) = selection else {
+                selection = .podcastLibrary(library)
+                return
+            }
+        }
+        
+        guard importedConnectionIDs.contains(library.id) else {
+            if importFailedConnectionIDs.contains(library.id) {
+                self.navigateToWhenReady = nil
+            }
+            
+            return
+        }
+        
+        Task {
+            if withDelay {
+                try await Task.sleep(for: .seconds(0.5))
+            }
+            
+            RFNotification[._navigateNotification].send(navigateToWhenReady)
+        }
+        
+        self.navigateToWhenReady = nil
     }
 }
 
