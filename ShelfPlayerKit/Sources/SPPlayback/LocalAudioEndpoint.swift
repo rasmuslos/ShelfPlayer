@@ -228,8 +228,8 @@ extension LocalAudioEndpoint {
         
         await audioPlayer.seek(to: CMTime(seconds: time - audioTracks[index].offset, preferredTimescale: 1000))
         
-        updateChapterIndex()
         currentTime = time
+        updateChapterIndex()
         
         if isPlaying {
             audioPlayer.play()
