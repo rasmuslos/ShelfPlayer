@@ -43,8 +43,11 @@ final class Satellite {
     private(set) var playbackRate: Percentage
     
     private(set) var route: AudioRoute?
+    private(set) var sleepTimer: SleepTimerConfiguration?
     
     // MARK: Playback helper
+    
+    private(set) var remainingSleepTime: Double?
     
     private(set) var totalLoading: Int
     private(set) var busy: [ItemIdentifier: Int]
@@ -219,7 +222,7 @@ extension Satellite {
             
             do {
                 try await AudioPlayer.shared.seek(to: time, insideChapter: insideChapter)
-                await endWorking(on: currentItemID, successfully: nil)
+                await endWorking(on: currentItemID, successfully: true)
                 
                 completion()
             } catch {
@@ -269,6 +272,7 @@ extension Satellite {
             }
         }
     }
+    
     nonisolated func setPlaybackRate(_ rate: Percentage) {
         Task {
             guard let currentItemID = await currentItemID else {
@@ -277,6 +281,28 @@ extension Satellite {
             
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.setPlaybackRate(rate)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    nonisolated func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.setSleepTimer(configuration)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    nonisolated func extendSleepTimer() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.extendSleepTimer()
             await endWorking(on: currentItemID, successfully: true)
         }
     }
@@ -348,6 +374,7 @@ private extension Satellite {
             self?.playbackRate = 0
             
             self?.route = nil
+            self?.sleepTimer = nil
             
             self?.resolvePlayingItem()
         }.store(in: &stash)
@@ -372,19 +399,14 @@ private extension Satellite {
         RFNotification[.currentTimesChanged].subscribe { [weak self] currentTimes in
             self?.currentTime = currentTimes.0 ?? 0
             self?.currentChapterTime = currentTimes.1 ?? self?.currentTime ?? 0
+            
+            if let sleepTimer = self?.sleepTimer, case .interval(let date) = sleepTimer {
+                self?.remainingSleepTime = Date.now.distance(to: date)
+            }
         }.store(in: &stash)
         
-        RFNotification[.chapterChanged].subscribe { [weak self] chapterIndex in
-            guard let chapterIndex else {
-                self?.chapter = nil
-                return
-            }
-            
-            Task {
-                if await AudioPlayer.shared.chapters.count > chapterIndex {
-                    self?.chapter = await AudioPlayer.shared.chapters[chapterIndex]
-                }
-            }
+        RFNotification[.chapterChanged].subscribe { [weak self] chapter in
+            self?.chapter = chapter
         }.store(in: &stash)
         
         RFNotification[.volumeChanged].subscribe { [weak self] volume in
@@ -396,6 +418,9 @@ private extension Satellite {
         
         RFNotification[.routeChanged].subscribe { [weak self] route in
             self?.route = route
+        }.store(in: &stash)
+        RFNotification[.sleepTimerChanged].subscribe { [weak self] sleepTimer in
+            self?.sleepTimer = sleepTimer
         }.store(in: &stash)
         
         RFNotification[.playbackStopped].subscribe { [weak self] in
@@ -416,6 +441,7 @@ private extension Satellite {
             self?.playbackRate = 0
             
             self?.route = nil
+            self?.sleepTimer = nil
         }.store(in: &stash)
     }
 }

@@ -1,7 +1,11 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    ":" : {
+
+    },
     "%lld account.sleepTimer.hours" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "variations" : {
@@ -72,6 +76,7 @@
       }
     },
     "%lld account.sleepTimer.minutes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "variations" : {
@@ -408,6 +413,7 @@
       }
     },
     "account.custom" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -436,6 +442,7 @@
       }
     },
     "account.custom.text" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2651,7 +2658,6 @@
 
     },
     "decrease" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3858,6 +3864,9 @@
     "github" : {
 
     },
+    "hours" : {
+
+    },
     "import.failed" : {
 
     },
@@ -3865,7 +3874,6 @@
 
     },
     "increase" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4683,6 +4691,9 @@
           }
         }
       }
+    },
+    "minutes" : {
+
     },
     "more" : {
 
@@ -6862,6 +6873,9 @@
         }
       }
     },
+    "sleep.cancel" : {
+
+    },
     "sleep.chapter" : {
       "comment" : "Is it like \"end of a chapter\" or \"by the end of the chapter\"?",
       "extractionState" : "stale",
@@ -6921,6 +6935,9 @@
         }
       }
     },
+    "sleep.extend" : {
+
+    },
     "sleepTimer" : {
       "localizations" : {
         "de" : {
@@ -6948,6 +6965,18 @@
           }
         }
       }
+    },
+    "sleepTimer.chapter" : {
+
+    },
+    "sleepTimer.extend" : {
+
+    },
+    "sleepTimer.extend..interval" : {
+
+    },
+    "sleepTimer.extend.chapters %lld" : {
+
     },
     "sort" : {
 

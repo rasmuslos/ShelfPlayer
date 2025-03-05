@@ -47,15 +47,6 @@ final actor NowPlayingWidgetManager: Sendable {
         updateTitle()
         updateArtwork()
     }
-    nonisolated func update(chapterIndex: Int?) {
-        Task {
-            if let chapterIndex, await AudioPlayer.shared.chapters.count > chapterIndex {
-                await update(chapter: AudioPlayer.shared.chapters[chapterIndex])
-            } else {
-                await update(chapter: nil)
-            }
-        }
-    }
     func update(chapter: Chapter?) {
         self.chapter = chapter
         updateTitle()

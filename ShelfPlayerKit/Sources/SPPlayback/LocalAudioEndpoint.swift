@@ -31,7 +31,19 @@ final class LocalAudioEndpoint: AudioEndpoint {
     nonisolated(unsafe) private(set) var activeAudioTrackIndex: Int
     
     nonisolated(unsafe) private(set) var chapters: [Chapter]
-    nonisolated(unsafe) private(set) var activeChapterIndex: Int?
+    nonisolated(unsafe) private(set) var activeChapterIndex: Int? {
+        didSet {
+            guard let oldValue else {
+                return
+            }
+            
+            if oldValue + 1 == activeChapterIndex {
+                Task {
+                    await sleepChapterDidEnd()
+                }
+            }
+        }
+    }
     
     nonisolated(unsafe) private(set) var isPlaying: Bool
     
@@ -62,12 +74,26 @@ final class LocalAudioEndpoint: AudioEndpoint {
             }
         }
     }
+    nonisolated(unsafe) var sleepTimer: SleepTimerConfiguration? {
+        didSet {
+            updateSleepTimerSchedule()
+            
+            Task {
+                await AudioPlayer.shared.sleepTimerDidChange(endpointID: id, configuration: sleepTimer)
+            }
+        }
+    }
     
     nonisolated(unsafe) private var allowUpNextGeneration: Bool
-    nonisolated(unsafe) private var chapterValidUntil: TimeInterval
+    nonisolated(unsafe) private var chapterValidUntil: TimeInterval?
     
     nonisolated(unsafe) private var volumeSubscription: AnyCancellable?
     nonisolated(unsafe) private var bufferCheckTimer: Timer?
+    
+    nonisolated(unsafe) private var sleepLastPause: Date?
+    nonisolated(unsafe) private var sleepTimeoutTimer: Timer?
+    
+    let audioPlayerVolume: Float = 1
     
     init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws {
         logger.info("Starting up local audio endpoint with item ID \(itemID) (without listening session: \(withoutListeningSession))")
@@ -102,7 +128,6 @@ final class LocalAudioEndpoint: AudioEndpoint {
         route = nil
         
         allowUpNextGeneration = true
-        chapterValidUntil = -1
         
         setupObservers()
         
@@ -158,13 +183,19 @@ extension LocalAudioEndpoint {
         audioPlayer.removeAllItems()
         
         await cancelUpdateBufferingCheck()
-        
         await AudioPlayer.shared.didStopPlaying(endpointID: id)
     }
     
     func play() async {
         audioPlayer.play()
         isPlaying = true
+        
+        if let sleepLastPause, let sleepTimer, case .interval(let until) = sleepTimer {
+            self.sleepTimer = .interval(until.advanced(by: sleepLastPause.distance(to: .now)))
+            self.sleepLastPause = nil
+        }
+        
+        updateSleepTimerSchedule()
         
         await playbackReporter.didChangePlayState(isPlaying: true)
         await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: true)
@@ -174,11 +205,22 @@ extension LocalAudioEndpoint {
         audioPlayer.pause()
         isPlaying = false
         
+        sleepLastPause = .now
+        updateSleepTimerSchedule()
+        
         await playbackReporter.didChangePlayState(isPlaying: false)
         await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: false)
     }
     
-    func seek(to time: TimeInterval, insideChapter: Bool) async throws {
+    func seek(to: TimeInterval, insideChapter: Bool) async throws {
+        let time: TimeInterval
+        
+        if insideChapter, let activeChapterIndex {
+            time = to + chapters[activeChapterIndex].startOffset
+        } else {
+            time = to
+        }
+        
         logger.info("Seeking to \(time)")
         
         guard time >= 0 else {
@@ -229,7 +271,7 @@ extension LocalAudioEndpoint {
         await audioPlayer.seek(to: CMTime(seconds: time - audioTracks[index].offset, preferredTimescale: 1000))
         
         currentTime = time
-        updateChapterIndex()
+        await updateChapterIndex()
         
         if isPlaying {
             audioPlayer.play()
@@ -357,11 +399,30 @@ private extension LocalAudioEndpoint {
         activeOperationCount -= 1
     }
     
-    func updateChapterIndex() {
+    func updateChapterIndex() async {
         if let currentTime {
-            activeChapterIndex = chapterIndex(at: currentTime)
+            let activeChapterIndex = chapterIndex(at: currentTime)
+            
+            if self.activeChapterIndex != activeChapterIndex {
+                if let activeChapterIndex {
+                    await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: chapters[activeChapterIndex])
+                } else {
+                    await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: nil)
+                }
+            }
+            
+            self.activeChapterIndex = activeChapterIndex
+            
+            if let activeChapterIndex {
+                chapterValidUntil = chapters[activeChapterIndex].endOffset
+            } else {
+                chapterValidUntil = nil
+            }
+            
+            await self.updateDuration()
         } else if !Defaults[.enableChapterTrack] {
             activeChapterIndex = nil
+            chapterValidUntil = nil
         }
     }
     
@@ -400,7 +461,7 @@ private extension LocalAudioEndpoint {
     
     @MainActor
     func updateBufferingCheckTaskSchedule() {
-        if !isBuffering, let bufferCheckTimer {
+        if !isBuffering && bufferCheckTimer != nil {
             cancelUpdateBufferingCheck()
         } else if isBuffering && bufferCheckTimer == nil {
             bufferCheckTimer = Timer(timeInterval: 1, repeats: true) { _ in
@@ -431,6 +492,65 @@ private extension LocalAudioEndpoint {
             
             await AudioPlayer.shared.bufferHealthDidChange(endpointID: id, isBuffering: isBuffering)
         }
+    }
+    
+    func sleepChapterDidEnd() async {
+        guard let sleepTimer, case .chapters(let amount) = sleepTimer else {
+            return
+        }
+        
+        guard amount > 1 else {
+            await pause()
+            self.sleepTimer = nil
+            
+            return
+        }
+    }
+    func updateSleepTimerSchedule() {
+        guard let sleepTimer, case .interval(let date) = sleepTimer else {
+            sleepTimeoutTimer?.invalidate()
+            return
+        }
+        
+        guard isPlaying else {
+            sleepTimeoutTimer?.invalidate()
+            return
+        }
+        
+        let distance = Date.now.distance(to: date)
+        let waitTime: TimeInterval
+        
+        if distance <= 10 {
+            waitTime = 1
+        } else {
+            waitTime = distance - 10
+        }
+        
+        logger.info("Scheduling sleep timer for \(waitTime) seconds")
+        
+        sleepTimeoutTimer = .init(timeInterval: waitTime, repeats: false) { _ in
+            Task {
+                let distance = Date.now.distance(to: date)
+                
+                if Defaults[.sleepTimerFadeOut] {
+                    if distance < 10 {
+                        self.audioPlayer.volume = Float(distance / 10)
+                    }
+                }
+                
+                if distance <= 0 {
+                    await self.pause()
+                    
+                    self.sleepTimer = nil
+                    self.sleepLastPause = nil
+                    
+                    self.audioPlayer.volume = self.audioPlayerVolume
+                }
+                
+                self.updateSleepTimerSchedule()
+            }
+        }
+        RunLoop.main.add(sleepTimeoutTimer!, forMode: .common)
     }
     
     func setupObservers() {
@@ -474,10 +594,8 @@ private extension LocalAudioEndpoint {
         }
         
         NotificationCenter.default.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: nil) { [weak self] _ in
-            if let id = self?.id, let output = AVAudioSession.sharedInstance().currentRoute.outputs.first {
-                let route = AudioRoute(name: output.portName, port: output.portType)
-                
-                self?.route = route
+            if let output = AVAudioSession.sharedInstance().currentRoute.outputs.first {
+                self?.route = .init(name: output.portName, port: output.portType)
             }
         }
         
@@ -511,18 +629,8 @@ private extension LocalAudioEndpoint {
                 
                 // MARK: Chapter
                 
-                if let chapters = self?.chapters, !chapters.isEmpty, let currentTime = self?.chapterCurrentTime, let chapterValidUntil = self?.chapterValidUntil, chapterValidUntil < currentTime {
-                    self?.activeChapterIndex = self?.chapterIndex(at: currentTime)
-                    
-                    if let activeChapterIndex = self?.activeChapterIndex {
-                        self?.chapterValidUntil = self?.chapters[activeChapterIndex].endOffset ?? -1
-                    }
-                    
-                    if let id = self?.id {
-                        await AudioPlayer.shared.chapterDidChange(endpointID: id, currentChapterIndex: self?.activeChapterIndex)
-                    }
-                    
-                    await self?.updateDuration()
+                if let chapters = self?.chapters, !chapters.isEmpty, let currentTime = self?.currentTime, let chapterValidUntil = self?.chapterValidUntil, chapterValidUntil < currentTime {
+                    await self?.updateChapterIndex()
                 }
                 
                 // MARK: Chapter current time
