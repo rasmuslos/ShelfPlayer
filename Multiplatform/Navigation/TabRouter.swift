@@ -110,8 +110,10 @@ struct TabRouter: View {
                 SessionImporter(connectionID: tab.library.connectionID) {
                     if $0 {
                         importedConnectionIDs.append(tab.library.connectionID)
+                        importFailedConnectionIDs.removeAll(where: { $0 == tab.library.connectionID })
                     } else {
                         importFailedConnectionIDs.append(tab.library.connectionID)
+                        importedConnectionIDs.removeAll(where: { $0 == tab.library.connectionID })
                     }
                     
                     if importFailedConnectionIDs.count == connectionStore.connections.count {
@@ -218,7 +220,7 @@ struct TabRouter: View {
         switch navigateToWhenReady.type {
         case .audiobook, .author, .series:
             guard case .audiobookLibrary(_) = selection else {
-                selection = .audiobookHome(library)
+                selection = .audiobookLibrary(library)
                 return
             }
         case .podcast, .episode:
@@ -228,7 +230,7 @@ struct TabRouter: View {
             }
         }
         
-        guard importedConnectionIDs.contains(library.id) else {
+        guard importedConnectionIDs.contains(library.connectionID) else {
             if importFailedConnectionIDs.contains(library.id) {
                 self.navigateToWhenReady = nil
             }
@@ -236,7 +238,7 @@ struct TabRouter: View {
             return
         }
         
-        Task {
+        Task { [navigateToWhenReady] in
             if withDelay {
                 try await Task.sleep(for: .seconds(0.5))
             }

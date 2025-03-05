@@ -30,6 +30,8 @@ struct PreferencesView: View {
                 } label: {
                     Label("sleepTimer", systemImage: "clock")
                 }
+                
+                TintPicker()
             }
             
             Section {

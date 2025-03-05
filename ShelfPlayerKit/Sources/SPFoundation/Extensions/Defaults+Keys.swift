@@ -52,7 +52,7 @@ public extension Defaults.Keys {
     static let defaultPlaybackRate = Key<Percentage>("defaultPlaybackRate", default: 1)
     
     static let sleepTimerIntervals = Key("sleepTimerIntervals", default: [10, 20, 30, 45, 60, 90].map { Double($0) * 60 })
-    static let sleepTimerExtendInterval = Key("sleepTimerExtendInterval", default: Double(20))
+    static let sleepTimerExtendInterval = Key("sleepTimerExtendInterval", default: Double(1200))
     static let sleepTimerExtendChapterAmount = Key("sleepTimerExtendChapterAmount", default: 1)
     
     // MARK: Filtering & Sorting

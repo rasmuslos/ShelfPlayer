@@ -27,6 +27,9 @@ struct AudiobookHomePanel: View {
     private var authors: [HomeRow<Author>] {
         showAuthorsRow ? _authors : []
     }
+    private var relevantItemIDs: [ItemIdentifier] {
+        audiobooks.flatMap(\.itemIDs)
+    }
     
     var body: some View {
         Group {
@@ -82,7 +85,11 @@ struct AudiobookHomePanel: View {
                 }
             }
         }
-        .onReceive(RFNotification[.playbackStopped].publisher()) {
+        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
+            guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {
+                return
+            }
+            
             fetchItems()
         }
         .onReceive(RFNotification[.downloadStatusChanged].publisher()) { itemID, _ in

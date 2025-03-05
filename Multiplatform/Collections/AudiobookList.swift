@@ -138,7 +138,7 @@ private struct Row: View {
             }
         }
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
-        .modifier(SwipeActionsModifier(item: audiobook, loading: .constant(false)))
+        .modifier(ItemSwipeActionsModifier(item: audiobook))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }

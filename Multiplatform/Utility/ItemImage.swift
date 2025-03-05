@@ -20,12 +20,15 @@ struct RequestImage: View {
     let priority: ImageRequest.Priority
     let contrastConfiguration: ContrastConfiguration?
     
-    init(request: ImageRequest?, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, priority: ImageRequest.Priority = .normal, contrastConfiguration: ContrastConfiguration? = .init()) {
+    let placeholderItemID: ItemIdentifier?
+    
+    init(request: ImageRequest?, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, priority: ImageRequest.Priority = .normal, contrastConfiguration: ContrastConfiguration? = .init(), placeholderItemID: ItemIdentifier? = nil) {
         self.request = request
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
         self.priority = priority
         self.contrastConfiguration = contrastConfiguration
+        self.placeholderItemID = placeholderItemID
     }
     
     private var aspectRatioPolicy: AspectRatioPolicy {
@@ -47,7 +50,7 @@ struct RequestImage: View {
                             .clipShape(.rect(cornerRadius: cornerRadius))
                             .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     } else {
-                        Placeholder(itemID: nil, cornerRadius: cornerRadius)
+                        Placeholder(itemID: placeholderItemID, cornerRadius: cornerRadius)
                     }
                 }
             } else {
@@ -72,7 +75,7 @@ struct RequestImage: View {
                                     }
                                 }
                             } else {
-                                Placeholder(itemID: nil, cornerRadius: cornerRadius)
+                                Placeholder(itemID: placeholderItemID, cornerRadius: cornerRadius)
                             }
                         }
                     }
@@ -155,7 +158,7 @@ struct ItemImage: View {
     
     var body: some View {
         if let request {
-            RequestImage(request: request, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority, contrastConfiguration: contrastConfiguration)
+            RequestImage(request: request, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority, contrastConfiguration: contrastConfiguration, placeholderItemID: itemID)
         } else {
             Placeholder(itemID: itemID, cornerRadius: cornerRadius)
                 .task {

@@ -183,7 +183,7 @@ extension LocalAudioEndpoint {
         audioPlayer.removeAllItems()
         
         await cancelUpdateBufferingCheck()
-        await AudioPlayer.shared.didStopPlaying(endpointID: id)
+        await AudioPlayer.shared.didStopPlaying(endpointID: id, itemID: currentItemID)
     }
     
     func play() async {
@@ -374,7 +374,7 @@ private extension LocalAudioEndpoint {
             logger.error("Failed to seek to start time: \(error)")
         }
         
-        await AudioPlayer.shared.didStartPlaying(endpointID: id, itemID: currentItemID, at: startTime)
+        await AudioPlayer.shared.didStartPlaying(endpointID: id, itemID: currentItemID, chapters: self.chapters, at: startTime)
         
         await updateDuration()
         
@@ -403,26 +403,23 @@ private extension LocalAudioEndpoint {
         if let currentTime {
             let activeChapterIndex = chapterIndex(at: currentTime)
             
-            if self.activeChapterIndex != activeChapterIndex {
-                if let activeChapterIndex {
-                    await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: chapters[activeChapterIndex])
-                } else {
-                    await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: nil)
-                }
-            }
-            
             self.activeChapterIndex = activeChapterIndex
             
             if let activeChapterIndex {
                 chapterValidUntil = chapters[activeChapterIndex].endOffset
+                await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: chapters[activeChapterIndex])
             } else {
                 chapterValidUntil = nil
+                await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: nil)
             }
             
             await self.updateDuration()
         } else if !Defaults[.enableChapterTrack] {
             activeChapterIndex = nil
             chapterValidUntil = nil
+            
+            await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: nil)
+            await self.updateDuration()
         }
     }
     
@@ -551,6 +548,13 @@ private extension LocalAudioEndpoint {
             }
         }
         RunLoop.main.add(sleepTimeoutTimer!, forMode: .common)
+    }
+    
+    func updateUpNextQueue() async {
+        guard allowUpNextGeneration else {
+            await upNextQueue.removeAll()
+            return
+        }
     }
     
     func setupObservers() {

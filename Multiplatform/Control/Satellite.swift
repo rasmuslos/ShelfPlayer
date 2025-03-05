@@ -28,7 +28,11 @@ final class Satellite {
     private(set) var currentItemID: ItemIdentifier?
     private(set) var currentItem: PlayableItem?
     
+    private(set) var queue: [ItemIdentifier]
+    private(set) var upNextQueue: [ItemIdentifier]
+    
     private(set) var chapter: Chapter?
+    private(set) var chapters: [Chapter]
     
     private(set) var isPlaying: Bool
     private(set) var isBuffering: Bool
@@ -63,6 +67,11 @@ final class Satellite {
         isOffline = false
         
         currentItem = nil
+        
+        queue = []
+        upNextQueue = []
+        
+        chapters = []
         
         isPlaying = false
         isBuffering = true
@@ -241,7 +250,7 @@ extension Satellite {
             await startWorking(on: item.id)
             
             do {
-                try await AudioPlayer.shared.start(item.id)
+                try await AudioPlayer.shared.start(item.id, withoutListeningSession: isOffline)
                 await endWorking(on: item.id, successfully: true)
             } catch {
                 await endWorking(on: item.id, successfully: false)
@@ -265,7 +274,7 @@ extension Satellite {
             await startWorking(on: item.id)
             
             do {
-                // try await AudioPlayer.shared.queue([.init(itemID: item.id, startWithoutListeningSession: <#T##Bool#>, origin: <#T##QueueItem.QueueItemOrigin#>)])
+                try await AudioPlayer.shared.queue([.init(itemID: item.id, startWithoutListeningSession: isOffline)])
                 await endWorking(on: item.id, successfully: true)
             } catch {
                 await endWorking(on: item.id, successfully: false)
@@ -360,12 +369,15 @@ private extension Satellite {
             self?.currentItemID = $0.0
             self?.currentItem = nil
             
-            self?.chapter = nil
+            self?.queue = []
+            self?.upNextQueue = []
+            
+            self?.chapters = $0.1
             
             self?.isPlaying = false
             self?.isBuffering = true
             
-            self?.currentTime = $0.1
+            self?.currentTime = $0.2
             self?.currentChapterTime = 0
             
             self?.duration = 0
@@ -423,11 +435,22 @@ private extension Satellite {
             self?.sleepTimer = sleepTimer
         }.store(in: &stash)
         
+        RFNotification[.queueChanged].subscribe { [weak self] queue in
+            self?.queue = queue
+        }
+        RFNotification[.upNextQueueChanged].subscribe { [weak self] upNextQueue in
+            self?.upNextQueue = upNextQueue
+        }
+        
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.currentItemID = nil
             self?.currentItem = nil
             
+            self?.queue = []
+            self?.upNextQueue = []
+            
             self?.chapter = nil
+            self?.chapters = []
             
             self?.isPlaying = false
             self?.isBuffering = true
@@ -451,6 +474,13 @@ extension Satellite {
     func debugPlayback() -> Self {
         currentItemID = .fixture
         currentItem = Audiobook.fixture
+        
+        chapters = [
+            .init(id: 0, startOffset: 0, endOffset: 100, title: "ABC"),
+            .init(id: 1, startOffset: 101, endOffset: 200, title: "DEF"),
+            .init(id: 2, startOffset: 201, endOffset: 300, title: "GHI"),
+            .init(id: 3, startOffset: 301, endOffset: 400, title: "JKL"),
+        ]
         
         isPlaying = true
         isBuffering = false
