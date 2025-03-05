@@ -222,62 +222,6 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string></string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Title</key>
-			<string>Playback speed adjustment</string>
-			<key>Key</key>
-			<string>playbackSpeedAdjustment</string>
-			<key>DefaultValue</key>
-			<string>0.25</string>
-			<key>Titles</key>
-			<array>
-				<string>10%</string>
-				<string>25%</string>
-				<string>30%</string>
-				<string>50%</string>
-			</array>
-			<key>Values</key>
-			<array>
-				<string>0.1</string>
-				<string>0.25</string>
-				<string>0.3</string>
-				<string>0.5</string>
-			</array>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Title</key>
-			<string>Stop playback after</string>
-			<key>Key</key>
-			<string>endPlaybackTimeout</string>
-			<key>DefaultValue</key>
-			<string>10</string>
-			<key>Values</key>
-			<array>
-				<string>10</string>
-				<string>20</string>
-				<string>30</string>
-				<string>60</string>
-				<string>-1</string>
-			</array>
-			<key>Titles</key>
-			<array>
-				<string>10 minutes</string>
-				<string>20 minutes</string>
-				<string>30 minutes</string>
-				<string>60 minutes</string>
-				<string>Never</string>
-			</array>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
 			<string>Queue</string>
 		</dict>
 		<dict>

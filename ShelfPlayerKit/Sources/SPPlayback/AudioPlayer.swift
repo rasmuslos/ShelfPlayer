@@ -83,6 +83,13 @@ public extension AudioPlayer {
         current?.chapterCurrentTime
     }
     
+    var route: AudioRoute? {
+        current?.route
+    }
+    var sleepTimer: SleepTimerConfiguration? {
+        current?.sleepTimer
+    }
+    
     func start(_ itemID: ItemIdentifier, withoutListeningSession: Bool = false) async throws {
         await stop()
         
@@ -169,6 +176,16 @@ public extension AudioPlayer {
                     logger.error("Failed to store playback rate: \(error)")
                 }
             }
+        }
+    }
+    
+    func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
+        current?.sleepTimer = configuration
+    }
+    
+    func extendSleepTimer() {
+        if let sleepTimer {
+            setSleepTimer(sleepTimer.extended)
         }
     }
 }
@@ -284,5 +301,7 @@ private extension AudioPlayer {
             
             return .success
         }
+        
+        // TODO: more
     }
 }

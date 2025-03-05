@@ -33,6 +33,7 @@ protocol AudioEndpoint: Identifiable, Sendable {
     var chapterCurrentTime: TimeInterval? { get }
     
     var route: AudioRoute? { get }
+    var sleepTimer: SleepTimerConfiguration? { get set }
     
     func queue(_ items: [QueueItem]) async throws
     func stop() async

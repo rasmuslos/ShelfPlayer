@@ -91,16 +91,18 @@ extension AudioPlayer {
         }
     }
     
-    func chapterDidChange(endpointID: UUID, currentChapterIndex: Int?) {
+    func chapterDidChange(endpointID: UUID, chapter: Chapter?) {
         if current != nil && current?.id != endpointID {
             return
         }
         
         Task { @MainActor in
-            RFNotification[.chapterChanged].send(currentChapterIndex)
+            RFNotification[.chapterChanged].send(chapter)
         }
         
-        widgetManager.update(chapterIndex: currentChapterIndex)
+        Task {
+            await widgetManager.update(chapter: chapter)
+        }
     }
     
     func volumeDidChange(endpointID: UUID, volume: Percentage) {
@@ -151,9 +153,25 @@ extension AudioPlayer {
         }
     }
     
+    func sleepTimerDidChange(endpointID: UUID, configuration: SleepTimerConfiguration?) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        Task { @MainActor in
+            RFNotification[.sleepTimerChanged].send(configuration)
+        }
+    }
+    
     func didStopPlaying(endpointID: UUID) async {
         guard current?.id == endpointID else {
             return
+        }
+        
+        do {
+            try audioSession.setActive(false)
+        } catch {
+            logger.error("Failed to deactivate audio session: \(error)")
         }
         
         await widgetManager.invalidate()
@@ -191,7 +209,7 @@ public extension RFNotification.Notification {
         .init("io.rfk.shelfPlayerKit.currentTimesChanged")
     }
     
-    static var chapterChanged: Notification<Int?> {
+    static var chapterChanged: Notification<Chapter?> {
         .init("io.rfk.shelfPlayerKit.chapterChanged")
     }
     
@@ -211,6 +229,10 @@ public extension RFNotification.Notification {
     }
     static var upNextQueueChanged: Notification<[ItemIdentifier]> {
         .init("io.rfk.shelfPlayerKit.upNextQueueChanged")
+    }
+    
+    static var sleepTimerChanged: Notification<SleepTimerConfiguration?> {
+        .init("io.rfk.shelfPlayerKit.sleepTimerChanged")
     }
     
     static var playbackStopped: Notification<RFNotificationEmptyPayload> {

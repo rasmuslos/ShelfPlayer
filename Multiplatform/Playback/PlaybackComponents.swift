@@ -124,7 +124,7 @@ struct PlaybackControls: View {
                 satellite.skip(forwards: true)
             }
             .onLongPressGesture {
-                satellite.seek(to: satellite.chapterDuration, insideChapter: true) {}
+                satellite.seek(to: satellite.chapterDuration + 0.1, insideChapter: true) {}
             }
             .padding(-12)
             .disabled(isLoading)
@@ -159,7 +159,7 @@ struct PlaybackControls: View {
         
         VStack(spacing: 0) {
             PlaybackSlider(percentage: satellite.played, seeking: $viewModel.seeking, currentTime: currentTime, duration: duration, textFirst: false) {
-                if viewModel.seeking == nil, let chapter = satellite.chapter {
+                if let chapter = satellite.chapter, viewModel.seeking == nil {
                     Text(chapter.title)
                 } else {
                     Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
@@ -191,6 +191,10 @@ struct PlaybackControls: View {
 
 struct PlaybackActions: View {
     @Environment(Satellite.self) private var satellite
+    
+    @Default(.sleepTimerIntervals) private var sleepTimerIntervals
+    @Default(.sleepTimerExtendInterval) private var sleepTimerExtendInterval
+    
     @Default(.playbackRates) private var playbackRates
     
     private let routePickerView = AVRoutePickerView()
@@ -233,9 +237,78 @@ struct PlaybackActions: View {
     
     @ViewBuilder
     private var sleepTimerButton: some View {
-        Button("sleepTimer", systemImage: "moon.zzz.fill") {
-            
+        Menu {
+            if let sleepTimer = satellite.sleepTimer {
+                switch sleepTimer {
+                case .chapters(let amount):
+                    ControlGroup {
+                        Button("decrease", systemImage: "minus") {
+                            if amount > 1 {
+                                satellite.setSleepTimer(.chapters(amount - 1))
+                            } else {
+                                satellite.setSleepTimer(nil)
+                            }
+                        }
+                        
+                        Text(amount.description)
+                        
+                        Button("increase", systemImage: "plus") {
+                            satellite.setSleepTimer(.chapters(amount + 1))
+                        }
+                    }
+                case .interval(_):
+                    EmptyView()
+                }
+                
+                Divider()
+                
+                Button("sleep.extend", systemImage: "plus") {
+                    satellite.extendSleepTimer()
+                }
+                
+                Button("sleep.cancel", systemImage: "alarm") {
+                    satellite.setSleepTimer(nil)
+                }
+            } else {
+                if satellite.chapter != nil {
+                    Button("sleepTimer.chapter", systemImage: "append.page") {
+                        satellite.setSleepTimer(.chapters(1))
+                    }
+                    
+                    Divider()
+                }
+                
+                ForEach(sleepTimerIntervals, id: \.hashValue) { interval in
+                    Button {
+                        satellite.setSleepTimer(.interval(.now.advanced(by: interval)))
+                    } label: {
+                        Text(interval, format: .duration(unitsStyle: .full, allowedUnits: [.minute, .hour]))
+                    }
+                }
+            }
+        } label: {
+            Group {
+                if let sleepTimer = satellite.sleepTimer {
+                    switch sleepTimer {
+                    case .chapters(_):
+                        Label("sleepTimer.chapter", systemImage: "append.page")
+                    case .interval(_):
+                        if let remainingSleepTime = satellite.remainingSleepTime {
+                            Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                        } else {
+                            ProgressView()
+                                .scaleEffect(0.5)
+                        }
+                    }
+                } else {
+                    Label("sleepTimer", systemImage: "moon.zzz.fill")
+                }
+            }
+            .padding(12)
+            .contentShape(.rect)
+            .padding(-12)
         }
+        .menuActionDismissBehavior(.disabled)
     }
     
     @ViewBuilder
