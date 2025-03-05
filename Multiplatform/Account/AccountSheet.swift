@@ -13,8 +13,6 @@ import ShelfPlayerKit
 internal struct AccountSheet: View {
     @Environment(\.dismiss) private var dismiss
     
-    @Default(.customSleepTimer) private var customSleepTimer
-    
     @Default(.lastSpotlightIndex) private var lastSpotlightIndex
     
     @State private var username: String?
@@ -71,6 +69,7 @@ internal struct AccountSheet: View {
                 
                 DownloadQueue()
                 
+                /*
                 Section {
                     let hours = customSleepTimer / 60
                     let minutes = customSleepTimer % 60
@@ -89,6 +88,7 @@ internal struct AccountSheet: View {
                 } footer: {
                     Text("account.custom.text")
                 }
+                 */
                 
                 Section {
                     TintPicker()

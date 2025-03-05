@@ -58,13 +58,13 @@ public extension ItemIdentifier {
         public var base: Int {
             switch self {
             case .tiny:
-                100
+                200
             case .small:
-                400
+                600
             case .regular:
-                800
+                1000
             case .large:
-                1200
+                1400
             }
         }
     }

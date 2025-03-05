@@ -36,9 +36,6 @@ public extension Defaults.Keys {
     static let skipBackwardsInterval = Key("skipBackwardsInterval", default: 30)
     static let skipForwardsInterval = Key("skipForwardsInterval", default: 30)
     
-    static let playbackSpeedAdjustment = Key("playbackSpeedAdjustment", default: 0.25)
-    static let endPlaybackTimeout = Key("endPlaybackTimeout", default: 10)
-    
     static let queueNextEpisodes = Key("queueNextEpisodes", default: true)
     static let queueNextAudiobooksInSeries = Key("queueNextAudiobooksInSeries", default: false)
     
@@ -51,11 +48,12 @@ public extension Defaults.Keys {
     // MARK: In-App settings
     // TODO: hhh
     
-    static let customSleepTimer = Key<Int>("customSleepTimer", default: 0)
-    static let customPlaybackSpeed = Key<Percentage>("customPlaybackSpeed", default: 1)
-    
     static let playbackRates = Key<[Percentage]>("playbackRates", default: [0.5, 0.75, 1, 1.25, 1.5, 2])
     static let defaultPlaybackRate = Key<Percentage>("defaultPlaybackRate", default: 1)
+    
+    static let sleepTimerIntervals = Key("sleepTimerIntervals", default: [10, 20, 30, 45, 60, 90].map { Double($0) * 60 })
+    static let sleepTimerExtendInterval = Key("sleepTimerExtendInterval", default: Double(20))
+    static let sleepTimerExtendChapterAmount = Key("sleepTimerExtendChapterAmount", default: 1)
     
     // MARK: Filtering & Sorting
     

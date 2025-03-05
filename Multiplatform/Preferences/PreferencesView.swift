@@ -19,10 +19,16 @@ struct PreferencesView: View {
                 } label: {
                     Label("connections", systemImage: "server.rack")
                 }
+                
                 NavigationLink {
                     PlaybackRateEditor()
                 } label: {
                     Label("playbackRates", systemImage: "percent")
+                }
+                NavigationLink {
+                    SleepTimerEditor()
+                } label: {
+                    Label("sleepTimer", systemImage: "clock")
                 }
             }
             
