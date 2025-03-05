@@ -23,8 +23,6 @@ internal struct AccountSheet: View {
     @State private var cacheSize: Int? = nil
     @State private var downloadsSize: Int? = nil
     
-    @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
-    
     var body: some View {
         NavigationStack {
             List {
@@ -68,32 +66,6 @@ internal struct AccountSheet: View {
                 }
                 
                 DownloadQueue()
-                
-                /*
-                Section {
-                    let hours = customSleepTimer / 60
-                    let minutes = customSleepTimer % 60
-                    
-                    Stepper("\(hours) account.sleepTimer.hours", value: .init(get: { hours }, set: {
-                        customSleepTimer -= hours * 60
-                        customSleepTimer += $0 * 60
-                    }), in: 0...12)
-                    
-                    Stepper("\(minutes) account.sleepTimer.minutes", value: .init(get: { minutes }, set: {
-                        customSleepTimer -= minutes
-                        customSleepTimer += $0
-                    }), in: 0...60)
-                } header: {
-                    Text("account.custom")
-                } footer: {
-                    Text("account.custom.text")
-                }
-                 */
-                
-                Section {
-                    TintPicker()
-                }
-                .foregroundStyle(.primary)
                 
                 Section {
                     Group {

@@ -103,6 +103,7 @@ struct PlayButton: View {
                 Group {
                     if isLoading {
                         ProgressIndicator()
+                            .frame(height: 0)
                     } else {
                         Label(label, systemImage: icon)
                             .labelStyle(.iconOnly)

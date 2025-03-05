@@ -37,6 +37,10 @@ extension HomeRow {
         }
     }
     
+    var itemIDs: [ItemIdentifier] {
+        entities.map(\.id)
+    }
+    
     // TODO: Hide from continue listening
     static func prepareForPresentation<S>(_ rows: [HomeRow<S>], connectionID: ItemIdentifier.ConnectionID) async -> [HomeRow<S>] {
         let hideDiscoverRow = Defaults[.hideDiscoverRow]

@@ -2516,7 +2516,6 @@
       }
     },
     "chapters" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5132,6 +5131,15 @@
         }
       }
     },
+    "playback.nextUpQueue" : {
+
+    },
+    "playback.queue" : {
+
+    },
+    "playback.queue.clear" : {
+
+    },
     "playback.stop" : {
       "localizations" : {
         "de" : {
@@ -5728,7 +5736,6 @@
       }
     },
     "queue.empty" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5755,6 +5762,9 @@
           }
         }
       }
+    },
+    "queue.empty.description" : {
+
     },
     "queue.last" : {
       "localizations" : {

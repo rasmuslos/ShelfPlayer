@@ -20,6 +20,10 @@ struct PodcastHomePanel: View {
     
     @State private var failed = false
     
+    private var relevantItemIDs: [ItemIdentifier] {
+        episodes.flatMap(\.itemIDs)
+    }
+    
     var body: some View {
         Group {
             if episodes.isEmpty && podcasts.isEmpty {
@@ -80,7 +84,11 @@ struct PodcastHomePanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onReceive(RFNotification[.playbackStopped].publisher()) {
+        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
+            guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {
+                return
+            }
+            
             fetchItems()
         }
     }
