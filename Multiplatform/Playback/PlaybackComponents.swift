@@ -190,6 +190,7 @@ struct PlaybackControls: View {
 }
 
 struct PlaybackActions: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
     @Default(.sleepTimerIntervals) private var sleepTimerIntervals
@@ -335,8 +336,15 @@ struct PlaybackActions: View {
     
     @ViewBuilder
     private var queueButton: some View {
-        Button("queue", systemImage: "list.number") {
-            
+        Button {
+            withAnimation(.snappy(extraBounce: 0.1)) {
+                viewModel.isQueueVisible.toggle()
+            }
+        } label: {
+            Label("queue", systemImage: "list.number")
+                .padding(12)
+                .contentShape(.rect)
+                .padding(-12)
         }
     }
     
@@ -512,6 +520,7 @@ private struct BottomSlider: View {
             PlaybackSlider(percentage: satellite.playedTotal, seeking: $viewModel.seekingTotal, currentTime: currentTime, duration: duration, textFirst: true) {
                 Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                     .contentTransition(.numericText())
+                    .transition(.opacity)
                     .animation(.smooth, value: remaining)
             } complete: {
                 satellite.seek(to: satellite.duration * $0, insideChapter: false) {

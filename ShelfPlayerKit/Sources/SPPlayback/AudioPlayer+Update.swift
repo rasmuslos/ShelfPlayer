@@ -7,12 +7,13 @@
 
 import Foundation
 import MediaPlayer
+import Defaults
 import RFNotifications
 import SPFoundation
 import SPPersistence
 
 extension AudioPlayer {
-    func didStartPlaying(endpointID: UUID, itemID: ItemIdentifier, at time: TimeInterval) {
+    func didStartPlaying(endpointID: UUID, itemID: ItemIdentifier, chapters: [Chapter], at time: TimeInterval) {
         if current != nil && current?.id != endpointID {
             return
         }
@@ -25,7 +26,7 @@ extension AudioPlayer {
         }
         
         Task { @MainActor in
-            RFNotification[.playbackItemChanged].send((itemID, time))
+            RFNotification[.playbackItemChanged].send((itemID, chapters, time))
         }
         
         widgetManager.update(itemID: itemID)
@@ -133,6 +134,15 @@ extension AudioPlayer {
             RFNotification[.routeChanged].send(route)
         }
     }
+    func sleepTimerDidChange(endpointID: UUID, configuration: SleepTimerConfiguration?) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        Task { @MainActor in
+            RFNotification[.sleepTimerChanged].send(configuration)
+        }
+    }
     
     func queueDidChange(endpointID: UUID, queue: [ItemIdentifier]) {
         if current != nil && current?.id != endpointID {
@@ -153,17 +163,7 @@ extension AudioPlayer {
         }
     }
     
-    func sleepTimerDidChange(endpointID: UUID, configuration: SleepTimerConfiguration?) {
-        if current != nil && current?.id != endpointID {
-            return
-        }
-        
-        Task { @MainActor in
-            RFNotification[.sleepTimerChanged].send(configuration)
-        }
-    }
-    
-    func didStopPlaying(endpointID: UUID) async {
+    func didStopPlaying(endpointID: UUID, itemID: ItemIdentifier) async {
         guard current?.id == endpointID else {
             return
         }
@@ -179,6 +179,14 @@ extension AudioPlayer {
         await MainActor.run {
             RFNotification[.playbackStopped].send()
         }
+        
+        if Defaults[.removeFinishedDownloads] {
+            do {
+                try await PersistenceManager.shared.download.remove(itemID)
+            } catch {
+                logger.error("Failed to remove finished download: \(error)")
+            }
+        }
     }
     
     func isBusyDidChange() async {
@@ -187,7 +195,7 @@ extension AudioPlayer {
 }
 
 public extension RFNotification.Notification {
-    static var playbackItemChanged: Notification<(ItemIdentifier, TimeInterval)> {
+    static var playbackItemChanged: Notification<(ItemIdentifier, [Chapter], TimeInterval)> {
         .init("io.rfk.shelfPlayerKit.playbackItemChanged")
     }
     static var playStateChanged: Notification<(Bool)> {
@@ -223,16 +231,15 @@ public extension RFNotification.Notification {
     static var routeChanged: Notification<AudioRoute> {
         .init("io.rfk.shelfPlayerKit.routeChanged")
     }
+    static var sleepTimerChanged: Notification<SleepTimerConfiguration?> {
+        .init("io.rfk.shelfPlayerKit.sleepTimerChanged")
+    }
     
     static var queueChanged: Notification<[ItemIdentifier]> {
         .init("io.rfk.shelfPlayerKit.queueChanged")
     }
     static var upNextQueueChanged: Notification<[ItemIdentifier]> {
         .init("io.rfk.shelfPlayerKit.upNextQueueChanged")
-    }
-    
-    static var sleepTimerChanged: Notification<SleepTimerConfiguration?> {
-        .init("io.rfk.shelfPlayerKit.sleepTimerChanged")
     }
     
     static var playbackStopped: Notification<RFNotificationEmptyPayload> {

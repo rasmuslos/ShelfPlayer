@@ -135,7 +135,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                     )
                                     .allowsHitTesting(!viewModel.isExpanded)
                                 
-                                ExpandedForeground()
+                                ExpandedForeground(height: geometryProxy.size.height)
                                     .allowsHitTesting(viewModel.isExpanded)
                             }
                         }
@@ -168,6 +168,8 @@ private struct ExpandedForeground: View {
     @Environment(Satellite.self) private var satellite
     @Environment(\.namespace) private var namespace
     
+    let height: CGFloat
+    
     var body: some View {
         @Bindable var viewModel = viewModel
         
@@ -175,47 +177,45 @@ private struct ExpandedForeground: View {
             if viewModel.isExpanded {
                 Spacer(minLength: 12)
                 
-                ItemImage(itemID: satellite.currentItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
-                    .id(satellite.currentItemID)
-                    .padding(.horizontal, -8)
-                    .shadow(color: .black.opacity(0.4), radius: 20)
-                    .scaleEffect(satellite.isPlaying ? 1 : 0.8)
-                    .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
-                    .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
-                    .modifier(PlaybackDragGestureCatcher(active: true))
-                
-                Spacer(minLength: 12)
-                
-                PlaybackTitle()
-                
-                Spacer(minLength: 12)
-                
-                PlaybackControls()
+                if !viewModel.isQueueVisible {
+                    ItemImage(itemID: satellite.currentItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
+                        .id(satellite.currentItemID)
+                        .padding(.horizontal, -8)
+                        .shadow(color: .black.opacity(0.4), radius: 20)
+                        .scaleEffect(satellite.isPlaying ? 1 : 0.8)
+                        .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
+                        .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
+                        .modifier(PlaybackDragGestureCatcher(active: true))
+                    
+                    Spacer(minLength: 12)
+                    
+                    PlaybackTitle()
+                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.2)))
+                    
+                    Spacer(minLength: 12)
+                    
+                    PlaybackControls()
+                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.2)))
+                } else {
+                    HStack(spacing: 8) {
+                        ItemImage(itemID: satellite.currentItemID, size: .regular, aspectRatio: .none, contrastConfiguration: nil)
+                            .shadow(color: .black.opacity(0.4), radius: 20)
+                            .frame(height: 72)
+                            .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
+                            .modifier(PlaybackDragGestureCatcher(active: true))
+                        
+                        PlaybackTitle()
+                    }
+                    
+                    PlaybackQueue()
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, -20)
+                        .frame(maxHeight: height - 290)
+                }
                 
                 Spacer(minLength: 12)
                 
                 PlaybackActions()
-                
-                /*
-                VStack(spacing: 0) {
-                    Text(satellite.currentTime.description)
-                    Text(satellite.duration.description)
-                    Text(satellite.currentChapterTime.description)
-                    Text(satellite.chapterDuration.description)
-                    /*
-                    NowPlaying.Title(item: item)
-                        .modifier(PlaybackDragGestureCatcher(active: true))
-                    
-                    NowPlaying.Controls(compact: false)
-                        .padding(.top, 16)
-                    
-                    NowPlaying.CompactButtons()
-                        .padding(.top, 28)
-                        .padding(.bottom, 28)
-                     */
-                }
-                .transition(.move(edge: .bottom))
-                 */
                 
                 Spacer(minLength: 12)
             }

@@ -10,32 +10,26 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-internal struct SwipeActionsModifier: ViewModifier {
+struct ItemSwipeActionsModifier: ViewModifier {
+    @Environment(Satellite.self) private var satellite
     @Default(.tintColor) private var tintColor
     
     let item: PlayableItem
-    
-    @Binding var loading: Bool
     
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading) {
                 QueueLaterButton(item: item, hideLast: true)
-                    .tint(tintColor.accent)
                     .labelStyle(.iconOnly)
+                    .tint(tintColor.accent)
             }
             .swipeActions(edge: .leading) {
-                Button {
-                    Task {
-                        loading = true
-                        // try await AudioPlayer.shared.play(item)
-                        loading = false
-                    }
-                } label: {
-                    Label("play", systemImage: "play")
+                Button("play", systemImage: "play") {
+                    satellite.start(item)
                 }
-                .tint(tintColor.color)
                 .labelStyle(.iconOnly)
+                .disabled(satellite.isLoading(observing: item.id))
+                .tint(tintColor.color)
             }
             .swipeActions(edge: .trailing) {
                 DownloadButton(item: item, tint: true)
@@ -53,5 +47,6 @@ internal struct SwipeActionsModifier: ViewModifier {
     List {
         AudiobookList(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7)) { _ in }
     }
+    .previewEnvironment()
 }
 #endif

@@ -15,6 +15,8 @@ final class PlaybackViewModel {
     private var _isExpanded: Bool
     private var _dragOffset: CGFloat
     
+    var isQueueVisible: Bool
+    
     var seeking: Percentage?
     var seekingTotal: Percentage?
     var volumePreview: Percentage?
@@ -34,6 +36,8 @@ final class PlaybackViewModel {
         _dragOffset = .zero
         _isExpanded = false
         
+        isQueueVisible = false
+        
         seriesIDs = []
         authorIDs = []
         
@@ -45,7 +49,7 @@ final class PlaybackViewModel {
             }
         }
         
-        RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _) in
+        RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _, _) in
             self?.isExpanded = true
             self?.loadAuthorIDs(itemID: itemID)
         }
