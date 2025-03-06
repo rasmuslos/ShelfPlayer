@@ -251,7 +251,7 @@ struct PlaybackActions: View {
                             }
                         }
                         
-                        Text(amount.description)
+                        Text(amount, format: .number)
                         
                         Button("increase", systemImage: "plus") {
                             satellite.setSleepTimer(.chapters(amount + 1))
@@ -337,7 +337,7 @@ struct PlaybackActions: View {
     @ViewBuilder
     private var queueButton: some View {
         Button {
-            withAnimation(.snappy(extraBounce: 0.1)) {
+            withAnimation(.snappy) {
                 viewModel.isQueueVisible.toggle()
             }
         } label: {

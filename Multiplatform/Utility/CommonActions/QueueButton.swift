@@ -10,24 +10,15 @@ import SwiftUI
 import ShelfPlayerKit
 import SPPlayback
 
-struct QueueLaterButton: View {
+struct QueueButton: View {
     @Environment(Satellite.self) private var satellite
     
     let item: PlayableItem
     var hideLast: Bool = false
     
     var body: some View {
-        Button {
+        Button("queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
             satellite.queue(item)
-        } label: {
-            Label("queue.last", systemImage: "text.line.last.and.arrowtriangle.forward")
-            
-            // TODO: queue
-            /*
-            if !hideLast, let last = AudioPlayer.shared.queue.last.itemID {
-                Text(last.name)
-            }
-             */
         }
         .disabled(satellite.isLoading(observing: item.id))
     }

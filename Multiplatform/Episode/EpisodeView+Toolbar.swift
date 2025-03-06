@@ -43,7 +43,7 @@ extension EpisodeView {
                         
                         Menu {
                             QueuePlayButton(item: viewModel.episode)
-                            QueueLaterButton(item: viewModel.episode)
+                            QueueButton(item: viewModel.episode)
                             
                             Divider()
                             

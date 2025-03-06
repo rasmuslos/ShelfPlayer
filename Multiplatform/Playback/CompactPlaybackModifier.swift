@@ -190,26 +190,32 @@ private struct ExpandedForeground: View {
                     Spacer(minLength: 12)
                     
                     PlaybackTitle()
-                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.2)))
+                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                     
                     Spacer(minLength: 12)
                     
                     PlaybackControls()
-                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.2)))
+                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 } else {
-                    HStack(spacing: 8) {
-                        ItemImage(itemID: satellite.currentItemID, size: .regular, aspectRatio: .none, contrastConfiguration: nil)
-                            .shadow(color: .black.opacity(0.4), radius: 20)
-                            .frame(height: 72)
-                            .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
-                            .modifier(PlaybackDragGestureCatcher(active: true))
+                    HStack(spacing: 12) {
+                        Button {
+                            withAnimation(.snappy) {
+                                viewModel.isQueueVisible.toggle()
+                            }
+                        } label: {
+                            ItemImage(itemID: satellite.currentItemID, size: .regular, aspectRatio: .none, contrastConfiguration: nil)
+                        }
+                        .buttonStyle(.plain)
+                        .frame(height: 72)
+                        .shadow(color: .black.opacity(0.4), radius: 20)
+                        .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
+                        .modifier(PlaybackDragGestureCatcher(active: true))
                         
                         PlaybackTitle()
                     }
                     
                     PlaybackQueue()
                         .padding(.vertical, 12)
-                        .padding(.horizontal, -20)
                         .frame(maxHeight: height - 290)
                 }
                 

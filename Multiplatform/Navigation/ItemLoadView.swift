@@ -20,6 +20,7 @@ struct ItemLoadView: View {
     }
     
     @State private var item: Item? = nil
+    @State private var episodes: [Episode] = []
     
     @State private var failed = false
     
@@ -33,7 +34,7 @@ struct ItemLoadView: View {
                 } else if let author = item as? Author {
                     AuthorView(author)
                 } else if let podcast = item as? Podcast {
-                    PodcastView(podcast, zoom: false)
+                    PodcastView(podcast, episodes: episodes, zoom: false)
                 } else if let episode = item as? Episode {
                     EpisodeView(episode, zoomID: nil)
                 } else {
@@ -73,10 +74,11 @@ struct ItemLoadView: View {
             }
             
             do {
-                let item = try await id.resolved
+                let (item, episodes) = try await id.resolvedComplex
                 
                 await MainActor.withAnimation {
                     self.item = item
+                    self.episodes = episodes
                 }
             } catch {
                 await MainActor.withAnimation {

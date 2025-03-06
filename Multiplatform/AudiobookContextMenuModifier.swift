@@ -16,7 +16,7 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
         content
             .contextMenu {
                 QueuePlayButton(item: audiobook)
-                QueueLaterButton(item: audiobook)
+                QueueButton(item: audiobook)
                 
                 Divider()
                 

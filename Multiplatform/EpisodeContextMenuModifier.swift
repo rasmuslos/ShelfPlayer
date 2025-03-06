@@ -25,7 +25,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     Label("play", systemImage: "play")
                 }
                 
-                QueueLaterButton(item: episode)
+                QueueButton(item: episode)
                 
                 Divider()
                 
