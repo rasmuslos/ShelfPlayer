@@ -206,7 +206,10 @@ public extension PersistenceManager.ProgressSubsystem {
         try modelContext.save()
         
         let entity = ProgressEntity(persistedEntity: persistedEntity)
-        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        
+        await MainActor.run {
+            RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        }
         
         if notifyServer {
             do {
