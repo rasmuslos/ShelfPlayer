@@ -144,48 +144,7 @@ extension PodcastViewModel {
 private extension PodcastViewModel {
     nonisolated func updateVisible() {
         Task {
-            var episodes = await episodes
-            
-            if let seasonFilter = await seasonFilter {
-                episodes = episodes.filter { $0.index.season == seasonFilter }
-            }
-            
-            // MARK: Filter
-            
-            let filter = await filter
-            
-            if filter != .all {
-                var included = [Episode]()
-                
-                for episode in episodes {
-                    if await episode.isIncluded(in: filter) {
-                        included.append(episode)
-                    }
-                }
-                
-                episodes = included
-            }
-            
-            // MARK: Search
-            
-            let search = await search.trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            if !search.isEmpty {
-                episodes = episodes.filter { $0.sortName.localizedStandardContains(search) || $0.descriptionText?.localizedStandardContains(search) == true }
-            }
-            
-            // MARK: Sort
-            
-            let sortOrder = await sortOrder
-            let ascending = await ascending
-            
-            episodes.sort { $0.compare(other: $1, sortOrder: sortOrder, ascending: ascending) }
-            
-            if !ascending {
-                episodes.reverse()
-            }
-            
-            // MARK: Update view
+            let episodes = await Podcast.filterSort(episodes, seasonFilter: seasonFilter, filter: filter, search: search, sortOrder: sortOrder, ascending: ascending)
             
             await MainActor.withAnimation {
                 self.visible = episodes

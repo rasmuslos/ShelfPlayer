@@ -158,6 +158,23 @@ public extension AudioPlayer {
         RFNotification[.skipped].send(forwards)
     }
     
+    func skip(queueIndex index: Int) async {
+        await current?.skip(queueIndex: index)
+    }
+    func skip(upNextQueueIndex index: Int) async {
+        await current?.skip(upNextQueueIndex: index)
+    }
+    
+    func remove(queueIndex index: Int) async {
+        await current?.remove(queueIndex: index)
+    }
+    func remove(upNextQueueIndex index: Int) async {
+        await current?.remove(upNextQueueIndex: index)
+    }
+    
+    func clearQueue() async {
+        await current?.clearQueue()
+    }
     func clearUpNextQueue() async {
         await current?.clearUpNextQueue()
     }

@@ -87,7 +87,7 @@ extension AudiobookView {
                         
                         Menu {
                             QueuePlayButton(item: viewModel.audiobook)
-                            QueueLaterButton(item: viewModel.audiobook)
+                            QueueButton(item: viewModel.audiobook)
                             
                             Divider()
                             

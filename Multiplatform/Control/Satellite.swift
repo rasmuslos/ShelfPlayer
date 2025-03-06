@@ -316,6 +316,75 @@ extension Satellite {
         }
     }
     
+    nonisolated func skip(queueIndex index: Int) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.skip(queueIndex: index)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    nonisolated func skip(upNextQueueIndex index: Int) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.skip(upNextQueueIndex: index)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    
+    nonisolated func remove(queueIndex index: Int) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.remove(queueIndex: index)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    nonisolated func remove(upNextQueueIndex index: Int) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.remove(upNextQueueIndex: index)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    
+    nonisolated func clearQueue() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.clearQueue()
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    nonisolated func clearUpNextQueue() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.clearUpNextQueue()
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    
     nonisolated func markAsFinished(_ item: PlayableItem) {
         Task {
             await startWorking(on: item.id)
@@ -368,9 +437,6 @@ private extension Satellite {
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.currentItemID = $0.0
             self?.currentItem = nil
-            
-            self?.queue = []
-            self?.upNextQueue = []
             
             self?.chapters = $0.1
             
