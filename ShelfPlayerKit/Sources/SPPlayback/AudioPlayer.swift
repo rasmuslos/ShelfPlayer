@@ -22,19 +22,13 @@ public final actor AudioPlayer: Sendable {
     let audioSession = AVAudioSession.sharedInstance()
     let widgetManager = NowPlayingWidgetManager()
     
+    var sleepTimerDidExpireAt: (SleepTimerConfiguration, Date)?
+    
     init() {
-        setupObservers()
         addRemoteCommandTargets()
         
         Task {
-            for await interval in Defaults.updates(.skipBackwardsInterval) {
-                MPRemoteCommandCenter.shared().skipBackwardCommand.preferredIntervals = [NSNumber(value: interval)]
-            }
-        }
-        Task {
-            for await interval in Defaults.updates(.skipForwardsInterval) {
-                MPRemoteCommandCenter.shared().skipForwardCommand.preferredIntervals = [NSNumber(value: interval)]
-            }
+            await setupObservers()
         }
     }
     
@@ -43,7 +37,9 @@ public final actor AudioPlayer: Sendable {
 
 public extension AudioPlayer {
     var currentItemID: ItemIdentifier? {
-        current?.currentItemID
+        get async {
+            await current?.currentItemID
+        }
     }
     var queue: [QueueItem] {
         get async {
@@ -52,42 +48,64 @@ public extension AudioPlayer {
     }
     
     var chapters: [Chapter] {
-        current?.chapters ?? []
+        get async {
+            await current?.chapters ?? []
+        }
     }
     
     var isBusy: Bool {
-        current?.isBusy ?? true
+        get async {
+            await current?.isBusy ?? true
+        }
     }
     var isPlaying: Bool {
-        current?.isPlaying ?? false
+        get async {
+            await current?.isPlaying ?? false
+        }
     }
     
     var volume: Percentage {
-        current?.volume ?? 0
+        get async {
+            await current?.volume ?? 0
+        }
     }
     var playbackRate: Percentage {
-        current?.playbackRate ?? 0
+        get async {
+            await current?.playbackRate ?? 0
+        }
     }
     
     var duration: TimeInterval? {
-        current?.duration
+        get async {
+            await current?.duration
+        }
     }
     var currentTime: TimeInterval? {
-        current?.currentTime
+        get async {
+            await current?.currentTime
+        }
     }
     
     var chapterDuration: TimeInterval? {
-        current?.chapterDuration
+        get async {
+            await current?.chapterDuration
+        }
     }
     var chapterCurrentTime: TimeInterval? {
-        current?.chapterCurrentTime
+        get async {
+            await current?.chapterCurrentTime
+        }
     }
     
     var route: AudioRoute? {
-        current?.route
+        get async {
+            await current?.route
+        }
     }
     var sleepTimer: SleepTimerConfiguration? {
-        current?.sleepTimer
+        get async {
+            await current?.sleepTimer
+        }
     }
     
     func start(_ itemID: ItemIdentifier, withoutListeningSession: Bool = false) async throws {
@@ -130,6 +148,14 @@ public extension AudioPlayer {
     
     func play() async {
         await current?.play()
+        
+        if let (configuration, date) = sleepTimerDidExpireAt {
+            let distance = date.distance(to: .now)
+            
+            if Defaults[.extendSleepTimerOnPlay], distance <= 10 {
+                await extendSleepTimer(configuration)
+            }
+        }
     }
     func pause() async {
         await current?.pause()
@@ -141,7 +167,7 @@ public extension AudioPlayer {
         }
     }
     func skip(forwards: Bool) async throws {
-        guard let currentTime else {
+        guard let currentTime = await currentTime else {
             throw AudioPlayerError.invalidTime
         }
         
@@ -156,6 +182,27 @@ public extension AudioPlayer {
         try await seek(to: currentTime + amount, insideChapter: false)
         
         RFNotification[.skipped].send(forwards)
+    }
+    
+    func setVolume(_ volume: Percentage) async {
+        await current?.setVolume(volume)
+    }
+    func setPlaybackRate(_ rate: Percentage) async {
+        await current?.setPlaybackRate(rate)
+        
+        if let itemID = await current?.currentItemID {
+            Task {
+                do {
+                    try await PersistenceManager.shared.item.setPlaybackRate(rate, for: itemID)
+                } catch {
+                    logger.error("Failed to store playback rate: \(error)")
+                }
+            }
+        }
+    }
+    
+    func setSleepTimer(_ configuration: SleepTimerConfiguration?) async {
+        await current?.setSleepTimer(configuration)
     }
     
     func skip(queueIndex index: Int) async {
@@ -179,36 +226,30 @@ public extension AudioPlayer {
         await current?.clearUpNextQueue()
     }
     
-    func setVolume(_ volume: Percentage) {
-        current?.volume = volume
-    }
-    func setPlaybackRate(_ rate: Percentage) {
-        current?.playbackRate = rate
-        
-        if let itemID = current?.currentItemID {
-            Task {
-                do {
-                    try await PersistenceManager.shared.item.setPlaybackRate(rate, for: itemID)
-                } catch {
-                    logger.error("Failed to store playback rate: \(error)")
-                }
-            }
-        }
-    }
-    
-    func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
-        current?.sleepTimer = configuration
-    }
-    
-    func extendSleepTimer() {
-        if let sleepTimer {
-            setSleepTimer(sleepTimer.extended)
+    func extendSleepTimer(_ configuration: SleepTimerConfiguration? = nil) async {
+        if let configuration {
+            await setSleepTimer(configuration.extended)
+        } else if let sleepTimer = await sleepTimer {
+            await setSleepTimer(sleepTimer.extended)
+        } else {
+            logger.warning("Can't extend sleep timer: no configuration")
         }
     }
 }
 
 private extension AudioPlayer {
-    nonisolated func setupObservers() {
+    func setupObservers() {
+        Task {
+            for await interval in Defaults.updates(.skipBackwardsInterval) {
+                MPRemoteCommandCenter.shared().skipBackwardCommand.preferredIntervals = [NSNumber(value: interval)]
+            }
+        }
+        Task {
+            for await interval in Defaults.updates(.skipForwardsInterval) {
+                MPRemoteCommandCenter.shared().skipForwardCommand.preferredIntervals = [NSNumber(value: interval)]
+            }
+        }
+        
         RFNotification[.downloadStatusChanged].subscribe(queue: .current) { [weak self] (itemID, status) in
             Task {
                 guard await self?.current?.currentItemID == itemID else {
@@ -216,6 +257,11 @@ private extension AudioPlayer {
                 }
                 
                 await self?.stop()
+            }
+        }
+        RFNotification[.sleepTimerExpired].subscribe(queue: .current) { [weak self] configuration in
+            self?.assumeIsolated { isolated -> Void in
+                isolated.sleepTimerDidExpireAt = (configuration, .now)
             }
         }
     }

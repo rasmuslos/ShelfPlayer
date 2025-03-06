@@ -11,7 +11,8 @@ import RFNotifications
 #if os(iOS)
 import UIKit
 
-nonisolated(unsafe) var motionStarted: Date?
+@MainActor
+var motionStarted: Date?
 
 extension UIWindow {
     open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
@@ -25,6 +26,7 @@ extension UIWindow {
         guard let motionStarted, motion == .motionShake else {
             return
         }
+        
         RFNotification[.shake].send(motionStarted.distance(to: .now))
     }
 }
