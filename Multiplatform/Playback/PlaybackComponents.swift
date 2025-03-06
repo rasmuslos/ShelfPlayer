@@ -488,7 +488,7 @@ private struct BottomSlider: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
-    @Default(.replaceVolumeWithTotalProgresss) private var replaceVolumeWithTotalProgresss
+    @Default(.replaceVolumeWithTotalProgress) private var replaceVolumeWithTotalProgress
     
     private var currentTime: TimeInterval {
         if let seekingTotal = viewModel.seekingTotal {
@@ -516,7 +516,7 @@ private struct BottomSlider: View {
     var body: some View {
         @Bindable var viewModel = viewModel
         
-        if true, satellite.chapter != nil {
+        if replaceVolumeWithTotalProgress, satellite.chapter != nil {
             PlaybackSlider(percentage: satellite.playedTotal, seeking: $viewModel.seekingTotal, currentTime: currentTime, duration: duration, textFirst: true) {
                 Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                     .contentTransition(.numericText())

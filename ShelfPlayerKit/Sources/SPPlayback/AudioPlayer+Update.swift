@@ -143,6 +143,15 @@ extension AudioPlayer {
             RFNotification[.sleepTimerChanged].send(configuration)
         }
     }
+    func sleepTimerDidExpire(endpointID: UUID, configuration: SleepTimerConfiguration) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        Task { @MainActor in
+            RFNotification[.sleepTimerExpired].send(configuration)
+        }
+    }
     
     func queueDidChange(endpointID: UUID, queue: [ItemIdentifier]) {
         if current != nil && current?.id != endpointID {
@@ -181,8 +190,12 @@ extension AudioPlayer {
         }
         
         if Defaults[.removeFinishedDownloads] {
+            let progress = await PersistenceManager.shared.progress[itemID]
+            
             do {
-                try await PersistenceManager.shared.download.remove(itemID)
+                if progress.isFinished {
+                    try await PersistenceManager.shared.download.remove(itemID)
+                }
             } catch {
                 logger.error("Failed to remove finished download: \(error)")
             }
@@ -190,7 +203,7 @@ extension AudioPlayer {
     }
     
     func isBusyDidChange() async {
-        RFNotification[.bufferHealthChanged].send(isBusy)
+        await RFNotification[.bufferHealthChanged].send(isBusy)
     }
 }
 
@@ -233,6 +246,9 @@ public extension RFNotification.Notification {
     }
     static var sleepTimerChanged: Notification<SleepTimerConfiguration?> {
         .init("io.rfk.shelfPlayerKit.sleepTimerChanged")
+    }
+    static var sleepTimerExpired: Notification<SleepTimerConfiguration> {
+        .init("io.rfk.shelfPlayerKit.sleepTimerExpired")
     }
     
     static var queueChanged: Notification<[ItemIdentifier]> {

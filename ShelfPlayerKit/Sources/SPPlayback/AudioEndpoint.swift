@@ -13,27 +13,27 @@ protocol AudioEndpoint: Identifiable, Sendable {
     
     init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws
     
-    var currentItemID: ItemIdentifier { get }
+    var currentItemID: ItemIdentifier { get async }
     
-    var queue: ActorArray<QueueItem> { get }
-    var upNextQueue: ActorArray<QueueItem> { get }
+    var queue: ActorArray<QueueItem> { get async }
+    var upNextQueue: ActorArray<QueueItem> { get async }
     
-    var chapters: [Chapter] { get }
+    var chapters: [Chapter] { get async }
     
-    var isBusy: Bool { get }
-    var isPlaying: Bool { get }
+    var isBusy: Bool { get async }
+    var isPlaying: Bool { get async }
     
-    var volume: Percentage { get set }
-    var playbackRate: Percentage { get set }
+    var volume: Percentage { get async }
+    var playbackRate: Percentage { get async }
     
-    var duration: TimeInterval? { get }
-    var currentTime: TimeInterval? { get }
+    var duration: TimeInterval? { get async }
+    var currentTime: TimeInterval? { get async }
     
-    var chapterDuration: TimeInterval? { get }
-    var chapterCurrentTime: TimeInterval? { get }
+    var chapterDuration: TimeInterval? { get async }
+    var chapterCurrentTime: TimeInterval? { get async }
     
-    var route: AudioRoute? { get }
-    var sleepTimer: SleepTimerConfiguration? { get set }
+    var route: AudioRoute? { get async }
+    var sleepTimer: SleepTimerConfiguration? { get async }
     
     func queue(_ items: [QueueItem]) async throws
     func stop() async
@@ -42,6 +42,11 @@ protocol AudioEndpoint: Identifiable, Sendable {
     func pause() async
     
     func seek(to time: TimeInterval, insideChapter: Bool) async throws
+    
+    func setVolume(_ volume: Percentage) async
+    func setPlaybackRate(_ rate: Percentage) async
+    
+    func setSleepTimer(_ configuration: SleepTimerConfiguration?) async
     
     func skip(queueIndex index: Int) async
     func skip(upNextQueueIndex index: Int) async

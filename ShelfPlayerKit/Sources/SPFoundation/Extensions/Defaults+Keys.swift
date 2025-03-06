@@ -19,7 +19,6 @@ public extension Defaults.Keys {
     
     static let showAuthorsRow = Key("showAuthorsRow", default: false)
     static let hideDiscoverRow = Key("hideDiscoverRow", default: false)
-    static let replaceVolumeWithTotalProgresss = Key("replaceVolumeWithTotalProgresss", default: false)
     
     // Playback
     
@@ -31,7 +30,6 @@ public extension Defaults.Keys {
     static let sleepTimerFadeOut = Key("sleepTimerFadeOut", default: true)
     static let shakeExtendsSleepTimer = Key("shakeExtendsSleepTimer", default: false)
     static let extendSleepTimerOnPlay = Key("extendSleepTimerOnPlay", default: false)
-    static let sleepTimerAdjustment = Key("sleepTimerAdjustment", default: 60)
     
     static let skipBackwardsInterval = Key("skipBackwardsInterval", default: 30)
     static let skipForwardsInterval = Key("skipForwardsInterval", default: 30)
@@ -43,7 +41,9 @@ public extension Defaults.Keys {
     
     static let enableSerifFont = Key("enableSerifFont", default: true)
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
+    
     static let lockSeekBar = Key("lockSeekBar", default: false)
+    static let replaceVolumeWithTotalProgress = Key("replaceVolumeWithTotalProgress", default: false)
     
     // MARK: In-App settings
     // TODO: hhh

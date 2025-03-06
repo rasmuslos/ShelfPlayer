@@ -91,7 +91,7 @@ struct SleepTimerEditor: View {
             
             Section {
                 Button("reset", role: .destructive) {
-                    Defaults.reset([.sleepTimerIntervals])
+                    Defaults.reset([.sleepTimerIntervals, .sleepTimerExtendInterval, .sleepTimerExtendChapterAmount])
                 }
             }
         }

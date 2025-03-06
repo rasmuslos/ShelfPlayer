@@ -31,10 +31,15 @@ struct PlaybackQueue: View {
         } else {
             List {
                 if !satellite.chapters.isEmpty {
-                    Section("chapters") {
+                    Section {
                         ForEach(satellite.chapters) {
                             QueueChapterRow(chapter: $0)
+                                .listRowBackground(Color.clear)
+                                .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                         }
+                    } header: {
+                        Text("chapters")
+                            .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                     }
                 }
                 
@@ -185,5 +190,6 @@ private struct QueueItemRow: View {
 #Preview {
     PlaybackQueue()
         .previewEnvironment()
+        .background(.background.secondary)
 }
 #endif
