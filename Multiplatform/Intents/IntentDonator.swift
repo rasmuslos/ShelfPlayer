@@ -13,12 +13,12 @@ import OSLog
 
 final class IntentDonator: Sendable {
     // bound to the notification queue
-    nonisolated(unsafe) var lastDonatedItem: Item?
+    // nonisolated(unsafe) var lastDonatedItem: Item?
     
     let logger = Logger(subsystem: "USerContext", category: "Intents")
     
     private init() {
-        lastDonatedItem = nil
+        // lastDonatedItem = nil
         setupObservers()
     }
     

@@ -282,6 +282,16 @@ Smart rewind will skip back ten seconds when playback was inactive for longer th
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Replace volume / progress bar</string>
+			<key>Key</key>
+			<string>replaceVolumeWithTotalProgress</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string></string>

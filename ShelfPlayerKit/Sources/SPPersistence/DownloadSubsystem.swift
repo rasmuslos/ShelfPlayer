@@ -26,8 +26,9 @@ extension PersistenceManager {
         let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Download")
         
         var busyItemIDs = Set<ItemIdentifier>()
-        
-        nonisolated(unsafe) var updateTask: Task<Void, Never>?
+       
+        @MainActor
+        var updateTask: Task<Void, Never>?
         
         private nonisolated lazy var urlSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: "io.rfk.shelfPlayerKit.download")
@@ -365,12 +366,14 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     
     nonisolated func scheduleUpdateTask() {
-        updateTask?.cancel()
-        updateTask = .detached {
-            do {
-                try await self.scheduleUnfinishedForCompletion()
-            } catch {
-                self.logger.error("Failed to schedule unfinished for completion: \(error)")
+        Task { @MainActor in
+            updateTask?.cancel()
+            updateTask = .detached {
+                do {
+                    try await self.scheduleUnfinishedForCompletion()
+                } catch {
+                    self.logger.error("Failed to schedule unfinished for completion: \(error)")
+                }
             }
         }
     }

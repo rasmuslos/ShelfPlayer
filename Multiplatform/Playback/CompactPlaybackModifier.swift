@@ -196,6 +196,8 @@ private struct ExpandedForeground: View {
                     
                     PlaybackControls()
                         .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                    
+                    Spacer(minLength: 12)
                 } else {
                     HStack(spacing: 12) {
                         Button {
@@ -212,14 +214,13 @@ private struct ExpandedForeground: View {
                         .modifier(PlaybackDragGestureCatcher(active: true))
                         
                         PlaybackTitle()
+                            .modifier(PlaybackDragGestureCatcher(active: true))
                     }
                     
                     PlaybackQueue()
                         .padding(.vertical, 12)
-                        .frame(maxHeight: height - 290)
+                        .frame(maxHeight: height - 230)
                 }
-                
-                Spacer(minLength: 12)
                 
                 PlaybackActions()
                 

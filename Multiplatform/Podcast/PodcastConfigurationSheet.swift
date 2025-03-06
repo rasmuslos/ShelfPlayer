@@ -79,7 +79,7 @@ struct PodcastConfigurationSheet: View {
                             }
                     }
                 }
-                .navigationTitle("podcast.settings.title")
+                .navigationTitle("podcast.configure")
                 .navigationBarTitleDisplayMode(.inline)
                 .sensoryFeedback(.error, trigger: notifyError)
                 .sensoryFeedback(.success, trigger: notifySuccess)
