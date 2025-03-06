@@ -48,7 +48,7 @@ struct RequestImage: View {
                             .resizable()
                             .scaledToFit()
                             .clipShape(.rect(cornerRadius: cornerRadius))
-                            .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
+                            .modifier(ContrastModifier(itemID: placeholderItemID, cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     } else {
                         Placeholder(itemID: placeholderItemID, cornerRadius: cornerRadius)
                     }
@@ -81,7 +81,7 @@ struct RequestImage: View {
                     }
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(.rect(cornerRadius: cornerRadius))
-                    .modifier(ContrastModifier(cornerRadius: cornerRadius, configuration: contrastConfiguration))
+                    .modifier(ContrastModifier(itemID: placeholderItemID, cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     .padding(0)
             }
         }
@@ -209,12 +209,28 @@ private struct Placeholder: View {
 private struct ContrastModifier: ViewModifier {
     @Environment(\.library) private var library
     
+    let itemID: ItemIdentifier?
     let cornerRadius: CGFloat
     let configuration: RequestImage.ContrastConfiguration?
     
+    private var libraryType: Library.MediaType? {
+        if let library {
+            return library.type
+        } else if let itemID {
+            switch itemID.type {
+            case .audiobook, .author, .series:
+                return .audiobooks
+            case .podcast, .episode:
+                return .podcasts
+            }
+        }
+        
+        return nil
+    }
+    
     func body(content: Content) -> some View {
         if let configuration {
-            switch library?.type {
+            switch libraryType {
             case .audiobooks:
                 content
                     .secondaryShadow(radius: configuration.shadowRadius, opacity: configuration.shadowOpacity)
