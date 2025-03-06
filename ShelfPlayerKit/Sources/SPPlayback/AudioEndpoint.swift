@@ -43,5 +43,12 @@ protocol AudioEndpoint: Identifiable, Sendable {
     
     func seek(to time: TimeInterval, insideChapter: Bool) async throws
     
+    func skip(queueIndex index: Int) async
+    func skip(upNextQueueIndex index: Int) async
+    
+    func remove(queueIndex index: Int) async
+    func remove(upNextQueueIndex index: Int) async
+    
+    func clearQueue() async
     func clearUpNextQueue() async
 }

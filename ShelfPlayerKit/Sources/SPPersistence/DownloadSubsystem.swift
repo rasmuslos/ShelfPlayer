@@ -291,8 +291,6 @@ private extension PersistenceManager.DownloadSubsystem {
         
         let task = urlSession.downloadTask(with: request)
         
-        print(request)
-        
         try await beganDownloading(assetID: id, taskID: task.taskIdentifier)
         task.resume()
         
@@ -356,6 +354,14 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         return nil
+    }
+    
+    func episodes(from podcastID: ItemIdentifier) throws -> [Episode] {
+        guard let podcast = persistedPodcast(for: podcastID) else {
+            return []
+        }
+        
+        return podcast.episodes.map(Episode.init)
     }
     
     nonisolated func scheduleUpdateTask() {

@@ -22,6 +22,7 @@ struct PlaybackQueue: View {
                 clear()
             }
         }
+        .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
     }
     
     var body: some View {
@@ -39,30 +40,62 @@ struct PlaybackQueue: View {
                 
                 if !satellite.queue.isEmpty {
                     Section {
-                        ForEach(satellite.queue) {
-                            QueueItemRow(itemID: $0)
+                        ForEach(Array(satellite.queue.enumerated()), id: \.element) { (index, item) in
+                            QueueItemRow(itemID: item)
+                                .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    Button("play", systemImage: "play") {
+                                        satellite.skip(queueIndex: index)
+                                    }
+                                }
+                        }
+                        .onDelete {
+                            for index in $0 {
+                                satellite.remove(queueIndex: index)
+                            }
                         }
                     } header: {
                         header(label: "playback.queue") {
-                            
+                            satellite.clearQueue()
                         }
                     }
                 }
                 
                 if !satellite.upNextQueue.isEmpty {
                     Section {
-                        ForEach(satellite.queue) {
-                            QueueItemRow(itemID: $0)
+                        ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, item) in
+                            QueueItemRow(itemID: item)
+                                .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    Button("play", systemImage: "play") {
+                                        satellite.skip(upNextQueueIndex: index)
+                                    }
+                                }
+                        }
+                        .onDelete {
+                            for index in $0 {
+                                satellite.remove(upNextQueueIndex: index)
+                            }
                         }
                     } header: {
                         header(label: "playback.nextUpQueue") {
-                            
+                            satellite.clearUpNextQueue()
                         }
                     }
                 }
             }
             .listStyle(.plain)
             .headerProminence(.increased)
+            .mask(
+                VStack(spacing: 0) {
+                    Rectangle()
+                        .fill(Color.black)
+                    
+                    LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black]), startPoint: .bottom, endPoint: .top)
+                        .frame(height: 8)
+                }
+            )
+            .padding(.horizontal, -28)
         }
     }
 }
@@ -84,11 +117,16 @@ private struct QueueChapterRow: View {
             satellite.seek(to: chapter.startOffset, insideChapter: false) {}
         } label: {
             HStack(spacing: 0) {
-                Text(chapter.startOffset, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-                    .font(.footnote)
-                    .fontDesign(.rounded)
-                    .foregroundStyle(Color.accentColor)
-                    .padding(.trailing, 12)
+                ZStack {
+                    Text(verbatim: "00:00:00")
+                        .hidden()
+                    
+                    Text(chapter.startOffset, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                }
+                .font(.footnote)
+                .fontDesign(.rounded)
+                .foregroundStyle(Color.accentColor)
+                .padding(.trailing, 12)
                 
                 Text(chapter.title)
                     .bold(isActive)
@@ -100,6 +138,7 @@ private struct QueueChapterRow: View {
             .contentShape(.hoverMenuInteraction, .rect)
         }
         .buttonStyle(.plain)
+    
     }
 }
 private struct QueueItemRow: View {
@@ -142,7 +181,9 @@ private struct QueueItemRow: View {
     }
 }
 
+#if DEBUG
 #Preview {
     PlaybackQueue()
         .previewEnvironment()
 }
+#endif

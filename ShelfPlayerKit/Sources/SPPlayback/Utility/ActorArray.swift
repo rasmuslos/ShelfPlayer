@@ -8,14 +8,31 @@
 import Foundation
 
 final actor ActorArray<Element> {
-    var elements: [Element] = []
+    var elements: [Element]
+    
+    init() {
+        self.elements = []
+    }
+    init(elements: [Element]) {
+        self.elements = elements
+    }
     
     func append(_ element: Element) {
         elements.append(element)
     }
     
+    func removeFirst() -> Element? {
+        if elements.isEmpty {
+            nil
+        } else {
+            elements.removeFirst()
+        }
+    }
     func remove(at index: Int) {
         elements.remove(at: index)
+    }
+    func removeSubrange(_ bounds: Range<Int>) {
+        elements.removeSubrange(bounds)
     }
     func removeAll() {
         elements.removeAll()
