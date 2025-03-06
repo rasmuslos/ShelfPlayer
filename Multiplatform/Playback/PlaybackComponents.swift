@@ -91,7 +91,7 @@ struct PlaybackControls: View {
             }
             .padding(-12)
             .disabled(isLoading)
-            .symbolEffect(.rotate.counterClockwise.byLayer, value: viewModel.notifySkipBackwards)
+            .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(1.75), value: viewModel.notifySkipBackwards)
     }
     @ViewBuilder
     private var togglePlayButton: some View {
@@ -128,7 +128,7 @@ struct PlaybackControls: View {
             }
             .padding(-12)
             .disabled(isLoading)
-            .symbolEffect(.rotate.clockwise.byLayer, value: viewModel.notifySkipForwards)
+            .symbolEffect(.rotate.clockwise.byLayer, options: .speed(1.75), value: viewModel.notifySkipForwards)
     }
     
     private var currentTime: TimeInterval {
