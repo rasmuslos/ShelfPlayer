@@ -22,7 +22,7 @@ struct PlaybackQueue: View {
                 clear()
             }
         }
-        .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
+        .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
     }
     
     var body: some View {
