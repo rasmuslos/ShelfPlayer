@@ -15,13 +15,13 @@ struct EpisodePlayButton: View {
     let episode: Episode
     let highlighted: Bool
     
-    @State private var progress: ProgressTracker
+    @State private var tracker: ProgressTracker
     
     init(episode: Episode, highlighted: Bool = false) {
         self.episode = episode
         self.highlighted = highlighted
         
-        _progress = .init(initialValue: .init(itemID: episode.id))
+        _tracker = .init(initialValue: .init(itemID: episode.id))
     }
     
     private var isPlaying: Bool {
@@ -36,14 +36,14 @@ struct EpisodePlayButton: View {
             episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute], maximumUnitCount: 1))
         }
         
-        if let isFinished = progress.isFinished, isFinished {
+        if let isFinished = tracker.isFinished, isFinished {
             return String(localized: "listen.again")
-        } else if let progress = progress.progress, progress <= 0 {
+        } else if let progress, progress <= 0 {
             return formatDuration()
         } else if isPlaying, satellite.duration > 0 {
             return (satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
-        } else if let currentTime = progress.currentTime, let progress = progress.progress, progress > 0 {
-            return ((self.progress.duration ?? episode.duration) - currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+        } else if let currentTime = tracker.currentTime, let progress, progress > 0 {
+            return ((self.tracker.duration ?? episode.duration) - currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
         } else {
             return formatDuration()
         }
@@ -56,12 +56,19 @@ struct EpisodePlayButton: View {
         return "play.fill"
     }
     
+    private var progress: Percentage? {
+        if isPlaying, satellite.duration > 0 {
+            return satellite.currentTime / satellite.duration
+        } else {
+            return tracker.progress
+        }
+    }
     private var progressVisible: Bool {
         if isPlaying {
             return true
         }
         
-        if let progress = progress.progress {
+        if let progress {
             return progress > 0 && progress < 1
         }
         
@@ -86,19 +93,21 @@ struct EpisodePlayButton: View {
             }
             .controlSize(.small)
             .padding(.trailing, 4)
-            
+           
             Rectangle()
                 .fill(.gray.opacity(0.25))
                 .overlay(alignment: .leading) {
-                    if let progress = progress.progress {
+                    if let progress {
                         Rectangle()
-                            .frame(width: progressVisible ? max(40 * progress, 5) : 0)
+                            .frame(width: progressVisible ? 40 * progress : 0)
                     }
                 }
                 .frame(width: progressVisible ? 40 : 0, height: 5)
                 .clipShape(.rect(cornerRadius: .infinity))
                 .padding(.leading, progressVisible ? 4 : 0)
                 .padding(.trailing, progressVisible ? 8 : 0)
+                .animation(.smooth, value: progress)
+                .animation(.smooth, value: progressVisible)
             
             Text(label)
                 .lineLimit(1)
