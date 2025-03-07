@@ -49,6 +49,13 @@ public extension PersistenceManager.PodcastSubsystem {
     func setPlaybackRate(_ rate: Percentage?, for itemID: ItemIdentifier) async throws {
         try await PersistenceManager.shared.keyValue.set(.podcastPlaybackRate(for: itemID), rate)
     }
+    
+    func allowNextUpQueueGeneration(for itemID: ItemIdentifier) async -> Bool? {
+        await PersistenceManager.shared.keyValue[.podcastAllowNextUpQueueGeneration(for: itemID)]
+    }
+    func setAllowNextUpQueueGeneration(_ allow: Bool?, for itemID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.podcastAllowNextUpQueueGeneration(for: itemID), allow)
+    }
 }
 
 private extension PersistenceManager.KeyValueSubsystem.Key {
@@ -57,5 +64,8 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
     }
     static func podcastPlaybackRate(for itemID: ItemIdentifier) -> Key<Percentage> {
         .init("podcastPlaybackRate-\(itemID.groupingID ?? itemID.primaryID)")
+    }
+    static func podcastAllowNextUpQueueGeneration(for itemID: ItemIdentifier) -> Key<Bool> {
+        .init("podcastAllowNextUpQueueGeneration-\(itemID.groupingID ?? itemID.primaryID)")
     }
 }
