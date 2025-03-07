@@ -43,7 +43,7 @@ public extension AudioPlayer {
     }
     var queue: [QueueItem] {
         get async {
-            await current?.queue.elements ?? []
+            await current?.queue ?? []
         }
     }
     

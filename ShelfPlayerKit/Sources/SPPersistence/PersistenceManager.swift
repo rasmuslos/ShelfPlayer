@@ -58,8 +58,8 @@ enum PersistenceError: Error {
     
     case busy
     
+    case unsupportedItemType
     case unsupportedDownloadCodec
-    case unsupportedDownloadItemType
     
     case serverNotFound
     case keychainInsertFailed

@@ -105,7 +105,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
             throw PersistenceError.keychainRetrieveFailed
         }
         
-        var exisiting = Array(connections.keys)
+        var existing = Array(connections.keys)
         
         for item in items {
             do {
@@ -113,8 +113,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
                     continue
                 }
                 
-                if let index = exisiting.firstIndex(of: connectionID) {
-                    exisiting.remove(at: index)
+                if let index = existing.firstIndex(of: connectionID) {
+                    existing.remove(at: index)
                 }
                 
                 connections[connectionID] = try fetchConnection(connectionID)
@@ -124,9 +124,11 @@ public extension PersistenceManager.AuthorizationSubsystem {
             }
         }
         
-        for connectionID in exisiting {
+        for connectionID in existing {
             connections[connectionID] = nil
         }
+        
+        connections = .init(uniqueKeysWithValues: connections.sorted { $0.key < $1.key })
         
         RFNotification[.connectionsChanged].send(connections)
     }
