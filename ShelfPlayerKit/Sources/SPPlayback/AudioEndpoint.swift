@@ -15,8 +15,8 @@ protocol AudioEndpoint: Identifiable, Sendable {
     
     var currentItemID: ItemIdentifier { get async }
     
-    var queue: ActorArray<QueueItem> { get async }
-    var upNextQueue: ActorArray<QueueItem> { get async }
+    var queue: [QueueItem] { get async }
+    var upNextQueue: [QueueItem] { get async }
     
     var chapters: [Chapter] { get async }
     

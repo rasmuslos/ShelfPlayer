@@ -344,7 +344,6 @@ struct PlaybackActions: View {
             Label("queue", systemImage: "list.number")
                 .padding(12)
                 .contentShape(.rect)
-                .border(.red)
         }
         .padding(-8)
         .background(.gray.opacity(viewModel.isQueueVisible ? 0.2 : 0), in: .rect(cornerRadius: 4))
