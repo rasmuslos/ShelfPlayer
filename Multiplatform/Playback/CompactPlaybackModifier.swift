@@ -190,7 +190,7 @@ private struct ExpandedForeground: View {
                     Spacer(minLength: 12)
                     
                     PlaybackTitle()
-                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                        .matchedGeometryEffect(id: "text", in: namespace!, properties: .frame, anchor: .center)
                     
                     Spacer(minLength: 12)
                     
@@ -215,11 +215,13 @@ private struct ExpandedForeground: View {
                         
                         PlaybackTitle()
                             .modifier(PlaybackDragGestureCatcher(active: true))
+                            .matchedGeometryEffect(id: "text", in: namespace!, properties: .frame, anchor: .center)
                     }
                     
                     PlaybackQueue()
                         .padding(.vertical, 12)
                         .frame(maxHeight: height - 230)
+                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 }
                 
                 PlaybackActions()

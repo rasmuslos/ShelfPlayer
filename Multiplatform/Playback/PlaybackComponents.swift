@@ -307,9 +307,9 @@ struct PlaybackActions: View {
             }
             .padding(12)
             .contentShape(.rect)
-            .padding(-12)
         }
         .menuActionDismissBehavior(.disabled)
+        .padding(-12)
     }
     
     @ViewBuilder
@@ -327,11 +327,11 @@ struct PlaybackActions: View {
             Label("airPlay", systemImage: satellite.route?.icon ?? "airplay.audio")
                 .padding(12)
                 .contentShape(.rect)
-                .padding(-12)
+                .symbolRenderingMode(.palette)
                 .foregroundStyle(satellite.route?.isHighlighted == true ? Color.accentColor : Color.primary)
                 .contentTransition(.symbolEffect(.replace))
         }
-        .symbolRenderingMode(.palette)
+        .padding(-12)
     }
     
     @ViewBuilder
@@ -344,8 +344,11 @@ struct PlaybackActions: View {
             Label("queue", systemImage: "list.number")
                 .padding(12)
                 .contentShape(.rect)
-                .padding(-12)
+                .border(.red)
         }
+        .padding(-8)
+        .background(.gray.opacity(viewModel.isQueueVisible ? 0.2 : 0), in: .rect(cornerRadius: 4))
+        .padding(-4)
     }
     
     var body: some View {
@@ -556,6 +559,7 @@ private struct StopPlaybackButton: View {
     }
 }
 
+#if DEBUG
 #Preview {
     @Previewable @State var seeking: Percentage? = nil
     
@@ -573,3 +577,8 @@ private struct StopPlaybackButton: View {
         }
     }
 }
+#Preview {
+    PlaybackActions()
+        .previewEnvironment()
+}
+#endif
