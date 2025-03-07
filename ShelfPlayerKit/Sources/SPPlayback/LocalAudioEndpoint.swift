@@ -22,12 +22,12 @@ final class LocalAudioEndpoint: AudioEndpoint {
     
     private let audioPlayer: AVQueuePlayer
     
-    private(set) var playbackReporter: PlaybackReporter!
+    private var playbackReporter: PlaybackReporter!
     
     private(set) var currentItemID: ItemIdentifier
     
-    private(set) var queue: ActorArray<QueueItem>
-    private(set) var upNextQueue: ActorArray<QueueItem>
+    private(set) var queue: [QueueItem]
+    private(set) var upNextQueue: [QueueItem]
     
     private(set) var audioTracks: [PlayableItem.AudioTrack]
     private(set) var activeAudioTrackIndex: Int
@@ -60,15 +60,15 @@ final class LocalAudioEndpoint: AudioEndpoint {
         }
     }
     
-    var systemVolume: Percentage
+    private(set) var systemVolume: Percentage
     
-    var duration: TimeInterval?
-    var currentTime: TimeInterval?
+    private(set) var duration: TimeInterval?
+    private(set) var currentTime: TimeInterval?
     
-    var chapterDuration: TimeInterval?
-    var chapterCurrentTime: TimeInterval?
+    private(set) var chapterDuration: TimeInterval?
+    private(set) var chapterCurrentTime: TimeInterval?
     
-    var route: AudioRoute? {
+    private(set) var route: AudioRoute? {
         didSet {
             if let route {
                 Task {
@@ -77,7 +77,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
             }
         }
     }
-    var sleepTimer: SleepTimerConfiguration? {
+    private(set) var sleepTimer: SleepTimerConfiguration? {
         didSet {
             updateSleepTimerSchedule()
             
@@ -173,10 +173,10 @@ final class LocalAudioEndpoint: AudioEndpoint {
 extension LocalAudioEndpoint {
     func queue(_ items: [QueueItem]) async throws {
         for item in items {
-            await queue.append(item)
+            queue.append(item)
         }
         
-        await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.elements.map(\.itemID))
+        await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.map(\.itemID))
     }
     
     func stop() async {
@@ -295,14 +295,14 @@ extension LocalAudioEndpoint {
     }
     
     func skip(queueIndex index: Int) async {
-        await queue.removeSubrange(0..<index)
+        queue.removeSubrange(0..<index)
         await queueDidChange()
         
         await didPlayToEnd()
     }
     func skip(upNextQueueIndex index: Int) async {
-        await queue.removeAll()
-        await upNextQueue.removeSubrange(0..<index)
+        queue.removeAll()
+        upNextQueue.removeSubrange(0..<index)
         
         await queueDidChange()
         await nextUpQueueDidChange()
@@ -311,30 +311,30 @@ extension LocalAudioEndpoint {
     }
     
     func remove(queueIndex index: Int) async {
-        await queue.remove(at: index)
+        queue.remove(at: index)
         await queueDidChange()
     }
     func remove(upNextQueueIndex index: Int) async {
-        await upNextQueue.remove(at: index)
+        upNextQueue.remove(at: index)
         await nextUpQueueDidChange()
     }
     
     func clearQueue() async {
-        await queue.removeAll()
+        queue.removeAll()
         await queueDidChange()
     }
     func clearUpNextQueue() async {
-        await upNextQueue.removeAll()
+        upNextQueue.removeAll()
         await nextUpQueueDidChange()
         
         allowUpNextGeneration = false
     }
     
     func queueDidChange() async {
-        await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.elements.map(\.itemID))
+        await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.map(\.itemID))
     }
     func nextUpQueueDidChange() async {
-        await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.elements.map(\.itemID))
+        await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
     }
 }
 
@@ -616,11 +616,11 @@ private extension LocalAudioEndpoint {
             }
             
             guard await allowUpNextGeneration else {
-                await upNextQueue.removeAll()
+                await clearUpNextQueue()
                 return
             }
             
-            guard await upNextQueue.elements.isEmpty else {
+            guard await upNextQueue.isEmpty else {
                 return
             }
             
@@ -634,14 +634,14 @@ private extension LocalAudioEndpoint {
                     
                     // TODO: better maybe?
                     await MainActor.run {
-                        upNextQueue = .init(elements: sorted.map { .init(itemID: $0.id, startWithoutListeningSession: false) })
+                        upNextQueue = sorted.map { .init(itemID: $0.id, startWithoutListeningSession: false) }
                     }
                 } else {
                     // TODO: series
                     return
                 }
                 
-                await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.elements.map(\.itemID))
+                await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
             } catch {
                 logger.error("Failed to update up next queue: \(error)")
             }
@@ -651,10 +651,14 @@ private extension LocalAudioEndpoint {
         let nextItemID: ItemIdentifier
         let startWithoutListeningSession: Bool
         
-        if let queueItem = await queue.removeFirst() {
+        if !queue.isEmpty {
+            let queueItem = queue.removeFirst()
+            
             nextItemID = queueItem.itemID
             startWithoutListeningSession = queueItem.startWithoutListeningSession
-        } else if let queueItem = await upNextQueue.removeFirst() {
+        } else if !upNextQueue.isEmpty {
+            let queueItem = upNextQueue.removeFirst()
+            
             nextItemID = queueItem.itemID
             startWithoutListeningSession = queueItem.startWithoutListeningSession
         } else {

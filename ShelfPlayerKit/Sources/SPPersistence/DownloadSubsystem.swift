@@ -358,6 +358,10 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     
     func episodes(from podcastID: ItemIdentifier) throws -> [Episode] {
+        guard podcastID.type == .podcast else {
+            throw PersistenceError.unsupportedItemType
+        }
+        
         guard let podcast = persistedPodcast(for: podcastID) else {
             return []
         }
@@ -407,7 +411,11 @@ public extension PersistenceManager.DownloadSubsystem {
     
     func cover(for itemID: ItemIdentifier, size: ItemIdentifier.CoverSize) async -> URL? {
         if let cached = await PersistenceManager.shared.keyValue[.coverURLCache(itemID: itemID)] {
-            return cached
+            if FileManager.default.fileExists(atPath: cached.absoluteString) {
+                return cached
+            } else {
+                return nil
+            }
         }
         
         guard let assets = try? assets(for: itemID) else {
@@ -429,7 +437,12 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         try? await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), path)
-        return path
+        
+        if FileManager.default.fileExists(atPath: path.absoluteString) {
+            return path
+        } else {
+            return nil
+        }
     }
     func audioTracks(for itemID: ItemIdentifier) throws -> [PlayableItem.AudioTrack] {
         try assets(for: itemID).compactMap {
@@ -462,7 +475,7 @@ public extension PersistenceManager.DownloadSubsystem {
     /// This method is atomic and progress tracking is available after it completes.
     func download(_ itemID: ItemIdentifier) async throws {
         guard itemID.type == .audiobook || itemID.type == .episode else {
-            throw PersistenceError.unsupportedDownloadItemType
+            throw PersistenceError.unsupportedItemType
         }
         
         guard persistedAudiobook(for: itemID) == nil && persistedEpisode(for: itemID) == nil else {
@@ -603,7 +616,7 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         guard itemID.type == .audiobook || itemID.type == .episode else {
-            throw PersistenceError.unsupportedDownloadItemType
+            throw PersistenceError.unsupportedItemType
         }
         
         guard !busyItemIDs.contains(itemID) else {
