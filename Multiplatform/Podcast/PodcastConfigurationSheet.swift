@@ -14,8 +14,9 @@ struct PodcastConfigurationSheet: View {
     
     let podcastID: ItemIdentifier
     
-    @State private var playbackRate: Percentage = -1
+    @State private var viewModel: PodcastConfigurationViewModel?
     @State private var configuration: PodcastAutoDownloadConfigurationShadow?
+    
     @State private var notificationPermission: UNAuthorizationStatus? = nil
     
     @State private var isLoading = false
@@ -24,7 +25,8 @@ struct PodcastConfigurationSheet: View {
     
     var body: some View {
         NavigationStack {
-            if let configuration {
+            if let viewModel, let configuration {
+                @Bindable var viewModel = viewModel
                 @Bindable var configuration = configuration
                 
                 List {
@@ -44,10 +46,9 @@ struct PodcastConfigurationSheet: View {
                     }
                     
                     Section {
-                        if playbackRate > 0 {
-                            PlaybackRatePicker(label: "playbackRate.default", selection: $playbackRate)
-                        } else {
-                            ProgressIndicator()
+                        PlaybackRatePicker(label: "playbackRate.default", selection: $viewModel.playbackRate)
+                        Toggle(isOn: $viewModel.allowNextUpQueueGeneration) {
+                            Text("podcast.configure.allowNextUpQueueGeneration")
                         }
                     }
                     
@@ -117,7 +118,7 @@ struct PodcastConfigurationSheet: View {
     }
     
     private func load() async {
-        self.playbackRate = await PersistenceManager.shared.podcasts.playbackRate(for: podcastID) ?? Defaults[.defaultPlaybackRate]
+        self.viewModel = await .init(podcastID: podcastID)
         self.configuration = .init(await PersistenceManager.shared.podcasts.configuration(for: podcastID))
     }
     private func save() {
@@ -125,12 +126,9 @@ struct PodcastConfigurationSheet: View {
             isLoading = true
             
             do {
-                if playbackRate != Defaults[.defaultPlaybackRate] {
-                    try await PersistenceManager.shared.podcasts.setPlaybackRate(playbackRate, for: podcastID)
-                } else {
-                    try await PersistenceManager.shared.podcasts.setPlaybackRate(nil, for: podcastID)
+                if let viewModel {
+                    try await viewModel.save()
                 }
-                
                 if let configuration {
                     try await PersistenceManager.shared.podcasts.set(configuration: configuration.materialized, for: podcastID)
                 }

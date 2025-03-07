@@ -629,6 +629,11 @@ private extension LocalAudioEndpoint {
             do {
                 if currentItemID.type == .episode {
                     let podcastID = ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
+                    
+                    if let isAllowed = await PersistenceManager.shared.podcasts.allowNextUpQueueGeneration(for: podcastID), !isAllowed {
+                        return
+                    }
+                    
                     let (_, episodes) = try await podcastID.resolvedComplex
                     let sorted = await Podcast.filterSort(episodes, seasonFilter: Defaults[.episodesSeasonFilter(podcastID)], filter: Defaults[.episodesFilter(podcastID)], search: nil, sortOrder: Defaults[.episodesSortOrder(podcastID)], ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != currentItemID }
                     
