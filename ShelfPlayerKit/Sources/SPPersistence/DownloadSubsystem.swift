@@ -143,7 +143,14 @@ private extension PersistenceManager.DownloadSubsystem {
         let current = PersistenceManager.DownloadSubsystem.temporaryLocation(taskIdentifier: taskIdentifier)
         
         do {
-            try FileManager.default.moveItem(at: current, to: asset.path)
+            var target = asset.path
+            try FileManager.default.moveItem(at: current, to: target)
+            
+            var resourceValues = URLResourceValues()
+            resourceValues.isExcludedFromBackup = true
+            
+            try target.setResourceValues(resourceValues)
+            
             try finishedDownloading(asset: asset)
         } catch {
             assetDownloadFailed(taskIdentifier: taskIdentifier)
