@@ -182,9 +182,9 @@ private struct ExpandedForeground: View {
                         .id(satellite.currentItemID)
                         .padding(.horizontal, -8)
                         .shadow(color: .black.opacity(0.4), radius: 20)
+                        .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
                         .scaleEffect(satellite.isPlaying ? 1 : 0.8)
                         .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
-                        .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
                         .modifier(PlaybackDragGestureCatcher(active: true))
                     
                     Spacer(minLength: 12)

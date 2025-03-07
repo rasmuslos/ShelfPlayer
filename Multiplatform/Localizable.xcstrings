@@ -5233,6 +5233,9 @@
     "podcast.configure" : {
 
     },
+    "podcast.configure.allowNextUpQueueGeneration" : {
+
+    },
     "podcast.episodic" : {
       "localizations" : {
         "de" : {
