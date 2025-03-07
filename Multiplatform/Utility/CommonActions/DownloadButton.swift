@@ -11,14 +11,28 @@ import ShelfPlayerKit
 struct DownloadButton: View {
     let item: PlayableItem
     
-    var tint = false
-    var progressVisibility = ProgressVisibility.never
-    var isPercentageTextVisible = false
+    let tint: Bool
+    let progressVisibility: ProgressVisibility
+    let isPercentageTextVisible: Bool
+    
+    init(item: PlayableItem, tint: Bool = false, progressVisibility: ProgressVisibility = ProgressVisibility.never, isPercentageTextVisible: Bool = false, initialStatus: PersistenceManager.DownloadSubsystem.DownloadStatus? = nil) {
+        self.item = item
+        
+        self.tint = tint
+        self.progressVisibility = progressVisibility
+        self.isPercentageTextVisible = isPercentageTextVisible
+        
+        if let initialStatus {
+            _status = .init(initialValue: initialStatus)
+        } else {
+            _status = .init(initialValue: nil)
+        }
+    }
     
     @State private var isWorking = false
     
     @State private var baseProgress: Percentage? = nil
-    @State private var status: PersistenceManager.DownloadSubsystem.DownloadStatus? = nil
+    @State private var status: PersistenceManager.DownloadSubsystem.DownloadStatus?
     
     @State private var progress = [UUID: Int64]()
     @State private var metadata = [UUID: (Percentage, Int64)]()

@@ -16,7 +16,8 @@ extension SchemaV2 {
         #Unique<PersistedChapter>([\.id], [\._itemID, \.startOffset])
         
         @Attribute(.unique)
-        private(set) var id: Int
+        private(set) var id: UUID
+        private(set) var index: Int
         private(set) var _itemID: String
         
         private(set) var name: String
@@ -24,8 +25,9 @@ extension SchemaV2 {
         private(set) var startOffset: TimeInterval
         private(set) var endOffset: TimeInterval
         
-        init(id: Int, itemID: ItemIdentifier, name: String, startOffset: TimeInterval, endOffset: TimeInterval) {
-            self.id = id
+        init(index: Int, itemID: ItemIdentifier, name: String, startOffset: TimeInterval, endOffset: TimeInterval) {
+            self.id = .init()
+            self.index = index
             _itemID = itemID.description
             self.name = name
             self.startOffset = startOffset

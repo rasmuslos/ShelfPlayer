@@ -195,6 +195,7 @@ private struct ExpandedForeground: View {
                     Spacer(minLength: 12)
                     
                     PlaybackControls()
+                        .compositingGroup()
                         .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                     
                     Spacer(minLength: 12)
