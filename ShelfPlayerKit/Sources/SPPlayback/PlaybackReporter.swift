@@ -59,15 +59,16 @@ final actor PlaybackReporter {
             if let lastUpdateTime {
                 logger.warning("Time spent listening is not accurate: \(Date().timeIntervalSince(lastUpdateTime)), \(self.accumulatedTimeSpendListening)")
             }
-            
-            lastUpdateTime = .now
         } else {
             if let delta = lastUpdateTime?.distance(to: .now) {
+                lastUpdateTime = nil
                 accumulatedTimeSpendListening += delta
             } else {
                 logger.warning("Could not calculate time spent listening")
             }
         }
+        
+        update()
     }
     
     func finalize() {

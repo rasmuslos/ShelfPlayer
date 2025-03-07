@@ -29,6 +29,8 @@ final class PlaybackViewModel {
     var seriesIDs: [(ItemIdentifier, String)]
     var authorIDs: [(ItemIdentifier, String)]
     
+    private var stoppedPlayingAt: Date?
+    
     private(set) var notifySkipBackwards = false
     private(set) var notifySkipForwards = false
     
@@ -50,7 +52,16 @@ final class PlaybackViewModel {
         }
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _, _) in
-            self?.isExpanded = true
+            if let stoppedPlayingAt = self?.stoppedPlayingAt {
+                let distance = stoppedPlayingAt.distance(to: .now)
+                
+                if distance > 3 {
+                    self?.isExpanded = true
+                }
+            } else {
+                self?.isExpanded = true
+            }
+            
             self?.loadAuthorIDs(itemID: itemID)
         }
         RFNotification[.playbackStopped].subscribe { [weak self] in
@@ -58,6 +69,8 @@ final class PlaybackViewModel {
             self?.dragOffset = 0
             
             self?.authorIDs = []
+            
+            self?.stoppedPlayingAt = .now
         }
         
         RFNotification[.navigateNotification].subscribe { [weak self] _ in

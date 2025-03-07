@@ -201,7 +201,9 @@ public extension PersistenceManager.ProgressSubsystem {
         
         persistedEntity.lastUpdate = .now
         
-        persistedEntity.status = .desynchronized
+        if notifyServer {
+            persistedEntity.status = .desynchronized
+        }
         
         try modelContext.save()
         
