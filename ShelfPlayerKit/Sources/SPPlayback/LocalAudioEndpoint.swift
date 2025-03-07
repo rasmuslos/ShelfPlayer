@@ -180,7 +180,12 @@ extension LocalAudioEndpoint {
     }
     
     func stop() async {
+        if let currentTime {
+            await playbackReporter.update(currentTime: currentTime)
+        }
+        
         await playbackReporter.finalize()
+        
         audioPlayer.removeAllItems()
         
         cancelUpdateBufferingCheck()
@@ -232,10 +237,7 @@ extension LocalAudioEndpoint {
         }
         
         if let duration, time >= duration {
-            await playbackReporter.update(currentTime: duration)
-            await playbackReporter.finalize()
-            
-            await didPlayToEnd()
+            await didPlayToEnd(finishedCurrentItem: true)
             return
         }
         
@@ -296,9 +298,9 @@ extension LocalAudioEndpoint {
     
     func skip(queueIndex index: Int) async {
         queue.removeSubrange(0..<index)
-        await queueDidChange()
         
-        await didPlayToEnd()
+        await queueDidChange()
+        await didPlayToEnd(finishedCurrentItem: false)
     }
     func skip(upNextQueueIndex index: Int) async {
         queue.removeAll()
@@ -307,7 +309,7 @@ extension LocalAudioEndpoint {
         await queueDidChange()
         await nextUpQueueDidChange()
         
-        await didPlayToEnd()
+        await didPlayToEnd(finishedCurrentItem: false)
     }
     
     func remove(queueIndex index: Int) async {
@@ -652,7 +654,15 @@ private extension LocalAudioEndpoint {
             }
         }
     }
-    func didPlayToEnd() async {
+    func didPlayToEnd(finishedCurrentItem: Bool) async {
+        if finishedCurrentItem {
+            if let duration {
+                await playbackReporter.update(currentTime: duration)
+            }
+        }
+        
+        await playbackReporter.finalize()
+        
         let nextItemID: ItemIdentifier
         let startWithoutListeningSession: Bool
         
@@ -738,7 +748,7 @@ private extension LocalAudioEndpoint {
             MainActor.assumeIsolated {
                 if activeAudioTrackIndex >= audioTracks.index(before: audioTracks.endIndex) {
                     Task {
-                        await didPlayToEnd()
+                        await didPlayToEnd(finishedCurrentItem: true)
                     }
                 } else {
                     activeAudioTrackIndex += 1

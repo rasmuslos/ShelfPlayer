@@ -20,6 +20,7 @@ struct ConnectionManager: View {
             NavigationLink(destination: ConnectionManageView(connection: connection)) {
                 Text(String("\(connection.host.absoluteString): \(connection.user)"))
             }
+            .foregroundStyle(connectionStore.offlineConnections.contains(connection.id) ? .red : .primary)
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                 NavigationLink(destination: ConnectionManageView(connection: connection)) {
                     Label("connection.manage", systemImage: "pencil")

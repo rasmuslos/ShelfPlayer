@@ -463,9 +463,11 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     func chapters(itemID: ItemIdentifier) -> [Chapter] {
         do {
+            print(try modelContext.fetch(FetchDescriptor<PersistedChapter>()))
+            
             return try modelContext.fetch(FetchDescriptor<PersistedChapter>(predicate: #Predicate {
                 $0._itemID == itemID.description
-            })).map { .init(id: $0.id, startOffset: $0.startOffset, endOffset: $0.endOffset, title: $0.name) }
+            })).map { .init(id: $0.index, startOffset: $0.startOffset, endOffset: $0.endOffset, title: $0.name) }
         } catch {
             return []
         }
@@ -590,7 +592,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             try modelContext.transaction {
                 for chapter in chapters {
-                    modelContext.insert(PersistedChapter(id: .init(), itemID: itemID, name: chapter.title, startOffset: chapter.startOffset, endOffset: chapter.endOffset))
+                    modelContext.insert(PersistedChapter(index: chapter.id, itemID: itemID, name: chapter.title, startOffset: chapter.startOffset, endOffset: chapter.endOffset))
                 }
                 
                 for asset in assets {

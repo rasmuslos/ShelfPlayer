@@ -161,6 +161,8 @@ struct PlaybackControls: View {
             PlaybackSlider(percentage: satellite.played, seeking: $viewModel.seeking, currentTime: currentTime, duration: duration, textFirst: false) {
                 if let chapter = satellite.chapter, viewModel.seeking == nil {
                     Text(chapter.title)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                 } else {
                     Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                         .contentTransition(.numericText())
@@ -215,10 +217,10 @@ struct PlaybackActions: View {
             }
         } label: {
             Text(satellite.playbackRate, format: .percent.notation(.compactName))
-                .contentTransition(.numericText())
                 .padding(12)
                 .contentShape(.rect)
-                .padding(-12)
+                .contentTransition(.numericText())
+                .animation(.smooth, value: satellite.playbackRate)
         } primaryAction: {
             guard let index = playbackRates.firstIndex(of: satellite.playbackRate) else {
                 if let rate = playbackRates.first {
@@ -234,6 +236,7 @@ struct PlaybackActions: View {
                 satellite.setPlaybackRate(rate)
             }
         }
+        .padding(-12)
     }
     
     @ViewBuilder
@@ -296,6 +299,8 @@ struct PlaybackActions: View {
                     case .interval(_):
                         if let remainingSleepTime = satellite.remainingSleepTime {
                             Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                                .contentTransition(.numericText())
+                                .animation(.smooth, value: remainingSleepTime)
                         } else {
                             ProgressView()
                                 .scaleEffect(0.5)
@@ -345,9 +350,9 @@ struct PlaybackActions: View {
                 .padding(12)
                 .contentShape(.rect)
         }
-        .padding(-8)
+        .padding(-6)
         .background(.gray.opacity(viewModel.isQueueVisible ? 0.2 : 0), in: .rect(cornerRadius: 4))
-        .padding(-4)
+        .padding(-6)
     }
     
     var body: some View {
