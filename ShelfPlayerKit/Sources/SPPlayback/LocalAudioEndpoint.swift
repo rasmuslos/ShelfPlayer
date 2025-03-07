@@ -727,9 +727,7 @@ private extension LocalAudioEndpoint {
             }
             
             MainActor.assumeIsolated {
-                print(activeAudioTrackIndex, audioTracks.endIndex)
-                
-                if activeAudioTrackIndex < audioTracks.endIndex - 1 {
+                if activeAudioTrackIndex >= audioTracks.index(before: audioTracks.endIndex) {
                     Task {
                         await didPlayToEnd()
                     }

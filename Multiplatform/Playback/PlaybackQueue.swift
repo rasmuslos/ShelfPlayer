@@ -47,6 +47,7 @@ struct PlaybackQueue: View {
                     Section {
                         ForEach(Array(satellite.queue.enumerated()), id: \.element) { (index, item) in
                             QueueItemRow(itemID: item)
+                                .listRowBackground(Color.clear)
                                 .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                     Button("play", systemImage: "play") {
@@ -70,6 +71,7 @@ struct PlaybackQueue: View {
                     Section {
                         ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, item) in
                             QueueItemRow(itemID: item)
+                                .listRowBackground(Color.clear)
                                 .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                     Button("play", systemImage: "play") {
