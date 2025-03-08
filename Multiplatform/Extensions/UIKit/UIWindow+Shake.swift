@@ -31,9 +31,3 @@ extension UIWindow {
     }
 }
 #endif
-
-extension RFNotification.Notification {
-    static var shake: Notification<TimeInterval> {
-        .init("io.rfk.shelfPlayer.shake")
-    }
-}

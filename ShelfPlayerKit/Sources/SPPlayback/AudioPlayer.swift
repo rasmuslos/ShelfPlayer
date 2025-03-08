@@ -238,7 +238,11 @@ public extension AudioPlayer {
 }
 
 private extension AudioPlayer {
-    func setupObservers() {
+    func sleepTimerDidExpire(configuration: SleepTimerConfiguration) {
+        sleepTimerDidExpireAt = (configuration, .now)
+    }
+    
+    nonisolated func setupObservers() {
         Task {
             for await interval in Defaults.updates(.skipBackwardsInterval) {
                 MPRemoteCommandCenter.shared().skipBackwardCommand.preferredIntervals = [NSNumber(value: interval)]
@@ -250,7 +254,7 @@ private extension AudioPlayer {
             }
         }
         
-        RFNotification[.downloadStatusChanged].subscribe(queue: .current) { [weak self] (itemID, status) in
+        RFNotification[.downloadStatusChanged].subscribe(queue: .sender) { [weak self] (itemID, status) in
             Task {
                 guard await self?.current?.currentItemID == itemID else {
                     return
@@ -259,9 +263,19 @@ private extension AudioPlayer {
                 await self?.stop()
             }
         }
-        RFNotification[.sleepTimerExpired].subscribe(queue: .current) { [weak self] configuration in
-            self?.assumeIsolated { isolated -> Void in
-                isolated.sleepTimerDidExpireAt = (configuration, .now)
+        
+        RFNotification[.shake].subscribe(queue: .sender) { [weak self] duration in
+            guard duration > 0.5 else {
+                return
+            }
+            
+            Task {
+                await self?.extendSleepTimer()
+            }
+        }
+        RFNotification[.sleepTimerExpired].subscribe(queue: .sender) { [weak self] configuration in
+            Task {
+                await self?.sleepTimerDidExpire(configuration: configuration)
             }
         }
     }
@@ -366,5 +380,11 @@ private extension AudioPlayer {
         }
         
         // TODO: more
+    }
+}
+
+extension RFNotification.Notification {
+    static var shake: Notification<TimeInterval> {
+        .init("io.rfk.shelfPlayer.shake")
     }
 }
