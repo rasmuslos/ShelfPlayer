@@ -180,34 +180,39 @@ public extension PersistenceManager.ProgressSubsystem {
     }
     
     func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double, notifyServer: Bool) async throws {
-        guard let persistedEntity = entity(itemID) else {
-            logger.warning("Could not update progress as listening for item \(itemID) because it does not exist.")
-            return
-        }
+        let targetEntity: PersistedProgress
         
-        persistedEntity.progress = currentTime / duration
-        persistedEntity.duration = duration
-        persistedEntity.currentTime = currentTime
+        let progress = currentTime / duration
         
-        if persistedEntity.startedAt == nil {
-            persistedEntity.startedAt = nil
-        }
-        
-        if persistedEntity.progress >= 1 {
-            persistedEntity.finishedAt = .now
+        if let existingEntity = entity(itemID) {
+            targetEntity = existingEntity
+            
+            targetEntity.progress = progress
+            targetEntity.duration = duration
+            targetEntity.currentTime = currentTime
+            
+            if targetEntity.startedAt == nil {
+                targetEntity.startedAt = nil
+            }
+            
+            if progress >= 1 {
+                targetEntity.finishedAt = .now
+            } else {
+                targetEntity.finishedAt = nil
+            }
+            
+            targetEntity.lastUpdate = .now
+            
+            if notifyServer {
+                targetEntity.status = .desynchronized
+            }
         } else {
-            persistedEntity.finishedAt = nil
-        }
-        
-        persistedEntity.lastUpdate = .now
-        
-        if notifyServer {
-            persistedEntity.status = .desynchronized
+            targetEntity = createEntity(id: UUID().uuidString, itemID: itemID, progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: progress >= 1 ? .now : nil, status: notifyServer ? .desynchronized : .tombstone)
         }
         
         try modelContext.save()
         
-        let entity = ProgressEntity(persistedEntity: persistedEntity)
+        let entity = ProgressEntity(persistedEntity: targetEntity)
         
         await MainActor.run {
             RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
@@ -217,7 +222,7 @@ public extension PersistenceManager.ProgressSubsystem {
             do {
                 try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
                 
-                persistedEntity.status = .synchronized
+                targetEntity.status = .synchronized
                 try modelContext.save()
             } catch {
                 logger.info("Caching progress update because of: \(error.localizedDescription).")
