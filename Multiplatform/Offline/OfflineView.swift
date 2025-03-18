@@ -19,7 +19,7 @@ internal struct OfflineView: View {
     private var offlineAudiobooksSortOrder: AudiobookSortOrder = .sortName
     private var offlineAudiobooksAscending = false
     
-    @State private var accountSheetPresented = false
+    // @State private var accountSheetPresented = false
     
     @State private var _audiobooks = [Audiobook]()
     @State private var podcasts = [Podcast: [Episode]]()
@@ -58,7 +58,7 @@ internal struct OfflineView: View {
                         Label("offline.disable", systemImage: "network")
                     }
                     Button {
-                        accountSheetPresented.toggle()
+                        
                     } label: {
                         Label("account.manage", systemImage: "server.rack")
                     }
@@ -88,9 +88,6 @@ internal struct OfflineView: View {
             }
         }
         // .modifier(NowPlaying.CompactModifier(bottomOffset: 40))
-        .sheet(isPresented: $accountSheetPresented) {
-            AccountSheet()
-        }
         /*
         .onReceive(NotificationCenter.default.publisher(for: PlayableItem.downloadStatusUpdatedNotification)) { _ in
             Task {

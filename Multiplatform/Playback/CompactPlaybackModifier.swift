@@ -47,7 +47,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             let width = totalWidth * viewModel.pushAmount
                             let leadingOffset = (totalWidth - width) / 2
                             
-                            RoundedRectangle(cornerRadius: satellite.isNowPlayingVisible ? viewModel.pushContainerCornerRadius(leadingOffset: leadingOffset) : 0, style: .continuous)
+                            RoundedRectangle(cornerRadius: satellite.isNowPlayingVisible && !satellite.isSheetPresented ? viewModel.pushContainerCornerRadius(leadingOffset: leadingOffset) : 0, style: .continuous)
                                 .fill(.background)
                                 .frame(width: width,
                                        height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * viewModel.pushAmount)
@@ -226,6 +226,7 @@ private struct ExpandedForeground: View {
                 }
                 
                 PlaybackActions()
+                    .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 
                 Spacer(minLength: 12)
             }
@@ -250,11 +251,6 @@ private struct ExpandedForeground: View {
         }
         .padding(.horizontal, 28)
         // .sensoryFeedback(.success, trigger: viewModel.notifyBookmark)
-        /*
-        .sheet(isPresented: $viewModel.sheetPresented) {
-            NowPlaying.Sheet()
-        }
-         */
     }
 }
 private struct CollapsedForeground: View {

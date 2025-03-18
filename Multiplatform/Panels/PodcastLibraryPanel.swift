@@ -71,7 +71,7 @@ struct PodcastLibraryPanel: View {
                 }
             }
         }
-        .modifier(AccountSheetToolbarModifier(requiredSize: .compact))
+        .modifier(CompactPreferencesToolbarModifier())
         .modifier(PlaybackSafeAreaPaddingModifier())
         .onAppear {
             lazyLoader.library = library

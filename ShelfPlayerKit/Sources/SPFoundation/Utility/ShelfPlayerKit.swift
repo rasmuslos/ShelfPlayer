@@ -7,8 +7,11 @@
 
 import Foundation
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 public struct ShelfPlayerKit {
-    
 }
 
 public extension ShelfPlayerKit {
@@ -19,7 +22,12 @@ public extension ShelfPlayerKit {
     static let clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     static let clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
-    static let machine: String = {
+    #if canImport(UIKit)
+    @MainActor
+    static let osVersion = UIDevice.current.systemVersion
+    #endif
+    
+    static let model: String = {
         var systemInfo = utsname()
         uname(&systemInfo)
         
@@ -40,5 +48,13 @@ public extension ShelfPlayerKit {
         }
         
         return _clientID!
+    }
+    
+    static var downloadDirectoryURL: URL {
+        if ShelfPlayerKit.enableCentralized {
+            FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.io.rfk.shelfplayer")!.appending(path: "DownloadV2")
+        } else {
+            URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
+        }
     }
 }

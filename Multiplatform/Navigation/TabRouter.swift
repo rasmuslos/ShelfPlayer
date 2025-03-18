@@ -62,13 +62,48 @@ struct TabRouter: View {
     }
     
     @ViewBuilder
+    private func sheetContent(for sheet: Satellite.Sheet) -> some View {
+        switch sheet {
+        case .preferences:
+            NavigationStack {
+                PreferencesView()
+            }
+        case .description(let item):
+            NavigationStack {
+                ScrollView {
+                    HStack(spacing: 0) {
+                        if let description = item.description {
+                            Text(description)
+                        } else {
+                            Text("description.unavailable")
+                        }
+                        
+                        Spacer(minLength: 0)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 20)
+                }
+                .navigationTitle(item.name)
+                .presentationDragIndicator(.visible)
+            }
+        case .podcastConfiguration(let itemID):
+            PodcastConfigurationSheet(podcastID: itemID)
+        }
+    }
+    
+    @ViewBuilder
     private func content(for tab: TabValue) -> some View {
+        @Bindable var satellite = satellite
+        
         Group {
             if importedConnectionIDs.contains(tab.library.connectionID) {
                 tab.content
                     .modifier(TabContentPlaybackModifier())
                     .task {
                         ShelfPlayer.updateUIHook()
+                    }
+                    .sheet(item: $satellite.currentSheet) {
+                        sheetContent(for: $0)
                     }
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
                 ContentUnavailableView("import.failed", systemImage: "circle.badge.xmark", description: Text("import.failed.description"))

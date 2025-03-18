@@ -78,11 +78,12 @@ private struct Title: View {
 }
 private struct PodcastDescription: View {
     @Environment(PodcastViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
     
     var body: some View {
         if let description = viewModel.podcast.description {
             Button {
-                viewModel.isDescriptionSheetPresented.toggle()
+                satellite.present(.description(viewModel.podcast))
             } label: {
                 HStack {
                     Text(description)

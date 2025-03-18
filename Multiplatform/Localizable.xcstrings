@@ -385,6 +385,7 @@
       }
     },
     "account" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -614,6 +615,7 @@
       }
     },
     "account.delete.footer" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -642,6 +644,7 @@
       }
     },
     "account.delete.spotlight" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -699,6 +702,7 @@
       }
     },
     "account.logout" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -755,6 +759,7 @@
       }
     },
     "account.newEpisodes.check" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1405,6 +1410,7 @@
       }
     },
     "account.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2973,6 +2979,7 @@
       }
     },
     "downloadQueue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3001,6 +3008,7 @@
       }
     },
     "downloadQueue.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

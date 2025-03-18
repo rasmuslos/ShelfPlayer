@@ -98,28 +98,6 @@ struct PodcastView: View {
         .refreshable {
             viewModel.load()
         }
-        .sheet(isPresented: $viewModel.isDescriptionSheetPresented) {
-            NavigationStack {
-                ScrollView {
-                    HStack(spacing: 0) {
-                        if let description = viewModel.podcast.description {
-                            Text(description)
-                        } else {
-                            Text("description.unavailable")
-                        }
-                        
-                        Spacer(minLength: 0)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 20)
-                }
-                .navigationTitle(viewModel.podcast.name)
-                .presentationDragIndicator(.visible)
-            }
-        }
-        .sheet(isPresented: $viewModel.isConfigureSheetPresented) {
-            PodcastConfigurationSheet(podcastID: viewModel.podcast.id)
-        }
         .userActivity("io.rfk.shelfPlayer.item") { activity in
             activity.title = viewModel.podcast.name
             activity.isEligibleForHandoff = true

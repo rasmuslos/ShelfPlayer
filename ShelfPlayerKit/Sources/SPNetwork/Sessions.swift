@@ -28,7 +28,7 @@ public extension APIClient {
                 "clientName": "ShelfPlayer",
                 "clientVersion": ShelfPlayerKit.clientVersion,
                 "manufacturer": "Apple",
-                "model": ShelfPlayerKit.machine,
+                "model": ShelfPlayerKit.model,
             ],
             "supportedMimeTypes": [
                 "audio/flac",
@@ -49,13 +49,21 @@ public extension APIClient {
         return (tracks.map { .init(track: $0, base: host) }, chapters.map(Chapter.init), startTime, playbackSessionID)
     }
     
-    func createListeningSession(itemID: ItemIdentifier, id: UUID, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
-        let (item, status, userId): (ItemPayload, StatusResponse, String) = try await (item(itemID: itemID), status(), me().0)
+    func createListeningSession(itemID: ItemIdentifier, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
+        let (item, status, userID) = try await (item(itemID: itemID), status(), me().0)
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let dayOfWeekFormatter = DateFormatter()
+        dayOfWeekFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dayOfWeekFormatter.dateFormat = "EEEE"
         
         let session = SessionPayload(
-            id: id.uuidString,
-            userId: userId,
-            libraryID: item.libraryId,
+            id: UUID().uuidString,
+            userId: userID,
+            libraryId: item.libraryId,
             libraryItemId: itemID.apiItemID,
             episodeId: itemID.apiEpisodeID,
             mediaType: item.mediaType,
@@ -67,18 +75,32 @@ public extension APIClient {
             duration: item.media?.duration,
             playMethod: 3,
             mediaPlayer: "ShelfPlayer",
-            deviceInfo: .current,
+            deviceInfo: .init(id: ShelfPlayerKit.clientID,
+                              userId: userID,
+                              deviceId: ShelfPlayerKit.clientID,
+                              browserName: "ShelfPlayer",
+                              browserVersion: ShelfPlayerKit.clientVersion,
+                              osName: "iOS",
+                              osVersion: await ShelfPlayerKit.osVersion,
+                              deviceType: "iPhone",
+                              manufacturer: "Apple",
+                              model: ShelfPlayerKit.model,
+                              clientName: "ShelfPlayer",
+                              clientVersion: ShelfPlayerKit.clientVersion),
+            date: dateFormatter.string(from: started),
+            dayOfWeek: dayOfWeekFormatter.string(from: started),
             serverVersion: status.serverVersion,
             timeListening: timeListened,
             startTime: startTime,
             currentTime: currentTime,
-            startedAt: started.timeIntervalSince1970 * 1000,
-            updatedAt: updated.timeIntervalSince1970 * 1000)
+            startedAt: Double(UInt64(started.timeIntervalSince1970 * 1000)),
+            updatedAt: Double(UInt64(updated.timeIntervalSince1970 * 1000)))
         
         try await response(for: ClientRequest<Empty>(path: "api/session/local", method: .post, body: session))
     }
     
     func syncSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
+        print(sessionID, currentTime, duration, timeListened)
         try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)/sync", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
