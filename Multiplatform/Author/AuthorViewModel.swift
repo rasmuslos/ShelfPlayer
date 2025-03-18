@@ -30,14 +30,12 @@ final class AuthorViewModel {
         }
     }
     
-    var isDescriptionSheetVisible: Bool
     private(set) var notifyError: Bool
     
     @MainActor
     init(author: Author) {
         self.author = author
         
-        isDescriptionSheetVisible = false
         notifyError = false
         
         seriesLoader = .series(filtered: author.id, filter: Defaults[.audiobooksFilter], sortOrder: .sortName, ascending: true)

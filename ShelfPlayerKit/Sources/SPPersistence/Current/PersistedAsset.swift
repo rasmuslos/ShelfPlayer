@@ -54,13 +54,7 @@ extension SchemaV2 {
             }
         }
         var path: URL {
-            var base: URL
-            
-            if ShelfPlayerKit.enableCentralized {
-                base = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.io.rfk.shelfplayer")!.appending(path: "DownloadV2")
-            } else {
-                base = URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
-            }
+            var base = ShelfPlayerKit.downloadDirectoryURL
             
             base.append(path: itemID.connectionID.replacing("/", with: "_"))
             base.append(path: itemID.libraryID)

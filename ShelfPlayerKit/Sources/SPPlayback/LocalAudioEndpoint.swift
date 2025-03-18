@@ -389,7 +389,8 @@ private extension LocalAudioEndpoint {
             } else {
                 var currentTime = entity.currentTime
                 
-                if Defaults[.enableSmartRewind] && entity.lastUpdate.timeIntervalSince(Date()) >= 10 * 60 {
+                // 10 minutes
+                if Defaults[.enableSmartRewind] && entity.lastUpdate.distance(to: Date()) >= 10 * 60 {
                     currentTime -= 30
                 }
                 
@@ -418,7 +419,7 @@ private extension LocalAudioEndpoint {
         self.audioTracks = audioTracks.sorted()
         self.chapters = chapters.sorted()
         
-        playbackReporter = .init(itemID: currentItemID, sessionID: sessionID)
+        playbackReporter = .init(itemID: currentItemID, startTime: startTime, sessionID: sessionID)
         
         do {
             try await seek(to: startTime, insideChapter: false)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @State private var connectionAddViewPresented = false
+    @State private var isConnectionAddViewPresented = false
     
     var body: some View {
         VStack {
@@ -32,12 +32,16 @@ struct WelcomeView: View {
             Spacer()
             
             Button("login.prompt") {
-                connectionAddViewPresented.toggle()
+                isConnectionAddViewPresented.toggle()
             }
             .controlSize(.large)
             .buttonStyle(.borderedProminent)
         }
-        .modifier(ConnectionAddSheetModifier(isPresented: $connectionAddViewPresented))
+        .sheet(isPresented: $isConnectionAddViewPresented) {
+            ConnectionAddView() {
+                isConnectionAddViewPresented = false
+            }
+        }
     }
 }
 

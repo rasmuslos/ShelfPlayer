@@ -45,8 +45,6 @@ final class PodcastViewModel {
     }
     
     var isToolbarVisible: Bool
-    var isConfigureSheetPresented: Bool
-    var isDescriptionSheetPresented: Bool
     
     private(set) var dominantColor: Color?
     
@@ -67,8 +65,6 @@ final class PodcastViewModel {
         seasonFilter = Defaults[.episodesSeasonFilter(podcast.id)]
         
         isToolbarVisible = false
-        isConfigureSheetPresented = false
-        isDescriptionSheetPresented = false
         
         dominantColor = nil
         

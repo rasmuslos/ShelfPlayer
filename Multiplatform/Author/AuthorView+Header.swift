@@ -11,6 +11,7 @@ import SPFoundation
 extension AuthorView {
     struct Header: View {
         @Environment(AuthorViewModel.self) private var viewModel
+        @Environment(Satellite.self) private var satellite
         
         var body: some View {
             VStack(spacing: 0) {
@@ -32,7 +33,7 @@ extension AuthorView {
                 
                 if let description = viewModel.author.description {
                     Button {
-                        viewModel.isDescriptionSheetVisible.toggle()
+                        satellite.present(.description(viewModel.author))
                     } label: {
                         Text(description)
                             .lineLimit(3)

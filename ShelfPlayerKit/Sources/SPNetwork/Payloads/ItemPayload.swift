@@ -139,55 +139,87 @@ struct MediaPayload: Codable {
 }
 
 struct MetadataPayload: Codable {
+    // MARK: Shared
+    
     let title: String?
-    let titleIgnorePrefix: String?
     
-    let subtitle: String?
     let description: String?
-    
-    let authorName: String?
-    let author: String?
-    let narratorName: String?
-    let publisher: String?
-    
-    let seriesName: String?
-    let series: [AudiobookshelfItemSeries]?
-    
-    let genres: [String]
-    let publishedYear: String?
     let releaseDate: String?
     
-    let isbn: String?
-    let language: String?
+    let genres: [String]
+    
     let explicit: Bool?
+    let language: String?
+    
+    // MARK: Book
+    
+    let subtitle: String?
+    let publishedYear: String?
+    let publisher: String?
+    
+    // undocumented
+    let descriptionPlain: String?
+    
+    let isbn: String?
+    let asin: String?
+    // undocumented
     let abridged: Bool?
+    
+    // MARK: Book mini
+    
+    let authorName: String?
+    let seriesName: String?
+    let narratorName: String?
+    
+    // MARK: Book maxi
+    
+    let authors: [AudiobookshelfItemAuthor]?
+    let narrators: [String]?
+    let series: [AudiobookshelfItemSeries]?
+    
+    // MARK: Podcast
+    
+    let author: String?
+    
+    let feedUrl: String?
+    let imageUrl: String?
+    let itunesPageUrl: String?
+    
+    // let itunesId: Int?
+    // let itunesArtistId: Int?
     
     let type: String?
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.title = try container.decodeIfPresent(String.self, forKey: .title)
-        self.titleIgnorePrefix = try container.decodeIfPresent(String.self, forKey: .titleIgnorePrefix)
-        self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
-        self.authorName = try container.decodeIfPresent(String.self, forKey: .authorName)
-        self.author = try container.decodeIfPresent(String.self, forKey: .author)
-        self.narratorName = try container.decodeIfPresent(String.self, forKey: .narratorName)
-        self.publisher = try container.decodeIfPresent(String.self, forKey: .publisher)
-        self.seriesName = try container.decodeIfPresent(String.self, forKey: .seriesName)
-        self.genres = try container.decode([String].self, forKey: .genres)
-        self.publishedYear = try container.decodeIfPresent(String.self, forKey: .publishedYear)
         self.releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
-        self.isbn = try container.decodeIfPresent(String.self, forKey: .isbn)
-        self.language = try container.decodeIfPresent(String.self, forKey: .language)
+        self.genres = try container.decode([String].self, forKey: .genres)
         self.explicit = try container.decodeIfPresent(Bool.self, forKey: .explicit)
+        self.language = try container.decodeIfPresent(String.self, forKey: .language)
+        self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
+        self.publishedYear = try container.decodeIfPresent(String.self, forKey: .publishedYear)
+        self.publisher = try container.decodeIfPresent(String.self, forKey: .publisher)
+        self.descriptionPlain = try container.decodeIfPresent(String.self, forKey: .descriptionPlain)
+        self.isbn = try container.decodeIfPresent(String.self, forKey: .isbn)
+        self.asin = try container.decodeIfPresent(String.self, forKey: .asin)
         self.abridged = try container.decodeIfPresent(Bool.self, forKey: .abridged)
+        self.authorName = try container.decodeIfPresent(String.self, forKey: .authorName)
+        self.seriesName = try container.decodeIfPresent(String.self, forKey: .seriesName)
+        self.narratorName = try container.decodeIfPresent(String.self, forKey: .narratorName)
+        self.authors = try container.decodeIfPresent([AudiobookshelfItemAuthor].self, forKey: .authors)
+        self.narrators = try container.decodeIfPresent([String].self, forKey: .narrators)
+        self.author = try container.decodeIfPresent(String.self, forKey: .author)
+        self.feedUrl = try container.decodeIfPresent(String.self, forKey: .feedUrl)
+        self.imageUrl = try container.decodeIfPresent(String.self, forKey: .imageUrl)
+        self.itunesPageUrl = try container.decodeIfPresent(String.self, forKey: .itunesPageUrl)
         self.type = try container.decodeIfPresent(String.self, forKey: .type)
         
         // this is truly stupid... The field is either of type series or an empty array
-        if let seriesArray = try? container.decodeIfPresent([AudiobookshelfItemSeries].self, forKey: MetadataPayload.CodingKeys.series) {
+        if let seriesArray = try? container.decodeIfPresent([AudiobookshelfItemSeries].self, forKey: .series) {
             self.series = seriesArray
-        } else if let seriesDict = try? container.decodeIfPresent(AudiobookshelfItemSeries.self, forKey: MetadataPayload.CodingKeys.series) {
+        } else if let seriesDict = try? container.decodeIfPresent(AudiobookshelfItemSeries.self, forKey: .series) {
             self.series = [seriesDict]
         } else {
             self.series = []
@@ -199,6 +231,10 @@ struct AudiobookshelfItemSeries: Codable {
     let id: String?
     let name: String?
     let sequence: String?
+}
+struct AudiobookshelfItemAuthor: Codable {
+    let id: String?
+    let name: String?
 }
 
 struct AudiobookshelfAudioTrack: Codable {
