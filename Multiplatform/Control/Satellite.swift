@@ -23,6 +23,8 @@ final class Satellite {
     @ObservableDefault(.lastTabValue) @ObservationIgnored
     var lastTabValue: TabValue?
     
+    var currentSheet: Sheet?
+    
     // MARK: Playback
     
     private(set) var currentItemID: ItemIdentifier?
@@ -97,6 +99,23 @@ final class Satellite {
         setupObservers()
     }
     
+    enum Sheet: Identifiable {
+        case preferences
+        
+        case description(_ item: Item)
+        case podcastConfiguration(_ podcastID: ItemIdentifier)
+        
+        var id: String {
+            switch self {
+            case .preferences:
+                "preferences"
+            case .description(let item):
+                "descritpion_\(item.id)"
+            case .podcastConfiguration(let itemID):
+                "podcastConfiguration_\(itemID)"
+            }
+        }
+    }
     enum SatelliteError: Error {
         case missingItem
     }
@@ -163,6 +182,9 @@ extension Satellite {
     var isNowPlayingVisible: Bool {
         currentItemID != nil
     }
+    var isSheetPresented: Bool {
+        currentSheet != nil
+    }
     
     var played: Percentage {
         min(1, max(0, currentChapterTime / chapterDuration))
@@ -173,6 +195,10 @@ extension Satellite {
     
     func isLoading(observing: ItemIdentifier) -> Bool {
         totalLoading > 0 || busy[observing] ?? 0 > 0
+    }
+    
+    func present(_ sheet: Sheet) {
+        currentSheet = sheet
     }
     
     nonisolated func play() {

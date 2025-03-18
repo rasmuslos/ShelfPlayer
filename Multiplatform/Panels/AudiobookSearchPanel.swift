@@ -11,9 +11,9 @@ import ShelfPlayerKit
 internal struct SearchView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.library) private var library
+    
     @FocusState private var focused
     
-    @State private var isPreferenceSheetPresented = false
     @State private var viewModel: SearchViewModel = .init()
     
     var body: some View {
@@ -55,6 +55,7 @@ internal struct SearchView: View {
         .searchFocused($focused)
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .modifier(PlaybackSafeAreaPaddingModifier())
+        .modifier(CompactPreferencesToolbarModifier())
         .environment(viewModel)
         .refreshable {
             viewModel.load()
@@ -77,23 +78,6 @@ internal struct SearchView: View {
             viewModel.search = search
         }
          */
-        .modify {
-            if horizontalSizeClass == .compact {
-                $0
-                    .toolbar {
-                        Button("preferences") {
-                            isPreferenceSheetPresented.toggle()
-                        }
-                    }
-                    .sheet(isPresented: $isPreferenceSheetPresented) {
-                        NavigationStack {
-                            PreferencesView()
-                        }
-                    }
-            } else {
-                $0
-            }
-        }
     }
 }
 
@@ -199,4 +183,5 @@ private final class SearchViewModel: Sendable {
     NavigationStack {
         SearchView()
     }
+    .previewEnvironment()
 }

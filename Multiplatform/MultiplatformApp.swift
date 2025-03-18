@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Nuke
-import TipKit
 import ShelfPlayerKit
 
 @main
@@ -19,12 +18,10 @@ struct MultiplatformApp: App {
         ShelfPlayerKit.enableCentralized = false
         #endif
         
-        ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
+        ShelfPlayer.launchHook()
         
         // BackgroundTaskHandler.setup()
         // OfflineManager.shared.setupFinishedRemoveObserver()
-        
-        try? Tips.configure()
     }
     
     var body: some Scene {

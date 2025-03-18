@@ -22,6 +22,7 @@ extension SchemaV2 {
         var duration: TimeInterval
         var currentTime: TimeInterval
         
+        private(set) var startTime: TimeInterval
         var timeListened: TimeInterval
         
         var started: Date
@@ -29,13 +30,14 @@ extension SchemaV2 {
         
         var eligibleForEarlySync: Bool
         
-        init(itemID: ItemIdentifier, duration: TimeInterval, currentTime: TimeInterval, timeListened: TimeInterval) {
+        init(itemID: ItemIdentifier, duration: TimeInterval, currentTime: TimeInterval, startTime: TimeInterval, timeListened: TimeInterval) {
             id = .init()
             _itemID = itemID.description
             
             self.duration = duration
             self.currentTime = currentTime
             
+            self.startTime = startTime
             self.timeListened = timeListened
             
             started = .now

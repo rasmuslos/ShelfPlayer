@@ -39,7 +39,6 @@
 		3A3129A52D24190900D143B4 /* HeaderEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A42D24190200D143B4 /* HeaderEditor.swift */; };
 		3A337E3A2B0E13CE009C932A /* EpisodeContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A337E392B0E13CE009C932A /* EpisodeContextMenuModifier.swift */; };
 		3A36D78B2ACF2C1D002EEC54 /* AudiobookGrids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */; };
-		3A36ED3D2BE8EC0E00AECE9C /* AccountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36ED3C2BE8EC0E00AECE9C /* AccountSheet.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
 		3A47D1872CB991BC0045C2BB /* SecondaryShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */; };
 		3A49848A2D610DF10086A2B5 /* AudiobookRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4984892D610DF00086A2B5 /* AudiobookRow.swift */; };
@@ -136,7 +135,6 @@
 		3ABCC7E22AD4659F004AEADF /* Description.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABCC7E12AD4659E004AEADF /* Description.swift */; };
 		3ABCC7E42AD46655004AEADF /* HeroBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABCC7E32AD46655004AEADF /* HeroBackground.swift */; };
 		3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABD77C12AD1459100636513 /* SeriesView+Header.swift */; };
-		3AC108C92CAE8E4E006B912F /* DownloadQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC108C82CAE8E4B006B912F /* DownloadQueue.swift */; };
 		3AC3FD632D79E8B800FA10DF /* PlaybackQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3FD622D79E8B800FA10DF /* PlaybackQueue.swift */; };
 		3AC3FD652D79E8C200FA10DF /* SleepTimerEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3FD642D79E8C200FA10DF /* SleepTimerEditor.swift */; };
 		3AC41F912CC52F3C009ABBFA /* CarPlayPodcastLibraryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F902CC52F34009ABBFA /* CarPlayPodcastLibraryController.swift */; };
@@ -240,7 +238,6 @@
 		3A3129A42D24190200D143B4 /* HeaderEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEditor.swift; sourceTree = "<group>"; };
 		3A337E392B0E13CE009C932A /* EpisodeContextMenuModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeContextMenuModifier.swift; sourceTree = "<group>"; };
 		3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookGrids.swift; sourceTree = "<group>"; };
-		3A36ED3C2BE8EC0E00AECE9C /* AccountSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSheet.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryShadow.swift; sourceTree = "<group>"; };
 		3A4984892D610DF00086A2B5 /* AudiobookRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookRow.swift; sourceTree = "<group>"; };
@@ -339,7 +336,6 @@
 		3ABCC7E12AD4659E004AEADF /* Description.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Description.swift; sourceTree = "<group>"; };
 		3ABCC7E32AD46655004AEADF /* HeroBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroBackground.swift; sourceTree = "<group>"; };
 		3ABD77C12AD1459100636513 /* SeriesView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SeriesView+Header.swift"; sourceTree = "<group>"; };
-		3AC108C82CAE8E4B006B912F /* DownloadQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadQueue.swift; sourceTree = "<group>"; };
 		3AC3FD622D79E8B800FA10DF /* PlaybackQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackQueue.swift; sourceTree = "<group>"; };
 		3AC3FD642D79E8C200FA10DF /* SleepTimerEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTimerEditor.swift; sourceTree = "<group>"; };
 		3AC41F902CC52F34009ABBFA /* CarPlayPodcastLibraryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPodcastLibraryController.swift; sourceTree = "<group>"; };
@@ -437,8 +433,8 @@
 				3A6924A92D6B9670004E291E /* Collections */,
 				3AA1642B2D6DBA4B00343214 /* Playback */,
 				3AAE5A6F2D33DCA10097DB77 /* DONE */,
+				3ACD19B82ACB5B32007D01FE /* SessionImporter.swift */,
 				3A98246A2B6EAB0A0098C06A /* Offline */,
-				3A0AE6B62AB624CC00ACCD68 /* Account */,
 				3A9206FA2B6CD77D00A5CAB0 /* Reusable */,
 				3AB418D02CE7E0E9009D9442 /* Search */,
 				3A64B3732CAACF4900446871 /* Intents */,
@@ -457,16 +453,6 @@
 				3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */,
 			);
 			path = Multiplatform;
-			sourceTree = "<group>";
-		};
-		3A0AE6B62AB624CC00ACCD68 /* Account */ = {
-			isa = PBXGroup;
-			children = (
-				3A36ED3C2BE8EC0E00AECE9C /* AccountSheet.swift */,
-				3AC108C82CAE8E4B006B912F /* DownloadQueue.swift */,
-				3ACD19B82ACB5B32007D01FE /* SessionImporter.swift */,
-			);
-			path = Account;
 			sourceTree = "<group>";
 		};
 		3A0E0ABA2ACD6E23009F8EF1 /* Audiobook */ = {
@@ -1001,7 +987,6 @@
 				3ABC462E2D5A25F800E21956 /* ItemSortOrderPicker.swift in Sources */,
 				3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */,
 				3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */,
-				3AC108C92CAE8E4E006B912F /* DownloadQueue.swift in Sources */,
 				3AB0E7252CC3FE820024DD08 /* CarPlayAudiobookLibraryController.swift in Sources */,
 				3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */,
 				3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */,
@@ -1083,7 +1068,6 @@
 				3ADD43482CC30E7A0060E043 /* CarPlayTabBar.swift in Sources */,
 				3AB8BBBF2BD7B76B0012023A /* PodcastLatestPanel.swift in Sources */,
 				3A9825DC2D4A121400A65826 /* LargePlayButtonStyle.swift in Sources */,
-				3A36ED3D2BE8EC0E00AECE9C /* AccountSheet.swift in Sources */,
 				3A8810FB2AD2CEE7009696D1 /* PodcastView+Toolbar.swift in Sources */,
 				3A012E292C806D9A0073A619 /* View+ReverseMask.swift in Sources */,
 				3A3129A52D24190900D143B4 /* HeaderEditor.swift in Sources */,

@@ -148,25 +148,6 @@ struct AuthorView: View {
                 }
             }
         }
-        .sheet(isPresented: $viewModel.isDescriptionSheetVisible) {
-            NavigationStack {
-                ScrollView {
-                    HStack(spacing: 0) {
-                        if let description = viewModel.author.description {
-                            Text(description)
-                        } else {
-                            Text("description.unavailable")
-                        }
-                        
-                        Spacer(minLength: 0)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 20)
-                }
-                .navigationTitle(viewModel.author.name)
-                .presentationDragIndicator(.visible)
-            }
-        }
         .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .sensoryFeedback(.error, trigger: viewModel.seriesLoader.notifyError)

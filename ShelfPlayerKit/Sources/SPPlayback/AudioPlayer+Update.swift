@@ -200,6 +200,14 @@ extension AudioPlayer {
                 logger.error("Failed to remove finished download: \(error)")
             }
         }
+        
+        Task {
+            do {
+                try await PersistenceManager.shared.session.attemptSync(early: true)
+            } catch {
+                logger.error("Failed to sync sessions: \(error)")
+            }
+        }
     }
     
     func isBusyDidChange() async {

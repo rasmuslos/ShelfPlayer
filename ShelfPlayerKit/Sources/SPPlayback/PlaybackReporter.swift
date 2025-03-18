@@ -19,18 +19,22 @@ final actor PlaybackReporter {
     private let sessionID: String?
     private var localSessionID: UUID?
     
+    private var startTime: TimeInterval
+    
     private var duration: TimeInterval?
     private var currentTime: TimeInterval?
     
-    private var lastUpdateTime: Date?
+    private var lastTimeSpendListeningCalculation: Date?
     private var accumulatedTimeSpendListening: TimeInterval = 0
     
     private var lastUpdate: Date?
     private var isFinished: Bool
     
-    init(itemID: ItemIdentifier, sessionID: String?) {
+    init(itemID: ItemIdentifier, startTime: TimeInterval, sessionID: String?) {
         self.sessionID = sessionID
         self.itemID = itemID
+        
+        self.startTime = startTime
         
         isFinished = false
         
@@ -56,12 +60,14 @@ final actor PlaybackReporter {
     
     func didChangePlayState(isPlaying: Bool) {
         if isPlaying {
-            if let lastUpdateTime {
-                logger.warning("Time spent listening is not accurate: \(Date().timeIntervalSince(lastUpdateTime)), \(self.accumulatedTimeSpendListening)")
+            if let lastTimeSpendListeningCalculation {
+                logger.warning("Time spent listening is not accurate: \(Date().timeIntervalSince(lastTimeSpendListeningCalculation)), \(self.accumulatedTimeSpendListening)")
             }
+            
+            lastTimeSpendListeningCalculation = .now
         } else {
-            if let delta = lastUpdateTime?.distance(to: .now) {
-                lastUpdateTime = nil
+            if let delta = lastTimeSpendListeningCalculation?.distance(to: .now) {
+                lastTimeSpendListeningCalculation = nil
                 accumulatedTimeSpendListening += delta
             } else {
                 logger.warning("Could not calculate time spent listening")
@@ -127,14 +133,14 @@ private extension PlaybackReporter {
         
         let timeListened: TimeInterval
         
-        if let delta = lastUpdateTime?.distance(to: .now) {
-            lastUpdateTime = .now
+        if let delta = lastTimeSpendListeningCalculation?.distance(to: .now) {
             timeListened = accumulatedTimeSpendListening + delta
         } else {
             timeListened = accumulatedTimeSpendListening
         }
         
         accumulatedTimeSpendListening = 0
+        lastTimeSpendListeningCalculation = .now
         lastUpdate = .now
         
         Task {
@@ -154,7 +160,7 @@ private extension PlaybackReporter {
                     if let localSessionID {
                         try await PersistenceManager.shared.session.updateLocalPlaybackSession(sessionID: localSessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
                     } else {
-                        localSessionID = try await PersistenceManager.shared.session.createLocalPlaybackSession(for: itemID, currentTime: currentTime, duration: duration, timeListened: timeListened)
+                        localSessionID = try await PersistenceManager.shared.session.createLocalPlaybackSession(for: itemID, startTime: startTime, currentTime: currentTime, duration: duration, timeListened: timeListened)
                     }
                 } catch {
                     logger.warning("Failed to update local session: \(error).")

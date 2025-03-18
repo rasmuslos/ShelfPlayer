@@ -122,19 +122,6 @@ struct ConnectionAddView: View {
     }
 }
 
-struct ConnectionAddSheetModifier: ViewModifier {
-    @Binding var isPresented: Bool
-    
-    func body(content: Content) -> some View {
-        content
-            .sheet(isPresented: $isPresented) {
-                ConnectionAddView() {
-                    isPresented = false
-                }
-            }
-    }
-}
-
 @Observable @MainActor
 private final class ViewModel: Sendable {
     var endpoint = "https://"

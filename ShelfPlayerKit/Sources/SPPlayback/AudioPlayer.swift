@@ -22,14 +22,12 @@ public final actor AudioPlayer: Sendable {
     let audioSession = AVAudioSession.sharedInstance()
     let widgetManager = NowPlayingWidgetManager()
     
+    var didPauseAt: Date?
     var sleepTimerDidExpireAt: (SleepTimerConfiguration, Date)?
     
     init() {
         addRemoteCommandTargets()
-        
-        Task {
-            await setupObservers()
-        }
+        setupObservers()
     }
     
     public static let shared = AudioPlayer()
@@ -149,6 +147,18 @@ public extension AudioPlayer {
     func play() async {
         await current?.play()
         
+        if let didPauseAt {
+            if didPauseAt.distance(to: .now) > 30, let currentTime = await currentTime {
+                do {
+                    try await seek(to: currentTime - 10, insideChapter: false)
+                } catch {
+                    logger.error("Could not seek back 10 seconds (smart rewind): \(error)")
+                }
+            }
+            
+            self.didPauseAt = nil
+        }
+        
         if let (configuration, date) = sleepTimerDidExpireAt {
             let distance = date.distance(to: .now)
             
@@ -158,6 +168,7 @@ public extension AudioPlayer {
         }
     }
     func pause() async {
+        didPauseAt = .now
         await current?.pause()
     }
     
@@ -276,6 +287,14 @@ private extension AudioPlayer {
         RFNotification[.sleepTimerExpired].subscribe(queue: .sender) { [weak self] configuration in
             Task {
                 await self?.sleepTimerDidExpire(configuration: configuration)
+                
+                if Defaults[.enableSmartRewind], let currentTime = await self?.currentTime {
+                    do {
+                        try await self?.seek(to: currentTime - 10, insideChapter: false)
+                    } catch {
+                        self?.logger.warning("Could not rewind after sleep timer expired: \(error)")
+                    }
+                }
             }
         }
     }
@@ -383,7 +402,7 @@ private extension AudioPlayer {
     }
 }
 
-extension RFNotification.Notification {
+public extension RFNotification.Notification {
     static var shake: Notification<TimeInterval> {
         .init("io.rfk.shelfPlayer.shake")
     }

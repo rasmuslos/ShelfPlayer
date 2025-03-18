@@ -58,6 +58,7 @@ extension PodcastView {
 extension PodcastView.ToolbarModifier {
     struct OptionsMenu: View {
         @Environment(PodcastViewModel.self) private var viewModel
+        @Environment(Satellite.self) private var satellite
         
         var body: some View {
             @Bindable var viewModel = viewModel
@@ -72,7 +73,7 @@ extension PodcastView.ToolbarModifier {
                 }
                 
                 Button("podcast.configure", systemImage: "gearshape") {
-                    viewModel.isConfigureSheetPresented.toggle()
+                    satellite.present(.podcastConfiguration(viewModel.podcast.id))
                 }
             }
             .menuActionDismissBehavior(.disabled)

@@ -15,7 +15,7 @@ import UIKit
 public struct SessionPayload: Sendable, Codable, Identifiable {
     public let id: String
     let userId: String
-    let libraryID: String?
+    let libraryId: String?
     
     let libraryItemId: String
     let episodeId: String?
@@ -34,6 +34,9 @@ public struct SessionPayload: Sendable, Codable, Identifiable {
     
     public let mediaPlayer: String
     public let deviceInfo: DeviceInfo
+    
+    let date: String?
+    let dayOfWeek: String?
     
     public let serverVersion: String
     public let timeListening: Double?
@@ -57,25 +60,21 @@ public extension SessionPayload {
 extension SessionPayload {
     public struct DeviceInfo: Sendable, Codable {
         public let id: String?
+        public let userId: String?
         public let deviceId: String?
+        
+        public let browserName: String?
+        public let browserVersion: String?
+        
         public let osName: String?
         public let osVersion: String?
+        
         public let deviceType: String?
         public let manufacturer: String?
+        public let model: String?
+        
         public let clientName: String?
         public let clientVersion: String?
-        
-        static var current: Self {
-            .init(
-                id: ShelfPlayerKit.clientID,
-                deviceId: ShelfPlayerKit.clientID,
-                osName: "iOS",
-                osVersion: ShelfPlayerKit.machine,
-                deviceType: "iPhone",
-                manufacturer: "Apple",
-                clientName: "ShelfPlayer",
-                clientVersion: ShelfPlayerKit.clientVersion)
-        }
     }
 }
 
