@@ -123,8 +123,6 @@ internal extension TabValue {
             [.audiobookHome(library), .audiobookSeries(library), .audiobookAuthors(library), .audiobookLibrary(library), .audiobookSearch(library)]
         case .podcasts:
             [.podcastHome(library), .podcastLatest(library), .podcastLibrary(library)]
-        default:
-            []
         }
     }
 }

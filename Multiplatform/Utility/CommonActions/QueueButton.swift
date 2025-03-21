@@ -18,7 +18,7 @@ struct QueueButton: View {
     
     var body: some View {
         Button("queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
-            satellite.queue(item)
+            satellite.queue(item.id)
         }
         .disabled(satellite.isLoading(observing: item.id))
     }

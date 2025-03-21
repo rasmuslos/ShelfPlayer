@@ -179,9 +179,11 @@ private final class SearchViewModel: Sendable {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         SearchView()
     }
     .previewEnvironment()
 }
+#endif

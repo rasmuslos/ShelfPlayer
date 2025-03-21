@@ -118,7 +118,7 @@ struct EpisodePlayButton: View {
     
     var body: some View {
         Button {
-            satellite.start(episode)
+            satellite.start(episode.id)
         } label: {
             text()
                 .opacity(highlighted ? 0 : 1)

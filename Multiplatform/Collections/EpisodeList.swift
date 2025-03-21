@@ -48,7 +48,7 @@ private struct Row: View {
             HStack(spacing: 0) {
                 if context.isImageVisible {
                     Button {
-                        satellite.start(episode)
+                        satellite.start(episode.id)
                     } label: {
                         ItemImage(item: episode, size: .small)
                             .frame(width: 104)

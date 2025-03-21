@@ -8,6 +8,7 @@
 import Foundation
 import AppIntents
 
+/*
 struct ShortcutProvider: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: CheckForNewDownloadsIntent(), phrases: [
@@ -20,3 +21,4 @@ struct ShortcutProvider: AppShortcutsProvider {
     
     static let shortcutTileColor: ShortcutTileColor = .yellow
 }
+*/

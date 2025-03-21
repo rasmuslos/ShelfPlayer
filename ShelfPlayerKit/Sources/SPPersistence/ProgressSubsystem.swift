@@ -259,6 +259,8 @@ public extension PersistenceManager.ProgressSubsystem {
                 try modelContext.enumerate(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
                     $0.connectionID == connectionID
                 })) { entity in
+                    try Task.checkCancellation()
+                    
                     let id = entity.id
                     
                     guard let index = payload.firstIndex(where: { $0.id == id }) else {
@@ -339,27 +341,6 @@ public extension PersistenceManager.ProgressSubsystem {
             signposter.emitEvent("transaction", id: signpostID)
             try Task.checkCancellation()
             
-            logger.info("Deleting \(pendingDeletion.count) progress entities")
-            
-            for (id, connectionID) in pendingDeletion {
-                try? await ABSClient[connectionID].delete(progressID: id)
-            }
-            
-            signposter.emitEvent("delete", id: signpostID)
-            try Task.checkCancellation()
-            
-            let batch = pendingCreation + pendingUpdate
-            let grouped = Dictionary(batch.map { ($0.connectionID, [$0]) }, uniquingKeysWith: +)
-            
-            logger.info("Batch updating \(batch.count) progress entities from \(grouped.count) servers")
-            
-            for (connectionID, entities) in grouped {
-                try await ABSClient[connectionID].batchUpdate(progress: entities)
-            }
-            
-            signposter.emitEvent("batch", id: signpostID)
-            try Task.checkCancellation()
-            
             // try modelContext.transaction {
             for payload in payload {
                 let _ = createEntity(id: payload.id,
@@ -378,8 +359,28 @@ public extension PersistenceManager.ProgressSubsystem {
             }
             // }
             
-            signposter.emitEvent("cleanup", id: signpostID)
+            signposter.emitEvent("create", id: signpostID)
             try Task.checkCancellation()
+            
+            let batch = pendingCreation + pendingUpdate
+            let grouped = Dictionary(batch.map { ($0.connectionID, [$0]) }, uniquingKeysWith: +)
+            
+            logger.info("Batch updating \(batch.count) progress entities from \(grouped.count) servers")
+            
+            for (connectionID, entities) in grouped {
+                try await ABSClient[connectionID].batchUpdate(progress: entities)
+            }
+            
+            signposter.emitEvent("batch", id: signpostID)
+            try Task.checkCancellation()
+            
+            logger.info("Deleting \(pendingDeletion.count) progress entities")
+            
+            for (id, connectionID) in pendingDeletion {
+                try? await ABSClient[connectionID].delete(progressID: id)
+            }
+            
+            signposter.emitEvent("delete", id: signpostID)
             
             try modelContext.save()
             

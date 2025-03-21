@@ -51,6 +51,8 @@ final class Satellite {
     private(set) var route: AudioRoute?
     private(set) var sleepTimer: SleepTimerConfiguration?
     
+    private(set) var bookmarks: [Bookmark]
+    
     // MARK: Playback helper
     
     private(set) var remainingSleepTime: Double?
@@ -88,6 +90,8 @@ final class Satellite {
         playbackRate = 0
         
         route = nil
+        
+        bookmarks = []
         
         totalLoading = 0
         busy = [:]
@@ -146,33 +150,6 @@ final class Satellite {
                 } else {
                     notifyError.toggle()
                 }
-            }
-        }
-    }
-    
-    private nonisolated func resolvePlayingItem() {
-        Task {
-            guard let currentItemID = await currentItemID else {
-                await MainActor.withAnimation {
-                    self.currentItem = nil
-                }
-                
-                return
-            }
-            
-            await startWorking(on: currentItemID)
-            
-            do {
-                guard let item = try await currentItemID.resolved as? PlayableItem else {
-                    throw SatelliteError.missingItem
-                }
-                
-                await MainActor.withAnimation {
-                    self.currentItem = item
-                }
-                await endWorking(on: currentItemID, successfully: nil)
-            } catch {
-                await endWorking(on: currentItemID, successfully: false)
             }
         }
     }
@@ -266,20 +243,20 @@ extension Satellite {
         }
     }
     
-    nonisolated func start(_ item: PlayableItem) {
+    nonisolated func start(_ itemID: ItemIdentifier) {
         Task {
-            guard await self.currentItem != item else {
+            guard await self.currentItemID != itemID else {
                 await togglePlaying()
                 return
             }
             
-            await startWorking(on: item.id)
+            await startWorking(on: itemID)
             
             do {
-                try await AudioPlayer.shared.start(item.id, withoutListeningSession: isOffline)
-                await endWorking(on: item.id, successfully: true)
+                try await AudioPlayer.shared.start(itemID, withoutListeningSession: isOffline)
+                await endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: item.id, successfully: false)
+                await endWorking(on: itemID, successfully: false)
             }
         }
     }
@@ -295,15 +272,15 @@ extension Satellite {
         }
     }
     
-    nonisolated func queue(_ item: PlayableItem) {
+    nonisolated func queue(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: item.id)
+            await startWorking(on: itemID)
             
             do {
-                try await AudioPlayer.shared.queue([.init(itemID: item.id, startWithoutListeningSession: isOffline)])
-                await endWorking(on: item.id, successfully: true)
+                try await AudioPlayer.shared.queue([.init(itemID: itemID, startWithoutListeningSession: isOffline)])
+                await endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: item.id, successfully: false)
+                await endWorking(on: itemID, successfully: false)
             }
         }
     }
@@ -411,50 +388,134 @@ extension Satellite {
         }
     }
     
-    nonisolated func markAsFinished(_ item: PlayableItem) {
+    nonisolated func markAsFinished(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: item.id)
+            await startWorking(on: itemID)
             
             do {
-                if await currentItemID == item.id {
+                if await currentItemID == itemID {
                     try await AudioPlayer.shared.seek(to: duration, insideChapter: false)
                 } else {
-                    try await PersistenceManager.shared.progress.markAsCompleted(item.id)
+                    try await PersistenceManager.shared.progress.markAsCompleted(itemID)
                 }
                 
-                await endWorking(on: item.id, successfully: true)
+                await endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: item.id, successfully: false)
+                await endWorking(on: itemID, successfully: false)
             }
         }
     }
-    nonisolated func markAsUnfinished(_ item: PlayableItem) {
+    nonisolated func markAsUnfinished(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: item.id)
+            await startWorking(on: itemID)
             
             do {
-                try await PersistenceManager.shared.progress.markAsListening(item.id)
-                await endWorking(on: item.id, successfully: true)
+                try await PersistenceManager.shared.progress.markAsListening(itemID)
+                await endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: item.id, successfully: false)
+                await endWorking(on: itemID, successfully: false)
             }
         }
     }
-    nonisolated func deleteProgress(_ item: PlayableItem) {
+    nonisolated func deleteProgress(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: item.id)
+            await startWorking(on: itemID)
             
             do {
-                try await PersistenceManager.shared.progress.delete(itemID: item.id)
-                await endWorking(on: item.id, successfully: true)
+                try await PersistenceManager.shared.progress.delete(itemID: itemID)
+                await endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: item.id, successfully: false)
+                await endWorking(on: itemID, successfully: false)
+            }
+        }
+    }
+    
+    nonisolated func createQuickBookmark() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            
+            do {
+                try await AudioPlayer.shared.createQuickBookmark()
+                await endWorking(on: currentItemID, successfully: true)
+            } catch {
+                await endWorking(on: currentItemID, successfully: false)
+            }
+        }
+    }
+    nonisolated func deleteBookmark(at time: UInt64, from itemID: ItemIdentifier) {
+        Task {
+            await startWorking(on: itemID)
+            
+            do {
+                try await PersistenceManager.shared.bookmark.delete(at: time, from: itemID)
+                
+                if await currentItemID == itemID {
+                    await MainActor.withAnimation {
+                        bookmarks.removeAll {
+                            $0.time == time
+                        }
+                    }
+                }
+                
+                await endWorking(on: itemID, successfully: true)
+            } catch {
+                await endWorking(on: itemID, successfully: false)
             }
         }
     }
 }
 
 private extension Satellite {
+    private nonisolated func resolvePlayingItem() {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                await MainActor.withAnimation {
+                    self.currentItem = nil
+                }
+                
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            
+            do {
+                guard let item = try await currentItemID.resolved as? PlayableItem else {
+                    throw SatelliteError.missingItem
+                }
+                
+                await MainActor.withAnimation {
+                    self.currentItem = item
+                }
+                await endWorking(on: currentItemID, successfully: nil)
+            } catch {
+                await endWorking(on: currentItemID, successfully: false)
+            }
+        }
+    }
+    private nonisolated func loadBookmarks(itemID: ItemIdentifier) {
+        Task {
+            do {
+                guard itemID.type == .audiobook else {
+                    throw CancellationError()
+                }
+                
+                let bookmarks = try await PersistenceManager.shared.bookmark[itemID]
+                
+                await MainActor.withAnimation {
+                    self.bookmarks = bookmarks
+                }
+            } catch {
+                await MainActor.withAnimation {
+                    self.bookmarks = []
+                }
+            }
+        }
+    }
+    
     private func setupObservers() {
         RFNotification[.changeOfflineMode].subscribe { [weak self] in
             self?.isOffline = $0
@@ -481,6 +542,7 @@ private extension Satellite {
             self?.sleepTimer = nil
             
             self?.resolvePlayingItem()
+            self?.loadBookmarks(itemID: $0.0)
         }.store(in: &stash)
         
         RFNotification[.playStateChanged].subscribe { [weak self] isPlaying in
@@ -557,6 +619,16 @@ private extension Satellite {
             
             self?.route = nil
             self?.sleepTimer = nil
+            
+            self?.bookmarks = []
+        }.store(in: &stash)
+        
+        RFNotification[.bookmarksChanged].subscribe { [weak self] itemID in
+            guard self?.currentItemID == itemID else {
+                return
+            }
+            
+            self?.loadBookmarks(itemID: itemID)
         }.store(in: &stash)
     }
 }
