@@ -35,11 +35,15 @@ final class ConnectionStore {
             didLoad = true
         }
         
+        RFNotification[.changeOfflineMode].subscribe { [weak self] connections in
+            self?.update()
+        }
         RFNotification[.connectionsChanged].subscribe { [weak self] connections in
             withAnimation {
                 self?.connections = connections
-                self?.update()
             }
+            
+            self?.update()
         }
     }
     

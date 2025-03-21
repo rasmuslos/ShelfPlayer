@@ -1559,9 +1559,6 @@
         }
       }
     },
-    "audiobook.narrator" : {
-
-    },
     "audiobook.narrator %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5957,11 +5954,7 @@
         }
       }
     },
-    "readBy" : {
-
-    },
     "readBy %@" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

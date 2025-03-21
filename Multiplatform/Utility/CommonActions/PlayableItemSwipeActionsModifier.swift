@@ -10,7 +10,7 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-struct ItemSwipeActionsModifier: ViewModifier {
+struct PlayableItemSwipeActionsModifier: ViewModifier {
     @Environment(Satellite.self) private var satellite
     @Default(.tintColor) private var tintColor
     

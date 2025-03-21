@@ -87,13 +87,10 @@ private struct Title: View {
                 }
                 
                 if !viewModel.audiobook.narrators.isEmpty {
-                    Group {
-                        Text("audiobook.narrator")
-                        + Text(viewModel.audiobook.narrators, format: .list(type: .and, width: .short))
-                    }
-                    .font(.caption)
-                    .lineLimit(1)
-                    .foregroundStyle(.secondary)
+                    Text("readBy \(viewModel.audiobook.narrators.formatted(.list(type: .and, width: .short)))")
+                        .font(.caption)
+                        .lineLimit(1)
+                        .foregroundStyle(.secondary)
                 }
                 
                 Group {
