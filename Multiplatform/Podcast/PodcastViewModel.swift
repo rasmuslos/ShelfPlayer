@@ -149,22 +149,10 @@ private extension PodcastViewModel {
     }
     
     nonisolated func extractColor() async {
-        guard let image = await podcast.id.platformCover(size: .small) else {
-            return
-        }
-        
-        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
-            return
-        }
-        
-        let filtered = RFKVisuals.brightnessExtremeFilter(colors.map { $0.color }, threshold: 0.1)
-        
-        guard let result = RFKVisuals.determineMostSaturated(filtered) else {
-            return
-        }
+        let color = await PersistenceManager.shared.item.domiantColor(of: podcast.id)
         
         await MainActor.withAnimation {
-            self.dominantColor = result
+            self.dominantColor = color
         }
     }
     

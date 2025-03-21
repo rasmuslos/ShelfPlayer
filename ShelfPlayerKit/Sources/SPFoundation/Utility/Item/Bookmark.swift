@@ -24,6 +24,7 @@ public struct Bookmark {
 }
 
 extension Bookmark: Sendable {}
+extension Bookmark: Hashable {}
 extension Bookmark: Identifiable {
     public var id: String {
         "\(itemID)_\(time)"

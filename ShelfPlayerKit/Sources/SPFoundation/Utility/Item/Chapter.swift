@@ -26,6 +26,7 @@ public struct Chapter {
 }
 
 extension Chapter: Sendable {}
+extension Chapter: Hashable {}
 extension Chapter: Comparable {
     public static func <(lhs: Self, rhs: Self) -> Bool {
         lhs.startOffset < rhs.startOffset
