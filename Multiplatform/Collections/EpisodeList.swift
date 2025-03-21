@@ -26,7 +26,6 @@ struct EpisodeList: View {
     }
 }
 
-
 private struct Row: View {
     @Environment(Satellite.self) private var satellite
     @Environment(\.namespace) private var namespace
@@ -34,17 +33,10 @@ private struct Row: View {
     let episode: Episode
     let context: EpisodeList.PresentationContext
     
-    @State private var _zoomID = UUID()
-    private var zoomID: UUID? {
-        if context == .grid {
-            return _zoomID
-        }
-        
-        return nil
-    }
+    @State private var zoomID = UUID()
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode, zoomID: zoomID)) {
+        NavigationLink(destination: EpisodeView(episode, zoomID: context == .grid ? zoomID : nil)) {
             HStack(spacing: 0) {
                 if context.isImageVisible {
                     Button {
@@ -64,11 +56,11 @@ private struct Row: View {
                                     }
                                 }
                             }
-                            .padding(.trailing, 12)
                     }
                     .buttonStyle(.plain)
                     .disabled(satellite.isLoading(observing: episode.id))
                     .matchedTransitionSource(id: zoomID, in: namespace!)
+                    .padding(.trailing, 12)
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
@@ -95,7 +87,7 @@ private struct Row: View {
             .contentShape(.hoverMenuInteraction, .rect())
         }
         .buttonStyle(.plain)
-        .modifier(ItemSwipeActionsModifier(item: episode))
+        .modifier(ItemSwipeActionsModifier(itemID: episode.id))
         .modifier(EpisodeContextMenuModifier(episode: episode))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
@@ -144,7 +136,7 @@ struct EpisodeItemActions: View {
             if let status = download.status {
                 switch status {
                 case .downloading:
-                    DownloadButton(item: episode, progressVisibility: .episode)
+                    DownloadButton(itemID: episode.id, progressVisibility: .episode)
                 case .completed:
                     Image(systemName: "arrow.down.circle.fill")
                         .font(.system(size: 10))

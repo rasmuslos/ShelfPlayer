@@ -11,12 +11,12 @@ import ShelfPlayerKit
 struct QueuePlayButton: View {
     @Environment(Satellite.self) private var satellite
     
-    let item: PlayableItem
+    let itemID: ItemIdentifier
     
     var body: some View {
         Button("queue.play", systemImage: "play.fill") {
-            satellite.start(item.id)
+            satellite.start(itemID)
         }
-        .disabled(satellite.isLoading(observing: item.id))
+        .disabled(satellite.isLoading(observing: itemID))
     }
 }

@@ -14,29 +14,36 @@ struct ItemSwipeActionsModifier: ViewModifier {
     @Environment(Satellite.self) private var satellite
     @Default(.tintColor) private var tintColor
     
-    let item: PlayableItem
+    let itemID: ItemIdentifier
+    
+    @State private var download: DownloadStatusTracker
+    
+    init(itemID: ItemIdentifier) {
+        self.itemID = itemID
+        _download = .init(initialValue: .init(itemID: itemID))
+    }
     
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading) {
-                QueueButton(item: item, hideLast: true)
+                QueueButton(itemID: itemID, hideLast: true)
                     .labelStyle(.iconOnly)
                     .tint(tintColor.accent)
             }
             .swipeActions(edge: .leading) {
                 Button("play", systemImage: "play") {
-                    satellite.start(item.id)
+                    satellite.start(itemID)
                 }
                 .labelStyle(.iconOnly)
-                .disabled(satellite.isLoading(observing: item.id))
+                .disabled(satellite.isLoading(observing: itemID))
                 .tint(tintColor.color)
             }
             .swipeActions(edge: .trailing) {
-                DownloadButton(item: item, tint: true)
+                DownloadButton(itemID: itemID, tint: true, initialStatus: download.status)
                     .labelStyle(.iconOnly)
             }
             .swipeActions(edge: .trailing) {
-                ProgressButton(item: item, tint: true)
+                ProgressButton(itemID: itemID, tint: true)
                     .labelStyle(.iconOnly)
             }
     }

@@ -62,20 +62,6 @@ struct TabRouter: View {
     }
     
     @ViewBuilder
-    private func sheetContent(for sheet: Satellite.Sheet) -> some View {
-        switch sheet {
-        case .preferences:
-            NavigationStack {
-                PreferencesView()
-            }
-        case .description(let item):
-            DescriptionSheet(item: item)
-        case .podcastConfiguration(let itemID):
-            PodcastConfigurationSheet(podcastID: itemID)
-        }
-    }
-    
-    @ViewBuilder
     private func content(for tab: TabValue) -> some View {
         @Bindable var satellite = satellite
         
@@ -85,9 +71,6 @@ struct TabRouter: View {
                     .modifier(TabContentPlaybackModifier())
                     .task {
                         ShelfPlayer.updateUIHook()
-                    }
-                    .sheet(item: $satellite.currentSheet) {
-                        sheetContent(for: $0)
                     }
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
                 ContentUnavailableView("import.failed", systemImage: "circle.badge.xmark", description: Text("import.failed.description"))

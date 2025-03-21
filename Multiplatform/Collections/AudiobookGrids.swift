@@ -28,7 +28,7 @@ struct AudiobookVGrid: View {
                         NavigationLink {
                             AudiobookView(audiobook)
                         } label: {
-                            ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
+                            ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                                 .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
                                 .hoverEffect(.highlight)
                         }
@@ -91,7 +91,7 @@ struct AudiobookHGrid: View {
                 LazyHStack(alignment: .bottom, spacing: 0) {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook)) {
-                            ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
+                            ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                                 .frame(width: size)
                                 .padding(.leading, gap)
                                 .modifier(AudiobookContextMenuModifier(audiobook: audiobook))

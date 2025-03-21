@@ -14,16 +14,16 @@ struct StatusOverlay: View {
     @Default(.tintColor) private var tintColor
     @Default(.itemImageStatusPercentageText) private var itemImageStatusPercentageText
     
-    let item: PlayableItem
+    let itemID: ItemIdentifier
     
     @State private var progress: ProgressTracker
     @State private var download: DownloadStatusTracker
     
-    init(item: PlayableItem) {
-        self.item = item
+    init(itemID: ItemIdentifier) {
+        self.itemID = itemID
         
-        _progress = .init(initialValue: .init(itemID: item.id))
-        _download = .init(initialValue: .init(itemID: item.id))
+        _progress = .init(initialValue: .init(itemID: itemID))
+        _download = .init(initialValue: .init(itemID: itemID))
     }
     
     private var showTriangle: Bool {
@@ -54,7 +54,7 @@ struct StatusOverlay: View {
                                 .overlay(alignment: .topTrailing) {
                                     Group {
                                         if download.status == .downloading {
-                                            DownloadButton(item: item, progressVisibility: .triangle)
+                                            DownloadButton(itemID: itemID, progressVisibility: .triangle)
                                         } else if progress < 1 {
                                             if itemImageStatusPercentageText {
                                                 Text(verbatim: "\(Int(progress * 100))")
@@ -93,15 +93,15 @@ struct StatusOverlay: View {
 }
 
 struct ItemProgressIndicatorImage: View {
-    let item: PlayableItem
+    let itemID: ItemIdentifier
     let size: ItemIdentifier.CoverSize
     
     var aspectRatio = RequestImage.AspectRatioPolicy.square
     
     var body: some View {
-        ItemImage(item: item, size: size, aspectRatio: aspectRatio)
+        ItemImage(itemID: itemID, size: size, aspectRatio: aspectRatio)
             .overlay {
-                StatusOverlay(item: item)
+                StatusOverlay(itemID: itemID)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             }
     }
@@ -109,6 +109,6 @@ struct ItemProgressIndicatorImage: View {
 
 #if DEBUG
 #Preview {
-    ItemProgressIndicatorImage(item: Audiobook.fixture, size: .large)
+    ItemProgressIndicatorImage(itemID: .fixture, size: .large)
 }
 #endif
