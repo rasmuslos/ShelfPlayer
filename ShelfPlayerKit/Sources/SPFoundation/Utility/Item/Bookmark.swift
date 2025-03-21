@@ -24,6 +24,11 @@ public struct Bookmark {
 }
 
 extension Bookmark: Sendable {}
+extension Bookmark: Identifiable {
+    public var id: String {
+        "\(itemID)_\(time)"
+    }
+}
 extension Bookmark: Comparable {
     public static func <(lhs: Self, rhs: Self) -> Bool {
         lhs.time < rhs.time

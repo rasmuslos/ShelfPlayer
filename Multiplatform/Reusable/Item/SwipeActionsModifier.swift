@@ -25,7 +25,7 @@ struct ItemSwipeActionsModifier: ViewModifier {
             }
             .swipeActions(edge: .leading) {
                 Button("play", systemImage: "play") {
-                    satellite.start(item)
+                    satellite.start(item.id)
                 }
                 .labelStyle(.iconOnly)
                 .disabled(satellite.isLoading(observing: item.id))

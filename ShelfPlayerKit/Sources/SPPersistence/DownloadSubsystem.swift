@@ -463,8 +463,6 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     func chapters(itemID: ItemIdentifier) -> [Chapter] {
         do {
-            print(try modelContext.fetch(FetchDescriptor<PersistedChapter>()))
-            
             return try modelContext.fetch(FetchDescriptor<PersistedChapter>(predicate: #Predicate {
                 $0._itemID == itemID.description
             })).map { .init(id: $0.index, startOffset: $0.startOffset, endOffset: $0.endOffset, title: $0.name) }

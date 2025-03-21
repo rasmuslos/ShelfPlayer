@@ -8,7 +8,7 @@
 import Foundation
 import SPFoundation
 
-public struct BookmarkPayload: Codable {
+public struct BookmarkPayload: Codable, Sendable {
     public let libraryItemId: String
     public let title: String
     public let time: Double

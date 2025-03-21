@@ -143,7 +143,7 @@ struct PlayButton: View {
         } label: {
             playButtonStyle.makeLabel(configuration: .init(progress: progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
-            satellite.start(item)
+            satellite.start(item.id)
         }
         .disabled(isLoading)
         .foregroundColor((background.isLight ?? false) ? .black : .white)

@@ -10,23 +10,21 @@ import RFNetwork
 import SPFoundation
 
 public extension APIClient {
-    /*
-    func createBookmark(itemId: String, position: UInt64, note: String) async throws -> Bookmark {
-        Bookmark(payload: try await response(for: ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark", method: .post, body: [
+    func createBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64, note: String) async throws -> Date {
+        Date(timeIntervalSince1970: try await response(for: ClientRequest<BookmarkPayload>(path: "api/me/item/\(primaryID)/bookmark", method: .post, body: [
             "title": note,
-            "time": position,
-        ])))
+            "time": time,
+        ])).createdAt / 1000)
     }
     
-    func updateBookmark(itemId: String, position: UInt64, note: String) async throws -> Bookmark {
-        Bookmark(payload: try await response(for: ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark", method: .patch, body: [
+    func updateBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64, note: String) async throws {
+        try await response(for: ClientRequest<Empty>(path: "api/me/item/\(primaryID)/bookmark", method: .patch, body: [
             "title": note,
-            "time": position,
-        ])))
+            "time": time,
+        ]))
     }
     
-    func deleteBookmark(itemId: String, position: UInt64) async throws {
-        let _ = try await response(for: ClientRequest<BookmarkPayload>(path: "api/me/item/\(itemId)/bookmark/\(Int(position))", method: .delete))
+    func deleteBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64) async throws {
+        try await response(for: ClientRequest<Empty>(path: "api/me/item/\(primaryID)/bookmark/\(time)", method: .delete))
     }
-     */
 }

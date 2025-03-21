@@ -37,7 +37,13 @@ struct SessionImporter: View {
                     
                     do {
                         let (sessions, bookmarks) = try await ABSClient[connectionID].authorize()
-                        try await PersistenceManager.shared.progress.sync(sessions: sessions, connectionID: connectionID)
+                        
+                        try await withThrowingTaskGroup(of: Void.self) {
+                            $0.addTask { try await PersistenceManager.shared.progress.sync(sessions: sessions, connectionID: connectionID) }
+                            $0.addTask { try await PersistenceManager.shared.bookmark.sync(bookmarks: bookmarks, connectionID: connectionID) }
+                            
+                            try await $0.waitForAll()
+                        }
                         
                         success = true
                     } catch {
