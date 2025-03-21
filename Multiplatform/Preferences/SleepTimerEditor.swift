@@ -50,7 +50,7 @@ struct SleepTimerEditor: View {
                         }
                     }
                     
-                    Text(":")
+                    Text(verbatim: ":")
                     
                     Picker("minutes", selection: $minuteTwo) {
                         ForEach(0..<7) { minute in
@@ -79,7 +79,7 @@ struct SleepTimerEditor: View {
             }
             
             Section("sleepTimer.extend") {
-                Picker("sleepTimer.extend..interval", selection: $sleepTimerExtendInterval) {
+                Picker("sleepTimer.extend.interval", selection: $sleepTimerExtendInterval) {
                     ForEach(Array(sleepTimerIntervals.enumerated()), id: \.element.hashValue) {
                         Text(sleepTimerIntervals[$0.offset], format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
                             .tag($0.element)

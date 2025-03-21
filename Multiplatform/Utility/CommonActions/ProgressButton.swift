@@ -43,7 +43,7 @@ struct ProgressButton: View {
             Label("progress.finished.unset", systemImage: "minus.square")
             
             if let finishedAt = progress.finishedAt {
-                Text("finished.ago") + Text(finishedAt, style: .relative)
+                Text("finished.ago \(finishedAt.formatted(.relative(presentation: .named)))")
             }
         }
     }

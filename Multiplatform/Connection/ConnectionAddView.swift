@@ -64,15 +64,15 @@ struct ConnectionAddView: View {
                         Section(strategy.label) {
                             switch strategy {
                             case .usernamePassword:
-                                TextField("Name", text: $viewModel.username)
+                                TextField("connection.username", text: $viewModel.username)
                                     .textContentType(.username)
                                     .autocorrectionDisabled()
                                     .textInputAutocapitalization(.never)
                                 
-                                SecureField("Password", text: $viewModel.password)
+                                SecureField("connection.password", text: $viewModel.password)
                                     .textContentType(.password)
                                 
-                                Button("connection.login") {
+                                Button("proceed") {
                                     viewModel.proceed()
                                 }
                                 .disabled(viewModel.loading)

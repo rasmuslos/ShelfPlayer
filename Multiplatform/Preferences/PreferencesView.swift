@@ -118,6 +118,8 @@ struct PreferencesView: View {
                 Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/Support.md")!) {
                     Label("support", systemImage: "lifepreserver")
                 }
+                
+                Label("preferences.generateLogFile", systemImage: "text.word.spacing")
             }
             
             Section {
