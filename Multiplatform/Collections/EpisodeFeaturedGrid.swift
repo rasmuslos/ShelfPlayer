@@ -87,7 +87,7 @@ private struct EpisodeGridItem: View {
             .clipShape(.rect(cornerRadius: 16))
             .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16))
             .hoverEffect(.highlight)
-            .modifier(EpisodeContextMenuModifier(episode: episode))
+            .modifier(PlayableItemContextMenuModifier(item: episode))
             .frame(width: size)
             .padding(.leading, gap)
             .matchedTransitionSource(id: zoomID, in: namespace!)

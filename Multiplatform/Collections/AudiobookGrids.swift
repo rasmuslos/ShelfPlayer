@@ -29,7 +29,7 @@ struct AudiobookVGrid: View {
                             AudiobookView(audiobook)
                         } label: {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
-                                .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+                                .modifier(PlayableItemContextMenuModifier(item: audiobook))
                                 .hoverEffect(.highlight)
                         }
                     case .series(let seriesID, _, let audiobookIDs):
@@ -94,7 +94,7 @@ struct AudiobookHGrid: View {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                                 .frame(width: size)
                                 .padding(.leading, gap)
-                                .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
+                                .modifier(PlayableItemContextMenuModifier(item: audiobook))
                                 .hoverEffect(.highlight)
                         }
                         .buttonStyle(.plain)
