@@ -141,6 +141,13 @@ struct CompactPlaybackModifier: ViewModifier {
                         }
                         .frame(height: viewModel.isExpanded ? nil : Self.height)
                         .padding(.horizontal, viewModel.isExpanded ? 0 : 12)
+                        .contextMenu {
+                            PlaybackMenuActions()
+                        } preview: {
+                            if let currentItem = satellite.currentItem {
+                                PlayableItemContextMenuPreview(item: currentItem)
+                            }
+                        }
                         .padding(.bottom, viewModel.isExpanded ? 0 : playbackBottomOffset)
                         .offset(x: 0, y: viewModel.dragOffset)
                         .toolbarBackground(.hidden, for: .tabBar)

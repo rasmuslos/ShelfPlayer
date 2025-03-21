@@ -123,7 +123,7 @@ final class PlaybackViewModel {
             return 0
         }
         set {
-            _dragOffset = newValue
+            _dragOffset = max(0, min(newValue, 2000))
         }
     }
     var pushAmount: Percentage {
