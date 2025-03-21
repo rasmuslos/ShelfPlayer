@@ -19,7 +19,11 @@ struct PlaybackTitle: View {
         HStack(spacing: 0) {
             Menu {
                 if let currentItem = satellite.currentItem {
-                    if currentItem as? Audiobook != nil {
+                    if let audiobook = currentItem as? Audiobook {
+                        NavigationLink(destination: AudiobookView(audiobook)) {
+                            Label("audiobook.view", systemImage: "book")
+                        }
+                        
                         ItemMenu(authors: viewModel.authorIDs)
                         ItemMenu(series: viewModel.seriesIDs)
                     } else if let episode = currentItem as? Episode {
