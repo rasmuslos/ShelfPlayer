@@ -92,7 +92,7 @@ private struct Row: View {
                 Button {
                     satellite.start(audiobook.id)
                 } label: {
-                    ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
+                    ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                         .frame(width: 94)
                         .overlay {
                             if satellite.isLoading(observing: audiobook.id) {
@@ -138,7 +138,7 @@ private struct Row: View {
             }
         }
         .modifier(AudiobookContextMenuModifier(audiobook: audiobook))
-        .modifier(ItemSwipeActionsModifier(item: audiobook))
+        .modifier(ItemSwipeActionsModifier(itemID: audiobook.id))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }

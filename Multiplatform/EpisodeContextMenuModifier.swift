@@ -25,7 +25,7 @@ struct EpisodeContextMenuModifier: ViewModifier {
                     Label("play", systemImage: "play")
                 }
                 
-                QueueButton(item: episode)
+                QueueButton(itemID: episode.id)
                 
                 Divider()
                 
@@ -44,8 +44,8 @@ struct EpisodeContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ProgressButton(item: episode)
-                DownloadButton(item: episode)
+                ProgressButton(itemID: episode.id)
+                DownloadButton(itemID: episode.id)
             } preview: {
                 Preview(episode: episode)
             }

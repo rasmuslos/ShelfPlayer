@@ -82,16 +82,16 @@ extension AudiobookView {
                             }
                         }
                         
-                        DownloadButton(item: viewModel.audiobook, progressVisibility: .toolbar)
+                        DownloadButton(itemID: viewModel.audiobook.id, progressVisibility: .toolbar)
                             .labelStyle(.iconOnly)
                         
                         Menu {
-                            QueuePlayButton(item: viewModel.audiobook)
-                            QueueButton(item: viewModel.audiobook)
+                            QueuePlayButton(itemID: viewModel.audiobook.id)
+                            QueueButton(itemID: viewModel.audiobook.id)
                             
                             Divider()
                             
-                            DownloadButton(item: viewModel.audiobook)
+                            DownloadButton(itemID: viewModel.audiobook.id)
                             
                             Divider()
                             
@@ -100,9 +100,8 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            ProgressButton(item: viewModel.audiobook)
-                            
-                            ProgressResetButton(item: viewModel.audiobook)
+                            ProgressButton(itemID: viewModel.audiobook.id)
+                            ProgressResetButton(itemID: viewModel.audiobook.id)
                         } label: {
                             Label("more", systemImage: "ellipsis.circle")
                         }

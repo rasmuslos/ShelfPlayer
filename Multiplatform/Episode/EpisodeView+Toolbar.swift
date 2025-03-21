@@ -38,16 +38,16 @@ extension EpisodeView {
                     }
                     
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        DownloadButton(item: viewModel.episode, progressVisibility: .toolbar)
+                        DownloadButton(itemID: viewModel.episode.id, progressVisibility: .toolbar)
                             .labelStyle(.iconOnly)
                         
                         Menu {
-                            QueuePlayButton(item: viewModel.episode)
-                            QueueButton(item: viewModel.episode)
+                            QueuePlayButton(itemID: viewModel.episode.id)
+                            QueueButton(itemID: viewModel.episode.id)
                             
                             Divider()
                             
-                            DownloadButton(item: viewModel.episode)
+                            DownloadButton(itemID: viewModel.episode.id)
                             
                             Divider()
                             
@@ -55,8 +55,8 @@ extension EpisodeView {
                             
                             Divider()
                             
-                            ProgressButton(item: viewModel.episode)
-                            ProgressResetButton(item: viewModel.episode)
+                            ProgressButton(itemID: viewModel.episode.id)
+                            ProgressResetButton(itemID: viewModel.episode.id)
                         } label: {
                             Label("more", systemImage: "ellipsis.circle")
                         }

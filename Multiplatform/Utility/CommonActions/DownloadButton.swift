@@ -9,14 +9,14 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct DownloadButton: View {
-    let item: PlayableItem
+    let itemID: ItemIdentifier
     
     let tint: Bool
     let progressVisibility: ProgressVisibility
     let isPercentageTextVisible: Bool
     
-    init(item: PlayableItem, tint: Bool = false, progressVisibility: ProgressVisibility = ProgressVisibility.never, isPercentageTextVisible: Bool = false, initialStatus: PersistenceManager.DownloadSubsystem.DownloadStatus? = nil) {
-        self.item = item
+    init(itemID: ItemIdentifier, tint: Bool = false, progressVisibility: ProgressVisibility = ProgressVisibility.never, isPercentageTextVisible: Bool = false, initialStatus: PersistenceManager.DownloadSubsystem.DownloadStatus? = nil) {
+        self.itemID = itemID
         
         self.tint = tint
         self.progressVisibility = progressVisibility
@@ -163,6 +163,11 @@ struct DownloadButton: View {
                                 case .toolbar:
                                     $0
                                         .frame(width: 18)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 1)
+                                                .aspectRatio(1, contentMode: .fit)
+                                                .frame(width: 6)
+                                        }
                                 case .triangle:
                                     $0
                                 case .episode:
@@ -204,7 +209,7 @@ struct DownloadButton: View {
                 loadProgress()
             }
         }
-        .onReceive(RFNotification[.downloadProgressChanged(item.id)].publisher()) { (assetID, weight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
+        .onReceive(RFNotification[.downloadProgressChanged(itemID)].publisher()) { (assetID, weight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
             guard progressVisibility != .never else {
                 return
             }
@@ -218,7 +223,7 @@ struct DownloadButton: View {
             }
         }
         .onReceive(RFNotification[.downloadStatusChanged].publisher()) { (itemID, status) in
-            guard item.id == itemID else {
+            guard itemID == itemID else {
                 return
             }
             
@@ -237,7 +242,7 @@ struct DownloadButton: View {
 private extension DownloadButton {
     nonisolated func loadCurrent() {
         Task {
-            let status = await PersistenceManager.shared.download.status(of: item.id)
+            let status = await PersistenceManager.shared.download.status(of: itemID)
             
             await MainActor.withAnimation {
                 self.status = status
@@ -246,7 +251,7 @@ private extension DownloadButton {
     }
     nonisolated func loadProgress() {
         Task {
-            let progress = await PersistenceManager.shared.download.downloadProgress(of: item.id)
+            let progress = await PersistenceManager.shared.download.downloadProgress(of: itemID)
             
             await MainActor.withAnimation {
                 self.baseProgress = progress
@@ -265,7 +270,7 @@ private extension DownloadButton {
             }
             
             do {
-                try await PersistenceManager.shared.download.download(item.id)
+                try await PersistenceManager.shared.download.download(itemID)
                 
                 await MainActor.withAnimation {
                     isWorking = false
@@ -291,7 +296,7 @@ private extension DownloadButton {
             }
             
             do {
-                try await PersistenceManager.shared.download.remove(item.id)
+                try await PersistenceManager.shared.download.remove(itemID)
                 
                 await MainActor.withAnimation {
                     isWorking = false
@@ -309,9 +314,9 @@ private extension DownloadButton {
 
 #if DEBUG
 #Preview {
-    DownloadButton(item: Audiobook.fixture, tint: false)
+    DownloadButton(itemID: .fixture, tint: false, progressVisibility: .toolbar)
 }
 #Preview {
-    DownloadButton(item: Audiobook.fixture, tint: true)
+    DownloadButton(itemID: .fixture, tint: true)
 }
 #endif
