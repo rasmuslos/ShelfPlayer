@@ -51,19 +51,10 @@ extension EpisodeViewModel {
 
 private extension EpisodeViewModel {
     nonisolated func extractDominantColor() async {
-        guard let image = await episode.id.platformCover(size: .small),
-              let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
-            return
-        }
-        
-        let filtered = RFKVisuals.brightnessExtremeFilter(colors.map { $0.color }, threshold: 0.1)
-        
-        guard let result = RFKVisuals.determineMostSaturated(filtered) else {
-            return
-        }
+        let color = await PersistenceManager.shared.item.domiantColor(of: episode.id)
         
         await MainActor.withAnimation {
-            self.dominantColor = result
+            self.dominantColor = color
         }
     }
     
