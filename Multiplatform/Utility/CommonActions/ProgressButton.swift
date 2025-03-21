@@ -12,33 +12,33 @@ import SPPersistence
 struct ProgressButton: View {
     @Environment(Satellite.self) private var satellite
     
-    let item: PlayableItem
+    let itemID: ItemIdentifier
     let tint: Bool
     
     @State private var progress: ProgressTracker
     
-    init(item: PlayableItem, tint: Bool = false) {
-        self.item = item
+    init(itemID: ItemIdentifier, tint: Bool = false) {
+        self.itemID = itemID
         self.tint = tint
         
-        _progress = .init(initialValue: .init(itemID: item.id))
+        _progress = .init(initialValue: .init(itemID: itemID))
     }
     
     private var isLoading: Bool {
-        satellite.isLoading(observing: item.id)
+        satellite.isLoading(observing: itemID)
     }
     
     @ViewBuilder
     private var markAsFinishedButton: some View {
         Button("progress.finished.set", systemImage: "checkmark.square") {
-            satellite.markAsFinished(item.id)
+            satellite.markAsFinished(itemID)
         }
     }
     
     @ViewBuilder
     private var markAsUnfinishedButton: some View {
         Button {
-            satellite.markAsUnfinished(item.id)
+            satellite.markAsUnfinished(itemID)
         } label: {
             Label("progress.finished.unset", systemImage: "minus.square")
             
@@ -75,9 +75,9 @@ struct ProgressButton: View {
 
 #if DEBUG
 #Preview {
-    ProgressButton(item: Episode.fixture, tint: false)
+    ProgressButton(itemID: .fixture, tint: false)
 }
 #Preview {
-    ProgressButton(item: Episode.fixture, tint: true)
+    ProgressButton(itemID: .fixture, tint: true)
 }
 #endif

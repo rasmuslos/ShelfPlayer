@@ -11,21 +11,21 @@ import ShelfPlayerKit
 struct ProgressResetButton: View {
     @Environment(Satellite.self) private var satellite
     
-    let item: PlayableItem
+    let itemID: ItemIdentifier
     
     @State private var tracker: ProgressTracker
     
-    init(item: PlayableItem) {
-        self.item = item
-        _tracker = .init(initialValue: .init(itemID: item.id))
+    init(itemID: ItemIdentifier) {
+        self.itemID = itemID
+        _tracker = .init(initialValue: .init(itemID: itemID))
     }
     
     var body: some View {
         if let progress = tracker.progress, progress > 0 {
             Button("progress.reset", systemImage: "square.slash", role: .destructive) {
-                satellite.deleteProgress(item.id)
+                satellite.deleteProgress(itemID)
             }
-            .disabled(satellite.isLoading(observing: item.id))
+            .disabled(satellite.isLoading(observing: itemID))
         }
     }
 }

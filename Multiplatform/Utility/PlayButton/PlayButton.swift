@@ -131,14 +131,14 @@ struct PlayButton: View {
     var menuContent: some View {
         Menu {
             ControlGroup {
-                QueuePlayButton(item: item)
-                QueueButton(item: item, hideLast: true)
+                QueuePlayButton(itemID: item.id)
+                QueueButton(itemID: item.id, hideLast: true)
             }
             
-            ProgressButton(item: item, tint: false)
+            ProgressButton(itemID: item.id, tint: false)
             
             if let progress = tracker.progress, progress > 0 {
-                ProgressResetButton(item: item)
+                ProgressResetButton(itemID: item.id)
             }
         } label: {
             playButtonStyle.makeLabel(configuration: .init(progress: progress, background: background, content: .init(content: labelContent)))

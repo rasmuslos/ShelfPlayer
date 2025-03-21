@@ -29,7 +29,7 @@ struct PlaybackTitle: View {
                     
                     Divider()
                     
-                    ProgressButton(item: currentItem)
+                    ProgressButton(itemID: currentItem.id)
                     StopPlaybackButton()
                 }
             } label: {
@@ -65,6 +65,8 @@ struct PlaybackTitle: View {
                     .onLongPressGesture {
                         satellite.createQuickBookmark()
                     }
+            } else {
+                Spacer(minLength: 0)
             }
         }
     }

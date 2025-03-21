@@ -13,13 +13,13 @@ import SPPlayback
 struct QueueButton: View {
     @Environment(Satellite.self) private var satellite
     
-    let item: PlayableItem
+    let itemID: ItemIdentifier
     var hideLast: Bool = false
     
     var body: some View {
         Button("queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
-            satellite.queue(item.id)
+            satellite.queue(itemID)
         }
-        .disabled(satellite.isLoading(observing: item.id))
+        .disabled(satellite.isLoading(observing: itemID))
     }
 }

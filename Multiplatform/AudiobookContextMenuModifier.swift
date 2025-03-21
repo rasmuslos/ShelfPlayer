@@ -15,8 +15,8 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
-                QueuePlayButton(item: audiobook)
-                QueueButton(item: audiobook)
+                QueuePlayButton(itemID: audiobook.id)
+                QueueButton(itemID: audiobook.id)
                 
                 Divider()
                 
@@ -29,8 +29,8 @@ internal struct AudiobookContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                ProgressButton(item: audiobook)
-                DownloadButton(item: audiobook)
+                ProgressButton(itemID: audiobook.id)
+                DownloadButton(itemID: audiobook.id)
             } preview: {
                 Preview(audiobook: audiobook)
             }
@@ -43,7 +43,7 @@ internal extension AudiobookContextMenuModifier {
         
         var body: some View {
             VStack(alignment: .leading, spacing: 2) {
-                ItemProgressIndicatorImage(item: audiobook, size: .small, aspectRatio: .none)
+                ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                     .padding(.bottom, 12)
                 
                 Text(audiobook.name)

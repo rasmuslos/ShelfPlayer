@@ -24,9 +24,22 @@ struct ContentView: View {
     
     @State private var connectionStore = ConnectionStore()
     
-    // try? await OfflineManager.shared.attemptListeningTimeSync()
     // try? await UserContext.run()
     // try? await BackgroundTaskHandler.updateDownloads()
+    
+    @ViewBuilder
+    private func sheetContent(for sheet: Satellite.Sheet) -> some View {
+        switch sheet {
+        case .preferences:
+            NavigationStack {
+                PreferencesView()
+            }
+        case .description(let item):
+            DescriptionSheet(item: item)
+        case .podcastConfiguration(let itemID):
+            PodcastConfigurationSheet(podcastID: itemID)
+        }
+    }
     
     var body: some View {
         Group {
@@ -55,6 +68,9 @@ struct ContentView: View {
         .sensoryFeedback(.error, trigger: playbackViewModel.notifyError)
         .sensoryFeedback(.success, trigger: playbackViewModel.notifySuccess)
         .modifier(PlaybackCreateBookmarkModifier())
+        .sheet(item: $satellite.currentSheet) {
+            sheetContent(for: $0)
+        }
         .environment(satellite)
         .environment(playbackViewModel)
         .environment(connectionStore)

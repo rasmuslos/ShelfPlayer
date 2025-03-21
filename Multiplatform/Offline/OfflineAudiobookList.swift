@@ -107,7 +107,7 @@ internal extension OfflineAudiobookList {
                 .contentShape(.hoverMenuInteraction, .rect)
             }
             .buttonStyle(.plain)
-            .modifier(ItemSwipeActionsModifier(item: audiobook))
+            // .modifier(ItemSwipeActionsModifier(item: audiobook))
         }
     }
 }
