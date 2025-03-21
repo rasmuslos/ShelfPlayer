@@ -126,6 +126,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             VStack(spacing: 0) {
                                 CollapsedForeground()
                                     .opacity(viewModel.isExpanded ? 0 : 1)
+                                    .contentShape(.rect)
                                     .highPriorityGesture(DragGesture()
                                         .onChanged {
                                             if $0.translation.height < -100 || $0.velocity.height < -2000 {
@@ -133,6 +134,13 @@ struct CompactPlaybackModifier: ViewModifier {
                                             }
                                         }
                                     )
+                                    .contextMenu {
+                                        PlaybackMenuActions()
+                                    } preview: {
+                                        if let currentItem = satellite.currentItem {
+                                            PlayableItemContextMenuPreview(item: currentItem)
+                                        }
+                                    }
                                     .allowsHitTesting(!viewModel.isExpanded)
                                 
                                 ExpandedForeground(height: geometryProxy.size.height)
@@ -141,13 +149,6 @@ struct CompactPlaybackModifier: ViewModifier {
                         }
                         .frame(height: viewModel.isExpanded ? nil : Self.height)
                         .padding(.horizontal, viewModel.isExpanded ? 0 : 12)
-                        .contextMenu {
-                            PlaybackMenuActions()
-                        } preview: {
-                            if let currentItem = satellite.currentItem {
-                                PlayableItemContextMenuPreview(item: currentItem)
-                            }
-                        }
                         .padding(.bottom, viewModel.isExpanded ? 0 : playbackBottomOffset)
                         .offset(x: 0, y: viewModel.dragOffset)
                         .toolbarBackground(.hidden, for: .tabBar)

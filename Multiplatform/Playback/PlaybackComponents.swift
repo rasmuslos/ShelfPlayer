@@ -45,7 +45,6 @@ struct PlaybackTitle: View {
                     .labelStyle(.iconOnly)
                     .contentShape(.rect)
                     .padding(4)
-                    .border(.red)
                     .onTapGesture {
                         viewModel.presentCreateBookmarkAlert()
                     }
@@ -110,7 +109,7 @@ struct PlaybackControls: View {
     }
     @ViewBuilder
     private var forwardButton: some View {
-        Label("forwards", systemImage: "goforward.\(viewModel.skipBackwardsInterval)")
+        Label("forwards", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
             .labelStyle(.iconOnly)
             .font(.title)
             .padding(12)

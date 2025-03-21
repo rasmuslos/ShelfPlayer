@@ -26,12 +26,19 @@ struct ShelfPlayer {
     
     static func initializeHook() {
         Task {
-            await PersistenceManager.shared.download.invalidateActiveDownloads()
-            
-            do {
-                try await PersistenceManager.shared.session.attemptSync(early: false)
-            } catch {
-                logger.error("Failed to sync sessions: \(error)")
+            await withTaskGroup(of: Void.self) {
+                $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }
+                $0.addTask {
+                    do {
+                        try await PersistenceManager.shared.session.attemptSync(early: false)
+                    } catch {
+                        logger.error("Failed to sync sessions: \(error)")
+                    }
+                }
+                
+                $0.addTask { await ContextProvider.updateUserContext() }
+                
+                await $0.waitForAll()
             }
         }
     }
