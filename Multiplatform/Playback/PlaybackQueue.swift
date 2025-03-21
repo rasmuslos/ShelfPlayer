@@ -94,14 +94,23 @@ struct PlaybackQueue: View {
                     
                     if !satellite.upNextQueue.isEmpty {
                         Section {
-                            ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, item) in
-                                QueueItemRow(itemID: item)
+                            ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, itemID) in
+                                QueueItemRow(itemID: itemID)
                                     .listRowBackground(Color.clear)
                                     .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                         Button("play", systemImage: "play") {
                                             satellite.skip(upNextQueueIndex: index)
                                         }
+                                    }
+                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                        Button("queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
+                                            satellite.queue(itemID)
+                                            satellite.remove(upNextQueueIndex: index)
+                                        }
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        ProgressButton(itemID: itemID)
                                     }
                             }
                             .onDelete {

@@ -16,4 +16,6 @@ enum AudioPlayerError: Error {
     
     case loadFailed
     case itemMissing
+    
+    case invalidItemType
 }

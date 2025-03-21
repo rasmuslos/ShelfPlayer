@@ -640,13 +640,42 @@ private extension LocalAudioEndpoint {
                     let (_, episodes) = try await podcastID.resolvedComplex
                     let sorted = await Podcast.filterSort(episodes, seasonFilter: Defaults[.episodesSeasonFilter(podcastID)], filter: Defaults[.episodesFilter(podcastID)], search: nil, sortOrder: Defaults[.episodesSortOrder(podcastID)], ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != currentItemID }
                     
-                    // TODO: better maybe?
+                    let queueItems = sorted.map { QueueItem(itemID: $0.id, startWithoutListeningSession: false) }
+                    
                     await MainActor.run {
-                        upNextQueue = sorted.map { .init(itemID: $0.id, startWithoutListeningSession: false) }
+                        upNextQueue = queueItems
+                    }
+                } else if currentItemID.type == .audiobook {
+                    guard let audiobook = try await currentItemID.resolved as? Audiobook else {
+                        throw AudioPlayerError.invalidItemType
+                    }
+                    
+                    guard let series = audiobook.series.first else {
+                        logger.info("Skipping updating up next queue for audiobook \(audiobook.id) as it has no series")
+                        return
+                    }
+                    
+                    let seriesID = series.id
+                    
+                    guard let seriesID else {
+                        logger.error("Missing series ID for audiobook \(audiobook.id) while updating up next queue")
+                        return
+                    }
+                    
+                    let audiobooks = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: nil, page: nil).0
+                    
+                    guard let index = audiobooks.firstIndex(of: audiobook) else {
+                        logger.error("Failed to find audiobook \(audiobook.id) in series \(seriesID) while updating up next queue")
+                        return
+                    }
+                    
+                    let queueItems = audiobooks[(index + 1)...].map { QueueItem(itemID: $0.id, startWithoutListeningSession: false) }
+                    
+                    await MainActor.run {
+                        self.upNextQueue = queueItems
                     }
                 } else {
-                    // TODO: series
-                    return
+                    throw AudioPlayerError.invalidItemType
                 }
                 
                 await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
