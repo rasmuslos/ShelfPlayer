@@ -18,24 +18,7 @@ struct PlaybackTitle: View {
     var body: some View {
         HStack(spacing: 0) {
             Menu {
-                if let currentItem = satellite.currentItem {
-                    if let audiobook = currentItem as? Audiobook {
-                        NavigationLink(destination: AudiobookView(audiobook)) {
-                            Label("audiobook.view", systemImage: "book")
-                        }
-                        
-                        ItemMenu(authors: viewModel.authorIDs)
-                        ItemMenu(series: viewModel.seriesIDs)
-                    } else if let episode = currentItem as? Episode {
-                        ItemLoadLink(itemID: episode.id)
-                        ItemLoadLink(itemID: episode.podcastID)
-                    }
-                    
-                    Divider()
-                    
-                    ProgressButton(itemID: currentItem.id)
-                    StopPlaybackButton()
-                }
+                PlaybackMenuActions()
             } label: {
                 VStack(alignment: .leading, spacing: 4) {
                     if let currentItem = satellite.currentItem {
@@ -203,6 +186,31 @@ struct PlaybackControls: View {
     }
 }
 
+struct PlaybackMenuActions: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+    
+    var body: some View {
+        if let currentItem = satellite.currentItem {
+            if let audiobook = currentItem as? Audiobook {
+                NavigationLink(destination: AudiobookView(audiobook)) {
+                    Label("audiobook.view", systemImage: "book")
+                }
+                
+                ItemMenu(authors: viewModel.authorIDs)
+                ItemMenu(series: viewModel.seriesIDs)
+            } else if let episode = currentItem as? Episode {
+                ItemLoadLink(itemID: episode.id)
+                ItemLoadLink(itemID: episode.podcastID)
+            }
+            
+            Divider()
+            
+            ProgressButton(itemID: currentItem.id)
+            StopPlaybackButton()
+        }
+    }
+}
 struct PlaybackActions: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
