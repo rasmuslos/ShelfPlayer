@@ -1848,6 +1848,15 @@
         }
       }
     },
+    "bookmark.create.alert.action" : {
+
+    },
+    "bookmark.create.alert.placeholder" : {
+
+    },
+    "bookmark.create.alert.title" : {
+
+    },
     "bookmark.create.cancel" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2108,6 +2117,9 @@
           }
         }
       }
+    },
+    "bookmarks" : {
+
     },
     "bookmarks.empty" : {
       "extractionState" : "stale",
@@ -3907,12 +3919,6 @@
           }
         }
       }
-    },
-    "intents.checkForNewDownloads.description" : {
-
-    },
-    "intents.checkForNewDownloads.title" : {
-
     },
     "intents.playItem.description" : {
 

@@ -246,6 +246,16 @@ public extension AudioPlayer {
             logger.warning("Can't extend sleep timer: no configuration")
         }
     }
+    
+    func createQuickBookmark() async throws {
+        guard let currentItemID = await currentItemID, let currentTime = await currentTime else {
+            throw AudioPlayerError.invalidTime
+        }
+        
+        let note = Date.now.formatted(date: .abbreviated, time: .shortened)
+        
+        try await PersistenceManager.shared.bookmark.create(at: UInt64(currentTime), note: note, for: currentItemID)
+    }
 }
 
 private extension AudioPlayer {

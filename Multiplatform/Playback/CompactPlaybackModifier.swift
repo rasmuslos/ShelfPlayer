@@ -226,6 +226,7 @@ private struct ExpandedForeground: View {
                 }
                 
                 PlaybackActions()
+                    .compositingGroup()
                     .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 
                 Spacer(minLength: 12)
@@ -250,7 +251,6 @@ private struct ExpandedForeground: View {
             }
         }
         .padding(.horizontal, 28)
-        // .sensoryFeedback(.success, trigger: viewModel.notifyBookmark)
     }
 }
 private struct CollapsedForeground: View {

@@ -63,3 +63,28 @@ struct PlaybackSafeAreaPaddingModifier: ViewModifier {
             .safeAreaPadding(.bottom, padding)
     }
 }
+
+struct PlaybackCreateBookmarkModifier: ViewModifier {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    
+    func body(content: Content) -> some View {
+        @Bindable var viewModel = viewModel
+        
+        content
+            .alert("bookmark.create.alert.title", isPresented: $viewModel.isCreateBookmookAlertVisible) {
+                TextField("bookmark.create.alert.placeholder", text: $viewModel.bookmarkNote)
+                
+                if viewModel.isCreatingBookmark {
+                    ProgressView()
+                } else {
+                    Button("cancel") {
+                        viewModel.cancalBookmarkCreation()
+                    }
+                    Button("bookmark.create.alert.action") {
+                        viewModel.finalizeBookmarkCreation()
+                    }
+                    .bold()
+                }
+            }
+    }
+}

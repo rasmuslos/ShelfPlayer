@@ -31,14 +31,14 @@ struct ProgressButton: View {
     @ViewBuilder
     private var markAsFinishedButton: some View {
         Button("progress.finished.set", systemImage: "checkmark.square") {
-            satellite.markAsFinished(item)
+            satellite.markAsFinished(item.id)
         }
     }
     
     @ViewBuilder
     private var markAsUnfinishedButton: some View {
         Button {
-            satellite.markAsUnfinished(item)
+            satellite.markAsUnfinished(item.id)
         } label: {
             Label("progress.finished.unset", systemImage: "minus.square")
             

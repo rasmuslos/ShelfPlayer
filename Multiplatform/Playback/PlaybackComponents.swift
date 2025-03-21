@@ -12,7 +12,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 struct PlaybackTitle: View {
-    @Environment(PlaybackViewModel.self) private var playbackViewModel
+    @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
     var body: some View {
@@ -20,8 +20,8 @@ struct PlaybackTitle: View {
             Menu {
                 if let currentItem = satellite.currentItem {
                     if currentItem as? Audiobook != nil {
-                        ItemMenu(authors: playbackViewModel.authorIDs)
-                        ItemMenu(series: playbackViewModel.seriesIDs)
+                        ItemMenu(authors: viewModel.authorIDs)
+                        ItemMenu(series: viewModel.seriesIDs)
                     } else if let episode = currentItem as? Episode {
                         ItemLoadLink(itemID: episode.id)
                         ItemLoadLink(itemID: episode.podcastID)
@@ -46,20 +46,26 @@ struct PlaybackTitle: View {
                     } else {
                         Text("loading")
                             .font(.headline)
-                        
-                        Text(String("PLACEHOLDER"))
-                            .font(.subheadline)
-                            .hidden()
-                            .overlay(alignment: .leading) {
-                                ProgressIndicator()
-                                    .scaleEffect(0.5)
-                            }
                     }
                 }
             }
             .buttonStyle(.plain)
             
-            Spacer(minLength: 12)
+            if satellite.currentItemID?.type == .audiobook {
+                Spacer(minLength: 12)
+                
+                Label("bookmarks", systemImage: "bookmark")
+                    .labelStyle(.iconOnly)
+                    .contentShape(.rect)
+                    .padding(4)
+                    .border(.red)
+                    .onTapGesture {
+                        viewModel.presentCreateBookmarkAlert()
+                    }
+                    .onLongPressGesture {
+                        satellite.createQuickBookmark()
+                    }
+            }
         }
     }
 }

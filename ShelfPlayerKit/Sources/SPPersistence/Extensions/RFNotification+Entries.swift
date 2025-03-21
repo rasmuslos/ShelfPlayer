@@ -11,7 +11,7 @@ import SPFoundation
 
 public extension RFNotification.Notification {
     static var connectionsChanged: Notification<[ItemIdentifier.ConnectionID: PersistenceManager.AuthorizationSubsystem.Connection]> {
-        .init("io.rfk.ShelfPlayer.connectionsChanged")
+        .init("io.rfk.shelfPlayerKit.connectionsChanged")
     }
     
     static var progressEntityUpdated: Notification<(connectionID: String, primaryID: String, groupingID: String?, ProgressEntity?)> {
@@ -22,9 +22,13 @@ public extension RFNotification.Notification {
     }
     
     static var downloadStatusChanged: Notification<(itemID: ItemIdentifier, status: PersistenceManager.DownloadSubsystem.DownloadStatus)> {
-        .init("io.rfk.shelfPlayerKit.progressEntity.updated")
+        .init("io.rfk.shelfPlayerKit.downloadStatus.updated")
     }
     static func downloadProgressChanged(_ itemID: ItemIdentifier) -> Notification<(assetID: UUID, weight: Percentage, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)> {
         .init("io.rfk.shelfPlayerKit.progress.updated_\(itemID)")
+    }
+    
+    static var bookmarksChanged: Notification<ItemIdentifier> {
+        .init("io.rfk.shelfPlayerKit.bookmarksChanged")
     }
 }

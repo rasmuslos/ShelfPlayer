@@ -9,6 +9,7 @@ import SwiftUI
 import Defaults
 import DefaultsMacros
 import ShelfPlayerKit
+import SPPlayback
 
 @Observable @MainActor
 final class PlaybackViewModel {
@@ -16,29 +17,41 @@ final class PlaybackViewModel {
     private var _dragOffset: CGFloat
     
     var isQueueVisible: Bool
+    var isCreateBookmookAlertVisible: Bool
+    var isCreatingBookmark: Bool
+    
+    var bookmarkNote: String
+    var bookmarkCapturedTime: UInt64?
     
     var seeking: Percentage?
     var seekingTotal: Percentage?
     var volumePreview: Percentage?
     
     @ObservableDefault(.skipBackwardsInterval) @ObservationIgnored
-    var skipBackwardsInterval: Int
+    private(set) var skipBackwardsInterval: Int
     @ObservableDefault(.skipForwardsInterval) @ObservationIgnored
-    var skipForwardsInterval: Int
+    private(set) var skipForwardsInterval: Int
     
-    var seriesIDs: [(ItemIdentifier, String)]
-    var authorIDs: [(ItemIdentifier, String)]
+    private(set) var seriesIDs: [(ItemIdentifier, String)]
+    private(set) var authorIDs: [(ItemIdentifier, String)]
     
     private var stoppedPlayingAt: Date?
     
     private(set) var notifySkipBackwards = false
     private(set) var notifySkipForwards = false
     
+    private(set) var notifyError = false
+    private(set) var notifySuccess = false
+    
     init() {
         _dragOffset = .zero
         _isExpanded = false
         
+        bookmarkNote = ""
+        
         isQueueVisible = false
+        isCreateBookmookAlertVisible = false
+        isCreatingBookmark = false
         
         seriesIDs = []
         authorIDs = []
@@ -137,6 +150,66 @@ final class PlaybackViewModel {
     }
     func pushContainerCornerRadius(leadingOffset: CGFloat) -> CGFloat {
         max(8, UIScreen.main.displayCornerRadius - leadingOffset)
+    }
+    
+    func presentCreateBookmarkAlert() {
+        Task {
+            guard let currentTime = await AudioPlayer.shared.currentTime else {
+                return
+            }
+            
+            bookmarkNote = ""
+            bookmarkCapturedTime = UInt64(currentTime)
+            isCreateBookmookAlertVisible = true
+        }
+    }
+    func cancalBookmarkCreation() {
+        isCreatingBookmark = false
+        isCreateBookmookAlertVisible = false
+        
+        bookmarkNote = ""
+        self.bookmarkCapturedTime = nil
+    }
+    nonisolated func finalizeBookmarkCreation() {
+        Task {
+            guard let bookmarkCapturedTime = await bookmarkCapturedTime, let currentItemID = await AudioPlayer.shared.currentItemID else {
+                return
+            }
+            
+            let note = await bookmarkNote.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            guard !note.isEmpty else {
+                await MainActor.run {
+                    notifyError.toggle()
+                }
+                
+                return
+            }
+            
+            await MainActor.withAnimation {
+                isCreatingBookmark = true
+            }
+            
+            do {
+                try await PersistenceManager.shared.bookmark.create(at: bookmarkCapturedTime, note: await bookmarkNote, for: currentItemID)
+            
+                await MainActor.run {
+                    notifySuccess.toggle()
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError.toggle()
+                }
+            }
+            
+            await MainActor.withAnimation {
+                isCreatingBookmark = false
+                isCreateBookmookAlertVisible = false
+                
+                bookmarkNote = ""
+                self.bookmarkCapturedTime = nil
+            }
+        }
     }
 }
 

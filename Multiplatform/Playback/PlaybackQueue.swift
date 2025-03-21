@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct PlaybackQueue: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
     @ViewBuilder
@@ -30,6 +31,28 @@ struct PlaybackQueue: View {
             ContentUnavailableView("queue.empty", systemImage: "list.number", description: Text("queue.empty.description"))
         } else {
             List {
+                if !satellite.bookmarks.isEmpty {
+                    Section {
+                        ForEach(satellite.bookmarks) {
+                            QueueTimeRow(title: $0.note, time: Double($0.time), isActive: false, isFinished: false)
+                                .listRowBackground(Color.clear)
+                                .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+                        }
+                        .onDelete {
+                            guard let currentItemID = satellite.currentItemID else {
+                                return
+                            }
+                            
+                            for index in $0 {
+                                satellite.deleteBookmark(at: satellite.bookmarks[index].time, from: currentItemID)
+                            }
+                        }
+                    } header: {
+                        Text("bookmarks")
+                            .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+                    }
+                }
+                
                 if !satellite.chapters.isEmpty {
                     Section {
                         ForEach(satellite.chapters) {
@@ -120,22 +143,35 @@ private struct QueueChapterRow: View {
     }
     
     var body: some View {
+        QueueTimeRow(title: chapter.title, time: chapter.startOffset, isActive: isActive, isFinished: isFinished)
+    }
+}
+private struct QueueTimeRow: View {
+    @Environment(Satellite.self) private var satellite
+    
+    let title: String
+    let time: TimeInterval
+    
+    let isActive: Bool
+    let isFinished: Bool
+    
+    var body: some View {
         Button {
-            satellite.seek(to: chapter.startOffset, insideChapter: false) {}
+            satellite.seek(to: time, insideChapter: false) {}
         } label: {
             HStack(spacing: 0) {
                 ZStack {
                     Text(verbatim: "00:00:00")
                         .hidden()
                     
-                    Text(chapter.startOffset, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                    Text(time, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
                 }
                 .font(.footnote)
                 .fontDesign(.rounded)
                 .foregroundStyle(Color.accentColor)
                 .padding(.trailing, 12)
                 
-                Text(chapter.title)
+                Text(title)
                     .bold(isActive)
                     .foregroundStyle(isFinished ? .secondary : .primary)
                 
@@ -145,9 +181,9 @@ private struct QueueChapterRow: View {
             .contentShape(.hoverMenuInteraction, .rect)
         }
         .buttonStyle(.plain)
-    
     }
 }
+
 private struct QueueItemRow: View {
     let itemID: ItemIdentifier
     

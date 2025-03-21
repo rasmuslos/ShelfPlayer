@@ -103,7 +103,9 @@ extension ItemIdentifier: Hashable {
 }
 extension ItemIdentifier: Equatable {
     public static func ==(lhs: ItemIdentifier, rhs: ItemIdentifier) -> Bool {
-        lhs.primaryID == rhs.primaryID && lhs.groupingID == rhs.groupingID
+        lhs.primaryID == rhs.primaryID
+        && lhs.groupingID == rhs.groupingID
+        && lhs.connectionID == rhs.connectionID
     }
 }
 extension ItemIdentifier: Identifiable {

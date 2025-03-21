@@ -15,6 +15,8 @@ public final class PersistenceManager: Sendable {
     public let keyValue: KeyValueSubsystem
     public let authorization: AuthorizationSubsystem
     
+    public let bookmark: BookmarkSubsystem
+    
     public let progress: ProgressSubsystem
     public let session: SessionSubsystem
     
@@ -42,6 +44,8 @@ public final class PersistenceManager: Sendable {
         
         keyValue = .init(modelContainer: modelContainer)
         authorization = .init(modelContainer: modelContainer)
+        
+        bookmark = .init(modelContainer: modelContainer)
         
         progress = .init(modelContainer: modelContainer)
         session = .init(modelContainer: modelContainer)

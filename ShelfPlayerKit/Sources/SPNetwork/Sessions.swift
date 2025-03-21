@@ -100,7 +100,6 @@ public extension APIClient {
     }
     
     func syncSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        print(sessionID, currentTime, duration, timeListened)
         try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)/sync", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,

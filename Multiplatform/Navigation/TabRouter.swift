@@ -69,23 +69,7 @@ struct TabRouter: View {
                 PreferencesView()
             }
         case .description(let item):
-            NavigationStack {
-                ScrollView {
-                    HStack(spacing: 0) {
-                        if let description = item.description {
-                            Text(description)
-                        } else {
-                            Text("description.unavailable")
-                        }
-                        
-                        Spacer(minLength: 0)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 20)
-                }
-                .navigationTitle(item.name)
-                .presentationDragIndicator(.visible)
-            }
+            DescriptionSheet(item: item)
         case .podcastConfiguration(let itemID):
             PodcastConfigurationSheet(podcastID: itemID)
         }
