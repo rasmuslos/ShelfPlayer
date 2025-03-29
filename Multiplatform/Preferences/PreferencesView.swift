@@ -74,7 +74,7 @@ struct PreferencesView: View {
             
             Section {
                 Button {
-                    
+                    ShelfPlayer.clearCache()
                 } label: {
                     Label {
                         HStack(spacing: 0) {
