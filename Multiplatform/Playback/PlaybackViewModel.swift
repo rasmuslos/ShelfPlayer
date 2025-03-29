@@ -17,7 +17,7 @@ final class PlaybackViewModel {
     private var _dragOffset: CGFloat
     
     var isQueueVisible: Bool
-    var isCreateBookmookAlertVisible: Bool
+    var isCreateBookmarkAlertVisible: Bool
     var isCreatingBookmark: Bool
     
     var bookmarkNote: String
@@ -50,7 +50,7 @@ final class PlaybackViewModel {
         bookmarkNote = ""
         
         isQueueVisible = false
-        isCreateBookmookAlertVisible = false
+        isCreateBookmarkAlertVisible = false
         isCreatingBookmark = false
         
         seriesIDs = []
@@ -152,6 +152,32 @@ final class PlaybackViewModel {
         max(8, UIScreen.main.displayCornerRadius - leadingOffset)
     }
     
+    nonisolated func createQuickBookmark() {
+        Task {
+            guard let currentItemID = await AudioPlayer.shared.currentItemID else {
+                return
+            }
+            
+            await MainActor.withAnimation {
+                isCreatingBookmark = true
+            }
+            
+            do {
+                try await AudioPlayer.shared.createQuickBookmark()
+                
+                await MainActor.withAnimation {
+                    notifySuccess.toggle()
+                    isCreatingBookmark = false
+                }
+            } catch {
+                await MainActor.withAnimation {
+                    notifyError.toggle()
+                    isCreatingBookmark = false
+                }
+            }
+        }
+    }
+    
     func presentCreateBookmarkAlert() {
         Task {
             guard let currentTime = await AudioPlayer.shared.currentTime else {
@@ -160,12 +186,12 @@ final class PlaybackViewModel {
             
             bookmarkNote = ""
             bookmarkCapturedTime = UInt64(currentTime)
-            isCreateBookmookAlertVisible = true
+            isCreateBookmarkAlertVisible = true
         }
     }
-    func cancalBookmarkCreation() {
+    func cancelBookmarkCreation() {
         isCreatingBookmark = false
-        isCreateBookmookAlertVisible = false
+        isCreateBookmarkAlertVisible = false
         
         bookmarkNote = ""
         self.bookmarkCapturedTime = nil
@@ -204,7 +230,7 @@ final class PlaybackViewModel {
             
             await MainActor.withAnimation {
                 isCreatingBookmark = false
-                isCreateBookmookAlertVisible = false
+                isCreateBookmarkAlertVisible = false
                 
                 bookmarkNote = ""
                 self.bookmarkCapturedTime = nil

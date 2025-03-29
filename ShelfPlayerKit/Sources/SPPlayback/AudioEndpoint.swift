@@ -19,6 +19,7 @@ protocol AudioEndpoint: Identifiable, Sendable {
     var upNextQueue: [QueueItem] { get async }
     
     var chapters: [Chapter] { get async }
+    var activeChapterIndex: Int? { get async }
     
     var isBusy: Bool { get async }
     var isPlaying: Bool { get async }

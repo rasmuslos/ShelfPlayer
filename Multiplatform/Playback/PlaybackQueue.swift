@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Defaults
 import ShelfPlayerKit
 
 struct PlaybackQueue: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
+    
+    @Default(.tintColor) private var tintColor
     
     @ViewBuilder
     private func header(label: LocalizedStringKey, clear: @escaping () -> Void) -> some View {
@@ -70,13 +73,21 @@ struct PlaybackQueue: View {
                     
                     if !satellite.queue.isEmpty {
                         Section {
-                            ForEach(Array(satellite.queue.enumerated()), id: \.element) { (index, item) in
-                                QueueItemRow(itemID: item)
+                            ForEach(Array(satellite.queue.enumerated()), id: \.element) { (index, itemID) in
+                                QueueItemRow(itemID: itemID)
                                     .listRowBackground(Color.clear)
                                     .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                         Button("play", systemImage: "play") {
                                             satellite.skip(queueIndex: index)
+                                        }
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        ProgressButton(itemID: itemID)
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button("queue.remove", systemImage: "minus.circle.fill") {
+                                            satellite.remove(queueIndex: index)
                                         }
                                     }
                             }
@@ -108,9 +119,15 @@ struct PlaybackQueue: View {
                                             satellite.queue(itemID)
                                             satellite.remove(upNextQueueIndex: index)
                                         }
+                                        .tint(tintColor.accent)
                                     }
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         ProgressButton(itemID: itemID)
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button("queue.remove", systemImage: "minus.circle.fill") {
+                                            satellite.remove(upNextQueueIndex: index)
+                                        }
                                     }
                             }
                             .onDelete {

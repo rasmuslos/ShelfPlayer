@@ -55,11 +55,11 @@ internal struct SearchView: View {
         .searchFocused($focused)
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .modifier(CompactPreferencesToolbarModifier())
         .environment(viewModel)
         .refreshable {
             viewModel.load()
         }
+        .modifier(CompactPreferencesToolbarModifier())
         .onAppear {
             viewModel.library = library
         }
