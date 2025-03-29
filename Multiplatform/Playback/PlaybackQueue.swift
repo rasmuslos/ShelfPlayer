@@ -83,12 +83,13 @@ struct PlaybackQueue: View {
                                         }
                                     }
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        ProgressButton(itemID: itemID)
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button("queue.remove", systemImage: "minus.circle.fill") {
                                             satellite.remove(queueIndex: index)
                                         }
+                                        .tint(.red)
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        ProgressButton(itemID: itemID)
                                     }
                             }
                             .onDelete {
@@ -122,12 +123,13 @@ struct PlaybackQueue: View {
                                         .tint(tintColor.accent)
                                     }
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        ProgressButton(itemID: itemID)
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button("queue.remove", systemImage: "minus.circle.fill") {
                                             satellite.remove(upNextQueueIndex: index)
                                         }
+                                        .tint(.red)
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        ProgressButton(itemID: itemID)
                                     }
                             }
                             .onDelete {

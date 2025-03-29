@@ -51,4 +51,8 @@ struct ShelfPlayer {
     static func clearCache() {
         ImagePipeline.shared.cache.removeAll()
     }
+    
+    static func generateLogArchive() {
+        
+    }
 }
