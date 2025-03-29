@@ -119,7 +119,9 @@ struct PreferencesView: View {
                     Label("support", systemImage: "lifepreserver")
                 }
                 
-                Label("preferences.generateLogFile", systemImage: "text.word.spacing")
+                Button("preferences.generateLogFile", systemImage: "text.word.spacing") {
+                    ShelfPlayer.generateLogArchive()
+                }
             }
             
             Section {
@@ -133,9 +135,6 @@ struct PreferencesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .foregroundStyle(.primary)
         .task {
-            load()
-        }
-        .refreshable {
             load()
         }
     }
