@@ -13,7 +13,7 @@ extension SeriesView {
         @Environment(SeriesViewModel.self) private var viewModel
         
         private var amountVisible: Int {
-            min(viewModel.audiobookIDs.count, 4)
+            min(viewModel.audiobookIDs.count, 5)
         }
         
         var body: some View {

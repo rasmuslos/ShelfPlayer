@@ -50,6 +50,11 @@ public extension AudioPlayer {
             await current?.chapters ?? []
         }
     }
+    var activeChapterIndex: Int? {
+        get async {
+            await current?.activeChapterIndex
+        }
+    }
     
     var isBusy: Bool {
         get async {
@@ -150,7 +155,7 @@ public extension AudioPlayer {
         if let didPauseAt {
             if didPauseAt.distance(to: .now) > 30, let currentTime = await currentTime {
                 do {
-                    try await seek(to: currentTime - 10, insideChapter: false)
+                    try await applySmartRewind()
                 } catch {
                     logger.error("Could not seek back 10 seconds (smart rewind): \(error)")
                 }
@@ -247,6 +252,25 @@ public extension AudioPlayer {
         }
     }
     
+    func applySmartRewind() async throws {
+        guard Defaults[.enableSmartRewind] else {
+            return
+        }
+        
+        guard let currentTime = await currentTime else {
+            return
+        }
+        
+        let target = currentTime - 10
+        
+        if let activeChapterIndex = await activeChapterIndex {
+            let startOffset = await chapters[activeChapterIndex].startOffset
+            try await seek(to: max(startOffset, target), insideChapter: false)
+        } else {
+            try await seek(to: target, insideChapter: false)
+        }
+    }
+    
     func createQuickBookmark() async throws {
         guard let currentItemID = await currentItemID, let currentTime = await currentTime else {
             throw AudioPlayerError.invalidTime
@@ -298,12 +322,10 @@ private extension AudioPlayer {
             Task {
                 await self?.sleepTimerDidExpire(configuration: configuration)
                 
-                if Defaults[.enableSmartRewind], let currentTime = await self?.currentTime {
-                    do {
-                        try await self?.seek(to: currentTime - 10, insideChapter: false)
-                    } catch {
-                        self?.logger.warning("Could not rewind after sleep timer expired: \(error)")
-                    }
+                do {
+                    try await self?.applySmartRewind()
+                } catch {
+                    self?.logger.warning("Could not rewind after sleep timer expired: \(error)")
                 }
             }
         }

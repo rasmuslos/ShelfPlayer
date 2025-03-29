@@ -631,6 +631,10 @@ private extension LocalAudioEndpoint {
             
             do {
                 if currentItemID.type == .episode {
+                    guard Defaults[.queueNextEpisodes] else {
+                        return
+                    }
+                    
                     let podcastID = ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
                     
                     if let isAllowed = await PersistenceManager.shared.podcasts.allowNextUpQueueGeneration(for: podcastID), !isAllowed {
@@ -646,6 +650,10 @@ private extension LocalAudioEndpoint {
                         upNextQueue = queueItems
                     }
                 } else if currentItemID.type == .audiobook {
+                    guard Defaults[.queueNextAudiobooksInSeries] else {
+                        return
+                    }
+                    
                     guard let audiobook = try await currentItemID.resolved as? Audiobook else {
                         throw AudioPlayerError.invalidItemType
                     }
@@ -699,10 +707,14 @@ private extension LocalAudioEndpoint {
         if !queue.isEmpty {
             let queueItem = queue.removeFirst()
             
+            await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.map(\.itemID))
+            
             nextItemID = queueItem.itemID
             startWithoutListeningSession = queueItem.startWithoutListeningSession
         } else if !upNextQueue.isEmpty {
             let queueItem = upNextQueue.removeFirst()
+            
+            await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
             
             nextItemID = queueItem.itemID
             startWithoutListeningSession = queueItem.startWithoutListeningSession

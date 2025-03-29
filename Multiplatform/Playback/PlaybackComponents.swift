@@ -25,6 +25,7 @@ struct PlaybackTitle: View {
                         Text(currentItem.name)
                             .lineLimit(2)
                             .font(.headline)
+                            .modifier(SerifModifier())
                         
                         Text(currentItem.authors, format: .list(type: .and, width: .short))
                             .lineLimit(1)
@@ -35,22 +36,27 @@ struct PlaybackTitle: View {
                             .font(.headline)
                     }
                 }
+                .id(satellite.currentItemID)
             }
             .buttonStyle(.plain)
             
             if satellite.currentItemID?.type == .audiobook {
                 Spacer(minLength: 12)
                 
-                Label("bookmarks", systemImage: "bookmark")
-                    .labelStyle(.iconOnly)
-                    .contentShape(.rect)
-                    .padding(4)
-                    .onTapGesture {
-                        viewModel.presentCreateBookmarkAlert()
-                    }
-                    .onLongPressGesture {
-                        satellite.createQuickBookmark()
-                    }
+                if viewModel.isCreatingBookmark {
+                    ProgressIndicator()
+                } else {
+                    Label("bookmarks", systemImage: "bookmark")
+                        .labelStyle(.iconOnly)
+                        .contentShape(.rect)
+                        .padding(4)
+                        .onTapGesture {
+                            viewModel.presentCreateBookmarkAlert()
+                        }
+                        .onLongPressGesture {
+                            viewModel.createQuickBookmark()
+                        }
+                }
             } else {
                 Spacer(minLength: 0)
             }
@@ -192,8 +198,8 @@ struct PlaybackMenuActions: View {
     var body: some View {
         if let currentItem = satellite.currentItem {
             if let audiobook = currentItem as? Audiobook {
-                NavigationLink(destination: AudiobookView(audiobook)) {
-                    Label("audiobook.view", systemImage: "book")
+                Button("audiobook.view", systemImage: "book") {
+                    audiobook.id.navigate()
                 }
                 
                 ItemMenu(authors: viewModel.authorIDs)
