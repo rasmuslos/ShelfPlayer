@@ -153,6 +153,7 @@ struct CompactPlaybackModifier: ViewModifier {
                         .offset(x: 0, y: viewModel.dragOffset)
                         .toolbarBackground(.hidden, for: .tabBar)
                         .animation(.snappy(duration: 0.6), value: viewModel.isExpanded)
+                        .sensoryFeedback(.selection, trigger: viewModel.isQueueVisible)
                     }
                     
                 }

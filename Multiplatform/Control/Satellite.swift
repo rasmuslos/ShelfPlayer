@@ -399,6 +399,10 @@ extension Satellite {
                     try await PersistenceManager.shared.progress.markAsCompleted(itemID)
                 }
                 
+                while let index = await queue.firstIndex(of: itemID) {
+                    remove(queueIndex: index)
+                }
+                
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 await endWorking(on: itemID, successfully: false)
@@ -430,22 +434,6 @@ extension Satellite {
         }
     }
     
-    nonisolated func createQuickBookmark() {
-        Task {
-            guard let currentItemID = await currentItemID else {
-                return
-            }
-            
-            await startWorking(on: currentItemID)
-            
-            do {
-                try await AudioPlayer.shared.createQuickBookmark()
-                await endWorking(on: currentItemID, successfully: true)
-            } catch {
-                await endWorking(on: currentItemID, successfully: false)
-            }
-        }
-    }
     nonisolated func deleteBookmark(at time: UInt64, from itemID: ItemIdentifier) {
         Task {
             await startWorking(on: itemID)

@@ -2819,13 +2819,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vor %@ abgeschlossen"
+            "value" : "%@ abgeschossen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finished %@ ago"
+            "value" : "Finished %@"
           }
         }
       }
@@ -3198,9 +3198,6 @@
           }
         }
       }
-    },
-    "logs" : {
-
     },
     "minutes" : {
       "localizations" : {
@@ -4036,7 +4033,7 @@
         }
       }
     },
-    "preferences.clear" : {
+    "preferences.generateLogFile" : {
 
     },
     "proceed" : {

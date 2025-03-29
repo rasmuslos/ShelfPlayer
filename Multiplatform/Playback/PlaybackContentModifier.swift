@@ -71,14 +71,14 @@ struct PlaybackCreateBookmarkModifier: ViewModifier {
         @Bindable var viewModel = viewModel
         
         content
-            .alert("bookmark.create.alert.title", isPresented: $viewModel.isCreateBookmookAlertVisible) {
+            .alert("bookmark.create.alert.title", isPresented: $viewModel.isCreateBookmarkAlertVisible) {
                 TextField("bookmark.create.alert.placeholder", text: $viewModel.bookmarkNote)
                 
                 if viewModel.isCreatingBookmark {
                     ProgressView()
                 } else {
                     Button("cancel") {
-                        viewModel.cancalBookmarkCreation()
+                        viewModel.cancelBookmarkCreation()
                     }
                     Button("bookmark.create.alert.action") {
                         viewModel.finalizeBookmarkCreation()

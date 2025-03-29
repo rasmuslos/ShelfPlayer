@@ -184,5 +184,6 @@ struct AuthorView: View {
     NavigationStack {
         AuthorView(.fixture)
     }
+    .previewEnvironment()
 }
 #endif
