@@ -3555,6 +3555,15 @@
         }
       }
     },
+    "playback.alert.resume" : {
+
+    },
+    "playback.alert.resume.action" : {
+
+    },
+    "playback.alert.resume.message" : {
+
+    },
     "playback.nextUpQueue" : {
       "localizations" : {
         "de" : {

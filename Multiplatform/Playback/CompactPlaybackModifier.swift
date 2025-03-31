@@ -356,7 +356,7 @@ private struct CollapsedForeground: View {
                     Image(systemName: "command")
                 }
             }
-            .modifier(TabContentPlaybackModifier())
+            .modifier(PlaybackTabContentModifier())
         }
     }
     .modifier(CompactPlaybackModifier(ready: true))
