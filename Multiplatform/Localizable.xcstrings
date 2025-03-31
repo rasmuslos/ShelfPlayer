@@ -141,6 +141,12 @@
         }
       }
     },
+    "carPlay.noConnections" : {
+
+    },
+    "carPlay.noConnections.subtitle" : {
+
+    },
     "carPlay.offline.empty" : {
       "localizations" : {
         "de" : {
@@ -282,6 +288,7 @@
       }
     },
     "carPlay.unauthorized.subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -310,6 +317,7 @@
       }
     },
     "carPlay.unauthorized.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

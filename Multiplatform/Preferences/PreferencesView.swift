@@ -119,9 +119,7 @@ struct PreferencesView: View {
                     Label("preferences.support", systemImage: "lifepreserver")
                 }
                 
-                Button("preferences.generateLogFile", systemImage: "text.word.spacing") {
-                    ShelfPlayer.generateLogArchive()
-                }
+                CreateLogArchiveButton()
             }
             
             Section {
