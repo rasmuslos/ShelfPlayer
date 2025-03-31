@@ -22,7 +22,7 @@ struct ProgressResetButton: View {
     
     var body: some View {
         if let progress = tracker.progress, progress > 0 {
-            Button("progress.reset", systemImage: "square.slash", role: .destructive) {
+            Button("item.progress.reset", systemImage: "square.slash", role: .destructive) {
                 satellite.deleteProgress(itemID)
             }
             .disabled(satellite.isLoading(observing: itemID))

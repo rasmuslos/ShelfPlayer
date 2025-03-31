@@ -57,9 +57,9 @@ struct ConnectionManageView: View {
                 serverVersion = nil
             }
         }) {
-            Button("dismiss", role: .cancel) {}
+            Button("action.dismiss", role: .cancel) {}
         } message: {
-            Text("connection.test.success \(serverVersion ?? "?")")
+            Text("connection.test.success.message \(serverVersion ?? "?")")
         }
         .navigationTitle("connection.manage")
         .toolbar {
@@ -67,7 +67,7 @@ struct ConnectionManageView: View {
                     if loading {
                         ProgressIndicator()
                     } else if hasUnsavedChanges {
-                        Button("connection.save") {
+                        Button("action.save") {
                             update()
                         }
                     }

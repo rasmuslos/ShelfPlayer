@@ -23,96 +23,119 @@ struct PodcastConfigurationSheet: View {
     @State private var notifyError = false
     @State private var notifySuccess = false
     
-    var body: some View {
-        NavigationStack {
-            if let viewModel, let configuration {
-                @Bindable var viewModel = viewModel
-                @Bindable var configuration = configuration
+    @ViewBuilder
+    private var automaticDownloadContent: some View {
+        if let configuration {
+            @Bindable var configuration = configuration
+            
+            List {
+                Section {
+                    Toggle("item.preferences.automaticDownload.enabled", isOn: $configuration.enabled)
+                    
+                    Stepper("item.preferences.automaticDownload.amount \(configuration.amount)") {
+                        if configuration.amount <= 32 {
+                            configuration.amount += 1
+                        }
+                    } onDecrement: {
+                        if configuration.amount > 1 {
+                            configuration.amount -= 1
+                        }
+                    }
+                        .disabled(!configuration.enabled)
+                } footer: {
+                    Text("item.preferences.automaticDownload.footer \(configuration.amount)")
+                }
                 
-                List {
-                    Section {
-                        EnabledToggle(enabled: $configuration.enabled)
-                        MaxEpisodesStepper(amount: $configuration.amount)
-                            .disabled(!configuration.enabled)
-                    } footer: {
-                        Text("podcast.settings.downloadFooter \(configuration.amount)")
-                    }
+                Section {
+                    Toggle("item.preferences.automaticDownload.notificationsEnabled", isOn: $configuration.enableNotifications)
+                        .disabled(notificationPermission != .authorized || !configuration.enabled)
                     
-                    Section {
-                        NotificationToggle(notificationsEnabled: $configuration.enableNotifications)
-                            .disabled(notificationPermission != .authorized || !configuration.enabled)
-                    } footer: {
-                        Text("podcast.settings.notificationFooter")
-                    }
-                    
-                    Section {
-                        PlaybackRatePicker(label: "playbackRate.default", selection: $viewModel.playbackRate)
-                        Toggle(isOn: $viewModel.allowNextUpQueueGeneration) {
-                            Text("podcast.configure.allowNextUpQueueGeneration")
-                        }
-                    }
-                    
-                    if let notificationPermission {
-                        if notificationPermission == .notDetermined {
-                            Button {
-                                Task {
-                                    try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
-                                    self.notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                                }
-                            } label: {
-                                Label("account.notifications.request", systemImage: "bell.badge.waveform.fill")
-                            }
-                        } else if notificationPermission != .authorized {
-                            Label("account.notifications.denied", systemImage: "bell.slash.fill")
-                                .foregroundStyle(.red)
-                            
-                            Button {
-                                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                            } label: {
-                                Label("account.settings", systemImage: "gear")
-                            }
-                            .tint(.primary)
-                        }
-                    } else {
-                        ProgressIndicator()
-                            .task {
-                                notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                            }
-                    }
+                    notificationPermissionButton
                 }
-                .navigationTitle("podcast.configure")
-                .navigationBarTitleDisplayMode(.inline)
-                .sensoryFeedback(.error, trigger: notifyError)
-                .sensoryFeedback(.success, trigger: notifySuccess)
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        if isLoading {
-                            ProgressIndicator()
-                        } else {
-                            Button("save") {
-                                save()
-                            }
+            }
+            .interactiveDismissDisabled()
+        } else {
+            LoadingView()
+        }
+    }
+    private var notificationPermissionButton: some View {
+        Group {
+            if let notificationPermission {
+                if notificationPermission == .notDetermined {
+                    Button {
+                        Task {
+                            try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+                            self.notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                         }
+                    } label: {
+                        Label("notification.permission.request", systemImage: "bell.badge.waveform.fill")
                     }
+                } else if notificationPermission != .authorized {
+                    Label("notification.permission.denied", systemImage: "bell.slash.fill")
+                        .foregroundStyle(.red)
                     
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("cancel") {
-                            dismiss()
-                        }
+                    Button {
+                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                    } label: {
+                        Label("item.preferences", systemImage: "gear")
                     }
+                    .tint(.primary)
                 }
-                .disabled(isLoading)
             } else {
-                LoadingView()
+                ProgressIndicator()
                     .task {
-                        await load()
-                    }
-                    .refreshable {
-                        await load()
+                        notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                     }
             }
         }
-        .interactiveDismissDisabled()
+        .navigationTitle("item.preferences.automaticDownloads")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    var body: some View {
+        NavigationStack {
+            Group {
+                if let viewModel {
+                    @Bindable var viewModel = viewModel
+                    
+                    List {
+                        NavigationLink("item.preferences.automaticDownloads", destination: automaticDownloadContent)
+                        
+                        Section {
+                            PlaybackRatePicker(label: "item.preferences.playbackRate", selection: $viewModel.playbackRate)
+                            
+                            Toggle(isOn: $viewModel.allowNextUpQueueGeneration) {
+                                Text("item.preferences.allowUpNextQueueGeneration")
+                            }
+                        }
+                    }
+                    .sensoryFeedback(.error, trigger: notifyError)
+                    .sensoryFeedback(.success, trigger: notifySuccess)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            if isLoading {
+                                ProgressIndicator()
+                            } else {
+                                Button("action.save") {
+                                    save()
+                                }
+                            }
+                        }
+                    }
+                    .disabled(isLoading)
+                } else {
+                    LoadingView()
+                        .task {
+                            await load()
+                        }
+                        .refreshable {
+                            await load()
+                        }
+                }
+            }
+            .navigationTitle("item.preferences")
+            .navigationBarTitleDisplayMode(.inline)
+        }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.hidden)
     }
@@ -168,40 +191,6 @@ private final class PodcastAutoDownloadConfigurationShadow: Sendable {
     
     var materialized: PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration {
         .init(itemID: itemID, enabled: enabled, amount: amount, enableNotifications: enableNotifications)
-    }
-}
-
-extension PodcastConfigurationSheet {
-    struct EnabledToggle: View {
-        @Binding var enabled: Bool
-        
-        var body: some View {
-            Toggle("podcast.settings.autoDownload", isOn: $enabled)
-        }
-    }
-    
-    struct MaxEpisodesStepper: View {
-        @Binding var amount: Int
-        
-        var body: some View {
-            Stepper("podcast.settings.maxEpisodes \(amount)") {
-                if amount <= 32 {
-                    amount += 1
-                }
-            } onDecrement: {
-                if amount > 1 {
-                    amount -= 1
-                }
-            }
-        }
-    }
-    
-    struct NotificationToggle: View {
-        @Binding var notificationsEnabled: Bool
-        
-        var body: some View {
-            Toggle("podcast.settings.notifications", isOn: $notificationsEnabled)
-        }
     }
 }
 

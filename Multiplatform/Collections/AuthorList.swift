@@ -22,7 +22,7 @@ struct AuthorList: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(author.name)
                         
-                        Text("books \(author.bookCount)")
+                        Text("item.count.audiobooks \(author.bookCount)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }

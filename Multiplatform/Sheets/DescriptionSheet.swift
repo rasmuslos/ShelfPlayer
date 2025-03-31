@@ -18,7 +18,8 @@ struct DescriptionSheet: View {
                     if let description = item.description {
                         Text(description)
                     } else {
-                        Text("description.unavailable")
+                        Text("item.description.missing")
+                            .foregroundStyle(.secondary)
                     }
                     
                     Spacer(minLength: 0)
@@ -35,5 +36,9 @@ struct DescriptionSheet: View {
 #if DEBUG
 #Preview {
     DescriptionSheet(item: Audiobook.fixture)
+}
+
+#Preview {
+    DescriptionSheet(item: Author(id: .fixture, name: "Fixture", description: nil, addedAt: .now, bookCount: 0))
 }
 #endif

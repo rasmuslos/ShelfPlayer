@@ -47,7 +47,7 @@ struct ConnectionManager: View {
         Section {
             NavigationLink("connection.add", destination: ConnectionAddViewWrapper())
             
-            Button("reset") {
+            Button("connection.removeAll") {
                 Task {
                     do {
                         try await PersistenceManager.shared.authorization.reset()

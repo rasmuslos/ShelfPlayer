@@ -115,11 +115,11 @@ extension PodcastViewModel {
     
     func seasonLabel(of season: String) -> String {
         if season.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return String(localized: "season.noLabel")
+            return String(localized: "item.season.noLabel")
         }
         
         if let number = Int(season) {
-            return String(localized: "season \(number)")
+            return String(localized: "item.season \(number)")
         }
         
         return season

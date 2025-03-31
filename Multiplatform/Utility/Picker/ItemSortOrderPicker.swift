@@ -46,17 +46,17 @@ extension AudiobookSortOrder: ItemSortOrder {
     var label: LocalizedStringKey {
         switch self {
         case .sortName:
-            "sort.name"
+            "item.sort.name"
         case .authorName:
-            "sort.author"
+            "item.sort.author"
         case .released:
-            "sort.released"
+            "item.sort.released"
         case .added:
-            "sort.added"
+            "item.sort.added"
         case .duration:
-            "sort.duration"
+            "item.sort.duration"
         case .lastPlayed:
-            "sort.lastPlayed"
+            "item.sort.lastPlayed"
         }
     }
     
@@ -82,13 +82,13 @@ extension AuthorSortOrder: ItemSortOrder {
     var label: LocalizedStringKey {
         switch self {
         case .firstNameLastName:
-            "sort.name.firstLast"
+            "item.sort.name.firstLast"
         case .lastNameFirstName:
-            "sort.name.lastFirst"
+            "item.sort.name.lastFirst"
         case .bookCount:
-            "sort.bookCount"
+            "item.sort.bookCount"
         case .added:
-            "sort.added"
+            "item.sort.added"
         }
     }
     
@@ -110,13 +110,13 @@ extension SeriesSortOrder: ItemSortOrder {
     var label: LocalizedStringKey {
         switch self {
         case .sortName:
-            "sort.name"
+            "item.sort.name"
         case .bookCount:
-            "sort.bookCount"
+            "item.sort.bookCount"
         case .added:
-            "sort.added"
+            "item.sort.added"
         case .duration:
-            "sort.duration"
+            "item.sort.duration"
         }
     }
     
@@ -138,15 +138,15 @@ extension PodcastSortOrder: ItemSortOrder {
     var label: LocalizedStringKey {
         switch self {
         case .name:
-            "sort.name"
+            "item.sort.name"
         case .author:
-            "sort.author"
+            "item.sort.author"
         case .episodeCount:
-            "sort.episodeCount"
+            "item.sort.episodeCount"
         case .addedAt:
-            "sort.added"
+            "item.sort.added"
         case .duration:
-            "sort.duration"
+            "item.sort.duration"
         }
     }
     
@@ -170,13 +170,13 @@ extension EpisodeSortOrder: ItemSortOrder {
     var label: LocalizedStringKey {
         switch self {
         case .name:
-            "sort.name"
+            "item.sort.name"
         case .index:
-            "sort.index"
+            "item.sort.index"
         case .released:
-            "sort.released"
+            "item.sort.released"
         case .duration:
-            "sort.duration"
+            "item.sort.duration"
         }
     }
     

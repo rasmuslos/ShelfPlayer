@@ -21,7 +21,7 @@ struct SeriesView: View {
     @ViewBuilder
     private var rowTitle: some View {
         HStack(spacing: 0) {
-            RowTitle(title: String(localized: "books"), fontDesign: .serif)
+            RowTitle(title: String(localized: "item.releated.series.audiobooks"), fontDesign: .serif)
             
             Spacer(minLength: 0)
             
@@ -81,12 +81,12 @@ struct SeriesView: View {
         .sensoryFeedback(.error, trigger: viewModel.lazyLoader.notifyError)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
                     ItemDisplayTypePicker(displayType: $viewModel.displayType)
                     
                     Divider()
                     
-                    Section("filter") {
+                    Section("item.filter") {
                         ItemFilterPicker(filter: $viewModel.filter)
                     }
                 }

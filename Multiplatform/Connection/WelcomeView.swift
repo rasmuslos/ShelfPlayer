@@ -22,16 +22,17 @@ struct WelcomeView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 15))
                     .padding(.bottom, 28)
                 
-                Text("login.welcome")
+                Text("setup.welcome")
                     .bold()
                     .font(.title)
                     .fontDesign(.serif)
-                Text("login.text")
+                
+                Text("setup.welcome.description")
             }
             
             Spacer()
             
-            Button("login.prompt") {
+            Button("setup.welcome.action") {
                 isConnectionAddViewPresented.toggle()
             }
             .controlSize(.large)

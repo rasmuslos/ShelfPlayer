@@ -64,7 +64,7 @@ struct StatusOverlay: View {
                                                 CircularProgressIndicator(completed: progress, background: .white.opacity(0.3), tint: .white)
                                             }
                                         } else {
-                                            Label("finished", systemImage: "checkmark")
+                                            Image(systemName: "checkmark")
                                                 .labelStyle(.iconOnly)
                                                 .font(.system(size: fontSize))
                                                 .fontWeight(.heavy)
@@ -77,7 +77,7 @@ struct StatusOverlay: View {
                         }
                         .frame(width: size, height: size)
                     } else if download.status == .completed {
-                        Label("downloaded", systemImage: "arrow.down.circle.fill")
+                        Image(systemName: "arrow.down.circle.fill")
                             .labelStyle(.iconOnly)
                             .font(.system(size: fontSize))
                             .foregroundStyle(.ultraThickMaterial)

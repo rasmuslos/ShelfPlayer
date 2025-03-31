@@ -44,7 +44,7 @@ struct SleepTimerEditor: View {
             
             Section {
                 HStack {
-                    Picker("hours", selection: $hourOne) {
+                    Picker("preferences.sleepTimer.hours", selection: $hourOne) {
                         ForEach(0..<10) { hour in
                             Text(hour, format: .number)
                         }
@@ -52,12 +52,12 @@ struct SleepTimerEditor: View {
                     
                     Text(verbatim: ":")
                     
-                    Picker("minutes", selection: $minuteTwo) {
+                    Picker("preferences.sleepTimer.minutes", selection: $minuteTwo) {
                         ForEach(0..<7) { minute in
                             Text(minute, format: .number)
                         }
                     }
-                    Picker("minutes", selection: $minuteOne) {
+                    Picker("preferences.sleepTimer.minutes", selection: $minuteOne) {
                         ForEach(0..<10) { minute in
                             Text(minute, format: .number)
                         }
@@ -65,7 +65,7 @@ struct SleepTimerEditor: View {
                 }
                 .pickerStyle(.wheel)
                 
-                Button("add", systemImage: "plus") {
+                Button("preferences.sleepTimer.add", systemImage: "plus") {
                     let time = Double(minuteOne) * 60 + Double(minuteTwo) * 60 * 10 + Double(hourOne) * 60 * 60
                     
                     guard time > 0 && !sleepTimerIntervals.contains(time) else {
@@ -90,13 +90,13 @@ struct SleepTimerEditor: View {
             }
             
             Section {
-                Button("reset", role: .destructive) {
+                Button("action.reset", role: .destructive) {
                     Defaults.reset([.sleepTimerIntervals, .sleepTimerExtendInterval, .sleepTimerExtendChapterAmount])
                 }
             }
         }
         .environment(\.editMode, .constant(.active))
-        .navigationTitle("sleepTimer")
+        .navigationTitle("perferences.sleepTimer")
         .sensoryFeedback(.error, trigger: notifyError)
     }
 }

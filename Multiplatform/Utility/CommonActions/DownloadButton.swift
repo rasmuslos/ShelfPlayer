@@ -81,21 +81,21 @@ struct DownloadButton: View {
     
     private var label: LocalizedStringKey {
         guard let status else {
-            return "download.loading"
+            return "item.download.resolving"
         }
         
         switch status {
         case .none:
-            return "download"
+            return "item.download"
         case .downloading:
-            return "download.cancel"
+            return "item.download.abort"
         case .completed:
-            return "download.remove"
+            return "item.download.remove"
         }
     }
     private var icon: String {
         guard let status else {
-            return "command"
+            return "questionmark.circle.dashed"
         }
         
         switch status {

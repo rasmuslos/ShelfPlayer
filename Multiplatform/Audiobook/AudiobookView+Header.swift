@@ -42,7 +42,7 @@ private struct Title: View {
                 .font(largeFont ? .title2 : .subheadline)
                 .lineLimit(1)
                 .overlay(alignment: .trailingLastTextBaseline) {
-                    Label("author.view", systemImage: "chevron.right.circle")
+                    Label(ItemIdentifier.ItemType.author.viewLabel, systemImage: "chevron.right.circle")
                         .labelStyle(.iconOnly)
                         .imageScale(.small)
                         .offset(x: 17)
@@ -78,16 +78,16 @@ private struct Title: View {
             
             HStack(spacing: 2) {
                 if viewModel.audiobook.explicit {
-                    Label("explicit", systemImage: "e.square.fill")
+                    Label("item.explicit", systemImage: "e.square.fill")
                         .labelStyle(.iconOnly)
                 }
                 if viewModel.audiobook.abridged {
-                    Label("abridged", systemImage: "a.square.fill")
+                    Label("item.abridged", systemImage: "a.square.fill")
                         .labelStyle(.iconOnly)
                 }
                 
                 if !viewModel.audiobook.narrators.isEmpty {
-                    Text("readBy \(viewModel.audiobook.narrators.formatted(.list(type: .and, width: .short)))")
+                    Text("item.readBy \(viewModel.audiobook.narrators.formatted(.list(type: .and, width: .short)))")
                         .font(.caption)
                         .lineLimit(1)
                         .foregroundStyle(.secondary)

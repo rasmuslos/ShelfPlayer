@@ -31,7 +31,7 @@ struct PlaybackQueue: View {
     
     var body: some View {
         if satellite.chapters.isEmpty && satellite.queue.isEmpty && satellite.upNextQueue.isEmpty {
-            ContentUnavailableView("queue.empty", systemImage: "list.number", description: Text("queue.empty.description"))
+            ContentUnavailableView("playback.queue.empty", systemImage: "list.number", description: Text("playback.queue.empty.description"))
         } else {
             ScrollViewReader { scrollProxy in
                 List {
@@ -53,7 +53,7 @@ struct PlaybackQueue: View {
                                 }
                             }
                         } header: {
-                            Text("bookmarks")
+                            Text("item.bookmarks")
                                 .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                         }
                     }
@@ -66,7 +66,7 @@ struct PlaybackQueue: View {
                                     .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                             }
                         } header: {
-                            Text("chapters")
+                            Text("item.chapters")
                                 .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                         }
                     }
@@ -78,12 +78,12 @@ struct PlaybackQueue: View {
                                     .listRowBackground(Color.clear)
                                     .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                        Button("play", systemImage: "play") {
+                                        Button("item.play", systemImage: "play") {
                                             satellite.skip(queueIndex: index)
                                         }
                                     }
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button("queue.remove", systemImage: "minus.circle.fill") {
+                                        Button("playback.queue.remove", systemImage: "minus.circle.fill") {
                                             satellite.remove(queueIndex: index)
                                         }
                                         .tint(.red)
@@ -111,19 +111,19 @@ struct PlaybackQueue: View {
                                     .listRowBackground(Color.clear)
                                     .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                        Button("play", systemImage: "play") {
+                                        Button("item.play", systemImage: "play") {
                                             satellite.skip(upNextQueueIndex: index)
                                         }
                                     }
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                        Button("queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
+                                        Button("playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
                                             satellite.queue(itemID)
                                             satellite.remove(upNextQueueIndex: index)
                                         }
                                         .tint(tintColor.accent)
                                     }
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button("queue.remove", systemImage: "minus.circle.fill") {
+                                        Button("playback.queue.remove", systemImage: "minus.circle.fill") {
                                             satellite.remove(upNextQueueIndex: index)
                                         }
                                         .tint(.red)

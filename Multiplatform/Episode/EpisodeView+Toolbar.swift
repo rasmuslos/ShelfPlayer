@@ -58,7 +58,7 @@ extension EpisodeView {
                             ProgressButton(itemID: viewModel.episode.id)
                             ProgressResetButton(itemID: viewModel.episode.id)
                         } label: {
-                            Label("more", systemImage: "ellipsis.circle")
+                            Label("item.options", systemImage: "ellipsis.circle")
                         }
                     }
                 }

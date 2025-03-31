@@ -62,6 +62,45 @@ struct TabRouter: View {
     }
     
     @ViewBuilder
+    private var syncFailedContent: some View {
+        ContentUnavailableView("navigation.sync.failed", systemImage: "circle.badge.xmark", description: Text("navigation.sync.failed"))
+            .symbolRenderingMode(.multicolor)
+            .symbolEffect(.wiggle, options: .nonRepeating)
+            .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 16) {
+                    Button {
+                        automaticOfflineModeDeadline = nil
+                        RFNotification[.changeOfflineMode].send(true)
+                    } label: {
+                        if let automaticOfflineModeDeadline {
+                            Text("navigation.offline.automatic")
+                            + Text(automaticOfflineModeDeadline, style: .relative)
+                        }
+                    }
+                    .task {
+                        automaticOfflineModeDeadline = .now.addingTimeInterval(7)
+                        
+                        do {
+                            try await Task.sleep(for: .seconds(7))
+                            
+                            RFNotification[.changeOfflineMode].send(true)
+                            automaticOfflineModeDeadline = nil
+                        } catch {
+                            automaticOfflineModeDeadline = nil
+                        }
+                    }
+                    
+                    Menu("navigation.library.select") {
+                        LibraryPicker()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                }
+            }
+    }
+    
+    @ViewBuilder
     private func content(for tab: TabValue) -> some View {
         @Bindable var satellite = satellite
         
@@ -73,43 +112,9 @@ struct TabRouter: View {
                         ShelfPlayer.updateUIHook()
                     }
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
-                ContentUnavailableView("import.failed", systemImage: "circle.badge.xmark", description: Text("import.failed.description"))
-                    .symbolRenderingMode(.multicolor)
-                    .symbolEffect(.wiggle, options: .nonRepeating)
-                    .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
-                    .safeAreaInset(edge: .bottom) {
-                        VStack(spacing: 16) {
-                            Button {
-                                automaticOfflineModeDeadline = nil
-                                RFNotification[.changeOfflineMode].send(true)
-                            } label: {
-                                if let automaticOfflineModeDeadline {
-                                    Text("library.change.automatic")
-                                    + Text(automaticOfflineModeDeadline, style: .relative)
-                                }
-                            }
-                            .task {
-                                automaticOfflineModeDeadline = .now.addingTimeInterval(4)
-                                
-                                do {
-                                    try await Task.sleep(for: .seconds(4))
-                                    
-                                    RFNotification[.changeOfflineMode].send(true)
-                                    automaticOfflineModeDeadline = nil
-                                } catch {
-                                    automaticOfflineModeDeadline = nil
-                                }
-                            }
-                            
-                            Menu("library.change") {
-                                LibraryPicker()
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.large)
-                        }
-                    }
+                syncFailedContent
             } else {
-                SessionImporter(connectionID: tab.library.connectionID) {
+                UserDataSyncer(connectionID: tab.library.connectionID) {
                     if $0 {
                         importedConnectionIDs.append(tab.library.connectionID)
                         importFailedConnectionIDs.removeAll(where: { $0 == tab.library.connectionID })

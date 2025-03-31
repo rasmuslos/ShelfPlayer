@@ -15,7 +15,7 @@ struct PodcastEpisodesView: View {
     @ScaledMetric private var seasonPickerHeight: CGFloat = 32
     
     private var allLabel: String {
-        String(localized: "episodes.all")
+        String(localized: "item.releated.podcast.episodes.all")
     }
     private var pickerBinding: Binding<String> {
         .init { viewModel.seasonFilter ?? allLabel } set: {
@@ -37,7 +37,7 @@ struct PodcastEpisodesView: View {
                 }
         }
         .listStyle(.plain)
-        .navigationTitle("episodes")
+        .navigationTitle("item.releated.podcast.episodes")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .top) {
             if !viewModel.seasons.isEmpty {

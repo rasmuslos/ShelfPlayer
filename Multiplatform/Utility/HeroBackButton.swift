@@ -15,7 +15,7 @@ struct HeroBackButton: View {
             Button {
                 presentationMode.wrappedValue.dismiss()
             } label: {
-                Label("back", systemImage: "chevron.left")
+                Label("navigation.back", systemImage: "chevron.left")
                     .labelStyle(.iconOnly)
             }
         }

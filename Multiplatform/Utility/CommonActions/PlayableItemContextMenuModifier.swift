@@ -25,7 +25,7 @@ struct PlayableItemContextMenuModifier: ViewModifier {
                 
                 if let audiobook = item as? Audiobook {
                     NavigationLink(destination: AudiobookView(audiobook)) {
-                        Label("audiobook.view", systemImage: "book")
+                        Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book")
                     }
                     
                     ItemMenu(authors: audiobook.authors)
@@ -65,7 +65,7 @@ struct PlayableItemContextMenuPreview: View {
                 }
                 
                 if !audiobook.narrators.isEmpty {
-                    Text("readBy \(audiobook.narrators.formatted(.list(type: .and, width: .short)))")
+                    Text("item.readBy \(audiobook.narrators.formatted(.list(type: .and, width: .short)))")
                         .font(.subheadline)
                         .foregroundStyle(.tertiary)
                 }

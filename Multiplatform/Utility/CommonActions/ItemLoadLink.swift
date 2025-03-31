@@ -42,15 +42,15 @@ extension ItemIdentifier.ItemType {
     var viewLabel: LocalizedStringKey {
         switch self {
         case .audiobook:
-            "audiobook.view"
+            "item.view.audiobook"
         case .author:
-            "author.view"
+            "item.view.author"
         case .series:
-            "series.view"
+            "item.view.series"
         case .podcast:
-            "podcast.view"
+            "item.view.podcast"
         case .episode:
-            "episode.view"
+            "item.view.episode"
         }
     }
     var errorLabel: LocalizedStringKey {
