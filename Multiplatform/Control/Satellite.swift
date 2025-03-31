@@ -60,6 +60,8 @@ final class Satellite {
     private(set) var totalLoading: Int
     private(set) var busy: [ItemIdentifier: Int]
     
+    var resumePlaybackItemID: ItemIdentifier?
+    
     // MARK: Utility
     
     private(set) var notifyError: Bool
@@ -101,6 +103,8 @@ final class Satellite {
         
         stash = .init()
         setupObservers()
+        
+        checkForResumeablePlayback()
     }
     
     enum Sheet: Identifiable {
@@ -455,10 +459,24 @@ extension Satellite {
             }
         }
     }
+    
+    nonisolated func resumePlayback() {
+        Task {
+            guard let resumePlaybackItemID = await resumePlaybackItemID else {
+                return
+            }
+            
+            await MainActor.run {
+                self.resumePlaybackItemID = nil
+            }
+            
+            start(resumePlaybackItemID)
+        }
+    }
 }
 
 private extension Satellite {
-    private nonisolated func resolvePlayingItem() {
+    nonisolated func resolvePlayingItem() {
         Task {
             guard let currentItemID = await currentItemID else {
                 await MainActor.withAnimation {
@@ -484,7 +502,7 @@ private extension Satellite {
             }
         }
     }
-    private nonisolated func loadBookmarks(itemID: ItemIdentifier) {
+    nonisolated func loadBookmarks(itemID: ItemIdentifier) {
         Task {
             do {
                 guard itemID.type == .audiobook else {
@@ -504,7 +522,24 @@ private extension Satellite {
         }
     }
     
-    private func setupObservers() {
+    func checkForResumeablePlayback() {
+        guard let playbackResumeInfo = Defaults[.playbackResumeInfo] else {
+            return
+        }
+        
+        Defaults[.playbackResumeInfo] = nil
+        
+        // 12 Hours
+        let timeout: Double = 60 * 60 * 12
+        
+        guard playbackResumeInfo.started.distance(to: .now) < timeout else {
+            return
+        }
+        
+        resumePlaybackItemID = playbackResumeInfo.itemID
+    }
+    
+    func setupObservers() {
         RFNotification[.changeOfflineMode].subscribe { [weak self] in
             self?.isOffline = $0
         }.store(in: &stash)

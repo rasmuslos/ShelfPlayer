@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TabContentPlaybackModifier: ViewModifier {
+struct PlaybackTabContentModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
@@ -64,26 +64,39 @@ struct PlaybackSafeAreaPaddingModifier: ViewModifier {
     }
 }
 
-struct PlaybackCreateBookmarkModifier: ViewModifier {
+struct PlaybackContentModifier: ViewModifier {
     @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
     
     func body(content: Content) -> some View {
         @Bindable var viewModel = viewModel
+        @Bindable var satellite = satellite
         
         content
+            .alert("playback.alert.resume", isPresented: .init { satellite.resumePlaybackItemID != nil } set: { _ in }) {
+                Button("cancel", role: .cancel) {
+                    satellite.resumePlaybackItemID = nil
+                }
+                Button("playback.alert.resume.action") {
+                    satellite.resumePlayback()
+                }
+                .keyboardShortcut(.defaultAction)
+            } message: {
+                Text("playback.alert.resume.message")
+            }
             .alert("bookmark.create.alert.title", isPresented: $viewModel.isCreateBookmarkAlertVisible) {
                 TextField("bookmark.create.alert.placeholder", text: $viewModel.bookmarkNote)
                 
                 if viewModel.isCreatingBookmark {
                     ProgressView()
                 } else {
-                    Button("cancel") {
+                    Button("cancel", role: .cancel) {
                         viewModel.cancelBookmarkCreation()
                     }
                     Button("bookmark.create.alert.action") {
                         viewModel.finalizeBookmarkCreation()
                     }
-                    .bold()
+                    .keyboardShortcut(.defaultAction)
                 }
             }
     }
