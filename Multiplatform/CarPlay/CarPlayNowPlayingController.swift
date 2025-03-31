@@ -6,12 +6,12 @@
 //
 
 import Foundation
-import CarPlay
+@preconcurrency import CarPlay
 import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-internal class CarPlayNowPlayingController: NSObject {
+class CarPlayNowPlayingController: NSObject {
     private let template = CPNowPlayingTemplate.shared
     private let interfaceController: CPInterfaceController
     

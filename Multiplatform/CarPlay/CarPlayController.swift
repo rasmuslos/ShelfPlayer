@@ -6,11 +6,10 @@
 //
 
 import Foundation
-import CarPlay
-import Combine
+@preconcurrency import CarPlay
 import ShelfPlayerKit
 
-internal class CarPlayController {
+class CarPlayController {
     private let interfaceController: CPInterfaceController
     
     private let tabBar: CarPlayTabBar
