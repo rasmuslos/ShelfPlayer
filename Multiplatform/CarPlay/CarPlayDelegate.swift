@@ -6,59 +6,68 @@
 //
 
 import Foundation
-import CarPlay
-import Combine
+import OSLog
+@preconcurrency import CarPlay
 import ShelfPlayerKit
 
 public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
-    private var interfaceController: CPInterfaceController?
+    static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "CarPlay")
     
+    private var interfaceController: CPInterfaceController?
     private var controller: CarPlayController?
-    private var apiClientSubscription: AnyCancellable?
     
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
-        registerAuthorizationSubscription()
-        // updateController(authorized: AudiobookshelfClient.shared.authorized)
+        registerConnectionsObserver()
+        updateController()
     }
     
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
-        self.interfaceController = nil
         
+        self.interfaceController = nil
         controller = nil
-        apiClientSubscription = nil
     }
 }
 
 private extension CarPlayDelegate {
-    private var unauthorizedTemplate: CPListTemplate {
+    var noConnectionsTemplate: CPListTemplate {
         let unauthorizedTemplate = CPListTemplate(title: nil, sections: [], assistantCellConfiguration: .none)
-        unauthorizedTemplate.emptyViewTitleVariants = [String(localized: "carPlay.unauthorized.title")]
-        unauthorizedTemplate.emptyViewSubtitleVariants = [String(localized: "carPlay.unauthorized.subtitle")]
+        unauthorizedTemplate.emptyViewTitleVariants = [String(localized: "carPlay.noConnections")]
+        unauthorizedTemplate.emptyViewSubtitleVariants = [String(localized: "carPlay.noConnections.subtitle")]
         
         return unauthorizedTemplate
     }
     
-    private func registerAuthorizationSubscription() {
-        /*
-        apiClientSubscription = AudiobookshelfClient.shared.$authorized.sink { [weak self] authorized in
-            self?.updateController(authorized: authorized)
+    func registerConnectionsObserver() {
+        RFNotification[.connectionsChanged].subscribe { [weak self] _ in
+            self?.updateController()
         }
-         */
     }
-    private func updateController(authorized: Bool) {
-        guard let interfaceController else {
-            return
-        }
-        
-        if authorized {
-            controller = .init(interfaceController: interfaceController)
-        } else {
-            controller = nil
+    
+    func updateController() {
+        Task {
+            guard let interfaceController else {
+                Self.logger.warning("Attempted to update CarPlay controller before it was initialized.")
+                return
+            }
             
-            Task {
-                // try await interfaceController.setRootTemplate(unauthorizedTemplate, animated: false)
+            let connectionCount = await PersistenceManager.shared.authorization.connections.count
+            
+            guard connectionCount > 0 else {
+                do {
+                    try await interfaceController.setRootTemplate(noConnectionsTemplate, animated: false)
+                } catch {
+                    Self.logger.error("Failed to set no connections template: \(error)")
+                }
+                
+                controller = nil
+                
+                return
+            }
+            
+            if controller == nil {
+                controller = .init(interfaceController: interfaceController)
             }
         }
     }

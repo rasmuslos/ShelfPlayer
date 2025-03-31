@@ -153,7 +153,7 @@ public extension AudioPlayer {
         await current?.play()
         
         if let didPauseAt {
-            if didPauseAt.distance(to: .now) > 30, let currentTime = await currentTime {
+            if didPauseAt.distance(to: .now) > 30 {
                 do {
                     try await applySmartRewind()
                 } catch {
@@ -329,6 +329,12 @@ private extension AudioPlayer {
                 }
             }
         }
+        
+        Task {
+            for await _ in Defaults.updates(.playbackRates) {
+                updateCommandCenterPlaybackRates()
+            }
+        }
     }
     nonisolated func addRemoteCommandTargets() {
         let commandCenter = MPRemoteCommandCenter.shared()
@@ -430,7 +436,47 @@ private extension AudioPlayer {
             return .success
         }
         
-        // TODO: more
+        commandCenter.bookmarkCommand.isEnabled = true
+        commandCenter.bookmarkCommand.addTarget { _ in
+            Task {
+                do {
+                    try await self.createQuickBookmark()
+                } catch {
+                    self.logger.error("Failed to create quick bookmark: \(error)")
+                }
+            }
+            
+            return .success
+        }
+        
+        updateCommandCenterPlaybackRates()
+        commandCenter.changePlaybackRateCommand.isEnabled = true
+        commandCenter.changePlaybackRateCommand.addTarget {
+            guard let event = $0 as? MPChangePlaybackRateCommandEvent else {
+                return .commandFailed
+            }
+            
+            let value = Percentage(event.playbackRate)
+            
+            Task {
+                await self.setPlaybackRate(value)
+            }
+            
+            return .success
+        }
+        
+        commandCenter.stopCommand.isEnabled = true
+        commandCenter.stopCommand.addTarget { _ in
+            Task {
+                await self.stop()
+            }
+            
+            return .success
+        }
+    }
+    
+    nonisolated func updateCommandCenterPlaybackRates() {
+        MPRemoteCommandCenter.shared().changePlaybackRateCommand.supportedPlaybackRates = Defaults[.playbackRates].map { NSNumber(value: $0) }
     }
 }
 
