@@ -61,12 +61,12 @@ struct PodcastLibraryPanel: View {
             }
         }
         .navigationTitle("panel.library")
-        .searchable(text: $lazyLoader.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.podcasts")
+        .searchable(text: $lazyLoader.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "panel.library.search.podcast")
         .searchFocused($focused)
         .modifier(CompactPreferencesToolbarModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("options", systemImage: "ellipsis.circle") {
+                Menu("item.options", systemImage: "ellipsis.circle") {
                     ItemDisplayTypePicker(displayType: $podcastsDisplayType)
                     ItemSortOrderPicker(sortOrder: $podcastsSortOrder, ascending: $podcastsAscending)
                 }

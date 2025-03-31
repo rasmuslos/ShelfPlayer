@@ -9,6 +9,6 @@ import SwiftUI
 
 struct EmptyCollectionView: View {
     var body: some View {
-        ContentUnavailableView("collection.empty", systemImage: "questionmark.folder", description: Text("collection.empty.description"))
+        ContentUnavailableView("item.releated.empty", systemImage: "questionmark.folder", description: Text("item.releated.empty.description"))
     }
 }

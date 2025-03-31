@@ -10,7 +10,7 @@ import OSLog
 import SPFoundation
 import SPPersistence
 
-struct SessionImporter: View {
+struct UserDataSyncer: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let connectionID: ItemIdentifier.ConnectionID
@@ -19,10 +19,10 @@ struct SessionImporter: View {
     @State private var task: Task<(), Error>?
     
     var body: some View {
-        ContentUnavailableView("sessions.importing", systemImage: "binoculars")
+        ContentUnavailableView("navigation.sync", systemImage: "binoculars")
             .symbolEffect(.pulse)
             .safeAreaInset(edge: .bottom) {
-                Menu("library.change") {
+                Menu("navigation.library.select") {
                     LibraryPicker() {
                         task?.cancel()
                         callback(false)
@@ -58,7 +58,7 @@ struct SessionImporter: View {
 }
 
 #Preview {
-    SessionImporter(connectionID: "fixture") { _ in
+    UserDataSyncer(connectionID: "fixture") { _ in
         // Nothing
     }
 }

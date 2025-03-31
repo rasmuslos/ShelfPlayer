@@ -49,7 +49,7 @@ struct AudiobookAuthorsPanel: View {
         .navigationTitle("panel.authors")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("options", systemImage: "arrow.up.arrow.down.circle") {
+                Menu("item.options", systemImage: "arrow.up.arrow.down.circle") {
                     ItemSortOrderPicker(sortOrder: $authorsSortOrder, ascending: $authorsAscending)
                 }
             }

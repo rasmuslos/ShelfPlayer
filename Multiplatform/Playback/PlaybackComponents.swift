@@ -53,7 +53,7 @@ struct PlaybackTitle: View {
                 if viewModel.isCreatingBookmark {
                     ProgressIndicator()
                 } else {
-                    Label("bookmarks", systemImage: "bookmark")
+                    Label("item.bookmarks", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
                         .contentShape(.rect)
                         .padding(4)
@@ -85,7 +85,7 @@ struct PlaybackControls: View {
     
     @ViewBuilder
     private var backwardButton: some View {
-        Label("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
+        Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
             .labelStyle(.iconOnly)
             .font(.title)
             .padding(12)
@@ -102,7 +102,7 @@ struct PlaybackControls: View {
     }
     @ViewBuilder
     private var togglePlayButton: some View {
-        Button(satellite.isPlaying ? "pause" : "play", systemImage: satellite.isPlaying ? "pause" : "play") {
+        Button(satellite.isPlaying ? "playback.pause" : "playback.play", systemImage: satellite.isPlaying ? "pause" : "play") {
             satellite.togglePlaying()
         }
         .contentShape(.rect)
@@ -122,7 +122,7 @@ struct PlaybackControls: View {
     }
     @ViewBuilder
     private var forwardButton: some View {
-        Label("forwards", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
+        Label("playback.skip.forward", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
             .labelStyle(.iconOnly)
             .font(.title)
             .padding(12)
@@ -205,7 +205,7 @@ struct PlaybackMenuActions: View {
     var body: some View {
         if let currentItem = satellite.currentItem {
             if let audiobook = currentItem as? Audiobook {
-                Button("audiobook.view", systemImage: "book") {
+                Button(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book") {
                     audiobook.id.navigate()
                 }
                 
@@ -278,7 +278,7 @@ struct PlaybackActions: View {
                 switch sleepTimer {
                 case .chapters(let amount):
                     ControlGroup {
-                        Button("decrease", systemImage: "minus") {
+                        Button("action.decrease", systemImage: "minus") {
                             if amount > 1 {
                                 satellite.setSleepTimer(.chapters(amount - 1))
                             } else {
@@ -288,26 +288,40 @@ struct PlaybackActions: View {
                         
                         Text(amount, format: .number)
                         
-                        Button("increase", systemImage: "plus") {
+                        Button("action.increase", systemImage: "plus") {
                             satellite.setSleepTimer(.chapters(amount + 1))
                         }
                     }
-                case .interval(_):
-                    EmptyView()
+                case .interval(let expiresAt):
+                    if let remainingSleepTime = satellite.remainingSleepTime {
+                        ControlGroup {
+                            Button("action.decrease", systemImage: "minus") {
+                                if remainingSleepTime > 60 {
+                                    satellite.setSleepTimer(.interval(expiresAt.advanced(by: -60)))
+                                } else {
+                                    satellite.setSleepTimer(nil)
+                                }
+                            }
+                            
+                            Button("action.increase", systemImage: "plus") {
+                                satellite.setSleepTimer(.interval(expiresAt.advanced(by: 60)))
+                            }
+                        }
+                    }
                 }
                 
                 Divider()
                 
-                Button("sleep.extend", systemImage: "plus") {
+                Button("playback.sleepTimer.extend", systemImage: "plus") {
                     satellite.extendSleepTimer()
                 }
                 
-                Button("sleep.cancel", systemImage: "alarm") {
+                Button("playback.sleepTimer.cancel", systemImage: "alarm") {
                     satellite.setSleepTimer(nil)
                 }
             } else {
                 if satellite.chapter != nil {
-                    Button("sleepTimer.chapter", systemImage: "append.page") {
+                    Button("playback.sleepTimer.chapter", systemImage: "append.page") {
                         satellite.setSleepTimer(.chapters(1))
                     }
                     
@@ -339,7 +353,7 @@ struct PlaybackActions: View {
                         }
                     }
                 } else {
-                    Label("sleepTimer", systemImage: "moon.zzz.fill")
+                    Label("playback.sleepTimer", systemImage: "moon.zzz.fill")
                 }
             }
             .padding(12)
@@ -378,7 +392,7 @@ struct PlaybackActions: View {
                 viewModel.isQueueVisible.toggle()
             }
         } label: {
-            Label("queue", systemImage: "list.number")
+            Label("playback.queue", systemImage: "list.number")
                 .padding(12)
                 .contentShape(.rect)
         }

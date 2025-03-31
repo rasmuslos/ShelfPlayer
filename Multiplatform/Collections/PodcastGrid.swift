@@ -99,7 +99,7 @@ private struct PodcastGridItem: View {
                     .hoverEffect(.highlight)
                 
                 if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
-                    Text("\(incompleteEpisodeCount) episodes.unplayed")
+                    Text("item.count.episodes.unplayed \(incompleteEpisodeCount)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

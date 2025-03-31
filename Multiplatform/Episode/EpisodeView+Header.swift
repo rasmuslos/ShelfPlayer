@@ -75,10 +75,13 @@ private struct Title: View {
             
             HStack {
                 NavigationLink(destination: ItemLoadView(viewModel.episode.podcastID)) {
-                    Text(viewModel.episode.podcastName)
-                    
-                    Label("author.view", systemImage: "chevron.right.circle")
-                        .labelStyle(.iconOnly)
+                    HStack(spacing: 4) {
+                        Text(viewModel.episode.podcastName)
+                        
+                        Label(ItemIdentifier.ItemType.podcast.viewLabel, systemImage: "chevron.right.circle")
+                            .labelStyle(.iconOnly)
+                            .font(.caption2)
+                    }
                 }
                 // .disabled(library!.type == .offline)
                 .lineLimit(1)

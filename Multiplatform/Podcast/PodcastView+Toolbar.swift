@@ -31,7 +31,7 @@ extension PodcastView {
                                     .font(.headline)
                                     .lineLimit(1)
                                 
-                                Text("\(viewModel.episodeCount) episodes")
+                                Text("item.count.episodes \(viewModel.episodeCount)")
                                     .font(.caption2)
                                     .lineLimit(1)
                             }
@@ -63,16 +63,16 @@ extension PodcastView.ToolbarModifier {
         var body: some View {
             @Bindable var viewModel = viewModel
             
-            Menu("options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
-                Section("filter") {
+            Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                Section("item.filter") {
                     ItemFilterPicker(filter: $viewModel.filter)
                 }
                 
-                Section("sort") {
+                Section("item.sort") {
                     ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                 }
                 
-                Button("podcast.configure", systemImage: "gearshape") {
+                Button("item.preferences", systemImage: "gearshape") {
                     satellite.present(.podcastConfiguration(viewModel.podcast.id))
                 }
             }

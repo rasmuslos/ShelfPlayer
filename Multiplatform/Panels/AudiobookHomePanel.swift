@@ -66,7 +66,7 @@ struct AudiobookHomePanel: View {
                         }
                         
                          if !downloaded.isEmpty {
-                             AudiobookRow(title: String(localized: "downloads"), small: false, audiobooks: downloaded)
+                             AudiobookRow(title: String(localized: "item.downloaded", comment: "Collection of downloaded items"), small: false, audiobooks: downloaded)
                          }
                     }
                 }
@@ -75,12 +75,12 @@ struct AudiobookHomePanel: View {
                 }
             }
         }
-        .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
+        .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
         .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: notifyError)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("library.change", systemImage: "books.vertical.fill") {
+                Menu("navigation.library.select", systemImage: "books.vertical.fill") {
                     LibraryPicker()
                 }
             }

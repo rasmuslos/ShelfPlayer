@@ -48,7 +48,7 @@ struct PodcastView: View {
                                 if let season = viewModel.seasonFilter {
                                     Text(viewModel.seasonLabel(of: season))
                                 } else {
-                                    Text("episodes")
+                                    Text("item.releated.podcast.episodes")
                                 }
                             }
                             .bold()
@@ -66,9 +66,10 @@ struct PodcastView: View {
                         PodcastEpisodesView()
                             .environment(viewModel)
                     } label: {
-                        HStack {
-                            Spacer()
-                            Text("episodes.all")
+                        HStack(spacing: 0) {
+                            Spacer(minLength: 0)
+                            
+                            Text("item.releated.podcast.episodes.all")
                         }
                     }
                 }

@@ -54,7 +54,7 @@ struct ContentView: View {
                     }
                 }
                 .safeAreaInset(edge: .bottom) {
-                    Button("offline.disable") {
+                    Button(String("ABC")) {
                         satellite.isOffline = false
                     }
                 }

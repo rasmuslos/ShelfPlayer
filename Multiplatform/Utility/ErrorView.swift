@@ -22,7 +22,7 @@ struct ErrorView: View {
         if let itemID {
             itemID.type.errorLabel
         } else {
-            "error.unavailable.title"
+            "error.unavailable"
         }
     }
     

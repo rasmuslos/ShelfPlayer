@@ -67,11 +67,11 @@ extension AudiobookView {
                                 ProgressIndicator()
                             } else {
                                 if viewModel.supplementaryPDFs.count == 1 {
-                                    Button("supplementaryPDF.read", systemImage: "book.circle") {
+                                    Button("item.documents.read", systemImage: "book.circle") {
                                         viewModel.presentPDF(viewModel.supplementaryPDFs[0])
                                     }
                                 } else {
-                                    Menu("supplementaryPDF.read", systemImage: "book.circle") {
+                                    Menu("item.documents.read", systemImage: "book.circle") {
                                         ForEach(viewModel.supplementaryPDFs) { pdf in
                                             Button(pdf.name) {
                                                 viewModel.presentPDF(pdf)
@@ -103,7 +103,7 @@ extension AudiobookView {
                             ProgressButton(itemID: viewModel.audiobook.id)
                             ProgressResetButton(itemID: viewModel.audiobook.id)
                         } label: {
-                            Label("more", systemImage: "ellipsis.circle")
+                            Label("item.options", systemImage: "ellipsis.circle")
                         }
                     }
                 }
@@ -112,7 +112,7 @@ extension AudiobookView {
                         PDFViewer(viewModel.presentedPDF!)
                             .toolbar {
                                 ToolbarItem(placement: .primaryAction) {
-                                    Button("done") {
+                                    Button("action.dismiss") {
                                         viewModel.presentedPDF = nil
                                     }
                                 }

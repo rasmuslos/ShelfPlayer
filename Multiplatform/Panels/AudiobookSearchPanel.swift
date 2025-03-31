@@ -23,25 +23,25 @@ internal struct SearchView: View {
                     LoadingView()
                 } else {
                     UnavailableWrapper {
-                        ContentUnavailableView("search.empty.title", systemImage: "magnifyingglass", description: Text("search.empty.description"))
+                        ContentUnavailableView("panel.search.empty", systemImage: "magnifyingglass", description: Text("panel.search.empty.description"))
                     }
                 }
             } else {
                 List {
                     if !viewModel.result.1.isEmpty {
-                        Section("section.authors") {
+                        Section("panel.search.authors") {
                             AuthorList(authors: viewModel.result.1) { _ in }
                         }
                     }
                     
                     if !viewModel.result.2.isEmpty {
-                        Section("section.series") {
+                        Section("panel.search.series") {
                             SeriesList(series: viewModel.result.2) { _ in }
                         }
                     }
                     
                     if !viewModel.result.0.isEmpty {
-                        Section("section.audiobooks") {
+                        Section("panel.search.audiobooks") {
                             AudiobookList(sections: viewModel.result.0.map { .audiobook(audiobook: $0) }) { _ in }
                         }
                     }
@@ -50,7 +50,7 @@ internal struct SearchView: View {
             }
         }
         .navigationTitle("panel.search")
-        .searchable(text: $viewModel.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "search.placeholder")
+        .searchable(text: $viewModel.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "panel.search.placeholder")
         .autocorrectionDisabled()
         .searchFocused($focused)
         .sensoryFeedback(.error, trigger: viewModel.notifyError)

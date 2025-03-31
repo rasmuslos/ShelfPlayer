@@ -24,6 +24,7 @@ internal struct Timeline: View {
     }
     
     var body: some View {
+        /*
         LazyVStack(spacing: 52) {
             ForEach(sessions) { session in
                 VStack(spacing: 8) {
@@ -66,6 +67,8 @@ internal struct Timeline: View {
             }
         }
         .padding(.horizontal, 20)
+         */
+        Text(verbatim: "abc")
     }
 }
 
