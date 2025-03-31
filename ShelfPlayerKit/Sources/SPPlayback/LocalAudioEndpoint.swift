@@ -191,6 +191,8 @@ extension LocalAudioEndpoint {
         cancelUpdateBufferingCheck()
         sleepTimeoutTimer?.invalidate()
         
+        Defaults[.playbackResumeInfo] = nil
+        
         await AudioPlayer.shared.didStopPlaying(endpointID: id, itemID: currentItemID)
     }
     
@@ -452,6 +454,8 @@ private extension LocalAudioEndpoint {
         activeOperationCount -= 1
         
         updateUpNextQueue()
+        
+        Defaults[.playbackResumeInfo] = PlaybackResumeInfo(itemID: currentItemID, started: .now)
     }
     
     func updateChapterIndex() async {

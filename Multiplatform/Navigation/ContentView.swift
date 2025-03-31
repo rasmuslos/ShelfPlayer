@@ -67,7 +67,7 @@ struct ContentView: View {
         .sensoryFeedback(.success, trigger: satellite.notifySuccess)
         .sensoryFeedback(.error, trigger: playbackViewModel.notifyError)
         .sensoryFeedback(.success, trigger: playbackViewModel.notifySuccess)
-        .modifier(PlaybackCreateBookmarkModifier())
+        .modifier(PlaybackContentModifier())
         .sheet(item: $satellite.currentSheet) {
             sheetContent(for: $0)
         }

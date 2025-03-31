@@ -85,4 +85,18 @@ public extension Defaults.Keys {
     static let podcastsAscending = Key("podcastsAscending", default: true, iCloud: true)
     static let podcastsSortOrder = Key<PodcastSortOrder>("podcastsSortOrder", default: .name, iCloud: true)
     static let podcastsDisplayType = Key<ItemDisplayType>("podcastsDisplayType", default: .grid, iCloud: true)
+    
+    // MARK: Playback
+    
+    static let playbackResumeInfo = Key<PlaybackResumeInfo?>("playbackResumeInfo", default: nil)
+}
+
+public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
+    public let itemID: ItemIdentifier
+    public let started: Date
+    
+    public init(itemID: ItemIdentifier, started: Date) {
+        self.itemID = itemID
+        self.started = started
+    }
 }

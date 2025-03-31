@@ -68,7 +68,7 @@ struct TabRouter: View {
         Group {
             if importedConnectionIDs.contains(tab.library.connectionID) {
                 tab.content
-                    .modifier(TabContentPlaybackModifier())
+                    .modifier(PlaybackTabContentModifier())
                     .task {
                         ShelfPlayer.updateUIHook()
                     }
