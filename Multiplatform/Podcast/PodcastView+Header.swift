@@ -106,16 +106,14 @@ private struct Additional: View {
     var body: some View {
         HStack {
             HStack(spacing: 3) {
-                Label("episodes.count", systemImage: "number")
+                Label("item.count.episodes \(viewModel.episodeCount)", systemImage: "number")
                     .labelStyle(.iconOnly)
-                
-                Text(viewModel.episodeCount, format: .number)
             }
             
             if viewModel.podcast.explicit {
                 Text(verbatim: "•")
                 
-                Label("explicit", systemImage: "e.square.fill")
+                Label("item.explicit", systemImage: "e.square.fill")
                     .labelStyle(.iconOnly)
             }
             
@@ -124,9 +122,9 @@ private struct Additional: View {
                 
                 switch publishingType {
                     case .episodic:
-                        Text("podcast.episodic")
+                        Text("item.publishing.episodic")
                     case .serial:
-                        Text("podcast.serial")
+                        Text("item.publishing.serial")
                 }
             }
             

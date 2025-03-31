@@ -74,7 +74,7 @@ struct PlaybackContentModifier: ViewModifier {
         
         content
             .alert("playback.alert.resume", isPresented: .init { satellite.resumePlaybackItemID != nil } set: { _ in }) {
-                Button("cancel", role: .cancel) {
+                Button("action.cancel", role: .cancel) {
                     satellite.resumePlaybackItemID = nil
                 }
                 Button("playback.alert.resume.action") {
@@ -84,16 +84,16 @@ struct PlaybackContentModifier: ViewModifier {
             } message: {
                 Text("playback.alert.resume.message")
             }
-            .alert("bookmark.create.alert.title", isPresented: $viewModel.isCreateBookmarkAlertVisible) {
-                TextField("bookmark.create.alert.placeholder", text: $viewModel.bookmarkNote)
+            .alert("playback.alert.createBookmark", isPresented: $viewModel.isCreateBookmarkAlertVisible) {
+                TextField("playback.alert.createBookmark.placeholder", text: $viewModel.bookmarkNote)
                 
                 if viewModel.isCreatingBookmark {
                     ProgressView()
                 } else {
-                    Button("cancel", role: .cancel) {
+                    Button("action.cancel", role: .cancel) {
                         viewModel.cancelBookmarkCreation()
                     }
-                    Button("bookmark.create.alert.action") {
+                    Button("playback.alert.createBookmark.action") {
                         viewModel.finalizeBookmarkCreation()
                     }
                     .keyboardShortcut(.defaultAction)

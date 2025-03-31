@@ -84,7 +84,7 @@ struct AudiobookLibraryPanel: View {
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 if let genres, !genres.isEmpty {
-                    Menu("genres", systemImage: "tag") {
+                    Menu("item.genres", systemImage: "tag") {
                         ForEach(genres.sorted(by: <), id: \.hashValue) {
                             Toggle($0, isOn: binding(for: $0))
                         }
@@ -95,16 +95,16 @@ struct AudiobookLibraryPanel: View {
                     ProgressIndicator()
                 }
                 
-                Menu("options", systemImage: filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                Menu("item.options", systemImage: filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
                     ItemDisplayTypePicker(displayType: $displayType)
                     
                     Divider()
                     
-                    Section("filter") {
+                    Section("item.filter") {
                         ItemFilterPicker(filter: $filter)
                     }
                     
-                    Section("sort") {
+                    Section("item.sort") {
                         ItemSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
                     }
                 }

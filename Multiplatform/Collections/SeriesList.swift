@@ -68,7 +68,7 @@ extension SeriesList {
                             .modifier(SerifModifier())
                     }
                     
-                    Text("series.count \(audiobookIDs.count)")
+                    Text("item.count.audiobooks \(audiobookIDs.count)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

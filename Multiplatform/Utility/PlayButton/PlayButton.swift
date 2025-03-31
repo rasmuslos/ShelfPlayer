@@ -72,19 +72,28 @@ struct PlayButton: View {
     
     private var label: LocalizedStringKey {
         if isPlaying {
-            return satellite.isPlaying ? "pause" : "resume"
+            return satellite.isPlaying ? "playback.pause" : "playback.pause"
         }
         
-        if let isFinished = tracker.isFinished, isFinished {
-            return "listen.again"
-        } else if let progress = tracker.progress, progress > 0 {
-            return "resume"
-        }
+        let isFinished = tracker.isFinished
+        let progress = tracker.progress
         
         if item.id.type == .audiobook {
-            return "listen"
+            if isFinished == true {
+                return "item.play.again.audiobook"
+            } else if let progress, progress > 0 {
+                return "item.play.resume.audiobook"
+            } else {
+                return "item.play.audiobook"
+            }
         } else {
-            return "play"
+            if isFinished == true {
+                return "item.play.again"
+            } else if let progress, progress > 0 {
+                return "item.play.resume"
+            } else {
+                return "item.play"
+            }
         }
     }
     

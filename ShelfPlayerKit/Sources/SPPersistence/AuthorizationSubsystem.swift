@@ -234,6 +234,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
     }
     
     func reset() throws {
+        for (connectionID, _) in connections {
+            try removeConnection(connectionID)
+        }
+        
         SecItemDelete([
             kSecClass: kSecClassGenericPassword,
             kSecAttrSynchronizable: kSecAttrSynchronizableAny,

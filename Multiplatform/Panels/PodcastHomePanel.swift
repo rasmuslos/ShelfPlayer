@@ -74,11 +74,11 @@ struct PodcastHomePanel: View {
                 }
             }
         }
-        .navigationTitle(library?.name ?? String(localized: "error.unavailable.title"))
+        .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
         .sensoryFeedback(.error, trigger: failed)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("library.change", systemImage: "books.vertical.fill") {
+                Menu("navigation.library.select", systemImage: "books.vertical.fill") {
                     LibraryPicker()
                 }
             }

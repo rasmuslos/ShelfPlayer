@@ -36,7 +36,7 @@ struct AudiobookView: View {
                 divider
                 
                 if viewModel.chapters.count > 1 {
-                    DisclosureGroup("\(viewModel.chapters.count) chapters", isExpanded: $viewModel.chaptersVisible) {
+                    DisclosureGroup("item.chapters \(viewModel.chapters.count)", isExpanded: $viewModel.chaptersVisible) {
                         List {
                             Chapters(item: viewModel.audiobook, chapters: viewModel.chapters)
                         }
@@ -56,7 +56,7 @@ struct AudiobookView: View {
                 .padding(.bottom, 16)
                 
                 if !viewModel.supplementaryPDFs.isEmpty {
-                    DisclosureGroup("audiobooks.pdfs", isExpanded: $viewModel.supplementaryPDFsVisible) {
+                    DisclosureGroup("item.documents", isExpanded: $viewModel.supplementaryPDFsVisible) {
                         List {
                             ForEach(viewModel.supplementaryPDFs, id: \.ino) { pdf in
                                 Button(pdf.name) {
@@ -73,13 +73,13 @@ struct AudiobookView: View {
                 
                 VStack(spacing: 12) {
                     ForEach(Array(viewModel.sameSeries.keys), id: \.self) { series in
-                        AudiobookRow(title: String(localized: "audiobook.similar.series \(series.name)"), small: true, audiobooks: viewModel.sameSeries[series]!)
+                        AudiobookRow(title: String(localized: "item.releated.audiobook.series \(series.name)"), small: true, audiobooks: viewModel.sameSeries[series]!)
                     }
                     ForEach(Array(viewModel.sameAuthor.keys), id: \.self) { author in
-                        AudiobookRow(title: String(localized: "audiobook.similar.author \(author)"), small: true, audiobooks: viewModel.sameAuthor[author]!)
+                        AudiobookRow(title: String(localized: "item.releated.audiobook.author \(author)"), small: true, audiobooks: viewModel.sameAuthor[author]!)
                     }
                     ForEach(Array(viewModel.sameNarrator.keys), id: \.self) { narrator in
-                        AudiobookRow(title: String(localized: "audiobook.similar.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator[narrator]!)
+                        AudiobookRow(title: String(localized: "item.releated.audiobook.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator[narrator]!)
                     }
                 }
                 .padding(.vertical, 16)

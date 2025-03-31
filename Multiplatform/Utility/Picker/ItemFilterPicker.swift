@@ -13,14 +13,6 @@ struct ItemFilterPicker: View {
     
     @Binding var filter: ItemFilter
     
-    private var options: [ItemFilter] {
-        if library?.type == .podcasts {
-            [.finished, .active, .notFinished]
-        } else {
-            [.finished, .active]
-        }
-    }
-    
     private func binding(for filter: ItemFilter) -> Binding<Bool> {
         .init() { self.filter == filter } set: {
             if $0 {
@@ -32,7 +24,7 @@ struct ItemFilterPicker: View {
     }
     
     var body: some View {
-        ForEach(options) {
+        ForEach([ItemFilter]([.finished, .active, .notFinished])) {
             Toggle($0.label, systemImage: $0.icon, isOn: binding(for: $0))
                 .tag($0)
         }
@@ -43,13 +35,13 @@ extension ItemFilter {
     var label: LocalizedStringKey {
         switch self {
         case .all:
-            "filter.all"
+            "item.filter.all"
         case .active:
-            "filter.active"
+            "item.filter.active"
         case .finished:
-            "filter.finished"
+            "item.filter.finished"
         case .notFinished:
-            "filter.notFinished"
+            "item.filter.notFinished"
         }
     }
     

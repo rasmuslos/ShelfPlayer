@@ -293,7 +293,7 @@ private struct CollapsedForeground: View {
                 
                 Spacer()
                 
-                Button("backwards", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)") {
+                Button("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)") {
                     satellite.skip(forwards: false)
                 }
                 .labelStyle(.iconOnly)
@@ -316,7 +316,7 @@ private struct CollapsedForeground: View {
                             Button {
                                 satellite.togglePlaying()
                             } label: {
-                                Label("playback.toggle", systemImage: satellite.isPlaying ? "pause.fill" : "play.fill")
+                                Label(satellite.isPlaying ? "playback.pause" : "playback.play", systemImage: satellite.isPlaying ? "pause.fill" : "play.fill")
                                     .labelStyle(.iconOnly)
                                     .contentTransition(.symbolEffect(.replace.byLayer.downUp))
                                     .animation(.spring(duration: 0.2, bounce: 0.7), value: satellite.isPlaying)

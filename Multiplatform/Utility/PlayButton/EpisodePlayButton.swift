@@ -37,7 +37,7 @@ struct EpisodePlayButton: View {
         }
         
         if let isFinished = tracker.isFinished, isFinished {
-            return String(localized: "listen.again")
+            return String(localized: "item.play.again")
         } else if let progress, progress <= 0 {
             return formatDuration()
         } else if isPlaying, satellite.duration > 0 {

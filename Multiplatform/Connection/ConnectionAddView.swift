@@ -17,25 +17,25 @@ struct ConnectionAddView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("connection.endpoint", text: $viewModel.endpoint)
+                    TextField("connection.add.endpoint", text: $viewModel.endpoint)
                     
                     if let version = viewModel.version {
-                        Text("connection.versionHint \(version)")
+                        Text("connection.add.versionHint \(version)")
                             .foregroundStyle(.green)
                     } else if viewModel.loading {
                         ProgressIndicator()
                     } else {
-                        Button("connection.verify") {
+                        Button("connection.add.verify") {
                             viewModel.proceed()
                         }
                     }
                 } footer: {
-                    Text("connection.formattingHint")
+                    Text("connection.add.formattingHint")
                 }
                 .disabled(viewModel.version != nil || viewModel.endpoint.isEmpty)
                 
                 // No section here, would prevent headers from displaying correctly
-                DisclosureGroup("connection.headers") {
+                DisclosureGroup("connection.modify.header") {
                     HeaderEditor(headers: $viewModel.headers)
                 }
                 
@@ -55,7 +55,7 @@ struct ConnectionAddView: View {
                     if let strategy = viewModel.strategy {
                         if viewModel.strategies.count > 1 {
                             Section {
-                                Button("configuration.strategy.change") {
+                                Button("connection.add.strategy.change") {
                                     viewModel.strategy = nil
                                 }
                             }
@@ -64,15 +64,15 @@ struct ConnectionAddView: View {
                         Section(strategy.label) {
                             switch strategy {
                             case .usernamePassword:
-                                TextField("connection.username", text: $viewModel.username)
+                                TextField("connection.add.username", text: $viewModel.username)
                                     .textContentType(.username)
                                     .autocorrectionDisabled()
                                     .textInputAutocapitalization(.never)
                                 
-                                SecureField("connection.password", text: $viewModel.password)
+                                SecureField("connection.add.password", text: $viewModel.password)
                                     .textContentType(.password)
                                 
-                                Button("proceed") {
+                                Button("connection.add.proceed") {
                                     viewModel.proceed()
                                 }
                                 .disabled(viewModel.loading)
@@ -81,7 +81,7 @@ struct ConnectionAddView: View {
                             }
                         }
                     } else {
-                        Picker("connection.strategy", selection: $viewModel.strategy) {
+                        Picker("connection.add.strategy.select", selection: $viewModel.strategy) {
                             ForEach(viewModel.strategies) {
                                 Text($0.label)
                                     .tag($0)
@@ -97,7 +97,7 @@ struct ConnectionAddView: View {
                     if viewModel.loading {
                         ProgressIndicator()
                     } else {
-                        Button("proceed") {
+                        Button("connection.add.proceed") {
                             viewModel.proceed()
                         }
                     }

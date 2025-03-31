@@ -30,7 +30,7 @@ struct ProgressButton: View {
     
     @ViewBuilder
     private var markAsFinishedButton: some View {
-        Button("progress.finished.set", systemImage: "checkmark.square") {
+        Button("item.progress.markAsFinished", systemImage: "checkmark.square") {
             satellite.markAsFinished(itemID)
         }
     }
@@ -40,10 +40,10 @@ struct ProgressButton: View {
         Button {
             satellite.markAsUnfinished(itemID)
         } label: {
-            Label("progress.finished.unset", systemImage: "minus.square")
+            Label("item.progress.markAsUnfinished", systemImage: "minus.square")
             
             if let finishedAt = progress.finishedAt {
-                Text("finished.ago \(finishedAt.formatted(.relative(presentation: .named)))")
+                Text("item.progress.finished.ago \(finishedAt.formatted(.relative(presentation: .named)))", comment: "The system will display a relative date")
             }
         }
     }

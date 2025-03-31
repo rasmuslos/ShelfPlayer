@@ -25,7 +25,7 @@ struct Description: View {
             
             HStack {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("description")
+                    Text("item.description")
                         .bold()
                         .underline()
                         .padding(.bottom, 8)
@@ -35,7 +35,7 @@ struct Description: View {
                             .padding(.horizontal, -5)
                             .frame(height: height)
                     } else {
-                        Text("description.unavailable")
+                        Text("item.description.missing")
                             .font(.body.smallCaps())
                             .foregroundStyle(.secondary)
                     }
@@ -99,4 +99,8 @@ private struct HTMLTextView: UIViewRepresentable {
 """)
             .padding()
     }
+}
+
+#Preview {
+    Description(description: nil)
 }

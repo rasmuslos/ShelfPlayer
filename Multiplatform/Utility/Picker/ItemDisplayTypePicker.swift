@@ -29,9 +29,9 @@ extension ItemDisplayType {
     var label: LocalizedStringKey {
         switch self {
         case .grid:
-            "display.grid"
+            "item.display.grid"
         case .list:
-            "display.list"
+            "item.display.list"
         }
     }
     

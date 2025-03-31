@@ -46,7 +46,7 @@ struct PlaybackRateEditor: View {
                     Text(newValue, format: .percent.notation(.compactName))
                 }
                 
-                Button("add", systemImage: "plus") {
+                Button("preferences.playbackRate.add", systemImage: "plus") {
                     guard !playbackRates.contains(newValue) else {
                         return
                     }
@@ -58,17 +58,17 @@ struct PlaybackRateEditor: View {
             }
             
             Section {
-                PlaybackRatePicker(label: "playbackRate.default", selection: $defaultPlaybackRate)
+                PlaybackRatePicker(label: "preferences.playbackRate.default", selection: $defaultPlaybackRate)
             }
             
             Section {
-                Button("reset", role: .destructive) {
+                Button("action.reset", role: .destructive) {
                     Defaults.reset([.playbackRates, .defaultPlaybackRate])
                 }
             }
         }
         .environment(\.editMode, .constant(.active))
-        .navigationTitle("playbackRates")
+        .navigationTitle("preferences.playbackRate")
     }
 }
 

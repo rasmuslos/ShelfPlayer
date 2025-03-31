@@ -21,18 +21,18 @@ struct PreferencesView: View {
                 NavigationLink {
                     ConnectionPreferences()
                 } label: {
-                    Label("connections", systemImage: "server.rack")
+                    Label("connection.manage", systemImage: "server.rack")
                 }
                 
                 NavigationLink {
                     PlaybackRateEditor()
                 } label: {
-                    Label("playbackRates", systemImage: "percent")
+                    Label("preferences.playbackRate", systemImage: "percent")
                 }
                 NavigationLink {
                     SleepTimerEditor()
                 } label: {
-                    Label("sleepTimer", systemImage: "clock")
+                    Label("preferences.sleepTimer", systemImage: "clock")
                 }
                 
                 TintPicker()
@@ -40,7 +40,7 @@ struct PreferencesView: View {
             
             Section {
                 Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
-                    Label("account.settings", systemImage: "gear")
+                    Label("preferences.settings", systemImage: "gear")
                 }
                 
                 switch notificationPermission {
@@ -51,24 +51,24 @@ struct PreferencesView: View {
                             notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                         }
                     } label: {
-                        Label("account.notifications.request", systemImage: "bell.badge.waveform.fill")
+                        Label("notification.permission.request", systemImage: "bell.badge.waveform.fill")
                     }
                     .task {
                         notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                     }
                 case .denied:
                     Link(destination: URL(string: UIApplication.openNotificationSettingsURLString)!) {
-                        Label("account.notifications.denied", systemImage: "bell.slash.fill")
+                        Label("notification.permission.denied", systemImage: "bell.slash.fill")
                     }
                     .foregroundStyle(.red)
                 case .authorized:
-                    Label("account.notifications.granted", systemImage: "bell.badge.fill")
+                    Label("notification.permission.granted", systemImage: "bell.badge.fill")
                         .foregroundStyle(.secondary)
                 default:
                     ProgressIndicator()
                 }
             } footer: {
-                Text("account.notifications.text")
+                Text("notification.permission.footer")
                     .foregroundStyle(.secondary)
             }
             
@@ -78,7 +78,7 @@ struct PreferencesView: View {
                 } label: {
                     Label {
                         HStack(spacing: 0) {
-                            Text("account.delete.cache")
+                            Text("preferences.purge.cache")
                             
                             if let cacheDirectorySize {
                                 Spacer(minLength: 8)
@@ -96,7 +96,7 @@ struct PreferencesView: View {
                 } label: {
                     Label {
                         HStack(spacing: 0) {
-                            Text("account.delete.downloads")
+                            Text("preferences.purge.downloads")
                             
                             if let downloadDirectorySize {
                                 Spacer(minLength: 8)
@@ -113,10 +113,10 @@ struct PreferencesView: View {
             
             Section {
                 Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer")!) {
-                    Label("github", systemImage: "chevron.left.forwardslash.chevron.right")
+                    Label("preferences.github", systemImage: "chevron.left.forwardslash.chevron.right")
                 }
                 Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/Support.md")!) {
-                    Label("support", systemImage: "lifepreserver")
+                    Label("preferences.support", systemImage: "lifepreserver")
                 }
                 
                 Button("preferences.generateLogFile", systemImage: "text.word.spacing") {
@@ -125,8 +125,8 @@ struct PreferencesView: View {
             }
             
             Section {
-                Text("version \(ShelfPlayerKit.clientVersion) \(ShelfPlayerKit.clientBuild) \(ShelfPlayerKit.enableCentralized ? "C" : "L")")
-                Text("version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
+                Text("preferences.version \(ShelfPlayerKit.clientVersion) \(ShelfPlayerKit.clientBuild) \(ShelfPlayerKit.enableCentralized ? "C" : "L")")
+                Text("preferences.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
             }
             .foregroundStyle(.secondary)
             .font(.caption)
@@ -187,7 +187,7 @@ private struct ConnectionPreferences: View {
         List {
             ConnectionManager()
         }
-        .navigationTitle("connections")
+        .navigationTitle("connection.manage")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

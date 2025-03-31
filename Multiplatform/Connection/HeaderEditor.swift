@@ -20,7 +20,7 @@ struct HeaderEditor: View {
             }
         }
         
-        Button("connection.header.add") {
+        Button("connection.modify.header.add") {
             if let last = headers.last, !last.isValid {
                 return
             }
@@ -38,10 +38,10 @@ struct HeaderEditorColumn: View {
     
     var body: some View {
         Section {
-            TextField("connection.header.key", text: $header.key)
-            TextField("connection.header.value", text: $header.value)
+            TextField("connection.modify.header.key", text: $header.key)
+            TextField("connection.modify.header.value", text: $header.value)
             
-            Button("connection.header.remove", role: .destructive) {
+            Button("connection.modify.header.remove", role: .destructive) {
                 remove()
             }
         }

@@ -12,7 +12,7 @@ struct TintPicker: View {
     @Default(.tintColor) private var tintColor
     
     var body: some View {
-        Picker("account.tint", systemImage: "circle.dashed", selection: $tintColor) {
+        Picker("preferences.tint", systemImage: "circle.dashed", selection: $tintColor) {
             Row(tint: .shelfPlayer)
             
             Divider()
@@ -57,25 +57,25 @@ struct TintPicker: View {
         var title: LocalizedStringKey {
             switch self {
             case .shelfPlayer:
-                "account.tint.shelfPlayer"
+                "preferences.tint.shelfPlayer"
             case .yellow:
-                "account.tint.yellow"
+                "preferences.tint.yellow"
             case .purple:
-                "account.tint.purple"
+                "preferences.tint.purple"
             case .red:
-                "account.tint.red"
+                "preferences.tint.red"
             case .violet:
-                "account.tint.violet"
+                "preferences.tint.violet"
             case .blue:
-                "account.tint.blue"
+                "preferences.tint.blue"
             case .aqua:
-                "account.tint.aqua"
+                "preferences.tint.aqua"
             case .green:
-                "account.tint.green"
+                "preferences.tint.green"
             case .mint:
-                "account.tint.mint"
+                "preferences.tint.mint"
             case .black:
-                "account.tint.black"
+                "preferences.tint.black"
             }
         }
         

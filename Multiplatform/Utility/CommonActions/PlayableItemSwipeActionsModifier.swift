@@ -31,7 +31,7 @@ struct PlayableItemSwipeActionsModifier: ViewModifier {
                     .tint(tintColor.accent)
             }
             .swipeActions(edge: .leading) {
-                Button("play", systemImage: "play") {
+                Button("item.play", systemImage: "play") {
                     satellite.start(itemID)
                 }
                 .labelStyle(.iconOnly)

@@ -39,7 +39,7 @@ struct LibraryPicker: View {
             }
         }
         
-        Button("offline.enable", systemImage: "network.slash") {
+        Button("navigation.offline.enable", systemImage: "network.slash") {
             RFNotification[.changeOfflineMode].send(true)
         }
     }
