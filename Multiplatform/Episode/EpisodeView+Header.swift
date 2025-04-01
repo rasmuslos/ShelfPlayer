@@ -65,6 +65,14 @@ private struct Title: View {
     
     let alignment: HorizontalAlignment
     
+    private var isLight: Bool {
+        if let isLight = viewModel.dominantColor?.isLight {
+            return isLight
+        }
+        
+        return colorScheme == .light
+    }
+    
     var body: some View {
         VStack(alignment: alignment, spacing: 4) {
             Text(viewModel.episode.name)
@@ -87,7 +95,7 @@ private struct Title: View {
                 .lineLimit(1)
                 .font(.footnote)
                 .foregroundStyle(.ultraThinMaterial)
-                .colorScheme(colorScheme == .dark ? .light : .dark)
+                .colorScheme(isLight ? .dark : .light)
                 .buttonStyle(.plain)
                 
                 if alignment == .leading {
@@ -95,6 +103,33 @@ private struct Title: View {
                 }
             }
         }
+    }
+}
+
+private struct TypeLabel: View {
+    @Environment(EpisodeViewModel.self) private var viewModel
+    @Environment(\.colorScheme) private var colorScheme
+    
+    private var isLight: Bool {
+        if let isLight = viewModel.dominantColor?.isLight {
+            return isLight
+        }
+        
+        return colorScheme == .light
+    }
+    
+    var body: some View {
+        Group {
+            if viewModel.episode.type == .trailer {
+                Text("item.trailer")
+            } else if viewModel.episode.type == .bonus {
+                Text("item.bonus")
+            }
+        }
+        .font(.caption)
+        .padding(.top, 8)
+        .foregroundStyle(.ultraThinMaterial)
+        .colorScheme(isLight ? .dark : .light)
     }
 }
 
@@ -114,6 +149,8 @@ private struct CompactPresentation: View {
                 .padding(.bottom, 16)
             
             PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
+            
+            TypeLabel()
         }
         .padding(.top, 120)
         .padding(.bottom, 20)
@@ -142,6 +179,8 @@ private struct RegularPresentation: View {
                         Spacer()
                         
                         PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
+                        
+                        TypeLabel()
                     }
                 }
         }

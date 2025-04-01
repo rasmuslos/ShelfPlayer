@@ -1241,7 +1241,7 @@
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "2024 Rasmus Krämer & ShelfPlayer contributors";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2025 Rasmus Krämer & ShelfPlayer contributors";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play items from your library using Siri";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1277,7 +1277,7 @@
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "2024 Rasmus Krämer & ShelfPlayer contributors";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2025 Rasmus Krämer & ShelfPlayer contributors";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play items from your library using Siri";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

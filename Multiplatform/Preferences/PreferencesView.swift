@@ -18,24 +18,24 @@ struct PreferencesView: View {
     var body: some View {
         List {
             Section {
-                NavigationLink {
-                    ConnectionPreferences()
-                } label: {
-                    Label("connection.manage", systemImage: "server.rack")
-                }
-                
-                NavigationLink {
-                    PlaybackRateEditor()
-                } label: {
+                NavigationLink(destination: PlaybackRateEditor()) {
                     Label("preferences.playbackRate", systemImage: "percent")
                 }
-                NavigationLink {
-                    SleepTimerEditor()
-                } label: {
+                NavigationLink(destination: SleepTimerEditor()) {
                     Label("preferences.sleepTimer", systemImage: "clock")
                 }
                 
                 TintPicker()
+            }
+            
+            Section {
+                NavigationLink(destination: ConnectionPreferences()) {
+                    Label("connection.manage", systemImage: "server.rack")
+                }
+                
+                NavigationLink(destination: CarPlayPreferences()) {
+                    Label("preferences.carPlay", systemImage: "car.badge.gearshape.fill")
+                }
             }
             
             Section {
