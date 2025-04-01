@@ -19,6 +19,7 @@ public extension Episode {
         size: 999_999_999,
         duration: 60 * 60,
         podcastName: "The Hut",
+        type: .trailer,
         index: .init(season: "Season 1", episode: "Episode 1"))
 }
 #endif

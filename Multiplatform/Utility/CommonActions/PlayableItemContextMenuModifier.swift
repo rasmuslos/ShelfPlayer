@@ -58,6 +58,11 @@ struct PlayableItemContextMenuPreview: View {
                     .font(.headline)
                     .modifier(SerifModifier())
                 
+                if let subtitle = audiobook.subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                }
+                
                 if !audiobook.authors.isEmpty {
                     Text(audiobook.authors, format: .list(type: .and, width: .short))
                         .font(.subheadline)
@@ -113,3 +118,12 @@ struct PlayableItemContextMenuPreview: View {
         }
     }
 }
+
+#if DEBUG
+#Preview {
+    PlayableItemContextMenuPreview(item: Audiobook.fixture)
+}
+#Preview {
+    PlayableItemContextMenuPreview(item: Episode.fixture)
+}
+#endif

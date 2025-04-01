@@ -10,6 +10,7 @@ import OSLog
 @preconcurrency import CarPlay
 import ShelfPlayerKit
 
+@MainActor
 public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "CarPlay")
     
@@ -67,7 +68,7 @@ private extension CarPlayDelegate {
             }
             
             if controller == nil {
-                controller = .init(interfaceController: interfaceController)
+                controller = try await CarPlayController(interfaceController: interfaceController)
             }
         }
     }

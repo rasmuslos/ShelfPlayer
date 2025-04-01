@@ -18,5 +18,6 @@ public extension Episode {
         size: 0,
         duration: 0,
         podcastName: "Placeholder",
+        type: .regular,
         index: .init(season: nil, episode: "placeholder"))
 }

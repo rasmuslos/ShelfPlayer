@@ -99,7 +99,9 @@ struct PodcastConfigurationSheet: View {
                     @Bindable var viewModel = viewModel
                     
                     List {
-                        NavigationLink("item.preferences.automaticDownloads", destination: automaticDownloadContent)
+                        NavigationLink(destination: automaticDownloadContent) {
+                            Label("item.preferences.automaticDownloads", systemImage: "arrow.down.circle")
+                        }
                         
                         Section {
                             PlaybackRatePicker(label: "item.preferences.playbackRate", selection: $viewModel.playbackRate)
@@ -109,6 +111,7 @@ struct PodcastConfigurationSheet: View {
                             }
                         }
                     }
+                    .foregroundStyle(.primary)
                     .sensoryFeedback(.error, trigger: notifyError)
                     .sensoryFeedback(.success, trigger: notifySuccess)
                     .toolbar {

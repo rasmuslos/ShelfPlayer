@@ -79,7 +79,7 @@ private struct Row: View {
                     }
                     
                     EpisodeItemActions(episode: episode, context: context)
-                    .padding(.top, 8)
+                        .padding(.top, 8)
                 }
                 
                 Spacer()
@@ -107,7 +107,7 @@ struct EpisodeItemActions: View {
     }
     
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 8) {
             EpisodePlayButton(episode: episode, highlighted: context.isHighlighted)
                 .modify {
                     if context.isHighlighted {
@@ -128,10 +128,20 @@ struct EpisodeItemActions: View {
                 }
                 .font(.caption2)
                 .foregroundStyle(.secondary)
-                .padding(.leading, 8)
             }
             
-            Spacer(minLength: 12)
+            Spacer(minLength: 4)
+            
+            Group {
+                if episode.type == .trailer {
+                    Label("item.trailer", systemImage: "movieclapper.fill")
+                } else if episode.type == .bonus {
+                    Label("item.bonus", systemImage: "fireworks")
+                }
+            }
+            .imageScale(.small)
+            .font(.caption2)
+            .labelStyle(.iconOnly)
             
             if let status = download.status {
                 switch status {
