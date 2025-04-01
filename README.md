@@ -57,6 +57,9 @@ If you're comfortable with Xcode, you can build ShelfPlayer yourself:
 
 ## Licensing & Contributing
 
+> [!WARNING]
+> ShelfPlayer is undergoing a massive backend rewrite at the moment. See #189. If you want to contribute please wait until it is finished or make a pull request against the [`inents`](https://github.com/rasmuslos/ShelfPlayer/tree/inents) branch.
+
 ShelfPlayer is licensed under the Mozilla Public License Version 2. Additionally the "Common Clause" applies. This means that you can modify ShelfPlayer, as well as contribute to it, but you are not allowed to distribute the application in binary form. Compiling for your own personal use is not covered by the commons clause and therefore fine. Additionally, prebuilt binaries are available on GitHub for side loading using popular tools like SideStore, etc.
 
 Contributions are welcome, just fork the repository, and open a pull request with your changes. If you want to contribute translations you have to edit `Localizable.xcstrings` in the `iOS` directory, as well as one line in `InfoPlist.xcstrings` located at the same directory using Xcode. If you want to add a new language add it in the project settings (The root of the Xcode project named "ShelfPlayer").
