@@ -581,6 +581,7 @@ public extension PersistenceManager.DownloadSubsystem {
                                          size: item.size,
                                          duration: item.duration,
                                          podcast: podcast!,
+                                         type: episode.type,
                                          index: episode.index)
                 
                 podcast?.episodes.append(model as! PersistedEpisode)

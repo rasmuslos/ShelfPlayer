@@ -961,6 +961,9 @@
         }
       }
     },
+    "item.bonus" : {
+
+    },
     "item.bookmarks" : {
       "localizations" : {
         "de" : {
@@ -2099,6 +2102,9 @@
         }
       }
     },
+    "item.trailer" : {
+
+    },
     "item.view.audiobook" : {
       "localizations" : {
         "de" : {
@@ -2276,13 +2282,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronisiere"
+            "value" : "Synchronisiere..."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Syncronizing"
+            "value" : "Syncronizing..."
           }
         }
       }
@@ -3042,6 +3048,12 @@
           }
         }
       }
+    },
+    "preferences.carPlay" : {
+
+    },
+    "preferences.carPlay.tabBar.footer" : {
+
     },
     "preferences.generateLogFile" : {
       "localizations" : {

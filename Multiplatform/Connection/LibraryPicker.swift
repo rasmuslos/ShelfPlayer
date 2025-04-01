@@ -16,16 +16,12 @@ struct LibraryPicker: View {
     var body: some View {
         ForEach(connectionStore.flat) { connection in
             if let libraries = connectionStore.libraries[connection.id] {
-                Section {
+                Section(connection.friendlyName) {
                     ForEach(libraries) { library in
                         Button(library.name, systemImage: image(for: library)) {
                             RFNotification[.changeLibrary].send(library)
                             callback?()
                         }
-                    }
-                } header: {
-                    if connectionStore.connections.count > 1 {
-                        Text(verbatim: "\(connection.host.formatted(.url.host())): \(connection.user)")
                     }
                 }
             }
