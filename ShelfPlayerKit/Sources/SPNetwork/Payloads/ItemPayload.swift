@@ -76,6 +76,8 @@ struct EpisodePayload: Codable {
     let title: String?
     let description: String?
     
+    let episodeType: String?
+    
     let pubDate: String?
     let publishedAt: Double?
     let addedAt: Double?

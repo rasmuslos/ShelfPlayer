@@ -11,10 +11,12 @@ import SwiftSoup
 public final class Episode: PlayableItem, @unchecked Sendable {
     public let podcastName: String
     
+    public let type: EpisodeType
     public let index: EpisodeIndex
     
-    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date, released: String?, size: Int64?, duration: TimeInterval, podcastName: String, index: EpisodeIndex) {
+    public init(id: ItemIdentifier, name: String, authors: [String], description: String?, addedAt: Date, released: String?, size: Int64?, duration: TimeInterval, podcastName: String, type: EpisodeType, index: EpisodeIndex) {
         self.podcastName = podcastName
+        self.type = type
         self.index = index
         
         super.init(id: id, name: name, authors: authors, description: description, genres: [], addedAt: addedAt, released: released, size: size, duration: duration)
@@ -28,6 +30,11 @@ public final class Episode: PlayableItem, @unchecked Sendable {
             self.season = season
             self.episode = episode
         }
+    }
+    public enum EpisodeType {
+        case regular
+        case trailer
+        case bonus
     }
 }
 
@@ -45,6 +52,8 @@ extension Episode.EpisodeIndex: Comparable {
         }
     }
 }
+
+extension Episode.EpisodeType: Codable {}
 
 public extension Episode {
     var podcastID: ItemIdentifier {

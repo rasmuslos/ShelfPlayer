@@ -30,6 +30,7 @@ extension Episode {
             size: recentEpisode.size ?? 0,
             duration: recentEpisode.audioFile?.duration ?? 0,
             podcastName: podcastTitle,
+            type: .parse(string: recentEpisode.episodeType),
             index: .init(season: recentEpisode.season, episode: String(recentEpisode.index ?? 0)))
     }
     convenience init?(episode: EpisodePayload, item: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
@@ -50,6 +51,19 @@ extension Episode {
             size: episode.size ?? 0,
             duration: episode.audioFile?.duration ?? 0,
             podcastName: episode.podcast!.metadata.title!,
+            type: .parse(string: episode.episodeType),
             index: .init(season: episode.season, episode: String(episode.index ?? fallbackIndex)))
+    }
+}
+
+private extension Episode.EpisodeType {
+    static func parse(string value: String?) -> Self {
+        if value == "trailer" {
+            .trailer
+        } else if value == "bonus" {
+            .bonus
+        } else {
+            .regular
+        }
     }
 }

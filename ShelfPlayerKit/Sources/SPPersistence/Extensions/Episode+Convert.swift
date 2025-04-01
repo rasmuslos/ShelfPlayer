@@ -19,6 +19,7 @@ extension Episode {
                   size: episode.size,
                   duration: episode.duration,
                   podcastName: episode.podcast.name,
+                  type: episode.type,
                   index: episode.index)
     }
 }

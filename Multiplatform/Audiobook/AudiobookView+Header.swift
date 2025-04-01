@@ -59,6 +59,11 @@ private struct Title: View {
                 .lineLimit(4)
                 .multilineTextAlignment(alignment.textAlignment)
             
+            if let subtitle = viewModel.audiobook.subtitle {
+                Text(subtitle)
+                    .font(.caption)
+            }
+            
             if viewModel.audiobook.authors.count > 1 {
                 Menu {
                     ItemMenu.MenuInner(authors: viewModel.audiobook.authors)

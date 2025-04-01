@@ -9,7 +9,8 @@ import Foundation
 import CarPlay
 import ShelfPlayerKit
 
-internal final class CarPlayTabBar {
+@MainActor
+final class CarPlayTabBar {
     private let interfaceController: CPInterfaceController
     private let offlineController: CarPlayOfflineController
     
