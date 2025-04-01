@@ -287,64 +287,6 @@
         }
       }
     },
-    "carPlay.unauthorized.subtitle" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Melde dich bei deinem Audiobookshelf server an um loszulegen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Login to your Audiobookshelf instance to get started"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logga in på din Audiobookshelf-instans för att börja"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请先登录 Audiobookshelf"
-          }
-        }
-      }
-    },
-    "carPlay.unauthorized.title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht angemeldet"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unauthorised"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obehörig"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未登录"
-          }
-        }
-      }
-    },
     "connection.add" : {
       "localizations" : {
         "de" : {
@@ -962,7 +904,20 @@
       }
     },
     "item.bonus" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonusfolge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonus"
+          }
+        }
+      }
     },
     "item.bookmarks" : {
       "localizations" : {
@@ -2103,7 +2058,20 @@
       }
     },
     "item.trailer" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trailer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trailer"
+          }
+        }
+      }
     },
     "item.view.audiobook" : {
       "localizations" : {
@@ -3050,9 +3018,31 @@
       }
     },
     "preferences.carPlay" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CarPlay"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CarPlay"
+          }
+        }
+      }
+    },
+    "preferences.carPlay.tabBar.additionalLibraries" : {
+
+    },
+    "preferences.carPlay.tabBar.downloaded" : {
 
     },
     "preferences.carPlay.tabBar.footer" : {
+
+    },
+    "preferences.carPlay.tabBar.warning" : {
 
     },
     "preferences.generateLogFile" : {

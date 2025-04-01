@@ -61,6 +61,14 @@ private struct Title: View {
     let largeFont: Bool
     let alignment: TextAlignment
     
+    private var isLight: Bool {
+        if let isLight = viewModel.dominantColor?.isLight {
+            return isLight
+        }
+        
+        return colorScheme == .light
+    }
+    
     var body: some View {
         Text(viewModel.podcast.name)
             .lineLimit(4)
@@ -73,7 +81,7 @@ private struct Title: View {
                 .foregroundStyle(.thickMaterial)
                 .multilineTextAlignment(alignment)
                 .font(largeFont ? .title2 : .subheadline)
-                .colorScheme(viewModel.dominantColor == nil ? colorScheme == .dark ? .light : .dark : .light)
+                .colorScheme(isLight ? .dark : .light)
         }
     }
 }
@@ -103,16 +111,24 @@ private struct Additional: View {
     @Environment(PodcastViewModel.self) private var viewModel
     @Environment(\.colorScheme) private var colorScheme
     
+    private var isLight: Bool {
+        if let isLight = viewModel.dominantColor?.isLight {
+            return isLight
+        }
+        
+        return colorScheme == .light
+    }
+    
     var body: some View {
         HStack {
-            HStack(spacing: 3) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Label("item.count.episodes \(viewModel.episodeCount)", systemImage: "number")
                     .labelStyle(.iconOnly)
+                
+                Text(viewModel.episodeCount, format: .number)
             }
             
             if viewModel.podcast.explicit {
-                Text(verbatim: "•")
-                
                 Label("item.explicit", systemImage: "e.square.fill")
                     .labelStyle(.iconOnly)
             }
@@ -139,7 +155,7 @@ private struct Additional: View {
         }
         .font(.footnote)
         .foregroundStyle(.thickMaterial)
-        .colorScheme(viewModel.dominantColor == nil ? colorScheme == .dark ? .light : .dark : .light)
+        .colorScheme(isLight ? .dark : .light)
     }
 }
 

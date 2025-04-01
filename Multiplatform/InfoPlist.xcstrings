@@ -46,12 +46,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "2024 Rasmus Krämer & ShelfPlayer contributors"
+            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "2024 Rasmus Krämer & ShelfPlayer contributors"
           }
         }
@@ -64,7 +64,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spiele deine Hörbücher oder Episoden mit Siri"
           }
         },
