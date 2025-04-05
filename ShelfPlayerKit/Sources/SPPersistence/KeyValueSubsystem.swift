@@ -62,7 +62,7 @@ extension PersistenceManager {
             }
         }
         
-        public func bulkDelete<T>(keys: [Key<T>]) throws where T: Decodable {
+        func bulkDelete<T>(keys: [Key<T>]) throws where T: Decodable {
             for key in keys {
                 guard let entity = entity(for: key) else {
                     continue
@@ -72,6 +72,24 @@ extension PersistenceManager {
             }
             
             try modelContext.save()
+        }
+        func remove(itemID: ItemIdentifier) {
+            do {
+                try modelContext.delete(model: KeyValueEntity.self, where: #Predicate {
+                    $0.key.contains(itemID.description)
+                })
+            } catch {
+                logger.error("Failed to remove related key value pairs for itemID \(itemID): \(error)")
+            }
+        }
+        func remove(connectionID: ItemIdentifier.ConnectionID) {
+            do {
+                try modelContext.delete(model: KeyValueEntity.self, where: #Predicate {
+                    $0.key.contains(connectionID)
+                })
+            } catch {
+                logger.error("Failed to remove related key value pairs for connection \(connectionID): \(error)")
+            }
         }
         
         func reset() throws {

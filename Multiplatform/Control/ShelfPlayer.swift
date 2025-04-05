@@ -7,6 +7,7 @@
 
 import Foundation
 import OSLog
+import Intents
 import TipKit
 import Nuke
 import ShelfPlayerKit
@@ -25,6 +26,12 @@ struct ShelfPlayer {
     }
     
     static func initializeHook() {
+        #if ENABLE_CENTRALIZED
+        INPreferences.requestSiriAuthorization {
+            logger.info("Got Siri authorization status: \($0.rawValue)")
+        }
+        #endif
+        
         Task {
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }

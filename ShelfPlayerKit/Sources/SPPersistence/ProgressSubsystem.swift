@@ -22,7 +22,7 @@ extension PersistenceManager {
         let logger: Logger
         let signposter: OSSignposter
         
-        public init(modelContainer: SwiftData.ModelContainer) {
+        init(modelContainer: SwiftData.ModelContainer) {
             let modelContext = ModelContext(modelContainer)
             
             self.modelExecutor = DefaultSerialModelExecutor(modelContext: modelContext)
@@ -94,6 +94,31 @@ extension PersistenceManager.ProgressSubsystem {
         try modelContext.save()
         
         RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, nil))
+    }
+    
+    func remove(itemID: ItemIdentifier) {
+        let primaryID = itemID.primaryID
+        let groupingID = itemID.groupingID
+        let connectionID = itemID.connectionID
+        
+        do {
+            try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+                $0.primaryID == primaryID
+                && $0.groupingID == groupingID
+                && $0.connectionID == connectionID
+            })
+        } catch {
+            logger.error("Failed to remove progress entities related to itemID \(itemID): \(error)")
+        }
+    }
+    func remove(connectionID: ItemIdentifier.ConnectionID) {
+        do {
+            try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+                $0.connectionID == connectionID
+            })
+        } catch {
+            logger.error("Failed to remove progress entities related to connection \(connectionID): \(error)")
+        }
     }
     
     nonisolated func progressEntityDidUpdate(_ entity: ProgressEntity) {

@@ -230,7 +230,7 @@ private extension AudiobookViewModel {
     }
     
     nonisolated func extractColor() async {
-        let color = await PersistenceManager.shared.item.domiantColor(of: audiobook.id)
+        let color = await PersistenceManager.shared.item.dominantColor(of: audiobook.id)
         
         await MainActor.withAnimation {
             self.dominantColor = color

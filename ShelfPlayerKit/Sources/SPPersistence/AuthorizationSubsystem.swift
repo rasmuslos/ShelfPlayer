@@ -16,7 +16,7 @@ import SPFoundation
 typealias DiscoveredConnection = SchemaV2.PersistedDiscoveredConnection
 
 public let ABSClient = APIClientStore { connectionID in
-    guard let connection = PersistenceManager.shared.authorization[connectionID] else {
+    guard let connection = await PersistenceManager.shared.authorization[connectionID] else {
         throw PersistenceError.serverNotFound
     }
     
@@ -216,7 +216,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         try fetchConnections()
     }
     
-    func removeConnection(_ connectionID: ItemIdentifier.ConnectionID) throws {
+    func remove(connectionID: ItemIdentifier.ConnectionID) {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrSynchronizable: kSecAttrSynchronizableAny,
@@ -227,19 +227,16 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         let status = SecItemDelete(query)
         
-        guard status == errSecSuccess else {
+        if status != errSecSuccess {
             logger.error("Error removing connection from keychain: \(SecCopyErrorMessageString(status, nil))")
-            throw PersistenceError.keychainInsertFailed
         }
         
-        try fetchConnections()
-        
-        // TODO: cleanup other subsystems
+        try? fetchConnections()
     }
     
-    func reset() throws {
+    func reset() async {
         for (connectionID, _) in connections {
-            try removeConnection(connectionID)
+            await PersistenceManager.shared.remove(connectionID: connectionID)
         }
         
         SecItemDelete([
@@ -247,8 +244,12 @@ public extension PersistenceManager.AuthorizationSubsystem {
             kSecAttrSynchronizable: kSecAttrSynchronizableAny,
         ] as CFDictionary)
         
-        try modelContext.delete(model: DiscoveredConnection.self)
-        try fetchConnections()
+        do {
+            try modelContext.delete(model: DiscoveredConnection.self)
+            try fetchConnections()
+        } catch {
+            logger.error("Failed to reset authorization subsystem: \(error)")
+        }
     }
     
     subscript(_ id: ItemIdentifier.ConnectionID) -> Connection? {

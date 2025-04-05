@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import OSLog
 import SPFoundation
 
 typealias PersistedPlaybackSession = SchemaV2.PersistedPlaybackSession
@@ -14,12 +15,41 @@ typealias PersistedPlaybackSession = SchemaV2.PersistedPlaybackSession
 extension PersistenceManager {
     @ModelActor
     public final actor SessionSubsystem {
+        let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "SessionSubsystem")
+        
         subscript(sessionID: UUID) -> PersistedPlaybackSession? {
             get throws {
                 var descriptor = FetchDescriptor<PersistedPlaybackSession>(predicate: #Predicate { $0.id == sessionID })
                 descriptor.fetchLimit = 1
                 
                 return try modelContext.fetch(descriptor).first
+            }
+        }
+        
+        func remove(itemID: ItemIdentifier) async {
+            do {
+                try await attemptSync(early: true)
+            } catch {
+                logger.error("Sync failed while removing related sessions to itemID \(itemID): \(error)")
+            }
+            
+            let description = itemID.description
+            
+            do {
+                try modelContext.delete(model: PersistedPlaybackSession.self, where: #Predicate {
+                    $0._itemID == description
+                })
+            } catch {
+                logger.error("Failed to remove related sessions to itemID \(itemID): \(error)")
+            }
+        }
+        func remove(connectionID: ItemIdentifier.ConnectionID) {
+            do {
+                try modelContext.delete(model: PersistedPlaybackSession.self, where: #Predicate {
+                    $0._itemID.contains(connectionID)
+                })
+            } catch {
+                logger.error("Failed to remove related sessions to connection \(connectionID): \(error)")
             }
         }
     }

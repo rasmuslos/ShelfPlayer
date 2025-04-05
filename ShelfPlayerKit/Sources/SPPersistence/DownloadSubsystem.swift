@@ -30,7 +30,7 @@ extension PersistenceManager {
         @MainActor
         var updateTask: Task<Void, Never>?
         
-        private nonisolated lazy var urlSession: URLSession = {
+        private lazy var urlSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: "io.rfk.shelfPlayerKit.download")
             config.sessionSendsLaunchEvents = true
             
@@ -74,6 +74,26 @@ extension PersistenceManager {
             descriptor.fetchLimit = 1
             
             return (try? modelContext.fetch(descriptor))?.first
+        }
+        
+        func remove(connectionID: ItemIdentifier.ConnectionID) {
+            do {
+                try modelContext.delete(model: PersistedAudiobook.self, where: #Predicate { $0._id.contains(connectionID) })
+                try modelContext.delete(model: PersistedEpisode.self, where: #Predicate { $0._id.contains(connectionID) })
+                try modelContext.delete(model: PersistedPodcast.self, where: #Predicate { $0._id.contains(connectionID) })
+                
+                try modelContext.delete(model: PersistedAsset.self, where: #Predicate { $0._itemID.contains(connectionID) })
+                try modelContext.delete(model: PersistedChapter.self, where: #Predicate { $0._itemID.contains(connectionID) })
+            } catch {
+                logger.error("Failed to remove downloads related to connection \(connectionID): \(error)")
+            }
+            
+            do {
+                let path = ShelfPlayerKit.downloadDirectoryURL.appending(path: connectionID.replacing("/", with: "_"))
+                try FileManager.default.removeItem(at: path)
+            } catch {
+                logger.error("Failed to remove download directory for connection \(connectionID): \(error)")
+            }
         }
     }
 }
@@ -297,7 +317,7 @@ private extension PersistenceManager.DownloadSubsystem {
             request = try await ABSClient[itemID.connectionID].audioTrackRequest(from: itemID, ino: ino)
         }
         
-        let task = urlSession.downloadTask(with: request)
+        let task = await urlSession.downloadTask(with: request)
         
         try await beganDownloading(assetID: id, taskID: task.taskIdentifier)
         task.resume()

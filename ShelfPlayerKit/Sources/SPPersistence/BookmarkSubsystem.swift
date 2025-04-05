@@ -33,6 +33,29 @@ extension PersistenceManager {
                 // && $0.status.rawValue != rawValue
             })).filter { $0.status != .deleted }
         }
+        
+        func remove(itemID: ItemIdentifier) {
+            let primaryID = itemID.primaryID
+            let connectionID = itemID.connectionID
+            
+            do {
+                try modelContext.delete(model: PersistedBookmark.self, where: #Predicate {
+                    $0.primaryID == primaryID
+                    && $0.connectionID == connectionID
+                })
+            } catch {
+                logger.error("Failed to remove related bookmarks to itemID \(itemID): \(error)")
+            }
+        }
+        func remove(connectionID: ItemIdentifier.ConnectionID) {
+            do {
+                try modelContext.delete(model: PersistedBookmark.self, where: #Predicate {
+                    $0.connectionID == connectionID
+                })
+            } catch {
+                logger.error("Failed to remove related bookmarks to connection \(connectionID): \(error)")
+            }
+        }
     }
 }
 
