@@ -114,7 +114,7 @@ struct TabRouter: View {
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
                 syncFailedContent
             } else {
-                UserDataSyncer(connectionID: tab.library.connectionID) {
+                UserDataSynchroniser(connectionID: tab.library.connectionID) {
                     if $0 {
                         importedConnectionIDs.append(tab.library.connectionID)
                         importFailedConnectionIDs.removeAll(where: { $0 == tab.library.connectionID })

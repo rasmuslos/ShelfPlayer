@@ -13,7 +13,7 @@ import ShelfPlayerKit
 final class ConnectionStore {
     var current: PersistenceManager.AuthorizationSubsystem.Connection?
     
-    private(set) var didLoad = false
+    private(set) var didLoad: Bool
     
     private(set) var connections: [ItemIdentifier.ConnectionID: PersistenceManager.AuthorizationSubsystem.Connection]
     
@@ -21,6 +21,7 @@ final class ConnectionStore {
     private(set) var offlineConnections: [ItemIdentifier.ConnectionID]
     
     init() {
+        didLoad = false
         connections = [:]
         
         libraries = [:]

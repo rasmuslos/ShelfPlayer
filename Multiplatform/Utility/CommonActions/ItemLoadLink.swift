@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct ItemLoadLink: View {
+    @Environment(Satellite.self) private var satellite
     @Environment(\.library) private var library
     
     let itemID: ItemIdentifier
@@ -24,17 +25,20 @@ struct ItemLoadLink: View {
     }
     
     var body: some View {
-        if library == nil {
-            Button {
-                itemID.navigate()
-            } label: {
-                labelContent
-            }
-        } else {
-            NavigationLink(destination: ItemLoadView(itemID)) {
-                labelContent
+        Group {
+            if library == nil {
+                Button {
+                    itemID.navigate()
+                } label: {
+                    labelContent
+                }
+            } else {
+                NavigationLink(destination: ItemLoadView(itemID)) {
+                    labelContent
+                }
             }
         }
+        .disabled(satellite.isOffline)
     }
 }
 

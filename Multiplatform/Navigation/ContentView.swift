@@ -48,16 +48,7 @@ struct ContentView: View {
             } else if connectionStore.flat.isEmpty {
                 WelcomeView()
             } else if satellite.isOffline {
-                NavigationStack {
-                    List {
-                        ConnectionManager()
-                    }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    Button(String("ABC")) {
-                        satellite.isOffline = false
-                    }
-                }
+                OfflineView()
             } else {
                 TabRouter(selection: $satellite.lastTabValue)
             }

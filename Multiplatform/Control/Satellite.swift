@@ -70,7 +70,7 @@ final class Satellite {
     private var stash: RFNotification.MarkerStash
     
     init() {
-        isOffline = false
+        isOffline = Defaults[.startInOfflineMode]
         
         currentItem = nil
         
@@ -104,7 +104,7 @@ final class Satellite {
         stash = .init()
         setupObservers()
         
-        checkForResumeablePlayback()
+        checkForResumablePlayback()
     }
     
     enum Sheet: Identifiable {
@@ -522,7 +522,7 @@ private extension Satellite {
         }
     }
     
-    func checkForResumeablePlayback() {
+    func checkForResumablePlayback() {
         guard let playbackResumeInfo = Defaults[.playbackResumeInfo] else {
             return
         }

@@ -66,7 +66,7 @@ struct AudiobookHomePanel: View {
                         }
                         
                          if !downloaded.isEmpty {
-                             AudiobookRow(title: String(localized: "item.downloaded", comment: "Collection of downloaded items"), small: false, audiobooks: downloaded)
+                             AudiobookRow(title: String(localized: "row.downloaded"), small: false, audiobooks: downloaded)
                          }
                     }
                 }
