@@ -104,7 +104,7 @@ struct DownloadButton: View {
         case .downloading:
             return "slash.circle"
         case .completed:
-            return "xmark.circle"
+            return "trash.circle"
         }
     }
     

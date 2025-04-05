@@ -10,7 +10,7 @@ import OSLog
 import SPFoundation
 import SPPersistence
 
-struct UserDataSyncer: View {
+struct UserDataSynchroniser: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let connectionID: ItemIdentifier.ConnectionID
@@ -58,7 +58,7 @@ struct UserDataSyncer: View {
 }
 
 #Preview {
-    UserDataSyncer(connectionID: "fixture") { _ in
+    UserDataSynchroniser(connectionID: "fixture") { _ in
         // Nothing
     }
 }

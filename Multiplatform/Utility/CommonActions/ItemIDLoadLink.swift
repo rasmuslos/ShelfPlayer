@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct ItemIDLoadLink: View {
+    @Environment(Satellite.self) private var satellite
     @Environment(\.library) private var library
     
     let name: String
@@ -38,6 +39,7 @@ struct ItemIDLoadLink: View {
             NavigationLink(destination: ItemIDLoadView(name: name, type: type)) {
                 labelContent
             }
+            .disabled(satellite.isOffline)
         }
     }
 }
