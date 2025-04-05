@@ -66,11 +66,7 @@ private struct Title: View {
     let alignment: HorizontalAlignment
     
     private var isLight: Bool {
-        if let isLight = viewModel.dominantColor?.isLight {
-            return isLight
-        }
-        
-        return colorScheme == .light
+        colorScheme == .light
     }
     
     var body: some View {

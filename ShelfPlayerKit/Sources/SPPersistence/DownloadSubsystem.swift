@@ -491,6 +491,9 @@ public extension PersistenceManager.DownloadSubsystem {
         }
     }
     
+    func audiobooks() throws -> [Audiobook] {
+        return try modelContext.fetch(FetchDescriptor<PersistedAudiobook>()).map(Audiobook.init)
+    }
     func audiobooks(in libraryID: String) throws -> [Audiobook] {
         return try modelContext.fetch(FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
             $0._id.contains(libraryID)

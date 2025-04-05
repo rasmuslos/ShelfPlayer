@@ -1177,6 +1177,7 @@
     },
     "item.downloaded" : {
       "comment" : "Collection of downloaded items",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2229,6 +2230,9 @@
         }
       }
     },
+    "navigation.offline.disable" : {
+
+    },
     "navigation.offline.enable" : {
       "localizations" : {
         "de" : {
@@ -2468,6 +2472,12 @@
           }
         }
       }
+    },
+    "panel.offline" : {
+
+    },
+    "panel.offline.audiobooks" : {
+
     },
     "panel.search" : {
       "localizations" : {
@@ -3572,6 +3582,9 @@
           }
         }
       }
+    },
+    "row.downloaded" : {
+
     },
     "row.latestEpisodes" : {
       "localizations" : {
