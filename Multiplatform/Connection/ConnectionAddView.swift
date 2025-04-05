@@ -18,6 +18,9 @@ struct ConnectionAddView: View {
             Form {
                 Section {
                     TextField("connection.add.endpoint", text: $viewModel.endpoint)
+                        .textContentType(.URL)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
                     
                     if let version = viewModel.version {
                         Text("connection.add.versionHint \(version)")
@@ -92,6 +95,7 @@ struct ConnectionAddView: View {
                 }
             }
             .navigationTitle("connection.add")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     if viewModel.loading {

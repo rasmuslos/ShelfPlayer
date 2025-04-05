@@ -26,7 +26,7 @@ public extension PersistenceManager.ItemSubsystem {
         try await PersistenceManager.shared.keyValue.set(.playbackRate(for: itemID), rate)
     }
     
-    func domiantColor(of itemID: ItemIdentifier) async -> Color? {
+    func dominantColor(of itemID: ItemIdentifier) async -> Color? {
         if let stored = await PersistenceManager.shared.keyValue[.domiantColor(of: itemID)] {
             let components = stored.split(separator: ":").map { Double($0) ?? 0 }
             return Color(red: components[0], green: components[1], blue: components[2])

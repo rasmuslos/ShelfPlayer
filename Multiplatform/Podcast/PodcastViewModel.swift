@@ -149,7 +149,7 @@ private extension PodcastViewModel {
     }
     
     nonisolated func extractColor() async {
-        let color = await PersistenceManager.shared.item.domiantColor(of: podcast.id)
+        let color = await PersistenceManager.shared.item.dominantColor(of: podcast.id)
         
         await MainActor.withAnimation {
             self.dominantColor = color

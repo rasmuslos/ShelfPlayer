@@ -54,6 +54,22 @@ public final class PersistenceManager: Sendable {
         item = .init()
         podcasts = .init()
     }
+    
+    public func remove(itemID: ItemIdentifier) async {
+        await keyValue.remove(itemID: itemID)
+        await bookmark.remove(itemID: itemID)
+        await progress.remove(itemID: itemID)
+        await session.remove(itemID: itemID)
+        try? await download.remove(itemID)
+    }
+    public func remove(connectionID: ItemIdentifier.ConnectionID) async {
+        await keyValue.remove(connectionID: connectionID)
+        await authorization.remove(connectionID: connectionID)
+        await bookmark.remove(connectionID: connectionID)
+        await progress.remove(connectionID: connectionID)
+        await session.remove(connectionID: connectionID)
+        await download.remove(connectionID: connectionID)
+    }
 }
 
 enum PersistenceError: Error {
