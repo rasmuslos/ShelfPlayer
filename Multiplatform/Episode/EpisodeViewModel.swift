@@ -51,7 +51,7 @@ extension EpisodeViewModel {
 
 private extension EpisodeViewModel {
     nonisolated func extractDominantColor() async {
-        let color = await PersistenceManager.shared.item.domiantColor(of: episode.id)
+        let color = await PersistenceManager.shared.item.dominantColor(of: episode.id)
         
         await MainActor.withAnimation {
             self.dominantColor = color

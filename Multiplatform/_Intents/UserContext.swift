@@ -14,10 +14,6 @@ internal struct UserContext {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "Intents & SpotLight")
     
     static func run() async throws {
-        #if ENABLE_CENTRALIZED
-        INPreferences.requestSiriAuthorization { _ in }
-        #endif
-
         Task.detached {
             try? await UserContext.donateNextUpSuggestions()
         }

@@ -33,27 +33,19 @@ struct ConnectionManager: View {
                 Task {
                     loading = false
                     
-                    do {
-                        try await PersistenceManager.shared.authorization.removeConnection(connectionStore.flat[index].id)
-                    } catch {
-                        notifyError.toggle()
-                    }
-                    
+                    await PersistenceManager.shared.remove(connectionID: connectionStore.flat[index].id)
+        
                     loading = true
                 }
             }
         }
         
         Section {
-            NavigationLink("connection.add", destination: ConnectionAddViewWrapper())
+            NavigationLink("connection.add", destination: ConnectionAddView() {})
             
             Button("connection.removeAll") {
                 Task {
-                    do {
-                        try await PersistenceManager.shared.authorization.reset()
-                    } catch {
-                        notifyError.toggle()
-                    }
+                    await PersistenceManager.shared.authorization.reset()
                 }
             }
             .foregroundStyle(.red)
@@ -62,16 +54,6 @@ struct ConnectionManager: View {
             connectionStore.update()
         }
         .sensoryFeedback(.error, trigger: notifyError)
-    }
-}
-
-private struct ConnectionAddViewWrapper: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        ConnectionAddView() {
-            dismiss()
-        }
     }
 }
 

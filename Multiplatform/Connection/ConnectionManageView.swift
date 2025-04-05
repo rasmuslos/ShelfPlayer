@@ -62,16 +62,17 @@ struct ConnectionManageView: View {
             Text("connection.test.success.message \(serverVersion ?? "?")")
         }
         .navigationTitle("connection.manage")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if loading {
-                        ProgressIndicator()
-                    } else if hasUnsavedChanges {
-                        Button("action.save") {
-                            update()
-                        }
+            ToolbarItem(placement: .topBarTrailing) {
+                if loading {
+                    ProgressIndicator()
+                } else if hasUnsavedChanges {
+                    Button("action.save") {
+                        update()
                     }
                 }
+            }
         }
         .sensoryFeedback(.error, trigger: notifyError)
     }
@@ -106,13 +107,8 @@ struct ConnectionManageView: View {
         Task {
             loading = true
             
-            do {
-                try await PersistenceManager.shared.authorization.removeConnection(connection.id)
-                dismiss()
-            } catch {
-                notifyError.toggle()
-                loading = false
-            }
+            await PersistenceManager.shared.remove(connectionID: connection.id)
+            dismiss()
             
             loading = false
         }
