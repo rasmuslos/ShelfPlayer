@@ -309,9 +309,9 @@ private struct CollapsedForeground: View {
                     
                     Group {
                         if let currentItemID = satellite.currentItemID, satellite.isLoading(observing: currentItemID) {
-                            ProgressIndicator()
+                            ProgressView()
                         } else if satellite.isBuffering || satellite.currentItemID == nil {
-                            ProgressIndicator()
+                            ProgressView()
                         } else {
                             Button {
                                 satellite.togglePlaying()

@@ -88,7 +88,7 @@ struct EpisodePlayButton: View {
             }
             .overlay {
                 if isLoading {
-                    ProgressIndicator()
+                    ProgressView()
                 }
             }
             .controlSize(.small)

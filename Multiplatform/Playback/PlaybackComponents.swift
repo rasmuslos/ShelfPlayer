@@ -51,7 +51,7 @@ struct PlaybackTitle: View {
                 Spacer(minLength: 12)
                 
                 if viewModel.isCreatingBookmark {
-                    ProgressIndicator()
+                    ProgressView()
                 } else {
                     Label("item.bookmarks", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
@@ -115,7 +115,7 @@ struct PlaybackControls: View {
         .opacity(isLoading ? 0 : 1)
         .overlay {
             if isLoading {
-                ProgressIndicator()
+                ProgressView()
                     .scaleEffect(1.5)
             }
         }

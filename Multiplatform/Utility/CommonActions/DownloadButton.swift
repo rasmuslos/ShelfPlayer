@@ -142,7 +142,7 @@ struct DownloadButton: View {
     var body: some View {
         Group {
             if isLoading && progressVisibility != .never {
-                ProgressIndicator()
+                ProgressView()
             } else if let text {
                 Text(text, format: .percent.notation(.compactName))
                     .contentTransition(.numericText())

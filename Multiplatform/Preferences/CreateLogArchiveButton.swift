@@ -18,7 +18,7 @@ struct CreateLogArchiveButton: View {
     
     var body: some View {
         if isLoading {
-            ProgressIndicator()
+            ProgressView()
         } else {
             Button("preferences.generateLogFile", systemImage: "text.word.spacing") {
                 createLogArchive()

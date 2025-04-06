@@ -29,7 +29,7 @@ struct PodcastView: View {
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
             if viewModel.episodes.isEmpty {
-                ProgressIndicator()
+                ProgressView()
             } else {
                 HStack {
                     Menu {

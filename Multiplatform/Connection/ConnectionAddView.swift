@@ -26,7 +26,7 @@ struct ConnectionAddView: View {
                         Text("connection.add.versionHint \(version)")
                             .foregroundStyle(.green)
                     } else if viewModel.loading {
-                        ProgressIndicator()
+                        ProgressView()
                     } else {
                         Button("connection.add.verify") {
                             viewModel.proceed()
@@ -80,7 +80,7 @@ struct ConnectionAddView: View {
                                 }
                                 .disabled(viewModel.loading)
                             case .openID:
-                                ProgressIndicator()
+                                ProgressView()
                             }
                         }
                     } else {
@@ -99,7 +99,7 @@ struct ConnectionAddView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     if viewModel.loading {
-                        ProgressIndicator()
+                        ProgressView()
                     } else {
                         Button("connection.add.proceed") {
                             viewModel.proceed()

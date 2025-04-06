@@ -64,7 +64,7 @@ extension AudiobookView {
                     ToolbarItemGroup(placement: .primaryAction) {
                         if !viewModel.supplementaryPDFs.isEmpty {
                             if viewModel.loadingPDF {
-                                ProgressIndicator()
+                                ProgressView()
                             } else {
                                 if viewModel.supplementaryPDFs.count == 1 {
                                     Button("item.documents.read", systemImage: "book.circle") {
