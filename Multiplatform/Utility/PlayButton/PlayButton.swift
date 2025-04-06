@@ -111,7 +111,7 @@ struct PlayButton: View {
             HStack(spacing: 4) {
                 Group {
                     if isLoading {
-                        ProgressIndicator()
+                        ProgressView()
                             .frame(height: 0)
                     } else {
                         Label(label, systemImage: icon)

@@ -53,7 +53,14 @@ struct ContentView: View {
                 TabRouter(selection: $satellite.lastTabValue)
             }
         }
-        .tint(tintColor.color)
+        .modify {
+            if tintColor == .shelfPlayer {
+                $0
+            } else {
+                $0
+                    .tint(tintColor.color)
+            }
+        }
         .sensoryFeedback(.error, trigger: satellite.notifyError)
         .sensoryFeedback(.success, trigger: satellite.notifySuccess)
         .sensoryFeedback(.error, trigger: playbackViewModel.notifyError)

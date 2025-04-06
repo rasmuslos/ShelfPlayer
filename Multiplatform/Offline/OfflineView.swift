@@ -12,7 +12,7 @@ struct OfflineView: View {
     @Environment(Satellite.self) private var satellite
     
     @State private var audiobooks: [Audiobook] = []
-    @State private var podcasts: [Podcast] = .init(repeating: .fixture, count: 7)
+    // @State private var podcasts: [Podcast] = .init(repeating: .fixture, count: 7)
     
     @ViewBuilder
     private var goOnlineButton: some View {
@@ -102,7 +102,7 @@ private struct OfflineAudiobookRow: View {
                     CircleProgressIndicator(progress: progress)
                         .frame(width: 16)
                 } else {
-                    ProgressIndicator()
+                    ProgressView()
                         .scaleEffect(0.75)
                 }
             }
@@ -114,7 +114,9 @@ private struct OfflineAudiobookRow: View {
     }
 }
 
+#if DEBUG
 #Preview {
     OfflineView()
         .previewEnvironment()
 }
+#endif

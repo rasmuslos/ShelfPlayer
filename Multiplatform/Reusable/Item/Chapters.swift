@@ -103,7 +103,7 @@ internal extension Chapters {
                             .hidden()
                         
                         if loading {
-                            ProgressIndicator()
+                            ProgressView()
                                 .scaleEffect(0.5)
                         } else {
                             Text(time, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))

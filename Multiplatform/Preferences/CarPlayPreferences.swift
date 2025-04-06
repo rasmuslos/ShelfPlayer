@@ -90,7 +90,7 @@ struct CarPlayPreferences: View {
                             .buttonStyle(.plain)
                         }
                     } else {
-                        ProgressIndicator()
+                        ProgressView()
                     }
                 }
             }

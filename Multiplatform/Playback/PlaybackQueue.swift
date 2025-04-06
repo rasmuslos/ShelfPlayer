@@ -242,7 +242,7 @@ private struct QueueItemRow: View {
                 .font(.subheadline)
                 .lineLimit(1)
             } else {
-                ProgressIndicator()
+                ProgressView()
             }
         }
         .id(itemID)

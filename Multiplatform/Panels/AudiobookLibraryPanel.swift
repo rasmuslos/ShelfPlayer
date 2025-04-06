@@ -92,7 +92,7 @@ struct AudiobookLibraryPanel: View {
                     .labelStyle(.iconOnly)
                     .symbolVariant(lazyLoader.filteredGenre != nil ? .fill : .none)
                 } else if genres == nil {
-                    ProgressIndicator()
+                    ProgressView()
                 }
                 
                 Menu("item.options", systemImage: filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {

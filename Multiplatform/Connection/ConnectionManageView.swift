@@ -66,7 +66,7 @@ struct ConnectionManageView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if loading {
-                    ProgressIndicator()
+                    ProgressView()
                 } else if hasUnsavedChanges {
                     Button("action.save") {
                         update()
