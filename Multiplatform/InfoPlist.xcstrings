@@ -58,6 +58,18 @@
       },
       "shouldTranslate" : false
     },
+    "NSLocalNetworkUsageDescription" : {
+      "comment" : "Privacy - Local Network Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Grant access to connect to a Audiobookshelf-Instance inside your local network."
+          }
+        }
+      }
+    },
     "NSSiriUsageDescription" : {
       "comment" : "Privacy - Siri Usage Description",
       "extractionState" : "extracted_with_value",

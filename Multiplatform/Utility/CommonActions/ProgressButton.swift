@@ -57,7 +57,7 @@ struct ProgressButton: View {
                     markAsFinishedButton
                 }
             } else {
-                ProgressIndicator()
+                ProgressView()
             }
         }
         .disabled(isLoading)

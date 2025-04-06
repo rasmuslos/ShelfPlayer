@@ -65,7 +65,7 @@ struct PreferencesView: View {
                     Label("notification.permission.granted", systemImage: "bell.badge.fill")
                         .foregroundStyle(.secondary)
                 default:
-                    ProgressIndicator()
+                    ProgressView()
                 }
             } footer: {
                 Text("notification.permission.footer")

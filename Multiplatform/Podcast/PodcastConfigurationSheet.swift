@@ -82,7 +82,7 @@ struct PodcastConfigurationSheet: View {
                     .tint(.primary)
                 }
             } else {
-                ProgressIndicator()
+                ProgressView()
                     .task {
                         notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                     }
@@ -117,7 +117,7 @@ struct PodcastConfigurationSheet: View {
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
                             if isLoading {
-                                ProgressIndicator()
+                                ProgressView()
                             } else {
                                 Button("action.save") {
                                     save()

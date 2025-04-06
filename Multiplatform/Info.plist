@@ -101,5 +101,7 @@
 	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Grant access to connect to a Audiobookshelf-Instance inside your local network.</string>
 </dict>
 </plist>

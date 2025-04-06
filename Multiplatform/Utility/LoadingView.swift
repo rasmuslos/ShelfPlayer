@@ -24,15 +24,6 @@ struct LoadingView: View {
     }
 }
 
-struct ProgressIndicator: View {
-    var tint: Color = .gray
-    
-    var body: some View {
-        ProgressView()
-            .tint(tint)
-    }
-}
-
 #Preview {
     LoadingView()
 }
