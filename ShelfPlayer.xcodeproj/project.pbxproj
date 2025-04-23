@@ -150,7 +150,7 @@
 		3AD6EA742CABEE1300B412DB /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD6EA732CABEE0F00B412DB /* PlayMediaIntentHandler.swift */; };
 		3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD29612B6D88EF0060248E /* DownloadButton.swift */; };
 		3ADD43482CC30E7A0060E043 /* CarPlayTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43472CC30E730060E043 /* CarPlayTabBar.swift */; };
-		3ADD434A2CC311630060E043 /* CarPlayOfflineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43492CC3115D0060E043 /* CarPlayOfflineController.swift */; };
+		3ADD434A2CC311630060E043 /* CarPlayListenNowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43492CC3115D0060E043 /* CarPlayListenNowController.swift */; };
 		3ADD434C2CC3151D0060E043 /* CarPlayHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD434B2CC3151B0060E043 /* CarPlayHelper.swift */; };
 		3ADD434E2CC318BD0060E043 /* CarPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD434D2CC318B90060E043 /* CarPlayController.swift */; };
 		3ADD43502CC3B6C50060E043 /* CarPlayNowPlayingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD434F2CC3B6C00060E043 /* CarPlayNowPlayingController.swift */; };
@@ -345,7 +345,7 @@
 		3AD6EA732CABEE0F00B412DB /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
 		3ADD29612B6D88EF0060248E /* DownloadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadButton.swift; sourceTree = "<group>"; };
 		3ADD43472CC30E730060E043 /* CarPlayTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTabBar.swift; sourceTree = "<group>"; };
-		3ADD43492CC3115D0060E043 /* CarPlayOfflineController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayOfflineController.swift; sourceTree = "<group>"; };
+		3ADD43492CC3115D0060E043 /* CarPlayListenNowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListenNowController.swift; sourceTree = "<group>"; };
 		3ADD434B2CC3151B0060E043 /* CarPlayHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayHelper.swift; sourceTree = "<group>"; };
 		3ADD434D2CC318B90060E043 /* CarPlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayController.swift; sourceTree = "<group>"; };
 		3ADD434F2CC3B6C00060E043 /* CarPlayNowPlayingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayNowPlayingController.swift; sourceTree = "<group>"; };
@@ -655,7 +655,7 @@
 				3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */,
 				3ADD434D2CC318B90060E043 /* CarPlayController.swift */,
 				3ADD43472CC30E730060E043 /* CarPlayTabBar.swift */,
-				3ADD43492CC3115D0060E043 /* CarPlayOfflineController.swift */,
+				3ADD43492CC3115D0060E043 /* CarPlayListenNowController.swift */,
 				3AC41F942CC534E9009ABBFA /* CarPlayPodcastController.swift */,
 				3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */,
 				3AB0E7242CC3FE7A0024DD08 /* CarPlayAudiobookLibraryController.swift */,
@@ -1030,7 +1030,7 @@
 				3A0F99F22BE8C08700F6B7B4 /* UIScreen+Radius.swift in Sources */,
 				3AA089352B6E413800773414 /* AudiobookList.swift in Sources */,
 				3A1507952AD348E700D7D6CF /* PodcastView+EpisodeList.swift in Sources */,
-				3ADD434A2CC311630060E043 /* CarPlayOfflineController.swift in Sources */,
+				3ADD434A2CC311630060E043 /* CarPlayListenNowController.swift in Sources */,
 				3AA19BA62AD6E94B00C468EA /* PodcastGrid.swift in Sources */,
 				3A9825E62D4A3C2200A65826 /* ItemLoadLink.swift in Sources */,
 				3ABCC7E22AD4659F004AEADF /* Description.swift in Sources */,

@@ -14,8 +14,9 @@ struct CarPlayPreferences: View {
     @Environment(Satellite.self) private var satellite
     
     @Default(.carPlayTabBarLibraries) private var carPlayTabBarLibraries
+    @Default(.carPlayShowOtherLibraries) private var carPlayShowOtherLibraries
     
-    private var showOtherLibrariesInfo: Bool {
+    private var shouldShowOtherLibraries: Bool {
         guard let carPlayTabBarLibraries else {
             return true
         }
@@ -24,6 +25,10 @@ struct CarPlayPreferences: View {
         
         return carPlayTabBarLibraries.count != totalLibraryCount
     }
+    private var areOtherLibrariesVisible: Bool {
+        carPlayShowOtherLibraries && shouldShowOtherLibraries
+    }
+    
     private var showTabBarLimitWarning: Bool {
         guard let carPlayTabBarLibraries else {
             return false
@@ -31,7 +36,7 @@ struct CarPlayPreferences: View {
         
         var additionalTabs = 1
         
-        if showOtherLibrariesInfo {
+        if areOtherLibrariesVisible {
             additionalTabs += 1
         }
         
@@ -57,8 +62,8 @@ struct CarPlayPreferences: View {
                         }
                     }
                     
-                    if showOtherLibrariesInfo {
-                        Text("preferences.carPlay.tabBar.additionalLibraries")
+                    if shouldShowOtherLibraries {
+                        Toggle("preferences.carPlay.tabBar.additionalLibraries", isOn: $carPlayShowOtherLibraries)
                             .foregroundStyle(.secondary)
                     }
                 }

@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import OSLog
 
 #if canImport(UIKit)
 import UIKit
 #endif
 
 public struct ShelfPlayerKit {
+    public static let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ShelfPlayerKit")
 }
 
 public extension ShelfPlayerKit {
