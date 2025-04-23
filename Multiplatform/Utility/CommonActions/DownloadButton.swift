@@ -9,6 +9,8 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct DownloadButton: View {
+    @Environment(Satellite.self) private var satellite
+    
     let itemID: ItemIdentifier
     
     let tint: Bool
@@ -189,6 +191,7 @@ struct DownloadButton: View {
                 }
             }
         }
+        .disabled(satellite.currentItemID == itemID)
         .animation(.smooth, value: current)
         .sensoryFeedback(.error, trigger: notifyError)
         .sensoryFeedback(.success, trigger: notifySuccess)
@@ -315,8 +318,10 @@ private extension DownloadButton {
 #if DEBUG
 #Preview {
     DownloadButton(itemID: .fixture, tint: false, progressVisibility: .toolbar)
+        .previewEnvironment()
 }
 #Preview {
     DownloadButton(itemID: .fixture, tint: true)
+        .previewEnvironment()
 }
 #endif

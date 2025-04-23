@@ -40,9 +40,19 @@ extension SeriesView {
                                 Text(verbatim: "")
                             }
                         }
+                    
+                    Group {
+                        if let first = viewModel.lazyLoader.items.first {
+                            PlayButton(item: first, color: nil)
+                        } else if viewModel.lazyLoader.working {
+                            PlayButton(item: Episode.placeholder, color: nil)
+                                .disabled(true)
+                        }
+                    }
+                    .padding(.horizontal, 20)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.bottom, 20)
+                .padding(.bottom, 0)
             }
         }
     }

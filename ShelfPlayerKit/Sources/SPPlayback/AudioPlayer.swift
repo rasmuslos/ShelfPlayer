@@ -310,7 +310,7 @@ private extension AudioPlayer {
         }
         
         RFNotification[.shake].subscribe(queue: .sender) { [weak self] duration in
-            guard duration > 0.5 else {
+            guard Defaults[.shakeExtendsSleepTimer] && duration > 0.5 else {
                 return
             }
             

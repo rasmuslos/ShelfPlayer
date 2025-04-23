@@ -165,7 +165,7 @@ struct TabRouter: View {
         .modifier(CompactPlaybackModifier(ready: isReady))
         .environment(\.playbackBottomOffset, 88)
         .sensoryFeedback(.error, trigger: importFailedConnectionIDs)
-        .onChange(of: current) {
+        .onChange(of: current, initial: true) {
             let appearance = UINavigationBarAppearance()
             
             if current?.type == .audiobooks && Defaults[.enableSerifFont] {

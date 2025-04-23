@@ -108,6 +108,7 @@ private struct OfflineAudiobookRow: View {
                         .scaleEffect(0.75)
                 }
             }
+            .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .disabled(satellite.isLoading(observing: audiobook.id))
