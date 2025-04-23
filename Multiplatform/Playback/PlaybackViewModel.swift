@@ -131,10 +131,10 @@ final class PlaybackViewModel {
         let dragHeight: Percentage = 500
         
         if dragOffset > 0 {
-            return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.15
+            return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.1
         }
         
-        return isExpanded ? 0.85 : 1
+        return isExpanded ? 0.9 : 1
     }
     
     var areSlidersInUse: Bool {
@@ -154,10 +154,6 @@ final class PlaybackViewModel {
     
     nonisolated func createQuickBookmark() {
         Task {
-            guard let currentItemID = await AudioPlayer.shared.currentItemID else {
-                return
-            }
-            
             await MainActor.withAnimation {
                 isCreatingBookmark = true
             }

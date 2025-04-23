@@ -25,9 +25,11 @@ struct OfflineView: View {
         GeometryReader { geometryProxy in
             NavigationStack {
                 List {
-                    Section("panel.offline.audiobooks") {
-                        ForEach(audiobooks) {
-                            OfflineAudiobookRow(audiobook: $0)
+                    if !audiobooks.isEmpty {
+                        Section("panel.offline.audiobooks") {
+                            ForEach(audiobooks) {
+                                OfflineAudiobookRow(audiobook: $0)
+                            }
                         }
                     }
                     

@@ -115,8 +115,10 @@ struct PlaybackControls: View {
         .opacity(isLoading ? 0 : 1)
         .overlay {
             if isLoading {
-                ProgressView()
-                    .scaleEffect(1.5)
+                Image(systemName: "dot.radiowaves.left.and.right")
+                    .font(.title3)
+                    .symbolRenderingMode(.multicolor)
+                    .symbolEffect(.variableColor.iterative.dimInactiveLayers.nonReversing, isActive: isLoading)
             }
         }
     }
@@ -195,6 +197,8 @@ struct PlaybackControls: View {
             BottomSlider()
         }
         .aspectRatio(2, contentMode: .fit)
+        .compositingGroup()
+        .drawingGroup()
     }
 }
 
@@ -534,6 +538,7 @@ private struct PlaybackSlider<MiddleContent: View>: View {
             }
         }
         .frame(height: height * 2 + activeHeight + 6)
+        .compositingGroup()
         .animation(.smooth, value: seeking)
     }
 }

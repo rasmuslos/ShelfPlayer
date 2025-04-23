@@ -114,6 +114,7 @@
       }
     },
     "carPlay.libraries" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -148,6 +149,7 @@
 
     },
     "carPlay.offline.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -176,6 +178,7 @@
       }
     },
     "carPlay.offline.empty.subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -204,6 +207,7 @@
       }
     },
     "carPlay.offline.tab" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -232,6 +236,7 @@
       }
     },
     "carPlay.offline.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -122,7 +122,9 @@ extension PersistenceManager.ProgressSubsystem {
     }
     
     nonisolated func progressEntityDidUpdate(_ entity: ProgressEntity) {
-        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        Task { @MainActor in
+            RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        }
     }
 }
 
