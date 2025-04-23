@@ -240,7 +240,7 @@ struct AudiobookshelfItemAuthor: Codable {
 }
 
 struct AudiobookshelfAudioTrack: Codable {
-    let index: Int
+    let index: Int?
     let ino: String?
     
     let startOffset: Double
@@ -259,7 +259,7 @@ struct AudiobookshelfAudioTrack: Codable {
 }
 
 struct AudioFilePayload: Codable {
-    let index: Int
+    let index: Int?
 }
 
 internal struct ChapterPayload: Codable {
