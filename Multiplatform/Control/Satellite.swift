@@ -541,6 +541,16 @@ private extension Satellite {
     
     func setupObservers() {
         RFNotification[.changeOfflineMode].subscribe { [weak self] in
+            if $0 {
+                let appearance = UINavigationBarAppearance()
+                
+                appearance.configureWithTransparentBackground()
+                UINavigationBar.appearance().standardAppearance = appearance
+                
+                appearance.configureWithDefaultBackground()
+                UINavigationBar.appearance().compactAppearance = appearance
+            }
+            
             self?.isOffline = $0
         }.store(in: &stash)
         
