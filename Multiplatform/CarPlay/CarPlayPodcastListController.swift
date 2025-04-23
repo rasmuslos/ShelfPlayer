@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CarPlay
+@preconcurrency import CarPlay
 import Defaults
 import ShelfPlayerKit
 

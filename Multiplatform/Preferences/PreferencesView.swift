@@ -13,127 +13,144 @@ struct PreferencesView: View {
     @State private var cacheDirectorySize: Int? = nil
     @State private var downloadDirectorySize: Int? = nil
     
+    @State private var navigationPath = NavigationPath()
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
+    @ViewBuilder
+    private var connectionPreferences: some View {
+            List {
+                ConnectionManager()
+            }
+            .navigationTitle("connection.manage")
+            .navigationBarTitleDisplayMode(.inline)
+    }
+    
     var body: some View {
-        List {
-            Section {
-                NavigationLink(destination: PlaybackRateEditor()) {
-                    Label("preferences.playbackRate", systemImage: "percent")
-                }
-                NavigationLink(destination: SleepTimerEditor()) {
-                    Label("preferences.sleepTimer", systemImage: "clock")
-                }
-                
-                TintPicker()
-            }
-            
-            Section {
-                NavigationLink(destination: ConnectionPreferences()) {
-                    Label("connection.manage", systemImage: "server.rack")
+        NavigationStack(path: $navigationPath) {
+            List {
+                Section {
+                    NavigationLink(destination: PlaybackRateEditor()) {
+                        Label("preferences.playbackRate", systemImage: "percent")
+                    }
+                    NavigationLink(destination: SleepTimerEditor()) {
+                        Label("preferences.sleepTimer", systemImage: "clock")
+                    }
+                    
+                    TintPicker()
                 }
                 
-                NavigationLink(destination: CarPlayPreferences()) {
-                    Label("preferences.carPlay", systemImage: "car.badge.gearshape.fill")
-                }
-            }
-            
-            Section {
-                Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
-                    Label("preferences.settings", systemImage: "gear")
+                Section {
+                    NavigationLink(destination: connectionPreferences) {
+                        Label("connection.manage", systemImage: "server.rack")
+                    }
+                    
+                    NavigationLink(destination: CarPlayPreferences()) {
+                        Label("preferences.carPlay", systemImage: "car.badge.gearshape.fill")
+                    }
                 }
                 
-                switch notificationPermission {
-                case .notDetermined:
-                    Button {
-                        Task {
-                            try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+                Section {
+                    Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
+                        Label("preferences.settings", systemImage: "gear")
+                    }
+                    
+                    switch notificationPermission {
+                    case .notDetermined:
+                        Button {
+                            Task {
+                                try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+                                notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                            }
+                        } label: {
+                            Label("notification.permission.request", systemImage: "bell.badge.waveform.fill")
+                        }
+                        .task {
                             notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
                         }
-                    } label: {
-                        Label("notification.permission.request", systemImage: "bell.badge.waveform.fill")
+                    case .denied:
+                        Link(destination: URL(string: UIApplication.openNotificationSettingsURLString)!) {
+                            Label("notification.permission.denied", systemImage: "bell.slash.fill")
+                        }
+                        .foregroundStyle(.red)
+                    case .authorized:
+                        Label("notification.permission.granted", systemImage: "bell.badge.fill")
+                            .foregroundStyle(.secondary)
+                    default:
+                        ProgressView()
                     }
-                    .task {
-                        notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                    }
-                case .denied:
-                    Link(destination: URL(string: UIApplication.openNotificationSettingsURLString)!) {
-                        Label("notification.permission.denied", systemImage: "bell.slash.fill")
-                    }
-                    .foregroundStyle(.red)
-                case .authorized:
-                    Label("notification.permission.granted", systemImage: "bell.badge.fill")
+                } footer: {
+                    Text("notification.permission.footer")
                         .foregroundStyle(.secondary)
-                default:
-                    ProgressView()
-                }
-            } footer: {
-                Text("notification.permission.footer")
-                    .foregroundStyle(.secondary)
-            }
-            
-            Section {
-                Button {
-                    ShelfPlayer.clearCache()
-                } label: {
-                    Label {
-                        HStack(spacing: 0) {
-                            Text("preferences.purge.cache")
-                            
-                            if let cacheDirectorySize {
-                                Spacer(minLength: 8)
-                                Text(cacheDirectorySize.formatted(.byteCount(style: .file)))
-                                    .foregroundStyle(.gray)
-                            }
-                        }
-                    } icon: {
-                        Image(systemName: "square.stack.3d.up.slash")
-                    }
                 }
                 
-                Button {
+                Section {
+                    Button {
+                        ShelfPlayer.clearCache()
+                    } label: {
+                        Label {
+                            HStack(spacing: 0) {
+                                Text("preferences.purge.cache")
+                                
+                                if let cacheDirectorySize {
+                                    Spacer(minLength: 8)
+                                    Text(cacheDirectorySize.formatted(.byteCount(style: .file)))
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                        } icon: {
+                            Image(systemName: "square.stack.3d.up.slash")
+                        }
+                    }
                     
-                } label: {
-                    Label {
-                        HStack(spacing: 0) {
-                            Text("preferences.purge.downloads")
-                            
-                            if let downloadDirectorySize {
-                                Spacer(minLength: 8)
-                                Text(downloadDirectorySize.formatted(.byteCount(style: .file)))
-                                    .foregroundStyle(.gray)
+                    Button {
+                        
+                    } label: {
+                        Label {
+                            HStack(spacing: 0) {
+                                Text("preferences.purge.downloads")
+                                
+                                if let downloadDirectorySize {
+                                    Spacer(minLength: 8)
+                                    Text(downloadDirectorySize.formatted(.byteCount(style: .file)))
+                                        .foregroundStyle(.gray)
+                                }
                             }
+                        } icon: {
+                            Image(systemName: "slash.circle")
                         }
-                    } icon: {
-                        Image(systemName: "slash.circle")
                     }
                 }
-            }
-            .foregroundStyle(.red)
-            
-            Section {
-                Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer")!) {
-                    Label("preferences.github", systemImage: "chevron.left.forwardslash.chevron.right")
-                }
-                Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/Support.md")!) {
-                    Label("preferences.support", systemImage: "lifepreserver")
+                .foregroundStyle(.red)
+                
+                Section {
+                    Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer")!) {
+                        Label("preferences.github", systemImage: "chevron.left.forwardslash.chevron.right")
+                    }
+                    Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/Support.md")!) {
+                        Label("preferences.support", systemImage: "lifepreserver")
+                    }
+                    
+                    CreateLogArchiveButton()
                 }
                 
-                CreateLogArchiveButton()
+                Section {
+                    Text("preferences.version \(ShelfPlayerKit.clientVersion) \(ShelfPlayerKit.clientBuild) \(ShelfPlayerKit.enableCentralized ? "C" : "L")")
+                    Text("preferences.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
+                }
+                .foregroundStyle(.secondary)
+                .font(.caption)
             }
-            
-            Section {
-                Text("preferences.version \(ShelfPlayerKit.clientVersion) \(ShelfPlayerKit.clientBuild) \(ShelfPlayerKit.enableCentralized ? "C" : "L")")
-                Text("preferences.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
-            }
-            .foregroundStyle(.secondary)
-            .font(.caption)
+            .navigationTitle("preferences")
+            .navigationBarTitleDisplayMode(.inline)
+            .foregroundStyle(.primary)
         }
-        .navigationTitle("preferences")
-        .navigationBarTitleDisplayMode(.inline)
-        .foregroundStyle(.primary)
         .task {
             load()
+        }
+        .onReceive(RFNotification[.connectionsChanged].publisher()) { _ in
+            while !navigationPath.isEmpty {
+                navigationPath.removeLast()
+            }
         }
     }
     
@@ -177,16 +194,6 @@ struct CompactPreferencesToolbarModifier: ViewModifier {
                     $0
                 }
             }
-    }
-}
-
-private struct ConnectionPreferences: View {
-    var body: some View {
-        List {
-            ConnectionManager()
-        }
-        .navigationTitle("connection.manage")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

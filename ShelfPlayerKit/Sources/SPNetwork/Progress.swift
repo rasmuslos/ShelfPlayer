@@ -19,7 +19,7 @@ public extension APIClient {
 
 public extension APIClient {
     func batchUpdate(progress: [ProgressEntity]) async throws {
-        try await response(for: ClientRequest<Empty>(path: "me/progress/batch/update", method: .post, body: progress.map {
+        try await response(for: ClientRequest<Empty>(path: "api/me/progress/batch/update", method: .patch, body: progress.map {
             let itemID: String
             let episodeID: String?
             

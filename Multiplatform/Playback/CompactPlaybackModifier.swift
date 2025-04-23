@@ -38,17 +38,14 @@ struct CompactPlaybackModifier: ViewModifier {
                             Color.white.opacity(min(0.1, (1 - viewModel.pushAmount)))
                                 .animation(.smooth(duration: 0.4), value: viewModel.isExpanded)
                         }
-                        .visualEffect { [pushAmount] content, _ in
-                            content
-                                .scaleEffect(pushAmount, anchor: .top)
-                        }
+                        .scaleEffect(pushAmount, anchor: .center)
                         .mask(alignment: .center) {
                             let totalWidth = geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing
                             let width = totalWidth * viewModel.pushAmount
                             let leadingOffset = (totalWidth - width) / 2
                             
                             RoundedRectangle(cornerRadius: satellite.isNowPlayingVisible && !satellite.isSheetPresented ? viewModel.pushContainerCornerRadius(leadingOffset: leadingOffset) : 0, style: .continuous)
-                                .fill(.background)
+                                .fill(.black)
                                 .frame(width: width,
                                        height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * viewModel.pushAmount)
                         }
@@ -61,7 +58,11 @@ struct CompactPlaybackModifier: ViewModifier {
                                 // Prevent content from shining through
                                 if viewModel.isExpanded {
                                     Rectangle()
-                                        .foregroundStyle(.background)
+                                        #if DEBUG && false
+                                            .foregroundStyle(.background.opacity(0.2))
+                                        #else
+                                            .foregroundStyle(.background)
+                                        #endif
                                         .transition(.opacity)
                                         .transaction {
                                             if !viewModel.isExpanded {
@@ -83,7 +84,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                     } else {
                                         Rectangle()
                                         #if DEBUG && false
-                                            .foregroundStyle(.background.opacity(0.8))
+                                            .foregroundStyle(.background.opacity(0.2))
                                         #else
                                             .foregroundStyle(.background)
                                         #endif
@@ -93,26 +94,6 @@ struct CompactPlaybackModifier: ViewModifier {
                                 .animation(.smooth(duration: 0.1), value: viewModel.isExpanded)
                             }
                             .allowsHitTesting(false)
-                            .mask {
-                                VStack(spacing: 0) {
-                                    UnevenRoundedRectangle(topLeadingRadius: viewModel.backgroundCornerRadius,
-                                                           topTrailingRadius: viewModel.backgroundCornerRadius,
-                                                           style: .continuous)
-                                    .frame(maxHeight: 60)
-                                    
-                                    // The padding prevents the mask from cutting lines in the background
-                                    // during the transformation. They are caused by the `spring` animation.
-                                    Rectangle()
-                                        .padding(.vertical, -2)
-                                    
-                                    UnevenRoundedRectangle(bottomLeadingRadius: viewModel.backgroundCornerRadius,
-                                                           bottomTrailingRadius: viewModel.backgroundCornerRadius,
-                                                           style: .continuous)
-                                    .frame(maxHeight: 60)
-                                }
-                                .drawingGroup()
-                            }
-                            .shadow(color: .black.opacity(0.2), radius: 8)
                             
                             // Drag gesture catcher
                             if viewModel.isExpanded {
@@ -148,6 +129,25 @@ struct CompactPlaybackModifier: ViewModifier {
                             }
                         }
                         .frame(height: viewModel.isExpanded ? nil : Self.height)
+                        .mask {
+                            VStack(spacing: 0) {
+                                UnevenRoundedRectangle(topLeadingRadius: viewModel.backgroundCornerRadius,
+                                                       topTrailingRadius: viewModel.backgroundCornerRadius,
+                                                       style: .continuous)
+                                .frame(maxHeight: 60)
+                                
+                                // The padding prevents the mask from cutting lines in the background
+                                // during the transformation. They are caused by the `spring` animation.
+                                Rectangle()
+                                    .padding(.vertical, -2)
+                                
+                                UnevenRoundedRectangle(bottomLeadingRadius: viewModel.backgroundCornerRadius,
+                                                       bottomTrailingRadius: viewModel.backgroundCornerRadius,
+                                                       style: .continuous)
+                                .frame(maxHeight: 60)
+                            }
+                        }
+                        .shadow(color: viewModel.isExpanded ? .clear : .black.opacity(0.2), radius: 8)
                         .padding(.horizontal, viewModel.isExpanded ? 0 : 12)
                         .padding(.bottom, viewModel.isExpanded ? 0 : playbackBottomOffset)
                         .offset(x: 0, y: viewModel.dragOffset)
@@ -204,7 +204,6 @@ private struct ExpandedForeground: View {
                     Spacer(minLength: 12)
                     
                     PlaybackControls()
-                        .compositingGroup()
                         .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                     
                     Spacer(minLength: 12)
@@ -276,19 +275,25 @@ private struct CollapsedForeground: View {
                     ItemImage(itemID: satellite.currentItemID, size: .small, cornerRadius: 8)
                         .frame(width: 40, height: 40)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: .topLeading)
+                    
+                    Group {
+                        if let currentItem = satellite.currentItem {
+                            Text(currentItem.name)
+                                .lineLimit(1)
+                        } else {
+                            Text("loading")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .matchedGeometryEffect(id: "text", in: namespace!, properties: .position, anchor: .center)
                 } else {
-                    Rectangle()
-                        .hidden()
-                        .frame(width: 40, height: 40)
-                }
-                
-                // Text(viewModel.chapter?.title ?? item.name)
-                if let currentItem = satellite.currentItem {
-                    Text(currentItem.name)
-                        .lineLimit(1)
-                } else {
-                    Text("loading")
-                        .foregroundStyle(.secondary)
+                    Group {
+                        Rectangle()
+                            .frame(width: 40, height: 40)
+                        
+                        Text("loading")
+                    }
+                    .hidden()
                 }
                 
                 Spacer()

@@ -31,9 +31,7 @@ struct ContentView: View {
     private func sheetContent(for sheet: Satellite.Sheet) -> some View {
         switch sheet {
         case .preferences:
-            NavigationStack {
-                PreferencesView()
-            }
+            PreferencesView()
         case .description(let item):
             DescriptionSheet(item: item)
         case .podcastConfiguration(let itemID):
