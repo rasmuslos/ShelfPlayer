@@ -37,6 +37,8 @@ struct ConnectionManageView: View {
                 Text(connection.host.absoluteString)
             }
             
+            Section("connection.modify.header") {}
+            
             HeaderEditor(headers: $headers)
             
             Section {

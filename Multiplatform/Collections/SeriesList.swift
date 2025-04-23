@@ -65,6 +65,7 @@ extension SeriesList {
                     if let name {
                         Text(name)
                             .lineLimit(2)
+                            .font(.headline)
                             .modifier(SerifModifier())
                     }
                     

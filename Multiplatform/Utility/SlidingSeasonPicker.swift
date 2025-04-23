@@ -17,9 +17,18 @@ struct SlidingSeasonPicker: View {
     @ScaledMetric private var fontSize: CGFloat = 14
     @ScaledMetric private var capsuleHeight: CGFloat = 32
     
+    private var font: UIFont {
+        let font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
+
+        if let descriptor = font.fontDescriptor.withDesign(.rounded) {
+            return UIFont(descriptor: descriptor, size: fontSize)
+        } else {
+            return font
+        }
+    }
     private var textWidth: [Int: CGFloat] {
         Dictionary(uniqueKeysWithValues: values.enumerated().map {
-            ($0.offset, NSString(string: makeLabel($0.element)).size(withAttributes: [.font: UIFont.systemFont(ofSize: fontSize)]).width)
+            ($0.offset, NSString(string: makeLabel($0.element)).size(withAttributes: [.font: font]).width)
         })
     }
     
@@ -44,7 +53,7 @@ struct SlidingSeasonPicker: View {
                     selection = value
                 }
                 .buttonStyle(.plain)
-                .font(.system(size: fontSize))
+                .font(Font(font))
                 .frame(width: textWidth[index])
             }
         }

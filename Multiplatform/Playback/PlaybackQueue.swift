@@ -81,6 +81,7 @@ struct PlaybackQueue: View {
                                         Button("item.play", systemImage: "play") {
                                             satellite.skip(queueIndex: index)
                                         }
+                                        .tint(tintColor.color)
                                     }
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button("playback.queue.remove", systemImage: "minus.circle.fill") {
@@ -114,6 +115,7 @@ struct PlaybackQueue: View {
                                         Button("item.play", systemImage: "play") {
                                             satellite.skip(upNextQueueIndex: index)
                                         }
+                                        .tint(tintColor.color)
                                     }
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                         Button("playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
