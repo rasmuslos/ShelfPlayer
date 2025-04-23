@@ -434,6 +434,7 @@ private struct PlaybackSlider<MiddleContent: View>: View {
     let complete: (_: Percentage) -> Void
     
     @State private var dragStartValue: Percentage?
+    @State private var lastDragVelocity: CGFloat? = nil
     
     @ScaledMetric private var mutedHeight = 11
     @ScaledMetric private var activeHeight = 14
@@ -511,23 +512,31 @@ private struct PlaybackSlider<MiddleContent: View>: View {
                         let velocity = abs($0.velocity.width)
                         let acceleration: Percentage
                         
-                        if velocity < 500 {
-                            acceleration = 0.7
-                        } else if velocity < 1000 {
+                        lastDragVelocity = velocity
+                        
+                        if velocity < 600 {
                             acceleration = 1
+                        } else if velocity < 1000 {
+                            acceleration = 2
                         } else {
-                            acceleration = 1.3
+                            acceleration = 3
                         }
                         
                         let modifier = moved * acceleration
                         seeking = min(1, max(0, dragStartValue! + modifier))
                     }
-                    .onEnded { _ in
+                    .onEnded {
+                        if let lastDragVelocity, lastDragVelocity > 1000, let seeking {
+                            let modifier = $0.translation.width < 0 ? -1.1 : 1.1
+                            self.seeking = min(1, seeking * modifier)
+                        }
+                        
                         if let seeking {
                             complete(seeking)
                         }
                         
                         dragStartValue = nil
+                        lastDragVelocity = nil
                     })
             }
             .frame(height: hitTargetPadding * 2 + adjustedHeight)
@@ -616,16 +625,17 @@ private struct StopPlaybackButton: View {
 
 #if DEBUG
 #Preview {
+    @Previewable @State var percentage: Percentage = 0.5
     @Previewable @State var seeking: Percentage? = nil
     
     VStack(spacing: 20) {
-        PlaybackSlider(percentage: 0.5, seeking: $seeking, currentTime: 10, duration: 20, textFirst: false) {
+        PlaybackSlider(percentage: percentage, seeking: $seeking, currentTime: 10, duration: 20, textFirst: false) {
             Text("ABC")
         } complete: { _ in
             seeking = nil
         }
         
-        PlaybackSlider(percentage: 0.5, seeking: $seeking, currentTime: nil, duration: nil, textFirst: true) {
+        PlaybackSlider(percentage: percentage, seeking: $seeking, currentTime: nil, duration: nil, textFirst: true) {
             Spacer()
         } complete: { _ in
             seeking = nil
