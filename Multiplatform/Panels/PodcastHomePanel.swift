@@ -31,9 +31,6 @@ struct PodcastHomePanel: View {
                         ErrorView()
                     } else if isLoading {
                         LoadingView()
-                            .task {
-                                fetchItems()
-                            }
                     } else {
                         EmptyCollectionView()
                     }
@@ -89,6 +86,9 @@ struct PodcastHomePanel: View {
                 return
             }
             
+            fetchItems()
+        }
+        .task {
             fetchItems()
         }
     }

@@ -27,9 +27,6 @@ struct PodcastLibraryPanel: View {
                         ErrorView()
                     } else if lazyLoader.working {
                         LoadingView()
-                            .task {
-                                lazyLoader.initialLoad()
-                            }
                     } else {
                         EmptyCollectionView()
                     }
@@ -74,8 +71,9 @@ struct PodcastLibraryPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onAppear {
-            lazyLoader.library = library
+        .onReceive(RFNotification[.focusSearchField].publisher()) {
+            lazyLoader.search = ""
+            focused = true
         }
         .onChange(of: podcastsAscending) {
             lazyLoader.ascending = podcastsAscending
@@ -83,9 +81,9 @@ struct PodcastLibraryPanel: View {
         .onChange(of: podcastsSortOrder) {
             lazyLoader.sortOrder = podcastsSortOrder
         }
-        .onReceive(RFNotification[.focusSearchField].publisher()) {
-            lazyLoader.search = ""
-            focused = true
+        .onAppear {
+            lazyLoader.library = library
+            lazyLoader.initialLoad()
         }
     }
 }
