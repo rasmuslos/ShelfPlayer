@@ -37,6 +37,8 @@ struct ListenNowSheet: View {
             .navigationTitle("panel.listenNow")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
         .task {
             load()
         }

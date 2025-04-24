@@ -1921,7 +1921,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zum Author"
+            "value" : "Zum Autor"
           }
         },
         "en" : {
@@ -2176,7 +2176,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Authoren"
+            "value" : "Autoren"
           }
         },
         "en" : {
@@ -2357,7 +2357,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Authoren"
+            "value" : "Autoren"
           }
         },
         "en" : {
@@ -3273,13 +3273,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ShelfPlayer: %1$@ (%2$@) [%3$@]"
+            "value" : "ShelfPlayer: %1$@ (%2$@) %3$@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ShelfPlayer: %1$@ (%2$@) [%3$@]"
+            "value" : "ShelfPlayer: %1$@ (%2$@) %3$@"
           }
         }
       }
@@ -3476,7 +3476,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neuste Authoren"
+            "value" : "Neuste Autoren"
           }
         },
         "en" : {
