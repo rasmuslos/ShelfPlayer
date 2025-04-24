@@ -26,9 +26,6 @@ struct AudiobookSeriesPanel: View {
                         ErrorView()
                     } else if lazyLoader.working {
                         LoadingView()
-                            .onAppear {
-                                lazyLoader.initialLoad()
-                            }
                     } else {
                         EmptyCollectionView()
                     }
@@ -72,6 +69,7 @@ struct AudiobookSeriesPanel: View {
         .modifier(PlaybackSafeAreaPaddingModifier())
         .onAppear {
             lazyLoader.library = library
+            lazyLoader.initialLoad()
         }
         .onChange(of: seriesAscending) {
             lazyLoader.ascending = seriesAscending

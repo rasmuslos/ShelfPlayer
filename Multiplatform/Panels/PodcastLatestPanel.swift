@@ -24,9 +24,6 @@ struct PodcastLatestPanel: View {
                         ErrorView()
                     } else if isLoading {
                         LoadingView()
-                            .task {
-                                fetchItems()
-                            }
                     } else {
                         EmptyCollectionView()
                     }
@@ -46,6 +43,9 @@ struct PodcastLatestPanel: View {
         }
         .navigationTitle("panel.latest")
         .modifier(PlaybackSafeAreaPaddingModifier())
+        .task {
+            fetchItems()
+        }
     }
 
     private nonisolated func fetchItems() {

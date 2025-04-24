@@ -59,6 +59,9 @@ struct PodcastEpisodesView: View {
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)
+        .onChange(of: viewModel.search) {
+            viewModel.updateVisible()
+        }
         .onDisappear {
             viewModel.search = ""
         }

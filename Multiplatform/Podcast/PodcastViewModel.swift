@@ -135,9 +135,6 @@ extension PodcastViewModel {
             }
         }
     }
-}
-
-private extension PodcastViewModel {
     nonisolated func updateVisible() {
         Task {
             let episodes = await Podcast.filterSort(episodes, seasonFilter: seasonFilter, filter: filter, search: search, sortOrder: sortOrder, ascending: ascending)
@@ -147,7 +144,9 @@ private extension PodcastViewModel {
             }
         }
     }
-    
+}
+
+private extension PodcastViewModel {
     nonisolated func extractColor() async {
         let color = await PersistenceManager.shared.item.dominantColor(of: podcast.id)
         
