@@ -12,25 +12,27 @@ import ShelfPlayerKit
 struct PodcastLatestPanel: View {
     @Environment(\.library) private var library
     
-    @State private var failed = false
+    @State private var didFail = false
+    @State private var isLoading = false
     @State private var episodes = [Episode]()
     
     var body: some View {
         Group {
             if episodes.isEmpty {
-                if failed {
-                    ErrorView()
-                        .refreshable {
-                            fetchItems()
-                        }
-                } else {
-                    LoadingView()
-                        .task {
-                            fetchItems()
-                        }
-                        .refreshable {
-                            fetchItems()
-                        }
+                Group {
+                    if didFail {
+                        ErrorView()
+                    } else if isLoading {
+                        LoadingView()
+                            .task {
+                                fetchItems()
+                            }
+                    } else {
+                        EmptyCollectionView()
+                    }
+                }
+                .refreshable {
+                    fetchItems()
                 }
             } else {
                 List {
@@ -53,18 +55,20 @@ struct PodcastLatestPanel: View {
             }
             
             await MainActor.withAnimation {
-                failed = false
+                didFail = false
+                isLoading = true
             }
             
             guard let episodes = try? await ABSClient[library.connectionID].recentEpisodes(from: library.id, limit: 20) else {
                 await MainActor.withAnimation {
-                    failed = true
+                    didFail = true
                 }
                 
                 return
             }
             
             await MainActor.withAnimation {
+                self.isLoading = false
                 self.episodes = episodes
             }
         }

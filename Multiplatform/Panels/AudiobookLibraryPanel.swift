@@ -38,22 +38,22 @@ struct AudiobookLibraryPanel: View {
     var body: some View {
         Group {
             if !lazyLoader.didLoad {
-                if lazyLoader.failed {
-                    ErrorView()
-                        .refreshable {
-                            loadGenres()
-                            lazyLoader.refresh()
-                        }
-                } else {
-                    LoadingView()
-                        .task {
-                            loadGenres()
-                            lazyLoader.initialLoad()
-                        }
-                        .refreshable {
-                            loadGenres()
-                            lazyLoader.refresh()
-                        }
+                Group {
+                    if lazyLoader.failed {
+                        ErrorView()
+                    } else if lazyLoader.working {
+                        LoadingView()
+                            .task {
+                                loadGenres()
+                                lazyLoader.initialLoad()
+                            }
+                    } else {
+                        EmptyCollectionView()
+                    }
+                }
+                .refreshable {
+                    loadGenres()
+                    lazyLoader.refresh()
                 }
             } else {
                 Group {
@@ -148,8 +148,11 @@ struct AudiobookLibraryPanel: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         AudiobookLibraryPanel()
     }
+    .previewEnvironment()
 }
+#endif

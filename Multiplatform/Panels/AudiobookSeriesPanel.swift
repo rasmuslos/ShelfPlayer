@@ -21,37 +21,38 @@ struct AudiobookSeriesPanel: View {
     var body: some View {
         Group {
             if !lazyLoader.didLoad {
-                if lazyLoader.failed {
-                    ErrorView()
-                        .refreshable {
-                            lazyLoader.refresh()
-                        }
-                } else {
-                    LoadingView()
-                        .onAppear {
-                            lazyLoader.initialLoad()
-                        }
-                        .refreshable {
-                            lazyLoader.refresh()
-                        }
+                Group {
+                    if lazyLoader.failed {
+                        ErrorView()
+                    } else if lazyLoader.working {
+                        LoadingView()
+                            .onAppear {
+                                lazyLoader.initialLoad()
+                            }
+                    } else {
+                        EmptyCollectionView()
+                    }
+                }
+                .refreshable {
+                    lazyLoader.refresh()
                 }
             } else {
                 Group {
                     switch seriesDisplayType {
-                        case .grid:
-                            ScrollView {
-                                SeriesGrid(series: lazyLoader.items, showName: true) {
-                                    lazyLoader.performLoadIfRequired($0)
-                                }
-                                .padding(20)
+                    case .grid:
+                        ScrollView {
+                            SeriesGrid(series: lazyLoader.items, showName: true) {
+                                lazyLoader.performLoadIfRequired($0)
                             }
-                        case .list:
-                            List {
-                                SeriesList(series: lazyLoader.items) {
-                                    lazyLoader.performLoadIfRequired($0)
-                                }
+                            .padding(20)
+                        }
+                    case .list:
+                        List {
+                            SeriesList(series: lazyLoader.items) {
+                                lazyLoader.performLoadIfRequired($0)
                             }
-                            .listStyle(.plain)
+                        }
+                        .listStyle(.plain)
                     }
                 }
                 .refreshable {
@@ -81,6 +82,11 @@ struct AudiobookSeriesPanel: View {
     }
 }
 
+#if DEBUG
 #Preview {
-    AudiobookSeriesPanel()
+    NavigationStack {
+        AudiobookSeriesPanel()
+            .previewEnvironment()
+    }
 }
+#endif
