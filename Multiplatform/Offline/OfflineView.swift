@@ -27,8 +27,10 @@ struct OfflineView: View {
                 List {
                     if !audiobooks.isEmpty {
                         Section("panel.offline.audiobooks") {
-                            ForEach(audiobooks) {
-                                OfflineAudiobookRow(audiobook: $0)
+                            ForEach(audiobooks) { audiobook in
+                                ItemCompactRow(item: audiobook) {
+                                    satellite.start(audiobook.id)
+                                }
                             }
                         }
                     }
@@ -65,55 +67,6 @@ struct OfflineView: View {
                 self.audiobooks = audiobooks
             }
         }
-    }
-}
-
-private struct OfflineAudiobookRow: View {
-    @Environment(Satellite.self) private var satellite
-    
-    let audiobook: Audiobook
-    @State private var progress: ProgressTracker
-    
-    init(audiobook: Audiobook) {
-        self.audiobook = audiobook
-        _progress = .init(initialValue: .init(itemID: audiobook.id))
-    }
-    
-    var body: some View {
-        Button {
-            satellite.start(audiobook.id)
-        } label: {
-            HStack(spacing: 8) {
-                ItemImage(item: audiobook, size: .small)
-                    .frame(width: 44)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(audiobook.name)
-                        .lineLimit(1)
-                        .font(.headline)
-                    
-                    Text(audiobook.authors, format: .list(type: .and, width: .short))
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Spacer(minLength: 0)
-                
-                if let progress = progress.progress {
-                    CircleProgressIndicator(progress: progress)
-                        .frame(width: 16)
-                } else {
-                    ProgressView()
-                        .scaleEffect(0.75)
-                }
-            }
-            .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .disabled(satellite.isLoading(observing: audiobook.id))
-        .modifier(PlayableItemSwipeActionsModifier(itemID: audiobook.id))
-        .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
     }
 }
 

@@ -108,6 +108,8 @@ final class Satellite {
     }
     
     enum Sheet: Identifiable {
+        case listenNow
+        
         case preferences
         
         case description(_ item: Item)
@@ -115,10 +117,12 @@ final class Satellite {
         
         var id: String {
             switch self {
+            case .listenNow:
+                "listenNow"
             case .preferences:
                 "preferences"
             case .description(let item):
-                "descritpion_\(item.id)"
+                "description_\(item.id)"
             case .podcastConfiguration(let itemID):
                 "podcastConfiguration_\(itemID)"
             }

@@ -14,7 +14,7 @@ struct WelcomeView: View {
         VStack {
             Spacer()
             
-            VStack(spacing: 8) {
+            VStack(spacing: 0) {
                 Image("Logo")
                     .resizable()
                     .aspectRatio(1, contentMode: .fit)
