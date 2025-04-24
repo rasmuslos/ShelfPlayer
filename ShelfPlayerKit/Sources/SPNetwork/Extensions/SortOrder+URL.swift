@@ -21,8 +21,6 @@ extension AudiobookSortOrder {
             "addedAt"
         case .duration:
             "media.duration"
-        case .lastPlayed:
-            ""
         }
     }
 }

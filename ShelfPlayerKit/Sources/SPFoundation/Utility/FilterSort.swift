@@ -44,8 +44,6 @@ public enum AudiobookSortOrder: String, Identifiable, Hashable, Codable, Sendabl
     case added
     case duration
     
-    case lastPlayed
-    
     public var id: String {
         rawValue
     }

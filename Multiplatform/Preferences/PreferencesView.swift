@@ -13,20 +13,19 @@ struct PreferencesView: View {
     @State private var cacheDirectorySize: Int? = nil
     @State private var downloadDirectorySize: Int? = nil
     
-    @State private var navigationPath = NavigationPath()
     @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
     
     @ViewBuilder
     private var connectionPreferences: some View {
-            List {
-                ConnectionManager()
-            }
-            .navigationTitle("connection.manage")
-            .navigationBarTitleDisplayMode(.inline)
+        List {
+            ConnectionManager()
+        }
+        .navigationTitle("connection.manage")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        NavigationStack {
             List {
                 Section {
                     NavigationLink(destination: PlaybackRateEditor()) {
@@ -146,11 +145,6 @@ struct PreferencesView: View {
         }
         .task {
             load()
-        }
-        .onReceive(RFNotification[.connectionsChanged].publisher()) { _ in
-            while !navigationPath.isEmpty {
-                navigationPath.removeLast()
-            }
         }
     }
     

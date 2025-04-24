@@ -256,7 +256,7 @@ private struct QueueItemRow: View {
             removeFromQueueButton
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-            ProgressButton(itemID: itemID, tint: true)
+            DownloadButton(itemID: itemID, tint: true)
         }
         .contextMenu {
             playButton

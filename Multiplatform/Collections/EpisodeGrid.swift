@@ -30,6 +30,9 @@ struct EpisodeGrid: View {
         
         return max(minimumSize, available / amount)
     }
+    private var amountVisible: Int {
+        min(episodes.count, amount)
+    }
     
     var body: some View {
         ZStack {
@@ -42,7 +45,7 @@ struct EpisodeGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: .init(repeating: GridItem(.flexible(), spacing: 8), count: amount), spacing: 0) {
+                LazyHGrid(rows: .init(repeating: GridItem(.flexible(), spacing: 8), count: amountVisible), spacing: 0) {
                     EpisodeList(episodes: episodes, context: .grid)
                         .padding(.leading, gap)
                         .frame(width: size)

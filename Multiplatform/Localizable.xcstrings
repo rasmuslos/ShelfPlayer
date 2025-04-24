@@ -113,156 +113,11 @@
         }
       }
     },
-    "carPlay.libraries" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliothek"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Libraries"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliotek"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "媒体库"
-          }
-        }
-      }
-    },
     "carPlay.noConnections" : {
 
     },
     "carPlay.noConnections.subtitle" : {
 
-    },
-    "carPlay.offline.empty" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Downloads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No downloads"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inga nedladdningar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无已下载内容"
-          }
-        }
-      }
-    },
-    "carPlay.offline.empty.subtitle" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heruntergeladene Entitäten erschienen hier"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Downloaded items will appear here"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nedladdade objekt kommer att visas här"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已下载内容将会出现在此处"
-          }
-        }
-      }
-    },
-    "carPlay.offline.tab" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Offline"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Offline"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nedkopplad"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "离线"
-          }
-        }
-      }
-    },
-    "carPlay.offline.title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShelfPlayer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shelfplayer"
-          }
-        }
-      }
     },
     "carPlay.queue.title" : {
       "localizations" : {
@@ -1180,24 +1035,6 @@
         }
       }
     },
-    "item.downloaded" : {
-      "comment" : "Collection of downloaded items",
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geladen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Downloaded"
-          }
-        }
-      }
-    },
     "item.explicit" : {
       "localizations" : {
         "de" : {
@@ -1892,7 +1729,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinzugefügt an"
+            "value" : "Hinzugefügt am"
           }
         },
         "en" : {
@@ -1979,22 +1816,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Index"
-          }
-        }
-      }
-    },
-    "item.sort.lastPlayed" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zuletzt gespielt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last played"
           }
         }
       }

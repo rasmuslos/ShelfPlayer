@@ -42,13 +42,13 @@ extension Episode.EpisodeIndex: Codable {}
 extension Episode.EpisodeIndex: Comparable {
     public static func <(lhs: Episode.EpisodeIndex, rhs: Episode.EpisodeIndex) -> Bool {
         if let lhsSeason = lhs.season, let rhsSeason = rhs.season, lhsSeason != rhsSeason {
-            lhsSeason.localizedCaseInsensitiveCompare(rhsSeason) == .orderedAscending
+            lhsSeason.localizedStandardCompare(rhsSeason) == .orderedAscending
         } else if lhs.season != nil && rhs.season == nil {
             true
         } else if lhs.season == nil && rhs.season != nil {
             false
         } else {
-            lhs.episode.localizedCaseInsensitiveCompare(rhs.episode) == .orderedAscending
+            lhs.episode.localizedStandardCompare(rhs.episode) == .orderedAscending
         }
     }
 }
