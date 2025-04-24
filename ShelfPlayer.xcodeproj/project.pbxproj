@@ -64,6 +64,7 @@
 		3A7FBA102D8D6E000038C0B1 /* DescriptionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7FBA0F2D8D6E000038C0B1 /* DescriptionSheet.swift */; };
 		3A7FBA132D8D7E640038C0B1 /* ContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7FBA122D8D7E600038C0B1 /* ContextProvider.swift */; };
 		3A81D1E72DBA53F800ACED78 /* ListenNowSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A81D1E62DBA53F800ACED78 /* ListenNowSheet.swift */; };
+		3A81D1EA2DBA5F6100ACED78 /* ItemCompactRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A81D1E92DBA5F6100ACED78 /* ItemCompactRow.swift */; };
 		3A828E062D27459A00267961 /* ConnectionManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A828E052D27459300267961 /* ConnectionManageView.swift */; };
 		3A83B8732B8893E000A05957 /* CarPlayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */; };
 		3A8410532CDF92A700FC3FCB /* URL+AllocatedSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8410522CDF92A400FC3FCB /* URL+AllocatedSize.swift */; };
@@ -259,6 +260,7 @@
 		3A7FBA0F2D8D6E000038C0B1 /* DescriptionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionSheet.swift; sourceTree = "<group>"; };
 		3A7FBA122D8D7E600038C0B1 /* ContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextProvider.swift; sourceTree = "<group>"; };
 		3A81D1E62DBA53F800ACED78 /* ListenNowSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenNowSheet.swift; sourceTree = "<group>"; };
+		3A81D1E92DBA5F6100ACED78 /* ItemCompactRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCompactRow.swift; sourceTree = "<group>"; };
 		3A82864B2AEC0DD800384BC9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3A828E052D27459300267961 /* ConnectionManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManageView.swift; sourceTree = "<group>"; };
 		3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDelegate.swift; sourceTree = "<group>"; };
@@ -588,6 +590,7 @@
 		3A6924A92D6B9670004E291E /* Collections */ = {
 			isa = PBXGroup;
 			children = (
+				3A81D1E92DBA5F6100ACED78 /* ItemCompactRow.swift */,
 				3A4984892D610DF00086A2B5 /* AudiobookRow.swift */,
 				3AA089342B6E413800773414 /* AudiobookList.swift */,
 				3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */,
@@ -607,8 +610,8 @@
 		3A743CF82D70CC750007C6B3 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				3AC3FD642D79E8C200FA10DF /* SleepTimerEditor.swift */,
 				3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */,
+				3AC3FD642D79E8C200FA10DF /* SleepTimerEditor.swift */,
 				3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */,
 				3A90A6422D9BD01E009BDA84 /* CarPlayPreferences.swift */,
 				3A90A6402D9AE268009BDA84 /* CreateLogArchiveButton.swift */,
@@ -967,6 +970,7 @@
 				3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */,
 				3AB695382ACF3D1200823049 /* AuthorView.swift in Sources */,
 				3A8E36582D7AE2040064A723 /* PodcastConfigurationViewModel.swift in Sources */,
+				3A81D1EA2DBA5F6100ACED78 /* ItemCompactRow.swift in Sources */,
 				3A0E42E82C811AAB0034873F /* AuthorViewModel.swift in Sources */,
 				3AC41F952CC534EE009ABBFA /* CarPlayPodcastController.swift in Sources */,
 				3AA089372B6E43FA00773414 /* Defaults+Keys.swift in Sources */,
