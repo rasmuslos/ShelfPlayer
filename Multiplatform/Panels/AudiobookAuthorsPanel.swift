@@ -25,9 +25,6 @@ struct AudiobookAuthorsPanel: View {
                         ErrorView()
                     } else if lazyLoader.working {
                         LoadingView()
-                            .onAppear {
-                                lazyLoader.initialLoad()
-                            }
                     } else {
                         EmptyCollectionView()
                     }
@@ -56,14 +53,15 @@ struct AudiobookAuthorsPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onAppear {
-            lazyLoader.library = library
-        }
         .onChange(of: authorsSortOrder) {
             lazyLoader.sortOrder = authorsSortOrder
         }
         .onChange(of: authorsAscending) {
             lazyLoader.ascending = authorsAscending
+        }
+        .onAppear {
+            lazyLoader.library = library
+            lazyLoader.initialLoad()
         }
     }
 }

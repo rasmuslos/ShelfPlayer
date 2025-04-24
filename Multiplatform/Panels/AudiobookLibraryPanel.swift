@@ -43,10 +43,6 @@ struct AudiobookLibraryPanel: View {
                         ErrorView()
                     } else if lazyLoader.working {
                         LoadingView()
-                            .task {
-                                loadGenres()
-                                lazyLoader.initialLoad()
-                            }
                     } else {
                         EmptyCollectionView()
                     }
@@ -121,8 +117,12 @@ struct AudiobookLibraryPanel: View {
         .onChange(of: ascending) {
             lazyLoader.ascending = ascending
         }
+        .task {
+            loadGenres()
+        }
         .onAppear {
             lazyLoader.library = library
+            lazyLoader.initialLoad()
         }
     }
     

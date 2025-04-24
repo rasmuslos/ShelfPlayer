@@ -40,9 +40,6 @@ struct AudiobookHomePanel: View {
                         ErrorView()
                     } else if isLoading {
                         LoadingView()
-                            .task {
-                                fetchItems()
-                            }
                     } else {
                         EmptyCollectionView()
                     }
@@ -86,6 +83,9 @@ struct AudiobookHomePanel: View {
                     LibraryPicker()
                 }
             }
+        }
+        .task {
+            fetchItems()
         }
         .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
             guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {
