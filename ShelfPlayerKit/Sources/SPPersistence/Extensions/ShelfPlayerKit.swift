@@ -12,7 +12,7 @@ import SPNetwork
 public extension ShelfPlayerKit {
     static var listenNowItems: [PlayableItem] {
         get async {
-            await withTaskGroup(of: [PlayableItem].self, returning: [PlayableItem].self) { group in
+            await withTaskGroup { group in
                 let connectionIDs = await PersistenceManager.shared.authorization.connections.keys
                 
                 for connectionID in connectionIDs {
@@ -58,8 +58,32 @@ public extension ShelfPlayerKit {
                     }
                 }
                 
-                return await group.reduce([], +)
+                let items = await group.reduce([], +)
+                
+                let lastPlayed = Dictionary(uniqueKeysWithValues: await withTaskGroup {
+                    for item in items {
+                        $0.addTask {
+                            return (item.id, await PersistenceManager.shared.progress[item.id].lastUpdate)
+                        }
+                    }
+                    
+                    return await $0.reduce([]) {
+                        $0 + [$1]
+                    }
+                })
+                
+                return items.sorted {
+                    guard let lhsLastPlayed = lastPlayed[$0.id] else {
+                        return false
+                    }
+                    guard let rhsLastPlayed = lastPlayed[$1.id] else {
+                        return true
+                    }
+                    
+                    return lhsLastPlayed > rhsLastPlayed
+                }
             }
         }
     }
 }
+

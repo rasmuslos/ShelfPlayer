@@ -10,7 +10,8 @@ import Foundation
 import ShelfPlayerKit
 import SPPlayback
 
-internal struct CarPlayHelper {
+@MainActor
+struct CarPlayHelper {
     static func buildAudiobookListItem(_ audiobook: Audiobook) -> CPListItem {
         var detail = [[String]]()
         
@@ -22,7 +23,11 @@ internal struct CarPlayHelper {
         }
         
         let detailText = detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • ")
-        return finalizeListItem(CPListItem(text: audiobook.name, detailText: detailText, image: nil), item: audiobook, displayCover: true)
+        let row = CPListItem(text: audiobook.name, detailText: detailText, image: nil)
+        
+        row.isExplicitContent = audiobook.explicit
+        
+        return finalizeListItem(row, item: audiobook, displayCover: true)
     }
     
     static func buildEpisodeListItem(_ episode: Episode, displayCover: Bool) -> CPListItem {
@@ -30,40 +35,51 @@ internal struct CarPlayHelper {
     }
     
     private static func finalizeListItem(_ listItem: CPListItem, item: PlayableItem, displayCover: Bool) -> CPListItem {
-        listItem.userInfo = [
-            // "identifier": convertIdentifier(item: item),
-        ]
-        /*
-        listItem.handler = { _, completion in
-            guard AudioPlayer.shared.item != item else {
-                AudioPlayer.shared.playing.toggle()
+        listItem.userInfo = item.id
+        
+        listItem.handler = { listItem, completion in
+            Task {
+                guard await AudioPlayer.shared.currentItemID != item.id else {
+                    if await AudioPlayer.shared.isPlaying {
+                        await AudioPlayer.shared.pause()
+                    } else {
+                        await AudioPlayer.shared.play()
+                    }
+                    
+                    completion()
+                    return
+                }
+                
+                listItem.isEnabled = false
+                try? await AudioPlayer.shared.start(item.id)
+                listItem.isEnabled = true
+                
+                completion()
                 return
             }
-            
-            Task {
-                try await AudioPlayer.shared.play(item)
-                completion()
-            }
-        }
-        
-        if displayCover {
-            Task {
-                listItem.setImage(await item.cover?.platformImage)
-            }
-        }
-         */
-        
-        /*
-        if OfflineManager.shared.offlineStatus(parentId: item.id) == .downloaded {
-            listItem.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
         }
         
         listItem.playingIndicatorLocation = .leading
-        listItem.isPlaying = AudioPlayer.shared.item == item
-        listItem.isExplicitContent = (item as? Audiobook)?.explicit ?? false
         
-        listItem.playbackProgress = OfflineManager.shared.progressEntity(item: item).progress
-         */
+        if displayCover {
+            Task {
+                listItem.setImage(await item.id.platformCover(size: .regular))
+            }
+        }
+        
+        Task {
+            listItem.isPlaying = await AudioPlayer.shared.currentItemID == item.id
+            listItem.playbackProgress = await PersistenceManager.shared.progress[item.id].progress
+            
+            switch await PersistenceManager.shared.download.status(of: item.id) {
+            case .completed:
+                listItem.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
+            case .downloading:
+                listItem.setAccessoryImage(.init(systemName: "circle.circle.fill"))
+            default:
+                break
+            }
+        }
         
         return listItem
     }
