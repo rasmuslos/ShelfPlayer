@@ -22,19 +22,20 @@ struct PodcastLibraryPanel: View {
     var body: some View {
         Group {
             if !lazyLoader.didLoad {
-                if lazyLoader.failed {
-                    ErrorView()
-                        .refreshable {
-                            lazyLoader.refresh()
-                        }
-                } else {
-                    LoadingView()
-                        .task {
-                            lazyLoader.initialLoad()
-                        }
-                        .refreshable {
-                            lazyLoader.refresh()
-                        }
+                Group {
+                    if lazyLoader.failed {
+                        ErrorView()
+                    } else if lazyLoader.working {
+                        LoadingView()
+                            .task {
+                                lazyLoader.initialLoad()
+                            }
+                    } else {
+                        EmptyCollectionView()
+                    }
+                }
+                .refreshable {
+                    lazyLoader.refresh()
                 }
             } else {
                 Group {

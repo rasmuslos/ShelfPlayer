@@ -20,19 +20,20 @@ struct AudiobookAuthorsPanel: View {
     var body: some View {
         Group {
             if lazyLoader.items.isEmpty {
-                if lazyLoader.failed {
-                    ErrorView()
-                        .refreshable {
-                            lazyLoader.refresh()
-                        }
-                } else {
-                    LoadingView()
-                        .onAppear {
-                            lazyLoader.initialLoad()
-                        }
-                        .refreshable {
-                            lazyLoader.refresh()
-                        }
+                Group {
+                    if lazyLoader.failed {
+                        ErrorView()
+                    } else if lazyLoader.working {
+                        LoadingView()
+                            .onAppear {
+                                lazyLoader.initialLoad()
+                            }
+                    } else {
+                        EmptyCollectionView()
+                    }
+                }
+                .refreshable {
+                    lazyLoader.refresh()
                 }
             } else {
                 List {
@@ -68,5 +69,10 @@ struct AudiobookAuthorsPanel: View {
 }
 
 #Preview {
-    AudiobookAuthorsPanel()
+    #if DEBUG
+    NavigationStack {
+        AudiobookAuthorsPanel()
+            .previewEnvironment()
+    }
+    #endif
 }

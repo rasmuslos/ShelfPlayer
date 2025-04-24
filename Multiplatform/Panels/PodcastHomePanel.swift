@@ -13,12 +13,11 @@ struct PodcastHomePanel: View {
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    // @Default(.hideFromContinueListening) private var hideFromContinueListening
-    
     @State private var episodes = [HomeRow<Episode>]()
     @State private var podcasts = [HomeRow<Podcast>]()
     
-    @State private var failed = false
+    @State private var didFail = false
+    @State private var isLoading = false
     
     private var relevantItemIDs: [ItemIdentifier] {
         episodes.flatMap(\.itemIDs)
@@ -27,19 +26,20 @@ struct PodcastHomePanel: View {
     var body: some View {
         Group {
             if episodes.isEmpty && podcasts.isEmpty {
-                if failed {
-                    ErrorView()
-                        .refreshable {
-                            fetchItems()
-                        }
-                } else {
-                    LoadingView()
-                        .task {
-                            fetchItems()
-                        }
-                        .refreshable {
-                            fetchItems()
-                        }
+                Group {
+                    if didFail {
+                        ErrorView()
+                    } else if isLoading {
+                        LoadingView()
+                            .task {
+                                fetchItems()
+                            }
+                    } else {
+                        EmptyCollectionView()
+                    }
+                }
+                .refreshable {
+                    fetchItems()
                 }
             } else {
                 ScrollView {
@@ -75,7 +75,7 @@ struct PodcastHomePanel: View {
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
-        .sensoryFeedback(.error, trigger: failed)
+        .sensoryFeedback(.error, trigger: didFail)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("navigation.library.select", systemImage: "books.vertical.fill") {
@@ -98,11 +98,16 @@ private extension PodcastHomePanel {
     nonisolated func fetchItems() {
         Task {
             await MainActor.withAnimation {
-                failed = false
+                didFail = false
+                isLoading = true
             }
             
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await fetchRemoteItems() }
+            }
+            
+            await MainActor.withAnimation {
+                isLoading = false
             }
         }
     }
@@ -121,7 +126,7 @@ private extension PodcastHomePanel {
             }
         } catch {
             await MainActor.withAnimation {
-                failed = true
+                didFail = true
             }
         }
     }

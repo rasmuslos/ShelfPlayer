@@ -21,7 +21,8 @@ struct AudiobookHomePanel: View {
     
     @State private var downloaded = [Audiobook]()
     
-    @State private var failed = false
+    @State private var didFail = false
+    @State private var isLoading = false
     @State private var notifyError = false
     
     private var authors: [HomeRow<Author>] {
@@ -34,19 +35,20 @@ struct AudiobookHomePanel: View {
     var body: some View {
         Group {
             if audiobooks.isEmpty && authors.isEmpty {
-                if failed {
-                    ErrorView()
-                        .refreshable {
-                            fetchItems()
-                        }
-                } else {
-                    LoadingView()
-                        .task {
-                            fetchItems()
-                        }
-                        .refreshable {
-                            fetchItems()
-                        }
+                Group {
+                    if didFail {
+                        ErrorView()
+                    } else if isLoading {
+                        LoadingView()
+                            .task {
+                                fetchItems()
+                            }
+                    } else {
+                        EmptyCollectionView()
+                    }
+                }
+                .refreshable {
+                    fetchItems()
                 }
             } else {
                 ScrollView {
@@ -108,12 +110,17 @@ private extension AudiobookHomePanel {
     nonisolated func fetchItems() {
         Task {
             await MainActor.withAnimation {
-                failed = false
+                isLoading = true
+                didFail = false
             }
             
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await fetchLocalItems() }
                 $0.addTask { await fetchRemoteItems() }
+            }
+            
+            await MainActor.withAnimation {
+                isLoading = false
             }
         }
     }
@@ -149,7 +156,7 @@ private extension AudiobookHomePanel {
             }
         } catch {
             await MainActor.withAnimation {
-                failed = true
+                didFail = true
                 notifyError.toggle()
             }
         }
@@ -158,7 +165,9 @@ private extension AudiobookHomePanel {
 
 #if DEBUG
 #Preview {
-    AudiobookHomePanel()
-        .previewEnvironment()
+    NavigationStack {
+        AudiobookHomePanel()
+            .previewEnvironment()
+    }
 }
 #endif
