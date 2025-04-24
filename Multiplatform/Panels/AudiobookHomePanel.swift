@@ -78,7 +78,9 @@ struct AudiobookHomePanel: View {
         .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: notifyError)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                ListenNowSheetToggle()
+                
                 Menu("navigation.library.select", systemImage: "books.vertical.fill") {
                     LibraryPicker()
                 }

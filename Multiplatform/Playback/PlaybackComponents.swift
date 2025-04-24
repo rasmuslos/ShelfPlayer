@@ -43,7 +43,6 @@ struct PlaybackTitle: View {
                             .font(.headline)
                     }
                 }
-                .id(satellite.currentItemID)
             }
             .buttonStyle(.plain)
             
@@ -68,6 +67,7 @@ struct PlaybackTitle: View {
                 Spacer(minLength: 0)
             }
         }
+        .id(satellite.currentItemID)
     }
 }
 

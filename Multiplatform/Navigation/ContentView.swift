@@ -30,6 +30,8 @@ struct ContentView: View {
     @ViewBuilder
     private func sheetContent(for sheet: Satellite.Sheet) -> some View {
         switch sheet {
+        case .listenNow:
+            ListenNowSheet()
         case .preferences:
             PreferencesView()
         case .description(let item):

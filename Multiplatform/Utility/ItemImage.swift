@@ -190,13 +190,15 @@ private struct Placeholder: View {
     }
     
     var body: some View {
-        ZStack {
-            Image(systemName: fallbackIcon)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 100)
-                .foregroundStyle(.gray.opacity(0.5))
-                .padding(20)
+        GeometryReader { geometryProxy in
+            ZStack {
+                Image(systemName: fallbackIcon)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: geometryProxy.size.width / 3)
+                    .foregroundStyle(.gray.opacity(0.5))
+            }
+            .frame(width: geometryProxy.size.width, height: geometryProxy.size.height)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.gray.opacity(0.1))
@@ -256,5 +258,9 @@ private struct ContrastModifier: ViewModifier {
 
 #Preview {
     ItemImage(item: Audiobook.fixture, size: .large)
+}
+#Preview {
+    ItemImage(item: Audiobook.fixture, size: .small)
+        .frame(width: 40)
 }
 #endif

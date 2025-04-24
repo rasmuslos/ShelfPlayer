@@ -40,8 +40,6 @@ struct PlaybackQueue: View {
                             ForEach(satellite.bookmarks) {
                                 QueueTimeRow(title: $0.note, time: Double($0.time), isActive: false, isFinished: false)
                                     .id($0)
-                                    .listRowBackground(Color.clear)
-                                    .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                             }
                             .onDelete {
                                 guard let currentItemID = satellite.currentItemID else {
@@ -62,8 +60,6 @@ struct PlaybackQueue: View {
                         Section {
                             ForEach(satellite.chapters) {
                                 QueueChapterRow(chapter: $0)
-                                    .listRowBackground(Color.clear)
-                                    .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                             }
                         } header: {
                             Text("item.chapters")
@@ -74,24 +70,7 @@ struct PlaybackQueue: View {
                     if !satellite.queue.isEmpty {
                         Section {
                             ForEach(Array(satellite.queue.enumerated()), id: \.element) { (index, itemID) in
-                                QueueItemRow(itemID: itemID)
-                                    .listRowBackground(Color.clear)
-                                    .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
-                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                        Button("item.play", systemImage: "play") {
-                                            satellite.skip(queueIndex: index)
-                                        }
-                                        .tint(tintColor.color)
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button("playback.queue.remove", systemImage: "minus.circle.fill") {
-                                            satellite.remove(queueIndex: index)
-                                        }
-                                        .tint(.red)
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        ProgressButton(itemID: itemID)
-                                    }
+                                QueueItemRow(itemID: itemID, queueIndex: index, isUpNextQueue: false)
                             }
                             .onDelete {
                                 for index in $0 {
@@ -108,31 +87,7 @@ struct PlaybackQueue: View {
                     if !satellite.upNextQueue.isEmpty {
                         Section {
                             ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, itemID) in
-                                QueueItemRow(itemID: itemID)
-                                    .listRowBackground(Color.clear)
-                                    .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
-                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                        Button("item.play", systemImage: "play") {
-                                            satellite.skip(upNextQueueIndex: index)
-                                        }
-                                        .tint(tintColor.color)
-                                    }
-                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                        Button("playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
-                                            satellite.queue(itemID)
-                                            satellite.remove(upNextQueueIndex: index)
-                                        }
-                                        .tint(tintColor.accent)
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button("playback.queue.remove", systemImage: "minus.circle.fill") {
-                                            satellite.remove(upNextQueueIndex: index)
-                                        }
-                                        .tint(.red)
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        ProgressButton(itemID: itemID)
-                                    }
+                                QueueItemRow(itemID: itemID, queueIndex: index, isUpNextQueue: true)
                             }
                             .onDelete {
                                 for index in $0 {
@@ -205,6 +160,8 @@ private struct QueueTimeRow: View {
             .contentShape(.hoverMenuInteraction, .rect)
         }
         .buttonStyle(.plain)
+        .listRowBackground(Color.clear)
+        .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
     }
 }
 private struct QueueChapterRow: View {
@@ -226,9 +183,47 @@ private struct QueueChapterRow: View {
 }
 
 private struct QueueItemRow: View {
+    @Environment(Satellite.self) private var satellite
+    
+    @Default(.tintColor) private var tintColor
+    
     let itemID: ItemIdentifier
     
-    @State private var item: Item?
+    let queueIndex: Int
+    let isUpNextQueue: Bool
+    
+    @State private var item: PlayableItem?
+    
+    @ViewBuilder
+    private var playButton: some View {
+        Button("item.play", systemImage: "play") {
+            if isUpNextQueue {
+                satellite.skip(upNextQueueIndex: queueIndex)
+            } else {
+                satellite.skip(queueIndex: queueIndex)
+            }
+        }
+    }
+    @ViewBuilder
+    private var queueButton: some View {
+        if isUpNextQueue {
+            Button("playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
+                satellite.queue(itemID)
+                satellite.remove(upNextQueueIndex: queueIndex)
+            }
+        }
+    }
+    @ViewBuilder
+    private var removeFromQueueButton: some View {
+        Button("playback.queue.remove", systemImage: "minus.circle.fill") {
+            if isUpNextQueue {
+                satellite.remove(upNextQueueIndex: queueIndex)
+            } else {
+                satellite.remove(queueIndex: queueIndex)
+            }
+        }
+        .tint(.red)
+    }
     
     var body: some View {
         HStack(spacing: 8) {
@@ -248,6 +243,65 @@ private struct QueueItemRow: View {
             }
         }
         .id(itemID)
+        .contentShape(.rect)
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            playButton
+                .tint(tintColor.color)
+        }
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            queueButton
+                .tint(tintColor.accent)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            removeFromQueueButton
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            ProgressButton(itemID: itemID, tint: true)
+        }
+        .contextMenu {
+            playButton
+            
+            if isUpNextQueue {
+                Button("playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
+                    satellite.queue(itemID)
+                    satellite.remove(upNextQueueIndex: queueIndex)
+                }
+            }
+            
+            Divider()
+            
+            DownloadButton(itemID: itemID)
+            
+            Divider()
+            
+            if let audiobook = item as? Audiobook {
+                NavigationLink(destination: AudiobookView(audiobook)) {
+                    Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book")
+                }
+                
+                ItemMenu(authors: audiobook.authors)
+                ItemMenu(series: audiobook.series)
+            } else if let episode = item as? Episode {
+                ItemLoadLink(itemID: episode.id)
+                ItemLoadLink(itemID: episode.podcastID)
+            }
+            
+            Divider()
+            
+            ProgressButton(itemID: itemID)
+            
+            Divider()
+            
+            removeFromQueueButton
+        } preview: {
+            if let item {
+                PlayableItemContextMenuPreview(item: item)
+            } else {
+                ProgressView()
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(.init(top: 8, leading: 28, bottom: 8, trailing: 28))
         .onAppear {
             load()
         }
@@ -255,7 +309,7 @@ private struct QueueItemRow: View {
     
     private nonisolated func load() {
         Task {
-            guard let item = try? await itemID.resolved else {
+            guard let item = try? await itemID.resolved as? PlayableItem else {
                 return
             }
             
@@ -269,7 +323,16 @@ private struct QueueItemRow: View {
 #if DEBUG
 #Preview {
     PlaybackQueue()
-        .previewEnvironment()
         .background(.background.secondary)
+        .previewEnvironment()
+}
+
+#Preview {
+    List {
+        QueueItemRow(itemID: .fixture, queueIndex: -1, isUpNextQueue: false)
+        QueueItemRow(itemID: .fixture, queueIndex: -1, isUpNextQueue: true)
+    }
+    .listStyle(.plain)
+    .previewEnvironment()
 }
 #endif
