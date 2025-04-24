@@ -160,14 +160,13 @@ public extension PersistenceManager.AuthorizationSubsystem {
     }
     
     func addConnection(_ connection: Connection) throws {
-        let descriptor = FetchDescriptor<DiscoveredConnection>(predicate: #Predicate { $0.connectionID == connection.id })
-        let count = try? modelContext.fetchCount(descriptor)
-        
-        if let count, count == 0 {
+        do {
             let discovered = DiscoveredConnection(connectionID: connection.id, host: connection.host, user: connection.user)
             
             modelContext.insert(discovered)
             try modelContext.save()
+        } catch {
+            logger.error("Failed to save discovered connection: \(error)")
         }
         
         let query = [

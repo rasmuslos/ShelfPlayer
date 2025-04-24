@@ -31,7 +31,7 @@ extension Episode {
             duration: recentEpisode.audioFile?.duration ?? 0,
             podcastName: podcastTitle,
             type: .parse(string: recentEpisode.episodeType),
-            index: .init(season: recentEpisode.season, episode: String(recentEpisode.index ?? 0)))
+            index: .init(season: recentEpisode.season, episode: recentEpisode.episode ?? String(recentEpisode.index ?? 0)))
     }
     convenience init?(episode: EpisodePayload, item: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
         var item = item

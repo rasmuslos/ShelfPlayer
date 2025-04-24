@@ -54,8 +54,8 @@ struct PlaybackTitle: View {
                 } else {
                     Label("item.bookmarks", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
-                        .contentShape(.rect)
                         .padding(4)
+                        .contentShape(.rect)
                         .onTapGesture {
                             viewModel.presentCreateBookmarkAlert()
                         }

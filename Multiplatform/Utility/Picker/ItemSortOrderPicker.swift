@@ -9,6 +9,8 @@ import SwiftUI
 import SPFoundation
 
 struct ItemSortOrderPicker<O: ItemSortOrder>: View {
+    @Environment(\.library) private var library
+    
     @Binding var sortOrder: O
     @Binding var ascending: Bool
     
@@ -55,8 +57,6 @@ extension AudiobookSortOrder: ItemSortOrder {
             "item.sort.added"
         case .duration:
             "item.sort.duration"
-        case .lastPlayed:
-            "item.sort.lastPlayed"
         }
     }
     
@@ -72,8 +72,6 @@ extension AudiobookSortOrder: ItemSortOrder {
             "plus.square"
         case .duration:
             "clock"
-        case .lastPlayed:
-            "memories"
         }
     }
 }
