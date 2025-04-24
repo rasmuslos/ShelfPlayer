@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ShelfPlayerKit
 
 struct WelcomeView: View {
     @State private var isConnectionAddViewPresented = false
@@ -42,6 +43,7 @@ struct WelcomeView: View {
         .sheet(isPresented: $isConnectionAddViewPresented) {
             ConnectionAddView() {
                 isConnectionAddViewPresented = false
+                RFNotification[.changeOfflineMode].send(false)
             }
         }
     }

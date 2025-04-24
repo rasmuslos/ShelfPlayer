@@ -231,7 +231,7 @@ private final class ViewModel: Sendable {
         let client = APIClient(connectionID: "temporary", host: url, headers: headers.compactMap(\.materialized))
         
         #if DEBUG
-        client.verbose = true
+        // client.verbose = true
         #endif
         
         do {

@@ -206,7 +206,7 @@
 			<key>Key</key>
 			<string>queueNextAudiobooksInSeries</string>
 			<key>DefaultValue</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Type</key>

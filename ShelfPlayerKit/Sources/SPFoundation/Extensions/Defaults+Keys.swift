@@ -35,7 +35,7 @@ public extension Defaults.Keys {
     static let skipForwardsInterval = Key("skipForwardsInterval", default: 30)
     
     static let queueNextEpisodes = Key("queueNextEpisodes", default: true)
-    static let queueNextAudiobooksInSeries = Key("queueNextAudiobooksInSeries", default: false)
+    static let queueNextAudiobooksInSeries = Key("queueNextAudiobooksInSeries", default: true)
     
     // Advanced
     
@@ -59,9 +59,9 @@ public extension Defaults.Keys {
     
     // MARK: Filtering & Sorting
     
-    static let audiobooksAscending = Key<Bool>("audiobooksAscending", default: true, iCloud: true)
-    static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobookSortOrder", default: .lastPlayed, iCloud: true)
-    static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .all, iCloud: true)
+    static let audiobooksAscending = Key<Bool>("audiobooksAscending", default: false, iCloud: true)
+    static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobookSortOrder", default: .added, iCloud: true)
+    static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .notFinished, iCloud: true)
     static let audiobooksDisplayType = Key<ItemDisplayType>("audiobooksDisplayType", default: .list, iCloud: true)
     
     static let authorsAscending = Key("authorsAscending", default: true)
