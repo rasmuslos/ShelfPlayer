@@ -18,9 +18,10 @@ struct LargePlayButtonStyle: PlayButtonStyle {
                     
                     GeometryReader { geometry in
                         Rectangle()
-                            .fill((configuration.background.isLight ?? false) ? .white : .black)
-                            .opacity(0.2)
+                            .fill((configuration.background.isLight ?? false) ? .black : .white)
+                            .opacity(0.14)
                             .frame(width: geometry.size.width * (configuration.progress ?? 0))
+                            .padding(.leading, geometry.size.width * (1 - (configuration.progress ?? 0)))
                             .animation(.smooth, value: configuration.progress)
                     }
                 }

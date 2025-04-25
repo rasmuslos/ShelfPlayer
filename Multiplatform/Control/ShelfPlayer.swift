@@ -15,6 +15,8 @@ import ShelfPlayerKit
 struct ShelfPlayer {
     static let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "Hooks")
     
+    // MARK: Hooks
+    
     static func launchHook() {
         ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
         
@@ -54,6 +56,8 @@ struct ShelfPlayer {
         PersistenceManager.shared.download.scheduleUpdateTask()
         RFNotification[.invalidateProgressEntities].send(nil)
     }
+    
+    // MARK: Actions
     
     static func clearCache() {
         ImagePipeline.shared.cache.removeAll()
@@ -95,6 +99,16 @@ struct ShelfPlayer {
         }
         
         return targetURL
+    }
+    
+    // MARK: Cache invalidation
+    
+    static func invalidateCache() async {
+        logger.info("Invalidating short term cache...")
+        
+        await ResolveCache.shared.invalidate()
+        await ProgressTrackerCache.shared.invalidate()
+        await DownloadTrackerCache.shared.invalidate()
     }
 }
 

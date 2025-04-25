@@ -22,13 +22,13 @@ public extension ItemIdentifier {
     }
 }
 
-private actor ResolveCache: Sendable {
-    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ResolveCache")
+public actor ResolveCache: Sendable {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ResolveCache")
     
-    var cache: [ItemIdentifier: Item] = [:]
-    var episodeCache: [ItemIdentifier: [Episode]] = [:]
+    private var cache = [ItemIdentifier: Item]()
+    private var episodeCache = [ItemIdentifier: [Episode]]()
     
-    func resolve(_ itemID: ItemIdentifier) async throws -> (Item, [Episode]) {
+    fileprivate func resolve(_ itemID: ItemIdentifier) async throws -> (Item, [Episode]) {
         if let cached = cache[itemID] {
             return (cached, episodeCache[itemID] ?? [])
         }
@@ -78,9 +78,14 @@ private actor ResolveCache: Sendable {
         return (item, episodes)
     }
     
-    enum ResolveError: Error {
+    public func invalidate() {
+        cache.removeAll()
+        episodeCache.removeAll()
+    }
+    
+    private enum ResolveError: Error {
         case notFound
     }
     
-    nonisolated static let shared = ResolveCache()
+    public nonisolated static let shared = ResolveCache()
 }

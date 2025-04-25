@@ -31,7 +31,7 @@ final class DownloadStatusTracker {
     
     private nonisolated func load() {
         Task {
-            let status = await PersistenceManager.shared.download.status(of: itemID)
+            let status = await DownloadTrackerCache.shared.resolve(itemID)
             
             await MainActor.withAnimation {
                 self.status = status
@@ -39,3 +39,24 @@ final class DownloadStatusTracker {
         }
     }
 }
+
+actor DownloadTrackerCache: Sendable {
+    private var cache = [ItemIdentifier: PersistenceManager.DownloadSubsystem.DownloadStatus]()
+    
+    fileprivate func resolve(_ itemID: ItemIdentifier) async -> PersistenceManager.DownloadSubsystem.DownloadStatus {
+        if let cached = cache[itemID] {
+            return cached
+        }
+        
+        let status = await PersistenceManager.shared.download.status(of: itemID)
+        cache[itemID] = status
+        
+        return status
+    }
+    func invalidate() {
+        cache.removeAll()
+    }
+    
+    nonisolated static let shared = DownloadTrackerCache()
+}
+
