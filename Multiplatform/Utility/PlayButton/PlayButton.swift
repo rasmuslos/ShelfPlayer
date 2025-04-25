@@ -187,4 +187,10 @@ struct PlayButton: View {
         .playButtonSize(.large)
         .previewEnvironment()
 }
+
+#Preview {
+    PlayButton(item: Audiobook.fixture, color: nil)
+        .playButtonSize(.large)
+        .previewEnvironment()
+}
 #endif

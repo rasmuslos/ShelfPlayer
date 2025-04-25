@@ -168,6 +168,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 guard !received.isEmpty else {
                     await MainActor.withAnimation { [self] in
                         finished = true
+                        working = false
                     }
                     
                     logger.info("Finished loading \(loadedCount) items of type \(T.self)")
@@ -176,12 +177,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 await Task.yield()
                 
-                received = received.filter { !existingIDs.contains($0.id) }
-                
-                let filter = await filter
-                
                 let receivedCount = received.count
-                let filterLocally = filterLocally || filteredGenre != nil
+                received = received.filter { !existingIDs.contains($0.id) }
                 
                 if receivedCount < Self.PAGE_SIZE {
                     await MainActor.withAnimation { [self] in
@@ -192,6 +189,9 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 }
                 
                 // MARK: Local filter & search
+                
+                let filter = await filter
+                let filterLocally = filterLocally || filteredGenre != nil
                 
                 if filterLocally && filter != .all {
                     if let items = received as? [PlayableItem] {
