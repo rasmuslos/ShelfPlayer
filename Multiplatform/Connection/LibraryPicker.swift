@@ -18,7 +18,7 @@ struct LibraryPicker: View {
             if let libraries = connectionStore.libraries[connection.id] {
                 Section(connection.friendlyName) {
                     ForEach(libraries) { library in
-                        Button(library.name, systemImage: image(for: library)) {
+                        Button(library.name, systemImage: library.icon) {
                             RFNotification[.changeLibrary].send(library)
                             callback?()
                         }
@@ -39,12 +39,15 @@ struct LibraryPicker: View {
             RFNotification[.changeOfflineMode].send(true)
         }
     }
-    
-    private func image(for library: Library) -> String {
-        if library.type == .podcasts {
-            "antenna.radiowaves.left.and.right"
-        } else {
+}
+
+extension Library {
+    var icon: String {
+        switch type {
+        case .audiobooks:
             "headphones"
+        case .podcasts:
+            "antenna.radiowaves.left.and.right"
         }
     }
 }

@@ -10,7 +10,7 @@ import SwiftUI
 struct EmptyCollectionView: View {
     var body: some View {
         UnavailableWrapper {
-            ContentUnavailableView("item.releated.empty", systemImage: "questionmark.folder", description: Text("item.releated.empty.description"))
+            ContentUnavailableView("item.empty", systemImage: "questionmark.folder", description: Text("item.empty.description"))
         }
     }
 }

@@ -122,6 +122,9 @@
     "carPlay.noConnections.subtitle" : {
 
     },
+    "carPlay.otherLibraries" : {
+
+    },
     "carPlay.queue.title" : {
       "localizations" : {
         "de" : {
@@ -1044,6 +1047,38 @@
         }
       }
     },
+    "item.empty" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Inhalte gefunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No items found"
+          }
+        }
+      }
+    },
+    "item.empty.description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Inhalte welche den Filter-Kriterien entsprechen konnten gefunden werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No items matching your filter could be found."
+          }
+        }
+      }
+    },
     "item.explicit" : {
       "localizations" : {
         "de" : {
@@ -1477,6 +1512,9 @@
         }
       }
     },
+    "item.progress.resolving" : {
+
+    },
     "item.publishing.episodic" : {
       "localizations" : {
         "de" : {
@@ -1601,38 +1639,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Series"
-          }
-        }
-      }
-    },
-    "item.releated.empty" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Inhalte gefunden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No items found"
-          }
-        }
-      }
-    },
-    "item.releated.empty.description" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Inhalte welche den Filter-Kriterien entsprechen konnten gefunden werden."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No items matching your filter could be found."
           }
         }
       }
