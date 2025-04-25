@@ -28,6 +28,9 @@ final class CarPlayListenNowController {
         template.tabTitle = String(localized: "carPlay.listenNow")
         template.tabImage = UIImage(systemName: "house.fill")
         
+        template.emptyViewTitleVariants = [String(localized: "item.empty")]
+        template.emptyViewSubtitleVariants = [String(localized: "item.empty.description")]
+        
         updateTemplate()
         
         RFNotification[.downloadStatusChanged].subscribe { [weak self] _ in
@@ -69,7 +72,7 @@ private extension CarPlayListenNowController {
         }
         
         return await MainActor.run {
-            let controllers = listenNowItems.map { CarPlayItemController(item: $0, displayCover: true) }
+            let controllers = listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
             return ([CPListSection(items: controllers.map(\.row), header: "row.listenNow", sectionIndexTitle: nil)], controllers)
         }
     }
@@ -82,7 +85,7 @@ private extension CarPlayListenNowController {
             }
             
             return await MainActor.run {
-                let controllers = audiobooks.map { CarPlayItemController(item: $0, displayCover: true) }
+                let controllers = audiobooks.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
                 let section = CPListSection(items: controllers.map(\.row), header: String(localized: "row.downloaded.audiobooks"), headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil)
                 
                 return ([section], controllers)
