@@ -26,7 +26,7 @@ struct OfflineView: View {
             NavigationStack {
                 List {
                     if !audiobooks.isEmpty {
-                        Section("panel.offline.audiobooks") {
+                        Section("row.downloaded.audiobooks") {
                             ForEach(audiobooks) { audiobook in
                                 ItemCompactRow(item: audiobook) {
                                     satellite.start(audiobook.id)

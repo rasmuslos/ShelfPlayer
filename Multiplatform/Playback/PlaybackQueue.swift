@@ -223,6 +223,7 @@ private struct QueueItemRow: View {
             }
         }
         .tint(.red)
+        .foregroundStyle(.red)
     }
     
     var body: some View {

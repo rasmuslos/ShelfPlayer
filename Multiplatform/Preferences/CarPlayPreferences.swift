@@ -14,6 +14,7 @@ struct CarPlayPreferences: View {
     @Environment(Satellite.self) private var satellite
     
     @Default(.carPlayTabBarLibraries) private var carPlayTabBarLibraries
+    @Default(.carPlayShowListenNow) private var carPlayShowListenNow
     @Default(.carPlayShowOtherLibraries) private var carPlayShowOtherLibraries
     
     private var shouldShowOtherLibraries: Bool {
@@ -46,8 +47,7 @@ struct CarPlayPreferences: View {
     var body: some View {
         List {
             Section {
-                Text("preferences.carPlay.tabBar.downloaded")
-                    .foregroundStyle(.secondary)
+                Toggle("carPlay.listenNow", isOn: $carPlayShowListenNow)
                 
                 if let carPlayTabBarLibraries {
                     ForEach(carPlayTabBarLibraries) {
@@ -61,11 +61,10 @@ struct CarPlayPreferences: View {
                             removeLibraryFromTabBar(at: index)
                         }
                     }
-                    
-                    if shouldShowOtherLibraries {
-                        Toggle("preferences.carPlay.tabBar.additionalLibraries", isOn: $carPlayShowOtherLibraries)
-                            .foregroundStyle(.secondary)
-                    }
+                }
+                
+                if shouldShowOtherLibraries {
+                    Toggle("preferences.carPlay.tabBar.additionalLibraries", isOn: $carPlayShowOtherLibraries)
                 }
             } footer: {
                 Text("preferences.carPlay.tabBar.footer")
@@ -93,6 +92,7 @@ struct CarPlayPreferences: View {
                                 }
                             }
                             .buttonStyle(.plain)
+                            .disabled(carPlayTabBarLibraries?.contains(library) ?? false)
                         }
                     } else {
                         ProgressView()
@@ -102,6 +102,8 @@ struct CarPlayPreferences: View {
             
             Button("action.reset", role: .destructive) {
                 Defaults.reset(.carPlayTabBarLibraries)
+                Defaults.reset(.carPlayShowListenNow)
+                Defaults.reset(.carPlayShowOtherLibraries)
             }
         }
         .environment(\.editMode, .constant(.active))
