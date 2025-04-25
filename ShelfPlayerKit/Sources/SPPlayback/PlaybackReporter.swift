@@ -61,7 +61,7 @@ final actor PlaybackReporter {
     func didChangePlayState(isPlaying: Bool) {
         if isPlaying {
             if let lastTimeSpendListeningCalculation {
-                logger.warning("Time spent listening is not accurate: \(Date().timeIntervalSince(lastTimeSpendListeningCalculation)), \(self.accumulatedTimeSpendListening)")
+                logger.warning("Time spent listening is not accurate | current: \(Date().timeIntervalSince(lastTimeSpendListeningCalculation)) accumulated: \(self.accumulatedTimeSpendListening)")
             }
             
             lastTimeSpendListeningCalculation = .now

@@ -17,50 +17,79 @@ final class CarPlayListenNowController {
     
     let template: CPListTemplate
     
-    private var observedItemIDs = [ItemIdentifier]()
+    private var itemControllers = [CarPlayItemController]()
     
+    @MainActor
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
-        template = .init(title: "carPlay.listenNow", sections: [], assistantCellConfiguration: .init(position: .top, visibility: .always, assistantAction: .playMedia))
+        template = .init(title: String(localized: "carPlay.listenNow"), sections: [], assistantCellConfiguration: .init(position: .top, visibility: .always, assistantAction: .playMedia))
         
-        template.tabTitle = "carPlay.listenNow"
+        template.tabTitle = String(localized: "carPlay.listenNow")
         template.tabImage = UIImage(systemName: "house.fill")
         
         updateTemplate()
         
-        RFNotification[.playbackItemChanged].subscribe {
-            let (itemID, _, _) = $0
-            
-            guard self.observedItemIDs.contains(itemID) else {
-                return
+        RFNotification[.downloadStatusChanged].subscribe { [weak self] _ in
+            self?.updateTemplate()
+        }
+    }
+}
+
+private extension CarPlayListenNowController {
+    nonisolated func updateTemplate() {
+        Task {
+            let (sections, controllers) = await withTaskGroup {
+                $0.addTask { await self.buildListenNowSection() }
+                $0.addTask { await self.buildPersistedAudiobooksSection() }
+                
+                var sections = [CPListSection]()
+                var controllers = [CarPlayItemController]()
+                
+                for await (rows, itemControllers) in $0 {
+                    sections += rows
+                    controllers += itemControllers
+                }
+                
+                return (sections, controllers)
             }
             
-            self.updateTemplate()
+            await MainActor.run {
+                itemControllers = controllers
+                template.updateSections(sections)
+            }
         }
     }
     
-    nonisolated func updateTemplate() {
-        Task {
-            let listenNowItems = await ShelfPlayerKit.listenNowItems
+    nonisolated func buildListenNowSection() async -> ([CPListSection], [CarPlayItemController]) {
+        let listenNowItems = await ShelfPlayerKit.listenNowItems
+        
+        guard !listenNowItems.isEmpty else {
+            return ([], [])
+        }
+        
+        return await MainActor.run {
+            let controllers = listenNowItems.map { CarPlayItemController(item: $0, displayCover: true) }
+            return ([CPListSection(items: controllers.map(\.row), header: "row.listenNow", sectionIndexTitle: nil)], controllers)
+        }
+    }
+    nonisolated func buildPersistedAudiobooksSection() async -> ([CPListSection], [CarPlayItemController]) {
+        do {
+            let audiobooks = try await PersistenceManager.shared.download.audiobooks()
             
-            await MainActor.run {
-                observedItemIDs = listenNowItems.map(\.id)
+            guard !audiobooks.isEmpty else {
+                return ([], [])
             }
             
-            var listenNowRows = [CPListItem]()
-            
-            for item in listenNowItems {
-                if let audiobook = item as? Audiobook {
-                    await listenNowRows.append(CarPlayHelper.buildAudiobookListItem(audiobook))
-                } else if let episode = item as? Episode {
-                    await listenNowRows.append(CarPlayHelper.buildEpisodeListItem(episode, displayCover: true))
-                }
+            return await MainActor.run {
+                let controllers = audiobooks.map { CarPlayItemController(item: $0, displayCover: true) }
+                let section = CPListSection(items: controllers.map(\.row), header: String(localized: "row.downloaded.audiobooks"), headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil)
+                
+                return ([section], controllers)
             }
-            
-            let row = CPListSection(items: listenNowRows, header: "row.listenNow", sectionIndexTitle: nil)
-            
-            await template.updateSections([row])
+        } catch {
+            await CarPlayDelegate.logger.error("Failed to load audiobooks: \(error)")
+            return ([], [])
         }
     }
 }
