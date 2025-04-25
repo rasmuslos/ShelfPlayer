@@ -57,7 +57,7 @@ struct ProgressButton: View {
                     markAsFinishedButton
                 }
             } else {
-                ProgressView()
+                Label("item.progress.resolving", systemImage: "square.dashed")
             }
         }
         .disabled(isLoading)

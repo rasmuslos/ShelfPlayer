@@ -1,5 +1,5 @@
 //
-//  CarPlayItemRow.swift
+//  CarPlayPlayableItemController.swift
 //  Multiplatform
 //
 //  Created by Rasmus Krämer on 25.04.25.
@@ -11,7 +11,7 @@ import ShelfPlayerKit
 import SPPlayback
 
 @MainActor
-final class CarPlayItemController {
+final class CarPlayPlayableItemController: CarPlayItemController {
     let item: PlayableItem
     let row: CPListItem
     

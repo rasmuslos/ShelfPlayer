@@ -51,7 +51,6 @@ extension PersistenceManager {
             }
             
             public var id: ItemIdentifier.ConnectionID {
-                // If someone has this as their user- or hostname its honestly their fault. This wont event break...
                 SHA256.hash(data: "host:\(host).?.?.user:\(user)".data(using: .ascii)!).withUnsafeBytes {
                     Data([UInt8]($0))
                 }.base64EncodedString()
