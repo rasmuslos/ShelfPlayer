@@ -1,0 +1,95 @@
+//
+//  CarPlayItemRow.swift
+//  Multiplatform
+//
+//  Created by Rasmus Krämer on 25.04.25.
+//
+
+import Foundation
+@preconcurrency import CarPlay
+import ShelfPlayerKit
+import SPPlayback
+
+@MainActor
+final class CarPlayItemController {
+    let item: PlayableItem
+    let row: CPListItem
+    
+    @MainActor
+    init(item: PlayableItem, displayCover: Bool) {
+        self.item = item
+        
+        if let audiobook = item as? Audiobook {
+            var detail = [[String]]()
+            
+            if !audiobook.authors.isEmpty {
+                detail.append(audiobook.authors)
+            }
+            if !audiobook.narrators.isEmpty {
+                detail.append(audiobook.narrators)
+            }
+            
+            let detailText = detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • ")
+            row = CPListItem(text: audiobook.name, detailText: detailText, image: nil)
+            row.isExplicitContent = audiobook.explicit
+        } else if let episode = item as? Episode {
+            row = CPListItem(text: episode.name, detailText: episode.authors.formatted(.list(type: .and, width: .short)), image: nil)
+        } else {
+            fatalError("Unsupported item type: \(type(of: item))")
+        }
+        
+        row.userInfo = item.id
+        
+        row.handler = { listItem, completion in
+            Task {
+                guard await AudioPlayer.shared.currentItemID != item.id else {
+                    if await AudioPlayer.shared.isPlaying {
+                        await AudioPlayer.shared.pause()
+                    } else {
+                        await AudioPlayer.shared.play()
+                    }
+                    
+                    completion()
+                    return
+                }
+                
+                listItem.isEnabled = false
+                try? await AudioPlayer.shared.start(item.id)
+                listItem.isEnabled = true
+                
+                completion()
+                return
+            }
+        }
+        
+        row.playingIndicatorLocation = .leading
+        
+        if displayCover {
+            Task {
+                row.setImage(await item.id.platformCover(size: .regular))
+            }
+        }
+        
+        Task {
+            row.isPlaying = await AudioPlayer.shared.currentItemID == item.id
+            row.playbackProgress = await PersistenceManager.shared.progress[item.id].progress
+            
+            switch await PersistenceManager.shared.download.status(of: item.id) {
+            case .completed:
+                row.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
+            case .downloading:
+                row.setAccessoryImage(.init(systemName: "circle.circle.fill"))
+            default:
+                break
+            }
+        }
+        
+        RFNotification[.playbackItemChanged].subscribe { [weak self] in
+            self?.row.isPlaying = self?.itemID == $0.0
+        }
+    }
+    
+    var itemID: ItemIdentifier {
+        item.id
+    }
+}

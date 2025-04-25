@@ -46,7 +46,6 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         }
     }
     
-    private var groupAudiobooksInSeries: Bool
     private let filterLocally: Bool
     
     var search: String {
@@ -76,10 +75,10 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     
     var library: Library?
     
-    private let loadMore: @Sendable (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ collapseSeries: Bool, _ library: Library) async throws -> ([T], Int)
+    private let loadMore: @Sendable (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)
     
     @MainActor
-    init(filterLocally: Bool, filter: ItemFilter, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ collapseSeries: Bool, _ library: Library) async throws -> ([T], Int)) {
+    init(filterLocally: Bool, filter: ItemFilter, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)) {
         logger = .init(subsystem: "io.rfk.shelfPlayer", category: "LazyLoader")
         
         self.filter = filter
@@ -87,7 +86,6 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         self.sortOrder = sortOrder
         self.ascending = ascending
         
-        groupAudiobooksInSeries = Defaults[.groupAudiobooksInSeries]
         self.filterLocally = filterLocally
         
         items = []
@@ -107,12 +105,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         self.loadMore = loadMore
         
         Task {
-            for await groupAudiobooksInSeries in Defaults.updates(.groupAudiobooksInSeries) {
-                guard self.groupAudiobooksInSeries != groupAudiobooksInSeries else {
-                    return
-                }
-                
-                self.groupAudiobooksInSeries = groupAudiobooksInSeries
+            for await _ in Defaults.updates(.groupAudiobooksInSeries) {
                 refresh()
             }
         }
@@ -162,6 +155,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 var received: [T]
                 let totalCount: Int
+                
+                let groupAudiobooksInSeries = Defaults[.groupAudiobooksInSeries]
                 
                 if let filteredGenre {
                     // Fuck you, this only needs to happen once, and this code is bloated already
@@ -328,8 +323,8 @@ extension LazyLoadHelper {
               filter: Defaults[.audiobooksFilter],
               sortOrder: Defaults[.audiobooksSortOrder],
               ascending: Defaults[.audiobooksAscending],
-              loadMore: { page, filter, sortOrder, ascending, collapseSeries, library in
-            try await ABSClient[library.connectionID].audiobooks(from: library.id, filter: filter, sortOrder: sortOrder, ascending: ascending, groupSeries: collapseSeries, limit: PAGE_SIZE, page: page)
+              loadMore: { page, filter, sortOrder, ascending, groupAudiobooksInSeries, library in
+            try await ABSClient[library.connectionID].audiobooks(from: library.id, filter: filter, sortOrder: sortOrder, ascending: ascending, groupSeries: groupAudiobooksInSeries, limit: PAGE_SIZE, page: page)
         })
     }
     

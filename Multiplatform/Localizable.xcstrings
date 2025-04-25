@@ -113,6 +113,9 @@
         }
       }
     },
+    "carPlay.listenNow" : {
+
+    },
     "carPlay.noConnections" : {
 
     },
@@ -146,6 +149,12 @@
           }
         }
       }
+    },
+    "carPlay.tabBar.empty" : {
+
+    },
+    "carPlay.tabBar.empty.message" : {
+
     },
     "connection.add" : {
       "localizations" : {
@@ -2305,9 +2314,6 @@
     "panel.offline" : {
 
     },
-    "panel.offline.audiobooks" : {
-
-    },
     "panel.search" : {
       "localizations" : {
         "de" : {
@@ -2875,9 +2881,6 @@
     "preferences.carPlay.tabBar.additionalLibraries" : {
 
     },
-    "preferences.carPlay.tabBar.downloaded" : {
-
-    },
     "preferences.carPlay.tabBar.footer" : {
 
     },
@@ -3413,6 +3416,9 @@
       }
     },
     "row.downloaded" : {
+
+    },
+    "row.downloaded.audiobooks" : {
 
     },
     "row.latestEpisodes" : {
