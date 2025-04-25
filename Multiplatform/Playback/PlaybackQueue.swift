@@ -215,15 +215,13 @@ private struct QueueItemRow: View {
     }
     @ViewBuilder
     private var removeFromQueueButton: some View {
-        Button("playback.queue.remove", systemImage: "minus.circle.fill") {
+        Button("playback.queue.remove", systemImage: "minus.circle.fill", role: .destructive) {
             if isUpNextQueue {
                 satellite.remove(upNextQueueIndex: queueIndex)
             } else {
                 satellite.remove(queueIndex: queueIndex)
             }
         }
-        .tint(.red)
-        .foregroundStyle(.red)
     }
     
     var body: some View {

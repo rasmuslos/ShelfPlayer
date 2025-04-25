@@ -13,9 +13,10 @@ import Defaults
 import ShelfPlayerKit
 
 struct ContentView: View {
-    @Namespace private var namespace
-    
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.scenePhase) var scenePhase
+    
+    @Namespace private var namespace
     
     @Default(.tintColor) private var tintColor
     
@@ -75,6 +76,16 @@ struct ContentView: View {
         .environment(\.namespace, namespace)
         .onAppear {
             ShelfPlayer.initializeHook()
+        }
+        .onChange(of: scenePhase) {
+            Task.detached { [scenePhase] in
+                switch scenePhase {
+                case .active:
+                    await ShelfPlayer.invalidateCache()
+                default:
+                    break
+                }
+            }
         }
         .onContinueUserActivity(CSSearchableItemActionType) {
             guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
