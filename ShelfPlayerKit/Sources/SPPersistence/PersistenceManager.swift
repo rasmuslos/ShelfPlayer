@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import RFNotifications
 import SPFoundation
 
 public final class PersistenceManager: Sendable {
@@ -69,6 +70,8 @@ public final class PersistenceManager: Sendable {
         await progress.remove(connectionID: connectionID)
         await session.remove(connectionID: connectionID)
         await download.remove(connectionID: connectionID)
+        
+        RFNotification[.removeConnection].send(connectionID)
     }
 }
 

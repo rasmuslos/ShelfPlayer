@@ -258,19 +258,7 @@ struct PlaybackActions: View {
                 .contentTransition(.numericText())
                 .animation(.smooth, value: satellite.playbackRate)
         } primaryAction: {
-            guard let index = playbackRates.firstIndex(of: satellite.playbackRate) else {
-                if let rate = playbackRates.first {
-                    satellite.setPlaybackRate(rate)
-                }
-                
-                return
-            }
-            
-            if index + 1 < playbackRates.count {
-                satellite.setPlaybackRate(playbackRates[index + 1])
-            } else if let rate = playbackRates.first {
-                satellite.setPlaybackRate(rate)
-            }
+            viewModel.cyclePlaybackSpeed()
         }
         .padding(-12)
     }

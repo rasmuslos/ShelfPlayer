@@ -44,6 +44,11 @@ public extension AudioPlayer {
             await current?.queue ?? []
         }
     }
+    var upNextQueue: [QueueItem] {
+        get async {
+            await current?.upNextQueue ?? []
+        }
+    }
     
     var chapters: [Chapter] {
         get async {
@@ -279,6 +284,31 @@ public extension AudioPlayer {
         let note = Date.now.formatted(date: .abbreviated, time: .shortened)
         
         try await PersistenceManager.shared.bookmark.create(at: UInt64(currentTime), note: note, for: currentItemID)
+    }
+    
+    func cyclePlaybackSpeed() async {
+        let playbackRates = Defaults[.playbackRates]
+        
+        guard let index = await playbackRates.firstIndex(of: playbackRate) else {
+            if let rate = playbackRates.first {
+                await setPlaybackRate(rate)
+            }
+            
+            return
+        }
+        
+        if index + 1 < playbackRates.count {
+            await setPlaybackRate(playbackRates[index + 1])
+        } else if let rate = playbackRates.first {
+            await setPlaybackRate(rate)
+        }
+    }
+    func advance() async {
+        if await !queue.isEmpty {
+            await skip(queueIndex: 0)
+        } else if await !upNextQueue.isEmpty {
+            await skip(upNextQueueIndex: 0)
+        }
     }
 }
 

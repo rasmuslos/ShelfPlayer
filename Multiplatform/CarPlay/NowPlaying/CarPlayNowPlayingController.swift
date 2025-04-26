@@ -11,6 +11,7 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
+@MainActor
 class CarPlayNowPlayingController: NSObject {
     private let template = CPNowPlayingTemplate.shared
     private let interfaceController: CPInterfaceController
@@ -19,42 +20,79 @@ class CarPlayNowPlayingController: NSObject {
     
     private let rateButton: CPNowPlayingPlaybackRateButton
     private let nextButton: CPNowPlayingImageButton
+    private let bookmarkButton: CPNowPlayingImageButton
     
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         queueController = .init(interfaceController: interfaceController)
         
         rateButton = CPNowPlayingPlaybackRateButton { _ in
-            /*
-            var rate = AudioPlayer.shared.playbackRate + Defaults[.playbackSpeedAdjustment]
-            
-            if rate > 2 {
-                rate = 0.25
-            }
-            
-            AudioPlayer.shared.playbackRate = rate
-             */
-        }
-        nextButton = CPNowPlayingImageButton(image: .init(systemName: "forward.end.fill")!) { _ in
             Task {
-                // try await AudioPlayer.shared.advance(to: 0)
+                await AudioPlayer.shared.cyclePlaybackSpeed()
+            }
+        }
+        nextButton = CPNowPlayingImageButton(image: UIImage(systemName: "forward.end.fill")!) { _ in
+            Task {
+                await AudioPlayer.shared.advance()
+            }
+        }
+        bookmarkButton = CPNowPlayingImageButton(image: UIImage(systemName: "bookmark.fill")!) { _ in
+            Task {
+                try await AudioPlayer.shared.createQuickBookmark()
             }
         }
         
         super.init()
         
-        setupObservers()
+        template.isAlbumArtistButtonEnabled = true
+        
+        template.add(self)
+        
+        RFNotification[.queueChanged].subscribe { [weak self] _ in
+            self?.update()
+            self?.queueController.update()
+        }
+        RFNotification[.upNextQueueChanged].subscribe { [weak self] _ in
+            self?.update()
+            self?.queueController.update()
+        }
+        RFNotification[.playbackItemChanged].subscribe { [weak self] _ in
+            self?.update()
+        }
+        
         update()
     }
     deinit {
         template.remove(self)
     }
+    
+    func update() {
+        Task {
+            let queue = await AudioPlayer.shared.queue
+            let upNextQueue = await AudioPlayer.shared.upNextQueue
+            let currentItemID = await AudioPlayer.shared.currentItemID
+            
+            let isQueueEmpty = queue.isEmpty && upNextQueue.isEmpty
+            var buttons = [CPNowPlayingButton]([rateButton])
+            
+            if currentItemID?.type == .audiobook {
+                buttons.append(bookmarkButton)
+            }
+            
+            if !isQueueEmpty {
+                buttons.append(nextButton)
+            }
+            
+            template.updateNowPlayingButtons(buttons)
+            template.isUpNextButtonEnabled = !isQueueEmpty
+        }
+    }
 }
 
-extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
+extension CarPlayNowPlayingController: @preconcurrency CPNowPlayingTemplateObserver {
     func nowPlayingTemplateUpNextButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
         Task {
-            // try await interfaceController.pushTemplate(queueController.template, animated: true)
+            try await interfaceController.pushTemplate(queueController.template, animated: true)
         }
     }
     func nowPlayingTemplateAlbumArtistButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
@@ -73,31 +111,6 @@ extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
                 try await self.interfaceController.pushTemplate(controller.template, animated: true)
                  */
             }
-        }
-         */
-    }
-}
-
-private extension CarPlayNowPlayingController {
-    func update() {
-        /*
-        if AudioPlayer.shared.queue.isEmpty {
-            template.updateNowPlayingButtons([rateButton])
-        } else {
-            template.updateNowPlayingButtons([rateButton, nextButton])
-        }
-        
-        template.isUpNextButtonEnabled = true
-        template.isAlbumArtistButtonEnabled = true
-         */
-    }
-    
-    func setupObservers() {
-        /*
-        template.add(self)
-        
-        NotificationCenter.default.addObserver(forName: AudioPlayer.queueDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
-            self?.update()
         }
          */
     }

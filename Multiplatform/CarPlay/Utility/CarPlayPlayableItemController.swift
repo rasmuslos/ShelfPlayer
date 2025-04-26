@@ -15,9 +15,12 @@ final class CarPlayPlayableItemController: CarPlayItemController {
     let item: PlayableItem
     let row: CPListItem
     
+    let customHandler: (() -> Void)?
+    
     @MainActor
-    init(item: PlayableItem, displayCover: Bool) {
+    init(item: PlayableItem, displayCover: Bool, customHandler: (() -> Void)? = nil) {
         self.item = item
+        self.customHandler = customHandler
         
         if let audiobook = item as? Audiobook {
             var detail = [[String]]()
@@ -41,6 +44,13 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         row.userInfo = item.id
         
         row.handler = { listItem, completion in
+            if let customHandler {
+                customHandler()
+                completion()
+                
+                return
+            }
+            
             Task {
                 guard await AudioPlayer.shared.currentItemID != item.id else {
                     if await AudioPlayer.shared.isPlaying {

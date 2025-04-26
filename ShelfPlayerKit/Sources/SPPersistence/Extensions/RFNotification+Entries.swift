@@ -13,6 +13,9 @@ public extension RFNotification.Notification {
     static var connectionsChanged: Notification<[ItemIdentifier.ConnectionID: PersistenceManager.AuthorizationSubsystem.Connection]> {
         .init("io.rfk.shelfPlayerKit.connectionsChanged")
     }
+    static var removeConnection: Notification<ItemIdentifier.ConnectionID> {
+        .init("io.rfk.shelfPlayerKit.removeConnection")
+    }
     
     static var progressEntityUpdated: Notification<(connectionID: String, primaryID: String, groupingID: String?, ProgressEntity?)> {
         .init("io.rfk.shelfPlayerKit.progressEntity.updated")
