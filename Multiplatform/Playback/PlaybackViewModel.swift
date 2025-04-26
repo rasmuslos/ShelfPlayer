@@ -173,6 +173,14 @@ final class PlaybackViewModel {
             }
         }
     }
+    nonisolated func cyclePlaybackSpeed() {
+        Task {
+            await AudioPlayer.shared.cyclePlaybackSpeed()
+            await MainActor.run {
+                notifySuccess.toggle()
+            }
+        }
+    }
     
     func presentCreateBookmarkAlert() {
         Task {

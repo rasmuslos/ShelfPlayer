@@ -35,6 +35,10 @@ final class CarPlayTabBar {
                 updateTemplate()
             }
         }
+        
+        RFNotification[.connectionsChanged].subscribe { [weak self] _ in
+            self?.updateLibraries()
+        }
     }
     
     @MainActor
@@ -56,10 +60,7 @@ private extension CarPlayTabBar {
         if let selection = Defaults[.carPlayTabBarLibraries] {
             for library in selection {
                 guard let controller = libraries.removeValue(forKey: library) else {
-                    Defaults[.carPlayTabBarLibraries]?.removeAll {
-                        $0.id == library.id
-                        && $0.connectionID == library.connectionID
-                    }
+                    templates.append(loadingLibraryTemplate)
                     
                     continue
                 }
@@ -120,6 +121,21 @@ private extension CarPlayTabBar {
         
         return template
     }
+    var loadingLibraryTemplate: CPListTemplate {
+        let template = emptyTemplate
+        
+        template.tabTitle = String(localized: "loading")
+        template.tabImage = UIImage(systemName: "hourglass")
+        
+        template.emptyViewTitleVariants = [String(localized: "loading")]
+        
+        if #available(iOS 18.4, *) {
+            template.showsSpinnerWhileEmpty = true
+        }
+        
+        return template
+    }
+    
     func otherLibrariesTemplate(_ libraries: [Library: LibraryController]) -> CPListTemplate {
         let items = libraries.map { (library, controller) in
             let item = CPListItem(text: library.name, detailText: nil, image: UIImage(systemName: library.icon))
