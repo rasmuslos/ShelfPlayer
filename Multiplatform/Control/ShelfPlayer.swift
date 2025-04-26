@@ -10,6 +10,7 @@ import OSLog
 import Intents
 import TipKit
 import Nuke
+import Defaults
 import ShelfPlayerKit
 
 struct ShelfPlayer {
@@ -24,6 +25,12 @@ struct ShelfPlayer {
             try Tips.configure()
         } catch {
             logger.error("Failed to configure tips: \(error)")
+        }
+        
+        RFNotification[.removeConnection].subscribe { connectionID in
+            Defaults[.carPlayTabBarLibraries]?.removeAll {
+                $0.connectionID == connectionID
+            }
         }
     }
     
