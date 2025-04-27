@@ -31,7 +31,7 @@ final class CarPlayTabBar {
         updateLibraries()
         
         Task {
-            for await _ in Defaults.updates([.carPlayTabBarLibraries, .carPlayShowListenNow, .carPlayShowOtherLibraries]) {
+            for await _ in Defaults.updates([.carPlayTabBarLibraries, .carPlayShowListenNow, .carPlayShowOtherLibraries], initial: false) {
                 updateTemplate()
             }
         }
