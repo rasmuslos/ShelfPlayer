@@ -36,12 +36,6 @@ extension AudioPlayer {
             return
         }
         
-        do {
-            try audioSession.setActive(false)
-        } catch {
-            logger.error("Failed to deactivate audio session: \(error)")
-        }
-        
         Task { @MainActor in
             RFNotification[.playStateChanged].send(isPlaying)
         }

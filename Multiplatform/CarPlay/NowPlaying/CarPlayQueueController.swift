@@ -88,16 +88,10 @@ final class CarPlayQueueController {
         }
     }
     private func updateSections() {
-        var items = [CPListItem]()
-        
-        for (index, itemID) in queue.enumerated() {
-            items.append(buildRow(for: itemID, index: index, isUpNextQueue: false))
-        }
-        for (index, itemID) in upNextQueue.enumerated() {
-            items.append(buildRow(for: itemID, index: index, isUpNextQueue: true))
-        }
-        
-        template.updateSections([CPListSection(items: items)])
+        template.updateSections([
+            CPListSection(items: queue.enumerated().map { buildRow(for: $1, index: $0, isUpNextQueue: false) }, header: String(localized: "playback.queue"), sectionIndexTitle: nil),
+            CPListSection(items: upNextQueue.enumerated().map { buildRow(for: $1, index: $0, isUpNextQueue: false) }, header: String(localized: "playback.upNextQueue"), sectionIndexTitle: nil),
+        ])
     }
     
     private func buildRow(for itemID: ItemIdentifier, index: Int, isUpNextQueue: Bool) -> CPListItem {
