@@ -24,7 +24,7 @@ final class CarPlayQueueController {
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
-        template = .init(title: String(localized: "carPlay.queue.title"), sections: [], assistantCellConfiguration: .none)
+        template = .init(title: String(localized: "playback.queue"), sections: [], assistantCellConfiguration: .none)
         
         if #available(iOS 18.4, *) {
             template.showsSpinnerWhileEmpty = true

@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import OSLog
 import ShelfPlayerKit
 
 struct DownloadButton: View {
+    fileprivate static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "DownloadButton")
+    
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
@@ -280,6 +283,8 @@ private extension DownloadButton {
                     notifySuccess.toggle()
                 }
             } catch {
+                await Self.logger.error("Failed to download item \(itemID): \(error)")
+                
                 await MainActor.withAnimation {
                     isWorking = false
                     notifyError.toggle()
