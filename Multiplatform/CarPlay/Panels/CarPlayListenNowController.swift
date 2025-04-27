@@ -23,9 +23,9 @@ final class CarPlayListenNowController {
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
-        template = .init(title: String(localized: "carPlay.listenNow"), sections: [], assistantCellConfiguration: .init(position: .top, visibility: .always, assistantAction: .playMedia))
+        template = .init(title: String(localized: "panel.listenNow"), sections: [], assistantCellConfiguration: .init(position: .top, visibility: .always, assistantAction: .playMedia))
         
-        template.tabTitle = String(localized: "carPlay.listenNow")
+        template.tabTitle = String(localized: "panel.listenNow")
         template.tabImage = UIImage(systemName: "house.fill")
         
         template.emptyViewTitleVariants = [String(localized: "item.empty")]
