@@ -131,8 +131,6 @@ public extension PersistenceManager.AuthorizationSubsystem {
             connections[connectionID] = nil
         }
         
-        connections = .init(uniqueKeysWithValues: connections.sorted { $0.key < $1.key })
-        
         RFNotification[.connectionsChanged].send(connections)
     }
     

@@ -28,6 +28,7 @@ struct DescriptionSheet: View {
                 .padding(.horizontal, 20)
             }
             .navigationTitle(item.name)
+            .navigationBarTitleDisplayMode(.inline)
             .presentationDragIndicator(.visible)
         }
     }

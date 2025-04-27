@@ -37,9 +37,9 @@ extension AudioPlayer {
         }
         
         do {
-            try audioSession.setActive(true)
+            try audioSession.setActive(false)
         } catch {
-            logger.error("Failed to activate audio session: \(error)")
+            logger.error("Failed to deactivate audio session: \(error)")
         }
         
         Task { @MainActor in
@@ -187,18 +187,6 @@ extension AudioPlayer {
         
         await MainActor.run {
             RFNotification[.playbackStopped].send()
-        }
-        
-        if Defaults[.removeFinishedDownloads] {
-            let progress = await PersistenceManager.shared.progress[itemID]
-            
-            do {
-                if progress.isFinished {
-                    try await PersistenceManager.shared.download.remove(itemID)
-                }
-            } catch {
-                logger.error("Failed to remove finished download: \(error)")
-            }
         }
         
         Task {

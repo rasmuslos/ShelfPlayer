@@ -7,6 +7,7 @@
 
 import Foundation
 import OSLog
+import Defaults
 import RFNotifications
 import SPFoundation
 import SPPersistence
@@ -89,6 +90,16 @@ final actor PlaybackReporter {
         if let duration, let currentTime {
             if duration - currentTime < 10 {
                 self.currentTime = duration
+                
+                if Defaults[.removeFinishedDownloads] {
+                    Task {
+                        do {
+                            try await PersistenceManager.shared.download.remove(itemID)
+                        } catch {
+                            logger.error("Failed to remove finished download: \(error)")
+                        }
+                    }
+                }
             }
         }
         

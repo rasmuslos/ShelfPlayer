@@ -509,6 +509,16 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         guard persistedAudiobook(for: itemID) == nil && persistedEpisode(for: itemID) == nil else {
+            if await PersistenceManager.shared.keyValue[.cachedDownloadStatus(itemID: itemID)] == PersistenceManager.DownloadSubsystem.DownloadStatus.none {
+                let status = await status(of: itemID)
+                
+                try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)
+                await MainActor.run {
+                    RFNotification[.downloadStatusChanged].send((itemID, status))
+                }
+                
+            }
+            
             throw PersistenceError.existing
         }
         
