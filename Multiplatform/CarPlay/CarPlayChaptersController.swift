@@ -11,7 +11,7 @@ import Defaults
 import ShelfPlayerKit
 import SPPlayback
 
-internal class CarPlayChaptersController {
+class CarPlayChaptersController {
     private let interfaceController: CPInterfaceController
     
     let template: CPListTemplate

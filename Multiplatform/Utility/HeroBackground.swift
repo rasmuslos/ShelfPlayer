@@ -19,7 +19,7 @@ struct HeroBackground: View {
             
             if offset > 0 {
                 Rectangle()
-                    .fill(backgroundColor ?? Color(UIColor.tertiarySystemBackground))
+                    .fill(backgroundColor ?? Color.clear)
                     .animation(.smooth, value: backgroundColor)
                     .offset(y: -offset)
                     .frame(height: offset)

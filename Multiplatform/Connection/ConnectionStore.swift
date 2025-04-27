@@ -78,6 +78,6 @@ final class ConnectionStore {
     }
     
     var flat: [PersistenceManager.AuthorizationSubsystem.Connection] {
-        Array(connections.values)
+        connections.values.sorted { $0.friendlyName < $1.friendlyName }
     }
 }

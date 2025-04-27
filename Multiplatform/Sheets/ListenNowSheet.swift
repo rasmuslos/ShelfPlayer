@@ -45,6 +45,9 @@ struct ListenNowSheet: View {
         .refreshable {
             load()
         }
+        .onReceive(RFNotification[.playbackItemChanged].publisher()) { _ in
+            load()
+        }
     }
     
     private nonisolated func load() {
