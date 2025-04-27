@@ -319,12 +319,12 @@ private extension AudioPlayer {
     
     nonisolated func setupObservers() {
         Task {
-            for await interval in Defaults.updates(.skipBackwardsInterval) {
+            for await interval in Defaults.updates(.skipBackwardsInterval, initial: false) {
                 MPRemoteCommandCenter.shared().skipBackwardCommand.preferredIntervals = [NSNumber(value: interval)]
             }
         }
         Task {
-            for await interval in Defaults.updates(.skipForwardsInterval) {
+            for await interval in Defaults.updates(.skipForwardsInterval, initial: false) {
                 MPRemoteCommandCenter.shared().skipForwardCommand.preferredIntervals = [NSNumber(value: interval)]
             }
         }
@@ -361,7 +361,7 @@ private extension AudioPlayer {
         }
         
         Task {
-            for await _ in Defaults.updates(.playbackRates) {
+            for await _ in Defaults.updates(.playbackRates, initial: false) {
                 updateCommandCenterPlaybackRates()
             }
         }

@@ -126,6 +126,7 @@
 
     },
     "carPlay.queue.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
