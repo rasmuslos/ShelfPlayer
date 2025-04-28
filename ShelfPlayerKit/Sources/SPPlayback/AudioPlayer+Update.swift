@@ -31,9 +31,17 @@ extension AudioPlayer {
         
         widgetManager.update(itemID: itemID)
     }
-    func playStateDidChange(endpointID: UUID, isPlaying: Bool) {
+    func playStateDidChange(endpointID: UUID, isPlaying: Bool, updateSessionActivation: Bool) {
         if current != nil && current?.id != endpointID {
             return
+        }
+        
+        if updateSessionActivation {
+            do {
+                try audioSession.setActive(isPlaying)
+            } catch {
+                logger.error("Failed to set audio session category: \(error)")
+            }
         }
         
         Task { @MainActor in
