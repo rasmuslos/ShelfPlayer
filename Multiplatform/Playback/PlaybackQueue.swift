@@ -193,6 +193,15 @@ private struct QueueItemRow: View {
     let isUpNextQueue: Bool
     
     @State private var item: PlayableItem?
+    @State private var download: DownloadStatusTracker
+    
+    init(itemID: ItemIdentifier, queueIndex: Int, isUpNextQueue: Bool) {
+        self.itemID = itemID
+        self.queueIndex = queueIndex
+        self.isUpNextQueue = isUpNextQueue
+        
+        _download = .init(initialValue: .init(itemID: itemID))
+    }
     
     @ViewBuilder
     private var playButton: some View {
@@ -255,7 +264,7 @@ private struct QueueItemRow: View {
             removeFromQueueButton
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-            DownloadButton(itemID: itemID, tint: true)
+            DownloadButton(itemID: itemID, tint: true, initialStatus: download.status)
         }
         .contextMenu {
             playButton
@@ -269,7 +278,7 @@ private struct QueueItemRow: View {
             
             Divider()
             
-            DownloadButton(itemID: itemID)
+            DownloadButton(itemID: itemID, initialStatus: download.status)
             
             Divider()
             
