@@ -104,7 +104,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             }
                             
                             // Foreground
-                            VStack(spacing: 0) {
+                            ZStack(alignment: .top) {
                                 CollapsedForeground()
                                     .opacity(viewModel.isExpanded ? 0 : 1)
                                     .contentShape(.rect)
@@ -124,7 +124,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                     }
                                     .allowsHitTesting(!viewModel.isExpanded)
                                 
-                                ExpandedForeground(height: geometryProxy.size.height)
+                                ExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: geometryProxy.safeAreaInsets.top)
                                     .allowsHitTesting(viewModel.isExpanded)
                             }
                         }
@@ -149,7 +149,7 @@ struct CompactPlaybackModifier: ViewModifier {
                         }
                         .shadow(color: viewModel.isExpanded ? .clear : .black.opacity(0.2), radius: 8)
                         .padding(.horizontal, viewModel.isExpanded ? 0 : 12)
-                        .padding(.bottom, viewModel.isExpanded ? 0 : playbackBottomOffset)
+                        .padding(.bottom, viewModel.isExpanded ? 0 : geometryProxy.safeAreaInsets.bottom + playbackBottomOffset)
                         .offset(x: 0, y: viewModel.dragOffset)
                         .toolbarBackground(.hidden, for: .tabBar)
                         .animation(.snappy(duration: 0.6), value: viewModel.isExpanded)
@@ -159,13 +159,13 @@ struct CompactPlaybackModifier: ViewModifier {
                 }
                 .frame(width: geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing,
                        height: geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom)
+                .ignoresSafeArea()
                 /*
                  .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _, _, _ in
                  viewModel.expanded = false
                  })
                  */
             }
-            .ignoresSafeArea()
         } else {
             content
         }
@@ -178,12 +178,17 @@ private struct ExpandedForeground: View {
     @Environment(\.namespace) private var namespace
     
     let height: CGFloat
+    let safeAreTopInset: CGFloat
     
     var body: some View {
         @Bindable var viewModel = viewModel
         
         VStack(spacing: 0) {
             if viewModel.isExpanded {
+                Rectangle()
+                    .frame(height: safeAreTopInset)
+                    .hidden()
+                
                 Spacer(minLength: 12)
                 
                 if !viewModel.isQueueVisible {
@@ -229,12 +234,10 @@ private struct ExpandedForeground: View {
                     
                     PlaybackQueue()
                         .padding(.vertical, 12)
-                        .frame(maxHeight: height - 230)
-                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                        .frame(maxHeight: height - 120)
                 }
                 
                 PlaybackActions()
-                    .compositingGroup()
                     .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 
                 Spacer(minLength: 12)
@@ -255,6 +258,7 @@ private struct ExpandedForeground: View {
                 .contentShape(.rect)
                 .modifier(PlaybackDragGestureCatcher(active: true))
                 .padding(-40)
+                .offset(y: safeAreTopInset - 8)
                 .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.3)), removal: .identity))
             }
         }
@@ -365,7 +369,7 @@ private struct CollapsedForeground: View {
         }
     }
     .modifier(CompactPlaybackModifier(ready: true))
-    .environment(\.playbackBottomOffset, 88)
+    .environment(\.playbackBottomOffset, 52)
     .previewEnvironment()
 }
 #endif
