@@ -208,18 +208,11 @@ extension LocalAudioEndpoint {
         updateSleepTimerSchedule()
         
         await playbackReporter.didChangePlayState(isPlaying: true)
-        await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: true)
+        await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: true, updateSessionActivation: true)
     }
     
     func pause() async {
-        audioPlayer.pause()
-        isPlaying = false
-        
-        sleepLastPause = .now
-        updateSleepTimerSchedule()
-        
-        await playbackReporter.didChangePlayState(isPlaying: false)
-        await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: false)
+        await pause(updateSessionActivation: false)
     }
     
     func seek(to: TimeInterval, insideChapter: Bool) async throws {
@@ -343,6 +336,17 @@ extension LocalAudioEndpoint {
 }
 
 private extension LocalAudioEndpoint {
+    func pause(updateSessionActivation: Bool) async {
+        audioPlayer.pause()
+        isPlaying = false
+        
+        sleepLastPause = .now
+        updateSleepTimerSchedule()
+        
+        await playbackReporter.didChangePlayState(isPlaying: false)
+        await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: false, updateSessionActivation: updateSessionActivation)
+    }
+    
     func start(withoutListeningSession: Bool) async throws {
         let downloadStatus = await PersistenceManager.shared.download.status(of: currentItemID)
         
@@ -761,7 +765,7 @@ private extension LocalAudioEndpoint {
             Task {
                 switch type {
                 case .began:
-                    await self?.pause()
+                    await self?.pause(updateSessionActivation: true)
                 case .ended:
                     guard let optionsValue else {
                         return
