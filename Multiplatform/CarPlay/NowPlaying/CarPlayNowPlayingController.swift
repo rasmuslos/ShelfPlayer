@@ -17,6 +17,7 @@ class CarPlayNowPlayingController: NSObject {
     private let interfaceController: CPInterfaceController
     
     private let queueController: CarPlayQueueController
+    private let chaptersController: CarPlayChaptersController
     
     private let rateButton: CPNowPlayingPlaybackRateButton
     private let nextButton: CPNowPlayingImageButton
@@ -24,7 +25,9 @@ class CarPlayNowPlayingController: NSObject {
     
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
+        
         queueController = .init(interfaceController: interfaceController)
+        chaptersController = .init(interfaceController: interfaceController)
         
         rateButton = CPNowPlayingPlaybackRateButton { _ in
             Task {
@@ -84,8 +87,13 @@ class CarPlayNowPlayingController: NSObject {
             }
             
             template.updateNowPlayingButtons(buttons)
+            template.isAlbumArtistButtonEnabled = true
             template.isUpNextButtonEnabled = !isQueueEmpty
         }
+    }
+    private func applyQueueToNextUpButton() {
+        template.upNextTitle = String(localized: "playback.queue")
+        template.isUpNextButtonEnabled = true
     }
 }
 
@@ -96,22 +104,12 @@ extension CarPlayNowPlayingController: @preconcurrency CPNowPlayingTemplateObser
         }
     }
     func nowPlayingTemplateAlbumArtistButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
-        /*
-        if let audiobook = AudioPlayer.shared.item as? Audiobook {
-            Task {
-                // let controller = CarPlayChaptersController(interfaceController: interfaceController, audiobook: audiobook)
-                // try await interfaceController.pushTemplate(controller.template, animated: true)
-            }
-        } else if let episode = AudioPlayer.shared.item as? Episode {
-            Task {
-                /*
-                let podcast = try await AudiobookshelfClient.shared.podcast(podcastId: episode.podcastId).0
-                let controller = CarPlayPodcastController(interfaceController: self.interfaceController, podcast: podcast)
-                
-                try await self.interfaceController.pushTemplate(controller.template, animated: true)
-                 */
+        Task {
+            let currentItemID = await AudioPlayer.shared.currentItemID
+            
+            if currentItemID?.type == .audiobook {
+                try await interfaceController.pushTemplate(chaptersController.template, animated: true)
             }
         }
-         */
     }
 }

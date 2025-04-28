@@ -23,6 +23,7 @@ struct PlaybackTitle: View {
                 VStack(alignment: .leading, spacing: 4) {
                     if let currentItem = satellite.currentItem {
                         Text(currentItem.name)
+                            .id(currentItem.name)
                             .lineLimit(2)
                             .font(.headline)
                             .modify {
@@ -35,6 +36,7 @@ struct PlaybackTitle: View {
                             }
                         
                         Text(currentItem.authors, format: .list(type: .and, width: .short))
+                            .id(currentItem.authors)
                             .lineLimit(1)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -43,6 +45,7 @@ struct PlaybackTitle: View {
                             .font(.headline)
                     }
                 }
+                .id(satellite.currentItem)
             }
             .buttonStyle(.plain)
             
@@ -67,7 +70,6 @@ struct PlaybackTitle: View {
                 Spacer(minLength: 0)
             }
         }
-        .id(satellite.currentItemID)
     }
 }
 
@@ -403,6 +405,8 @@ struct PlaybackActions: View {
         .buttonStyle(.plain)
         .labelStyle(.iconOnly)
         .font(.system(size: 17, weight: .bold, design: .rounded))
+        .geometryGroup()
+        .compositingGroup()
     }
 }
 

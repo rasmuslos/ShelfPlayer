@@ -67,6 +67,8 @@ private extension CarPlayTabBar {
                 
                 templates.append(controller.template)
             }
+        } else {
+            templates.append(preferencesTipTemplate)
         }
         
         if !libraries.isEmpty, Defaults[.carPlayShowOtherLibraries] {
@@ -135,14 +137,25 @@ private extension CarPlayTabBar {
         
         return template
     }
+    var preferencesTipTemplate: CPListTemplate {
+        let template = CPListTemplate(title: String(localized: "carPlay.tabBar.preferencesTip.message"), sections: [], assistantCellConfiguration: nil)
+        
+        template.tabTitle = String(localized: "carPlay.tabBar.preferencesTip")
+        template.tabImage = UIImage(systemName: "plus.square.dashed")
+        
+        template.emptyViewTitleVariants = [String(localized: "carPlay.tabBar.preferencesTip")]
+        template.emptyViewSubtitleVariants = [String(localized: "carPlay.tabBar.preferencesTip.message")]
+        
+        return template
+    }
     
     func otherLibrariesTemplate(_ libraries: [Library: LibraryController]) -> CPListTemplate {
         let items = libraries.map { (library, controller) in
             let item = CPListItem(text: library.name, detailText: nil, image: UIImage(systemName: library.icon))
             
-            item.handler = { _, completion in
+            item.handler = { [weak self] _, completion in
                 Task {
-                    let _ = try? await self.interfaceController.pushTemplate(controller.template, animated: true)
+                    let _ = try? await self?.interfaceController.pushTemplate(controller.template, animated: true)
                     completion()
                 }
             }

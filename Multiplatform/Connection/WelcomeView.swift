@@ -39,6 +39,7 @@ struct WelcomeView: View {
             }
             .controlSize(.large)
             .buttonStyle(.borderedProminent)
+            .padding(.bottom, 8)
         }
         .sheet(isPresented: $isConnectionAddViewPresented) {
             ConnectionAddView() {

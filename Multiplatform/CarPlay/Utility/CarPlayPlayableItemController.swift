@@ -43,7 +43,8 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         
         row.userInfo = item.id
         
-        row.handler = { listItem, completion in
+        // row.handler = { [weak self] listItem, completion in
+        row.handler = { [item] listItem, completion in
             if let customHandler {
                 customHandler()
                 completion()

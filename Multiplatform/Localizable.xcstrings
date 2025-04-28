@@ -125,40 +125,30 @@
     "carPlay.otherLibraries" : {
 
     },
-    "carPlay.queue.title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Warteschlange"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Queue"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kö"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "播放队列"
-          }
-        }
-      }
-    },
     "carPlay.tabBar.empty" : {
 
     },
     "carPlay.tabBar.empty.message" : {
 
+    },
+    "carPlay.tabBar.preferencesTip" : {
+
+    },
+    "carPlay.tabBar.preferencesTip.message" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle in den App-Einstellungen aus welche Bibliotheken in der Tab-Leiste angezeigt werden sollen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can configure which libraries are visible in the tab bar in the preferences sheet."
+          }
+        }
+      }
     },
     "connection.add" : {
       "localizations" : {
@@ -3068,6 +3058,9 @@
           }
         }
       }
+    },
+    "playback.upNextQueue" : {
+
     },
     "preferences" : {
       "localizations" : {

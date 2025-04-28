@@ -32,9 +32,6 @@ struct PodcastEpisodesView: View {
         
         List {
             EpisodeList(episodes: viewModel.visible, context: .podcast)
-                .refreshable {
-                    viewModel.load()
-                }
         }
         .listStyle(.plain)
         .navigationTitle("item.releated.podcast.episodes")
@@ -59,6 +56,9 @@ struct PodcastEpisodesView: View {
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)
+        .refreshable {
+            viewModel.load()
+        }
         .onChange(of: viewModel.search) {
             viewModel.updateVisible()
         }

@@ -454,6 +454,7 @@
 			isa = PBXGroup;
 			children = (
 				3AF5A6382CC55F9F002F9B50 /* CarPlayQueueController.swift */,
+				3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */,
 				3ADD434F2CC3B6C00060E043 /* CarPlayNowPlayingController.swift */,
 			);
 			path = NowPlaying;
@@ -693,7 +694,6 @@
 				3A0C08992DBB9D8100E677D4 /* Utility */,
 				3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */,
 				3A0C089D2DBBA6E800E677D4 /* CarPlayPodcastController.swift */,
-				3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */,
 			);
 			path = CarPlay;
 			sourceTree = "<group>";

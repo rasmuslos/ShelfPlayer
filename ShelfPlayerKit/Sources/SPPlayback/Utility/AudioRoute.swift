@@ -42,16 +42,16 @@ public struct AudioRoute: Sendable {
             "cable.coaxial"
         } else if port == .thunderbolt || port == .usbAudio {
             "cable.connector"
+        } else if port == .carAudio {
+            "car.fill"
         } else {
             "airplay.audio"
         }
     }
     public var isHighlighted: Bool {
         switch port {
-        case .AVB, .HDMI, .PCI, .airPlay, .bluetoothA2DP, .bluetoothHFP, .bluetoothLE, .displayPort, .fireWire, .headphones, .lineOut, .thunderbolt, .usbAudio:
+        case .AVB, .HDMI, .PCI, .airPlay, .bluetoothA2DP, .bluetoothHFP, .bluetoothLE, .displayPort, .fireWire, .headphones, .lineOut, .thunderbolt, .usbAudio, .carAudio:
             true
-        case .carAudio:
-            false
         default:
             false
         }
