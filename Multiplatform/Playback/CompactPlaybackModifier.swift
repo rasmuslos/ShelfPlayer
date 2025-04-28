@@ -14,16 +14,16 @@ struct CompactPlaybackModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
-    @Environment(Satellite.self) private var satellite
     @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+    
+    static let height: CGFloat = 56
     
     let ready: Bool
     
     private var pushAmount: CGFloat {
         viewModel.pushAmount
     }
-    
-    static let height: CGFloat = 56
     
     func body(content: Content) -> some View {
         if ready && horizontalSizeClass == .compact {
@@ -235,6 +235,7 @@ private struct ExpandedForeground: View {
                     PlaybackQueue()
                         .padding(.vertical, 12)
                         .frame(maxHeight: height - 120)
+                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 }
                 
                 PlaybackActions()

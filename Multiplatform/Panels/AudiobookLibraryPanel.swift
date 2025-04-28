@@ -14,6 +14,7 @@ struct AudiobookLibraryPanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Default(.audiobooksFilter) private var filter
+    @Default(.audiobooksRestrictToPersisted) private var restrictToPersisted
     @Default(.audiobooksDisplayType) private var displayType
     
     @Default(.audiobooksSortOrder) private var sortOrder
@@ -97,7 +98,7 @@ struct AudiobookLibraryPanel: View {
                     Divider()
                     
                     Section("item.filter") {
-                        ItemFilterPicker(filter: $filter)
+                        ItemFilterPicker(filter: $filter, restrictToPersisted: $restrictToPersisted)
                     }
                     
                     Section("item.sort") {
@@ -110,6 +111,9 @@ struct AudiobookLibraryPanel: View {
         .sensoryFeedback(.error, trigger: notifyError)
         .onChange(of: filter) {
             lazyLoader.filter = filter
+        }
+        .onChange(of: restrictToPersisted) {
+            lazyLoader.restrictToPersisted = restrictToPersisted
         }
         .onChange(of: sortOrder) {
             lazyLoader.sortOrder = sortOrder
