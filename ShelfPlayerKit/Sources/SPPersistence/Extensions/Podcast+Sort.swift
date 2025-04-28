@@ -9,11 +9,25 @@ import Foundation
 import SPFoundation
 
 public extension Podcast {
-    static func filterSort(_ episodes: [Episode], seasonFilter: String?, filter: ItemFilter, search: String?, sortOrder: EpisodeSortOrder, ascending: Bool) async -> [Episode] {
+    static func filterSort(_ episodes: [Episode], filter: ItemFilter, seasonFilter: String?, restrictToPersisted: Bool, search: String?, sortOrder: EpisodeSortOrder, ascending: Bool) async -> [Episode] {
         var episodes = episodes
         
         if let seasonFilter {
             episodes = episodes.filter { $0.index.season == seasonFilter }
+        }
+        
+        if restrictToPersisted {
+            var included = [Episode]()
+            
+            for episode in episodes {
+                guard await PersistenceManager.shared.download.status(of: episode.id) != .none else {
+                    continue
+                }
+                
+                included.append(episode)
+            }
+            
+            episodes = included
         }
         
         // MARK: Filter

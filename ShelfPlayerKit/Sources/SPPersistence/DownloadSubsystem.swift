@@ -288,7 +288,7 @@ private extension PersistenceManager.DownloadSubsystem {
             activeTaskCount = 0
         }
         
-        guard activeTaskCount < 2 else {
+        guard activeTaskCount < 5 else {
             logger.info("There are \(activeTaskCount) active downloads. Skipping.")
             return
         }

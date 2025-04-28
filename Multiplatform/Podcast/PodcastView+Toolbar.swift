@@ -65,7 +65,7 @@ extension PodcastView.ToolbarModifier {
             
             Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
                 Section("item.filter") {
-                    ItemFilterPicker(filter: $viewModel.filter)
+                    ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
                 }
                 
                 Section("item.sort") {

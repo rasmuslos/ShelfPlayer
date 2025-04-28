@@ -12,6 +12,7 @@ struct ItemFilterPicker: View {
     @Environment(\.library) private var library
     
     @Binding var filter: ItemFilter
+    @Binding var restrictToPersisted: Bool
     
     private func binding(for filter: ItemFilter) -> Binding<Bool> {
         .init() { self.filter == filter } set: {
@@ -28,6 +29,8 @@ struct ItemFilterPicker: View {
             Toggle($0.label, systemImage: $0.icon, isOn: binding(for: $0))
                 .tag($0)
         }
+        
+        Toggle("item.filter.downloaded", systemImage: "arrow.down.circle", isOn: $restrictToPersisted)
     }
 }
 
@@ -60,23 +63,26 @@ extension ItemFilter {
 
 #Preview {
     @Previewable @State var filter: ItemFilter = .all
+    @Previewable @State var restrictToPersisted = false
     
-    ItemFilterPicker(filter: $filter)
+    ItemFilterPicker(filter: $filter, restrictToPersisted: $restrictToPersisted)
         .environment(\.library, .init(id: "fixture", connectionID: "fixture", name: "Fixture", type: .podcasts, index: -1))
 }
 
 #Preview {
     @Previewable @State var filter: ItemFilter = .all
+    @Previewable @State var restrictToPersisted = true
     
     Menu(String("Filter")) {
-        ItemFilterPicker(filter: $filter)
+        ItemFilterPicker(filter: $filter, restrictToPersisted: $restrictToPersisted)
     }
 }
 
 #Preview {
     @Previewable @State var filter: ItemFilter = .all
+    @Previewable @State var restrictToPersisted = false
     
     Picker(String("Filter"), selection: $filter) {
-        ItemFilterPicker(filter: $filter)
+        ItemFilterPicker(filter: $filter, restrictToPersisted: $restrictToPersisted)
     }
 }

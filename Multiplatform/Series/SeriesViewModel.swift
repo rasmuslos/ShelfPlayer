@@ -19,6 +19,8 @@ final class SeriesViewModel {
     
     @ObservableDefault(.audiobooksFilter) @ObservationIgnored
     var filter: ItemFilter
+    @ObservableDefault(.audiobooksRestrictToPersisted) @ObservationIgnored
+    var restrictToPersisted: Bool
     @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
     var displayType: ItemDisplayType
     

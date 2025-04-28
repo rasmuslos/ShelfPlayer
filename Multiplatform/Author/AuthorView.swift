@@ -143,7 +143,7 @@ struct AuthorView: View {
                     Divider()
                     
                     Section("item.filter") {
-                        ItemFilterPicker(filter: $viewModel.filter)
+                        ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
                     }
                 }
             }
@@ -166,6 +166,10 @@ struct AuthorView: View {
         .onChange(of: viewModel.filter) {
             viewModel.seriesLoader.filter = viewModel.filter
             viewModel.audiobooksLoader.filter = viewModel.filter
+        }
+        .onChange(of: viewModel.restrictToPersisted) {
+            viewModel.seriesLoader.restrictToPersisted = viewModel.restrictToPersisted
+            viewModel.audiobooksLoader.restrictToPersisted = viewModel.restrictToPersisted
         }
         .userActivity("io.rfk.shelfplayer.item") { activity in
             activity.title = viewModel.author.name

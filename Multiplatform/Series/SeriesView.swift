@@ -87,7 +87,7 @@ struct SeriesView: View {
                     Divider()
                     
                     Section("item.filter") {
-                        ItemFilterPicker(filter: $viewModel.filter)
+                        ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
                     }
                 }
             }
@@ -104,6 +104,9 @@ struct SeriesView: View {
         }
         .onChange(of: viewModel.filter) {
             viewModel.lazyLoader.filter = viewModel.filter
+        }
+        .onChange(of: viewModel.restrictToPersisted) {
+            viewModel.lazyLoader.restrictToPersisted = viewModel.restrictToPersisted
         }
         .userActivity("io.rfk.shelfplayer.item") { activity in
             activity.title = viewModel.series.name

@@ -43,6 +43,12 @@ final class PodcastViewModel {
             updateVisible()
         }
     }
+    var restrictToPersisted: Bool {
+        didSet {
+            Defaults[.episodesFilter(podcast.id)] = filter
+            updateVisible()
+        }
+    }
     
     var isToolbarVisible: Bool
     
@@ -63,6 +69,7 @@ final class PodcastViewModel {
         
         filter = Defaults[.episodesFilter(podcast.id)]
         seasonFilter = Defaults[.episodesSeasonFilter(podcast.id)]
+        restrictToPersisted = Defaults[.episodesRestrictToPersisted(podcast.id)]
         
         isToolbarVisible = false
         
@@ -137,7 +144,7 @@ extension PodcastViewModel {
     }
     nonisolated func updateVisible() {
         Task {
-            let episodes = await Podcast.filterSort(episodes, seasonFilter: seasonFilter, filter: filter, search: search, sortOrder: sortOrder, ascending: ascending)
+            let episodes = await Podcast.filterSort(episodes, filter: filter, seasonFilter: seasonFilter, restrictToPersisted: restrictToPersisted, search: search, sortOrder: sortOrder, ascending: ascending)
             
             await MainActor.withAnimation {
                 self.visible = episodes
