@@ -163,7 +163,7 @@ struct TabRouter: View {
         .tabViewStyle(.sidebarAdaptable)
         .id(current)
         .modifier(CompactPlaybackModifier(ready: isReady))
-        .environment(\.playbackBottomOffset, 88)
+        .environment(\.playbackBottomOffset, 52)
         .sensoryFeedback(.error, trigger: importFailedConnectionIDs)
         .onChange(of: current, initial: true) {
             let appearance = UINavigationBarAppearance()
