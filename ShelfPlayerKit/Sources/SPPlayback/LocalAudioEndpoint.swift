@@ -646,7 +646,7 @@ private extension LocalAudioEndpoint {
                     }
                     
                     let (_, episodes) = try await podcastID.resolvedComplex
-                    let sorted = await Podcast.filterSort(episodes, seasonFilter: Defaults[.episodesSeasonFilter(podcastID)], filter: Defaults[.episodesFilter(podcastID)], search: nil, sortOrder: Defaults[.episodesSortOrder(podcastID)], ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != currentItemID }
+                    let sorted = await Podcast.filterSort(episodes, filter: Defaults[.episodesFilter(podcastID)], seasonFilter: Defaults[.episodesSeasonFilter(podcastID)], restrictToPersisted: Defaults[.episodesRestrictToPersisted(podcastID)], search: nil, sortOrder: Defaults[.episodesSortOrder(podcastID)], ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != currentItemID }
                     
                     let queueItems = sorted.map { QueueItem(itemID: $0.id, startWithoutListeningSession: false) }
                     

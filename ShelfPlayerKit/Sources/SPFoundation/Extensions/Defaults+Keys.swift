@@ -62,6 +62,7 @@ public extension Defaults.Keys {
     static let audiobooksAscending = Key<Bool>("audiobooksAscending", default: false, iCloud: true)
     static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobookSortOrder", default: .added, iCloud: true)
     static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .notFinished, iCloud: true)
+    static let audiobooksRestrictToPersisted = Key("audiobooksRestrictToPersisted", default: false, iCloud: true)
     static let audiobooksDisplayType = Key<ItemDisplayType>("audiobooksDisplayType", default: .list, iCloud: true)
     
     static let authorsAscending = Key("authorsAscending", default: true)
@@ -82,6 +83,9 @@ public extension Defaults.Keys {
     }
     static func episodesSeasonFilter(_ itemID: ItemIdentifier) -> Defaults.Key<String?> {
         .init("episodes-season-filter-\(itemID.groupingID ?? itemID.primaryID)", default: nil)
+    }
+    static func episodesRestrictToPersisted(_ itemID: ItemIdentifier) -> Defaults.Key<Bool> {
+        .init("episodes-restrict-to-persisted-\(itemID.groupingID ?? itemID.primaryID)", default: false)
     }
     
     static let podcastsAscending = Key("podcastsAscending", default: true, iCloud: true)

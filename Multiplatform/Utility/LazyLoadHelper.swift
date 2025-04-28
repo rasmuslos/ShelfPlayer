@@ -34,6 +34,11 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
             refresh()
         }
     }
+    var restrictToPersisted: Bool {
+        didSet {
+            refresh()
+        }
+    }
     
     var sortOrder: O {
         didSet {
@@ -78,10 +83,11 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     private let loadMore: @Sendable (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)
     
     @MainActor
-    init(filterLocally: Bool, filter: ItemFilter, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)) {
+    init(filterLocally: Bool, filter: ItemFilter, restrictToPersisted: Bool, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)) {
         logger = .init(subsystem: "io.rfk.shelfPlayer", category: "LazyLoader")
         
         self.filter = filter
+        self.restrictToPersisted = restrictToPersisted
         
         self.sortOrder = sortOrder
         self.ascending = ascending
@@ -198,6 +204,48 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 let filter = await filter
                 let filterLocally = filterLocally || filteredGenre != nil
+                
+                if await restrictToPersisted {
+                    if let items = received as? [PlayableItem] {
+                        var filtered = [PlayableItem]()
+                        
+                        for item in items {
+                            let status = await PersistenceManager.shared.download.status(of: item.id)
+                            
+                            if status != .none {
+                                filtered.append(item)
+                            }
+                        }
+                        
+                        received = filtered as! [T]
+                    } else if let sections = received as? [AudiobookSection] {
+                        var filtered = [AudiobookSection]()
+                        
+                        for section in sections {
+                            switch section {
+                            case .audiobook(let audiobook):
+                                let status = await PersistenceManager.shared.download.status(of: audiobook.id)
+                                
+                                if status != .none {
+                                    filtered.append(section)
+                                }
+                            case .series(_, _, let audiobookIDs):
+                                for audiobookID in audiobookIDs {
+                                    let status = await PersistenceManager.shared.download.status(of: audiobookID)
+                                    
+                                    if status != .none {
+                                        filtered.append(section)
+                                        break
+                                    }
+                                }
+                            }
+                        }
+                        
+                        received = filtered as! [T]
+                    } else {
+                        throw FilterError.unsupportedItemType
+                    }
+                }
                 
                 if filterLocally && filter != .all {
                     if let items = received as? [PlayableItem] {
@@ -327,6 +375,7 @@ extension LazyLoadHelper {
     static var audiobooks: LazyLoadHelper<AudiobookSection, AudiobookSortOrder> {
         .init(filterLocally: false,
               filter: Defaults[.audiobooksFilter],
+              restrictToPersisted: Defaults[.audiobooksRestrictToPersisted],
               sortOrder: Defaults[.audiobooksSortOrder],
               ascending: Defaults[.audiobooksAscending],
               loadMore: { page, filter, sortOrder, ascending, groupAudiobooksInSeries, library in
@@ -335,31 +384,31 @@ extension LazyLoadHelper {
     }
     
     static func audiobooks(filtered: ItemIdentifier, sortOrder: AudiobookSortOrder?, ascending: Bool?) -> LazyLoadHelper<Audiobook, AudiobookSortOrder?> {
-        .init(filterLocally: true, filter: Defaults[.audiobooksFilter], sortOrder: sortOrder, ascending: ascending ?? true, loadMore: { page, filter, sortOrder, ascending, _, _ in
+        .init(filterLocally: true, filter: Defaults[.audiobooksFilter], restrictToPersisted: Defaults[.audiobooksRestrictToPersisted], sortOrder: sortOrder, ascending: ascending ?? true, loadMore: { page, filter, sortOrder, ascending, _, _ in
             try await ABSClient[filtered.connectionID].audiobooks(filtered: filtered, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     
     static var authors: LazyLoadHelper<Author, AuthorSortOrder> {
-        .init(filterLocally: false, filter: .all, sortOrder: Defaults[.authorsSortOrder], ascending: Defaults[.authorsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
+        .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: Defaults[.authorsSortOrder], ascending: Defaults[.authorsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].authors(from: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     
     static var series: LazyLoadHelper<Series, SeriesSortOrder> {
-        .init(filterLocally: false, filter: .all, sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: { page, _, sortOrder, ascending, _, library in
+        .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].series(in: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     
     static func series(filtered: ItemIdentifier, filter: ItemFilter, sortOrder: SeriesSortOrder, ascending: Bool) -> LazyLoadHelper<Series, SeriesSortOrder> {
-        .init(filterLocally: true, filter: filter, sortOrder: sortOrder, ascending: ascending, loadMore: { page, _, sortOrder, ascending, _, library in
+        .init(filterLocally: true, filter: filter, restrictToPersisted: false, sortOrder: sortOrder, ascending: ascending, loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].series(in: library.id, filtered: filtered, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
     
     static var podcasts: LazyLoadHelper<Podcast, PodcastSortOrder> {
-        .init(filterLocally: false, filter: .all, sortOrder: Defaults[.podcastsSortOrder], ascending: Defaults[.podcastsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
+        .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: Defaults[.podcastsSortOrder], ascending: Defaults[.podcastsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }

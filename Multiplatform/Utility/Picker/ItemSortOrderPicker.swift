@@ -23,18 +23,25 @@ struct ItemSortOrderPicker<O: ItemSortOrder>: View {
             }
         }
     }
-    private func icon(for sortOrder: O) -> String {
+    private func icon(for sortOrder: O) -> String? {
         if self.sortOrder == sortOrder {
-            ascending ? "chevron.down.2" : "chevron.up.2"
+            ascending ? "chevron.down" : "chevron.up"
         } else {
-            sortOrder.icon
+            // sortOrder.icon
+            nil
         }
     }
     
     var body: some View {
-        ForEach(Array(O.allCases)) {
-            Toggle($0.label, systemImage: icon(for: $0), isOn: binding(for: $0))
-                .tag($0)
+        ForEach(Array(O.allCases)) { sortOrder in
+            Group {
+                if let icon = icon(for: sortOrder) {
+                    Toggle(sortOrder.label, systemImage: icon, isOn: binding(for: sortOrder))
+                } else {
+                    Toggle(sortOrder.label, isOn: binding(for: sortOrder))
+                }
+            }
+            .tag(sortOrder)
         }
     }
 }
