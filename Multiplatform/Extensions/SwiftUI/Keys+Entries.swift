@@ -17,7 +17,6 @@ extension EnvironmentValues {
     @Entry var connectionID: ItemIdentifier.ConnectionID? = nil
     
     @Entry var playbackBottomOffset: CGFloat = 0
-    @Entry var playbackBottomSafeAreaPadding: CGFloat = 0
 }
 
 enum DisplayContext {

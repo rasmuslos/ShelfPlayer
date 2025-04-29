@@ -178,6 +178,14 @@ struct DownloadButton: View {
                                 case .episode:
                                     $0
                                         .frame(width: 8)
+                                case .queue:
+                                    $0
+                                        .frame(width: 15)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 1)
+                                                .aspectRatio(1, contentMode: .fit)
+                                                .frame(width: 5)
+                                        }
                                 }
                             }
                     } else {
@@ -229,7 +237,7 @@ struct DownloadButton: View {
             }
         }
         .onReceive(RFNotification[.downloadStatusChanged].publisher()) { (itemID, status) in
-            guard itemID == itemID else {
+            guard self.itemID == itemID else {
                 return
             }
             
@@ -242,6 +250,7 @@ struct DownloadButton: View {
         case toolbar
         case triangle
         case episode
+        case queue
     }
 }
 

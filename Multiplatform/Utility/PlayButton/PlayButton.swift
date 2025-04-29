@@ -170,27 +170,3 @@ struct PlayButton: View {
             .environment(\.playButtonStyle, .init(style: playButtonStyle))
     }
 }
-
-#if DEBUG
-#Preview {
-    VStack {
-        PlayButton(item: Audiobook.fixture, color: .accent)
-            .playButtonSize(.medium)
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(.accent)
-    .previewEnvironment()
-}
-
-#Preview {
-    PlayButton(item: Audiobook.fixture, color: .accent)
-        .playButtonSize(.large)
-        .previewEnvironment()
-}
-
-#Preview {
-    PlayButton(item: Audiobook.fixture, color: nil)
-        .playButtonSize(.large)
-        .previewEnvironment()
-}
-#endif

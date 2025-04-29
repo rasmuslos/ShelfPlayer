@@ -75,7 +75,7 @@ final class PlaybackViewModel {
                 self?.isExpanded = true
             }
             
-            self?.loadAuthorIDs(itemID: itemID)
+            self?.loadIDs(itemID: itemID)
         }
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.isExpanded = false
@@ -244,23 +244,62 @@ final class PlaybackViewModel {
 }
 
 private extension PlaybackViewModel {
-    func loadAuthorIDs(itemID: ItemIdentifier) {
+    nonisolated func loadIDs(itemID: ItemIdentifier) {
         Task {
             guard let item = try? await itemID.resolved else {
                 return
             }
             
+            await withTaskGroup {
+                $0.addTask { await self.loadAuthorIDs(item: item) }
+                $0.addTask { await self.loadSeriesIDs(item: item) }
+            }
+        }
+    }
+    func loadAuthorIDs(item: Item) {
+        Task {
             var authorIDs = [(ItemIdentifier, String)]()
             
             for author in item.authors {
                 do {
-                    let authorID = try await ABSClient[itemID.connectionID].authorID(from: itemID.libraryID, name: author)
+                    let authorID = try await ABSClient[item.id.connectionID].authorID(from: item.id.libraryID, name: author)
                     authorIDs.append((authorID, author))
                 } catch {}
             }
             
             await MainActor.withAnimation {
                 self.authorIDs = authorIDs
+            }
+        }
+    }
+    func loadSeriesIDs(item: Item) {
+        Task {
+            guard let audiobook = item as? Audiobook else {
+                await MainActor.withAnimation {
+                    self.seriesIDs.removeAll()
+                }
+                
+                return
+            }
+            
+            var seriesIDs = [(ItemIdentifier, String)]()
+            
+            for series in audiobook.series {
+                if let seriesID = series.id {
+                    seriesIDs.append((seriesID, series.name))
+                    continue
+                }
+                
+                do {
+                    let seriesID = try await ABSClient[item.id.connectionID].seriesID(from: item.id.libraryID, name: series.name)
+                    authorIDs.append((seriesID, series.name))
+                } catch {
+                    continue
+                }
+            }
+            
+            await MainActor.withAnimation {
+                self.seriesIDs = seriesIDs
             }
         }
     }

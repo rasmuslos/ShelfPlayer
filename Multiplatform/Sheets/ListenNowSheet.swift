@@ -76,7 +76,7 @@ struct ListenNowSheetToggle: View {
     
     var body: some View {
         if totalLibraryCount > 1 {
-            Button("panel.listenNow", systemImage: "play.square.stack.fill") {
+            Button("panel.listenNow", systemImage: "play.rectangle.on.rectangle.fill") {
                 satellite.currentSheet = .listenNow
             }
         }

@@ -32,9 +32,9 @@ final class AudiobookViewModel: Sendable {
     private(set) var chapters: [Chapter]
     private(set) var supplementaryPDFs: [PlayableItem.SupplementaryPDF]
     
-    private(set) var sameAuthor: [String: [Audiobook]]
-    private(set) var sameSeries: [Audiobook.SeriesFragment: [Audiobook]]
-    private(set) var sameNarrator: [String: [Audiobook]]
+    private(set) var sameAuthor: [(String, [Audiobook])]
+    private(set) var sameSeries: [(Audiobook.SeriesFragment, [Audiobook])]
+    private(set) var sameNarrator: [(String, [Audiobook])]
     
     private(set) var loadingPDF: Bool
     
@@ -59,9 +59,9 @@ final class AudiobookViewModel: Sendable {
         chapters = []
         supplementaryPDFs = []
         
-        sameAuthor = [:]
-        sameSeries = [:]
-        sameNarrator = [:]
+        sameAuthor = []
+        sameSeries = []
+        sameNarrator = []
         
         loadingPDF = false
         
@@ -134,28 +134,35 @@ private extension AudiobookViewModel {
     }
     
     nonisolated func loadAuthors() async {
-        let current = await audiobook
-        var resolved = [String: [Audiobook]]()
-        
-        for author in await audiobook.authors {
-            do {
-                let authorID = try await ABSClient[audiobook.id.connectionID].authorID(from: audiobook.id.libraryID, name: author)
-                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: authorID, sortOrder: .released, ascending: true, limit: 100, page: 0)
-                
-                audiobooks = audiobooks.filter { $0 != current }
-                
-                guard !audiobooks.isEmpty else {
-                    continue
-                }
-                
-                resolved[author] = audiobooks
-            } catch {
-                logger.warning("Failed to load author \(author): \(error)")
-                
-                await MainActor.run {
-                    notifyError.toggle()
+        let resolved = await withTaskGroup {
+            let audiobook = await audiobook
+            
+            for author in audiobook.authors {
+                $0.addTask { () -> (String, [Audiobook])? in
+                    do {
+                        let authorID = try await ABSClient[self.audiobook.id.connectionID].authorID(from: self.audiobook.id.libraryID, name: author)
+                        var (audiobooks, _) = try await ABSClient[self.audiobook.id.connectionID].audiobooks(filtered: authorID, sortOrder: .released, ascending: true, limit: 100, page: 0)
+                        
+                        audiobooks = audiobooks.filter { $0 != audiobook }
+                        
+                        guard !audiobooks.isEmpty else {
+                            return nil
+                        }
+                        
+                        return (author, audiobooks)
+                    } catch {
+                        return nil
+                    }
                 }
             }
+            
+            return await $0.reduce(into: [String: [Audiobook]]()) {
+                guard let (author, audiobooks) = $1 else {
+                    return
+                }
+                
+                $0[author] = audiobooks
+            }.sorted(by: { $0.0 < $1.0 })
         }
         
         await MainActor.withAnimation {
@@ -164,35 +171,42 @@ private extension AudiobookViewModel {
     }
     
     nonisolated func loadSeries() async {
-        let current = await audiobook
-        var resolved = [Audiobook.SeriesFragment: [Audiobook]]()
-        
-        for series in await audiobook.series {
-            do {
-                let seriesID: ItemIdentifier
-                
-                if let id = series.id {
-                    seriesID = id
-                } else {
-                    seriesID = try await ABSClient[audiobook.id.connectionID].seriesID(from: library.id, name: series.name)
-                }
-                
-                var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: 20, page: 0)
-                
-                audiobooks = audiobooks.filter { $0 != current }
-                
-                guard !audiobooks.isEmpty else {
-                    continue
-                }
-                
-                resolved[series] = audiobooks
-            } catch {
-                logger.warning("Failed to load series \(series.name): \(error)")
-                
-                await MainActor.run {
-                    notifyError.toggle()
+        let resolved = await withTaskGroup {
+            let audiobook = await audiobook
+            
+            for series in audiobook.series {
+                $0.addTask { () -> (Audiobook.SeriesFragment, [Audiobook])? in
+                    do {
+                        let seriesID: ItemIdentifier
+                        
+                        if let id = series.id {
+                            seriesID = id
+                        } else {
+                            seriesID = try await ABSClient[audiobook.id.connectionID].seriesID(from: self.library.id, name: series.name)
+                        }
+                        
+                        var (audiobooks, _) = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: 20, page: 0)
+                        
+                        audiobooks = audiobooks.filter { $0 != audiobook }
+                        
+                        guard !audiobooks.isEmpty else {
+                            return nil
+                        }
+                        
+                        return (series, audiobooks)
+                    } catch {
+                        return nil
+                    }
                 }
             }
+            
+            return await $0.reduce(into: [Audiobook.SeriesFragment: [Audiobook]]()) {
+                guard let (series, audiobooks) = $1 else {
+                    return
+                }
+                
+                $0[series] = audiobooks
+            }.sorted(by: { $0.0.name < $1.0.name })
         }
         
         await MainActor.withAnimation {
@@ -201,27 +215,34 @@ private extension AudiobookViewModel {
     }
     
     nonisolated func loadNarrators() async {
-        let current = await audiobook
-        var resolved = [String: [Audiobook]]()
-        
-        for narrator in await audiobook.narrators {
-            do {
-                var audiobooks = try await ABSClient[audiobook.id.connectionID].audiobooks(from: audiobook.id.libraryID, narratorName: narrator, page: 0, limit: 200)
-                
-                audiobooks = audiobooks.filter { $0 != current }
-                
-                guard !audiobooks.isEmpty else {
-                    continue
-                }
-                
-                resolved[narrator] = audiobooks
-            } catch {
-                logger.warning("Failed to load narrator \(narrator): \(error)")
-                
-                await MainActor.run {
-                    notifyError.toggle()
+        let resolved = await withTaskGroup {
+            let audiobook = await audiobook
+            
+            for narrator in audiobook.narrators {
+                $0.addTask { () -> (String, [Audiobook])? in
+                    do {
+                        var audiobooks = try await ABSClient[audiobook.id.connectionID].audiobooks(from: audiobook.id.libraryID, narratorName: narrator, page: 0, limit: 200)
+                        
+                        audiobooks = audiobooks.filter { $0 != audiobook }
+                        
+                        guard !audiobooks.isEmpty else {
+                            return nil
+                        }
+                        
+                        return (narrator, audiobooks)
+                    } catch {
+                        return nil
+                    }
                 }
             }
+            
+            return await $0.reduce(into: [String: [Audiobook]]()) {
+                guard let (narrator, audiobooks) = $1 else {
+                    return
+                }
+                
+                $0[narrator] = audiobooks
+            }.sorted(by: { $0.0 < $1.0 })
         }
         
         await MainActor.withAnimation {

@@ -21,7 +21,7 @@ struct SeriesView: View {
     @ViewBuilder
     private var rowTitle: some View {
         HStack(spacing: 0) {
-            RowTitle(title: String(localized: "item.releated.series.audiobooks"), fontDesign: .serif)
+            RowTitle(title: String(localized: "item.related.series.audiobooks"), fontDesign: .serif)
             
             Spacer(minLength: 0)
             

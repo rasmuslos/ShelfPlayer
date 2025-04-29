@@ -20,8 +20,8 @@ struct LargePlayButtonStyle: PlayButtonStyle {
                         Rectangle()
                             .fill((configuration.background.isLight ?? false) ? .black : .white)
                             .opacity(0.14)
-                            .frame(width: geometry.size.width * (configuration.progress ?? 0))
-                            .padding(.leading, geometry.size.width * (1 - (configuration.progress ?? 0)))
+                            .frame(width: geometry.size.width * (1 - (configuration.progress ?? 0)))
+                            .padding(.leading, geometry.size.width * (configuration.progress ?? 0))
                             .animation(.smooth, value: configuration.progress)
                     }
                 }
@@ -42,3 +42,17 @@ struct LargePlayButtonStyle: PlayButtonStyle {
         true
     }
 }
+
+#if DEBUG
+#Preview {
+    PlayButton(item: Audiobook.fixture, color: .accent)
+        .playButtonSize(.large)
+        .previewEnvironment()
+}
+
+#Preview {
+    PlayButton(item: Audiobook.fixture, color: nil)
+        .playButtonSize(.large)
+        .previewEnvironment()
+}
+#endif

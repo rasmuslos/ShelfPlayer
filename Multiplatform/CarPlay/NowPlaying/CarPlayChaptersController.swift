@@ -44,7 +44,7 @@ class CarPlayChaptersController {
     }
     private func updateSections(chapters: [Chapter], activeIndex: Int?) {
         self.template.updateSections([CPListSection(items: chapters.enumerated().map { index, chapter in
-            let item =  CPListItem(text: chapter.title, detailText: "\(chapter.startOffset.formatted(.duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))) - \(chapter.endOffset.formatted(.duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))) • \((chapter.endOffset - chapter.startOffset).formatted(.duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3)))")
+            let item =  CPListItem(text: chapter.title, detailText: chapter.timeOffsetFormatted)
             
             item.isPlaying = index == activeIndex
             item.playingIndicatorLocation = .trailing
