@@ -536,7 +536,7 @@ public extension PersistenceManager.DownloadSubsystem {
             // Otherwise: 10% shared between images
             // Otherwise: 80% shared between audio
             
-            // Formula: category base * (1/n) where n = count of assets in category
+            // Formula: category base * (1/n) where n = number of assets in category
             
             let (item, audioTracks, chapters, supplementaryPDFs) = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID)
             
@@ -775,7 +775,6 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
         Task {
             await PersistenceManager.shared.download.reportProgress(taskID: downloadTask.taskIdentifier, bytesWritten: bytesWritten, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
         }
-        
     }
     
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {

@@ -48,7 +48,7 @@ struct PodcastView: View {
                                 if let season = viewModel.seasonFilter {
                                     Text(viewModel.seasonLabel(of: season))
                                 } else {
-                                    Text("item.releated.podcast.episodes")
+                                    Text("item.related.podcast.episodes")
                                 }
                             }
                             .bold()
@@ -69,7 +69,7 @@ struct PodcastView: View {
                         HStack(spacing: 0) {
                             Spacer(minLength: 0)
                             
-                            Text("item.releated.podcast.episodes.all")
+                            Text("item.related.podcast.episodes.all")
                         }
                     }
                 }

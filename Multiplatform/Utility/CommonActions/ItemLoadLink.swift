@@ -81,9 +81,9 @@ extension ItemIdentifier.ItemType {
         case .series:
             "rectangle.grid.2x2"
         case .podcast:
-            "rectangle.stack"
+            "square.stack"
         case .episode:
-            "play.square.stack"
+            "play.square"
         }
     }
 }

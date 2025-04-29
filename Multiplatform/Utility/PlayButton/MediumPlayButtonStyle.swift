@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ShelfPlayerKit
 
 struct MediumPlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {
@@ -29,3 +30,15 @@ struct MediumPlayButtonStyle: PlayButtonStyle {
         false
     }
 }
+
+#if DEBUG
+#Preview {
+    VStack {
+        PlayButton(item: Audiobook.fixture, color: .accent)
+            .playButtonSize(.medium)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(.accent)
+    .previewEnvironment()
+}
+#endif

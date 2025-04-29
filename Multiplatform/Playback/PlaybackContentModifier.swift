@@ -21,7 +21,6 @@ struct PlaybackTabContentModifier: ViewModifier {
             
             ZStack(alignment: .bottom) {
                 content
-                    .environment(\.playbackBottomSafeAreaPadding, geometryProxy.safeAreaInsets.bottom)
                 
                 if satellite.isNowPlayingVisible {
                     Rectangle()
@@ -42,17 +41,13 @@ struct PlaybackTabContentModifier: ViewModifier {
 }
 
 struct PlaybackSafeAreaPaddingModifier: ViewModifier {
-    @Environment(\.playbackBottomSafeAreaPadding) private var playbackBottomSafeAreaPadding
     @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     
     @Environment(Satellite.self) private var satellite
     
-    private var totalHeight: CGFloat {
-        CompactPlaybackModifier.height + playbackBottomOffset
-    }
     private var padding: CGFloat {
         if satellite.isNowPlayingVisible {
-            max(0, (totalHeight - playbackBottomSafeAreaPadding))
+            CompactPlaybackModifier.height + 4
         } else {
             0
         }

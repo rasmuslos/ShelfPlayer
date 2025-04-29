@@ -111,7 +111,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         self.loadMore = loadMore
         
         Task {
-            for await _ in Defaults.updates(.groupAudiobooksInSeries, initial: false) {
+            for await _ in Defaults.updates([.groupAudiobooksInSeries, .showSingleEntryGroupedSeries], initial: false) {
                 refresh()
             }
         }
@@ -198,6 +198,37 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     }
                     
                     logger.info("Finished loading items of type \(T.self)")
+                }
+                
+                // MARK: Replace audiobook sections with only one book
+                
+                if Defaults[.showSingleEntryGroupedSeries], let sections = received as? [AudiobookSection] {
+                    var updated = [AudiobookSection]()
+                    
+                    for section in sections {
+                        switch section {
+                        case .audiobook:
+                            updated.append(section)
+                        case .series(_, _, let audiobookIDs):
+                            guard audiobookIDs.count > 1 else {
+                                guard let firstID = audiobookIDs.first else {
+                                    continue
+                                }
+                                
+                                guard let audiobook = try? await firstID.resolved as? Audiobook else {
+                                    updated.append(section)
+                                    continue
+                                }
+                                
+                                updated.append(.audiobook(audiobook: audiobook))
+                                continue
+                            }
+                            
+                            updated.append(section)
+                        }
+                    }
+                    
+                    received = updated as! [T]
                 }
                 
                 // MARK: Local filter & search

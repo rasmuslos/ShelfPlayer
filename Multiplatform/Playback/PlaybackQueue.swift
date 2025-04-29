@@ -176,9 +176,41 @@ private struct QueueChapterRow: View {
         satellite.currentTime >= chapter.startOffset && !isFinished
     }
     
+    @ViewBuilder
+    private var sleepTimerButton: some View {
+        Button("sleepTimer.chapter.set", systemImage: "moon.dust.fill") {
+            satellite.setSleepTimerToChapter(chapter)
+        }
+    }
+    
     var body: some View {
         QueueTimeRow(title: chapter.title, time: chapter.startOffset, isActive: isActive, isFinished: isFinished)
             .id(chapter)
+            .contextMenu {
+                sleepTimerButton
+            } preview: {
+                VStack(alignment: .leading, spacing: 2) {
+                    let remaining = (chapter.endOffset - satellite.currentTime) * satellite.playbackRate
+                    
+                    if remaining > 0 {
+                        Text("chapter.finishedAt \(Date.now.advanced(by: remaining).formatted(date: .omitted, time: .shortened))")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Text(chapter.title)
+                        .font(.headline)
+                    
+                    Text(chapter.timeOffsetFormatted)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(20)
+            }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                sleepTimerButton
+                    .tint(.accentColor)
+            }
     }
 }
 
@@ -249,6 +281,11 @@ private struct QueueItemRow: View {
             } else {
                 ProgressView()
             }
+            
+            Spacer(minLength: 4)
+            
+            DownloadButton(itemID: itemID, progressVisibility: .queue)
+                .labelStyle(.iconOnly)
         }
         .id(itemID)
         .contentShape(.rect)
@@ -283,12 +320,7 @@ private struct QueueItemRow: View {
             Divider()
             
             if let audiobook = item as? Audiobook {
-                NavigationLink(destination: AudiobookView(audiobook)) {
-                    Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book")
-                }
-                
-                ItemMenu(authors: audiobook.authors)
-                ItemMenu(series: audiobook.series)
+                ItemLoadLink(itemID: audiobook.id)
             } else if let episode = item as? Episode {
                 ItemLoadLink(itemID: episode.id)
                 ItemLoadLink(itemID: episode.podcastID)

@@ -40,6 +40,7 @@ public extension Defaults.Keys {
     // Advanced
     
     static let enableSerifFont = Key("enableSerifFont", default: true)
+    static let showSingleEntryGroupedSeries = Key("showSingleEntryGroupedSeries", default: true)
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
     
     static let lockSeekBar = Key("lockSeekBar", default: false)
@@ -48,7 +49,6 @@ public extension Defaults.Keys {
     static let startInOfflineMode = Key("startInOfflineMode", default: false)
     
     // MARK: In-App settings
-    // TODO: hhh
     
     static let playbackRates = Key<[Percentage]>("playbackRates", default: [0.5, 0.75, 1, 1.25, 1.5, 2])
     static let defaultPlaybackRate = Key<Percentage>("defaultPlaybackRate", default: 1)

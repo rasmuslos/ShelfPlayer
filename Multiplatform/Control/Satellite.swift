@@ -304,6 +304,7 @@ extension Satellite {
             await endWorking(on: currentItemID, successfully: true)
         }
     }
+    
     nonisolated func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
         Task {
             guard let currentItemID = await currentItemID else {
@@ -323,6 +324,28 @@ extension Satellite {
             
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.extendSleepTimer()
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
+    nonisolated func setSleepTimerToChapter(_ chapter: Chapter) {
+        Task {
+            guard let currentItemID = await currentItemID else {
+                return
+            }
+            
+            await startWorking(on: currentItemID)
+            let chapters = await AudioPlayer.shared.chapters
+            
+            guard let index = chapters.firstIndex(of: chapter),
+                  let currentChapterIndex = await AudioPlayer.shared.activeChapterIndex,
+                  index >= currentChapterIndex else {
+                await endWorking(on: currentItemID, successfully: false)
+                return
+            }
+            
+            let amount = index - currentChapterIndex + 1
+            
+            await AudioPlayer.shared.setSleepTimer(.chapters(amount))
             await endWorking(on: currentItemID, successfully: true)
         }
     }
@@ -686,11 +709,13 @@ extension Satellite {
         isPlaying = true
         isBuffering = false
         
-        currentTime = 30
+        currentTime = 20
         duration = 60
         
         currentChapterTime = 5
         chapterDuration = 10
+        
+        playbackRate = 1.5
         
         return self
     }

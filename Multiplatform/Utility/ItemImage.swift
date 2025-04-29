@@ -174,9 +174,16 @@ private struct Placeholder: View {
     let itemID: ItemIdentifier?
     let cornerRadius: CGFloat
     
+    private var itemIDIcon: String? {
+        guard let itemID else {
+            return nil
+        }
+        
+        return itemID.type.icon
+    }
     private var fallbackIcon: String {
-        if let itemID, itemID.type == .author {
-            "person"
+        if let itemID {
+            itemID.type.icon
         } else {
             switch library?.type {
             case .audiobooks:

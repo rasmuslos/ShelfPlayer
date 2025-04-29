@@ -15,7 +15,7 @@ struct LoadingView: View {
     }
     
     struct Inner: View {
-        let symbols = ["pc", "server.rack", "cpu", "memorychip"]
+        let symbols = ["pc", "server.rack", "cpu", "memorychip", "hourglass", "zzz"]
         
         var body: some View {
             ContentUnavailableView("loading", systemImage: symbols.randomElement()!)

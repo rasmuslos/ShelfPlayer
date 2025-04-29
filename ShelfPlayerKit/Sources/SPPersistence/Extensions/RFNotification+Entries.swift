@@ -28,7 +28,7 @@ public extension RFNotification.Notification {
         .init("io.rfk.shelfPlayerKit.downloadStatus.updated")
     }
     static func downloadProgressChanged(_ itemID: ItemIdentifier) -> Notification<(assetID: UUID, weight: Percentage, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)> {
-        .init("io.rfk.shelfPlayerKit.progress.updated_\(itemID)")
+        .init("io.rfk.shelfPlayerKit.progress.updated_\(itemID.description)")
     }
     
     static var bookmarksChanged: Notification<ItemIdentifier> {
