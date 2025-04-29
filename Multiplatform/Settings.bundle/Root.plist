@@ -228,6 +228,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Show single-entry grouped series</string>
+			<key>Key</key>
+			<string>showSingleEntryGroupedSeries</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Show progress in %</string>
 			<key>Key</key>
 			<string>itemImageStatusPercentageText</string>

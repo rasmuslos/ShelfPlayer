@@ -234,7 +234,7 @@ private struct ExpandedForeground: View {
                     
                     PlaybackQueue()
                         .padding(.vertical, 12)
-                        .frame(maxHeight: height - 120)
+                        .frame(maxHeight: height - 140)
                         .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 }
                 
@@ -308,7 +308,7 @@ private struct CollapsedForeground: View {
                 }
                 .labelStyle(.iconOnly)
                 .imageScale(.large)
-                .symbolEffect(.bounce.up, value: viewModel.notifySkipBackwards)
+                .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
                 
                 ZStack {
                     Group {

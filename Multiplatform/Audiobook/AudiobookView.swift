@@ -72,14 +72,14 @@ struct AudiobookView: View {
                 }
                 
                 VStack(spacing: 12) {
-                    ForEach(Array(viewModel.sameSeries.keys), id: \.self) { series in
-                        AudiobookRow(title: String(localized: "item.releated.audiobook.series \(series.name)"), small: true, audiobooks: viewModel.sameSeries[series]!)
+                    ForEach(viewModel.sameSeries, id: \.0.hashValue) { (series, audiobooks) in
+                        AudiobookRow(title: String(localized: "item.related.audiobook.series \(series.name)"), small: true, audiobooks: audiobooks)
                     }
-                    ForEach(Array(viewModel.sameAuthor.keys), id: \.self) { author in
-                        AudiobookRow(title: String(localized: "item.releated.audiobook.author \(author)"), small: true, audiobooks: viewModel.sameAuthor[author]!)
+                    ForEach(viewModel.sameAuthor, id: \.0.hashValue) { (author, audiobooks) in
+                        AudiobookRow(title: String(localized: "item.related.audiobook.author \(author)"), small: true, audiobooks: audiobooks)
                     }
-                    ForEach(Array(viewModel.sameNarrator.keys), id: \.self) { narrator in
-                        AudiobookRow(title: String(localized: "item.releated.audiobook.narrator \(narrator)"), small: true, audiobooks: viewModel.sameNarrator[narrator]!)
+                    ForEach(viewModel.sameNarrator, id: \.0.hashValue) { (narrator, audiobooks) in
+                        AudiobookRow(title: String(localized: "item.related.audiobook.narrator \(narrator)"), small: true, audiobooks: audiobooks)
                     }
                 }
                 .padding(.vertical, 16)

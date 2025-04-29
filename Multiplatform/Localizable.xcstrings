@@ -150,6 +150,9 @@
         }
       }
     },
+    "chapter.finishedAt %@" : {
+
+    },
     "connection.add" : {
       "localizations" : {
         "de" : {
@@ -1749,7 +1752,7 @@
         }
       }
     },
-    "item.releated.audiobook.author %@" : {
+    "item.related.audiobook.author %@" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1765,7 +1768,7 @@
         }
       }
     },
-    "item.releated.audiobook.narrator %@" : {
+    "item.related.audiobook.narrator %@" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1781,7 +1784,7 @@
         }
       }
     },
-    "item.releated.audiobook.series %@" : {
+    "item.related.audiobook.series %@" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1797,7 +1800,7 @@
         }
       }
     },
-    "item.releated.author.audiobooks" : {
+    "item.related.author.audiobooks" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1813,7 +1816,7 @@
         }
       }
     },
-    "item.releated.author.series" : {
+    "item.related.author.series" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1829,7 +1832,7 @@
         }
       }
     },
-    "item.releated.podcast.episodes" : {
+    "item.related.podcast.episodes" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1845,7 +1848,7 @@
         }
       }
     },
-    "item.releated.podcast.episodes.all" : {
+    "item.related.podcast.episodes.all" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1861,7 +1864,7 @@
         }
       }
     },
-    "item.releated.series.audiobooks" : {
+    "item.related.series.audiobooks" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3871,6 +3874,9 @@
           }
         }
       }
+    },
+    "sleepTimer.chapter.set" : {
+
     },
     "sleepTimer.extend" : {
       "localizations" : {
