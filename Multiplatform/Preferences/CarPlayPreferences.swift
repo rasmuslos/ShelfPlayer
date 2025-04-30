@@ -47,7 +47,7 @@ struct CarPlayPreferences: View {
     var body: some View {
         List {
             Section {
-                Toggle("carPlay.listenNow", isOn: $carPlayShowListenNow)
+                Toggle("panel.listenNow", isOn: $carPlayShowListenNow)
                 
                 if let carPlayTabBarLibraries {
                     ForEach(carPlayTabBarLibraries) {
@@ -64,7 +64,7 @@ struct CarPlayPreferences: View {
                 }
                 
                 if shouldShowOtherLibraries {
-                    Toggle("preferences.carPlay.tabBar.additionalLibraries", isOn: $carPlayShowOtherLibraries)
+                    Toggle("carPlay.otherLibraries", isOn: $carPlayShowOtherLibraries)
                 }
             } footer: {
                 Text("preferences.carPlay.tabBar.footer")

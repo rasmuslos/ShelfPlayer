@@ -95,18 +95,18 @@ private struct EventRow: View {
         
         var icon: String {
             switch self {
-                case .start:
-                        "play.fill"
-                case .end:
-                        "pause.fill"
+            case .start:
+                "play.fill"
+            case .end:
+                "pause.fill"
             }
         }
         var color: Color {
             switch self {
-                case .start:
-                        .accentColor
-                case .end:
-                        .primary
+            case .start:
+                    .accentColor
+            case .end:
+                    .primary
             }
         }
     }

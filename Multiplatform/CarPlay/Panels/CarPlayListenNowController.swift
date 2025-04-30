@@ -73,7 +73,7 @@ private extension CarPlayListenNowController {
         
         return await MainActor.run {
             let controllers = listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-            return ([CPListSection(items: controllers.map(\.row), header: "row.listenNow", sectionIndexTitle: nil)], controllers)
+            return ([CPListSection(items: controllers.map(\.row), header: "panel.listenNow", sectionIndexTitle: nil)], controllers)
         }
     }
     nonisolated func buildPersistedAudiobooksSection() async -> ([CPListSection], [CarPlayItemController]) {
@@ -96,9 +96,3 @@ private extension CarPlayListenNowController {
         }
     }
 }
-
-/*
- if #available(iOS 18.4, *) {
-     template.showsSpinnerWhileEmpty = true
- }
- */

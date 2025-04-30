@@ -33,6 +33,7 @@ final class CarPlayPlayableItemController: CarPlayItemController {
             }
             
             let detailText = detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • ")
+            
             row = CPListItem(text: audiobook.name, detailText: detailText, image: nil)
             row.isExplicitContent = audiobook.explicit
         } else if let episode = item as? Episode {

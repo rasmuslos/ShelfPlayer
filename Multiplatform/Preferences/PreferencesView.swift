@@ -48,38 +48,8 @@ struct PreferencesView: View {
                     }
                 }
                 
-                Section {
-                    Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
-                        Label("preferences.settings", systemImage: "gear")
-                    }
-                    
-                    switch notificationPermission {
-                    case .notDetermined:
-                        Button {
-                            Task {
-                                try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
-                                notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                            }
-                        } label: {
-                            Label("notification.permission.request", systemImage: "bell.badge.waveform.fill")
-                        }
-                        .task {
-                            notificationPermission = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
-                        }
-                    case .denied:
-                        Link(destination: URL(string: UIApplication.openNotificationSettingsURLString)!) {
-                            Label("notification.permission.denied", systemImage: "bell.slash.fill")
-                        }
-                        .foregroundStyle(.red)
-                    case .authorized:
-                        Label("notification.permission.granted", systemImage: "bell.badge.fill")
-                            .foregroundStyle(.secondary)
-                    default:
-                        ProgressView()
-                    }
-                } footer: {
-                    Text("notification.permission.footer")
-                        .foregroundStyle(.secondary)
+                Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
+                    Label("preferences.settings", systemImage: "gear")
                 }
                 
                 Section {

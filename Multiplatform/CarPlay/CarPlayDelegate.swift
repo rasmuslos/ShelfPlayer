@@ -20,7 +20,10 @@ public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDeleg
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
-        registerConnectionsObserver()
+        RFNotification[.connectionsChanged].subscribe { [weak self] _ in
+            self?.updateController()
+        }
+        
         updateController()
         
         Task.detached {
@@ -42,12 +45,6 @@ private extension CarPlayDelegate {
         unauthorizedTemplate.emptyViewSubtitleVariants = [String(localized: "carPlay.noConnections.subtitle")]
         
         return unauthorizedTemplate
-    }
-    
-    func registerConnectionsObserver() {
-        RFNotification[.connectionsChanged].subscribe { [weak self] _ in
-            self?.updateController()
-        }
     }
     
     func updateController() {
