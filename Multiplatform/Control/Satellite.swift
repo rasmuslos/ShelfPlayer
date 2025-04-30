@@ -60,6 +60,11 @@ final class Satellite {
     private(set) var totalLoading: Int
     private(set) var busy: [ItemIdentifier: Int]
     
+    private(set) var skipCache: TimeInterval?
+    
+    @ObservationIgnored
+    private(set) nonisolated(unsafe) var skipTask: Task<Void, Never>?
+    
     var resumePlaybackItemID: ItemIdentifier?
     
     // MARK: Utility
@@ -247,6 +252,33 @@ extension Satellite {
                 completion()
             } catch {
                 await endWorking(on: currentItemID, successfully: false)
+            }
+        }
+    }
+    
+    func skipPressed(forwards: Bool) {
+        let isInitial: Bool
+        let adjustment = Double(forwards ? Defaults[.skipForwardsInterval] : -Defaults[.skipBackwardsInterval])
+        
+        if let skipCache {
+            isInitial = false
+            self.skipCache = skipCache + adjustment
+        } else {
+            isInitial = true
+            self.skipCache = adjustment
+        }
+        
+        skipTask?.cancel()
+        skipTask = Task {
+            try? await Task.sleep(for: .seconds(isInitial ? 0.2 : 0.6))
+            
+            guard !Task.isCancelled else {
+                return
+            }
+            
+            if let skipCache {
+                self.skipCache = nil
+                seek(to: currentTime + skipCache, insideChapter: false) {}
             }
         }
     }
