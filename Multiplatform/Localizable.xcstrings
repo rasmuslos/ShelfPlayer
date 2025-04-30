@@ -116,9 +116,6 @@
         }
       }
     },
-    "carPlay.listenNow" : {
-
-    },
     "carPlay.noConnections" : {
 
     },
@@ -1963,13 +1960,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinzugefügt am"
+            "value" : "Hinzugefügt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Date added"
+            "value" : "Added"
           }
         }
       }
@@ -1985,7 +1982,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Author name"
+            "value" : "Author"
           }
         }
       }
@@ -1995,13 +1992,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anzahl Bücher"
+            "value" : "Bücher"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Book count"
+            "value" : "Books"
           }
         }
       }
@@ -2353,38 +2350,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notifications forbidden"
-          }
-        }
-      }
-    },
-    "notification.permission.footer" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Erlaubnis, ShelfPlayer Benachrichtigungen zu senden, zu gewähren, ist eine Voraussetzung, um über neue Downloads benachrichtigt zu werden."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Granting ShelfPlayer the permission to send notifications is a prerequisite to getting notified about new downloads."
-          }
-        }
-      }
-    },
-    "notification.permission.granted" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benachrichtigungen erlaubt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifications allowed"
           }
         }
       }
@@ -3105,9 +3070,6 @@
           }
         }
       }
-    },
-    "preferences.carPlay.tabBar.additionalLibraries" : {
-
     },
     "preferences.carPlay.tabBar.footer" : {
 

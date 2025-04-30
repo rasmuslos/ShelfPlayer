@@ -47,7 +47,9 @@ extension HomeRow {
         let hiddenIDs = await PersistenceManager.shared.progress.hiddenFromContinueListening(connectionID: connectionID)
         
         return rows.compactMap { (row: HomeRow<S>) -> HomeRow<S>? in
-            if row.id == "discover" && hideDiscoverRow {
+            if row.entities.isEmpty {
+                nil
+            } else if row.id == "discover" && hideDiscoverRow {
                 nil
             } else if row.id != "continue-listening" {
                 row
