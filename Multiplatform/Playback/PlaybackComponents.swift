@@ -86,21 +86,40 @@ struct PlaybackControls: View {
     }
     
     @ViewBuilder
+    private func skipText(forwards: Bool) -> some View {
+        if let skipCache = satellite.skipCache {
+            if (Double(-viewModel.skipBackwardsInterval) > skipCache && !forwards) || (Double(viewModel.skipForwardsInterval) < skipCache && forwards) {
+                Text(abs(skipCache) ,format: .duration(unitsStyle: .abbreviated, allowedUnits: [.second, .minute], maximumUnitCount: 2))
+                    .font(.caption)
+                    .contentTransition(.numericText(value: skipCache))
+                    .foregroundStyle(.secondary)
+                    .animation(.snappy, value: skipCache)
+            }
+        }
+    }
+    
+    @ViewBuilder
     private var backwardButton: some View {
-        Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
-            .labelStyle(.iconOnly)
-            .font(.title)
-            .padding(12)
-            .contentShape(.rect)
-            .onTapGesture {
-                satellite.skip(forwards: false)
-            }
-            .onLongPressGesture {
-                satellite.seek(to: 0, insideChapter: true) {}
-            }
-            .padding(-12)
-            .disabled(isLoading)
-            .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
+        HStack(spacing: 0) {
+            skipText(forwards: false)
+            
+            Spacer(minLength: 12)
+            
+            Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
+                .labelStyle(.iconOnly)
+                .font(.title)
+                .padding(12)
+                .contentShape(.rect)
+                .onTapGesture {
+                    satellite.skipPressed(forwards: false)
+                }
+                .onLongPressGesture {
+                    satellite.seek(to: 0, insideChapter: true) {}
+                }
+                .padding(-12)
+                .disabled(isLoading)
+                .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
+        }
     }
     @ViewBuilder
     private var togglePlayButton: some View {
@@ -126,20 +145,26 @@ struct PlaybackControls: View {
     }
     @ViewBuilder
     private var forwardButton: some View {
-        Label("playback.skip.forward", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
-            .labelStyle(.iconOnly)
-            .font(.title)
-            .padding(12)
-            .contentShape(.rect)
-            .onTapGesture {
-                satellite.skip(forwards: true)
-            }
-            .onLongPressGesture {
-                satellite.seek(to: satellite.chapterDuration + 0.1, insideChapter: true) {}
-            }
-            .padding(-12)
-            .disabled(isLoading)
-            .symbolEffect(.rotate.clockwise.byLayer, options: .speed(2), value: viewModel.notifySkipForwards)
+        HStack(spacing: 0) {
+            Label("playback.skip.forward", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
+                .labelStyle(.iconOnly)
+                .font(.title)
+                .padding(12)
+                .contentShape(.rect)
+                .onTapGesture {
+                    satellite.skipPressed(forwards: true)
+                }
+                .onLongPressGesture {
+                    satellite.seek(to: satellite.chapterDuration + 0.1, insideChapter: true) {}
+                }
+                .padding(-12)
+                .disabled(isLoading)
+                .symbolEffect(.rotate.clockwise.byLayer, options: .speed(2), value: viewModel.notifySkipForwards)
+            
+            Spacer(minLength: 12)
+            
+            skipText(forwards: true)
+        }
     }
     
     private var currentTime: TimeInterval {
@@ -634,6 +659,12 @@ private struct StopPlaybackButton: View {
         }
     }
 }
+
+#Preview {
+    PlaybackControls()
+        .previewEnvironment()
+}
+
 #Preview {
     PlaybackActions()
         .previewEnvironment()
