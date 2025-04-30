@@ -1,15 +1,6 @@
 {
-  "originHash" : "66db7d0dcc280cfaa6e57f9b73e46dde1bf185e047630db22ad8851fd42f624b",
+  "originHash" : "5be0658adb052b7235664f746dc82b9b355c8a859497d708ece79e1868550f44",
   "pins" : [
-    {
-      "identity" : "bettersafariview",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stleamist/BetterSafariView.git",
-      "state" : {
-        "revision" : "884533749e55949b2566030948c6fdbe2873ed0c",
-        "version" : "2.4.2"
-      }
-    },
     {
       "identity" : "defaults",
       "kind" : "remoteSourceControl",

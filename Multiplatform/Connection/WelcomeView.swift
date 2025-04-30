@@ -44,7 +44,11 @@ struct WelcomeView: View {
         .sheet(isPresented: $isConnectionAddViewPresented) {
             ConnectionAddView() {
                 isConnectionAddViewPresented = false
-                RFNotification[.changeOfflineMode].send(false)
+                
+                Task {
+                    try await Task.sleep(for: .seconds(1))
+                    RFNotification[.changeOfflineMode].send(false)
+                }
             }
         }
     }

@@ -78,13 +78,13 @@ public extension APIClient {
         throw APIClientError.invalidResponse
     }
     
-    func openIDExchange(code: String, state: String, verifier: String) async throws -> String {
+    func openIDExchange(code: String, state: String, verifier: String) async throws -> (username: String, token: String) {
         let response = try await response(for: ClientRequest<AuthorizationResponse>(path: "auth/openid/callback", method: .get, query: [
             .init(name: "code", value: code),
             .init(name: "state", value: state),
             .init(name: "code_verifier", value: verifier),
         ]))
         
-        return response.user.token
+        return (response.user.username, response.user.token)
     }
 }
