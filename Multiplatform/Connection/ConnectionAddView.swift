@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 import ShelfPlayerKit
 
 struct ConnectionAddView: View {
@@ -64,7 +65,7 @@ struct ConnectionAddView: View {
                             }
                         }
                         
-                        Section(strategy.label) {
+                        Section {
                             switch strategy {
                             case .usernamePassword:
                                 TextField("connection.add.username", text: $viewModel.username)
@@ -80,7 +81,19 @@ struct ConnectionAddView: View {
                                 }
                                 .disabled(viewModel.loading)
                             case .openID:
-                                ProgressView()
+                                Button("action.retry") {
+                                    viewModel.proceed()
+                                }
+                                .disabled(viewModel.loading)
+                                .onAppear {
+                                    viewModel.proceed()
+                                }
+                            }
+                        } header: {
+                            Text(strategy.label)
+                        } footer: {
+                            if strategy == .openID {
+                                Text("connection.add.strategy.openID.hint")
                             }
                         }
                     } else {
@@ -149,6 +162,8 @@ private final class ViewModel: Sendable {
     var notifyError = false
     var notifyFinished = false
     
+    let authenticationSessionPresentationContextProvider = AuthenticationSessionPresentationContextProvider()
+    
     func proceed() {
         guard !loading else {
             return
@@ -158,17 +173,17 @@ private final class ViewModel: Sendable {
         Task {
             if let strategy, let url {
                 do {
+                    loading = true
+                    
+                    let headers = headers.compactMap(\.materialized)
+                    let client = APIClient(connectionID: "temporary", host: url, headers: headers)
+                    
                     switch strategy {
                     case .usernamePassword:
                         guard !username.isEmpty else {
                             notifyError.toggle()
                             return
                         }
-                        
-                        loading = true
-                        
-                        let headers = headers.compactMap(\.materialized)
-                        let client = APIClient(connectionID: "temporary", host: url, headers: headers)
                         
                         let token = try await client.login(username: username, password: password)
                         
@@ -177,7 +192,39 @@ private final class ViewModel: Sendable {
                         notifyFinished.toggle()
                     case .openID:
                         // TODO:
-                        ""
+                        let session = try await ASWebAuthenticationSession(url: client.openIDLoginURL(verifier: verifier), callback: .customScheme("shelfplayer")) {
+                            guard $1 == nil,
+                                  let callback = $0,
+                                  let components = URLComponents(url: callback, resolvingAgainstBaseURL: false),
+                                  let queryItems = components.queryItems,
+                                  let code = queryItems.first(where: { $0.name == "code" })?.value,
+                                  let state = queryItems.first(where: { $0.name == "state" })?.value else {
+                                Task { @MainActor in
+                                    self.loading = false
+                                    self.notifyError.toggle()
+                                }
+                                
+                                return
+                            }
+                            
+                            Task { @MainActor in
+                                do {
+                                    let (username, token) = try await client.openIDExchange(code: code, state: state, verifier: self.verifier)
+                                    try await PersistenceManager.shared.authorization.addConnection(.init(host: url, user: username, token: token, headers: headers))
+                                    
+                                    self.notifyFinished.toggle()
+                                } catch {
+                                    self.loading = false
+                                    self.notifyError.toggle()
+                                }
+                            }
+                        }
+                        
+                        session.presentationContextProvider = authenticationSessionPresentationContextProvider
+                        session.prefersEphemeralWebBrowserSession = true
+                        session.additionalHeaderFields = Dictionary(uniqueKeysWithValues: headers.map { ($0.key, $0.value) })
+                        
+                        session.start()
                     }
                 } catch {
                     notifyError.toggle()
@@ -283,6 +330,7 @@ private final class ViewModel: Sendable {
     
     enum ConnectionError: Error {
         case serverIsNotInitialized
+        case openIDError
     }
     enum AuthorizationStrategy: Int, Identifiable {
         case usernamePassword
@@ -300,6 +348,12 @@ private final class ViewModel: Sendable {
                 "connection.strategy.oAuth"
             }
         }
+    }
+}
+
+private final class AuthenticationSessionPresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        ASPresentationAnchor()
     }
 }
 

@@ -81,6 +81,9 @@
         }
       }
     },
+    "action.retry" : {
+
+    },
     "action.save" : {
       "localizations" : {
         "de" : {
@@ -248,6 +251,9 @@
           }
         }
       }
+    },
+    "connection.add.strategy.openID.hint" : {
+
     },
     "connection.add.strategy.select" : {
       "localizations" : {

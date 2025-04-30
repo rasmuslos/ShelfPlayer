@@ -165,7 +165,6 @@
 		3AE72D352D74682200832AF9 /* RFKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3AE72D342D74682200832AF9 /* RFKit */; };
 		3AE73DB72B7624FB00058F70 /* PodcastConfigurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE73DB62B7624FB00058F70 /* PodcastConfigurationSheet.swift */; };
 		3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */; };
-		3AEFA9562B8BB51A00220CA3 /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 3AEFA9552B8BB51A00220CA3 /* BetterSafariView */; };
 		3AF240E82ADA853A0065C0A4 /* AudiobookSearchPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240E72ADA853A0065C0A4 /* AudiobookSearchPanel.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */; };
 		3AF5A6392CC55FA4002F9B50 /* CarPlayQueueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF5A6382CC55F9F002F9B50 /* CarPlayQueueController.swift */; };
@@ -386,7 +385,6 @@
 				3A9206FF2B6CD86400A5CAB0 /* Defaults in Frameworks */,
 				3AE700522C7A12BA00D93BA8 /* ShelfPlayerKit in Frameworks */,
 				3A9BF3362D42532F00573161 /* DefaultsMacros in Frameworks */,
-				3AEFA9562B8BB51A00220CA3 /* BetterSafariView in Frameworks */,
 				3AE72D352D74682200832AF9 /* RFKit in Frameworks */,
 				3AE700542C7A12BA00D93BA8 /* SPPlayback in Frameworks */,
 				3A1EAB932ACC80690064C80C /* NukeUI in Frameworks */,
@@ -865,7 +863,6 @@
 			packageProductDependencies = (
 				3A1EAB922ACC80690064C80C /* NukeUI */,
 				3A9206FE2B6CD86400A5CAB0 /* Defaults */,
-				3AEFA9552B8BB51A00220CA3 /* BetterSafariView */,
 				3AE700512C7A12BA00D93BA8 /* ShelfPlayerKit */,
 				3AE700532C7A12BA00D93BA8 /* SPPlayback */,
 				3A9BF3352D42532F00573161 /* DefaultsMacros */,
@@ -905,7 +902,6 @@
 			packageReferences = (
 				3A1EAB912ACC80690064C80C /* XCRemoteSwiftPackageReference "Nuke" */,
 				3A9206FD2B6CD86400A5CAB0 /* XCRemoteSwiftPackageReference "Defaults" */,
-				3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */,
 				3AE72D332D74682200832AF9 /* XCRemoteSwiftPackageReference "RFKit" */,
 			);
 			productRefGroup = 3A21CC542B0A1CBB002D5D55 /* Products */;
@@ -1408,14 +1404,6 @@
 				kind = branch;
 			};
 		};
-		3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stleamist/BetterSafariView.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.4.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1446,11 +1434,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3AE72D332D74682200832AF9 /* XCRemoteSwiftPackageReference "RFKit" */;
 			productName = RFKit;
-		};
-		3AEFA9552B8BB51A00220CA3 /* BetterSafariView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3AEFA9542B8BB51A00220CA3 /* XCRemoteSwiftPackageReference "BetterSafariView" */;
-			productName = BetterSafariView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
