@@ -101,7 +101,12 @@ private extension NowPlayingWidgetManager {
             metadata[MPMediaItemPropertyAlbumTitle] = item.name
         } else {
             metadata[MPMediaItemPropertyTitle] = item.name
-            metadata[MPMediaItemPropertyAlbumTitle] = nil
+            
+            if let episode = item as? Episode {
+                metadata[MPMediaItemPropertyAlbumTitle] = episode.podcastName
+            } else {
+                metadata[MPMediaItemPropertyAlbumTitle] = nil
+            }
         }
         
         updateWidget()
