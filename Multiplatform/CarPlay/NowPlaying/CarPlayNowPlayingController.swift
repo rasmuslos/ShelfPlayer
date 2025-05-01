@@ -105,10 +105,21 @@ extension CarPlayNowPlayingController: @preconcurrency CPNowPlayingTemplateObser
     }
     func nowPlayingTemplateAlbumArtistButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
         Task {
-            let currentItemID = await AudioPlayer.shared.currentItemID
+            guard let currentItemID = await AudioPlayer.shared.currentItemID else {
+                return
+            }
             
-            if currentItemID?.type == .audiobook {
+            if currentItemID.type == .audiobook {
                 try await interfaceController.pushTemplate(chaptersController.template, animated: true)
+            } else if currentItemID.type == .episode {
+                let podcastID = ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
+                
+                guard let podcast = try await podcastID.resolved as? Podcast else {
+                    return
+                }
+                
+                let controller = CarPlayPodcastController(interfaceController: interfaceController, podcast: podcast)
+                try await interfaceController.pushTemplate(controller.template, animated: true)
             }
         }
     }

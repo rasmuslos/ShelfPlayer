@@ -99,7 +99,7 @@ private extension CarPlayTabBar {
                     } else {
                         $0
                     }
-                }
+                }.sorted()
             }
             
             await MainActor.run {
