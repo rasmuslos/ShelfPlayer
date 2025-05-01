@@ -6,5 +6,9 @@
 //
 
 import Foundation
+import CarPlay
 
-protocol CarPlayItemController: Sendable {}
+@MainActor
+protocol CarPlayItemController: Sendable {
+    var row: CPListItem { get }
+}
