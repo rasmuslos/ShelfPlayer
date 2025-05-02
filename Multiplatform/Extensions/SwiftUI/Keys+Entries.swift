@@ -26,14 +26,11 @@ enum DisplayContext {
 }
 
 extension RFNotification.Notification {
-    static var focusSearchField: RFNotification.Notification<RFNotificationEmptyPayload> {
-        .init("io.rfk.shelfPlayer.focusSearchField")
-    }
+    static var focusSearchField: RFNotification.Notification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.focusSearchField") }
     
-    static var navigateNotification: Notification<ItemIdentifier> {
-        .init("io.rfk.shelfPlayer.navigate.one")
-    }
-    static var _navigateNotification: Notification<ItemIdentifier> {
-        .init("io.rfk.shelfPlayer.navigate.two")
-    }
+    static var navigateNotification: Notification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.one") }
+    static var _navigateNotification: Notification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.two") }
+    
+    static var changeLibrary: Notification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
+    static var changeOfflineMode: Notification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
 }

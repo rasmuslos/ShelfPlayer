@@ -52,11 +52,6 @@ extension Library {
     }
 }
 
-extension RFNotification.Notification {
-    static var changeLibrary: Notification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
-    static var changeOfflineMode: Notification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
-}
-
 #Preview {
     Menu {
         LibraryPicker()

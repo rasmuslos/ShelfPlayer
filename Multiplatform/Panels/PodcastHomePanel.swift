@@ -104,7 +104,7 @@ private extension PodcastHomePanel {
                 isLoading = true
             }
             
-            await withTaskGroup(of: Void.self) {
+            await withTaskGroup {
                 $0.addTask { await fetchRemoteItems() }
             }
             

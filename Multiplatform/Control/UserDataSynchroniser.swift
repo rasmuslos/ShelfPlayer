@@ -34,8 +34,10 @@ struct UserDataSynchroniser: View {
             .onAppear {
                 task = Task.detached {
                     let success: Bool
+                    let task = await UIApplication.shared.beginBackgroundTask(withName: "synchroniseUserData")
                     
                     do {
+                        
                         let (sessions, bookmarks) = try await ABSClient[connectionID].authorize()
                         
                         try await withThrowingTaskGroup(of: Void.self) {
@@ -50,7 +52,9 @@ struct UserDataSynchroniser: View {
                         success = false
                     }
                     
+                    await UIApplication.shared.endBackgroundTask(task)
                     try Task.checkCancellation()
+                    
                     await callback(success)
                 }
             }

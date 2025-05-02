@@ -83,24 +83,7 @@ private extension CarPlayTabBar {
     }
     nonisolated func updateLibraries() {
         Task {
-            let connectionIDs = await PersistenceManager.shared.authorization.connections.keys
-            
-            let libraries = await withTaskGroup {
-                for connectionID in connectionIDs {
-                    $0.addTask {
-                        try? await ABSClient[connectionID].libraries()
-                    }
-                }
-                
-                // return await $0.compactMap { $0 }.reduce([], +)
-                return await $0.reduce([Library]()) {
-                    if let libraries = $1 {
-                        $0 + libraries
-                    } else {
-                        $0
-                    }
-                }.sorted()
-            }
+            let libraries = await ShelfPlayerKit.libraries
             
             await MainActor.run {
                 self.libraries = Dictionary(uniqueKeysWithValues: libraries.map {

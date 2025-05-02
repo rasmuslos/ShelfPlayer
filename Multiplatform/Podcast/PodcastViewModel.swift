@@ -134,11 +134,9 @@ extension PodcastViewModel {
     
     nonisolated func load() {
         Task {
-            await withTaskGroup(of: Void.self) {
+            await withTaskGroup {
                 $0.addTask { await self.extractColor() }
                 $0.addTask { await self.fetchEpisodes() }
-                
-                await $0.waitForAll()
             }
         }
     }

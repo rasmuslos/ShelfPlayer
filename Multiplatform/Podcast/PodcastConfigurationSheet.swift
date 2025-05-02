@@ -100,7 +100,7 @@ struct PodcastConfigurationSheet: View {
                     
                     List {
                         NavigationLink(destination: automaticDownloadContent) {
-                            Label("item.preferences.automaticDownloads", systemImage: "arrow.down.circle")
+                            Label("item.preferences.automaticDownloads", systemImage: "arrow.down.to.line.circle")
                         }
                         
                         Section {

@@ -284,7 +284,7 @@ private struct QueueItemRow: View {
             
             Spacer(minLength: 4)
             
-            DownloadButton(itemID: itemID, progressVisibility: .queue)
+            DownloadButton(itemID: itemID, progressVisibility: .row)
                 .labelStyle(.iconOnly)
         }
         .id(itemID)

@@ -116,7 +116,7 @@ private extension AudiobookHomePanel {
                 didFail = false
             }
             
-            await withTaskGroup(of: Void.self) {
+            await withTaskGroup {
                 $0.addTask { await fetchLocalItems() }
                 $0.addTask { await fetchRemoteItems() }
             }
