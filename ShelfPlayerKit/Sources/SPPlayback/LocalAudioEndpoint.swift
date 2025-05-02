@@ -354,6 +354,8 @@ private extension LocalAudioEndpoint {
             throw AudioPlayerError.downloading
         }
         
+        let task = UIApplication.shared.beginBackgroundTask(withName: "LocalAudioEndpoint::start")
+        
         audioTracks = []
         activeAudioTrackIndex = -1
         
@@ -419,6 +421,8 @@ private extension LocalAudioEndpoint {
             activeOperationCount -= 1
             logger.error("Failed to load audio tracks: \(error)")
             
+            UIApplication.shared.endBackgroundTask(task)
+            
             throw error
         }
         
@@ -460,6 +464,7 @@ private extension LocalAudioEndpoint {
         updateUpNextQueue()
         
         Defaults[.playbackResumeInfo] = PlaybackResumeInfo(itemID: currentItemID, started: .now)
+        UIApplication.shared.endBackgroundTask(task)
     }
     
     func updateChapterIndex() async {

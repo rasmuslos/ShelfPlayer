@@ -509,9 +509,3 @@ private extension AudioPlayer {
         MPRemoteCommandCenter.shared().changePlaybackRateCommand.supportedPlaybackRates = Defaults[.playbackRates].map { NSNumber(value: $0) }
     }
 }
-
-public extension RFNotification.Notification {
-    static var shake: Notification<TimeInterval> {
-        .init("io.rfk.shelfPlayer.shake")
-    }
-}

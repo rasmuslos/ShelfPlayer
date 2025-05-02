@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 
 /**
  ShelfPlayer Item Identifier
@@ -15,7 +16,7 @@ import Foundation
  ### Format
  `VERSION::TYPE::SERVER_ID::LIBRARY_ID::PRIMARY_ID(::GROUPING_ID)`
  */
-public final class ItemIdentifier {
+public final class ItemIdentifier: NSObject {
     public typealias PrimaryID = String
     public typealias GroupingID = String
     
@@ -62,13 +63,25 @@ public final class ItemIdentifier {
         }
     }
     
+    public override var description: String {
+        get {
+            let base = "1::\(type)::\(connectionID)::\(libraryID)::\(primaryID)"
+            
+            if let groupingID {
+                return base + "::\(groupingID)"
+            }
+            
+            return base
+        }
+    }
+    
     enum ParseError: Error {
         case invalidVersion
     }
 }
 
 extension ItemIdentifier: Codable {}
-
+extension ItemIdentifier: Defaults.Serializable {}
 extension ItemIdentifier: NSSecureCoding {
     public func encode(with coder: NSCoder) {
         coder.encode(primaryID as NSString, forKey: "primaryID")
@@ -94,20 +107,28 @@ extension ItemIdentifier: NSSecureCoding {
         true
     }
 }
-extension ItemIdentifier: Sendable {}
-extension ItemIdentifier: Hashable {
-    public func hash(into hasher: inout Hasher) {
+
+extension ItemIdentifier {
+    public override var hash: Int {
+        var hasher = Hasher()
+        
         hasher.combine(primaryID)
         hasher.combine(groupingID)
+        hasher.combine(libraryID)
+        hasher.combine(connectionID)
+        
+        return hasher.finalize()
+    }
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ItemIdentifier else {
+            return false
+        }
+        
+        return primaryID == rhs.primaryID && groupingID == rhs.groupingID && libraryID == rhs.libraryID && connectionID == rhs.connectionID
     }
 }
-extension ItemIdentifier: Equatable {
-    public static func ==(lhs: ItemIdentifier, rhs: ItemIdentifier) -> Bool {
-        lhs.primaryID == rhs.primaryID
-        && lhs.groupingID == rhs.groupingID
-        && lhs.connectionID == rhs.connectionID
-    }
-}
+
+extension ItemIdentifier: Sendable {}
 extension ItemIdentifier: Identifiable {
     public var id: String {
         description
@@ -116,16 +137,6 @@ extension ItemIdentifier: Identifiable {
 extension ItemIdentifier: LosslessStringConvertible {
     public convenience init(_ description: String) {
         self.init(string: description)
-    }
-    
-    public var description: String {
-        let base = "1::\(type)::\(connectionID)::\(libraryID)::\(primaryID)"
-        
-        if let groupingID {
-            return base + "::\(groupingID)"
-        }
-        
-        return base
     }
 }
 

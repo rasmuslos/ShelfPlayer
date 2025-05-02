@@ -11,7 +11,7 @@ import Intents
 import Defaults
 import ShelfPlayerKit
 
-internal struct SpotlightIndexer {
+internal struct _SpotlightIndexer {
     // 3 days
     static let indexWaitTime: TimeInterval = 60 * 60 * 24
     static let searchableIndex = CSSearchableIndex(name: "ShelfPlayer_Items", protectionClass: .completeUntilFirstUserAuthentication)

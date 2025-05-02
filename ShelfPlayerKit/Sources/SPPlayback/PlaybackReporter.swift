@@ -12,6 +12,10 @@ import RFNotifications
 import SPFoundation
 import SPPersistence
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 final actor PlaybackReporter {
     nonisolated let logger = Logger(subsystem: "io.rfk.shelfplayerKit", category: "PlaybackReporter")
     
@@ -39,9 +43,9 @@ final actor PlaybackReporter {
         
         isFinished = false
         
-        RFNotification[.finalizePlaybackReporting].subscribe(queue: .sender) {
+        RFNotification[.finalizePlaybackReporting].subscribe { [weak self] in
             Task {
-                await self.finalize()
+                await self?.finalize()
             }
         }
     }
@@ -104,6 +108,8 @@ final actor PlaybackReporter {
         }
         
         Task {
+            let task = await UIApplication.shared.beginBackgroundTask(withName: "PlaybackReporter::finalize")
+            
             if let localSessionID {
                 do {
                     try await PersistenceManager.shared.session.closeLocalPlaybackSession(sessionID: localSessionID)
@@ -119,6 +125,8 @@ final actor PlaybackReporter {
                     logger.error("Failed to close session: \(error)")
                 }
             }
+            
+            await UIApplication.shared.endBackgroundTask(task)
         }
     }
 }
@@ -184,11 +192,5 @@ private extension PlaybackReporter {
                 logger.warning("Cannot update progress: \(error).")
             }
         }
-    }
-}
-
-public extension RFNotification.Notification {
-    static var finalizePlaybackReporting: Notification<RFNotificationEmptyPayload> {
-        .init("io.rfk.shelfPlayerKit.finalizePlaybackReporting")
     }
 }

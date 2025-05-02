@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Defaults
 import ShelfPlayerKit
 
 struct ListenNowSheet: View {
     @Environment(Satellite.self) private var satellite
+    
+    @Default(.downloadListenNowItems) private var downloadListenNowItems
     
     @State private var listenNowItems = [PlayableItem]()
     @State private var isLoading = false
@@ -36,6 +39,15 @@ struct ListenNowSheet: View {
             }
             .navigationTitle("panel.listenNow")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("item.preferences.automaticDownload.enabled", systemImage: "arrow.down.to.line") {
+                        downloadListenNowItems.toggle()
+                    }
+                    .labelStyle(.iconOnly)
+                    .symbolVariant(downloadListenNowItems ? .circle.fill : .circle)
+                }
+            }
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
@@ -71,7 +83,7 @@ struct ListenNowSheetToggle: View {
     @Environment(Satellite.self) private var satellite
     
     private var totalLibraryCount: Int {
-        connectionStore.libraries.map(\.value.count).reduce(0, +)
+        connectionStore.libraries.reduce(0) { $0 + $1.value.count }
     }
     
     var body: some View {

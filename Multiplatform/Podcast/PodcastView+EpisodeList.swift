@@ -36,6 +36,9 @@ struct PodcastEpisodesView: View {
         .listStyle(.plain)
         .navigationTitle("item.related.podcast.episodes")
         .navigationBarTitleDisplayMode(.inline)
+        .refreshable {
+            viewModel.load()
+        }
         .safeAreaInset(edge: .top) {
             if !viewModel.seasons.isEmpty {
                 ZStack(alignment: .top) {
@@ -56,9 +59,6 @@ struct PodcastEpisodesView: View {
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)
-        .refreshable {
-            viewModel.load()
-        }
         .onChange(of: viewModel.search) {
             viewModel.updateVisible()
         }

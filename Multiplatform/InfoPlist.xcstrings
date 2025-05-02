@@ -62,6 +62,12 @@
       "comment" : "Privacy - Local Network Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube den Zugriff um dich mit einer in deinem lokalen Netzwerk befindlichen Instanz zu verbinden."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",

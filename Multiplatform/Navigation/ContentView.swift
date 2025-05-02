@@ -75,7 +75,7 @@ struct ContentView: View {
         .environment(connectionStore)
         .environment(\.namespace, namespace)
         .onAppear {
-            ShelfPlayer.initializeHook()
+            ShelfPlayer.initializeUIHook()
         }
         .onChange(of: scenePhase) {
             Task.detached { [scenePhase] in

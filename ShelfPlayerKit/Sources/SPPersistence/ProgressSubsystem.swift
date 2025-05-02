@@ -133,6 +133,14 @@ public extension PersistenceManager.ProgressSubsystem {
         await PersistenceManager.shared.keyValue[.hideFromContinueListening(connectionID: connectionID)] ?? []
     }
     
+    var activeProgressEntities: [ProgressEntity] {
+        get throws {
+            try modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+                $0.progress > 0 && $0.progress < 1
+            })).map(ProgressEntity.init)
+        }
+    }
+    
     func markAsCompleted(_ itemID: ItemIdentifier) async throws {
         logger.info("Marking progress as completed for item \(itemID).")
         

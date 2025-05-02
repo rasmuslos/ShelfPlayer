@@ -11,7 +11,10 @@ import SPFoundation
 
 extension APIClient {
     func item(itemID: ItemIdentifier) async throws -> ItemPayload {
-        try await response(for: ClientRequest(path: "api/items/\(itemID.apiItemID)", method: .get, query: [
+        try await item(primaryID: itemID.primaryID, groupingID: itemID.groupingID)
+    }
+    func item(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) async throws -> ItemPayload {
+        try await response(for: ClientRequest(path: "api/items/\(groupingID ?? primaryID)", method: .get, query: [
             URLQueryItem(name: "expanded", value: "1"),
         ]))
     }
@@ -19,7 +22,11 @@ extension APIClient {
 
 public extension APIClient where I == ItemIdentifier.ConnectionID  {
     func playableItem(itemID: ItemIdentifier) async throws -> (PlayableItem, [PlayableItem.AudioFile], [Chapter], [PlayableItem.SupplementaryPDF]) {
-        let payload = try await item(itemID: itemID)
+        try await playableItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID)
+    }
+    /// This atrocity is required because progress entities do not store the libraryID of their item
+    func playableItem(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) async throws -> (PlayableItem, [PlayableItem.AudioFile], [Chapter], [PlayableItem.SupplementaryPDF]) {
+        let payload = try await item(primaryID: primaryID, groupingID: groupingID)
         var supplementaryPDFs = [PlayableItem.SupplementaryPDF]()
         
         if let libraryFiles = payload.libraryFiles {
@@ -39,7 +46,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
             }
         }
         
-        if itemID.groupingID != nil, let item = payload.media?.episodes?.first(where: { $0.id == itemID.primaryID }) {
+        if groupingID != nil, let item = payload.media?.episodes?.first(where: { $0.id == primaryID }) {
             let episode = Episode(episode: item, item: payload, connectionID: connectionID)
             
             guard let episode,
@@ -51,7 +58,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
             return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init), supplementaryPDFs)
         }
         
-        guard let audiobook = Audiobook(payload: payload, libraryID: itemID.libraryID, connectionID: itemID.connectionID),
+        guard let audiobook = Audiobook(payload: payload, libraryID: nil, connectionID: connectionID),
               let tracks = payload.media?.tracks,
               let chapters = payload.media?.chapters else {
             throw APIClientError.invalidResponse

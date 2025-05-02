@@ -22,7 +22,7 @@ struct CarPlayPreferences: View {
             return true
         }
         
-        let totalLibraryCount = connectionStore.libraries.map { $0.1.count }.reduce(0, +)
+        let totalLibraryCount = connectionStore.libraries.reduce(0) { $0 + $1.1.count }
         
         return carPlayTabBarLibraries.count != totalLibraryCount
     }

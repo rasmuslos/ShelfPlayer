@@ -4,7 +4,8 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>io.rfk.shelfplayer.autoDownloadEpisodes</string>
+		<string>io.rfk.shelfPlayer.automaticDownload</string>
+		<string>io.rfk.shelfPlayer.spotlightIndex</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
