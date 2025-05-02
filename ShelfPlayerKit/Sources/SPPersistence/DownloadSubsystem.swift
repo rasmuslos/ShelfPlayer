@@ -13,6 +13,10 @@ import RFNotifications
 import SPFoundation
 import SPNetwork
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 typealias PersistedAudiobook = SchemaV2.PersistedAudiobook
 typealias PersistedEpisode = SchemaV2.PersistedEpisode
 typealias PersistedPodcast = SchemaV2.PersistedPodcast
@@ -528,6 +532,8 @@ public extension PersistenceManager.DownloadSubsystem {
         
         busyItemIDs.insert(itemID)
         
+        let task = await UIApplication.shared.beginBackgroundTask(withName: "download::\(itemID)")
+        
         do {
             try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
             
@@ -644,9 +650,13 @@ public extension PersistenceManager.DownloadSubsystem {
             }
             
             scheduleUpdateTask()
+            
+            await UIApplication.shared.endBackgroundTask(task)
         } catch {
             logger.error("Error creating download: \(error)")
             busyItemIDs.remove(itemID)
+            
+            await UIApplication.shared.endBackgroundTask(task)
             
             throw error
         }

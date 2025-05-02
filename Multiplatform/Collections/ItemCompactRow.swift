@@ -15,12 +15,14 @@ struct ItemCompactRow: View {
     let callback: () -> Void
     
     @State private var progress: ProgressTracker
+    @State private var download: DownloadStatusTracker
     
     init(item: PlayableItem, callback: @escaping () -> Void) {
         self.item = item
         self.callback = callback
         
         _progress = .init(initialValue: .init(itemID: item.id))
+        _download = .init(initialValue: .init(itemID: item.id))
     }
     
     var body: some View {
@@ -52,7 +54,10 @@ struct ItemCompactRow: View {
                 
                 Spacer(minLength: 0)
                 
-                if let progress = progress.progress {
+                if download.status == .downloading {
+                    DownloadButton(itemID: item.id, progressVisibility: .row)
+                        .labelStyle(.iconOnly)
+                } else if let progress = progress.progress {
                     CircleProgressIndicator(progress: progress)
                         .frame(width: 16)
                 } else {

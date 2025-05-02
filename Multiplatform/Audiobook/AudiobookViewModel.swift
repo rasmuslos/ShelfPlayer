@@ -84,8 +84,6 @@ extension AudiobookViewModel {
                 
                 $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractColor() }
-                
-                await $0.waitForAll()
             }
         }
     }

@@ -34,7 +34,7 @@ struct ShelfPlayer {
         }
     }
     
-    static func initializeHook() {
+    static func initializeUIHook() {
         #if ENABLE_CENTRALIZED
         INPreferences.requestSiriAuthorization {
             logger.info("Got Siri authorization status: \($0.rawValue)")
@@ -42,7 +42,7 @@ struct ShelfPlayer {
         #endif
         
         Task {
-            await withTaskGroup(of: Void.self) {
+            await withTaskGroup {
                 $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }
                 $0.addTask {
                     do {
@@ -53,8 +53,7 @@ struct ShelfPlayer {
                 }
                 
                 $0.addTask { await ContextProvider.updateUserContext() }
-                
-                await $0.waitForAll()
+                $0.addTask { await ListenNowCache.shared.preload() }
             }
         }
     }
@@ -114,8 +113,11 @@ struct ShelfPlayer {
         logger.info("Invalidating short term cache...")
         
         await ResolveCache.shared.invalidate()
+        
         await ProgressTrackerCache.shared.invalidate()
         await DownloadTrackerCache.shared.invalidate()
+        
+        await ListenNowCache.shared.invalidate()
     }
 }
 

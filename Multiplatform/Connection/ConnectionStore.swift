@@ -50,29 +50,19 @@ final class ConnectionStore {
     
     nonisolated func update() {
         Task {
-            var offline = [ItemIdentifier.ConnectionID]()
-            var libraries = [ItemIdentifier.ConnectionID: [Library]]()
+            let libraries = await ShelfPlayerKit.libraries
+            let grouped = Dictionary(grouping: libraries, by: { $0.connectionID })
             
-            for connection in await connections {
-                do {
-                    libraries[connection.key] = try await ABSClient[connection.key].libraries()
-                } catch {
-                    offline.append(connection.key)
-                    continue
-                }
-            }
+            let offline = await Array(connections.keys).filter { grouped[$0] == nil }
             
             await MainActor.withAnimation {
                 self.offlineConnections = offline
+                self.libraries = grouped
             }
             
             guard !libraries.isEmpty else {
                 RFNotification[.changeOfflineMode].send(true)
                 return
-            }
-            
-            await MainActor.withAnimation {
-                self.libraries = libraries
             }
         }
     }

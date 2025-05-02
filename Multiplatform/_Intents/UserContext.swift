@@ -18,7 +18,7 @@ internal struct UserContext {
             try? await UserContext.donateNextUpSuggestions()
         }
 
-        SpotlightIndexer.index()
+        // SpotlightIndexer.index()
         IntentDonator.shared.ping()
     }
     

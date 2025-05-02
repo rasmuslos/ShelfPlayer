@@ -39,11 +39,9 @@ final class EpisodeViewModel {
 extension EpisodeViewModel {
     nonisolated func load() {
         Task {
-            await withTaskGroup(of: Void.self) {
+            await withTaskGroup {
                 $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractDominantColor() }
-                
-                await $0.waitForAll()
             }
         }
     }

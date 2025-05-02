@@ -14,22 +14,21 @@ struct ContextProvider {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ContextProvider")
     
     static func updateUserContext() async {
-        var totalCount = 0
-        
-        for connectionID in await PersistenceManager.shared.authorization.connections.keys {
-            do {
-                let libraries = try await ABSClient[connectionID].libraries()
-                
-                for library in libraries {
+        let libraries = await ShelfPlayerKit.libraries
+        let totalCount = await withTaskGroup {
+            for library in libraries {
+                $0.addTask {
                     switch library.type {
                     case .audiobooks:
-                        totalCount += try await ABSClient[connectionID].audiobooks(from: library.id, filter: .all, sortOrder: .added, ascending: false, limit: 0, page: 0).1
+                        try? await ABSClient[library.connectionID].audiobooks(from: library.id, filter: .all, sortOrder: .added, ascending: false, limit: 0, page: 0).1
                     case .podcasts:
-                        totalCount += try await ABSClient[connectionID].podcasts(from: library.id, sortOrder: .addedAt, ascending: false, limit: 0, page: 0).1
+                        try? await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: .addedAt, ascending: false, limit: 0, page: 0).1
                     }
                 }
-            } catch {
-                logger.error("Failed to update user context for connection \(connectionID): \(error)")
+            }
+            
+            return await $0.reduce(0) {
+                $0 + ($1 ?? 0)
             }
         }
         

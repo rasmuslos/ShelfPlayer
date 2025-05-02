@@ -67,7 +67,7 @@ extension SchemaV2 {
         }
         
         var id: ItemIdentifier {
-            .init(_id)
+            .init(string: _id)
         }
     }
 }

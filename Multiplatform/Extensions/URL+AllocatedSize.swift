@@ -21,14 +21,8 @@ extension URL {
             contents = try FileManager.default.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
         }
         
-        return try contents.lazy.reduce(0) {
-            let size = try $1.resourceValues(forKeys: [.totalFileAllocatedSizeKey]).totalFileAllocatedSize
-            
-            guard let size else {
-                return $0
-            }
-            
-            return $0 + size
+        return contents.lazy.reduce(0) {
+            $0 + ((try? $1.resourceValues(forKeys: [.totalFileAllocatedSizeKey]))?.totalFileAllocatedSize ?? 0)
         }
     }
 }

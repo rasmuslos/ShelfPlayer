@@ -178,14 +178,15 @@ struct DownloadButton: View {
                                 case .episode:
                                     $0
                                         .frame(width: 8)
-                                case .queue:
+                                case .row:
                                     $0
-                                        .frame(width: 15)
+                                        .frame(width: 14)
                                         .overlay {
                                             RoundedRectangle(cornerRadius: 1)
                                                 .aspectRatio(1, contentMode: .fit)
                                                 .frame(width: 5)
                                         }
+                                        .foregroundStyle(Color.accentColor)
                                 }
                             }
                     } else {
@@ -250,7 +251,7 @@ struct DownloadButton: View {
         case toolbar
         case triangle
         case episode
-        case queue
+        case row
     }
 }
 
