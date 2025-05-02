@@ -138,7 +138,6 @@ final class LocalAudioEndpoint: AudioEndpoint {
     }
     deinit {
         // bufferCheckTimer?.invalidate()
-        logger.info("Deinitializing local audio endpoint: \(self.id)")
     }
     
     var isBusy: Bool {
