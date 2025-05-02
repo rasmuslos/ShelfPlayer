@@ -335,7 +335,13 @@ private extension AudioPlayer {
                     return
                 }
                 
-                await self?.stop()
+                if status == .downloading {
+                    do {
+                        try await PersistenceManager.shared.download.remove(itemID)
+                    } catch {
+                        await self?.stop()
+                    }
+                }
             }
         }
         
