@@ -74,8 +74,6 @@ public actor ListenNowCache: Sendable {
                 expired = current
             }
             
-            Defaults[.downloadedListenNowItems] = added
-            
             await withTaskGroup {
                 for itemID in expired {
                     $0.addTask {
@@ -87,17 +85,23 @@ public actor ListenNowCache: Sendable {
                     }
                 }
             }
-            await withTaskGroup {
+            let failed = await withTaskGroup {
                 for itemID in added {
-                    $0.addTask {
+                    $0.addTask { () -> ItemIdentifier? in
                         do {
                             try await PersistenceManager.shared.download.download(itemID)
+                            return nil
                         } catch {
                             self.logger.error("Failed to download item \(itemID): \(error)")
+                            return itemID
                         }
                     }
                 }
+                
+                return await $0.compactMap { $0 }.reduce(into: []) { $0.append($1) }
             }
+            
+            Defaults[.downloadedListenNowItems] = added.filter { !failed.contains($0) }
         }
     }
     
