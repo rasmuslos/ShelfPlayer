@@ -39,6 +39,7 @@ extension PersistenceManager {
                 try modelContext.delete(model: PersistedPlaybackSession.self, where: #Predicate {
                     $0._itemID == description
                 })
+                try modelContext.save()
             } catch {
                 logger.error("Failed to remove related sessions to itemID \(itemID): \(error)")
             }
@@ -48,6 +49,7 @@ extension PersistenceManager {
                 try modelContext.delete(model: PersistedPlaybackSession.self, where: #Predicate {
                     $0._itemID.contains(connectionID)
                 })
+                try modelContext.save()
             } catch {
                 logger.error("Failed to remove related sessions to connection \(connectionID): \(error)")
             }

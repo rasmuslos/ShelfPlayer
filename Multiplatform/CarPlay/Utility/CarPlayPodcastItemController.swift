@@ -23,6 +23,8 @@ final class CarPlayPodcastItemController: CarPlayItemController {
         
         row = CPListItem(text: podcast.name, detailText: podcast.authors.formatted(.list(type: .and, width: .short)), image: nil)
         
+        loadCover()
+        
         // row.handler = { [weak self] (_, completion) in
         row.handler = { (_, completion) in
             Task {
@@ -31,8 +33,22 @@ final class CarPlayPodcastItemController: CarPlayItemController {
             }
         }
         
+        RFNotification[.reloadImages].subscribe { [weak self] itemID in
+            if let itemID, self?.podcast.id != itemID {
+                return
+            }
+            
+            self?.loadCover()
+        }
+    }
+    
+    private nonisolated func loadCover() {
         Task {
-            row.setImage(await podcast.id.platformCover(size: .regular))
+            let cover = await podcast.id.platformCover(size: .regular)
+            
+            await MainActor.run {
+                row.setImage(cover)
+            }
         }
     }
 }

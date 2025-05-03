@@ -20,15 +20,17 @@ struct RequestImage: View {
     let priority: ImageRequest.Priority
     let contrastConfiguration: ContrastConfiguration?
     
-    let placeholderItemID: ItemIdentifier?
+    let associatedItemID: ItemIdentifier?
     
-    init(request: ImageRequest?, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, priority: ImageRequest.Priority = .normal, contrastConfiguration: ContrastConfiguration? = .init(), placeholderItemID: ItemIdentifier? = nil) {
+    @State private var id = UUID()
+    
+    init(request: ImageRequest?, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, priority: ImageRequest.Priority = .normal, contrastConfiguration: ContrastConfiguration? = .init(), associatedItemID: ItemIdentifier? = nil) {
         self.request = request
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
         self.priority = priority
         self.contrastConfiguration = contrastConfiguration
-        self.placeholderItemID = placeholderItemID
+        self.associatedItemID = associatedItemID
     }
     
     private var aspectRatioPolicy: AspectRatioPolicy {
@@ -48,9 +50,9 @@ struct RequestImage: View {
                             .resizable()
                             .scaledToFit()
                             .clipShape(.rect(cornerRadius: cornerRadius))
-                            .modifier(ContrastModifier(itemID: placeholderItemID, cornerRadius: cornerRadius, configuration: contrastConfiguration))
+                            .modifier(ContrastModifier(itemID: associatedItemID, cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     } else {
-                        Placeholder(itemID: placeholderItemID, cornerRadius: cornerRadius)
+                        Placeholder(itemID: associatedItemID, cornerRadius: cornerRadius)
                     }
                 }
             } else {
@@ -75,17 +77,29 @@ struct RequestImage: View {
                                     }
                                 }
                             } else {
-                                Placeholder(itemID: placeholderItemID, cornerRadius: cornerRadius)
+                                Placeholder(itemID: associatedItemID, cornerRadius: cornerRadius)
                             }
                         }
                     }
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(.rect(cornerRadius: cornerRadius))
-                    .modifier(ContrastModifier(itemID: placeholderItemID, cornerRadius: cornerRadius, configuration: contrastConfiguration))
+                    .modifier(ContrastModifier(itemID: associatedItemID, cornerRadius: cornerRadius, configuration: contrastConfiguration))
                     .padding(0)
             }
         }
+        .id(id)
         .contentShape(.hoverMenuInteraction, .rect(cornerRadius: cornerRadius))
+        .onReceive(RFNotification[.reloadImages].publisher()) { itemID in
+            if let itemID, self.associatedItemID != itemID {
+                return
+            }
+            
+            reload()
+        }
+    }
+    
+    private func reload() {
+        id = UUID()
     }
     
     enum AspectRatioPolicy {
@@ -158,7 +172,7 @@ struct ItemImage: View {
     
     var body: some View {
         if let request {
-            RequestImage(request: request, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority, contrastConfiguration: contrastConfiguration, placeholderItemID: itemID)
+            RequestImage(request: request, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority, contrastConfiguration: contrastConfiguration, associatedItemID: itemID)
         } else {
             Placeholder(itemID: itemID, cornerRadius: cornerRadius)
                 .task {

@@ -71,7 +71,7 @@ struct TabRouter: View {
                 VStack(spacing: 16) {
                     Button {
                         automaticOfflineModeDeadline = nil
-                        RFNotification[.changeOfflineMode].send(true)
+                        RFNotification[.changeOfflineMode].send(payload: true)
                     } label: {
                         if let automaticOfflineModeDeadline {
                             Text("navigation.offline.automatic")
@@ -84,7 +84,7 @@ struct TabRouter: View {
                         do {
                             try await Task.sleep(for: .seconds(7))
                             
-                            RFNotification[.changeOfflineMode].send(true)
+                            await RFNotification[.changeOfflineMode].send(payload: true)
                             automaticOfflineModeDeadline = nil
                         } catch {
                             automaticOfflineModeDeadline = nil
@@ -250,7 +250,7 @@ struct TabRouter: View {
                 try await Task.sleep(for: .seconds(0.5))
             }
             
-            RFNotification[._navigateNotification].send(navigateToWhenReady)
+            await RFNotification[._navigateNotification].send(payload: navigateToWhenReady)
         }
         
         self.navigateToWhenReady = nil

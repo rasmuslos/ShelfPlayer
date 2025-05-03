@@ -13,6 +13,7 @@ import SPPlayback
 @MainActor
 final class CarPlayPlayableItemController: CarPlayItemController {
     let item: PlayableItem
+    let displayCover: Bool
     let row: CPListItem
     
     let customHandler: (() -> Void)?
@@ -20,6 +21,7 @@ final class CarPlayPlayableItemController: CarPlayItemController {
     @MainActor
     init(item: PlayableItem, displayCover: Bool, customHandler: (() -> Void)? = nil) {
         self.item = item
+        self.displayCover = displayCover
         self.customHandler = customHandler
         
         if let audiobook = item as? Audiobook {
@@ -76,11 +78,7 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         
         row.playingIndicatorLocation = .leading
         
-        if displayCover {
-            Task {
-                row.setImage(await item.id.platformCover(size: .regular))
-            }
-        }
+        loadCover()
         
         Task {
             row.isPlaying = await AudioPlayer.shared.currentItemID == item.id
@@ -98,6 +96,27 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.row.isPlaying = self?.itemID == $0.0
+        }
+        RFNotification[.reloadImages].subscribe { [weak self] itemID in
+            if let itemID, self?.itemID != itemID {
+                return
+            }
+            
+            self?.loadCover()
+        }
+    }
+    
+    private nonisolated func loadCover() {
+        guard displayCover else {
+            return
+        }
+        
+        Task {
+            let cover = await item.id.platformCover(size: .regular)
+            
+            await MainActor.run {
+                row.setImage(cover)
+            }
         }
     }
     

@@ -29,20 +29,6 @@ extension PersistenceManager {
 }
 
 public extension PersistenceManager.PodcastSubsystem {
-    func configuration(for itemID: ItemIdentifier) async -> PodcastAutoDownloadConfiguration {
-        if let configuration = await PersistenceManager.shared.keyValue[.podcastAutoDownloadConfiguration(for: itemID)] {
-            return configuration
-        }
-        
-        let configuration = PodcastAutoDownloadConfiguration(itemID: itemID, enabled: false, amount: 5, enableNotifications: false)
-        try? await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(for: itemID), configuration)
-        
-        return configuration
-    }
-    func set(configuration: PodcastAutoDownloadConfiguration, for itemID: ItemIdentifier) async throws {
-        try await PersistenceManager.shared.keyValue.set(.podcastAutoDownloadConfiguration(for: itemID), configuration)
-    }
-    
     func playbackRate(for itemID: ItemIdentifier) async -> Percentage? {
         await PersistenceManager.shared.keyValue[.podcastPlaybackRate(for: itemID)]
     }
@@ -59,13 +45,10 @@ public extension PersistenceManager.PodcastSubsystem {
 }
 
 private extension PersistenceManager.KeyValueSubsystem.Key {
-    static func podcastAutoDownloadConfiguration(for itemID: ItemIdentifier) -> Key<PersistenceManager.PodcastSubsystem.PodcastAutoDownloadConfiguration> {
-        .init("podcastAutoDownloadConfiguration-\(itemID.groupingID ?? itemID.primaryID)")
-    }
     static func podcastPlaybackRate(for itemID: ItemIdentifier) -> Key<Percentage> {
-        .init("podcastPlaybackRate-\(itemID.groupingID ?? itemID.primaryID)")
+        Key(identifier: "podcastPlaybackRate-\(itemID.groupingID ?? itemID.primaryID)", cluster: "podcastPlaybackRate", isCachePurgeable: false)
     }
     static func podcastAllowNextUpQueueGeneration(for itemID: ItemIdentifier) -> Key<Bool> {
-        .init("podcastAllowNextUpQueueGeneration-\(itemID.groupingID ?? itemID.primaryID)")
+        .Key(identifier: "podcastAllowNextUpQueueGeneration-\(itemID.groupingID ?? itemID.primaryID)", cluster: "podcastAllowNextUpQueueGeneration", isCachePurgeable: false)
     }
 }

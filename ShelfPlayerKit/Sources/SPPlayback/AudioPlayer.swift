@@ -202,7 +202,7 @@ public extension AudioPlayer {
         
         try await seek(to: currentTime + amount, insideChapter: false)
         
-        RFNotification[.skipped].send(forwards)
+        await RFNotification[.skipped].send(payload: forwards)
     }
     
     func setVolume(_ volume: Percentage) async {

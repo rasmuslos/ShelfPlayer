@@ -43,6 +43,13 @@ final class SeriesViewModel {
         
         return lazyLoader.items.map(\.id)
     }
+    
+    nonisolated func refresh() {
+        Task {
+            try? await ShelfPlayer.refreshItem(itemID: series.id)
+            lazyLoader.refresh()
+        }
+    }
 }
 
 extension SeriesViewModel {

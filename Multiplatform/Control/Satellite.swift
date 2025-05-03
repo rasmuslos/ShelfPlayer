@@ -268,6 +268,8 @@ extension Satellite {
             self.skipCache = adjustment
         }
         
+        RFNotification[.skipped].send(payload: forwards)
+        
         skipTask?.cancel()
         skipTask = Task {
             try? await Task.sleep(for: .seconds(isInitial ? 0.2 : 0.6))
@@ -611,6 +613,10 @@ private extension Satellite {
             }
             
             self?.isOffline = $0
+        }.store(in: &stash)
+        
+        RFNotification[.navigateNotification].subscribe { [weak self] _ in
+            self?.currentSheet = nil
         }.store(in: &stash)
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
