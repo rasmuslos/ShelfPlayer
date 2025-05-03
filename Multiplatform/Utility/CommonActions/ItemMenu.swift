@@ -13,21 +13,25 @@ struct ItemMenu: View {
     let items: [(id: ItemIdentifier?, name: String)]
     let type: ItemIdentifier.ItemType
     
-    init(series: [Audiobook.SeriesFragment]) {
-        items = series.map { ($0.id, $0.name) }
-        type = .series
-    }
     init(authors: [String]) {
         items = authors.map { (nil, $0) }
         type = .author
     }
-    
-    init(series: [(id: ItemIdentifier, name: String)]) {
-        items = series
-        type = .author
+    init(narrators: [String]) {
+        items = narrators.map { (nil, $0) }
+        type = .narrator
     }
+    init(series: [Audiobook.SeriesFragment]) {
+        items = series.map { ($0.id, $0.name) }
+        type = .series
+    }
+    
     init(authors: [(id: ItemIdentifier, name: String)]) {
         items = authors
+        type = .author
+    }
+    init(series: [(id: ItemIdentifier, name: String)]) {
+        items = series
         type = .author
     }
     
@@ -63,7 +67,7 @@ struct ItemMenu: View {
 }
 
 @ViewBuilder
-private func link(_ item: (id: ItemIdentifier?, name: String), type: ItemIdentifier.ItemType) -> some View {
+private func link(_ item: (id: ItemIdentifier?, name: String), type: ItemIdentifier.ItemType) -> some View {    
     if let id = item.id {
         ItemLoadLink(itemID: id, footer: item.name)
     } else {

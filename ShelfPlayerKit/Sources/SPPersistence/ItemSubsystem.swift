@@ -69,7 +69,7 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         switch itemID.type {
         case .audiobook, .episode:
             isPurgeable = true
-        case .author, .series, .podcast:
+        case .author, .narrator, .series, .podcast:
             isPurgeable = false
         }
         

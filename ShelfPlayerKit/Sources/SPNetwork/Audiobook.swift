@@ -10,10 +10,10 @@ import RFNetwork
 import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
-    func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Author>]) {
+    func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Person>]) {
         let response = try await response(for: ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
         
-        var authors = [HomeRow<Author>]()
+        var authors = [HomeRow<Person>]()
         var audiobooks = [HomeRow<Audiobook>]()
         
         for row in response {
@@ -24,7 +24,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             if row.type == "book" {
                 audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }))
             } else if row.type == "authors" {
-                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Author(payload: $0, connectionID: connectionID) }))
+                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Person(author: $0, connectionID: connectionID) }))
             }
         }
         
@@ -79,19 +79,17 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
     }
     
     func audiobooks(filtered identifier: ItemIdentifier, sortOrder: AudiobookSortOrder?, ascending: Bool?, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
-        let prefix: String
+        var query = [URLQueryItem]()
         
         if identifier.type == .author {
-            prefix = "authors"
+            query.append(URLQueryItem(name: "filter", value: "authors.\(Data(identifier.primaryID.utf8).base64EncodedString())"))
+        } else if identifier.type == .narrator {
+            query.append(URLQueryItem(name: "filter", value: "narrators.\(identifier.primaryID)"))
         } else if identifier.type == .series {
-            prefix = "series"
+            query.append(URLQueryItem(name: "filter", value: "series.\(Data(identifier.primaryID.utf8).base64EncodedString())"))
         } else {
             throw APIClientError.missing
         }
-        
-        var query: [URLQueryItem] = [
-            .init(name: "filter", value: "\(prefix).\(Data(identifier.primaryID.utf8).base64EncodedString())"),
-        ]
         
         if let page {
             query.append(.init(name: "page", value: String(page)))

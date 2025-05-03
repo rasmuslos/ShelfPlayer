@@ -49,6 +49,8 @@ extension ItemIdentifier.ItemType {
             "item.view.audiobook"
         case .author:
             "item.view.author"
+        case .narrator:
+            "item.view.narrator"
         case .series:
             "item.view.series"
         case .podcast:
@@ -63,6 +65,8 @@ extension ItemIdentifier.ItemType {
             "error.unavailable.audiobook"
         case .author:
             "error.unavailable.author"
+        case .narrator:
+            "error.unavailable.narrator"
         case .series:
             "error.unavailable.series"
         case .podcast:
@@ -78,6 +82,8 @@ extension ItemIdentifier.ItemType {
             "book"
         case .author:
             "person"
+        case .narrator:
+            "microphone.fill"
         case .series:
             "rectangle.grid.2x2"
         case .podcast:

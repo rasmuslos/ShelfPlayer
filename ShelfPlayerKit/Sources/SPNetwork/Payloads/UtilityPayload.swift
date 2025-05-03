@@ -73,7 +73,7 @@ struct Filterdata: Codable {
 struct SearchResponse: Codable {
     let book: [SearchLibraryItem]?
     let podcast: [SearchLibraryItem]?
-    // let narrators: [AudiobookshelfItem]
+    let narrators: [NarratorResponse]?
     let series: [SearchSeries]?
     let authors: [ItemPayload]?
     
@@ -93,4 +93,13 @@ struct ResultResponse: Codable {
 
 struct EpisodesResponse: Codable {
     let episodes: [EpisodePayload]
+}
+
+struct NarratorResponse: Codable {
+    let id: String?
+    let name: String
+    let numBooks: Int
+}
+struct NarratorsResponse: Codable {
+    let narrators: [NarratorResponse]
 }

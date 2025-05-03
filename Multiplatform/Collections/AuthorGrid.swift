@@ -8,10 +8,10 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct AuthorGrid: View {
+struct PersonGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    let authors: [Author]
+    let people: [Person]
     
     @State private var width: CGFloat = .zero
     
@@ -42,14 +42,14 @@ struct AuthorGrid: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 0) {
-                    ForEach(authors) { author in
-                        NavigationLink(destination: AuthorView(author)) {
+                    ForEach(people) { person in
+                        NavigationLink(destination: PersonView(person)) {
                             VStack(spacing: 0) {
-                                ItemImage(item: author, size: .small, cornerRadius: .infinity)
+                                ItemImage(item: person, size: .small, cornerRadius: .infinity)
                                     .padding(.bottom, 4)
                                     .hoverEffect(.highlight)
                                 
-                                Text(author.name)
+                                Text(person.name)
                                     .font(.caption)
                                     .lineLimit(1)
                             }
@@ -72,7 +72,7 @@ struct AuthorGrid: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        AuthorGrid(authors: .init(repeating: .fixture, count: 7))
+        PersonGrid(people: .init(repeating: .authorFixture, count: 7))
     }
 }
 #endif

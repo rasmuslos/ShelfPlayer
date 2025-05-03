@@ -29,6 +29,7 @@ struct PlayableItemContextMenuModifier: ViewModifier {
                     }
                     
                     ItemMenu(authors: audiobook.authors)
+                    ItemMenu(narrators: audiobook.narrators)
                     ItemMenu(series: audiobook.series)
                 } else if let episode = item as? Episode {
                     ItemLoadLink(itemID: episode.id)

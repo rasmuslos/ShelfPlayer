@@ -8,7 +8,7 @@
 import SwiftUI
 import ShelfPlayerKit
 
-internal struct SearchView: View {
+internal struct AudiobookSearchPanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.library) private var library
     
@@ -30,13 +30,18 @@ internal struct SearchView: View {
                 List {
                     if !viewModel.result.1.isEmpty {
                         Section("panel.search.authors") {
-                            AuthorList(authors: viewModel.result.1) { _ in }
+                            PersonList(people: viewModel.result.1, showImage: true) { _ in }
+                        }
+                    }
+                    if !viewModel.result.2.isEmpty {
+                        Section("panel.search.narrators") {
+                            PersonList(people: viewModel.result.2, showImage: false) { _ in }
                         }
                     }
                     
-                    if !viewModel.result.2.isEmpty {
+                    if !viewModel.result.3.isEmpty {
                         Section("panel.search.series") {
-                            SeriesList(series: viewModel.result.2) { _ in }
+                            SeriesList(series: viewModel.result.3) { _ in }
                         }
                     }
                     
@@ -72,12 +77,6 @@ internal struct SearchView: View {
         .onReceive(RFNotification[.focusSearchField].publisher()) {
             viewModel.focus(clear: true)
         }
-        /*
-        .onReceive(Search.shared.searchPublisher) { (library, search) in
-            viewModel.focus(clear: true)
-            viewModel.search = search
-        }
-         */
     }
 }
 
@@ -86,7 +85,7 @@ private final class SearchViewModel: Sendable {
     var search: String
     
     var isLoading: Bool
-    var result: ([Audiobook], [Author], [Series])
+    var result: ([Audiobook], [Person], [Person], [Series])
     
     private var searchTask: Task<Void, Never>?
     
@@ -99,7 +98,7 @@ private final class SearchViewModel: Sendable {
         search = ""
         isLoading = false
         
-        result = ([], [], [])
+        result = ([], [], [], [])
         
         notifyError = false
         notifyFocus = false
@@ -139,7 +138,7 @@ private final class SearchViewModel: Sendable {
                 }
                 
                 await MainActor.withAnimation {
-                    self.result = ([], [], [])
+                    self.result = ([], [], [], [])
                     self.isLoading = true
                 }
                 
@@ -151,7 +150,7 @@ private final class SearchViewModel: Sendable {
             }
             
             do {
-                var (audiobooks, authors, series) = try await ABSClient[library.connectionID].items(in: library, search: search)
+                var (audiobooks, authors, narrators, series) = try await ABSClient[library.connectionID].items(in: library, search: search)
                 
                 if Task.isCancelled {
                     return
@@ -159,6 +158,7 @@ private final class SearchViewModel: Sendable {
                 
                 audiobooks.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
                 authors.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
+                narrators.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
                 series.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
                 
                 if Task.isCancelled {
@@ -166,7 +166,7 @@ private final class SearchViewModel: Sendable {
                 }
                 
                 await MainActor.withAnimation {
-                    self.result = (audiobooks, authors, series)
+                    self.result = (audiobooks, authors, narrators, series)
                     self.isLoading = false
                 }
             } catch {
@@ -182,7 +182,7 @@ private final class SearchViewModel: Sendable {
 #if DEBUG
 #Preview {
     NavigationStack {
-        SearchView()
+        AudiobookSearchPanel()
     }
     .previewEnvironment()
 }

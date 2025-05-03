@@ -12,6 +12,7 @@ import ShelfPlayerKit
 struct AudiobookLibraryPanel: View {
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.defaultMinListRowHeight) private var defaultMinListRowHeight
     
     @Default(.audiobooksFilter) private var filter
     @Default(.audiobooksRestrictToPersisted) private var restrictToPersisted
@@ -25,6 +26,27 @@ struct AudiobookLibraryPanel: View {
     
     @State private var lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortOrder>.audiobooks
     @State private var notifyError = false
+    
+    private var libraryRowCount: CGFloat { 4 }
+    @ViewBuilder
+    private var libraryRows: some View {
+        if let library {
+            let rows = [
+                TabValue.audiobookSeries(library),
+                TabValue.audiobookAuthors(library),
+                TabValue.audiobookNarrators(library),
+                // collections
+            ]
+            
+            ForEach(Array(rows.enumerated()), id: \.element) { (index, row) in
+                NavigationLink(destination: row.content) {
+                    Label(row.label, systemImage: row.image)
+                        .foregroundStyle(.primary)
+                }
+                .listRowSeparator(index == 0 ? .hidden : .automatic, edges: .top)
+            }
+        }
+    }
     
     private func binding(for genre: String) -> Binding<Bool> {
         .init(get: { lazyLoader.filteredGenre == genre }, set: {
@@ -57,6 +79,11 @@ struct AudiobookLibraryPanel: View {
                     switch displayType {
                     case .grid:
                         ScrollView {
+                            List {
+                                libraryRows
+                            }
+                            .frame(height: defaultMinListRowHeight * libraryRowCount)
+                            
                             AudiobookVGrid(sections: lazyLoader.items) {
                                 lazyLoader.performLoadIfRequired($0)
                             }
@@ -64,11 +91,12 @@ struct AudiobookLibraryPanel: View {
                         }
                     case .list:
                         List {
+                            libraryRows
+                            
                             AudiobookList(sections: lazyLoader.items) {
                                 lazyLoader.performLoadIfRequired($0)
                             }
                         }
-                        .listStyle(.plain)
                     }
                 }
                 .refreshable {
@@ -77,6 +105,7 @@ struct AudiobookLibraryPanel: View {
                 }
             }
         }
+        .listStyle(.plain)
         .navigationTitle("panel.library")
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
