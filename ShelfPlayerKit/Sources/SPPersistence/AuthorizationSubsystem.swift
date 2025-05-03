@@ -98,7 +98,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
             logger.info("No connections found in keychain")
             
             connections.removeAll()
-            RFNotification[.connectionsChanged].send(connections)
+            RFNotification[.connectionsChanged].dispatch(payload: connections)
             
             return
         }
@@ -131,7 +131,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
             connections[connectionID] = nil
         }
         
-        RFNotification[.connectionsChanged].send(connections)
+        RFNotification[.connectionsChanged].dispatch(payload: connections)
     }
     
     func fetchConnection(_ connectionID: ItemIdentifier.ConnectionID) throws -> Connection {
@@ -242,6 +242,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         do {
             try modelContext.delete(model: DiscoveredConnection.self)
+            try modelContext.save()
+            
             try fetchConnections()
         } catch {
             logger.error("Failed to reset authorization subsystem: \(error)")

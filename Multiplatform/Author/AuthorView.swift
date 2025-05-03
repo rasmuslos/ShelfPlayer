@@ -158,10 +158,10 @@ struct AuthorView: View {
             viewModel.library = library
         }
         .task {
-            viewModel.load()
+            viewModel.load(refresh: false)
         }
         .refreshable {
-            viewModel.load()
+            viewModel.load(refresh: true)
         }
         .onChange(of: viewModel.filter) {
             viewModel.seriesLoader.filter = viewModel.filter

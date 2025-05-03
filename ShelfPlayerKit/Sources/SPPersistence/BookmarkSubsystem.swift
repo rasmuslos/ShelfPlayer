@@ -43,6 +43,7 @@ extension PersistenceManager {
                     $0.primaryID == primaryID
                     && $0.connectionID == connectionID
                 })
+                try modelContext.save()
             } catch {
                 logger.error("Failed to remove related bookmarks to itemID \(itemID): \(error)")
             }
@@ -52,6 +53,7 @@ extension PersistenceManager {
                 try modelContext.delete(model: PersistedBookmark.self, where: #Predicate {
                     $0.connectionID == connectionID
                 })
+                try modelContext.save()
             } catch {
                 logger.error("Failed to remove related bookmarks to connection \(connectionID): \(error)")
             }
@@ -88,7 +90,7 @@ public extension PersistenceManager.BookmarkSubsystem {
         modelContext.insert(bookmark)
         try modelContext.save()
         
-        RFNotification[.bookmarksChanged].send(itemID)
+        await RFNotification[.bookmarksChanged].send(payload: itemID)
     }
     
     func delete(at time: UInt64, from itemID: ItemIdentifier) async throws {
@@ -114,7 +116,7 @@ public extension PersistenceManager.BookmarkSubsystem {
         
         try modelContext.save()
         
-        RFNotification[.bookmarksChanged].send(itemID)
+        await RFNotification[.bookmarksChanged].send(payload: itemID)
     }
     
     func sync(bookmarks: [BookmarkPayload], connectionID: ItemIdentifier.ConnectionID) async throws {

@@ -37,7 +37,7 @@ struct PodcastEpisodesView: View {
         .navigationTitle("item.related.podcast.episodes")
         .navigationBarTitleDisplayMode(.inline)
         .refreshable {
-            viewModel.load()
+            viewModel.load(refresh: true)
         }
         .safeAreaInset(edge: .top) {
             if !viewModel.seasons.isEmpty {

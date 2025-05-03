@@ -10,10 +10,12 @@ import Nuke
 import ShelfPlayerKit
 
 struct PreferencesView: View {
+    @State private var isLoading = false
+    
     @State private var cacheDirectorySize: Int? = nil
     @State private var downloadDirectorySize: Int? = nil
     
-    @State private var notificationPermission: UNAuthorizationStatus = .notDetermined
+    @State private var notifyError = false
     
     @ViewBuilder
     private var connectionPreferences: some View {
@@ -54,7 +56,7 @@ struct PreferencesView: View {
                 
                 Section {
                     Button {
-                        ShelfPlayer.clearCache()
+                        clearCache()
                     } label: {
                         Label {
                             HStack(spacing: 0) {
@@ -113,13 +115,14 @@ struct PreferencesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .foregroundStyle(.primary)
         }
+        .sensoryFeedback(.error, trigger: notifyError)
         .task {
             load()
         }
     }
     
     private nonisolated func load() {
-        Task.detached {
+        Task {
             let (cacheSize, downloadsSize) = ((ImagePipeline.shared.configuration.dataCache as? DataCache)?.totalAllocatedSize, try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize())
             
             await MainActor.withAnimation {
@@ -133,6 +136,30 @@ struct PreferencesView: View {
                     downloadDirectorySize = downloadsSize
                 } else {
                     downloadDirectorySize = nil
+                }
+            }
+        }
+    }
+    private nonisolated func clearCache() {
+        Task {
+            await MainActor.run {
+                isLoading = true
+            }
+            
+            let success: Bool
+            
+            do {
+                try await ShelfPlayer.invalidateCache()
+                success = true
+            } catch {
+                success = false
+            }
+            
+            await MainActor.run {
+                isLoading = false
+                
+                if !success {
+                    notifyError.toggle()
                 }
             }
         }

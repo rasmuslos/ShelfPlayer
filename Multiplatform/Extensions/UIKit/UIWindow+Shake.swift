@@ -27,7 +27,7 @@ extension UIWindow {
             return
         }
         
-        RFNotification[.shake].send(motionStarted.distance(to: .now))
+        RFNotification[.shake].send(payload: motionStarted.distance(to: .now))
     }
 }
 #endif

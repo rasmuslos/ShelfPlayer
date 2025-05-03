@@ -47,7 +47,7 @@ struct WelcomeView: View {
                 
                 Task {
                     try await Task.sleep(for: .seconds(1))
-                    RFNotification[.changeOfflineMode].send(false)
+                    await RFNotification[.changeOfflineMode].send(payload: false)
                 }
             }
         }

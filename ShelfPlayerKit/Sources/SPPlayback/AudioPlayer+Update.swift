@@ -25,9 +25,7 @@ extension AudioPlayer {
             logger.error("Failed to set audio session category: \(error)")
         }
         
-        Task { @MainActor in
-            RFNotification[.playbackItemChanged].send((itemID, chapters, time))
-        }
+        RFNotification[.playbackItemChanged].dispatch(payload: (itemID, chapters, time))
         
         widgetManager.update(itemID: itemID)
     }
@@ -44,9 +42,7 @@ extension AudioPlayer {
             }
         }
         
-        Task { @MainActor in
-            RFNotification[.playStateChanged].send(isPlaying)
-        }
+        RFNotification[.playStateChanged].dispatch(payload: isPlaying)
         
         Task {
             await widgetManager.update(isPlaying: isPlaying)
@@ -58,8 +54,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            await RFNotification[.bufferHealthChanged].send(isBusy)
+        Task {
+            await RFNotification[.bufferHealthChanged].send(payload: isBusy)
         }
         
         Task {
@@ -72,8 +68,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.durationsChanged].send((itemDuration, chapterDuration))
+        Task {
+            await RFNotification[.durationsChanged].send(payload: (itemDuration, chapterDuration))
         }
         
         Task {
@@ -85,8 +81,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.currentTimesChanged].send((itemCurrentTime, chapterCurrentTime))
+        Task {
+            await RFNotification[.currentTimesChanged].send(payload: (itemCurrentTime, chapterCurrentTime))
         }
         
         Task {
@@ -99,8 +95,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.chapterChanged].send(chapter)
+        Task {
+            await RFNotification[.chapterChanged].send(payload: chapter)
         }
         
         Task {
@@ -113,8 +109,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.volumeChanged].send(volume)
+        Task {
+            await RFNotification[.volumeChanged].send(payload: volume)
         }
     }
     func playbackRateDidChange(endpointID: UUID, playbackRate: Percentage) {
@@ -122,8 +118,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.playbackRateChanged].send(playbackRate)
+        Task {
+            await RFNotification[.playbackRateChanged].send(payload: playbackRate)
         }
     }
     
@@ -132,8 +128,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.routeChanged].send(route)
+        Task {
+            await RFNotification[.routeChanged].send(payload: route)
         }
     }
     func sleepTimerDidChange(endpointID: UUID, configuration: SleepTimerConfiguration?) {
@@ -141,8 +137,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.sleepTimerChanged].send(configuration)
+        Task {
+            await RFNotification[.sleepTimerChanged].send(payload: configuration)
         }
     }
     func sleepTimerDidExpire(endpointID: UUID, configuration: SleepTimerConfiguration) {
@@ -150,8 +146,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.sleepTimerExpired].send(configuration)
+        Task {
+            await RFNotification[.sleepTimerExpired].send(payload:  configuration)
         }
     }
     
@@ -160,8 +156,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.queueChanged].send(queue)
+        Task {
+            await RFNotification[.queueChanged].send(payload: queue)
         }
     }
     func upNextQueueDidChange(endpointID: UUID, upNextQueue: [ItemIdentifier]) {
@@ -169,8 +165,8 @@ extension AudioPlayer {
             return
         }
         
-        Task { @MainActor in
-            RFNotification[.upNextQueueChanged].send(upNextQueue)
+        Task {
+            await RFNotification[.upNextQueueChanged].send(payload: upNextQueue)
         }
     }
     
@@ -201,13 +197,12 @@ extension AudioPlayer {
     }
     
     func isBusyDidChange() async {
-        await RFNotification[.bufferHealthChanged].send(isBusy)
+        await RFNotification[.bufferHealthChanged].send(payload: isBusy)
     }
 }
 
-public extension RFNotification.Notification {
-    
-    static var routeChanged: Notification<AudioRoute> { .init("io.rfk.shelfPlayerKit.routeChanged") }
-    static var sleepTimerChanged: Notification<SleepTimerConfiguration?> { .init("io.rfk.shelfPlayerKit.sleepTimerChanged") }
-    static var sleepTimerExpired: Notification<SleepTimerConfiguration> { .init("io.rfk.shelfPlayerKit.sleepTimerExpired") }
+public extension RFNotification.IsolatedNotification {
+    static var routeChanged: IsolatedNotification<AudioRoute> { .init("io.rfk.shelfPlayerKit.routeChanged") }
+    static var sleepTimerChanged: IsolatedNotification<SleepTimerConfiguration?> { .init("io.rfk.shelfPlayerKit.sleepTimerChanged") }
+    static var sleepTimerExpired: IsolatedNotification<SleepTimerConfiguration> { .init("io.rfk.shelfPlayerKit.sleepTimerExpired") }
 }

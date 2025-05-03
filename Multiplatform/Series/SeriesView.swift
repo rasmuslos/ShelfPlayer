@@ -100,7 +100,7 @@ struct SeriesView: View {
             viewModel.lazyLoader.initialLoad()
         }
         .refreshable {
-            viewModel.lazyLoader.refresh()
+            viewModel.refresh()
         }
         .onChange(of: viewModel.filter) {
             viewModel.lazyLoader.filter = viewModel.filter
