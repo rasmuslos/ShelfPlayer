@@ -93,7 +93,7 @@ extension PersistenceManager.ProgressSubsystem {
         modelContext.delete(entity)
         try modelContext.save()
         
-        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, nil))
+        await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, nil))
     }
     
     func remove(itemID: ItemIdentifier) {
@@ -107,6 +107,7 @@ extension PersistenceManager.ProgressSubsystem {
                 && $0.groupingID == groupingID
                 && $0.connectionID == connectionID
             })
+            try modelContext.save()
         } catch {
             logger.error("Failed to remove progress entities related to itemID \(itemID): \(error)")
         }
@@ -116,14 +117,15 @@ extension PersistenceManager.ProgressSubsystem {
             try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
                 $0.connectionID == connectionID
             })
+            try modelContext.save()
         } catch {
             logger.error("Failed to remove progress entities related to connection \(connectionID): \(error)")
         }
     }
     
     nonisolated func progressEntityDidUpdate(_ entity: ProgressEntity) {
-        Task { @MainActor in
-            RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        Task {
+            await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
         }
     }
 }
@@ -202,7 +204,7 @@ public extension PersistenceManager.ProgressSubsystem {
         try modelContext.save()
         
         let entity = ProgressEntity(persistedEntity: persistedEntity)
-        RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
         
         do {
             try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
@@ -249,9 +251,7 @@ public extension PersistenceManager.ProgressSubsystem {
         
         let entity = ProgressEntity(persistedEntity: targetEntity)
         
-        await MainActor.run {
-            RFNotification[.progressEntityUpdated].send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
-        }
+        await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
         
         if notifyServer {
             do {
@@ -421,7 +421,7 @@ public extension PersistenceManager.ProgressSubsystem {
             
             signposter.endInterval("sync", signpostState)
             
-            RFNotification[.invalidateProgressEntities].send(connectionID)
+            await RFNotification[.invalidateProgressEntities].send(payload: connectionID)
         } catch {
             logger.error("Error while syncing progress: \(error)")
             
@@ -444,5 +444,11 @@ public extension PersistenceManager.ProgressSubsystem {
         } else {
             .init(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
         }
+    }
+}
+
+private extension PersistenceManager.KeyValueSubsystem.Key {
+    static func hideFromContinueListening(connectionID: ItemIdentifier.ConnectionID) -> Key<Set<String>> {
+        Key(identifier: "hideFromContinueListening_\(connectionID)", cluster: "hideFromContinueListening", isCachePurgeable: true)
     }
 }

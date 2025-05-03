@@ -37,11 +37,18 @@ final class EpisodeViewModel {
 }
 
 extension EpisodeViewModel {
-    nonisolated func load() {
+    nonisolated func load(refresh: Bool) {
         Task {
             await withTaskGroup {
                 $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractDominantColor() }
+                
+                if refresh {
+                    $0.addTask {
+                        try? await ShelfPlayer.refreshItem(itemID: self.episode.id)
+                        self.load(refresh: false)
+                    }
+                }
             }
         }
     }

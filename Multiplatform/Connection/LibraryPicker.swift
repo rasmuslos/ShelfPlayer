@@ -19,7 +19,7 @@ struct LibraryPicker: View {
                 Section(connection.friendlyName) {
                     ForEach(libraries) { library in
                         Button(library.name, systemImage: library.icon) {
-                            RFNotification[.changeLibrary].send(library)
+                            RFNotification[.changeLibrary].send(payload: library)
                             callback?()
                         }
                     }
@@ -36,7 +36,7 @@ struct LibraryPicker: View {
         }
         
         Button("navigation.offline.enable", systemImage: "network.slash") {
-            RFNotification[.changeOfflineMode].send(true)
+            RFNotification[.changeOfflineMode].send(payload: true)
         }
     }
 }

@@ -45,7 +45,7 @@ extension PersistenceManager {
                     if let existing {
                         existing.value = data
                     } else {
-                        let entity = KeyValueEntity(key: key.identifier, value: data)
+                        let entity = KeyValueEntity(key: key.identifier, cluster: key.cluster, value: data, isCachePurgeable: key.isCachePurgeable)
                         modelContext.insert(entity)
                     }
                     
@@ -62,21 +62,10 @@ extension PersistenceManager {
             }
         }
         
-        func bulkDelete<T>(keys: [Key<T>]) throws where T: Decodable {
-            for key in keys {
-                guard let entity = entity(for: key) else {
-                    continue
-                }
-                
-                modelContext.delete(entity)
-            }
-            
-            try modelContext.save()
-        }
         func remove(itemID: ItemIdentifier) {
             do {
                 try modelContext.delete(model: KeyValueEntity.self, where: #Predicate {
-                    $0.key.contains(itemID.description)
+                    $0.key.contains(itemID.description) || $0.cluster.contains(itemID.description)
                 })
             } catch {
                 logger.error("Failed to remove related key value pairs for itemID \(itemID): \(error)")
@@ -85,15 +74,31 @@ extension PersistenceManager {
         func remove(connectionID: ItemIdentifier.ConnectionID) {
             do {
                 try modelContext.delete(model: KeyValueEntity.self, where: #Predicate {
-                    $0.key.contains(connectionID)
+                    $0.key.contains(connectionID) || $0.cluster.contains(connectionID)
                 })
             } catch {
                 logger.error("Failed to remove related key value pairs for connection \(connectionID): \(error)")
             }
         }
+        func remove(cluster: String) throws {
+            try modelContext.delete(model: KeyValueEntity.self, where: #Predicate { $0.cluster == cluster })
+            try modelContext.save()
+        }
         
         func reset() throws {
             try modelContext.delete(model: KeyValueEntity.self)
+            try modelContext.save()
+        }
+        func purgeCached() throws {
+            try modelContext.delete(model: KeyValueEntity.self, where: #Predicate { $0.isCachePurgeable })
+            try modelContext.save()
+        }
+        func purgeCached(itemID: ItemIdentifier) throws {
+            try modelContext.delete(model: KeyValueEntity.self, where: #Predicate {
+                $0.isCachePurgeable
+                && ($0.key.contains(itemID.description) || $0.cluster.contains(itemID.description))
+            })
+            try modelContext.save()
         }
         
         private func entity<T>(for key: Key<T>) -> KeyValueEntity? where T: Decodable {
@@ -104,28 +109,15 @@ extension PersistenceManager {
         public struct Key<Value: Codable>: Sendable {
             public typealias Key = PersistenceManager.KeyValueSubsystem.Key
             
-            let identifier: String
+            public let identifier: String
+            public let cluster: String
+            public let isCachePurgeable: Bool
             
-            init(_ identifier: String) {
+            public init(identifier: String, cluster: String, isCachePurgeable: Bool) {
                 self.identifier = identifier
+                self.cluster = cluster
+                self.isCachePurgeable = isCachePurgeable
             }
         }
-    }
-}
-
-public extension PersistenceManager.KeyValueSubsystem.Key {
-    static func hideFromContinueListening(connectionID: ItemIdentifier.ConnectionID) -> Key<Set<String>> {
-        .init("hideFromContinueListening_\(connectionID)")
-    }
-    
-    static func assetFailedAttempts(assetID: UUID) -> Key<Int> {
-        .init("assetFailedAttempts_\(assetID)")
-    }
-    static func cachedDownloadStatus(itemID: ItemIdentifier) -> Key<PersistenceManager.DownloadSubsystem.DownloadStatus> {
-        .init("cachedDownloadStatus_\(itemID)")
-    }
-    
-    static func coverURLCache(itemID: ItemIdentifier) -> Key<URL> {
-        .init("coverURLCache_\(itemID)")
     }
 }

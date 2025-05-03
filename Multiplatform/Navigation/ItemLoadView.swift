@@ -44,15 +44,15 @@ struct ItemLoadView: View {
                 if failed {
                     ErrorView(itemID: id)
                         .refreshable {
-                            load()
+                            load(refresh: true)
                         }
                 } else {
                     LoadingView()
                         .task {
-                            load()
+                            load(refresh: false)
                         }
                         .refreshable {
-                            load()
+                            load(refresh: true)
                         }
                 }
             }
@@ -67,10 +67,14 @@ struct ItemLoadView: View {
         }
     }
     
-    private nonisolated func load() {
+    private nonisolated func load(refresh: Bool) {
         Task {
             await MainActor.withAnimation {
                 failed = false
+            }
+            
+            if refresh {
+                try? await ShelfPlayer.refreshItem(itemID: id)
             }
             
             do {

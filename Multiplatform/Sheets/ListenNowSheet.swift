@@ -52,20 +52,24 @@ struct ListenNowSheet: View {
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
         .task {
-            load()
+            load(refresh: false)
         }
         .refreshable {
-            load()
+            load(refresh: true)
         }
         .onReceive(RFNotification[.playbackItemChanged].publisher()) { _ in
-            load()
+            load(refresh: false)
         }
     }
     
-    private nonisolated func load() {
+    private nonisolated func load(refresh: Bool) {
         Task {
             await MainActor.run {
                 isLoading = true
+            }
+            
+            if refresh {
+                await ListenNowCache.shared.invalidate()
             }
             
             let listenNowItems = await ShelfPlayerKit.listenNowItems

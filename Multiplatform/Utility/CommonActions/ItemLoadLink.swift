@@ -28,7 +28,7 @@ struct ItemLoadLink: View {
         Group {
             if library == nil {
                 Button {
-                    itemID.navigate()
+                    itemID.navigateIsolated()
                 } label: {
                     labelContent
                 }

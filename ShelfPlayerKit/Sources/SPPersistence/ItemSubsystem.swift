@@ -25,9 +25,15 @@ public extension PersistenceManager.ItemSubsystem {
     func setPlaybackRate(_ rate: Percentage, for itemID: ItemIdentifier) async throws {
         try await PersistenceManager.shared.keyValue.set(.playbackRate(for: itemID), rate)
     }
+    func allowUpNextQueueGeneration(for itemID: ItemIdentifier) async -> Bool {
+        await PersistenceManager.shared.keyValue[.allowUpNextQueueGeneration(for: itemID)] ?? true
+    }
+    func setAllowUpNextQueueGeneration(_ allow: Bool, for itemID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.allowUpNextQueueGeneration(for: itemID), allow)
+    }
     
     func dominantColor(of itemID: ItemIdentifier) async -> Color? {
-        if let stored = await PersistenceManager.shared.keyValue[.domiantColor(of: itemID)] {
+        if let stored = await PersistenceManager.shared.keyValue[.dominantColor(of: itemID)] {
             let components = stored.split(separator: ":").map { Double($0) ?? 0 }
             return Color(red: components[0], green: components[1], blue: components[2])
         }
@@ -46,7 +52,7 @@ public extension PersistenceManager.ItemSubsystem {
         let stored = "\(resolved.red):\(resolved.green):\(resolved.blue)"
         
         do {
-            try await PersistenceManager.shared.keyValue.set(.domiantColor(of: itemID), stored)
+            try await PersistenceManager.shared.keyValue.set(.dominantColor(of: itemID), stored)
         } catch {
             logger.error("Failed to store color for \(itemID): \(error)")
         }
@@ -56,10 +62,25 @@ public extension PersistenceManager.ItemSubsystem {
 }
 
 private extension PersistenceManager.KeyValueSubsystem.Key {
+    // Contains the stored rate for playable items (audiobook, episode) and overrides for others (author, series,  podcast)
     static func playbackRate(for itemID: ItemIdentifier) -> Key<Percentage> {
-        .init("playbackRate-\(itemID)")
+        let isPurgeable: Bool
+        
+        switch itemID.type {
+        case .audiobook, .episode:
+            isPurgeable = true
+        case .author, .series, .podcast:
+            isPurgeable = false
+        }
+        
+        return Key(identifier: "playbackRate-\(itemID)", cluster: "playbackRates", isCachePurgeable: isPurgeable)
     }
-    static func domiantColor(of itemID: ItemIdentifier) -> Key<String> {
-        .init("domiantColor-\(itemID)")
+    
+    static func allowUpNextQueueGeneration(for itemID: ItemIdentifier) -> Key<Bool> {
+        Key(identifier: "allowUpNextQueueGeneration-\(itemID)", cluster: "allowUpNextQueueGeneration", isCachePurgeable: false)
+    }
+    
+    static func dominantColor(of itemID: ItemIdentifier) -> Key<String> {
+        Key(identifier: "dominantColor-\(itemID)", cluster: "dominantColors", isCachePurgeable: true)
     }
 }

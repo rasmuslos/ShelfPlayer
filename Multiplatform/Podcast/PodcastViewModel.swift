@@ -132,11 +132,18 @@ extension PodcastViewModel {
         return season
     }
     
-    nonisolated func load() {
+    nonisolated func load(refresh: Bool) {
         Task {
             await withTaskGroup {
                 $0.addTask { await self.extractColor() }
                 $0.addTask { await self.fetchEpisodes() }
+                
+                if refresh {
+                    $0.addTask {
+                        try? await ShelfPlayer.refreshItem(itemID: self.podcast.id)
+                        self.load(refresh: false)
+                    }
+                }
             }
         }
     }

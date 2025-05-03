@@ -52,10 +52,10 @@ struct EpisodeView: View {
             viewModel.library = library
         }
         .task {
-            viewModel.load()
+            viewModel.load(refresh: false)
         }
         .refreshable {
-            viewModel.load()
+            viewModel.load(refresh: true)
         }
         .userActivity("io.rfk.shelfPlayer.item") { activity in
             activity.title = viewModel.episode.name

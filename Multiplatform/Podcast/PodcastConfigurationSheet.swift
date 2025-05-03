@@ -145,7 +145,7 @@ struct PodcastConfigurationSheet: View {
     
     private func load() async {
         self.viewModel = await .init(podcastID: podcastID)
-        self.configuration = .init(await PersistenceManager.shared.podcasts.configuration(for: podcastID))
+        // self.configuration = .init(await PersistenceManager.shared.podcasts.configuration(for: podcastID))
     }
     private func save() {
         Task {
@@ -156,7 +156,7 @@ struct PodcastConfigurationSheet: View {
                     try await viewModel.save()
                 }
                 if let configuration {
-                    try await PersistenceManager.shared.podcasts.set(configuration: configuration.materialized, for: podcastID)
+                    // try await PersistenceManager.shared.podcasts.set(configuration: configuration.materialized, for: podcastID)
                 }
                 
                 await MainActor.run {

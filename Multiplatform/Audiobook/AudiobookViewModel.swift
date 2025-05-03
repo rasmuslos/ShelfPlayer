@@ -73,7 +73,7 @@ final class AudiobookViewModel: Sendable {
 }
 
 extension AudiobookViewModel {
-    nonisolated func load() {
+    nonisolated func load(refresh: Bool) {
         Task {
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await self.loadAudiobook() }
@@ -84,6 +84,13 @@ extension AudiobookViewModel {
                 
                 $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractColor() }
+                
+                if refresh {
+                    $0.addTask {
+                        try? await ShelfPlayer.refreshItem(itemID: self.audiobook.id)
+                        self.load(refresh: false)
+                    }
+                }
             }
         }
     }

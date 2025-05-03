@@ -71,7 +71,14 @@ public final class PersistenceManager: Sendable {
         await session.remove(connectionID: connectionID)
         await download.remove(connectionID: connectionID)
         
-        RFNotification[.removeConnection].send(connectionID)
+        await RFNotification[.removeConnection].send(payload: connectionID)
+    }
+    
+    public func refreshItem(itemID: ItemIdentifier) async throws {
+        try await keyValue.purgeCached(itemID: itemID)
+    }
+    public func invalidateCache() async throws {
+        try await keyValue.purgeCached()
     }
 }
 

@@ -185,9 +185,7 @@ private extension PersistenceManager.DownloadSubsystem {
                 try? await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: asset.itemID), .completed)
                 
                 let itemID = asset.itemID
-                await MainActor.run {
-                    RFNotification[.downloadStatusChanged].send((itemID, .completed))
-                }
+                await RFNotification[.downloadStatusChanged].send(payload: (itemID, .completed))
                 
                 logger.info("Cached download status for item \(asset.itemID)")
             }
@@ -203,8 +201,8 @@ private extension PersistenceManager.DownloadSubsystem {
         let itemID = asset.itemID
         let progressWeight = asset.progressWeight
         
-        Task { @MainActor in
-            RFNotification[.downloadProgressChanged(itemID)].send((id, progressWeight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite))
+        Task {
+            await RFNotification[.downloadProgressChanged(itemID)].send(payload: (id, progressWeight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite))
         }
     }
     
@@ -239,16 +237,21 @@ private extension PersistenceManager.DownloadSubsystem {
         let assetID = asset.id
         
         Task {
-            if let failedAttempts = await PersistenceManager.shared.keyValue[.assetFailedAttempts(assetID: assetID)] {
-                logger.info("Asset \(assetID) failed to download \(failedAttempts + 1) times")
-                
-                if failedAttempts > 3 {
+            do {
+                if let failedAttempts = await PersistenceManager.shared.keyValue[.assetFailedAttempts(assetID: assetID, itemID: asset.itemID)] {
+                    logger.info("Asset \(assetID) failed to download \(failedAttempts + 1) times")
                     
+                    if failedAttempts > 3 {
+                        logger.warning("Asset \(assetID) failed to download more than 3 times. Removing download \(asset.itemID)")
+                        try await remove(asset.itemID)
+                    } else {
+                        try await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID, itemID: asset.itemID), failedAttempts + 1)
+                    }
                 } else {
-                    try? await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID), failedAttempts + 1)
+                    try await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID, itemID: asset.itemID), 1)
                 }
-            } else {
-                try? await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID), 1)
+            } catch {
+                logger.error("Failed to update failed download attempts for asset \(assetID): \(error)")
             }
         }
         
@@ -347,7 +350,10 @@ private extension PersistenceManager.DownloadSubsystem {
                 let assets = try assets(for: podcastID)
                 
                 try await removeAssets(assets)
-                try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: podcastID), nil)
+                
+                for coverSize in ItemIdentifier.CoverSize.allCases {
+                    try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: podcastID, size: coverSize), nil)
+                }
             } catch {
                 logger.error("Error removing podcast \(podcastID): \(error)")
             }
@@ -419,19 +425,31 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         if let status = await PersistenceManager.shared.keyValue[.cachedDownloadStatus(itemID: itemID)] {
-            return status
+            if status == .none {
+                do {
+                    try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
+                } catch {
+                    logger.error("Failed to clear cached download status: \(error)")
+                }
+            } else {
+                return status
+            }
         }
         
         do {
             let assets = try assets(for: itemID)
             
             if assets.isEmpty {
-                try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), DownloadStatus.none)
                 return .none
             }
             
             let completed = assets.reduce(true) { $0 && $1.isDownloaded }
-            return completed ? .completed : .downloading
+            let status: DownloadStatus = completed ? .completed : .downloading
+            
+            // Should be cached already
+            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)
+            
+            return status
         } catch {}
         
         return .none
@@ -441,7 +459,7 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     
     func cover(for itemID: ItemIdentifier, size: ItemIdentifier.CoverSize) async -> URL? {
-        if let cached = await PersistenceManager.shared.keyValue[.coverURLCache(itemID: itemID)] {
+        if let cached = await PersistenceManager.shared.keyValue[.coverURLCache(itemID: itemID, size: size)] {
             if FileManager.default.fileExists(atPath: cached.absoluteString) {
                 return cached
             } else {
@@ -461,19 +479,20 @@ public extension PersistenceManager.DownloadSubsystem {
                 false
             }
         }
+        
         let path = asset?.path
         
-        guard let path else {
+        guard let path, FileManager.default.fileExists(atPath: path.absoluteString) else {
             return nil
         }
         
-        try? await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), path)
-        
-        if FileManager.default.fileExists(atPath: path.absoluteString) {
-            return path
-        } else {
-            return nil
+        do {
+            try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: size), path)
+        } catch {
+            logger.error("Failed to cache cover URL for \(itemID) (\(size.base)): \(error)")
         }
+        
+        return path
     }
     func audioTracks(for itemID: ItemIdentifier) throws -> [PlayableItem.AudioTrack] {
         try assets(for: itemID).compactMap {
@@ -517,9 +536,7 @@ public extension PersistenceManager.DownloadSubsystem {
                 let status = await status(of: itemID)
                 
                 try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)
-                await MainActor.run {
-                    RFNotification[.downloadStatusChanged].send((itemID, status))
-                }
+                await RFNotification[.downloadStatusChanged].send(payload: (itemID, status))
                 
             }
             
@@ -645,9 +662,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             logger.info("Created download for \(itemID)")
             
-            await MainActor.run {
-                RFNotification[.downloadStatusChanged].send((itemID, .downloading))
-            }
+            await RFNotification[.downloadStatusChanged].send(payload: (itemID, .downloading))
             
             scheduleUpdateTask()
             
@@ -685,7 +700,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             try await removeAssets(assets)
             
-            try await PersistenceManager.shared.keyValue.bulkDelete(keys: assets.map { .assetFailedAttempts(assetID: $0.id) })
+            try await PersistenceManager.shared.keyValue.remove(cluster: "assetFailedAttempts_\(itemID.description)")
             
             try modelContext.delete(model: SchemaV2.PersistedChapter.self, where: #Predicate { $0._itemID == itemID.description })
             
@@ -694,12 +709,13 @@ public extension PersistenceManager.DownloadSubsystem {
             
             try modelContext.save()
             
-            try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID), nil)
+            for coverSize in ItemIdentifier.CoverSize.allCases {
+                try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
+            }
+            
             try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
             
-            await MainActor.run {
-                RFNotification[.downloadStatusChanged].send((itemID, .none))
-            }
+            await RFNotification[.downloadStatusChanged].send(payload: (itemID, .none))
             
             busyItemIDs.remove(itemID)
             
@@ -791,5 +807,18 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
         Task {
             await PersistenceManager.shared.download.invalidateActiveDownloads()
         }
+    }
+}
+
+private extension PersistenceManager.KeyValueSubsystem.Key {
+    static func assetFailedAttempts(assetID: UUID, itemID: ItemIdentifier) -> Key<Int> {
+        Key(identifier: "assetFailedAttempts_\(assetID)", cluster: "assetFailedAttempts_\(itemID.description)", isCachePurgeable: false)
+    }
+    static func cachedDownloadStatus(itemID: ItemIdentifier) -> Key<PersistenceManager.DownloadSubsystem.DownloadStatus> {
+        Key(identifier: "downloadStatus_\(itemID)", cluster: "downloadStatusCache", isCachePurgeable: true)
+    }
+    
+    static func coverURLCache(itemID: ItemIdentifier, size: ItemIdentifier.CoverSize) -> Key<URL> {
+        Key(identifier: "coverURL_\(itemID)_\(size)", cluster: "coverURLCache", isCachePurgeable: true)
     }
 }

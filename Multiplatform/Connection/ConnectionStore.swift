@@ -61,7 +61,7 @@ final class ConnectionStore {
             }
             
             guard !libraries.isEmpty else {
-                RFNotification[.changeOfflineMode].send(true)
+                RFNotification[.changeOfflineMode].dispatch(payload: true)
                 return
             }
         }

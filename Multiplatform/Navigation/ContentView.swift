@@ -81,7 +81,7 @@ struct ContentView: View {
             Task.detached { [scenePhase] in
                 switch scenePhase {
                 case .active:
-                    await ShelfPlayer.invalidateCache()
+                    await ShelfPlayer.invalidateShortTermCache()
                 default:
                     break
                 }

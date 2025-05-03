@@ -60,14 +60,10 @@ struct ShelfPlayer {
     
     static func updateUIHook() {
         PersistenceManager.shared.download.scheduleUpdateTask()
-        RFNotification[.invalidateProgressEntities].send(nil)
+        RFNotification[.invalidateProgressEntities].dispatch(payload: nil)
     }
     
     // MARK: Actions
-    
-    static func clearCache() {
-        ImagePipeline.shared.cache.removeAll()
-    }
     
     static func generateLogArchive() throws -> URL {
         let store = try OSLogStore(scope: .currentProcessIdentifier)
@@ -109,7 +105,7 @@ struct ShelfPlayer {
     
     // MARK: Cache invalidation
     
-    static func invalidateCache() async {
+    static func invalidateShortTermCache() async {
         logger.info("Invalidating short term cache...")
         
         await ResolveCache.shared.invalidate()
@@ -118,6 +114,29 @@ struct ShelfPlayer {
         await DownloadTrackerCache.shared.invalidate()
         
         await ListenNowCache.shared.invalidate()
+    }
+    
+    static func refreshItem(itemID: ItemIdentifier) async throws {
+        await invalidateShortTermCache()
+        
+        for size in ItemIdentifier.CoverSize.allCases {
+            guard let request = await itemID.coverRequest(size: size) else {
+                continue
+            }
+            
+            ImagePipeline.shared.cache.removeCachedImage(for: request)
+        }
+        
+        await RFNotification[.reloadImages].send(payload: itemID)
+        
+        try await PersistenceManager.shared.refreshItem(itemID: itemID)
+    }
+    
+    static func invalidateCache() async throws {
+        ImagePipeline.shared.cache.removeAll()
+        await RFNotification[.reloadImages].send(payload: nil)
+        
+        try await PersistenceManager.shared.invalidateCache()
     }
 }
 
