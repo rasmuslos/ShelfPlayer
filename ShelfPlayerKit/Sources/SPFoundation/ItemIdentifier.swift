@@ -144,6 +144,7 @@ public extension ItemIdentifier {
     enum ItemType: String, Codable, Sendable, LosslessStringConvertible {
         case audiobook = "audiobook"
         case author = "author"
+        case narrator = "narrator"
         case series = "series"
         case podcast = "podcast"
         case episode = "episode"

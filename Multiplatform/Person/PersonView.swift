@@ -1,5 +1,5 @@
 //
-//  AuthorView.swift
+//  PersonView.swift
 //  Audiobooks
 //
 //  Created by Rasmus Krämer on 05.10.23.
@@ -9,13 +9,13 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-struct AuthorView: View {
+struct PersonView: View {
     @Environment(\.library) private var library
     
-    @State private var viewModel: AuthorViewModel
+    @State private var viewModel: PersonViewModel
     
-    init(_ author: Author) {
-        viewModel = .init(author: author)
+    init(_ person: Person) {
+        viewModel = .init(person: person)
     }
     
     @ViewBuilder
@@ -28,22 +28,30 @@ struct AuthorView: View {
         }
     }
     
+    private var audiobooksRowTitle: String {
+        if viewModel.person.id.type == .narrator {
+            String(localized: "item.related.narrator.audiobooks")
+        } else {
+            String(localized: "item.related.author.audiobooks")
+        }
+    }
+    
     @ViewBuilder
     private var gridPresentation: some View {
         ScrollView {
             Header()
             
-            if !viewModel.seriesLoader.items.isEmpty {
-                gridTitle(.init(localized: "item.related.author.series"), count: viewModel.seriesLoader.totalCount)
+            if let seriesLoader = viewModel.seriesLoader, !seriesLoader.items.isEmpty {
+                gridTitle(.init(localized: "item.related.author.series"), count: seriesLoader.totalCount)
                 
-                SeriesGrid(series: viewModel.seriesLoader.items, showName: true) {
-                    viewModel.seriesLoader.performLoadIfRequired($0)
+                SeriesGrid(series: seriesLoader.items, showName: true) {
+                    seriesLoader.performLoadIfRequired($0)
                 }
                 .padding(.horizontal, 20)
             }
             
-            if !viewModel.sections.isEmpty || !viewModel.seriesLoader.items.isEmpty {
-                gridTitle(.init(localized: "item.related.author.audiobooks"), count: viewModel.audiobooksLoader.totalCount)
+            if !viewModel.sections.isEmpty {
+                gridTitle(audiobooksRowTitle, count: viewModel.audiobooksLoader.totalCount)
                 
                 AudiobookVGrid(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
@@ -59,16 +67,16 @@ struct AuthorView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
-            if !viewModel.seriesLoader.items.isEmpty {
-                listTitle(.init(localized: "item.related.author.series"), count: viewModel.seriesLoader.totalCount)
+            if let seriesLoader = viewModel.seriesLoader, !seriesLoader.items.isEmpty {
+                listTitle(.init(localized: "item.related.author.series"), count: seriesLoader.totalCount)
                 
-                SeriesList(series: viewModel.seriesLoader.items) {
-                    viewModel.seriesLoader.performLoadIfRequired($0)
+                SeriesList(series: seriesLoader.items) {
+                    seriesLoader.performLoadIfRequired($0)
                 }
             }
             
             if !viewModel.sections.isEmpty {
-                listTitle(.init(localized: "item.related.author.audiobooks"), count: viewModel.audiobooksLoader.totalCount)
+                listTitle(audiobooksRowTitle, count: viewModel.audiobooksLoader.totalCount)
                 
                 AudiobookList(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
@@ -115,9 +123,9 @@ struct AuthorView: View {
     
     var body: some View {
         Group {
-            if !viewModel.audiobooksLoader.didLoad && !viewModel.seriesLoader.didLoad {
+            if !viewModel.audiobooksLoader.didLoad && viewModel.seriesLoader?.didLoad == false {
                 loadingPresentation
-            } else if viewModel.sections.isEmpty && viewModel.seriesLoader.items.isEmpty {
+            } else if viewModel.sections.isEmpty && viewModel.seriesLoader?.items.isEmpty == true {
                 UnavailableWrapper {
                     VStack(spacing: 0) {
                         Header()
@@ -133,7 +141,7 @@ struct AuthorView: View {
                 }
             }
         }
-        .navigationTitle(viewModel.author.name)
+        .navigationTitle(viewModel.person.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -150,10 +158,10 @@ struct AuthorView: View {
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
-        .sensoryFeedback(.error, trigger: viewModel.seriesLoader.notifyError)
+        .sensoryFeedback(.error, trigger: viewModel.seriesLoader?.notifyError)
         .sensoryFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)
         .environment(viewModel)
-        .environment(\.displayContext, .author(author: viewModel.author))
+        .environment(\.displayContext, .person(person: viewModel.person))
         .onAppear {
             viewModel.library = library
         }
@@ -164,20 +172,20 @@ struct AuthorView: View {
             viewModel.load(refresh: true)
         }
         .onChange(of: viewModel.filter) {
-            viewModel.seriesLoader.filter = viewModel.filter
+            viewModel.seriesLoader?.filter = viewModel.filter
             viewModel.audiobooksLoader.filter = viewModel.filter
         }
         .onChange(of: viewModel.restrictToPersisted) {
-            viewModel.seriesLoader.restrictToPersisted = viewModel.restrictToPersisted
+            viewModel.seriesLoader?.restrictToPersisted = viewModel.restrictToPersisted
             viewModel.audiobooksLoader.restrictToPersisted = viewModel.restrictToPersisted
         }
         .userActivity("io.rfk.shelfplayer.item") { activity in
-            activity.title = viewModel.author.name
+            activity.title = viewModel.person.name
             activity.isEligibleForHandoff = true
-            activity.persistentIdentifier = viewModel.author.description
+            activity.persistentIdentifier = viewModel.person.description
             
             Task {
-                activity.webpageURL = try await viewModel.author.id.url
+                activity.webpageURL = try await viewModel.person.id.url
             }
         }
     }
@@ -186,7 +194,7 @@ struct AuthorView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        AuthorView(.fixture)
+        PersonView(.authorFixture)
     }
     .previewEnvironment()
 }

@@ -14,6 +14,7 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     case audiobookHome(Library)
     case audiobookSeries(Library)
     case audiobookAuthors(Library)
+    case audiobookNarrators(Library)
     case audiobookLibrary(Library)
     case audiobookSearch(Library)
     
@@ -32,6 +33,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
         case .audiobookSeries(let library):
             library
         case .audiobookAuthors(let library):
+            library
+        case .audiobookNarrators(let library):
             library
         case .audiobookLibrary(let library):
             library
@@ -54,6 +57,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             "panel.series"
         case .audiobookAuthors:
             "panel.authors"
+        case .audiobookNarrators:
+            "panel.narrators"
         case .audiobookLibrary:
             "panel.library"
         case .audiobookSearch:
@@ -76,6 +81,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             "rectangle.grid.2x2.fill"
         case .audiobookAuthors:
             "person.2.fill"
+        case .audiobookNarrators:
+            "microphone.fill"
         case .audiobookLibrary:
             "books.vertical.fill"
         case .audiobookSearch:
@@ -92,35 +99,35 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     
     @ViewBuilder @MainActor
     var content: some View {
-        NavigationStackWrapper(tab: self) {
-            switch self {
-            case .audiobookHome:
-                AudiobookHomePanel()
-            case .audiobookSeries:
-                AudiobookSeriesPanel()
-            case .audiobookAuthors:
-                AudiobookAuthorsPanel()
-            case .podcastLibrary:
-                PodcastLibraryPanel()
-            case .audiobookSearch:
-                SearchView()
-                
-            case .podcastHome:
-                PodcastHomePanel()
-            case .podcastLatest:
-                PodcastLatestPanel()
-            case .audiobookLibrary:
-                AudiobookLibraryPanel()
-            }
+        switch self {
+        case .audiobookHome:
+            AudiobookHomePanel()
+        case .audiobookSeries:
+            AudiobookSeriesPanel()
+        case .audiobookAuthors:
+            AudiobookAuthorsPanel()
+        case .audiobookNarrators:
+            AudiobookNarratorsPanel()
+        case .podcastLibrary:
+            PodcastLibraryPanel()
+        case .audiobookSearch:
+            AudiobookSearchPanel()
+            
+        case .podcastHome:
+            PodcastHomePanel()
+        case .podcastLatest:
+            PodcastLatestPanel()
+        case .audiobookLibrary:
+            AudiobookLibraryPanel()
         }
     }
 }
 
-internal extension TabValue {
+extension TabValue {
     static func tabs(for library: Library) -> [TabValue] {
         switch library.type {
         case .audiobooks:
-            [.audiobookHome(library), .audiobookSeries(library), .audiobookAuthors(library), .audiobookLibrary(library), .audiobookSearch(library)]
+            [.audiobookHome(library), .audiobookLibrary(library), .audiobookSearch(library)]
         case .podcasts:
             [.podcastHome(library), .podcastLatest(library), .podcastLibrary(library)]
         }

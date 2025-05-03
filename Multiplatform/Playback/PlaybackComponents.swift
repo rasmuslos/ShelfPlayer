@@ -241,6 +241,7 @@ struct PlaybackMenuActions: View {
                 }
                 
                 ItemMenu(authors: viewModel.authorIDs)
+                ItemMenu(narrators: audiobook.narrators)
                 ItemMenu(series: viewModel.seriesIDs)
             } else if let episode = currentItem as? Episode {
                 ItemLoadLink(itemID: episode.id)

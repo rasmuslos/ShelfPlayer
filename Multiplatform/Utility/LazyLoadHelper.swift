@@ -80,10 +80,10 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     
     var library: Library?
     
-    private let loadMore: @Sendable (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)
+    private let loadMore: @Sendable (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)?
     
     @MainActor
-    init(filterLocally: Bool, filter: ItemFilter, restrictToPersisted: Bool, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)) {
+    init(filterLocally: Bool, filter: ItemFilter, restrictToPersisted: Bool, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)?) {
         logger = .init(subsystem: "io.rfk.shelfPlayer", category: "LazyLoader")
         
         self.filter = filter
@@ -141,6 +141,30 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     
     nonisolated func didReachEndOfLoadedContent(bypassWorking: Bool = false) {
         Task {
+            guard let library = await library else {
+                #if DEBUG
+                if await self.items.isEmpty {
+                    logger.warning("Library not set yet. Using fixtures.")
+                    
+                    await MainActor.run {
+                        if T.self == AudiobookSection.self {
+                            self.items = Array(repeating: AudiobookSection.audiobook(audiobook: .fixture), count: 7) as! [T]
+                        } else {
+                            failed = true
+                        }
+                        
+                        self.loadedCount = 7
+                        totalCount = 7
+                        
+                        working = false
+                        finished = true
+                    }
+                }
+                #endif
+                
+                return
+            }
+            
             let shouldContinue = await MainActor.run {
                 if working {
                     return bypassWorking && !finished
@@ -152,7 +176,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 return !finished
             }
             
-            guard shouldContinue, let library = await library else {
+            guard shouldContinue else {
                 return
             }
             
@@ -173,9 +197,13 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 if let filteredGenre {
                     // Fuck you, this only needs to happen once, and this code is bloated already
                     (received, totalCount) = try await ABSClient[library.connectionID].audiobooks(from: library.id, filtered: filteredGenre, sortOrder: sortOrder as! AudiobookSortOrder, ascending: ascending, groupSeries: groupAudiobooksInSeries, limit: Self.PAGE_SIZE, page: page) as! ([T], Int)
+                } else if let response = try await loadMore(page, filter, sortOrder, ascending, groupAudiobooksInSeries, library) {
+                    (received, totalCount) = response
                 } else {
-                    (received, totalCount) = try await loadMore(page, filter, sortOrder, ascending, groupAudiobooksInSeries, library)
+                    received = []
+                    totalCount = await self.totalCount
                 }
+                
                 
                 guard !received.isEmpty else {
                     await MainActor.withAnimation { [self] in
@@ -274,7 +302,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         
                         received = filtered as! [T]
                     } else {
-                        throw FilterError.unsupportedItemType
+                        throw LazyLoadError.unsupportedItemType
                     }
                 }
                 
@@ -336,7 +364,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         
                         received = filtered as! [T]
                     } else {
-                        throw FilterError.unsupportedItemType
+                        throw LazyLoadError.unsupportedItemType
                     }
                 }
                 
@@ -349,7 +377,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                             || $0.authors.reduce(false) { $0 || $1.localizedCaseInsensitiveContains(search) }
                         } as! [T]
                     } else {
-                        throw FilterError.unsupportedItemType
+                        throw LazyLoadError.unsupportedItemType
                     }
                 }
                 
@@ -397,7 +425,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         didReachEndOfLoadedContent()
     }
     
-    enum FilterError: Error {
+    enum LazyLoadError: Error {
         case unsupportedItemType
     }
 }
@@ -420,9 +448,27 @@ extension LazyLoadHelper {
         })
     }
     
-    static var authors: LazyLoadHelper<Author, AuthorSortOrder> {
+    static var authors: LazyLoadHelper<Person, AuthorSortOrder> {
         .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: Defaults[.authorsSortOrder], ascending: Defaults[.authorsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].authors(from: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
+        })
+    }
+    static var narrators: LazyLoadHelper<Person, NarratorSortOrder> {
+        .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: Defaults[.narratorsSortOrder], ascending: Defaults[.narratorsAscending], loadMore: { page, _, sortOrder, ascending, _, library in
+            guard page == 0 else {
+                return nil
+            }
+            
+            let narrators = try await ABSClient[library.connectionID].narrators(from: library.id).sorted {
+                switch sortOrder {
+                case .name:
+                    $0.name.localizedStandardCompare($1.name) == (ascending ? .orderedAscending : .orderedDescending)
+                case .bookCount:
+                    ascending ? $0.bookCount > $1.bookCount : $0.bookCount < $1.bookCount
+                }
+            }
+            
+            return (narrators, narrators.count)
         })
     }
     

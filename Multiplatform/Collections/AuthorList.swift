@@ -8,21 +8,24 @@
 import SwiftUI
 import ShelfPlayerKit
 
-struct AuthorList: View {
-    let authors: [Author]
-    let onAppear: ((_: Author) -> Void)
+struct PersonList: View {
+    let people: [Person]
+    let showImage: Bool
+    let onAppear: ((_: Person) -> Void)
     
     var body: some View {
-        ForEach(authors) { author in
-            NavigationLink(destination: AuthorView(author)) {
+        ForEach(people) { person in
+            NavigationLink(destination: PersonView(person)) {
                 HStack(spacing: 8) {
-                    ItemImage(item: author, size: .tiny, cornerRadius: .infinity)
-                        .frame(width: 52)
+                    if showImage {
+                        ItemImage(item: person, size: .tiny, cornerRadius: .infinity)
+                            .frame(width: 52)
+                    }
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(author.name)
+                        Text(person.name)
                         
-                        Text("item.count.audiobooks \(author.bookCount)")
+                        Text("item.count.audiobooks \(person.bookCount)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -30,7 +33,7 @@ struct AuthorList: View {
             }
             .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
             .onAppear {
-                onAppear(author)
+                onAppear(person)
             }
         }
     }
@@ -40,7 +43,17 @@ struct AuthorList: View {
 #Preview {
     NavigationStack {
         List {
-            AuthorList(authors: .init(repeating: .fixture, count: 7)) { _ in }
+            PersonList(people: .init(repeating: .authorFixture, count: 7), showImage: true) { _ in }
+        }
+        .listStyle(.plain)
+    }
+    .previewEnvironment()
+}
+
+#Preview {
+    NavigationStack {
+        List {
+            PersonList(people: .init(repeating: .authorFixture, count: 7), showImage: false) { _ in }
         }
         .listStyle(.plain)
     }

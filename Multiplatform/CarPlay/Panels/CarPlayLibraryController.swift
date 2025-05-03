@@ -61,7 +61,7 @@ class CarPlayLibraryController: CarPlayTabBar.LibraryController {
         Task {
             let connectionID = library.connectionID
             
-            let (rows, _): ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await ABSClient[connectionID].home(for: library.id)
+            let (rows, _): ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[connectionID].home(for: library.id)
             let prepared = await HomeRow.prepareForPresentation(rows, connectionID: connectionID)
             
             await MainActor.run {

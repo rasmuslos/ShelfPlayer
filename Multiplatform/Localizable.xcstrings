@@ -720,6 +720,9 @@
         }
       }
     },
+    "error.unavailable.narrator" : {
+
+    },
     "error.unavailable.podcast" : {
       "localizations" : {
         "de" : {
@@ -1835,6 +1838,9 @@
         }
       }
     },
+    "item.related.narrator.audiobooks" : {
+
+    },
     "item.related.podcast.episodes" : {
       "localizations" : {
         "de" : {
@@ -2179,6 +2185,9 @@
         }
       }
     },
+    "item.view.narrator" : {
+
+    },
     "item.view.podcast" : {
       "localizations" : {
         "de" : {
@@ -2501,6 +2510,9 @@
     "panel.listenNow" : {
 
     },
+    "panel.narrators" : {
+
+    },
     "panel.offline" : {
 
     },
@@ -2595,6 +2607,9 @@
           }
         }
       }
+    },
+    "panel.search.narrators" : {
+
     },
     "panel.search.placeholder" : {
       "localizations" : {

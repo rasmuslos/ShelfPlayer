@@ -21,7 +21,7 @@ extension EnvironmentValues {
 
 enum DisplayContext {
     case unknown
-    case author(author: Author)
+    case person(person: Person)
     case series(series: Series)
 }
 

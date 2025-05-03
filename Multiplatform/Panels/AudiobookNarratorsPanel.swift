@@ -1,21 +1,21 @@
 //
-//  AuthorsView.swift
-//  iOS
+//  AudiobookNarratorsPanel.swift
+//  Multiplatform
 //
-//  Created by Rasmus Krämer on 07.01.24.
+//  Created by Rasmus Krämer on 03.05.25.
 //
 
 import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
-struct AudiobookAuthorsPanel: View {
+struct AudiobookNarratorsPanel: View {
     @Environment(\.library) private var library
     
-    @Default(.authorsAscending) private var authorsAscending
-    @Default(.authorsSortOrder) private var authorsSortOrder
+    @Default(.narratorsAscending) private var narratorsAscending
+    @Default(.narratorsSortOrder) private var narratorsSortOrder
     
-    @State private var lazyLoader = LazyLoadHelper<Person, Void>.authors
+    @State private var lazyLoader = LazyLoadHelper<Person, Void>.narrators
     
     var body: some View {
         Group {
@@ -34,7 +34,7 @@ struct AudiobookAuthorsPanel: View {
                 }
             } else {
                 List {
-                    PersonList(people: lazyLoader.items, showImage: true) {
+                    PersonList(people: lazyLoader.items, showImage: false) {
                         lazyLoader.performLoadIfRequired($0)
                     }
                 }
@@ -44,20 +44,20 @@ struct AudiobookAuthorsPanel: View {
                 }
             }
         }
-        .navigationTitle("panel.authors")
+        .navigationTitle("panel.narrators")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "arrow.up.arrow.down.circle") {
-                    ItemSortOrderPicker(sortOrder: $authorsSortOrder, ascending: $authorsAscending)
+                    ItemSortOrderPicker(sortOrder: $narratorsSortOrder, ascending: $narratorsAscending)
                 }
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onChange(of: authorsSortOrder) {
-            lazyLoader.sortOrder = authorsSortOrder
+        .onChange(of: narratorsSortOrder) {
+            lazyLoader.sortOrder = narratorsSortOrder
         }
-        .onChange(of: authorsAscending) {
-            lazyLoader.ascending = authorsAscending
+        .onChange(of: narratorsAscending) {
+            lazyLoader.ascending = narratorsAscending
         }
         .onAppear {
             lazyLoader.library = library
@@ -69,7 +69,7 @@ struct AudiobookAuthorsPanel: View {
 #Preview {
     #if DEBUG
     NavigationStack {
-        AudiobookAuthorsPanel()
+        AudiobookNarratorsPanel()
             .previewEnvironment()
     }
     #endif

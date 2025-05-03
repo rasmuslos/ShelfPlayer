@@ -106,11 +106,13 @@ struct TabRouter: View {
         
         Group {
             if importedConnectionIDs.contains(tab.library.connectionID) {
-                tab.content
-                    .modifier(PlaybackTabContentModifier())
-                    .task {
-                        ShelfPlayer.updateUIHook()
-                    }
+                NavigationStackWrapper(tab: tab) {
+                    tab.content
+                }
+                .modifier(PlaybackTabContentModifier())
+                .task {
+                    ShelfPlayer.updateUIHook()
+                }
             } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
                 syncFailedContent
             } else {
@@ -145,6 +147,7 @@ struct TabRouter: View {
                     }
                 }
             }
+            
             ForEach(connectionStore.flat) { connection in
                 if let libraries = connectionStore.libraries[connection.id] {
                     TabSection(connection.user) {
@@ -225,7 +228,7 @@ struct TabRouter: View {
         }
         
         switch navigateToWhenReady.type {
-        case .audiobook, .author, .series:
+        case .audiobook, .author, .narrator, .series:
             guard case .audiobookLibrary(_) = selection else {
                 selection = .audiobookLibrary(library)
                 return

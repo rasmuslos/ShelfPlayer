@@ -10,11 +10,11 @@ import RFNetwork
 import SPFoundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
-    func author(with identifier: ItemIdentifier) async throws -> Author {
-        Author(payload: try await response(for: ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), connectionID: connectionID)
+    func author(with identifier: ItemIdentifier) async throws -> Person {
+        Person(author: try await response(for: ClientRequest<ItemPayload>(path: "api/authors/\(identifier.pathComponent)", method: .get)), connectionID: connectionID)
     }
     
-    func authors(from libraryID: String, sortOrder: AuthorSortOrder, ascending: Bool, limit: Int, page: Int) async throws -> ([Author], Int) {
+    func authors(from libraryID: String, sortOrder: AuthorSortOrder, ascending: Bool, limit: Int, page: Int) async throws -> ([Person], Int) {
         let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/authors", method: .get, query: [
             .init(name: "sort", value: sortOrder.queryValue),
             .init(name: "desc", value: ascending ? "0" : "1"),
@@ -22,7 +22,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             .init(name: "page", value: String(page)),
         ]))
         
-        return (response.results.map { Author(payload: $0, connectionID: connectionID) }, response.total)
+        return (response.results.map { Person(author: $0, connectionID: connectionID) }, response.total)
     }
     
     func authorID(from libraryID: String, name: String) async throws -> ItemIdentifier {

@@ -117,7 +117,7 @@ private struct Row: View {
                         .modifier(SerifModifier())
                     
                     Group {
-                        if case .author = displayContext, let seriesName = audiobook.seriesName {
+                        if case .person(let person) = displayContext, person.id.type == .author, let seriesName = audiobook.seriesName {
                             Text(seriesName)
                         } else if !audiobook.authors.isEmpty {
                             Text(audiobook.authors, format: .list(type: .and, width: .short))

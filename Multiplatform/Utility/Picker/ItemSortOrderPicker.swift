@@ -110,6 +110,25 @@ extension AuthorSortOrder: ItemSortOrder {
         }
     }
 }
+extension NarratorSortOrder: ItemSortOrder {
+    var label: LocalizedStringKey {
+        switch self {
+        case .name:
+            "item.sort.name"
+        case .bookCount:
+            "item.sort.bookCount"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .name:
+            "text.quote"
+        case .bookCount:
+            "number"
+        }
+    }
+}
 
 extension SeriesSortOrder: ItemSortOrder {
     var label: LocalizedStringKey {

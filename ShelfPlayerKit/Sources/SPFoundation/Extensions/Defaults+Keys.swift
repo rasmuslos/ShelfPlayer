@@ -71,6 +71,9 @@ public extension Defaults.Keys {
     static let authorsAscending = Key("authorsAscending", default: true)
     static let authorsSortOrder = Key<AuthorSortOrder>("authorsSortOrder", default: .firstNameLastName, iCloud: true)
     
+    static let narratorsAscending = Key("narratorsAscending", default: true)
+    static let narratorsSortOrder = Key<NarratorSortOrder>("narratorsSortOrder", default: .name, iCloud: true)
+    
     static let seriesSortOrder = Key<SeriesSortOrder>("seriesSortOrder", default: .sortName, iCloud: true)
     static let seriesAscending = Key<Bool>("seriesAscending", default: true, iCloud: true)
     static let seriesDisplayType = Key<ItemDisplayType>("seriesDisplayType", default: .grid, iCloud: true)
