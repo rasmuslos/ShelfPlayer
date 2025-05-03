@@ -12,8 +12,8 @@ import DefaultsMacros
 import ShelfPlayerKit
 
 @Observable @MainActor
-final class AuthorViewModel {
-    let author: Author
+final class PersonViewModel {
+    let person: Person
     
     @ObservableDefault(.audiobooksFilter) @ObservationIgnored
     var filter: ItemFilter
@@ -22,12 +22,12 @@ final class AuthorViewModel {
     @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
     var displayType: ItemDisplayType
     
-    private(set) var seriesLoader: LazyLoadHelper<Series, SeriesSortOrder>!
-    private(set) var audiobooksLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder?>!
+    private(set) var seriesLoader: LazyLoadHelper<Series, SeriesSortOrder>?
+    private(set) var audiobooksLoader: LazyLoadHelper<Audiobook, AudiobookSortOrder?>
     
     var library: Library! {
         didSet {
-            seriesLoader.library = library
+            seriesLoader?.library = library
             audiobooksLoader.library = library
         }
     }
@@ -35,17 +35,20 @@ final class AuthorViewModel {
     private(set) var notifyError: Bool
     
     @MainActor
-    init(author: Author) {
-        self.author = author
+    init(person: Person) {
+        self.person = person
         
         notifyError = false
         
-        seriesLoader = .series(filtered: author.id, filter: Defaults[.audiobooksFilter], sortOrder: .sortName, ascending: true)
-        audiobooksLoader = .audiobooks(filtered: author.id, sortOrder: .released, ascending: true)
+        audiobooksLoader = .audiobooks(filtered: person.id, sortOrder: .released, ascending: true)
+        
+        if person.id.type == .author {
+            seriesLoader = .series(filtered: person.id, filter: Defaults[.audiobooksFilter], sortOrder: .sortName, ascending: true)
+        }
     }
 }
 
-extension AuthorViewModel {
+extension PersonViewModel {
     var sections: [AudiobookSection] {
         audiobooksLoader.items.map { .audiobook(audiobook: $0) }
     }
@@ -53,12 +56,12 @@ extension AuthorViewModel {
     nonisolated func load(refresh: Bool) {
         Task {
             await withTaskGroup(of: Void.self) {
-                $0.addTask { await self.seriesLoader.initialLoad() }
+                $0.addTask { await self.seriesLoader?.initialLoad() }
                 $0.addTask { await self.audiobooksLoader.initialLoad() }
                 
                 if refresh {
                     $0.addTask {
-                        try? await ShelfPlayer.refreshItem(itemID: self.author.id)
+                        try? await ShelfPlayer.refreshItem(itemID: self.person.id)
                         self.load(refresh: false)
                     }
                 }

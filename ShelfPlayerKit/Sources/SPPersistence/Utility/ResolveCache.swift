@@ -44,6 +44,15 @@ public actor ResolveCache: Sendable {
                 case .author:
                     item = try await ABSClient[itemID.connectionID].author(with: itemID)
                     episodes = []
+                case .narrator:
+                    let narrators = try await ABSClient[itemID.connectionID].narrators(from: itemID.libraryID)
+                    
+                    guard let narrator = narrators.first(where: { $0.id == itemID }) else {
+                        throw ResolveError.notFound
+                    }
+                    
+                    item = narrator
+                    episodes = []
                 case .series:
                     item = try await ABSClient[itemID.connectionID].series(with: itemID)
                     episodes = []

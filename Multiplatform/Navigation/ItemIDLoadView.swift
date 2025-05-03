@@ -48,10 +48,12 @@ struct ItemIDLoadView: View {
                 let itemID: ItemIdentifier
                 
                 switch type {
-                case .series:
-                    itemID = try await ABSClient[library.connectionID].seriesID(from: library.id, name: name)
                 case .author:
                     itemID = try await ABSClient[library.connectionID].authorID(from: library.id, name: name)
+                case .narrator:
+                    itemID = Person.convertNarratorToID(name, libraryID: library.id, connectionID: library.connectionID)
+                case .series:
+                    itemID = try await ABSClient[library.connectionID].seriesID(from: library.id, name: name)
                 default:
                     throw LoadError.unsupportedItemType
                 }
@@ -70,4 +72,8 @@ struct ItemIDLoadView: View {
     private enum LoadError: Error {
         case unsupportedItemType
     }
+}
+
+#Preview {
+    Text("https://a.de/?a=vee&a=".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
 }

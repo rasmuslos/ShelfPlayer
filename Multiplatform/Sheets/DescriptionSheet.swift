@@ -40,6 +40,6 @@ struct DescriptionSheet: View {
 }
 
 #Preview {
-    DescriptionSheet(item: Author(id: .fixture, name: "Fixture", description: nil, addedAt: .now, bookCount: 0))
+    DescriptionSheet(item: Person.authorFixture)
 }
 #endif

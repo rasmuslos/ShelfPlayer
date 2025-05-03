@@ -8,17 +8,17 @@
 import SwiftUI
 import SPFoundation
 
-extension AuthorView {
+extension PersonView {
     struct Header: View {
-        @Environment(AuthorViewModel.self) private var viewModel
+        @Environment(PersonViewModel.self) private var viewModel
         @Environment(Satellite.self) private var satellite
         
         var body: some View {
             VStack(spacing: 0) {
-                ItemImage(item: viewModel.author, size: .small, cornerRadius: .infinity)
+                ItemImage(item: viewModel.person, size: .small, cornerRadius: .infinity)
                     .frame(width: 100, height: 100)
                 
-                Text(viewModel.author.name)
+                Text(viewModel.person.name)
                     .modifier(SerifModifier())
                     .font(.headline)
                     .multilineTextAlignment(.center)
@@ -31,9 +31,9 @@ extension AuthorView {
                         }
                     }
                 
-                if let description = viewModel.author.description {
+                if let description = viewModel.person.description {
                     Button {
-                        satellite.present(.description(viewModel.author))
+                        satellite.present(.description(viewModel.person))
                     } label: {
                         Text(description)
                             .lineLimit(3)

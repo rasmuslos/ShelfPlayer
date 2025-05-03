@@ -16,7 +16,7 @@ struct AudiobookHomePanel: View {
     
     @Default(.showAuthorsRow) private var showAuthorsRow
     
-    @State private var _authors = [HomeRow<Author>]()
+    @State private var _authors = [HomeRow<Person>]()
     @State private var audiobooks = [HomeRow<Audiobook>]()
     
     @State private var downloaded = [Audiobook]()
@@ -25,7 +25,7 @@ struct AudiobookHomePanel: View {
     @State private var isLoading = false
     @State private var notifyError = false
     
-    private var authors: [HomeRow<Author>] {
+    private var authors: [HomeRow<Person>] {
         showAuthorsRow ? _authors : []
     }
     private var relevantItemIDs: [ItemIdentifier] {
@@ -60,7 +60,7 @@ struct AudiobookHomePanel: View {
                                     .padding(.bottom, 8)
                                     .padding(.horizontal, 20)
                                 
-                                AuthorGrid(authors: row.entities)
+                                PersonGrid(people: row.entities)
                             }
                         }
                         
@@ -149,7 +149,7 @@ private extension AudiobookHomePanel {
         }
         
         do {
-            let home: ([HomeRow<Audiobook>], [HomeRow<Author>]) = try await ABSClient[library.connectionID].home(for: library.id)
+            let home: ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[library.connectionID].home(for: library.id)
             let audiobooks = await HomeRow.prepareForPresentation(home.0, connectionID: library.connectionID)
             
             await MainActor.withAnimation {

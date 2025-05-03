@@ -59,6 +59,14 @@ public enum AuthorSortOrder: Int, Identifiable, Hashable, Codable, Sendable, Cas
         rawValue
     }
 }
+public enum NarratorSortOrder: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
+    case name
+    case bookCount
+    
+    public var id: Int {
+        rawValue
+    }
+}
 
 public enum SeriesSortOrder: String, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
     case sortName

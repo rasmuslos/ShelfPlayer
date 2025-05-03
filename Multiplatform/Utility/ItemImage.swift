@@ -241,7 +241,7 @@ private struct ContrastModifier: ViewModifier {
             return library.type
         } else if let itemID {
             switch itemID.type {
-            case .audiobook, .author, .series:
+            case .audiobook, .narrator, .author, .series:
                 return .audiobooks
             case .podcast, .episode:
                 return .podcasts

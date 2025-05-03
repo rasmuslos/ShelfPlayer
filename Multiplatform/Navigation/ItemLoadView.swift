@@ -31,8 +31,8 @@ struct ItemLoadView: View {
                     AudiobookView(audiobook)
                 } else if let series = item as? Series {
                     SeriesView(series)
-                } else if let author = item as? Author {
-                    AuthorView(author)
+                } else if let person = item as? Person {
+                    PersonView(person)
                 } else if let podcast = item as? Podcast {
                     PodcastView(podcast, episodes: episodes, zoom: false)
                 } else if let episode = item as? Episode {
