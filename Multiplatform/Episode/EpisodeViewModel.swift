@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftUI
 import ShelfPlayerKit
 

@@ -21,7 +21,7 @@ struct PlaybackTitle: View {
                 PlaybackMenuActions()
             } label: {
                 VStack(alignment: .leading, spacing: 4) {
-                    if let currentItem = satellite.currentItem {
+                    if let currentItem = satellite.nowPlayingItem {
                         Text(currentItem.name)
                             .id(currentItem.name)
                             .lineLimit(2)
@@ -45,11 +45,11 @@ struct PlaybackTitle: View {
                             .font(.headline)
                     }
                 }
-                .id(satellite.currentItem)
+                .id(satellite.nowPlayingItem)
             }
             .buttonStyle(.plain)
             
-            if satellite.currentItemID?.type == .audiobook {
+            if satellite.nowPlayingItemID?.type == .audiobook {
                 Spacer(minLength: 12)
                 
                 if viewModel.isCreatingBookmark {
@@ -78,7 +78,7 @@ struct PlaybackControls: View {
     @Environment(Satellite.self) private var satellite
     
     private var isLoading: Bool {
-        if let currentItemID = satellite.currentItemID {
+        if let currentItemID = satellite.nowPlayingItemID {
             satellite.isBuffering || satellite.isLoading(observing: currentItemID)
         } else {
             true
@@ -234,7 +234,7 @@ struct PlaybackMenuActions: View {
     @Environment(Satellite.self) private var satellite
     
     var body: some View {
-        if let currentItem = satellite.currentItem {
+        if let currentItem = satellite.nowPlayingItem {
             if let audiobook = currentItem as? Audiobook {
                 Button(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book") {
                     audiobook.id.navigateIsolated()

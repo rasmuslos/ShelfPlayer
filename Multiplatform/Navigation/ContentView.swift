@@ -67,8 +67,17 @@ struct ContentView: View {
         .sensoryFeedback(.error, trigger: playbackViewModel.notifyError)
         .sensoryFeedback(.success, trigger: playbackViewModel.notifySuccess)
         .modifier(PlaybackContentModifier())
-        .sheet(item: $satellite.currentSheet) {
+        .sheet(item: satellite.presentedSheet) {
             sheetContent(for: $0)
+                .interactiveDismissDisabled($0.dismissBehavior.preventInteraction)
+        }
+        .alert(isPresented: satellite.isWarningAlertPresented, error: satellite.warningAlert) {
+            Button("action.cancel", role: .cancel) {
+                satellite.cancelWarningAlert()
+            }
+            Button("action.proceed") {
+                satellite.confirmWarningAlert()
+            }
         }
         .environment(satellite)
         .environment(playbackViewModel)

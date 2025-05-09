@@ -31,7 +31,7 @@ struct ListenNowSheet: View {
                         ForEach(listenNowItems) { item in
                             ItemCompactRow(item: item) {
                                 satellite.start(item.id)
-                                satellite.currentSheet = nil
+                                satellite.attemptSheetDismissal()
                             }
                         }
                     }
@@ -93,7 +93,7 @@ struct ListenNowSheetToggle: View {
     var body: some View {
         if totalLibraryCount > 1 {
             Button("panel.listenNow", systemImage: "play.rectangle.on.rectangle.fill") {
-                satellite.currentSheet = .listenNow
+                satellite.present(.listenNow)
             }
         }
     }

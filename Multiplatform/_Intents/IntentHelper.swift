@@ -81,7 +81,7 @@ private extension IntentHelper {
         let ranked = items.map { ($0.name.levenshteinDistanceScore(to: search), $0) }.sorted { $0.0 > $1.0 }
         let grouped = Dictionary(grouping: ranked, by: \.0)
         
-        UserContext.logger.info("Resolved \(ranked.map { ($0, $1.name) }) for \"\(search)\"")
+        UserContext.logger.info("Resolved \(ranked.map { ($0, $1.name) }, privacy: .public) for \"\(search)\"")
         
         var result = [R]()
         

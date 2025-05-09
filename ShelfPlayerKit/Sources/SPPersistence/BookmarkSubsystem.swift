@@ -45,7 +45,7 @@ extension PersistenceManager {
                 })
                 try modelContext.save()
             } catch {
-                logger.error("Failed to remove related bookmarks to itemID \(itemID): \(error)")
+                logger.error("Failed to remove related bookmarks to itemID \(itemID, privacy: .public): \(error)")
             }
         }
         func remove(connectionID: ItemIdentifier.ConnectionID) {
@@ -55,7 +55,7 @@ extension PersistenceManager {
                 })
                 try modelContext.save()
             } catch {
-                logger.error("Failed to remove related bookmarks to connection \(connectionID): \(error)")
+                logger.error("Failed to remove related bookmarks to connection \(connectionID, privacy: .public): \(error)")
             }
         }
     }
@@ -104,7 +104,7 @@ public extension PersistenceManager.BookmarkSubsystem {
         }
         
         guard let bookmark = try bookmark(connectionID: itemID.connectionID, primaryID: itemID.primaryID, time: time) else {
-            logger.error("Tried to delete a non existent bookmark at \(time) for item \(itemID)")
+            logger.error("Tried to delete a non existent bookmark at \(time) for item \(itemID, privacy: .public)")
             throw PersistenceError.missing
         }
         
@@ -120,7 +120,7 @@ public extension PersistenceManager.BookmarkSubsystem {
     }
     
     func sync(bookmarks: [BookmarkPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
-        logger.info("Syncronizing \(bookmarks.count) bookmarks for connection \(connectionID)")
+        logger.info("Syncronizing \(bookmarks.count) bookmarks for connection \(connectionID, privacy: .public)")
         
         var bookmarks = bookmarks
         
@@ -163,7 +163,7 @@ public extension PersistenceManager.BookmarkSubsystem {
                         bookmark.status = .synced
                     default:
                         if bookmark.status == .pendingCreation {
-                            logger.error("Bookmark is scheduled for creation but already exists. Updating local entity (primaryID: \(bookmark.primaryID) at: \(bookmark.time) | \(bookmark.note))")
+                            logger.error("Bookmark is scheduled for creation but already exists. Updating local entity (primaryID: \(bookmark.primaryID, privacy: .public) at: \(bookmark.time) | \(bookmark.note))")
                         }
                         
                         bookmark.note = existing.title
