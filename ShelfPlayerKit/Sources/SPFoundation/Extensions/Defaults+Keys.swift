@@ -34,9 +34,6 @@ public extension Defaults.Keys {
     static let skipBackwardsInterval = Key("skipBackwardsInterval", default: 30)
     static let skipForwardsInterval = Key("skipForwardsInterval", default: 30)
     
-    static let queueNextEpisodes = Key("queueNextEpisodes", default: true)
-    static let queueNextAudiobooksInSeries = Key("queueNextAudiobooksInSeries", default: true)
-    
     // Advanced
     
     static let enableSerifFont = Key("enableSerifFont", default: true)
@@ -59,6 +56,9 @@ public extension Defaults.Keys {
     static let sleepTimerIntervals = Key("sleepTimerIntervals", default: [10, 20, 30, 45, 60, 90].map { Double($0) * 60 })
     static let sleepTimerExtendInterval = Key("sleepTimerExtendInterval", default: Double(1200))
     static let sleepTimerExtendChapterAmount = Key("sleepTimerExtendChapterAmount", default: 1)
+    
+    static let enableConvenienceDownloads = Key("enableConvenienceDownloads", default: true)
+    static let enableListenNowDownloads = Key("enableListenNowDownloads", default: true)
     
     // MARK: Filtering & Sorting
     

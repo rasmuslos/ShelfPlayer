@@ -34,16 +34,11 @@ struct DownloadButton: View {
         }
     }
     
-    @State private var isWorking = false
-    
     @State private var baseProgress: Percentage? = nil
     @State private var status: PersistenceManager.DownloadSubsystem.DownloadStatus?
     
     @State private var progress = [UUID: Int64]()
     @State private var metadata = [UUID: (Percentage, Int64)]()
-    
-    @State private var notifyError = false
-    @State private var notifySuccess = false
     
     private var current: Percentage? {
         guard let baseProgress else {
@@ -129,7 +124,7 @@ struct DownloadButton: View {
     }
     
     private var isLoading: Bool {
-        if isWorking {
+        if satellite.isLoading(observing: itemID) {
             return true
         }
         
@@ -154,9 +149,9 @@ struct DownloadButton: View {
             } else {
                 Button {
                     if status == PersistenceManager.DownloadSubsystem.DownloadStatus.none {
-                        download()
+                        satellite.download(itemID: itemID)
                     } else {
-                        remove()
+                        satellite.removeDownload(itemID: itemID)
                     }
                 } label: {
                     if let current {
@@ -203,10 +198,8 @@ struct DownloadButton: View {
                 }
             }
         }
-        .disabled(satellite.nowPlayingItemID == itemID)
+        .disabled(status == nil || satellite.isLoading(observing: itemID))
         .animation(.smooth, value: current)
-        .sensoryFeedback(.error, trigger: notifyError)
-        .sensoryFeedback(.success, trigger: notifySuccess)
         .task {
             loadCurrent()
         }
@@ -271,32 +264,6 @@ private extension DownloadButton {
             
             await MainActor.withAnimation {
                 self.baseProgress = progress
-            }
-        }
-    }
-    
-    nonisolated func remove() {
-        Task {
-            guard !(await isWorking), let status = await status, status != .none else {
-                return
-            }
-            
-            await MainActor.withAnimation {
-                isWorking = true
-            }
-            
-            do {
-                try await PersistenceManager.shared.download.remove(itemID)
-                
-                await MainActor.withAnimation {
-                    isWorking = false
-                    notifySuccess.toggle()
-                }
-            } catch {
-                await MainActor.withAnimation {
-                    isWorking = false
-                    notifyError.toggle()
-                }
             }
         }
     }

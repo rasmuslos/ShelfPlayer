@@ -17,15 +17,18 @@ extension PersistenceManager {
     public final actor KeyValueSubsystem: Sendable {
         private let logger = Logger(subsystem: "SatelliteGuardKit", category: "KeyValue")
         
-        public subscript<Value: Codable>(_ key: Key<Value>) -> Value? {
+        public subscript<T: Codable>(_ key: Key<T>) -> T? {
             guard let entity = entity(for: key) else {
                 return nil
             }
             
+            return value(for: entity, type: T.self)
+        }
+        private func value<T: Decodable>(for key: KeyValueEntity, type: T.Type) -> T? {
             do {
-                return try JSONDecoder().decode(Value.self, from: entity.value)
+                return try JSONDecoder().decode(T.self, from: key.value)
             } catch {
-                logger.error("Failed to decode \(Value.self): \(error)")
+                logger.error("Failed to decode \(T.self): \(error)")
                 return nil
             }
         }
@@ -80,7 +83,7 @@ extension PersistenceManager {
                 logger.error("Failed to remove related key value pairs for connection \(connectionID): \(error)")
             }
         }
-        func remove(cluster: String) throws {
+        public func remove(cluster: String) throws {
             try modelContext.delete(model: KeyValueEntity.self, where: #Predicate { $0.cluster == cluster })
             try modelContext.save()
         }
@@ -104,6 +107,19 @@ extension PersistenceManager {
         private func entity<T>(for key: Key<T>) -> KeyValueEntity? where T: Decodable {
             let identifier = key.identifier
             return try? modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.key == identifier })).first
+        }
+        public func entities<T: Decodable>(cluster: String, type: T.Type) -> [String: T] {
+            do {
+                return Dictionary(uniqueKeysWithValues: try modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.cluster == cluster })).compactMap { entity -> (key: String, value: T)? in
+                    guard let value = value(for: entity, type: T.self) else {
+                        return nil
+                    }
+                    
+                    return (entity.key, value)
+                })
+            } catch {
+                return [:]
+            }
         }
         
         public struct Key<Value: Codable>: Sendable {

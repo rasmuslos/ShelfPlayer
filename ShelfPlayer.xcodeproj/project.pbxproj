@@ -45,6 +45,8 @@
 		3A3129A52D24190900D143B4 /* HeaderEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A42D24190200D143B4 /* HeaderEditor.swift */; };
 		3A36D78B2ACF2C1D002EEC54 /* AudiobookGrids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
+		3A45C8B82DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */; };
+		3A45C8BA2DCE3050004B48A1 /* CollectionConfigurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B92DCE3050004B48A1 /* CollectionConfigurationSheet.swift */; };
 		3A47D1872CB991BC0045C2BB /* SecondaryShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */; };
 		3A49848A2D610DF10086A2B5 /* AudiobookRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4984892D610DF00086A2B5 /* AudiobookRow.swift */; };
 		3A4AD9552DBB85C60057349C /* CarPlayItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4AD9542DBB85C20057349C /* CarPlayItemController.swift */; };
@@ -244,6 +246,8 @@
 		3A3129A42D24190200D143B4 /* HeaderEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEditor.swift; sourceTree = "<group>"; };
 		3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookGrids.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
+		3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenienceDownloadPreferences.swift; sourceTree = "<group>"; };
+		3A45C8B92DCE3050004B48A1 /* CollectionConfigurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionConfigurationSheet.swift; sourceTree = "<group>"; };
 		3A47D1862CB991BA0045C2BB /* SecondaryShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryShadow.swift; sourceTree = "<group>"; };
 		3A4984892D610DF00086A2B5 /* AudiobookRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookRow.swift; sourceTree = "<group>"; };
 		3A4AD9542DBB85C20057349C /* CarPlayItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayItemController.swift; sourceTree = "<group>"; };
@@ -649,6 +653,7 @@
 				3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */,
 				3A90A6422D9BD01E009BDA84 /* CarPlayPreferences.swift */,
 				3A90A6402D9AE268009BDA84 /* CreateLogArchiveButton.swift */,
+				3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -678,6 +683,7 @@
 			children = (
 				3A81D1E62DBA53F800ACED78 /* ListenNowSheet.swift */,
 				3A7FBA0F2D8D6E000038C0B1 /* DescriptionSheet.swift */,
+				3A45C8B92DCE3050004B48A1 /* CollectionConfigurationSheet.swift */,
 			);
 			path = Sheets;
 			sourceTree = "<group>";
@@ -970,6 +976,7 @@
 				3A64B3772CAAD37A00446871 /* _SpotlightIndexer.swift in Sources */,
 				3AE31DCE2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift in Sources */,
 				3A7F84A52CAD1F4A00A51EEE /* UIWindow+Shake.swift in Sources */,
+				3A45C8B82DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift in Sources */,
 				3A47D1872CB991BC0045C2BB /* SecondaryShadow.swift in Sources */,
 				3A102EAA2D4511340075FA0B /* PDFViewer.swift in Sources */,
 				3A98246E2B6EAC7F0098C06A /* CircleProgressIndicator.swift in Sources */,
@@ -1114,6 +1121,7 @@
 				3A6924AB2D6B9BAF004E291E /* EmptyCollectionView.swift in Sources */,
 				3A36D78B2ACF2C1D002EEC54 /* AudiobookGrids.swift in Sources */,
 				3A9825DA2D4A11FE00A65826 /* PlayButtonStyle.swift in Sources */,
+				3A45C8BA2DCE3050004B48A1 /* CollectionConfigurationSheet.swift in Sources */,
 				3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */,
 				3A828E062D27459A00267961 /* ConnectionManageView.swift in Sources */,
 				3A64B3752CAAD26900446871 /* UserContext.swift in Sources */,
