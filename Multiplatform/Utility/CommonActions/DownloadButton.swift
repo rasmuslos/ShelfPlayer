@@ -203,7 +203,7 @@ struct DownloadButton: View {
                 }
             }
         }
-        .disabled(satellite.currentItemID == itemID)
+        .disabled(satellite.nowPlayingItemID == itemID)
         .animation(.smooth, value: current)
         .sensoryFeedback(.error, trigger: notifyError)
         .sensoryFeedback(.success, trigger: notifySuccess)
@@ -271,34 +271,6 @@ private extension DownloadButton {
             
             await MainActor.withAnimation {
                 self.baseProgress = progress
-            }
-        }
-    }
-    
-    nonisolated func download() {
-        Task {
-            guard !(await isWorking), let status = await status, status == .none else {
-                return
-            }
-            
-            await MainActor.withAnimation {
-                isWorking = true
-            }
-            
-            do {
-                try await PersistenceManager.shared.download.download(itemID)
-                
-                await MainActor.withAnimation {
-                    isWorking = false
-                    notifySuccess.toggle()
-                }
-            } catch {
-                await Self.logger.error("Failed to download item \(itemID): \(error)")
-                
-                await MainActor.withAnimation {
-                    isWorking = false
-                    notifyError.toggle()
-                }
             }
         }
     }

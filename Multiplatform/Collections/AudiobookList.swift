@@ -72,7 +72,7 @@ private struct Row: View {
         
         if let isFinished = progress.isFinished, isFinished {
             parts.append(String(localized: "item.progress.finished"))
-        } else if satellite.currentItemID == audiobook.id, satellite.duration > 0 {
+        } else if satellite.nowPlayingItemID == audiobook.id, satellite.duration > 0 {
             parts.append((satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1)))
         } else if let progress = progress.progress, progress <= 0 {
             appendDuration()

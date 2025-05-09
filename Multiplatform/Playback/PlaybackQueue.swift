@@ -42,7 +42,7 @@ struct PlaybackQueue: View {
                                     .id($0)
                             }
                             .onDelete {
-                                guard let currentItemID = satellite.currentItemID else {
+                                guard let currentItemID = satellite.nowPlayingItemID else {
                                     return
                                 }
                                 

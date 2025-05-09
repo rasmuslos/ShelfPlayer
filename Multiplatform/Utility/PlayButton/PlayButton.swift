@@ -39,7 +39,7 @@ struct PlayButton: View {
     }
     
     private var isPlaying: Bool {
-        satellite.currentItem == item
+        satellite.nowPlayingItem == item
     }
     private var isLoading: Bool {
         satellite.isLoading(observing: item.id)

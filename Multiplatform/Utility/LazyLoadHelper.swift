@@ -211,7 +211,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         working = false
                     }
                     
-                    logger.info("Finished loading \(loadedCount) items of type \(T.self)")
+                    logger.info("Finished loading \(loadedCount) items of type \(T.self, privacy: .public)")
                     return
                 }
                 
@@ -225,7 +225,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         finished = true
                     }
                     
-                    logger.info("Finished loading items of type \(T.self)")
+                    logger.info("Finished loading items of type \(T.self, privacy: .public)")
                 }
                 
                 // MARK: Replace audiobook sections with only one book
@@ -391,7 +391,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     
                     items += received
                     
-                    logger.info("Now at \(self.loadedCount)/\(self.totalCount) items of type \(T.self) (received \(receivedCount))")
+                    logger.info("Now at \(self.loadedCount)/\(self.totalCount) items of type \(T.self, privacy: .public) (received \(receivedCount))")
                 }
                 
                 // The filter has removed all new items so the method will not be called from the view
@@ -400,7 +400,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     didReachEndOfLoadedContent()
                 }
             } catch {
-                logger.error("Error loading more \(T.self): \(error)")
+                logger.error("Error loading more \(T.self, privacy: .public): \(error)")
                 
                 await MainActor.withAnimation { [self] in
                     notifyError.toggle()

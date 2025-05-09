@@ -336,11 +336,7 @@ private extension AudioPlayer {
                 }
                 
                 if status == .downloading {
-                    do {
-                        try await PersistenceManager.shared.download.remove(itemID)
-                    } catch {
-                        await self?.stop()
-                    }
+                    await self?.stop()
                 }
             }
         }

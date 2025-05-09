@@ -25,7 +25,7 @@ struct EpisodePlayButton: View {
     }
     
     private var isPlaying: Bool {
-        satellite.currentItem == episode
+        satellite.nowPlayingItem == episode
     }
     private var isLoading: Bool {
         satellite.isLoading(observing: episode.id)
