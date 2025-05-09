@@ -3095,6 +3095,12 @@
     "preferences.carPlay.tabBar.warning" : {
 
     },
+    "preferences.convenienceDownload" : {
+
+    },
+    "preferences.convenienceDownload.enable" : {
+
+    },
     "preferences.generateLogFile" : {
       "localizations" : {
         "de" : {

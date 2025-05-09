@@ -71,7 +71,7 @@ struct ContentView: View {
             sheetContent(for: $0)
                 .interactiveDismissDisabled($0.dismissBehavior.preventInteraction)
         }
-        .alert(isPresented: satellite.isWarningAlertPresented, error: satellite.warningAlert) {
+        .alert(isPresented: satellite.isWarningAlertPresented, error: satellite.warningAlertStack.first) {
             Button("action.cancel", role: .cancel) {
                 satellite.cancelWarningAlert()
             }

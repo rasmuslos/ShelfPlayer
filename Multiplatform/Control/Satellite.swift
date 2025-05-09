@@ -24,7 +24,7 @@ final class Satellite {
     var lastTabValue: TabValue?
     
     private(set) var sheetStack: [Sheet]
-    var warningAlert: WarningAlert?
+    var warningAlertStack: [WarningAlert]
 
     // MARK: Playback
     
@@ -81,6 +81,7 @@ final class Satellite {
         isOffline = Defaults[.startInOfflineMode]
         
         sheetStack = []
+        warningAlertStack = []
         
         nowPlayingItem = nil
         
@@ -208,20 +209,26 @@ extension Satellite {
     }
     enum WarningAlert: LocalizedError {
         case sheetDismissalPrevention(sheet: Sheet)
-
+        case message(String)
+        case playbackAttemptWhileDownloading(itemID: ItemIdentifier)
+        
         var errorDescription: String? {
             switch self {
-            case .sheetDismissalPrevention(let sheet):
-                switch sheet.dismissBehavior {
-                case .allow, .prevent:
-                    nil
-                case .warn(let message):
+                case .sheetDismissalPrevention(let sheet):
+                    switch sheet.dismissBehavior {
+                        case .allow, .prevent:
+                            nil
+                        case .warn(let message):
+                            message
+                    }
+                case .message(let message):
                     message
-                }
+                case .playbackAttemptWhileDownloading:
+                    String(localized: "toDo")
             }
         }
     }
-
+    
     var isSheetPresented: Bool {
         !sheetStack.isEmpty
     }
@@ -238,12 +245,15 @@ extension Satellite {
     }
     var isWarningAlertPresented: Binding<Bool> {
         .init {
-            self.warningAlert != nil
+            !self.warningAlertStack.isEmpty
         } set: { _ in }
     }
     
     func present(_ sheet: Sheet) {
         sheetStack.append(sheet)
+    }
+    func warn(_ warning: WarningAlert) {
+        warningAlertStack.append(warning)
     }
     
     func attemptSheetDismissal() {
@@ -257,7 +267,7 @@ extension Satellite {
         case .allow:
             dismissSheet()
         case .warn:
-            warningAlert = .sheetDismissalPrevention(sheet: sheet)
+                warn(.sheetDismissalPrevention(sheet: sheet))
         case .prevent:
             break
         }
@@ -271,7 +281,7 @@ extension Satellite {
         case .allow:
             break
         case .warn:
-            guard case .sheetDismissalPrevention(let warningSheet) = self.warningAlert, warningSheet == sheet else {
+                guard let warning = warningAlertStack.first, case .sheetDismissalPrevention(let warningSheet) = warning, warningSheet == sheet else {
                 return
             }
         case .prevent:
@@ -286,19 +296,34 @@ extension Satellite {
     }
 
     func cancelWarningAlert() {
-        warningAlert = nil
+        guard !warningAlertStack.isEmpty else {
+            return
+        }
+        
+        warningAlertStack.removeFirst()
     }
     func confirmWarningAlert() {
-        guard let warningAlert = warningAlert else {
+        guard let warningAlert = warningAlertStack.first else {
             return
         }
         
         switch warningAlert {
-        case .sheetDismissalPrevention:
-            dismissSheet()
+            case .sheetDismissalPrevention:
+                dismissSheet()
+            case .message:
+                break
+            case .playbackAttemptWhileDownloading(let itemID):
+                Task {
+                    removeDownload(itemID: itemID)
+                    await enqueueDownload(itemID: itemID)
+                    
+                    try await Task.sleep(for: .seconds(0.5))
+                    
+                    start(itemID)
+                }
         }
         
-        self.warningAlert = nil
+        self.warningAlertStack.removeFirst()
     }
 }
 
@@ -441,6 +466,11 @@ extension Satellite {
         Task {
             guard await self.nowPlayingItemID != itemID else {
                 await togglePlaying()
+                return
+            }
+            
+            if await PersistenceManager.shared.download.status(of: itemID) == .downloading {
+                await warn(.playbackAttemptWhileDownloading(itemID: itemID))
                 return
             }
 
@@ -673,7 +703,7 @@ extension Satellite {
 // MARK: Download
 
 extension Satellite {
-    nonisolated func download(itemID: ItemIdentifier) throws {
+    nonisolated func download(itemID: ItemIdentifier) {
         Task {
             let status = await PersistenceManager.shared.download.status(of: itemID)
 
@@ -681,8 +711,11 @@ extension Satellite {
                 return
             }
             
-            if await nowPlayingItemID == itemID {
+            guard await nowPlayingItemID != itemID else {
+                await warn(.message(String(localized: "toDo")))
+                await enqueueDownload(itemID: itemID)
                 
+                return
             }
 
             await startWorking(on: itemID)
@@ -692,6 +725,33 @@ extension Satellite {
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 logger.error("Failed to download item \(itemID, privacy: .public): \(error)")
+                await endWorking(on: itemID, successfully: false)
+            }
+        }
+    }
+    private nonisolated func enqueueDownload(itemID: ItemIdentifier) async {
+        await startWorking(on: itemID)
+        
+        fatalError("bruh")
+    }
+    
+    nonisolated func removeDownload(itemID: ItemIdentifier) {
+        Task {
+            let status = await PersistenceManager.shared.download.status(of: itemID)
+            
+            guard status != .none else {
+                return
+            }
+            
+            guard await nowPlayingItemID != itemID else {
+                stop()
+                return
+            }
+            
+            do {
+                try await PersistenceManager.shared.download.remove(itemID)
+                await endWorking(on: itemID, successfully: true)
+            } catch {
                 await endWorking(on: itemID, successfully: false)
             }
         }

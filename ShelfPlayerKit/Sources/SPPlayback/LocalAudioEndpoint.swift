@@ -643,9 +643,12 @@ private extension LocalAudioEndpoint {
             
             do {
                 if currentItemID.type == .episode {
+                    /*
+                     TODO: j
                     guard Defaults[.queueNextEpisodes] else {
                         return
                     }
+                     */
                     
                     let podcastID = ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
                     
@@ -662,9 +665,11 @@ private extension LocalAudioEndpoint {
                         upNextQueue = queueItems
                     }
                 } else if currentItemID.type == .audiobook {
+                    /*
                     guard Defaults[.queueNextAudiobooksInSeries] else {
                         return
                     }
+                     */
                     
                     guard let audiobook = try await currentItemID.resolved as? Audiobook else {
                         throw AudioPlayerError.invalidItemType
