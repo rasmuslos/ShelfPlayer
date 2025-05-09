@@ -118,7 +118,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                     .contextMenu {
                                         PlaybackMenuActions()
                                     } preview: {
-                                        if let currentItem = satellite.currentItem {
+                                        if let currentItem = satellite.nowPlayingItem {
                                             PlayableItemContextMenuPreview(item: currentItem)
                                         }
                                     }
@@ -192,8 +192,8 @@ private struct ExpandedForeground: View {
                 Spacer(minLength: 12)
                 
                 if !viewModel.isQueueVisible {
-                    ItemImage(itemID: satellite.currentItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
-                        .id(satellite.currentItemID)
+                    ItemImage(itemID: satellite.nowPlayingItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
+                        .id(satellite.nowPlayingItemID)
                         .padding(.horizontal, -8)
                         .shadow(color: .black.opacity(0.4), radius: 20)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
@@ -219,7 +219,7 @@ private struct ExpandedForeground: View {
                                 viewModel.isQueueVisible.toggle()
                             }
                         } label: {
-                            ItemImage(itemID: satellite.currentItemID, size: .regular, aspectRatio: .none, contrastConfiguration: nil)
+                            ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, aspectRatio: .none, contrastConfiguration: nil)
                         }
                         .buttonStyle(.plain)
                         .frame(height: 72)
@@ -277,12 +277,12 @@ private struct CollapsedForeground: View {
         } label: {
             HStack(spacing: 8) {
                 if !viewModel.isExpanded {
-                    ItemImage(itemID: satellite.currentItemID, size: .small, cornerRadius: 8)
+                    ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: 8)
                         .frame(width: 40, height: 40)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: .topLeading)
                     
                     Group {
-                        if let currentItem = satellite.currentItem {
+                        if let currentItem = satellite.nowPlayingItem {
                             Text(currentItem.name)
                                 .lineLimit(1)
                         } else {
@@ -318,9 +318,9 @@ private struct CollapsedForeground: View {
                     .hidden()
                     
                     Group {
-                        if let currentItemID = satellite.currentItemID, satellite.isLoading(observing: currentItemID) {
+                        if let currentItemID = satellite.nowPlayingItemID, satellite.isLoading(observing: currentItemID) {
                             ProgressView()
-                        } else if satellite.isBuffering || satellite.currentItemID == nil {
+                        } else if satellite.isBuffering || satellite.nowPlayingItemID == nil {
                             ProgressView()
                         } else {
                             Button {

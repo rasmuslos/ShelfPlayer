@@ -89,14 +89,14 @@ extension PersistenceManager {
                 try modelContext.delete(model: PersistedAsset.self, where: #Predicate { $0._itemID.contains(connectionID) })
                 try modelContext.delete(model: PersistedChapter.self, where: #Predicate { $0._itemID.contains(connectionID) })
             } catch {
-                logger.error("Failed to remove downloads related to connection \(connectionID): \(error)")
+                logger.error("Failed to remove downloads related to connection \(connectionID, privacy: .public): \(error)")
             }
             
             do {
                 let path = ShelfPlayerKit.downloadDirectoryURL.appending(path: connectionID.replacing("/", with: "_"))
                 try FileManager.default.removeItem(at: path)
             } catch {
-                logger.error("Failed to remove download directory for connection \(connectionID): \(error)")
+                logger.error("Failed to remove download directory for connection \(connectionID, privacy: .public): \(error)")
             }
         }
     }
@@ -187,7 +187,7 @@ private extension PersistenceManager.DownloadSubsystem {
                 let itemID = asset.itemID
                 await RFNotification[.downloadStatusChanged].send(payload: (itemID, .completed))
                 
-                logger.info("Cached download status for item \(asset.itemID)")
+                logger.info("Cached download status for item \(asset.itemID, privacy: .public)")
             }
         }
     }
@@ -224,7 +224,7 @@ private extension PersistenceManager.DownloadSubsystem {
             return
         }
         
-        logger.error("Task failed: \(taskIdentifier) for asset: \(asset.id)")
+        logger.error("Task failed: \(taskIdentifier, privacy: .public) for asset: \(asset.id, privacy: .public)")
         
         asset.downloadTaskID = nil
         
@@ -239,10 +239,10 @@ private extension PersistenceManager.DownloadSubsystem {
         Task {
             do {
                 if let failedAttempts = await PersistenceManager.shared.keyValue[.assetFailedAttempts(assetID: assetID, itemID: asset.itemID)] {
-                    logger.info("Asset \(assetID) failed to download \(failedAttempts + 1) times")
+                    logger.info("Asset \(assetID, privacy: .public) failed to download \(failedAttempts + 1) times")
                     
                     if failedAttempts > 3 {
-                        logger.warning("Asset \(assetID) failed to download more than 3 times. Removing download \(asset.itemID)")
+                        logger.warning("Asset \(assetID, privacy: .public) failed to download more than 3 times. Removing download \(asset.itemID)")
                         try await remove(asset.itemID)
                     } else {
                         try await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID, itemID: asset.itemID), failedAttempts + 1)
@@ -251,7 +251,7 @@ private extension PersistenceManager.DownloadSubsystem {
                     try await PersistenceManager.shared.keyValue.set(.assetFailedAttempts(assetID: assetID, itemID: asset.itemID), 1)
                 }
             } catch {
-                logger.error("Failed to update failed download attempts for asset \(assetID): \(error)")
+                logger.error("Failed to update failed download attempts for asset \(assetID, privacy: .public): \(error)")
             }
         }
         
@@ -281,7 +281,7 @@ private extension PersistenceManager.DownloadSubsystem {
         
         try modelContext.save()
         
-        logger.info("Finished downloading asset \(asset.id) for \(asset.itemID)")
+        logger.info("Finished downloading asset \(asset.id, privacy: .public) for \(asset.itemID, privacy: .public)")
         
         scheduleUpdateTask()
     }
@@ -692,28 +692,25 @@ public extension PersistenceManager.DownloadSubsystem {
         busyItemIDs.insert(itemID)
         
         do {
-            let assets = try assets(for: itemID)
-            
-            guard !assets.isEmpty else {
-                throw PersistenceError.missing
-            }
-            
-            try await removeAssets(assets)
-            
-            try await PersistenceManager.shared.keyValue.remove(cluster: "assetFailedAttempts_\(itemID.description)")
-            
             try modelContext.delete(model: SchemaV2.PersistedChapter.self, where: #Predicate { $0._itemID == itemID.description })
             
             let model: any PersistentModel = persistedAudiobook(for: itemID) ?? persistedEpisode(for: itemID)!
             modelContext.delete(model)
             
-            try modelContext.save()
+            let assets = try assets(for: itemID)
+            
+            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
+            try await PersistenceManager.shared.keyValue.remove(cluster: "assetFailedAttempts_\(itemID.description)")
             
             for coverSize in ItemIdentifier.CoverSize.allCases {
                 try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
             }
             
-            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
+            if !assets.isEmpty {
+                try await removeAssets(assets)
+            }
+            
+            try modelContext.save()
             
             await RFNotification[.downloadStatusChanged].send(payload: (itemID, .none))
             

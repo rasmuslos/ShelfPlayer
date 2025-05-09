@@ -80,7 +80,7 @@ public actor ListenNowCache: Sendable {
                         do {
                             try await PersistenceManager.shared.download.remove(itemID)
                         } catch {
-                            self.logger.error("Failed to remove item \(itemID): \(error)")
+                            self.logger.error("Failed to remove item \(itemID, privacy: .public): \(error)")
                         }
                     }
                 }
@@ -92,7 +92,7 @@ public actor ListenNowCache: Sendable {
                             try await PersistenceManager.shared.download.download(itemID)
                             return nil
                         } catch {
-                            self.logger.error("Failed to download item \(itemID): \(error)")
+                            self.logger.error("Failed to download item \(itemID, privacy: .public): \(error)")
                             return itemID
                         }
                     }

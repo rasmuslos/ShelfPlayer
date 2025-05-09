@@ -23,12 +23,13 @@ final class Satellite {
     @ObservableDefault(.lastTabValue) @ObservationIgnored
     var lastTabValue: TabValue?
     
-    var currentSheet: Sheet?
-    
+    private(set) var sheetStack: [Sheet]
+    var warningAlert: WarningAlert?
+
     // MARK: Playback
     
-    private(set) var currentItemID: ItemIdentifier?
-    private(set) var currentItem: PlayableItem?
+    private(set) var nowPlayingItemID: ItemIdentifier?
+    private(set) var nowPlayingItem: PlayableItem?
     
     private(set) var queue: [ItemIdentifier]
     private(set) var upNextQueue: [ItemIdentifier]
@@ -74,10 +75,14 @@ final class Satellite {
     
     private var stash: RFNotification.MarkerStash
     
+    // MARK: Init
+    
     init() {
         isOffline = Defaults[.startInOfflineMode]
         
-        currentItem = nil
+        sheetStack = []
+        
+        nowPlayingItem = nil
         
         queue = []
         upNextQueue = []
@@ -112,7 +117,51 @@ final class Satellite {
         checkForResumablePlayback()
     }
     
-    enum Sheet: Identifiable {
+    // MARK: General Purpose
+    
+    enum SatelliteError: Error {
+        case missingItem
+    }
+
+    public func isLoading(observing: ItemIdentifier) -> Bool {
+        totalLoading > 0 || busy[observing] ?? 0 > 0
+    }
+
+    private func startWorking(on itemID: ItemIdentifier) {
+        withAnimation {
+            let current = busy[itemID]
+            
+            if current == nil {
+                busy[itemID] = 1
+            } else {
+                busy[itemID]! += 1
+            }
+        }
+    }
+    private func endWorking(on itemID: ItemIdentifier, successfully: Bool?) {
+        withAnimation {
+            guard let current = busy[itemID] else {
+                logger.warning("Ending work on \(itemID, privacy: .public) but no longer busy")
+                return
+            }
+            
+            busy[itemID] = current - 1
+            
+            if let successfully {
+                if successfully {
+                    notifySuccess.toggle()
+                } else {
+                    notifyError.toggle()
+                }
+            }
+        }
+    }
+}
+
+// MARK: Sheet & Alert
+
+extension Satellite {
+    enum Sheet: Identifiable, Equatable {
         case listenNow
         
         case preferences
@@ -132,71 +181,174 @@ final class Satellite {
                 "podcastConfiguration_\(itemID)"
             }
         }
-    }
-    enum SatelliteError: Error {
-        case missingItem
-    }
-    
-    private func startWorking(on itemID: ItemIdentifier) {
-        withAnimation {
-            let current = busy[itemID]
-            
-            if current == nil {
-                busy[itemID] = 1
-            } else {
-                busy[itemID]! += 1
+        
+        var dismissBehavior: DismissBehavior {
+            switch self {
+            case .listenNow, .preferences, .description:
+                    .allow
+            case .podcastConfiguration:
+                    .warn(message: String(localized: "toDo"))
+            }
+        }
+        
+        enum DismissBehavior {
+            case allow
+            case warn(message: String)
+            case prevent
+
+            var preventInteraction: Bool {
+                switch self {
+                case .allow, .warn:
+                    false
+                case .prevent:
+                    true
+                }
             }
         }
     }
-    private func endWorking(on itemID: ItemIdentifier, successfully: Bool?) {
-        withAnimation {
-            guard let current = busy[itemID] else {
-                logger.warning("Ending work on \(itemID) but no longer busy")
+    enum WarningAlert: LocalizedError {
+        case sheetDismissalPrevention(sheet: Sheet)
+
+        var errorDescription: String? {
+            switch self {
+            case .sheetDismissalPrevention(let sheet):
+                switch sheet.dismissBehavior {
+                case .allow, .prevent:
+                    nil
+                case .warn(let message):
+                    message
+                }
+            }
+        }
+    }
+
+    var isSheetPresented: Bool {
+        !sheetStack.isEmpty
+    }
+    var presentedSheet: Binding<Sheet?> {
+        .init {
+            self.sheetStack.first
+        } set: {
+            if let sheet = $0, self.sheetStack.first != sheet {
+                self.present(sheet)
+            } else if $0 == nil {
+                self.attemptSheetDismissal()
+            }
+        }
+    }
+    var isWarningAlertPresented: Binding<Bool> {
+        .init {
+            self.warningAlert != nil
+        } set: { _ in }
+    }
+    
+    func present(_ sheet: Sheet) {
+        sheetStack.append(sheet)
+    }
+    
+    func attemptSheetDismissal() {
+        guard let sheet = sheetStack.first else {
+            return
+        }
+        
+        let dismissalBehavior = sheet.dismissBehavior
+        
+        switch dismissalBehavior {
+        case .allow:
+            dismissSheet()
+        case .warn:
+            warningAlert = .sheetDismissalPrevention(sheet: sheet)
+        case .prevent:
+            break
+        }
+    }
+    func dismissSheet() {
+        guard let sheet = sheetStack.first else {
+            return
+        }
+        
+        switch sheet.dismissBehavior {
+        case .allow:
+            break
+        case .warn:
+            guard case .sheetDismissalPrevention(let warningSheet) = self.warningAlert, warningSheet == sheet else {
                 return
             }
-            
-            busy[itemID] = current - 1
-            
-            if let successfully {
-                if successfully {
-                    notifySuccess.toggle()
-                } else {
-                    notifyError.toggle()
+        case .prevent:
+            return
+        }
+        
+        if case .prevent = sheet.dismissBehavior {
+            return
+        }
+        
+        sheetStack.removeFirst()
+    }
+
+    func cancelWarningAlert() {
+        warningAlert = nil
+    }
+    func confirmWarningAlert() {
+        guard let warningAlert = warningAlert else {
+            return
+        }
+        
+        switch warningAlert {
+        case .sheetDismissalPrevention:
+            dismissSheet()
+        }
+        
+        self.warningAlert = nil
+    }
+}
+
+// MARK: Miscellaneous
+
+extension Satellite {
+    nonisolated func deleteBookmark(at time: UInt64, from itemID: ItemIdentifier) {
+        Task {
+            await startWorking(on: itemID)
+
+            do {
+                try await PersistenceManager.shared.bookmark.delete(at: time, from: itemID)
+
+                if await nowPlayingItemID == itemID {
+                    await MainActor.withAnimation {
+                        bookmarks.removeAll {
+                            $0.time == time
+                        }
+                    }
                 }
+
+                await endWorking(on: itemID, successfully: true)
+            } catch {
+                await endWorking(on: itemID, successfully: false)
             }
         }
     }
 }
 
+// MARK: Now Playing
+
 extension Satellite {
     var isNowPlayingVisible: Bool {
-        currentItemID != nil
+        nowPlayingItemID != nil
     }
-    var isSheetPresented: Bool {
-        currentSheet != nil
-    }
-    
+
     var played: Percentage {
         min(1, max(0, currentChapterTime / chapterDuration))
     }
     var playedTotal: Percentage {
         min(1, max(0, currentTime / duration))
     }
-    
-    func isLoading(observing: ItemIdentifier) -> Bool {
-        totalLoading > 0 || busy[observing] ?? 0 > 0
-    }
-    
-    func present(_ sheet: Sheet) {
-        currentSheet = sheet
-    }
-    
+
+
     nonisolated func play() {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.play()
             await endWorking(on: currentItemID, successfully: nil)
@@ -204,10 +356,10 @@ extension Satellite {
     }
     nonisolated func pause() {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.pause()
             await endWorking(on: currentItemID, successfully: nil)
@@ -220,15 +372,15 @@ extension Satellite {
             play()
         }
     }
-    
+
     nonisolated func skip(forwards: Bool) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
-            
+
             do {
                 try await AudioPlayer.shared.skip(forwards: forwards)
                 await endWorking(on: currentItemID, successfully: nil)
@@ -239,27 +391,27 @@ extension Satellite {
     }
     nonisolated func seek(to time: TimeInterval, insideChapter: Bool, completion: (@Sendable @escaping () -> Void)) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
-            
+
             do {
                 try await AudioPlayer.shared.seek(to: time, insideChapter: insideChapter)
                 await endWorking(on: currentItemID, successfully: true)
-                
+
                 completion()
             } catch {
                 await endWorking(on: currentItemID, successfully: false)
             }
         }
     }
-    
+
     func skipPressed(forwards: Bool) {
         let isInitial: Bool
         let adjustment = Double(forwards ? Defaults[.skipForwardsInterval] : -Defaults[.skipBackwardsInterval])
-        
+
         if let skipCache {
             isInitial = false
             self.skipCache = skipCache + adjustment
@@ -267,33 +419,33 @@ extension Satellite {
             isInitial = true
             self.skipCache = adjustment
         }
-        
+
         RFNotification[.skipped].send(payload: forwards)
-        
+
         skipTask?.cancel()
         skipTask = Task {
             try? await Task.sleep(for: .seconds(isInitial ? 0.2 : 0.6))
-            
+
             guard !Task.isCancelled else {
                 return
             }
-            
+
             if let skipCache {
                 self.skipCache = nil
                 seek(to: currentTime + skipCache, insideChapter: false) {}
             }
         }
     }
-    
+
     nonisolated func start(_ itemID: ItemIdentifier) {
         Task {
-            guard await self.currentItemID != itemID else {
+            guard await self.nowPlayingItemID != itemID else {
                 await togglePlaying()
                 return
             }
-            
+
             await startWorking(on: itemID)
-            
+
             do {
                 try await AudioPlayer.shared.start(itemID, withoutListeningSession: isOffline)
                 await endWorking(on: itemID, successfully: true)
@@ -304,20 +456,20 @@ extension Satellite {
     }
     nonisolated func stop() {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.stop()
             await endWorking(on: currentItemID, successfully: true)
         }
     }
-    
+
     nonisolated func queue(_ itemID: ItemIdentifier) {
         Task {
             await startWorking(on: itemID)
-            
+
             do {
                 try await AudioPlayer.shared.queue([.init(itemID: itemID, startWithoutListeningSession: isOffline)])
                 await endWorking(on: itemID, successfully: true)
@@ -326,25 +478,25 @@ extension Satellite {
             }
         }
     }
-    
+
     nonisolated func setPlaybackRate(_ rate: Percentage) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.setPlaybackRate(rate)
             await endWorking(on: currentItemID, successfully: true)
         }
     }
-    
+
     nonisolated func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.setSleepTimer(configuration)
             await endWorking(on: currentItemID, successfully: true)
@@ -352,10 +504,10 @@ extension Satellite {
     }
     nonisolated func extendSleepTimer() {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.extendSleepTimer()
             await endWorking(on: currentItemID, successfully: true)
@@ -363,33 +515,33 @@ extension Satellite {
     }
     nonisolated func setSleepTimerToChapter(_ chapter: Chapter) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             let chapters = await AudioPlayer.shared.chapters
-            
+
             guard let index = chapters.firstIndex(of: chapter),
                   let currentChapterIndex = await AudioPlayer.shared.activeChapterIndex,
                   index >= currentChapterIndex else {
                 await endWorking(on: currentItemID, successfully: false)
                 return
             }
-            
+
             let amount = index - currentChapterIndex + 1
-            
+
             await AudioPlayer.shared.setSleepTimer(.chapters(amount))
             await endWorking(on: currentItemID, successfully: true)
         }
     }
-    
+
     nonisolated func skip(queueIndex index: Int) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.skip(queueIndex: index)
             await endWorking(on: currentItemID, successfully: true)
@@ -397,22 +549,22 @@ extension Satellite {
     }
     nonisolated func skip(upNextQueueIndex index: Int) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.skip(upNextQueueIndex: index)
             await endWorking(on: currentItemID, successfully: true)
         }
     }
-    
+
     nonisolated func remove(queueIndex index: Int) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.remove(queueIndex: index)
             await endWorking(on: currentItemID, successfully: true)
@@ -420,22 +572,22 @@ extension Satellite {
     }
     nonisolated func remove(upNextQueueIndex index: Int) {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.remove(upNextQueueIndex: index)
             await endWorking(on: currentItemID, successfully: true)
         }
     }
-    
+
     nonisolated func clearQueue() {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.clearQueue()
             await endWorking(on: currentItemID, successfully: true)
@@ -443,22 +595,40 @@ extension Satellite {
     }
     nonisolated func clearUpNextQueue() {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 return
             }
-            
+
             await startWorking(on: currentItemID)
             await AudioPlayer.shared.clearUpNextQueue()
             await endWorking(on: currentItemID, successfully: true)
         }
     }
-    
+
+    nonisolated func resumePlayback() {
+        Task {
+            guard let resumePlaybackItemID = await resumePlaybackItemID else {
+                return
+            }
+
+            await MainActor.run {
+                self.resumePlaybackItemID = nil
+            }
+
+            start(resumePlaybackItemID)
+        }
+    }
+}
+
+// MARK: Progress
+
+extension Satellite {
     nonisolated func markAsFinished(_ itemID: ItemIdentifier) {
         Task {
             await startWorking(on: itemID)
             
             do {
-                if await currentItemID == itemID {
+                if await nowPlayingItemID == itemID {
                     try await AudioPlayer.shared.seek(to: duration, insideChapter: false)
                 } else {
                     try await PersistenceManager.shared.progress.markAsCompleted(itemID)
@@ -498,50 +668,44 @@ extension Satellite {
             }
         }
     }
-    
-    nonisolated func deleteBookmark(at time: UInt64, from itemID: ItemIdentifier) {
+}
+
+// MARK: Download
+
+extension Satellite {
+    nonisolated func download(itemID: ItemIdentifier) throws {
         Task {
-            await startWorking(on: itemID)
+            let status = await PersistenceManager.shared.download.status(of: itemID)
+
+            guard status == .none else {
+                return
+            }
             
+            if await nowPlayingItemID == itemID {
+                
+            }
+
+            await startWorking(on: itemID)
+
             do {
-                try await PersistenceManager.shared.bookmark.delete(at: time, from: itemID)
-                
-                if await currentItemID == itemID {
-                    await MainActor.withAnimation {
-                        bookmarks.removeAll {
-                            $0.time == time
-                        }
-                    }
-                }
-                
+                try await PersistenceManager.shared.download.download(itemID)
                 await endWorking(on: itemID, successfully: true)
             } catch {
+                logger.error("Failed to download item \(itemID, privacy: .public): \(error)")
                 await endWorking(on: itemID, successfully: false)
             }
         }
     }
-    
-    nonisolated func resumePlayback() {
-        Task {
-            guard let resumePlaybackItemID = await resumePlaybackItemID else {
-                return
-            }
-            
-            await MainActor.run {
-                self.resumePlaybackItemID = nil
-            }
-            
-            start(resumePlaybackItemID)
-        }
-    }
 }
+
+// MARK: Private
 
 private extension Satellite {
     nonisolated func resolvePlayingItem() {
         Task {
-            guard let currentItemID = await currentItemID else {
+            guard let currentItemID = await nowPlayingItemID else {
                 await MainActor.withAnimation {
-                    self.currentItem = nil
+                    self.nowPlayingItem = nil
                 }
                 
                 return
@@ -555,7 +719,7 @@ private extension Satellite {
                 }
                 
                 await MainActor.withAnimation {
-                    self.currentItem = item
+                    self.nowPlayingItem = item
                 }
                 await endWorking(on: currentItemID, successfully: nil)
             } catch {
@@ -599,7 +763,9 @@ private extension Satellite {
         
         resumePlaybackItemID = playbackResumeInfo.itemID
     }
-    
+
+    // MARK: Observers
+
     func setupObservers() {
         RFNotification[.changeOfflineMode].subscribe { [weak self] in
             if $0 {
@@ -616,12 +782,12 @@ private extension Satellite {
         }.store(in: &stash)
         
         RFNotification[.navigateNotification].subscribe { [weak self] _ in
-            self?.currentSheet = nil
+            self?.attemptSheetDismissal()
         }.store(in: &stash)
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
-            self?.currentItemID = $0.0
-            self?.currentItem = nil
+            self?.nowPlayingItemID = $0.0
+            self?.nowPlayingItem = nil
             
             self?.chapters = $0.1
             
@@ -695,8 +861,8 @@ private extension Satellite {
         }
         
         RFNotification[.playbackStopped].subscribe { [weak self] in
-            self?.currentItemID = nil
-            self?.currentItem = nil
+            self?.nowPlayingItemID = nil
+            self?.nowPlayingItem = nil
             
             self?.queue = []
             self?.upNextQueue = []
@@ -722,7 +888,7 @@ private extension Satellite {
         }.store(in: &stash)
         
         RFNotification[.bookmarksChanged].subscribe { [weak self] itemID in
-            guard self?.currentItemID == itemID else {
+            guard self?.nowPlayingItemID == itemID else {
                 return
             }
             
@@ -731,11 +897,13 @@ private extension Satellite {
     }
 }
 
+// MARK: Debug fixture
+
 #if DEBUG
 extension Satellite {
     func debugPlayback() -> Self {
-        currentItemID = .fixture
-        currentItem = Audiobook.fixture
+        nowPlayingItemID = .fixture
+        nowPlayingItem = Audiobook.fixture
         
         chapters = [
             .init(id: 0, startOffset: 0, endOffset: 100, title: "ABC"),
