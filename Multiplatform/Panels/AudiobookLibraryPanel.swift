@@ -149,30 +149,32 @@ struct AudiobookLibraryPanel: View {
         }
         .searchFocused($focused, equals: true)
         .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                if let genres = viewModel.genres, !genres.isEmpty {
-                    Menu("item.genres", systemImage: "tag") {
-                        ForEach(genres.sorted(by: <), id: \.hashValue) {
-                            Toggle($0, isOn: viewModel.binding(for: $0))
+            if viewModel.search.isEmpty {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    if let genres = viewModel.genres, !genres.isEmpty {
+                        Menu("item.genres", systemImage: "tag") {
+                            ForEach(genres.sorted(by: <), id: \.hashValue) {
+                                Toggle($0, isOn: viewModel.binding(for: $0))
+                            }
                         }
-                    }
-                    .labelStyle(.iconOnly)
-                    .symbolVariant(viewModel.lazyLoader.filteredGenre != nil ? .fill : .none)
-                } else if viewModel.genres == nil {
-                    ProgressView()
-                }
-                
-                Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
-                    ItemDisplayTypePicker(displayType: $viewModel.displayType)
-                    
-                    Divider()
-                    
-                    Section("item.filter") {
-                        ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
+                        .labelStyle(.iconOnly)
+                        .symbolVariant(viewModel.lazyLoader.filteredGenre != nil ? .fill : .none)
+                    } else if viewModel.genres == nil {
+                        ProgressView()
                     }
                     
-                    Section("item.sort") {
-                        ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                    Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                        ItemDisplayTypePicker(displayType: $viewModel.displayType)
+                        
+                        Divider()
+                        
+                        Section("item.filter") {
+                            ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
+                        }
+                        
+                        Section("item.sort") {
+                            ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                        }
                     }
                 }
             }
@@ -413,11 +415,11 @@ private enum SearchScope: Int, Hashable, Identifiable, CaseIterable {
             case .series:
                 "item.series"
             case .authors:
-                "item.author"
+                "item.authors"
             case .narrators:
-                "item.narrator"
+                "item.narrators"
             case .audiobooks:
-                "item.audiobook"
+                "item.audiobooks"
         }
     }
     

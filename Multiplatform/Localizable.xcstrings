@@ -829,10 +829,10 @@
         }
       }
     },
-    "item.audiobook" : {
+    "item.audiobooks" : {
 
     },
-    "item.author" : {
+    "item.authors" : {
 
     },
     "item.bonus" : {
@@ -1353,7 +1353,7 @@
         }
       }
     },
-    "item.narrator" : {
+    "item.narrators" : {
 
     },
     "item.options" : {
@@ -1964,7 +1964,7 @@
       }
     },
     "item.series" : {
-
+      "comment" : "Plural."
     },
     "item.sort" : {
       "localizations" : {
