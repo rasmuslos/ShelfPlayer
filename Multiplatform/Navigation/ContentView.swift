@@ -108,7 +108,8 @@ struct ContentView: View {
                 return
             }
             
-            ""
+            let itemID = ItemIdentifier(identifier)
+            itemID.navigate()
         }
     }
 }
