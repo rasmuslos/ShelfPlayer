@@ -179,6 +179,7 @@ struct AudiobookLibraryPanel: View {
                 }
             }
         }
+        .modifier(CompactPreferencesToolbarModifier())
         .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .onChange(of: viewModel.filter) {

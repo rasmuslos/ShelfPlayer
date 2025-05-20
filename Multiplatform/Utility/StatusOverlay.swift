@@ -55,6 +55,12 @@ struct StatusOverlay: View {
                                     Group {
                                         if download.status == .downloading {
                                             DownloadButton(itemID: itemID, progressVisibility: .triangle)
+                                                .overlay {
+                                                    Image(systemName: "arrow.down")
+                                                        .labelStyle(.iconOnly)
+                                                        .font(.system(size: fontSize - 3))
+                                                        .fontWeight(.heavy)
+                                                }
                                         } else if progress < 1 {
                                             if itemImageStatusPercentageText {
                                                 Text(verbatim: "\(Int(progress * 100))")

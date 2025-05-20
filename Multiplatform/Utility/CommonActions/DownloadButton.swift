@@ -85,12 +85,12 @@ struct DownloadButton: View {
         }
         
         switch status {
-        case .none:
-            return "item.download"
-        case .downloading:
-            return "item.download.abort"
-        case .completed:
-            return "item.download.remove"
+            case .none:
+                return "item.download"
+            case .downloading:
+                return "item.download.abort"
+            case .completed:
+                return "item.download.remove"
         }
     }
     private var icon: String {
@@ -99,12 +99,12 @@ struct DownloadButton: View {
         }
         
         switch status {
-        case .none:
-            return "arrow.down.circle"
-        case .downloading:
-            return "slash.circle"
-        case .completed:
-            return "trash.circle"
+            case .none:
+                return "arrow.down.circle"
+            case .downloading:
+                return "slash.circle"
+            case .completed:
+                return "trash.circle"
         }
     }
     
@@ -158,30 +158,30 @@ struct DownloadButton: View {
                         CircularProgressIndicator(completed: current, background: progressBackgroundColor, tint: progressTintColor)
                             .modify {
                                 switch progressVisibility {
-                                case .never:
-                                    EmptyView()
-                                case .toolbar:
-                                    $0
-                                        .frame(width: 18)
-                                        .overlay {
-                                            RoundedRectangle(cornerRadius: 1)
-                                                .aspectRatio(1, contentMode: .fit)
-                                                .frame(width: 6)
-                                        }
-                                case .triangle:
-                                    $0
-                                case .episode:
-                                    $0
-                                        .frame(width: 8)
-                                case .row:
-                                    $0
-                                        .frame(width: 14)
-                                        .overlay {
-                                            RoundedRectangle(cornerRadius: 1)
-                                                .aspectRatio(1, contentMode: .fit)
-                                                .frame(width: 5)
-                                        }
-                                        .foregroundStyle(Color.accentColor)
+                                    case .never:
+                                        EmptyView()
+                                    case .toolbar:
+                                        $0
+                                            .frame(width: 18)
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: 1)
+                                                    .aspectRatio(1, contentMode: .fit)
+                                                    .frame(width: 6)
+                                            }
+                                    case .triangle:
+                                        $0
+                                    case .episode:
+                                        $0
+                                            .frame(width: 8)
+                                    case .row:
+                                        $0
+                                            .frame(width: 14)
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: 1)
+                                                    .aspectRatio(1, contentMode: .fit)
+                                                    .frame(width: 5)
+                                            }
+                                            .foregroundStyle(Color.accentColor)
                                 }
                             }
                     } else {

@@ -177,7 +177,7 @@ private struct CompactPresentation: View {
                 if let first = viewModel.visible.first {
                     PlayButton(item: first, color: viewModel.dominantColor)
                         .playButtonSize(.medium)
-                } else if viewModel.visible.isEmpty {
+                } else if viewModel.episodes.isEmpty {
                     PlayButton(item: Episode.placeholder, color: viewModel.dominantColor)
                         .playButtonSize(.medium)
                         .disabled(true)

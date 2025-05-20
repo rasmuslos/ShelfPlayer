@@ -14,10 +14,12 @@ struct QueueButton: View {
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
+    
+    var short: Bool = false
     var hideLast: Bool = false
     
     var body: some View {
-        Button("playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
+        Button(short ? "playback.queue.add.short" : "playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
             satellite.queue(itemID)
         }
         .disabled(satellite.isLoading(observing: itemID))

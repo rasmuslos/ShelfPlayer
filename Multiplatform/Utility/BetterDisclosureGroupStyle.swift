@@ -16,11 +16,11 @@ struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
             Button {
                 configuration.isExpanded.toggle()
             } label: {
-                HStack {
+                HStack(spacing: 0) {
                     configuration.label
                         .font(.headline)
                     
-                    Spacer()
+                    Spacer(minLength: 8)
                     
                     Image(systemName: "chevron.down")
                         .font(.subheadline)
