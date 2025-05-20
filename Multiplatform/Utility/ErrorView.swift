@@ -11,25 +11,19 @@ import ShelfPlayerKit
 struct ErrorView: View {
     var itemID: ItemIdentifier?
     
-    private var icon: String {
-        if let itemID {
-            itemID.type.icon
-        } else {
-            "xmark"
-        }
-    }
-    private var label: LocalizedStringKey {
-        if let itemID {
-            itemID.type.errorLabel
-        } else {
-            "error.unavailable"
-        }
-    }
-    
     var body: some View {
         UnavailableWrapper {
-            ContentUnavailableView(label, systemImage: icon, description: Text("error.unavailable.text"))
+            ErrorViewInner(label: itemID?.type.errorLabel, systemImage: itemID?.type.icon)
         }
+    }
+}
+
+struct ErrorViewInner: View {
+    var label: LocalizedStringKey? = nil
+    var systemImage: String? = nil
+    
+    var body: some View {
+        ContentUnavailableView(label ?? "error.unavailable", systemImage: systemImage ?? "xmark", description: Text("error.unavailable.text"))
     }
 }
 

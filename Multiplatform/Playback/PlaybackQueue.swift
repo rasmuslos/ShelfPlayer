@@ -38,8 +38,12 @@ struct PlaybackQueue: View {
                     if !satellite.bookmarks.isEmpty {
                         Section {
                             ForEach(satellite.bookmarks) {
-                                QueueTimeRow(title: $0.note, time: Double($0.time), isActive: false, isFinished: false)
-                                    .id($0)
+                                let time = Double($0.time)
+                                
+                                TimeRow(title: $0.note, time: time, isActive: false, isFinished: false) {
+                                    satellite.seek(to: time, insideChapter: false) {}
+                                }
+                                .id($0)
                             }
                             .onDelete {
                                 guard let currentItemID = satellite.nowPlayingItemID else {
@@ -125,45 +129,6 @@ struct PlaybackQueue: View {
     }
 }
 
-private struct QueueTimeRow: View {
-    @Environment(Satellite.self) private var satellite
-    
-    let title: String
-    let time: TimeInterval
-    
-    let isActive: Bool
-    let isFinished: Bool
-    
-    var body: some View {
-        Button {
-            satellite.seek(to: time, insideChapter: false) {}
-        } label: {
-            HStack(spacing: 0) {
-                ZStack {
-                    Text(verbatim: "00:00:00")
-                        .hidden()
-                    
-                    Text(time, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-                }
-                .font(.footnote)
-                .fontDesign(.rounded)
-                .foregroundStyle(Color.accentColor)
-                .padding(.trailing, 12)
-                
-                Text(title)
-                    .bold(isActive)
-                    .foregroundStyle(isFinished ? .secondary : .primary)
-                
-                Spacer(minLength: 0)
-            }
-            .lineLimit(1)
-            .contentShape(.hoverMenuInteraction, .rect)
-        }
-        .buttonStyle(.plain)
-        .listRowBackground(Color.clear)
-        .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
-    }
-}
 private struct QueueChapterRow: View {
     @Environment(Satellite.self) private var satellite
     
@@ -184,33 +149,35 @@ private struct QueueChapterRow: View {
     }
     
     var body: some View {
-        QueueTimeRow(title: chapter.title, time: chapter.startOffset, isActive: isActive, isFinished: isFinished)
-            .id(chapter)
-            .contextMenu {
-                sleepTimerButton
-            } preview: {
-                VStack(alignment: .leading, spacing: 2) {
-                    let remaining = (chapter.endOffset - satellite.currentTime) * satellite.playbackRate
-                    
-                    if remaining > 0 {
-                        Text("chapter.finishedAt \(Date.now.advanced(by: remaining).formatted(date: .omitted, time: .shortened))")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Text(chapter.title)
-                        .font(.headline)
-                    
-                    Text(chapter.timeOffsetFormatted)
-                        .font(.subheadline)
+        TimeRow(title: chapter.title, time: chapter.startOffset, isActive: isActive, isFinished: isFinished) {
+            satellite.seek(to: chapter.startOffset, insideChapter: false) {}
+        }
+        .id(chapter)
+        .contextMenu {
+            sleepTimerButton
+        } preview: {
+            VStack(alignment: .leading, spacing: 2) {
+                let remaining = (chapter.endOffset - satellite.currentTime) * satellite.playbackRate
+                
+                if remaining > 0 {
+                    Text("chapter.finishedAt \(Date.now.advanced(by: remaining).formatted(date: .omitted, time: .shortened))")
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                .padding(20)
+                
+                Text(chapter.title)
+                    .font(.headline)
+                
+                Text(chapter.timeOffsetFormatted)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                sleepTimerButton
-                    .tint(.accentColor)
-            }
+            .padding(20)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            sleepTimerButton
+                .tint(.accentColor)
+        }
     }
 }
 

@@ -29,7 +29,7 @@ struct TabRouter: View {
     var selectionProxy: Binding<TabValue?> {
         .init() { selection } set: {
             if $0 == selection {
-                if case .audiobookSearch = $0 {
+                if case .audiobookLibrary = $0 {
                     RFNotification[.focusSearchField].send()
                 } else if case .podcastLibrary = $0 {
                     RFNotification[.focusSearchField].send()
@@ -91,11 +91,13 @@ struct TabRouter: View {
                         }
                     }
                     
-                    Menu("navigation.library.select") {
-                        LibraryPicker()
+                    if horizontalSizeClass == .compact {
+                        Menu("navigation.library.select") {
+                            LibraryPicker()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
                 }
             }
     }
@@ -150,9 +152,9 @@ struct TabRouter: View {
             
             ForEach(connectionStore.flat) { connection in
                 if let libraries = connectionStore.libraries[connection.id] {
-                    TabSection(connection.user) {
-                        ForEach(libraries) {
-                            ForEach(TabValue.tabs(for: $0)) { tab in
+                    ForEach(libraries) { library in
+                        TabSection(library.name) {
+                            ForEach(TabValue.tabs(for: library)) { tab in
                                 Tab(tab.label, systemImage: tab.image, value: tab) {
                                     content(for: tab)
                                 }
