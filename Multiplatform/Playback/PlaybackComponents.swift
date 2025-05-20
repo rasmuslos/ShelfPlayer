@@ -108,6 +108,7 @@ struct PlaybackControls: View {
             Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
                 .labelStyle(.iconOnly)
                 .font(.title)
+                .foregroundStyle(isLoading ? .secondary : .primary)
                 .padding(12)
                 .contentShape(.rect)
                 .onTapGesture {
@@ -119,6 +120,7 @@ struct PlaybackControls: View {
                 .padding(-12)
                 .disabled(isLoading)
                 .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
+                .animation(.smooth, value: isLoading)
         }
     }
     @ViewBuilder
@@ -149,6 +151,7 @@ struct PlaybackControls: View {
             Label("playback.skip.forward", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
                 .labelStyle(.iconOnly)
                 .font(.title)
+                .foregroundStyle(isLoading ? .secondary : .primary)
                 .padding(12)
                 .contentShape(.rect)
                 .onTapGesture {
@@ -160,6 +163,7 @@ struct PlaybackControls: View {
                 .padding(-12)
                 .disabled(isLoading)
                 .symbolEffect(.rotate.clockwise.byLayer, options: .speed(2), value: viewModel.notifySkipForwards)
+                .animation(.smooth, value: isLoading)
             
             Spacer(minLength: 12)
             
@@ -357,7 +361,13 @@ struct PlaybackActions: View {
                 }
             }
         } label: {
-            Group {
+            ZStack {
+                Group {
+                    Image(systemName: "append.page")
+                    Image(systemName: "moon.zzz.fill")
+                }
+                .hidden()
+                
                 if let sleepTimer = satellite.sleepTimer {
                     switch sleepTimer {
                     case .chapters(_):

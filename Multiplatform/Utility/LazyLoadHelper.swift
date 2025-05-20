@@ -17,11 +17,11 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     private let logger: Logger
     
     private nonisolated static var PAGE_SIZE: Int {
-        #if DEBUG
+#if DEBUG
         30
-        #else
+#else
         100
-        #endif
+#endif
     }
     
     private(set) var items: [T]
@@ -142,7 +142,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     nonisolated func didReachEndOfLoadedContent(bypassWorking: Bool = false) {
         Task {
             guard let library = await library else {
-                #if DEBUG
+#if DEBUG
                 if await self.items.isEmpty {
                     logger.warning("Library not set yet. Using fixtures.")
                     
@@ -160,7 +160,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         finished = true
                     }
                 }
-                #endif
+#endif
                 
                 return
             }
@@ -235,24 +235,24 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     
                     for section in sections {
                         switch section {
-                        case .audiobook:
-                            updated.append(section)
-                        case .series(_, _, let audiobookIDs):
-                            guard audiobookIDs.count > 1 else {
-                                guard let firstID = audiobookIDs.first else {
+                            case .audiobook:
+                                updated.append(section)
+                            case .series(_, _, let audiobookIDs):
+                                guard audiobookIDs.count > 1 else {
+                                    guard let firstID = audiobookIDs.first else {
+                                        continue
+                                    }
+                                    
+                                    guard let audiobook = try? await firstID.resolved as? Audiobook else {
+                                        updated.append(section)
+                                        continue
+                                    }
+                                    
+                                    updated.append(.audiobook(audiobook: audiobook))
                                     continue
                                 }
                                 
-                                guard let audiobook = try? await firstID.resolved as? Audiobook else {
-                                    updated.append(section)
-                                    continue
-                                }
-                                
-                                updated.append(.audiobook(audiobook: audiobook))
-                                continue
-                            }
-                            
-                            updated.append(section)
+                                updated.append(section)
                         }
                     }
                     
@@ -282,21 +282,21 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         
                         for section in sections {
                             switch section {
-                            case .audiobook(let audiobook):
-                                let status = await PersistenceManager.shared.download.status(of: audiobook.id)
-                                
-                                if status != .none {
-                                    filtered.append(section)
-                                }
-                            case .series(_, _, let audiobookIDs):
-                                for audiobookID in audiobookIDs {
-                                    let status = await PersistenceManager.shared.download.status(of: audiobookID)
+                                case .audiobook(let audiobook):
+                                    let status = await PersistenceManager.shared.download.status(of: audiobook.id)
                                     
                                     if status != .none {
                                         filtered.append(section)
-                                        break
                                     }
-                                }
+                                case .series(_, _, let audiobookIDs):
+                                    for audiobookID in audiobookIDs {
+                                        let status = await PersistenceManager.shared.download.status(of: audiobookID)
+                                        
+                                        if status != .none {
+                                            filtered.append(section)
+                                            break
+                                        }
+                                    }
                             }
                         }
                         
@@ -321,9 +321,34 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         var filtered = [Series]()
                         
                         for series in series {
-                            if await series.isIncluded(in: filter) {
-                                filtered.append(series)
+                            var passed = [Audiobook]()
+                            
+                            for audiobook in series.audiobooks {
+                                let progress = await PersistenceManager.shared.progress[audiobook.id].progress
+                                
+                                switch filter {
+                                    case .all:
+                                        passed.append(audiobook)
+                                    case .active:
+                                        if progress > 0 && progress < 1 {
+                                            passed.append(audiobook)
+                                        }
+                                    case .finished:
+                                        if progress >= 1 {
+                                            passed.append(audiobook)
+                                        }
+                                    case .notFinished:
+                                        if progress < 1 {
+                                            passed.append(audiobook)
+                                        }
+                                }
                             }
+                            
+                            guard !passed.isEmpty else {
+                                continue
+                            }
+                            
+                            filtered.append(.init(id: series.id, name: series.name, authors: series.authors, description: series.description, addedAt: series.addedAt, audiobooks: passed))
                         }
                         
                         received = filtered as! [T]
@@ -332,33 +357,39 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         
                         for section in sections {
                             switch section {
-                            case .audiobook(let audiobook):
-                                if await audiobook.isIncluded(in: filter) {
-                                    filtered.append(section)
-                                }
-                            case .series(_, _, let audiobookIDs):
-                                var progress = [Percentage]()
-                                
-                                for audiobookID in audiobookIDs {
-                                    progress.append(await PersistenceManager.shared.progress[audiobookID].progress)
-                                }
-                                
-                                let passed: Bool
-                                
-                                switch filter {
-                                case .all:
-                                    passed = true
-                                case .active:
-                                    passed = progress.reduce(false) { $0 || ($1 > 0 && $1 < 1) }
-                                case .finished:
-                                    passed = progress.allSatisfy { $0 >= 1 }
-                                case .notFinished:
-                                    passed = progress.reduce(false) { $0 || $1 < 1 }
-                                }
-                                
-                                if passed {
-                                    filtered.append(section)
-                                }
+                                case .audiobook(let audiobook):
+                                    if await audiobook.isIncluded(in: filter) {
+                                        filtered.append(section)
+                                    }
+                                case .series(let seriesID, let seriesName, let audiobookIDs):
+                                    var passed = [ItemIdentifier]()
+                                    
+                                    for audiobookID in audiobookIDs {
+                                        let progress = await PersistenceManager.shared.progress[audiobookID].progress
+                                        
+                                        switch filter {
+                                            case .all:
+                                                passed.append(audiobookID)
+                                            case .active:
+                                                if progress > 0 && progress < 1 {
+                                                    passed.append(audiobookID)
+                                                }
+                                            case .finished:
+                                                if progress >= 1 {
+                                                    passed.append(audiobookID)
+                                                }
+                                            case .notFinished:
+                                                if progress < 1 {
+                                                    passed.append(audiobookID)
+                                                }
+                                        }
+                                    }
+                                    
+                                    guard !passed.isEmpty else {
+                                        continue
+                                    }
+                                    
+                                    filtered.append(.series(seriesID: seriesID, seriesName: seriesName, audiobookIDs: passed))
                             }
                         }
                         
@@ -461,10 +492,10 @@ extension LazyLoadHelper {
             
             let narrators = try await ABSClient[library.connectionID].narrators(from: library.id).sorted {
                 switch sortOrder {
-                case .name:
-                    $0.name.localizedStandardCompare($1.name) == (ascending ? .orderedAscending : .orderedDescending)
-                case .bookCount:
-                    ascending ? $0.bookCount > $1.bookCount : $0.bookCount < $1.bookCount
+                    case .name:
+                        $0.name.localizedStandardCompare($1.name) == (ascending ? .orderedAscending : .orderedDescending)
+                    case .bookCount:
+                        ascending ? $0.bookCount > $1.bookCount : $0.bookCount < $1.bookCount
                 }
             }
             

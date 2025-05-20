@@ -49,6 +49,7 @@ struct TimeRow: View {
     }
 }
 
+#if DEBUG
 #Preview {
     List {
         TimeRow(title: "Test", time: 300, isActive: false, isFinished: false) {}
@@ -59,3 +60,4 @@ struct TimeRow: View {
     .listStyle(.plain)
     .previewEnvironment()
 }
+#endif

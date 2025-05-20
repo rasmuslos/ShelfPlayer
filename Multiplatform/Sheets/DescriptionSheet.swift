@@ -29,7 +29,6 @@ struct DescriptionSheet: View {
             }
             .navigationTitle(item.name)
             .navigationBarTitleDisplayMode(.inline)
-            .presentationDragIndicator(.visible)
         }
     }
 }

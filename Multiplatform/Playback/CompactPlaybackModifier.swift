@@ -223,7 +223,7 @@ private struct ExpandedForeground: View {
                         }
                         .buttonStyle(.plain)
                         .frame(height: 72)
-                        .shadow(color: .black.opacity(0.4), radius: 20)
+                        .shadow(color: .black.opacity(0.32), radius: 12)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
                         .modifier(PlaybackDragGestureCatcher(active: true))
                         
