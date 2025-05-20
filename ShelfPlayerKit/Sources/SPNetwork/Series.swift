@@ -45,7 +45,17 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         ]
         
         if let identifier {
-            query.append(.init(name: "filter", value: "author.\(Data(identifier.primaryID.utf8).base64EncodedString())"))
+            let prefix: String
+            
+            if identifier.type == .author {
+                prefix = "authors"
+            } else if identifier.type == .series {
+                prefix = "series"
+            } else {
+                throw APIClientError.missing
+            }
+            
+            query.append(.init(name: "filter", value: "\(prefix).\(Data(identifier.primaryID.utf8).base64EncodedString())"))
         } else {
             query.append(.init(name: "filter", value: "all"))
         }
