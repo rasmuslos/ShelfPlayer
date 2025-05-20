@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Defaults
 import ShelfPlayerKit
 
 struct AudiobookView: View {
     @Environment(\.defaultMinListRowHeight) private var minimumHeight
     @Environment(\.library) private var library
+    
+    @Default(.tintColor) private var tintColor
     
     @State private var viewModel: AudiobookViewModel
     
@@ -47,6 +50,19 @@ struct AudiobookView: View {
                     .padding(.bottom, 16)
                     .padding(.horizontal, 20)
                 }
+                
+                NavigationLink(destination: AudiobookBookmarkView(audiobook: viewModel.audiobook)) {
+                    HStack(spacing: 0) {
+                        Text("bookmarks")
+                            .font(.headline)
+                            .foregroundStyle(tintColor.color)
+                        
+                        Spacer(minLength: 0)
+                    }
+                }
+                .buttonStyle(.plain)
+                .padding(.bottom, 16)
+                .padding(.horizontal, 20)
                 
                 DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
                     Timeline(item: viewModel.audiobook, sessions: viewModel.sessions)
