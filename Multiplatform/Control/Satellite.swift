@@ -70,8 +70,8 @@ final class Satellite {
     
     // MARK: Utility
     
-    private(set) var notifyError: Bool
-    private(set) var notifySuccess: Bool
+    var notifyError: Bool
+    var notifySuccess: Bool
     
     private var stash: RFNotification.MarkerStash
     
@@ -462,7 +462,7 @@ extension Satellite {
         }
     }
 
-    nonisolated func start(_ itemID: ItemIdentifier) {
+    nonisolated func start(_ itemID: ItemIdentifier, at: TimeInterval? = nil) {
         Task {
             guard await self.nowPlayingItemID != itemID else {
                 await togglePlaying()
@@ -478,6 +478,11 @@ extension Satellite {
 
             do {
                 try await AudioPlayer.shared.start(itemID, withoutListeningSession: isOffline)
+                
+                if let at {
+                    try await AudioPlayer.shared.seek(to: at, insideChapter: false)
+                }
+                
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 await endWorking(on: itemID, successfully: false)

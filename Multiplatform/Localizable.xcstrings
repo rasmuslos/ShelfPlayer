@@ -810,6 +810,9 @@
         }
       }
     },
+    "filter.all" : {
+
+    },
     "item.abridged" : {
       "localizations" : {
         "de" : {
@@ -825,6 +828,12 @@
           }
         }
       }
+    },
+    "item.audiobook" : {
+
+    },
+    "item.author" : {
+
     },
     "item.bonus" : {
       "localizations" : {
@@ -913,6 +922,9 @@
           }
         }
       }
+    },
+    "item.collection.configure" : {
+
     },
     "item.count.audiobooks %lld" : {
       "localizations" : {
@@ -1340,6 +1352,9 @@
           }
         }
       }
+    },
+    "item.narrator" : {
+
     },
     "item.options" : {
       "localizations" : {
@@ -1948,6 +1963,9 @@
         }
       }
     },
+    "item.series" : {
+
+    },
     "item.sort" : {
       "localizations" : {
         "de" : {
@@ -2410,6 +2428,9 @@
         }
       }
     },
+    "panel.bookmarks" : {
+
+    },
     "panel.home" : {
       "localizations" : {
         "de" : {
@@ -2580,6 +2601,7 @@
       }
     },
     "panel.search.empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2596,6 +2618,7 @@
       }
     },
     "panel.search.empty.description" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2615,6 +2638,7 @@
 
     },
     "panel.search.placeholder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3098,7 +3122,13 @@
     "preferences.convenienceDownload" : {
 
     },
+    "preferences.convenienceDownload.configurations" : {
+
+    },
     "preferences.convenienceDownload.enable" : {
+
+    },
+    "preferences.convenienceDownload.enableListenNowDownloads" : {
 
     },
     "preferences.generateLogFile" : {

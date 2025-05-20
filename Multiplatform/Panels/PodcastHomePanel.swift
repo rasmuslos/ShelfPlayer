@@ -74,11 +74,13 @@ struct PodcastHomePanel: View {
         .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
         .sensoryFeedback(.error, trigger: didFail)
         .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                ListenNowSheetToggle()
-                
-                Menu("navigation.library.select", systemImage: "books.vertical.fill") {
-                    LibraryPicker()
+            if horizontalSizeClass == .compact {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    ListenNowSheetToggle()
+                    
+                    Menu("navigation.library.select", systemImage: "books.vertical.fill") {
+                        LibraryPicker()
+                    }
                 }
             }
         }

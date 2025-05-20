@@ -33,6 +33,11 @@ extension PersistenceManager {
                 // && $0.status.rawValue != rawValue
             })).filter { $0.status != .deleted }
         }
+        func bookmarks(connectionID: ItemIdentifier.ConnectionID) throws -> [PersistedBookmark] {
+            try modelContext.fetch(FetchDescriptor<PersistedBookmark>(predicate: #Predicate {
+                $0.connectionID == connectionID
+            })).filter { $0.status != .deleted }
+        }
         
         func remove(itemID: ItemIdentifier) {
             let primaryID = itemID.primaryID
@@ -69,6 +74,15 @@ public extension PersistenceManager.BookmarkSubsystem {
             }
             
             return try bookmarks(connectionID: itemID.connectionID, primaryID: itemID.primaryID).map { Bookmark(itemID: itemID, time: $0.time, note: $0.note, created: $0.created) }
+        }
+    }
+    subscript(library: Library) -> Set<String> {
+        get throws {
+            guard library.type == .audiobooks else {
+                throw PersistenceError.unsupportedItemType
+            }
+            
+            return Set(try bookmarks(connectionID: library.connectionID).map { $0.primaryID })
         }
     }
     

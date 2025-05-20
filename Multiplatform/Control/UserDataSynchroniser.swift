@@ -22,14 +22,16 @@ struct UserDataSynchroniser: View {
         ContentUnavailableView("navigation.sync", systemImage: "binoculars")
             .symbolEffect(.pulse)
             .safeAreaInset(edge: .bottom) {
-                Menu("navigation.library.select") {
-                    LibraryPicker() {
-                        task?.cancel()
-                        callback(false)
+                if horizontalSizeClass == .compact {
+                    Menu("navigation.library.select") {
+                        LibraryPicker() {
+                            task?.cancel()
+                            callback(false)
+                        }
                     }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
             }
             .onAppear {
                 task = Task.detached {
