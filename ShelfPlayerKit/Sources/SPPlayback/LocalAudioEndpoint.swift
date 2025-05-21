@@ -179,6 +179,8 @@ extension LocalAudioEndpoint {
     }
     
     func stop() async {
+        await PersistenceManager.shared.download.removeBlock(from: currentItemID)
+        
         if let currentTime {
             await playbackReporter.update(currentTime: currentTime)
         }
@@ -352,6 +354,8 @@ private extension LocalAudioEndpoint {
         guard downloadStatus != .downloading else {
             throw AudioPlayerError.downloading
         }
+        
+        await PersistenceManager.shared.download.addBlock(to: currentItemID)
         
         let task = UIApplication.shared.beginBackgroundTask(withName: "LocalAudioEndpoint::start")
         

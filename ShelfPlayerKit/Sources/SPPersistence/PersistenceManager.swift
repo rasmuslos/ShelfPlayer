@@ -87,6 +87,7 @@ enum PersistenceError: Error {
     case existing
     
     case busy
+    case blocked
     
     case unsupportedItemType
     case unsupportedDownloadCodec

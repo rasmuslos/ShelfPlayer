@@ -12,4 +12,8 @@ struct SpotlightIndexer {
     static func run() async {
         
     }
+    
+    static func planRun() async throws {
+        try await PersistenceManager.shared.authorization.fetchConnections()
+    }
 }
