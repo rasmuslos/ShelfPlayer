@@ -329,18 +329,6 @@ private extension AudioPlayer {
             }
         }
         
-        RFNotification[.downloadStatusChanged].subscribe(queue: .sender) { [weak self] (itemID, status) in
-            Task {
-                guard await self?.current?.currentItemID == itemID else {
-                    return
-                }
-                
-                if status == .downloading {
-                    await self?.stop()
-                }
-            }
-        }
-        
         RFNotification[.shake].subscribe(queue: .sender) { [weak self] duration in
             guard Defaults[.shakeExtendsSleepTimer] && duration > 0.5 else {
                 return

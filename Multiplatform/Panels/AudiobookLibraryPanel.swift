@@ -386,7 +386,7 @@ extension LibraryViewModel {
                     self.genres = genres
                 }
             } catch {
-                await MainActor.run {
+                await MainActor.withAnimation {
                     notifyError.toggle()
                     genres = []
                 }

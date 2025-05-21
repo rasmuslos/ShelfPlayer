@@ -32,8 +32,9 @@ final class PlaybackViewModel {
     @ObservableDefault(.skipForwardsInterval) @ObservationIgnored
     private(set) var skipForwardsInterval: Int
     
-    private(set) var seriesIDs: [(ItemIdentifier, String)]
     private(set) var authorIDs: [(ItemIdentifier, String)]
+    private(set) var narratorIDs: [(ItemIdentifier, String)]
+    private(set) var seriesIDs: [(ItemIdentifier, String)]
     
     private var stoppedPlayingAt: Date?
     
@@ -53,8 +54,9 @@ final class PlaybackViewModel {
         isCreateBookmarkAlertVisible = false
         isCreatingBookmark = false
         
-        seriesIDs = []
         authorIDs = []
+        narratorIDs = []
+        seriesIDs = []
         
         RFNotification[.skipped].subscribe { [weak self] forwards in
             if forwards {
@@ -252,55 +254,67 @@ private extension PlaybackViewModel {
             
             await withTaskGroup {
                 $0.addTask { await self.loadAuthorIDs(item: item) }
+                $0.addTask { await self.loadNarratorIDs(item: item) }
                 $0.addTask { await self.loadSeriesIDs(item: item) }
             }
         }
     }
-    func loadAuthorIDs(item: Item) {
-        Task {
-            var authorIDs = [(ItemIdentifier, String)]()
-            
-            for author in item.authors {
-                do {
-                    let authorID = try await ABSClient[item.id.connectionID].authorID(from: item.id.libraryID, name: author)
-                    authorIDs.append((authorID, author))
-                } catch {}
-            }
-            
-            await MainActor.withAnimation {
-                self.authorIDs = authorIDs
-            }
+    nonisolated func loadAuthorIDs(item: Item) async {
+        var authorIDs = [(ItemIdentifier, String)]()
+        
+        for author in item.authors {
+            do {
+                let authorID = try await ABSClient[item.id.connectionID].authorID(from: item.id.libraryID, name: author)
+                authorIDs.append((authorID, author))
+            } catch {}
+        }
+        
+        await MainActor.withAnimation {
+            self.authorIDs = authorIDs
         }
     }
-    func loadSeriesIDs(item: Item) {
-        Task {
-            guard let audiobook = item as? Audiobook else {
-                await MainActor.withAnimation {
-                    self.seriesIDs.removeAll()
-                }
-                
-                return
-            }
-            
-            var seriesIDs = [(ItemIdentifier, String)]()
-            
-            for series in audiobook.series {
-                if let seriesID = series.id {
-                    seriesIDs.append((seriesID, series.name))
-                    continue
-                }
-                
-                do {
-                    let seriesID = try await ABSClient[item.id.connectionID].seriesID(from: item.id.libraryID, name: series.name)
-                    authorIDs.append((seriesID, series.name))
-                } catch {
-                    continue
-                }
-            }
-            
+    nonisolated func loadNarratorIDs(item: Item) async {
+        guard let audiobook = item as? Audiobook else {
             await MainActor.withAnimation {
-                self.seriesIDs = seriesIDs
+                self.narratorIDs.removeAll()
             }
+            
+            return
+        }
+        
+        let mapped = audiobook.narrators.map { (Person.convertNarratorToID($0, libraryID: item.id.libraryID, connectionID: item.id.connectionID), $0) }
+        
+        await MainActor.withAnimation {
+            self.narratorIDs = mapped
+        }
+    }
+    nonisolated func loadSeriesIDs(item: Item) async {
+        guard let audiobook = item as? Audiobook else {
+            await MainActor.withAnimation {
+                self.seriesIDs.removeAll()
+            }
+            
+            return
+        }
+        
+        var seriesIDs = [(ItemIdentifier, String)]()
+        
+        for series in audiobook.series {
+            if let seriesID = series.id {
+                seriesIDs.append((seriesID, series.name))
+                continue
+            }
+            
+            do {
+                let seriesID = try await ABSClient[item.id.connectionID].seriesID(from: item.id.libraryID, name: series.name)
+                seriesIDs.append((seriesID, series.name))
+            } catch {
+                continue
+            }
+        }
+        
+        await MainActor.withAnimation {
+            self.seriesIDs = seriesIDs
         }
     }
 }

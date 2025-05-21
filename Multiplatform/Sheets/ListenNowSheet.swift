@@ -64,7 +64,7 @@ struct ListenNowSheet: View {
     
     private nonisolated func load(refresh: Bool) {
         Task {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 isLoading = true
             }
             
@@ -74,7 +74,7 @@ struct ListenNowSheet: View {
             
             let listenNowItems = await ShelfPlayerKit.listenNowItems
             
-            await MainActor.run {
+            await MainActor.withAnimation {
                 isLoading = false
                 self.listenNowItems = listenNowItems
             }
