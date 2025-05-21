@@ -12,6 +12,7 @@ struct ItemCompactRow: View {
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
+    let trailingText: Text?
     let callback: () -> Void
     
     @State private var item: PlayableItem?
@@ -19,8 +20,9 @@ struct ItemCompactRow: View {
     @State private var progress: ProgressTracker
     @State private var download: DownloadStatusTracker
     
-    init(itemID: ItemIdentifier, callback: @escaping () -> Void) {
+    init(itemID: ItemIdentifier, trailingText: Text? = nil, callback: @escaping () -> Void) {
         self.itemID = itemID
+        self.trailingText = trailingText
         self.callback = callback
         
         _item = .init(initialValue: nil)
@@ -28,8 +30,9 @@ struct ItemCompactRow: View {
         _progress = .init(initialValue: .init(itemID: itemID))
         _download = .init(initialValue: .init(itemID: itemID))
     }
-    init(item: PlayableItem, callback: @escaping () -> Void) {
+    init(item: PlayableItem, trailingText: Text? = nil, callback: @escaping () -> Void) {
         itemID = item.id
+        self.trailingText = trailingText
         self.callback = callback
         
         _item = .init(initialValue: item)
@@ -80,7 +83,9 @@ struct ItemCompactRow: View {
             
             Spacer(minLength: 12)
             
-            if download.status == .downloading {
+            if let trailingText {
+                trailingText
+            } else if download.status == .downloading {
                 DownloadButton(itemID: itemID, progressVisibility: .row)
                     .labelStyle(.iconOnly)
             } else if let progress = progress.progress {

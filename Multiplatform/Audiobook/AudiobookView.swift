@@ -38,10 +38,25 @@ struct AudiobookView: View {
                 
                 divider
                 
+                if viewModel.bookmarks.count > 0 {
+                    DisclosureGroup("item.bookmarks \(viewModel.bookmarks.count)", isExpanded: $viewModel.bookmarksVisible) {
+                        List {
+                            BookmarksList(itemID: viewModel.audiobook.id, bookmarks: viewModel.bookmarks)
+                                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        }
+                        .listStyle(.plain)
+                        .frame(height: minimumHeight * CGFloat(viewModel.bookmarks.count))
+                    }
+                    .disclosureGroupStyle(BetterDisclosureGroupStyle())
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
+                }
+                
                 if viewModel.chapters.count > 1 {
                     DisclosureGroup("item.chapters \(viewModel.chapters.count)", isExpanded: $viewModel.chaptersVisible) {
                         List {
-                            Chapters(item: viewModel.audiobook, chapters: viewModel.chapters)
+                            ChaptersList(itemID: viewModel.audiobook.id, chapters: viewModel.chapters)
+                                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                         }
                         .listStyle(.plain)
                         .frame(height: minimumHeight * CGFloat(viewModel.chapters.count))
@@ -50,19 +65,6 @@ struct AudiobookView: View {
                     .padding(.bottom, 16)
                     .padding(.horizontal, 20)
                 }
-                
-                NavigationLink(destination: AudiobookBookmarkView(audiobook: viewModel.audiobook)) {
-                    HStack(spacing: 0) {
-                        Text("bookmarks")
-                            .font(.headline)
-                            .foregroundStyle(tintColor.color)
-                        
-                        Spacer(minLength: 0)
-                    }
-                }
-                .buttonStyle(.plain)
-                .padding(.bottom, 16)
-                .padding(.horizontal, 20)
                 
                 DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
                     Timeline(item: viewModel.audiobook, sessions: viewModel.sessions)

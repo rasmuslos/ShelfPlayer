@@ -45,7 +45,6 @@ struct TimeRow: View {
         }
         .buttonStyle(.plain)
         .listRowBackground(Color.clear)
-        .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
     }
 }
 
