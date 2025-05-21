@@ -176,10 +176,12 @@ struct CompactPreferencesToolbarModifier: ViewModifier {
                 if horizontalSizeClass == .compact {
                     $0
                         .toolbar {
-                            Button("preferences", systemImage: "gearshape.circle") {
-                                satellite.present(.preferences)
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button("preferences", systemImage: "gearshape.circle") {
+                                    satellite.present(.preferences)
+                                }
+                                .labelStyle(.iconOnly)
                             }
-                            .labelStyle(.iconOnly)
                         }
                 } else {
                     $0

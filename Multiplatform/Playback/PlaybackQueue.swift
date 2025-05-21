@@ -44,6 +44,7 @@ struct PlaybackQueue: View {
                                     satellite.seek(to: time, insideChapter: false) {}
                                 }
                                 .id($0)
+                                .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
                             }
                             .onDelete {
                                 guard let currentItemID = satellite.nowPlayingItemID else {
@@ -153,6 +154,7 @@ private struct QueueChapterRow: View {
             satellite.seek(to: chapter.startOffset, insideChapter: false) {}
         }
         .id(chapter)
+        .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
         .contextMenu {
             sleepTimerButton
         } preview: {

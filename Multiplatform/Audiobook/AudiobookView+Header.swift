@@ -47,8 +47,14 @@ private struct Title: View {
                         .imageScale(.small)
                         .offset(x: 17)
                 }
-                .font(.subheadline)
         }
+    }
+    @ViewBuilder
+    private var narratorLabel: some View {
+        Text("item.readBy \(viewModel.audiobook.narrators.formatted(.list(type: .and, width: .short)))")
+            .font(.caption)
+            .lineLimit(1)
+            .foregroundStyle(.secondary)
     }
     
     var body: some View {
@@ -73,9 +79,7 @@ private struct Title: View {
                 .menuStyle(.button)
                 .buttonStyle(.plain)
             } else if let authorName = viewModel.audiobook.authors.first {
-                NavigationLink {
-                    ItemIDLoadView(name: authorName, type: .author)
-                } label: {
+                NavigationLink(destination: ItemIDLoadView(name: authorName, type: .author)) {
                     authorLabel
                 }
                 .buttonStyle(.plain)
@@ -91,11 +95,19 @@ private struct Title: View {
                         .labelStyle(.iconOnly)
                 }
                 
-                if !viewModel.audiobook.narrators.isEmpty {
-                    Text("item.readBy \(viewModel.audiobook.narrators.formatted(.list(type: .and, width: .short)))")
-                        .font(.caption)
-                        .lineLimit(1)
-                        .foregroundStyle(.secondary)
+                if viewModel.audiobook.narrators.count > 1 {
+                    Menu {
+                        ItemMenu.MenuInner(narrators: viewModel.audiobook.narrators)
+                    } label: {
+                        narratorLabel
+                    }
+                    .menuStyle(.button)
+                    .buttonStyle(.plain)
+                } else if let first = viewModel.audiobook.narrators.first {
+                    NavigationLink(destination: ItemIDLoadView(name: first, type: .narrator)) {
+                        narratorLabel
+                    }
+                    .buttonStyle(.plain)
                 }
                 
                 Group {
