@@ -154,6 +154,7 @@
 		3ACB8D082DDCA860005336C0 /* TimeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D072DDCA860005336C0 /* TimeRow.swift */; };
 		3ACB8D0B2DDDAD0E005336C0 /* BookmarksList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D0A2DDDAD0E005336C0 /* BookmarksList.swift */; };
 		3ACB8D0D2DDDB35D005336C0 /* ChaptersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D0C2DDDB35A005336C0 /* ChaptersList.swift */; };
+		3ACB8D0F2DDDCE71005336C0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ACB8D0E2DDDCE71005336C0 /* Preview Assets.xcassets */; };
 		3ACD19B52ACB58EB007D01FE /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B42ACB58EB007D01FE /* LoadingView.swift */; };
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
 		3ACD19B92ACB5B32007D01FE /* UserDataSynchroniser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B82ACB5B32007D01FE /* UserDataSynchroniser.swift */; };
@@ -358,6 +359,7 @@
 		3ACB8D072DDCA860005336C0 /* TimeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeRow.swift; sourceTree = "<group>"; };
 		3ACB8D0A2DDDAD0E005336C0 /* BookmarksList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksList.swift; sourceTree = "<group>"; };
 		3ACB8D0C2DDDB35A005336C0 /* ChaptersList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChaptersList.swift; sourceTree = "<group>"; };
+		3ACB8D0E2DDDCE71005336C0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3ACD19B42ACB58EB007D01FE /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		3ACD19B62ACB5A49007D01FE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		3ACD19B82ACB5B32007D01FE /* UserDataSynchroniser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataSynchroniser.swift; sourceTree = "<group>"; };
@@ -454,6 +456,7 @@
 				3A27A66D2AB7631900F80C92 /* Info.plist */,
 				3A792B962B6F9F53002A48E6 /* InfoPlist.xcstrings */,
 				3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */,
+				3ACB8D0E2DDDCE71005336C0 /* Preview Assets.xcassets */,
 				3AFF94872AF65CF500127AFF /* Localizable.xcstrings */,
 				3A2657EE2BA3402C000C62E3 /* PrivacyInfo.xcprivacy */,
 				3A0AE6AB2AB623F500ACCD68 /* ShelfPlayer.entitlements */,
@@ -945,6 +948,7 @@
 				3AA94F8D2BB02DF90012E731 /* PrivacyInfo.xcprivacy in Resources */,
 				3A2BC1952AD8121400054727 /* Settings.bundle in Resources */,
 				3A792B972B6F9F53002A48E6 /* InfoPlist.xcstrings in Resources */,
+				3ACB8D0F2DDDCE71005336C0 /* Preview Assets.xcassets in Resources */,
 				3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */,
 				3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */,
 				3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */,
@@ -1321,6 +1325,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				DEVELOPMENT_ASSET_PATHS = "\"Multiplatform/Preview Assets.xcassets\"";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
@@ -1357,6 +1362,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				DEVELOPMENT_ASSET_PATHS = "\"Multiplatform/Preview Assets.xcassets\"";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;

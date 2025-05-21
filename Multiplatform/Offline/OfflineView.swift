@@ -53,7 +53,7 @@ struct OfflineView: View {
             .refreshable {
                 loadItems()
             }
-            .onReceive(RFNotification[.downloadStatusChanged].publisher()) { itemID, _ in
+            .onReceive(RFNotification[.downloadStatusChanged].publisher()) { _, _ in
                 loadItems()
             }
         }
