@@ -11,6 +11,14 @@ struct HeroBackground: View {
     let threshold: CGFloat
     let backgroundColor: Color?
     
+    private var color: Color {
+        if let backgroundColor {
+            return backgroundColor
+        } else {
+            return .clear
+        }
+    }
+    
     @Binding var isToolbarVisible: Bool
     
     var body: some View {
@@ -19,8 +27,8 @@ struct HeroBackground: View {
             
             if offset > 0 {
                 Rectangle()
-                    .fill(backgroundColor ?? Color.clear)
-                    .animation(.smooth, value: backgroundColor)
+                    .fill(color)
+                    .animation(.smooth, value: color)
                     .offset(y: -offset)
                     .frame(height: offset)
             }

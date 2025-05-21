@@ -395,18 +395,6 @@ public extension PersistenceManager.DownloadSubsystem {
         return nil
     }
     
-    func episodes(from podcastID: ItemIdentifier) throws -> [Episode] {
-        guard podcastID.type == .podcast else {
-            throw PersistenceError.unsupportedItemType
-        }
-        
-        guard let podcast = persistedPodcast(for: podcastID) else {
-            return []
-        }
-        
-        return podcast.episodes.map(Episode.init)
-    }
-    
     nonisolated func scheduleUpdateTask() {
         Task { @MainActor in
             updateTask?.cancel()
@@ -522,6 +510,21 @@ public extension PersistenceManager.DownloadSubsystem {
         return try modelContext.fetch(FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
             $0._id.contains(libraryID)
         })).filter { $0.id.libraryID == libraryID }.map(Audiobook.init)
+    }
+    
+    func episodes() throws -> [Episode] {
+        try modelContext.fetch(FetchDescriptor<PersistedEpisode>()).map(Episode.init)
+    }
+    func episodes(from podcastID: ItemIdentifier) throws -> [Episode] {
+        guard podcastID.type == .podcast else {
+            throw PersistenceError.unsupportedItemType
+        }
+        
+        guard let podcast = persistedPodcast(for: podcastID) else {
+            return []
+        }
+        
+        return podcast.episodes.map(Episode.init)
     }
     
     /// Performs the necessary work to add an item to the download queue.
@@ -701,10 +704,13 @@ public extension PersistenceManager.DownloadSubsystem {
         busy.insert(itemID)
         
         do {
-            try modelContext.delete(model: SchemaV2.PersistedChapter.self, where: #Predicate { $0._itemID == itemID.description })
+            if let model: any PersistentModel = persistedAudiobook(for: itemID) ?? persistedEpisode(for: itemID) {
+                modelContext.delete(model)
+            } else {
+                logger.error("Tried to delete non-existent model for \(itemID)")
+            }
             
-            let model: any PersistentModel = persistedAudiobook(for: itemID) ?? persistedEpisode(for: itemID)!
-            modelContext.delete(model)
+            try modelContext.delete(model: SchemaV2.PersistedChapter.self, where: #Predicate { $0._itemID == itemID.description })
             
             let assets = try assets(for: itemID)
             
@@ -731,6 +737,25 @@ public extension PersistenceManager.DownloadSubsystem {
             busy.remove(itemID)
             
             throw error
+        }
+    }
+    func removeAll() async throws {
+        do {
+            try modelContext.delete(model: PersistedAudiobook.self)
+            try modelContext.delete(model: PersistedEpisode.self)
+            try modelContext.delete(model: PersistedPodcast.self)
+            
+            try modelContext.delete(model: PersistedAsset.self)
+            try modelContext.delete(model: PersistedChapter.self)
+        } catch {
+            logger.error("Failed to remove all downloads: \(error)")
+        }
+        
+        do {
+            let path = ShelfPlayerKit.downloadDirectoryURL
+            try FileManager.default.removeItem(at: path)
+        } catch {
+            logger.error("Failed to remove download directory: \(error)")
         }
     }
     

@@ -38,13 +38,28 @@ public extension PersistenceManager.ItemSubsystem {
             return Color(red: components[0], green: components[1], blue: components[2])
         }
         
-        guard let image = await itemID.platformCover(size: .small), let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
+        guard let image = await itemID.platformCover(size: .small), let extracted = try? await RFKVisuals.extractDominantColors(9, image: image) else {
             return nil
         }
         
-        let filtered = RFKVisuals.brightnessExtremeFilter(colors.map { $0.color }, threshold: 0.1)
+        let colors = extracted.sorted { $0.percentage > $1.percentage }.map(\.color)
         
-        guard let result = RFKVisuals.determineMostSaturated(filtered) else {
+        let result: Color?
+        
+        switch itemID.type {
+            case .podcast:
+                result = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.1).first
+            default:
+                let highlySaturated = RFKVisuals.saturationExtremeFilter(colors, threshold: 0.45)
+                
+                if !highlySaturated.isEmpty {
+                    result = highlySaturated.randomElement()
+                } else {
+                    result = RFKVisuals.saturationExtremeFilter(colors, threshold: 0.3).randomElement()
+                }
+        }
+        
+        guard let result else {
             return nil
         }
         

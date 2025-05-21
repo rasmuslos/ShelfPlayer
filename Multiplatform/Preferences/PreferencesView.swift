@@ -74,7 +74,7 @@ struct PreferencesView: View {
                     }
                     
                     Button {
-                        
+                        removeDownloads()
                     } label: {
                         Label {
                             HStack(spacing: 0) {
@@ -91,6 +91,7 @@ struct PreferencesView: View {
                         }
                     }
                 }
+                .disabled(isLoading)
                 .foregroundStyle(.red)
                 
                 Section {
@@ -154,6 +155,34 @@ struct PreferencesView: View {
             } catch {
                 success = false
             }
+            
+            load()
+            
+            await MainActor.withAnimation {
+                isLoading = false
+                
+                if !success {
+                    notifyError.toggle()
+                }
+            }
+        }
+    }
+    private nonisolated func removeDownloads() {
+        Task {
+            await MainActor.withAnimation {
+                isLoading = true
+            }
+            
+            let success: Bool
+            
+            do {
+                try await PersistenceManager.shared.download.removeAll()
+                success = true
+            } catch {
+                success = false
+            }
+            
+            load()
             
             await MainActor.withAnimation {
                 isLoading = false
