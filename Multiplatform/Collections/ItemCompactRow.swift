@@ -116,7 +116,7 @@ struct ItemCompactRow: View {
         Task {
             let item = try? await itemID.resolved as? PlayableItem
             
-            await MainActor.run {
+            await MainActor.withAnimation {
                 self.item = item
             }
         }

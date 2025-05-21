@@ -239,7 +239,7 @@ private final class ViewModel: Sendable {
     nonisolated func fetchKnownConnections() async {
         let connections = await PersistenceManager.shared.authorization.knownConnections
         
-        await MainActor.run {
+        await MainActor.withAnimation {
             self.knownConnections = connections
         }
     }

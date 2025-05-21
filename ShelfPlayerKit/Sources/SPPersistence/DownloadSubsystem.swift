@@ -29,7 +29,8 @@ extension PersistenceManager {
     public final actor DownloadSubsystem {
         let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Download")
         
-        var busyItemIDs = Set<ItemIdentifier>()
+        var blocked = [ItemIdentifier: Int]()
+        var busy = Set<ItemIdentifier>()
        
         @MainActor
         var updateTask: Task<Void, Never>?
@@ -543,11 +544,15 @@ public extension PersistenceManager.DownloadSubsystem {
             throw PersistenceError.existing
         }
         
-        guard !busyItemIDs.contains(itemID) else {
+        guard !blocked.keys.contains(itemID) else {
+            throw PersistenceError.blocked
+        }
+        
+        guard !busy.contains(itemID) else {
             throw PersistenceError.busy
         }
         
-        busyItemIDs.insert(itemID)
+        busy.insert(itemID)
         
         let task = await UIApplication.shared.beginBackgroundTask(withName: "download::\(itemID)")
         
@@ -658,7 +663,7 @@ public extension PersistenceManager.DownloadSubsystem {
             }
             try modelContext.save()
             
-            busyItemIDs.remove(itemID)
+            busy.remove(itemID)
             
             logger.info("Created download for \(itemID)")
             
@@ -669,7 +674,7 @@ public extension PersistenceManager.DownloadSubsystem {
             await UIApplication.shared.endBackgroundTask(task)
         } catch {
             logger.error("Error creating download: \(error)")
-            busyItemIDs.remove(itemID)
+            busy.remove(itemID)
             
             await UIApplication.shared.endBackgroundTask(task)
             
@@ -685,11 +690,15 @@ public extension PersistenceManager.DownloadSubsystem {
             throw PersistenceError.unsupportedItemType
         }
         
-        guard !busyItemIDs.contains(itemID) else {
+        guard !blocked.keys.contains(itemID) else {
+            throw PersistenceError.blocked
+        }
+        
+        guard !busy.contains(itemID) else {
             throw PersistenceError.busy
         }
         
-        busyItemIDs.insert(itemID)
+        busy.insert(itemID)
         
         do {
             try modelContext.delete(model: SchemaV2.PersistedChapter.self, where: #Predicate { $0._itemID == itemID.description })
@@ -714,14 +723,34 @@ public extension PersistenceManager.DownloadSubsystem {
             
             await RFNotification[.downloadStatusChanged].send(payload: (itemID, .none))
             
-            busyItemIDs.remove(itemID)
+            busy.remove(itemID)
             
             await removeEmptyPodcasts()
         } catch {
             logger.error("Error removing download: \(error)")
-            busyItemIDs.remove(itemID)
+            busy.remove(itemID)
             
             throw error
+        }
+    }
+    
+    func addBlock(to itemID: ItemIdentifier) {
+        if let existing = blocked[itemID] {
+            blocked[itemID] = existing + 1
+        } else {
+            blocked[itemID] = 1
+        }
+    }
+    func removeBlock(from itemID: ItemIdentifier) {
+        guard let existing = blocked[itemID] else {
+            logger.error("Tried to remove non existing block for item: \(itemID)")
+            return
+        }
+        
+        if existing == 1 {
+            blocked[itemID] = nil
+        } else {
+            blocked[itemID] = existing - 1
         }
     }
     

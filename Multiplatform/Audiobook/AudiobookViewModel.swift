@@ -124,7 +124,7 @@ private extension AudiobookViewModel {
                     self.presentedPDF = data
                 }
             } catch {
-                await MainActor.run {
+                await MainActor.withAnimation {
                     loadingPDF = false
                     notifyError.toggle()
                 }

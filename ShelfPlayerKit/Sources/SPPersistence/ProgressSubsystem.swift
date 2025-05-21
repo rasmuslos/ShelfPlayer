@@ -35,6 +35,11 @@ extension PersistenceManager {
 }
 
 extension PersistenceManager.ProgressSubsystem {
+    func entity(_ id: String) -> PersistedProgress? {
+        try? modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+            $0.id == id
+        })).first
+    }
     func entity(_ itemID: ItemIdentifier) -> PersistedProgress? {
         let connectionID = itemID.connectionID
         let primaryID = itemID.primaryID
@@ -284,6 +289,8 @@ public extension PersistenceManager.ProgressSubsystem {
             
             signposter.emitEvent("mapIDs", id: signpostID)
             
+            // Should be updated on the server:
+            
             var pendingDeletion = [(id: String, connectionID: String)]()
             var pendingCreation = [ProgressEntity]()
             var pendingUpdate = [ProgressEntity]()
@@ -327,7 +334,7 @@ public extension PersistenceManager.ProgressSubsystem {
                             return
                         }
                         
-                        if delta < 0 {
+                        guard delta > 0 else {
                             pendingUpdate.append(.init(persistedEntity: entity))
                             return
                         }
@@ -363,7 +370,6 @@ public extension PersistenceManager.ProgressSubsystem {
                         entity.status = .synchronized
                     case .tombstone:
                         pendingDeletion.append((id, entity.connectionID))
-                        modelContext.delete(entity)
                     }
                 }
             }
@@ -379,18 +385,18 @@ public extension PersistenceManager.ProgressSubsystem {
             // try modelContext.transaction {
             for payload in payload {
                 let _ = createEntity(id: payload.id,
-                             itemID: .init(primaryID: payload.episodeId ?? payload.libraryItemId,
-                                           groupingID: payload.episodeId != nil ? payload.libraryItemId : nil,
-                                           libraryID: "_",
-                                           connectionID: connectionID,
-                                           type: payload.episodeId != nil ? .episode : .audiobook),
-                             progress: payload.progress ?? 0,
-                             duration: payload.duration ?? 0,
-                             currentTime: payload.currentTime ?? 0,
-                             startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
-                             lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
-                             finishedAt: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : nil,
-                             status: .synchronized)
+                                     itemID: .init(primaryID: payload.episodeId ?? payload.libraryItemId,
+                                                   groupingID: payload.episodeId != nil ? payload.libraryItemId : nil,
+                                                   libraryID: "_",
+                                                   connectionID: connectionID,
+                                                   type: payload.episodeId != nil ? .episode : .audiobook),
+                                     progress: payload.progress ?? 0,
+                                     duration: payload.duration ?? 0,
+                                     currentTime: payload.currentTime ?? 0,
+                                     startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
+                                     lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
+                                     finishedAt: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : nil,
+                                     status: .synchronized)
             }
             // }
             
@@ -404,6 +410,14 @@ public extension PersistenceManager.ProgressSubsystem {
             
             for (connectionID, entities) in grouped {
                 try await ABSClient[connectionID].batchUpdate(progress: entities)
+                
+                for entity in entities {
+                    guard let persisted = self.entity(entity.id) else {
+                        continue
+                    }
+                    
+                    persisted.status = .synchronized
+                }
             }
             
             signposter.emitEvent("batch", id: signpostID)
@@ -412,8 +426,20 @@ public extension PersistenceManager.ProgressSubsystem {
             logger.info("Deleting \(pendingDeletion.count) progress entities")
             
             for (id, connectionID) in pendingDeletion {
-                try? await ABSClient[connectionID].delete(progressID: id)
+                do {
+                    try await ABSClient[connectionID].delete(progressID: id)
+                } catch {
+                    logger.error("Failed to delete progress entity \(id): \(error)")
+                }
+                
+                guard let persisted = entity(id) else {
+                    continue
+                }
+                
+                try await delete(persisted)
             }
+            
+            try modelContext.save()
             
             signposter.emitEvent("delete", id: signpostID)
             

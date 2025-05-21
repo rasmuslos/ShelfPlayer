@@ -142,7 +142,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     nonisolated func didReachEndOfLoadedContent(bypassWorking: Bool = false) {
         Task {
             guard let library = await library else {
-#if DEBUG
+                #if DEBUG
                 if await self.items.isEmpty {
                     logger.warning("Library not set yet. Using fixtures.")
                     
@@ -160,7 +160,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         finished = true
                     }
                 }
-#endif
+                #endif
                 
                 return
             }

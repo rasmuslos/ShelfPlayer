@@ -142,7 +142,7 @@ struct PreferencesView: View {
     }
     private nonisolated func clearCache() {
         Task {
-            await MainActor.run {
+            await MainActor.withAnimation {
                 isLoading = true
             }
             
@@ -155,7 +155,7 @@ struct PreferencesView: View {
                 success = false
             }
             
-            await MainActor.run {
+            await MainActor.withAnimation {
                 isLoading = false
                 
                 if !success {

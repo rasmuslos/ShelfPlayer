@@ -30,6 +30,10 @@ struct ItemMenu: View {
         items = authors
         type = .author
     }
+    init(narrators: [(id: ItemIdentifier, name: String)]) {
+        items = narrators
+        type = .narrator
+    }
     init(series: [(id: ItemIdentifier, name: String)]) {
         items = series
         type = .author
