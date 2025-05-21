@@ -39,7 +39,7 @@ struct ItemMenu: View {
         if items.count == 1, let item = items.first {
             link(item, type: type)
         } else if !items.isEmpty {
-            Menu(type.viewLabel, systemImage: ItemIdentifier.ItemType.series.icon) {
+            Menu(type.viewLabel, systemImage: type.icon) {
                 MenuInner(items: items, type: type)
             }
         }
@@ -56,6 +56,10 @@ struct ItemMenu: View {
         init(authors: [String]) {
             items = authors.map { (nil, $0) }
             type = .author
+        }
+        init(narrators: [String]) {
+            items = narrators.map { (nil, $0) }
+            type = .narrator
         }
         
         var body: some View {

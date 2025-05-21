@@ -27,7 +27,7 @@ struct ItemIDLoadLink: View {
     
     var body: some View {
         if library == nil {
-            #if DEBUG && false
+            #if DEBUG
             let _ = fatalError("Cannot load itemIDs without a library.")
             #endif
         } else {

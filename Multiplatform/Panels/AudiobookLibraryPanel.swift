@@ -22,7 +22,6 @@ struct AudiobookLibraryPanel: View {
     private var libraryRowCount: CGFloat {
         horizontalSizeClass == .compact && library != nil ? 4 :  0
     }
-    
     @ViewBuilder
     private var libraryRows: some View {
         if horizontalSizeClass == .compact, let library {
@@ -43,7 +42,6 @@ struct AudiobookLibraryPanel: View {
             }
         }
     }
-    
     @ViewBuilder
     private var libraryRowsList: some View {
         List {

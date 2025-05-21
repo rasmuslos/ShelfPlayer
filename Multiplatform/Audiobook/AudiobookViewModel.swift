@@ -23,6 +23,7 @@ final class AudiobookViewModel: Sendable {
     var presentedPDF: Data?
     
     var toolbarVisible: Bool
+    var bookmarksVisible: Bool
     var chaptersVisible: Bool
     var sessionsVisible: Bool
     var supplementaryPDFsVisible: Bool
@@ -39,6 +40,7 @@ final class AudiobookViewModel: Sendable {
     private(set) var loadingPDF: Bool
     
     private(set) var sessions: [SessionPayload]
+    private(set) var bookmarks: [Bookmark]
     
     private(set) var notifyError: Bool
     private(set) var notifySuccess: Bool
@@ -50,6 +52,7 @@ final class AudiobookViewModel: Sendable {
         self.audiobook = audiobook
         
         toolbarVisible = false
+        bookmarksVisible = false
         chaptersVisible = false
         sessionsVisible = false
         supplementaryPDFsVisible = false
@@ -66,6 +69,7 @@ final class AudiobookViewModel: Sendable {
         loadingPDF = false
         
         sessions = []
+        bookmarks = []
         
         notifyError = false
         notifySuccess = false
@@ -83,6 +87,8 @@ extension AudiobookViewModel {
                 $0.addTask { await self.loadNarrators() }
                 
                 $0.addTask { await self.loadSessions() }
+                $0.addTask { await self.loadBookmarks() }
+                
                 $0.addTask { await self.extractColor() }
                 
                 if refresh {
@@ -274,6 +280,19 @@ private extension AudiobookViewModel {
         
         await MainActor.withAnimation {
             self.sessions = sessions
+        }
+    }
+    nonisolated func loadBookmarks() async {
+        guard let bookmarks = try? await PersistenceManager.shared.bookmark[audiobook.id] else {
+            await MainActor.run {
+                notifyError.toggle()
+            }
+            
+            return
+        }
+        
+        await MainActor.withAnimation {
+            self.bookmarks = bookmarks
         }
     }
 }
