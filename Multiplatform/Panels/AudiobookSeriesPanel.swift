@@ -64,6 +64,7 @@ struct AudiobookSeriesPanel: View {
                     ItemDisplayTypePicker(displayType: $seriesDisplayType)
                     ItemSortOrderPicker(sortOrder: $seriesSortOrder, ascending: $seriesAscending)
                 }
+                .menuActionDismissBehavior(.disabled)
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())

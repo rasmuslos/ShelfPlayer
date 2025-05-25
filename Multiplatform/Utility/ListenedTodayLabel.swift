@@ -20,9 +20,8 @@ struct ListenedTodayLabel: View {
     
     private let availablePercentage: CGFloat = 0.75
     
-    private var targetMinutes: CGFloat {
-        30
-    }
+    @Default(.listenTimeTarget) private var listenTimeTarget
+    
     private var totalMinutes: Int {
         Int((loader.totalTimeSpendListening + cachedTimeSpendListening) / 60) + 16
     }
@@ -37,7 +36,7 @@ struct ListenedTodayLabel: View {
                 .frame(width: 22)
             
             Circle()
-                .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(totalMinutes) / targetMinutes))))
+                .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(totalMinutes) / CGFloat(listenTimeTarget)))))
                 .stroke(tintColor.color, lineWidth: 2)
                 .rotationEffect(.degrees(135))
                 .frame(width: 22)
@@ -55,7 +54,7 @@ struct ListenedTodayLabel: View {
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
                 
-                Text(Int(targetMinutes), format: .number)
+                Text(listenTimeTarget, format: .number)
                     .font(.caption2.uppercaseSmallCaps())
                     .foregroundStyle(tintColor.color)
                     .opacity(0.72)

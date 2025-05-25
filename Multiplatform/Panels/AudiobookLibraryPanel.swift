@@ -174,6 +174,7 @@ struct AudiobookLibraryPanel: View {
                             ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                         }
                     }
+                    .menuActionDismissBehavior(.disabled)
                 }
             }
         }

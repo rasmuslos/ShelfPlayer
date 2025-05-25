@@ -68,6 +68,7 @@ struct PodcastLibraryPanel: View {
                     ItemDisplayTypePicker(displayType: $podcastsDisplayType)
                     ItemSortOrderPicker(sortOrder: $podcastsSortOrder, ascending: $podcastsAscending)
                 }
+                .menuActionDismissBehavior(.disabled)
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
