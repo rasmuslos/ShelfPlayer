@@ -126,6 +126,7 @@ final actor PlaybackReporter {
                 }
             }
             
+            await RFNotification[.unreportedAccumulatedTimeSpendListeningChanged].send(payload: nil)
             await UIApplication.shared.endBackgroundTask(task)
         }
     }
@@ -161,6 +162,8 @@ private extension PlaybackReporter {
         accumulatedTimeSpendListening = 0
         lastTimeSpendListeningCalculation = .now
         lastUpdate = .now
+        
+        RFNotification[.unreportedAccumulatedTimeSpendListeningChanged].dispatch(payload: timeListened)
         
         Task {
             var updateLocalSession = true

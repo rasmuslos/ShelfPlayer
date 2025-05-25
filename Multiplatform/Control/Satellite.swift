@@ -63,6 +63,8 @@ final class Satellite {
     
     private(set) var skipCache: TimeInterval?
     
+    private(set) var unreportedTimeSpendListening: TimeInterval
+    
     @ObservationIgnored
     private(set) nonisolated(unsafe) var skipTask: Task<Void, Never>?
     
@@ -108,6 +110,8 @@ final class Satellite {
         
         totalLoading = 0
         busy = [:]
+        
+        unreportedTimeSpendListening = 0
         
         notifyError = false
         notifySuccess = false
@@ -449,7 +453,7 @@ extension Satellite {
 
         skipTask?.cancel()
         skipTask = Task {
-            try? await Task.sleep(for: .seconds(isInitial ? 0.2 : 0.6))
+            try? await Task.sleep(for: .seconds(isInitial ? 0.3 : 0.7))
 
             guard !Task.isCancelled else {
                 return
@@ -872,6 +876,8 @@ private extension Satellite {
             
             self?.resolvePlayingItem()
             self?.loadBookmarks(itemID: $0.0)
+            
+            self?.updateAccumulatedUnreportedTimeSpendListening()
         }.store(in: &stash)
         
         RFNotification[.playStateChanged].subscribe { [weak self] isPlaying in
@@ -950,6 +956,8 @@ private extension Satellite {
             self?.sleepTimer = nil
             
             self?.bookmarks = []
+            
+            self?.updateAccumulatedUnreportedTimeSpendListening()
         }.store(in: &stash)
         
         RFNotification[.bookmarksChanged].subscribe { [weak self] itemID in
@@ -959,6 +967,20 @@ private extension Satellite {
             
             self?.loadBookmarks(itemID: itemID)
         }.store(in: &stash)
+        
+        RFNotification[.unreportedAccumulatedTimeSpendListeningChanged].subscribe { [weak self] amount in
+            self?.updateAccumulatedUnreportedTimeSpendListening(amount)
+        }.store(in: &stash)
+    }
+    
+    nonisolated func updateAccumulatedUnreportedTimeSpendListening(_ currentPlaybackAmount: TimeInterval? = nil) {
+        Task {
+            let cached = try? await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
+            
+            await MainActor.run {
+                unreportedTimeSpendListening = (currentPlaybackAmount ?? 0) + (cached ?? 0)
+            }
+        }
     }
 }
 
