@@ -68,6 +68,15 @@ final class SessionLoader {
             let finished = await finished
             
             let connectionIDs = await filter.connectionIDs.filter { finished[$0] != true }
+            
+            guard !connectionIDs.isEmpty else {
+                await MainActor.run {
+                    isLoading = false
+                }
+                
+                return
+            }
+            
             let sessions = await withTaskGroup {
                 for connectionID in connectionIDs {
                     $0.addTask {
