@@ -2148,11 +2148,18 @@
         }
       }
     },
-    "item.timeline.empty" : {
-
-    },
     "item.timeline.playing" : {
 
+    },
+    "item.timeline.row %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "item.timeline.row %1$@ %2$@"
+          }
+        }
+      }
     },
     "item.timeline.total" : {
 

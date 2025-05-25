@@ -28,6 +28,9 @@ public extension RFNotification.IsolatedNotification {
     static var upNextQueueChanged: IsolatedNotification<[ItemIdentifier]> { .init("io.rfk.shelfPlayerKit.upNextQueueChanged") }
     
     static var playbackStopped: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackStopped") }
+    
+    static var unreportedAccumulatedTimeSpendListeningChanged: IsolatedNotification<TimeInterval?> { .init("io.rfk.shelfPlayerKit.unreportedAccumulatedTimeSpendListeningChanged")
+    }
 }
 
 public extension RFNotification.NonIsolatedNotification {
