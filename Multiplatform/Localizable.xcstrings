@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "abc" : {
+
+    },
     "action.cancel" : {
       "localizations" : {
         "de" : {
@@ -118,6 +121,9 @@
           }
         }
       }
+    },
+    "arrow.down.circle" : {
+
     },
     "carPlay.noConnections" : {
 
@@ -2785,6 +2791,7 @@
       }
     },
     "playback.alert.resume" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2817,6 +2824,7 @@
       }
     },
     "playback.alert.resume.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

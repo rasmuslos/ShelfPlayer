@@ -16,14 +16,13 @@ struct ListenedTodayLabel: View {
     @Default(.tintColor) private var tintColor
     
     @State private var loader = SessionLoader(filter: .today)
-    @State private var cachedTimeSpendListening = 0.0
     
     private let availablePercentage: CGFloat = 0.75
     
     @Default(.listenTimeTarget) private var listenTimeTarget
     
     private var totalMinutes: Int {
-        Int((loader.totalTimeSpendListening + cachedTimeSpendListening) / 60) + 16
+        Int((loader.totalTimeSpendListening + satellite.cachedTimeSpendListening) / 60) + 16
     }
     
     var body: some View {
@@ -62,24 +61,6 @@ struct ListenedTodayLabel: View {
             .offset(x: 0, y: 6)
         }
         .animation(.spring, value: totalMinutes)
-        .onAppear {
-            updateCachedTimeSpendListening()
-        }
-        .onReceive(RFNotification[.cachedTimeSpendListeningChanged].publisher()) {
-            updateCachedTimeSpendListening()
-            loader.refresh()
-        }
-    }
-    
-    private nonisolated func updateCachedTimeSpendListening() {
-        Task {
-            let cachedSessions = try await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
-            let pendingOpen = await AudioPlayer.shared.pendingTimeSpendListening ?? 0
-            
-            await MainActor.run {
-                self.cachedTimeSpendListening = cachedSessions + pendingOpen
-            }
-        }
     }
 }
 
