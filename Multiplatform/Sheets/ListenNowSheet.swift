@@ -18,13 +18,17 @@ struct ListenNowSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                #if DEBUG
                 Section {
+                    NavigationLink(destination: Text("abc")) {
+                        Label("arrow.down.circle", systemImage: "item.convenienceDownload")
+                    }
+                    
+                    #if DEBUG
                     NavigationLink(destination: Text(verbatim: "stats")) {
                         Label(String("Statistiken"), systemImage: "chart.line.uptrend.xyaxis")
                     }
+                    #endif
                 }
-                #endif
                 
                 if listenNowItems.isEmpty {
                     if isLoading {

@@ -65,10 +65,10 @@ final class Satellite {
     
     private(set) var skipCache: TimeInterval?
     
+    private(set) var cachedTimeSpendListening = 0.0
+    
     @ObservationIgnored
     private(set) nonisolated(unsafe) var skipTask: Task<Void, Never>?
-    
-    var resumePlaybackItemID: ItemIdentifier?
     
     // MARK: Utility
     
@@ -81,6 +81,8 @@ final class Satellite {
     
     init() {
         setupObservers()
+        
+        updateCachedTimeSpendListening()
         checkForResumablePlayback()
     }
     
@@ -151,6 +153,9 @@ extension Satellite {
     }
     enum WarningAlert: LocalizedError {
         case message(String)
+        
+        case resumePlayback(ItemIdentifier)
+        
         case playbackStartWhileDownloading(ItemIdentifier)
         case downloadStartWhilePlaying
         case downloadRemoveWhilePlaying
@@ -159,6 +164,10 @@ extension Satellite {
             switch self {
                 case .message(let message):
                     message
+                    
+                case .resumePlayback:
+                    String(localized: "playback.alert.resume.message")
+                    
                 case .playbackStartWhileDownloading:
                     String(localized: "warning.playbackDownload.activeDownload")
                 case .downloadStartWhilePlaying:
@@ -172,11 +181,8 @@ extension Satellite {
             switch self {
                 case .message:
                     [.dismiss]
-                case .playbackStartWhileDownloading:
-                    [.cancel, .proceed]
-                case .downloadStartWhilePlaying:
-                    [.cancel, .proceed]
-                case .downloadRemoveWhilePlaying:
+                    
+                case .resumePlayback, .playbackStartWhileDownloading, .downloadStartWhilePlaying, .downloadRemoveWhilePlaying:
                     [.cancel, .proceed]
             }
         }
@@ -245,6 +251,10 @@ extension Satellite {
             switch warningAlert {
                 case .message:
                     break
+                    
+                case .resumePlayback(let itemID):
+                    start(itemID)
+                    
                 case .playbackStartWhileDownloading(let itemID):
                     try? await PersistenceManager.shared.download.remove(itemID)
                     start(itemID)
@@ -585,20 +595,6 @@ extension Satellite {
             await endWorking(on: currentItemID, successfully: true)
         }
     }
-
-    nonisolated func resumePlayback() {
-        Task {
-            guard let resumePlaybackItemID = await resumePlaybackItemID else {
-                return
-            }
-
-            await MainActor.run {
-                self.resumePlaybackItemID = nil
-            }
-
-            start(resumePlaybackItemID)
-        }
-    }
 }
 
 // MARK: Progress
@@ -764,7 +760,18 @@ private extension Satellite {
             return
         }
         
-        resumePlaybackItemID = playbackResumeInfo.itemID
+        warn(.resumePlayback(playbackResumeInfo.itemID))
+    }
+    
+    nonisolated func updateCachedTimeSpendListening() {
+        Task {
+            let cachedSessions = try await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
+            let pendingOpen = await AudioPlayer.shared.pendingTimeSpendListening ?? 0
+            
+            await MainActor.run {
+                self.cachedTimeSpendListening = cachedSessions + pendingOpen
+            }
+        }
     }
 
     // MARK: Observers
@@ -896,6 +903,10 @@ private extension Satellite {
             }
             
             self?.loadBookmarks(itemID: itemID)
+        }.store(in: &stash)
+        
+        RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
+            self?.updateCachedTimeSpendListening()
         }.store(in: &stash)
     }
 }
