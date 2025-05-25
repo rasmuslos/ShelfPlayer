@@ -58,6 +58,15 @@ extension PersistenceManager {
 }
 
 public extension PersistenceManager.SessionSubsystem {
+    func totalUnreportedTimeSpentListening() throws -> TimeInterval {
+        let startOfDay = Calendar.current.startOfDay(for: .now)
+        let sessions = try modelContext.fetch(FetchDescriptor<PersistedPlaybackSession>(predicate: #Predicate {
+            $0.started >= startOfDay
+        }))
+        
+        return sessions.reduce(0) { $0 + $1.timeListened }
+    }
+    
     func createLocalPlaybackSession(for itemID: ItemIdentifier, startTime: TimeInterval, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) throws -> UUID {
         let session = PersistedPlaybackSession(itemID: itemID,
                                                duration: duration,

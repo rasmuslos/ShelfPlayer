@@ -15,6 +15,10 @@ struct Timeline: View {
     let sessionLoader: SessionLoader
     var item: PlayableItem? = nil
     
+    private var isPlaying: Bool {
+        satellite.nowPlayingItemID == item?.id
+    }
+    
     @ViewBuilder
     private func capsule<Content: View>(title: LocalizedStringKey, isLoading: Bool, @ViewBuilder text: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -43,13 +47,8 @@ struct Timeline: View {
     }
     
     @ViewBuilder
-    private func row(title: String, text: Text, color: Color, systemImage: String) -> some View {
+    private func row(text: Text, color: Color, systemImage: String) -> some View {
         HStack(spacing: 0) {
-            Text(title.leftPadding(toLength: 5, withPad: " "))
-                .font(.caption)
-                .fontDesign(.monospaced)
-                .lineLimit(1)
-            
             ZStack {
                 Circle()
                     .fill(color)
@@ -59,7 +58,7 @@ struct Timeline: View {
                     .font(.caption)
                     .foregroundStyle(color.isLight == true ? .black : .white)
             }
-            .padding(.horizontal, 8)
+            .padding(.trailing, 8)
             
             text
                 .font(.caption)
@@ -70,64 +69,48 @@ struct Timeline: View {
     
     var body: some View {
         VStack(spacing: 12) {
-            ZStack {
-                capsule(title: "loading", isLoading: false) {
-                    Text(verbatim: "LAYOUT")
-                }
-                .hidden()
-                
-                if !sessionLoader.sessions.isEmpty || sessionLoader.isLoading {
-                    HStack(spacing: 12) {
-                        capsule(title: "item.timeline.total",
-                                isLoading: sessionLoader.isLoading) {
-                            Text(sessionLoader.totalTimeSpendListening, format: .duration(unitsStyle: .full, allowedUnits: [.day, .hour, .minute], maximumUnitCount: 1))
-                        }
-                        
-                        capsule(title: "item.lastPlayed", isLoading: sessionLoader.mostRecent == nil && sessionLoader.isLoading) {
-                            if let mostRecent = sessionLoader.mostRecent {
-                                Text(mostRecent.startDate, style: .relative)
-                            } else {
-                                Text("loading")
-                                    .redacted(reason: .placeholder)
-                            }
+            if !sessionLoader.sessions.isEmpty || sessionLoader.isLoading {
+                HStack(spacing: 12) {
+                    capsule(title: "item.timeline.total",
+                            isLoading: sessionLoader.isLoading) {
+                        Text(sessionLoader.totalTimeSpendListening, format: .duration(unitsStyle: .full, allowedUnits: [.day, .hour, .minute], maximumUnitCount: 1))
+                    }
+                    
+                    capsule(title: "item.lastPlayed", isLoading: sessionLoader.mostRecent == nil && sessionLoader.isLoading) {
+                        if !isPlaying, let mostRecent = sessionLoader.mostRecent {
+                            Text(mostRecent.startDate, style: .relative)
+                        } else {
+                            Text("loading")
+                                .redacted(reason: .placeholder)
                         }
                     }
-                } else {
-                    Text("item.timeline.empty")
-                        .font(.caption.smallCaps())
-                        .foregroundStyle(.secondary)
                 }
             }
             
             LazyVStack(spacing: 20) {
-                if satellite.nowPlayingItemID == item?.id {
-                    row(title: "", text: Text("item.timeline.playing"), color: .blue, systemImage: "pause.fill")
+                if isPlaying {
+                    row(text: Text("item.timeline.playing"), color: .blue, systemImage: "pause.fill")
                 }
                 
                 ForEach(sessionLoader.sessions) { session in
-                    row(title: session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute], maximumUnitCount: 1)) ?? "?",
-                        text: Text(session.startDate, style: .relative),
+                    row(text: Text("item.timeline.row \(session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute], maximumUnitCount: 1)) ?? "?") \(session.startDate.formatted(.relative(presentation: .named)))"),
                         color: .accentColor,
                         systemImage: "play.fill")
                 }
                 
                 if let audiobook = item as? Audiobook, let released = audiobook.released {
-                    row(title: released, text: Text(verbatim: "item.released"), color: .green, systemImage: "plus")
+                    row(text: Text(verbatim: "item.released \(released)"), color: .green, systemImage: "plus")
                 }
             }
             .background(alignment: .leading) {
-                HStack(spacing: 0) {
-                    Text(verbatim: "     ")
-                        .font(.caption)
-                        .fontDesign(.monospaced)
-                        .hidden()
-                        .padding(.trailing, 20)
-                    
-                    Rectangle()
-                        .fill(Color.accentColor)
-                        .frame(width: 2, height: nil)
-                }
+                Rectangle()
+                    .fill(Color.accentColor)
+                    .frame(width: 2, height: nil)
+                    .padding(.leading, 12)
             }
+        }
+        .onReceive(RFNotification[.playbackItemChanged].publisher()) { _ in
+            sessionLoader.refresh()
         }
     }
 }
@@ -146,6 +129,11 @@ private extension String {
 #if DEBUG
 #Preview {
     Timeline(sessionLoader: SessionLoader(filter: .fixture), item: Audiobook.fixture)
+        .padding(20)
+        .previewEnvironment()
+}
+#Preview {
+    Timeline(sessionLoader: SessionLoader(filter: .itemID(.fixture)), item: Audiobook.fixture)
         .padding(20)
         .previewEnvironment()
 }

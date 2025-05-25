@@ -130,7 +130,13 @@ final class SessionLoader {
         func sessions(page: Int, pageSize: Int, connectionID: ItemIdentifier.ConnectionID) async throws -> ([SessionPayload], Bool) {
             switch self {
                 case .today:
-                    return ([], true)
+                    let startOfDay = Calendar.current.startOfDay(for: .now)
+                    let sessions = try await ABSClient[connectionID].listeningSessions(page: page, pageSize: pageSize)
+                    
+                    let filtered = sessions.filter { $0.startDate >= startOfDay }
+                    let isFinished = sessions.isEmpty || filtered.count != sessions.count
+                    
+                    return (filtered, isFinished)
                 case .itemID(let itemID):
                     let sessions = try await ABSClient[connectionID].listeningSessions(from: itemID, page: page, pageSize: pageSize)
                     return (sessions, sessions.isEmpty)
