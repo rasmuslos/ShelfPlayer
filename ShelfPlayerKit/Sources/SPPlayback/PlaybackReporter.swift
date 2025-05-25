@@ -35,6 +35,8 @@ final actor PlaybackReporter {
     private var lastUpdate: Date?
     private var isFinished: Bool
     
+    private(set) var accumulatedServerReportedTimeListening: TimeInterval = 0
+    
     init(itemID: ItemIdentifier, startTime: TimeInterval, sessionID: String?) {
         self.sessionID = sessionID
         self.itemID = itemID
@@ -169,6 +171,9 @@ private extension PlaybackReporter {
                 if let sessionID {
                     try await ABSClient[itemID.connectionID].syncSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
                     updateLocalSession = false
+                    
+                    accumulatedServerReportedTimeListening += timeListened
+                    await RFNotification[.cachedTimeSpendListeningChanged].send()
                 }
             } catch {
                 logger.warning("Failed to update session: \(error). Update local session instead.")

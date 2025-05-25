@@ -167,6 +167,12 @@ final class LocalAudioEndpoint: AudioEndpoint {
             }
         }
     }
+    
+    var pendingTimeSpendListening: TimeInterval {
+        get async {
+            await playbackReporter.accumulatedServerReportedTimeListening
+        }
+    }
 }
 
 extension LocalAudioEndpoint {
