@@ -199,17 +199,6 @@ private extension PersistenceManager.DownloadSubsystem {
         } catch {
             assetDownloadFailed(taskIdentifier: taskIdentifier)
         }
-        
-        Task {
-            if await status(of: asset.itemID) == .completed {
-                try? await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: asset.itemID), .completed)
-                
-                let itemID = asset.itemID
-                await RFNotification[.downloadStatusChanged].send(payload: (itemID, .completed))
-                
-                logger.info("Cached download status for item \(asset.itemID, privacy: .public)")
-            }
-        }
     }
     
     func reportProgress(taskID: Int, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {

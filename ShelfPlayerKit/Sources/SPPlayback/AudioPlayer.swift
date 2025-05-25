@@ -116,6 +116,12 @@ public extension AudioPlayer {
         }
     }
     
+    var pendingTimeSpendListening: TimeInterval? {
+        get async {
+            await current?.pendingTimeSpendListening
+        }
+    }
+    
     func start(_ itemID: ItemIdentifier, withoutListeningSession: Bool = false) async throws {
         await stop()
         

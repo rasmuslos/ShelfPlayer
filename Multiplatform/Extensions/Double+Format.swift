@@ -52,8 +52,6 @@ struct DurationComponentsFormatter: FormatStyle {
         
         if unitsStyle == .positional {
             formatter.zeroFormattingBehavior = .pad
-        } else {
-            formatter.zeroFormattingBehavior = .dropLeading
         }
         
         formatter.allowsFractionalUnits = false
