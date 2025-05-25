@@ -20,7 +20,7 @@ struct ListenNowSheet: View {
             List {
                 Section {
                     NavigationLink(destination: Text("abc")) {
-                        Label("arrow.down.circle", systemImage: "item.convenienceDownload")
+                        Label("item.convenienceDownload", systemImage: "arrow.down.circle")
                     }
                     
                     #if DEBUG
