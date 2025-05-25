@@ -128,6 +128,7 @@ struct ShelfPlayer {
         }
         
         await RFNotification[.reloadImages].send(payload: itemID)
+        await RFNotification[.downloadStatusChanged].send(payload: nil)
         
         try await PersistenceManager.shared.refreshItem(itemID: itemID)
     }

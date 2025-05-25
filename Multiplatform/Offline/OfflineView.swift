@@ -53,7 +53,7 @@ struct OfflineView: View {
             .refreshable {
                 loadItems()
             }
-            .onReceive(RFNotification[.downloadStatusChanged].publisher()) { _, _ in
+            .onReceive(RFNotification[.downloadStatusChanged].publisher()) { _ in
                 loadItems()
             }
         }
@@ -62,6 +62,7 @@ struct OfflineView: View {
     private nonisolated func loadItems() {
         Task {
             let audiobooks = try await PersistenceManager.shared.download.audiobooks()
+            // let episodes = try await PersistenceManager.shared.download.episodes()
             
             await MainActor.withAnimation {
                 self.audiobooks = audiobooks

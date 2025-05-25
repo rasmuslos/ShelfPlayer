@@ -230,8 +230,11 @@ struct DownloadButton: View {
                 progress[assetID]! += bytesWritten
             }
         }
-        .onReceive(RFNotification[.downloadStatusChanged].publisher()) { (itemID, status) in
-            guard self.itemID == itemID else {
+        .onReceive(RFNotification[.downloadStatusChanged].publisher()) {
+            guard let (itemID, status) = $0, self.itemID == itemID else {
+                self.status = nil
+                loadCurrent()
+                
                 return
             }
             
