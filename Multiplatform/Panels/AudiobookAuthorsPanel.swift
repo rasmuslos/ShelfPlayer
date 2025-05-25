@@ -50,6 +50,7 @@ struct AudiobookAuthorsPanel: View {
                 Menu("item.options", systemImage: "arrow.up.arrow.down.circle") {
                     ItemSortOrderPicker(sortOrder: $authorsSortOrder, ascending: $authorsAscending)
                 }
+                .menuActionDismissBehavior(.disabled)
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
