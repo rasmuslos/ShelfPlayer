@@ -37,6 +37,12 @@ struct TabRouter: View {
             }
             
             selection = $0
+            
+            // Update all download & progress trackers
+            
+            Task {
+                await ShelfPlayer.invalidateShortTermCache()
+            }
         }
     }
     var isReady: Bool {
