@@ -30,10 +30,11 @@ struct EpisodeView: View {
                 .padding(.horizontal, 20)
             
             DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
-                Timeline(item: viewModel.episode, sessions: viewModel.sessions)
+                Timeline(sessionLoader: viewModel.sessionLoader, item: viewModel.episode)
                     .padding(.top, 8)
+                    .padding(.horizontal, 20)
             }
-            .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
+            .disclosureGroupStyle(BetterDisclosureGroupStyle())
         }
         .ignoresSafeArea(edges: .top)
         .modify {

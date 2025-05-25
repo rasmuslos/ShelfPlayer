@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
-    var horizontalLabelPadding: CGFloat = 0
+    var horizontalLabelPadding: CGFloat = 20
     
     func makeBody(configuration: Configuration) -> some View {
         VStack(spacing: 0) {

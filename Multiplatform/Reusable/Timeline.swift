@@ -9,198 +9,144 @@ import Foundation
 import SwiftUI
 import ShelfPlayerKit
 
-internal struct Timeline: View {
-    let item: PlayableItem
-    let sessions: [SessionPayload]
+struct Timeline: View {
+    @Environment(Satellite.self) private var satellite
     
-    private var released: String? {
-        if let audiobook = item as? Audiobook {
-            return audiobook.released
-        } else if let episode = item as? Episode, let releaseDate = episode.releaseDate {
-            return releaseDate.formatted(date: .abbreviated, time: .omitted)
+    let sessionLoader: SessionLoader
+    var item: PlayableItem? = nil
+    
+    @ViewBuilder
+    private func capsule<Content: View>(title: LocalizedStringKey, isLoading: Bool, @ViewBuilder text: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .top, spacing: 0) {
+                text()
+                    .bold()
+                    .font(.title3)
+                
+                Spacer(minLength: 0)
+                
+                if isLoading {
+                    ProgressView()
+                        .scaleEffect(0.5)
+                }
+            }
+            
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
-        
-        return nil
+        .padding(8)
+        .background {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(.background.secondary)
+        }
+    }
+    
+    @ViewBuilder
+    private func row(title: String, text: Text, color: Color, systemImage: String) -> some View {
+        HStack(spacing: 0) {
+            Text(title.leftPadding(toLength: 5, withPad: " "))
+                .font(.caption)
+                .fontDesign(.monospaced)
+                .lineLimit(1)
+            
+            ZStack {
+                Circle()
+                    .fill(color)
+                    .frame(width: 26)
+                
+                Image(systemName: systemImage)
+                    .font(.caption)
+                    .foregroundStyle(color.isLight == true ? .black : .white)
+            }
+            .padding(.horizontal, 8)
+            
+            text
+                .font(.caption)
+            
+            Spacer()
+        }
     }
     
     var body: some View {
-        /*
-        LazyVStack(spacing: 52) {
-            ForEach(sessions) { session in
-                VStack(spacing: 8) {
-                    EventRow(date: session.endDate, currentTime: session.currentTime, type: .end)
-                    
-                    if let timeListening = session.timeListening {
-                        HStack {
-                            Text(timeListening, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute]))
-                                .font(.caption2)
-                            
-                            Spacer()
+        VStack(spacing: 12) {
+            ZStack {
+                capsule(title: "loading", isLoading: false) {
+                    Text(verbatim: "LAYOUT")
+                }
+                .hidden()
+                
+                if !sessionLoader.sessions.isEmpty || sessionLoader.isLoading {
+                    HStack(spacing: 12) {
+                        capsule(title: "item.timeline.total",
+                                isLoading: sessionLoader.isLoading) {
+                            Text(sessionLoader.totalTimeSpendListening, format: .duration(unitsStyle: .full, allowedUnits: [.day, .hour, .minute], maximumUnitCount: 1))
+                        }
+                        
+                        capsule(title: "item.lastPlayed", isLoading: sessionLoader.mostRecent == nil && sessionLoader.isLoading) {
+                            if let mostRecent = sessionLoader.mostRecent {
+                                Text(mostRecent.startDate, style: .relative)
+                            } else {
+                                Text("loading")
+                                    .redacted(reason: .placeholder)
+                            }
                         }
                     }
-                    
-                    EventRow(date: session.startDate, currentTime: session.startTime, type: .start)
+                } else {
+                    Text("item.timeline.empty")
+                        .font(.caption.smallCaps())
+                        .foregroundStyle(.secondary)
                 }
             }
             
-            VStack(spacing: 16) {
-                Row(date: item.addedAt, icon: "plus", color: .brown, text: .init("added \(item.addedAt.formatted(date: .numeric, time: .omitted))")) {
-                    EmptyView()
+            LazyVStack(spacing: 20) {
+                if satellite.nowPlayingItemID == item?.id {
+                    row(title: "", text: Text("item.timeline.playing"), color: .blue, systemImage: "pause.fill")
                 }
                 
-                if let released = released {
-                    Row(date: .now, icon: "storefront", color: .green, hideTime: true, text: .init("released \(released)")) {
-                        EmptyView()
-                    }
+                ForEach(sessionLoader.sessions) { session in
+                    row(title: session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute], maximumUnitCount: 1)) ?? "?",
+                        text: Text(session.startDate, style: .relative),
+                        color: .accentColor,
+                        systemImage: "play.fill")
+                }
+                
+                if let audiobook = item as? Audiobook, let released = audiobook.released {
+                    row(title: released, text: Text(verbatim: "item.released"), color: .green, systemImage: "plus")
                 }
             }
-        }
-        .background(alignment: .leading) {
-            HStack(spacing: 0) {
-                Time(date: .now)
-                    .hidden()
-                
-                Rectangle()
-                    .fill(Color.accentColor)
-                    .frame(width: 4, height: nil)
-                    .padding(.leading, 10)
-            }
-        }
-        .padding(.horizontal, 20)
-         */
-        Text(verbatim: "abc")
-    }
-}
-
-private struct EventRow: View {
-    let date: Date
-    let currentTime: TimeInterval?
-    let type: EventType
-    
-    var body: some View {
-        Row(date: date, icon: type.icon, color: type.color) {
-            if let currentTime {
-                Position(current: currentTime)
-            }
-        }
-    }
-    
-    enum EventType: Codable, Identifiable, Hashable {
-        case start
-        case end
-        
-        var id: Self {
-            self
-        }
-        
-        var icon: String {
-            switch self {
-            case .start:
-                "play.fill"
-            case .end:
-                "pause.fill"
-            }
-        }
-        var color: Color {
-            switch self {
-            case .start:
-                    .accentColor
-            case .end:
-                    .primary
-            }
-        }
-    }
-}
-private struct Row<Content: View>: View {
-    @Environment(\.colorScheme) private var colorScheme
-    
-    let date: Date
-    let icon: String
-    let color: Color
-    
-    var hideTime = false
-    var text: Text? = nil
-    
-    @ViewBuilder var content: Content
-    
-    private var foreground: Color {
-        if color == .primary && colorScheme == .dark {
-            return .black
-        }
-        
-        if let isLight = color.isLight {
-            return isLight ? .black : .white
-        }
-        
-        return colorScheme == .dark ? .white : .black
-    }
-    
-    var body: some View {
-        HStack(spacing: 0) {
-            Time(date: date)
-                .opacity(hideTime ? 0 : 1)
-            
-            Circle()
-                .fill(color)
-                .frame(width: 24)
-                .overlay {
-                    Image(systemName: icon)
+            .background(alignment: .leading) {
+                HStack(spacing: 0) {
+                    Text(verbatim: "     ")
                         .font(.caption)
-                        .foregroundStyle(foreground)
-                }
-                .padding(.trailing, 12)
-            
-            if let text = text {
-                text
-            } else {
-                Text(date, format: {
-                    var formatStyle = Date.RelativeFormatStyle.relative(presentation: .named)
-                    formatStyle.capitalizationContext = .listItem
+                        .fontDesign(.monospaced)
+                        .hidden()
+                        .padding(.trailing, 20)
                     
-                    return formatStyle
-                }())
+                    Rectangle()
+                        .fill(Color.accentColor)
+                        .frame(width: 2, height: nil)
+                }
             }
-            
-            Spacer(minLength: 8)
-            
-            content
         }
     }
 }
 
-private struct Time: View {
-    let date: Date
-    
-    var body: some View {
-        Text(date, format: .dateTime.hour().minute())
-            .font(.caption2)
-            .fontDesign(.monospaced)
-            .foregroundStyle(.secondary)
-            .padding(.trailing, 8)
-    }
-}
-private struct Position: View {
-    let current: TimeInterval
-    
-    var body: some View {
-        Text(current, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-            .font(.caption)
-            .fontDesign(.monospaced)
-            .foregroundStyle(.secondary)
+private extension String {
+    func leftPadding(toLength: Int, withPad character: Character) -> String {
+        let stringLength = self.count
+        if stringLength < toLength {
+            return String(repeatElement(character, count: toLength - stringLength)) + self
+        } else {
+            return String(self.suffix(toLength))
+        }
     }
 }
 
 #if DEBUG
 #Preview {
-    @Previewable @State var previewSessions: [SessionPayload] = []
-    
-    ScrollView {
-        Timeline(item: Audiobook.fixture, sessions: previewSessions)
-    }
-    .task {
-        do {
-            // previewSessions = try await AudiobookshelfClient.shared.listeningSessions(for: "0fbce99b-97af-4f6b-bb11-2a657b2fea86", episodeID: nil)
-        } catch {}
-    }
+    Timeline(sessionLoader: SessionLoader(filter: .fixture), item: Audiobook.fixture)
+        .padding(20)
+        .previewEnvironment()
 }
 #endif

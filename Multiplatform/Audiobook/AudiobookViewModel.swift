@@ -39,8 +39,9 @@ final class AudiobookViewModel: Sendable {
     
     private(set) var loadingPDF: Bool
     
-    private(set) var sessions: [SessionPayload]
     private(set) var bookmarks: [Bookmark]
+    
+    let sessionLoader: SessionLoader
     
     private(set) var notifyError: Bool
     private(set) var notifySuccess: Bool
@@ -68,8 +69,9 @@ final class AudiobookViewModel: Sendable {
         
         loadingPDF = false
         
-        sessions = []
         bookmarks = []
+        
+        sessionLoader = .init(filter: .itemID(audiobook.id))
         
         notifyError = false
         notifySuccess = false
@@ -86,12 +88,13 @@ extension AudiobookViewModel {
                 $0.addTask { await self.loadSeries() }
                 $0.addTask { await self.loadNarrators() }
                 
-                $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.loadBookmarks() }
                 
                 $0.addTask { await self.extractColor() }
                 
                 if refresh {
+                    $0.addTask { await self.sessionLoader.refresh() }
+                    
                     $0.addTask {
                         try? await ShelfPlayer.refreshItem(itemID: self.audiobook.id)
                         self.load(refresh: false)
@@ -269,19 +272,6 @@ private extension AudiobookViewModel {
         }
     }
     
-    nonisolated func loadSessions() async {
-        guard let sessions = try? await ABSClient[audiobook.id.connectionID].listeningSessions(with: audiobook.id) else {
-            await MainActor.run {
-                notifyError.toggle()
-            }
-            
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.sessions = sessions
-        }
-    }
     nonisolated func loadBookmarks() async {
         guard let bookmarks = try? await PersistenceManager.shared.bookmark[audiobook.id] else {
             await MainActor.run {

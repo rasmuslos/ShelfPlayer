@@ -20,7 +20,8 @@ final class EpisodeViewModel {
     
     private(set) var dominantColor: Color?
     
-    private(set) var sessions: [SessionPayload]
+    let sessionLoader: SessionLoader
+    
     private(set) var notifyError: Bool
     
     init(episode: Episode) {
@@ -32,7 +33,8 @@ final class EpisodeViewModel {
         
         dominantColor = nil
         
-        sessions = []
+        sessionLoader = .init(filter: .itemID(episode.id))
+        
         notifyError = false
     }
 }
@@ -41,10 +43,11 @@ extension EpisodeViewModel {
     nonisolated func load(refresh: Bool) {
         Task {
             await withTaskGroup {
-                $0.addTask { await self.loadSessions() }
                 $0.addTask { await self.extractDominantColor() }
                 
                 if refresh {
+                    $0.addTask { await self.sessionLoader.refresh() }
+                    
                     $0.addTask {
                         try? await ShelfPlayer.refreshItem(itemID: self.episode.id)
                         self.load(refresh: false)
@@ -61,20 +64,6 @@ private extension EpisodeViewModel {
         
         await MainActor.withAnimation {
             self.dominantColor = color
-        }
-    }
-    
-    nonisolated func loadSessions() async {
-        guard let sessions = try? await ABSClient[episode.id.connectionID].listeningSessions(with: episode.id) else {
-            await MainActor.run {
-                notifyError.toggle()
-            }
-            
-            return
-        }
-        
-        await MainActor.withAnimation {
-            self.sessions = sessions
         }
     }
 }
