@@ -2808,6 +2808,7 @@
       }
     },
     "playback.alert.resume.action" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2824,7 +2825,6 @@
       }
     },
     "playback.alert.resume.message" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
