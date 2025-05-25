@@ -18,48 +18,50 @@ final class Satellite {
     
     // MARK: Navigation
     
-    var isOffline: Bool
+    var isOffline = Defaults[.startInOfflineMode]
     
     @ObservableDefault(.lastTabValue) @ObservationIgnored
     var lastTabValue: TabValue?
     
-    private(set) var sheetStack: [Sheet]
-    var warningAlertStack: [WarningAlert]
+    private(set) var sheetStack = [Sheet]()
+    var warningAlertStack = [WarningAlert]()
+    
+    private(set) var isLoadingAlert = false
 
     // MARK: Playback
     
     private(set) var nowPlayingItemID: ItemIdentifier?
     private(set) var nowPlayingItem: PlayableItem?
     
-    private(set) var queue: [ItemIdentifier]
-    private(set) var upNextQueue: [ItemIdentifier]
+    private(set) var queue = [ItemIdentifier]()
+    private(set) var upNextQueue = [ItemIdentifier]()
     
     private(set) var chapter: Chapter?
-    private(set) var chapters: [Chapter]
+    private(set) var chapters = [Chapter]()
     
-    private(set) var isPlaying: Bool
-    private(set) var isBuffering: Bool
+    private(set) var isPlaying = false
+    private(set) var isBuffering = true
     
-    private(set) var currentTime: TimeInterval
-    private(set) var currentChapterTime: TimeInterval
+    private(set) var currentTime = 0.0
+    private(set) var currentChapterTime = 0.0
     
-    private(set) var duration: TimeInterval
-    private(set) var chapterDuration: TimeInterval
+    private(set) var duration = 0.0
+    private(set) var chapterDuration = 0.0
     
-    private(set) var volume: Percentage
-    private(set) var playbackRate: Percentage
+    private(set) var volume = 0.0
+    private(set) var playbackRate = 0.0
     
     private(set) var route: AudioRoute?
     private(set) var sleepTimer: SleepTimerConfiguration?
     
-    private(set) var bookmarks: [Bookmark]
+    private(set) var bookmarks = [Bookmark]()
     
     // MARK: Playback helper
     
     private(set) var remainingSleepTime: Double?
     
-    private(set) var totalLoading: Int
-    private(set) var busy: [ItemIdentifier: Int]
+    private(set) var totalLoading = 0
+    private(set) var busy = [ItemIdentifier: Int]()
     
     private(set) var skipCache: TimeInterval?
     
@@ -70,51 +72,15 @@ final class Satellite {
     
     // MARK: Utility
     
-    var notifyError: Bool
-    var notifySuccess: Bool
+    var notifyError = false
+    var notifySuccess = false
     
-    private var stash: RFNotification.MarkerStash
+    private var stash = RFNotification.MarkerStash()
     
     // MARK: Init
     
     init() {
-        isOffline = Defaults[.startInOfflineMode]
-        
-        sheetStack = []
-        warningAlertStack = []
-        
-        nowPlayingItem = nil
-        
-        queue = []
-        upNextQueue = []
-        
-        chapters = []
-        
-        isPlaying = false
-        isBuffering = true
-        
-        currentTime = 0
-        currentChapterTime = 0
-        
-        duration = 0
-        chapterDuration = 0
-        
-        volume = 0
-        playbackRate = 0
-        
-        route = nil
-        
-        bookmarks = []
-        
-        totalLoading = 0
-        busy = [:]
-        
-        notifyError = false
-        notifySuccess = false
-        
-        stash = .init()
         setupObservers()
-        
         checkForResumablePlayback()
     }
     
@@ -182,49 +148,46 @@ extension Satellite {
                 "podcastConfiguration_\(itemID)"
             }
         }
-        
-        var dismissBehavior: DismissBehavior {
-            switch self {
-            case .listenNow, .preferences, .description:
-                    .allow
-            case .podcastConfiguration:
-                    .warn(message: String(localized: "toDo"))
-            }
-        }
-        
-        enum DismissBehavior {
-            case allow
-            case warn(message: String)
-            case prevent
-
-            var preventInteraction: Bool {
-                switch self {
-                case .allow, .warn:
-                    false
-                case .prevent:
-                    true
-                }
-            }
-        }
     }
     enum WarningAlert: LocalizedError {
-        case sheetDismissalPrevention(sheet: Sheet)
         case message(String)
-        case playbackAttemptWhileDownloading(itemID: ItemIdentifier)
+        case playbackStartWhileDownloading(ItemIdentifier)
+        case downloadStartWhilePlaying
+        case downloadRemoveWhilePlaying
         
         var errorDescription: String? {
             switch self {
-                case .sheetDismissalPrevention(let sheet):
-                    switch sheet.dismissBehavior {
-                        case .allow, .prevent:
-                            nil
-                        case .warn(let message):
-                            message
-                    }
                 case .message(let message):
                     message
-                case .playbackAttemptWhileDownloading:
-                    String(localized: "toDo")
+                case .playbackStartWhileDownloading:
+                    String(localized: "warning.playbackDownload.activeDownload")
+                case .downloadStartWhilePlaying:
+                    String(localized: "warning.playbackDownload.activePlayback")
+                case .downloadRemoveWhilePlaying:
+                    String(localized: "warning.playbackDownload.removeDownload")
+            }
+        }
+        
+        var actions: [WarningAction] {
+            switch self {
+                case .message:
+                    [.dismiss]
+                case .playbackStartWhileDownloading:
+                    [.cancel, .proceed]
+                case .downloadStartWhilePlaying:
+                    [.cancel, .proceed]
+                case .downloadRemoveWhilePlaying:
+                    [.cancel, .proceed]
+            }
+        }
+        
+        enum WarningAction: Int, Identifiable, Hashable, Equatable, Codable {
+            case cancel
+            case proceed
+            case dismiss
+            
+            var id: Int {
+                rawValue
             }
         }
     }
@@ -239,7 +202,7 @@ extension Satellite {
             if let sheet = $0, self.sheetStack.first != sheet {
                 self.present(sheet)
             } else if $0 == nil {
-                self.attemptSheetDismissal()
+                self.dismissSheet()
             }
         }
     }
@@ -256,39 +219,8 @@ extension Satellite {
         warningAlertStack.append(warning)
     }
     
-    func attemptSheetDismissal() {
-        guard let sheet = sheetStack.first else {
-            return
-        }
-        
-        let dismissalBehavior = sheet.dismissBehavior
-        
-        switch dismissalBehavior {
-        case .allow:
-            dismissSheet()
-        case .warn:
-                warn(.sheetDismissalPrevention(sheet: sheet))
-        case .prevent:
-            break
-        }
-    }
     func dismissSheet() {
-        guard let sheet = sheetStack.first else {
-            return
-        }
-        
-        switch sheet.dismissBehavior {
-        case .allow:
-            break
-        case .warn:
-                guard let warning = warningAlertStack.first, case .sheetDismissalPrevention(let warningSheet) = warning, warningSheet == sheet else {
-                return
-            }
-        case .prevent:
-            return
-        }
-        
-        if case .prevent = sheet.dismissBehavior {
+        guard !sheetStack.isEmpty else {
             return
         }
         
@@ -307,23 +239,37 @@ extension Satellite {
             return
         }
         
-        switch warningAlert {
-            case .sheetDismissalPrevention:
-                dismissSheet()
-            case .message:
-                break
-            case .playbackAttemptWhileDownloading(let itemID):
-                Task {
-                    removeDownload(itemID: itemID)
-                    await enqueueDownload(itemID: itemID)
-                    
-                    try await Task.sleep(for: .seconds(0.5))
-                    
+        Task {
+            isLoadingAlert = true
+            
+            switch warningAlert {
+                case .message:
+                    break
+                case .playbackStartWhileDownloading(let itemID):
+                    try? await PersistenceManager.shared.download.remove(itemID)
                     start(itemID)
-                }
+                case .downloadStartWhilePlaying:
+                    guard let nowPlayingItemID else {
+                        notifyError.toggle()
+                        return
+                    }
+                    
+                    await AudioPlayer.shared.stop()
+                    download(itemID: nowPlayingItemID)
+                case .downloadRemoveWhilePlaying:
+                    guard let nowPlayingItemID else {
+                        notifyError.toggle()
+                        return
+                    }
+                    
+                    await AudioPlayer.shared.stop()
+                    removeDownload(itemID: nowPlayingItemID)
+            }
+            
+            self.warningAlertStack.removeFirst()
+            
+            isLoadingAlert = false
         }
-        
-        self.warningAlertStack.removeFirst()
     }
 }
 
@@ -469,8 +415,8 @@ extension Satellite {
                 return
             }
             
-            if await PersistenceManager.shared.download.status(of: itemID) == .downloading {
-                await warn(.playbackAttemptWhileDownloading(itemID: itemID))
+            guard await PersistenceManager.shared.download.status(of: itemID) != .downloading else {
+                await warn(.playbackStartWhileDownloading(itemID))
                 return
             }
 
@@ -716,13 +662,10 @@ extension Satellite {
                 return
             }
             
-            guard await nowPlayingItemID != itemID else {
-                await warn(.message(String(localized: "toDo")))
-                await enqueueDownload(itemID: itemID)
-                
+            guard await AudioPlayer.shared.currentItemID != itemID else {
+                await warn(.downloadStartWhilePlaying)
                 return
             }
-
             await startWorking(on: itemID)
 
             do {
@@ -734,11 +677,6 @@ extension Satellite {
             }
         }
     }
-    private nonisolated func enqueueDownload(itemID: ItemIdentifier) async {
-        await startWorking(on: itemID)
-        
-        fatalError("bruh")
-    }
     
     nonisolated func removeDownload(itemID: ItemIdentifier) {
         Task {
@@ -749,7 +687,7 @@ extension Satellite {
             }
             
             guard await nowPlayingItemID != itemID else {
-                stop()
+                await warn(.downloadRemoveWhilePlaying)
                 return
             }
             
@@ -847,7 +785,7 @@ private extension Satellite {
         }.store(in: &stash)
         
         RFNotification[.navigateNotification].subscribe { [weak self] _ in
-            self?.attemptSheetDismissal()
+            self?.dismissSheet()
         }.store(in: &stash)
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in

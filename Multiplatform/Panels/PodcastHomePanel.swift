@@ -76,8 +76,6 @@ struct PodcastHomePanel: View {
         .toolbar {
             if horizontalSizeClass == .compact {
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    ListenedTodayLabel()
-                    
                     ListenNowSheetToggle()
                     
                     Menu("navigation.library.select", systemImage: "books.vertical.fill") {
