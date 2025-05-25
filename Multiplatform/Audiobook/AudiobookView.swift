@@ -42,35 +42,32 @@ struct AudiobookView: View {
                     DisclosureGroup("item.bookmarks \(viewModel.bookmarks.count)", isExpanded: $viewModel.bookmarksVisible) {
                         List {
                             BookmarksList(itemID: viewModel.audiobook.id, bookmarks: viewModel.bookmarks)
-                                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                         }
                         .listStyle(.plain)
                         .frame(height: minimumHeight * CGFloat(viewModel.bookmarks.count))
                     }
                     .disclosureGroupStyle(BetterDisclosureGroupStyle())
                     .padding(.bottom, 16)
-                    .padding(.horizontal, 20)
                 }
                 
                 if viewModel.chapters.count > 1 {
                     DisclosureGroup("item.chapters \(viewModel.chapters.count)", isExpanded: $viewModel.chaptersVisible) {
                         List {
                             ChaptersList(itemID: viewModel.audiobook.id, chapters: viewModel.chapters)
-                                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                         }
                         .listStyle(.plain)
                         .frame(height: minimumHeight * CGFloat(viewModel.chapters.count))
                     }
                     .disclosureGroupStyle(BetterDisclosureGroupStyle())
                     .padding(.bottom, 16)
-                    .padding(.horizontal, 20)
                 }
                 
                 DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
-                    Timeline(item: viewModel.audiobook, sessions: viewModel.sessions)
+                    Timeline(sessionLoader: viewModel.sessionLoader, item: viewModel.audiobook)
                         .padding(.top, 8)
+                        .padding(.horizontal, 20)
                 }
-                .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
+                .disclosureGroupStyle(BetterDisclosureGroupStyle())
                 .padding(.bottom, 16)
                 
                 if !viewModel.supplementaryPDFs.isEmpty {
@@ -86,7 +83,7 @@ struct AudiobookView: View {
                         .disabled(viewModel.loadingPDF)
                         .frame(height: minimumHeight * CGFloat(viewModel.supplementaryPDFs.count))
                     }
-                    .disclosureGroupStyle(BetterDisclosureGroupStyle(horizontalLabelPadding: 20))
+                    .disclosureGroupStyle(BetterDisclosureGroupStyle())
                 }
                 
                 VStack(spacing: 12) {

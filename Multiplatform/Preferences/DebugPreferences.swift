@@ -57,6 +57,7 @@ struct DebugPreferences: View {
     }
 }
 
+#if DEBUG
 private func createDebugListeningSession(for itemID: ItemIdentifier) async {
     for i in 1..<50 {
         let i = Double(i)
@@ -64,7 +65,6 @@ private func createDebugListeningSession(for itemID: ItemIdentifier) async {
     }
 }
 
-#if DEBUG
 #Preview {
     NavigationStack {
         DebugPreferences()
