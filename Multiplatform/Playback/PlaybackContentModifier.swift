@@ -68,17 +68,6 @@ struct PlaybackContentModifier: ViewModifier {
         @Bindable var satellite = satellite
         
         content
-            .alert("playback.alert.resume", isPresented: .init { satellite.resumePlaybackItemID != nil } set: { _ in }) {
-                Button("action.cancel", role: .cancel) {
-                    satellite.resumePlaybackItemID = nil
-                }
-                Button("playback.alert.resume.action") {
-                    satellite.resumePlayback()
-                }
-                .keyboardShortcut(.defaultAction)
-            } message: {
-                Text("playback.alert.resume.message")
-            }
             .alert("playback.alert.createBookmark", isPresented: $viewModel.isCreateBookmarkAlertVisible) {
                 TextField("playback.alert.createBookmark.placeholder", text: $viewModel.bookmarkNote)
                 
