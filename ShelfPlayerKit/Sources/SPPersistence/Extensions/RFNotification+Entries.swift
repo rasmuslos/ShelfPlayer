@@ -24,7 +24,7 @@ public extension RFNotification.IsolatedNotification {
         .init("io.rfk.shelfPlayerKit.progressEntity.invalidate")
     }
     
-    static var downloadStatusChanged: IsolatedNotification<(itemID: ItemIdentifier, status: PersistenceManager.DownloadSubsystem.DownloadStatus)> {
+    static var downloadStatusChanged: IsolatedNotification<(itemID: ItemIdentifier, status: PersistenceManager.DownloadSubsystem.DownloadStatus)?> {
         .init("io.rfk.shelfPlayerKit.downloadStatus.updated")
     }
     static func downloadProgressChanged(_ itemID: ItemIdentifier) -> IsolatedNotification<(assetID: UUID, weight: Percentage, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)> {

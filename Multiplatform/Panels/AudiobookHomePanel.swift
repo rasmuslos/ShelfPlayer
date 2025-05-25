@@ -100,8 +100,8 @@ struct AudiobookHomePanel: View {
             
             fetchItems()
         }
-        .onReceive(RFNotification[.downloadStatusChanged].publisher()) { itemID, _ in
-            guard itemID.libraryID == library?.id else {
+        .onReceive(RFNotification[.downloadStatusChanged].publisher()) {
+            if let (itemID, _) = $0, itemID.libraryID != library?.id {
                 return
             }
             

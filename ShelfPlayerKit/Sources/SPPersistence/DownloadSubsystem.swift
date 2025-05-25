@@ -99,6 +99,8 @@ extension PersistenceManager {
             } catch {
                 logger.error("Failed to remove download directory for connection \(connectionID, privacy: .public): \(error)")
             }
+            
+            RFNotification[.downloadStatusChanged].dispatch(payload: nil)
         }
     }
 }
@@ -156,6 +158,23 @@ private extension PersistenceManager.DownloadSubsystem {
             }
             
             modelContext.delete(asset)
+        }
+    }
+    
+    func fetchDownloadStatus(of itemID: ItemIdentifier) -> DownloadStatus {
+        do {
+            let assets = try assets(for: itemID)
+            
+            if assets.isEmpty {
+                return .none
+            }
+            
+            let completed = assets.reduce(true) { $0 && $1.isDownloaded }
+            let status: DownloadStatus = completed ? .completed : .downloading
+            
+            return status
+        } catch {
+            return .none
         }
     }
     
@@ -284,7 +303,22 @@ private extension PersistenceManager.DownloadSubsystem {
         
         logger.info("Finished downloading asset \(asset.id, privacy: .public) for \(asset.itemID, privacy: .public)")
         
+        if fetchDownloadStatus(of: asset.itemID) == .completed {
+            Task {
+                await finishedDownloading(itemID: asset.itemID)
+            }
+        }
+        
         scheduleUpdateTask()
+    }
+    func finishedDownloading(itemID: ItemIdentifier) async {
+        do {
+            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), .completed)
+        } catch {
+            logger.error("Failed to update download status for \(itemID) after it finished downloading: \(error)")
+        }
+        
+        await RFNotification[.downloadStatusChanged].send(payload: (itemID, .completed))
     }
     
     nonisolated func scheduleUnfinishedForCompletion() async throws {
@@ -425,24 +459,14 @@ public extension PersistenceManager.DownloadSubsystem {
             }
         }
         
-        do {
-            let assets = try assets(for: itemID)
-            
-            if assets.isEmpty {
-                return .none
-            }
-            
-            let completed = assets.reduce(true) { $0 && $1.isDownloaded }
-            let status: DownloadStatus = completed ? .completed : .downloading
-            
-            // Should be cached already
-            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)
-            
-            return status
-        } catch {}
+        let status = fetchDownloadStatus(of: itemID)
         
-        return .none
+        // Should be cached already
+        try? await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)
+        
+        return status
     }
+    
     func downloadProgress(of itemID: ItemIdentifier) -> Percentage {
         (try? assets(for: itemID).filter { $0.isDownloaded }.reduce(0) { $0 + $1.progressWeight }) ?? 0
     }
@@ -757,6 +781,8 @@ public extension PersistenceManager.DownloadSubsystem {
         } catch {
             logger.error("Failed to remove download directory: \(error)")
         }
+        
+        await RFNotification[.downloadStatusChanged].send(payload: nil)
     }
     
     func addBlock(to itemID: ItemIdentifier) {
@@ -795,6 +821,8 @@ public extension PersistenceManager.DownloadSubsystem {
         } catch {
             logger.error("Failed to save context: \(error)")
         }
+        
+        RFNotification[.downloadStatusChanged].dispatch(payload: nil)
     }
 }
 
