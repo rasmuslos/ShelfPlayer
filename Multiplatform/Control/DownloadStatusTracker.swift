@@ -18,7 +18,12 @@ final class DownloadStatusTracker {
         
         load()
         
-        RFNotification[.downloadStatusChanged].subscribe { [weak self] (itemID, status) in
+        RFNotification[.downloadStatusChanged].subscribe { [weak self] in
+            guard let (itemID, status) = $0 else {
+                self?.load()
+                return
+            }
+            
             guard self?.itemID == itemID else {
                 return
             }
@@ -28,7 +33,7 @@ final class DownloadStatusTracker {
             }
         }
     }
-    
+        
     private nonisolated func load() {
         Task {
             let status = await DownloadTrackerCache.shared.resolve(itemID)
