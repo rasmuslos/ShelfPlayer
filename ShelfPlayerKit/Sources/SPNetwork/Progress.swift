@@ -49,7 +49,12 @@ public extension APIClient {
         try await response(for: ClientRequest<Empty>(path: "api/me/progress/\(progressID)", method: .delete))
     }
     
-    func listeningSessions(with itemID: ItemIdentifier) async throws -> [SessionPayload] {
-        try await response(for: ClientRequest<SessionsResponse>(path: "api/me/item/listening-sessions/\(itemID.pathComponent)", method: .get)).sessions
+    func listeningSessions(from itemID: ItemIdentifier, page: Int, pageSize: Int) async throws -> [SessionPayload] {
+        let response = try await response(for: ClientRequest<SessionsResponse>(path: "api/me/item/listening-sessions/\(itemID.pathComponent)", method: .get, query: [
+            URLQueryItem(name: "page", value: "\(page)"),
+            URLQueryItem(name: "itemsPerPage", value: "\(pageSize)"),
+        ]))
+        
+        return response.sessions
     }
 }

@@ -3137,6 +3137,9 @@
     "preferences.convenienceDownload.enableListenNowDownloads" : {
 
     },
+    "preferences.debug" : {
+
+    },
     "preferences.generateLogFile" : {
       "localizations" : {
         "de" : {
