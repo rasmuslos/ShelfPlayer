@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 import OSLog
+import RFNotifications
 import SPFoundation
 
 typealias PersistedPlaybackSession = SchemaV2.PersistedPlaybackSession
@@ -43,6 +44,8 @@ extension PersistenceManager {
             } catch {
                 logger.error("Failed to remove related sessions to itemID \(itemID): \(error)")
             }
+            
+            RFNotification[.cachedTimeSpendListeningChanged].dispatch()
         }
         func remove(connectionID: ItemIdentifier.ConnectionID) {
             do {
@@ -53,6 +56,8 @@ extension PersistenceManager {
             } catch {
                 logger.error("Failed to remove related sessions to connection \(connectionID): \(error)")
             }
+            
+            RFNotification[.cachedTimeSpendListeningChanged].dispatch()
         }
     }
 }
@@ -77,6 +82,8 @@ public extension PersistenceManager.SessionSubsystem {
         modelContext.insert(session)
         try modelContext.save()
         
+        RFNotification[.cachedTimeSpendListeningChanged].dispatch()
+        
         return session.id
     }
     func updateLocalPlaybackSession(sessionID: UUID, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) throws {
@@ -91,6 +98,8 @@ public extension PersistenceManager.SessionSubsystem {
         session.lastUpdated = .now
         
         try modelContext.save()
+        
+        RFNotification[.cachedTimeSpendListeningChanged].dispatch()
     }
     func closeLocalPlaybackSession(sessionID: UUID) throws {
         guard let session = try self[sessionID] else {
@@ -121,5 +130,7 @@ public extension PersistenceManager.SessionSubsystem {
         }
         
         try modelContext.save()
+        
+        RFNotification[.cachedTimeSpendListeningChanged].dispatch()
     }
 }
