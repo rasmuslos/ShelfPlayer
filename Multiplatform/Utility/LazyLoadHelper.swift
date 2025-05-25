@@ -17,11 +17,11 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     private let logger: Logger
     
     private nonisolated static var PAGE_SIZE: Int {
-#if DEBUG
+        #if DEBUG
         30
-#else
+        #else
         100
-#endif
+        #endif
     }
     
     private(set) var items: [T]

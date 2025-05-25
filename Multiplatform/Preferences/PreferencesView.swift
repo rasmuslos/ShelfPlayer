@@ -50,8 +50,13 @@ struct PreferencesView: View {
                     }
                 }
                 
-                Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
-                    Label("preferences.settings", systemImage: "gear")
+                Section {
+                    Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
+                        Label("preferences.settings", systemImage: "gear")
+                    }
+                    NavigationLink(destination: DebugPreferences()) {
+                        Label("preferences.debug", systemImage: "ladybug.fill")
+                    }
                 }
                 
                 Section {
@@ -93,24 +98,6 @@ struct PreferencesView: View {
                 }
                 .disabled(isLoading)
                 .foregroundStyle(.red)
-                
-                Section {
-                    Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer")!) {
-                        Label("preferences.github", systemImage: "chevron.left.forwardslash.chevron.right")
-                    }
-                    Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/Support.md")!) {
-                        Label("preferences.support", systemImage: "lifepreserver")
-                    }
-                    
-                    CreateLogArchiveButton()
-                }
-                
-                Section {
-                    Text("preferences.version \(ShelfPlayerKit.clientVersion) \(ShelfPlayerKit.clientBuild) \(ShelfPlayerKit.enableCentralized ? "C" : "L")")
-                    Text("preferences.version.database \(PersistenceManager.shared.modelContainer.schema.version.description) \(PersistenceManager.shared.modelContainer.configurations.map { $0.name }.joined(separator: ", "))")
-                }
-                .foregroundStyle(.secondary)
-                .font(.caption)
             }
             .navigationTitle("preferences")
             .navigationBarTitleDisplayMode(.inline)
