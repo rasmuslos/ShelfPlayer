@@ -90,6 +90,7 @@ struct SeriesView: View {
                         ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
                     }
                 }
+                .menuActionDismissBehavior(.disabled)
             }
         }
         .environment(viewModel)

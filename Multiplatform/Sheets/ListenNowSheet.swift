@@ -12,40 +12,33 @@ import ShelfPlayerKit
 struct ListenNowSheet: View {
     @Environment(Satellite.self) private var satellite
     
-    @Default(.downloadListenNowItems) private var downloadListenNowItems
-    
     @State private var listenNowItems = [PlayableItem]()
     @State private var isLoading = false
     
     var body: some View {
         NavigationStack {
-            Group {
-                if listenNowItems.isEmpty {
-                    if isLoading {
-                        LoadingView()
-                    } else {
-                        EmptyCollectionView()
-                    }
-                } else {
-                    List {
-                        ForEach(listenNowItems) { item in
-                            ItemCompactRow(item: item) {
-                                satellite.start(item.id)
-                                satellite.dismissSheet()
-                            }
-                        }
+            List {
+                #if DEBUG
+                Section {
+                    NavigationLink(destination: Text(verbatim: "stats")) {
+                        Label(String("Statistiken"), systemImage: "chart.line.uptrend.xyaxis")
                     }
                 }
-            }
-            .navigationTitle("panel.listenNow")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("item.preferences.automaticDownload.enabled", systemImage: "arrow.down.to.line") {
-                        downloadListenNowItems.toggle()
+                #endif
+                
+                if listenNowItems.isEmpty {
+                    if isLoading {
+                        LoadingView.Inner()
+                    } else {
+                        EmptyCollectionView.Inner()
                     }
-                    .labelStyle(.iconOnly)
-                    .symbolVariant(downloadListenNowItems ? .circle.fill : .circle)
+                } else {
+                    ForEach(listenNowItems) { item in
+                        ItemCompactRow(item: item) {
+                            satellite.start(item.id)
+                            satellite.dismissSheet()
+                        }
+                    }
                 }
             }
         }
@@ -83,22 +76,33 @@ struct ListenNowSheet: View {
 }
 
 struct ListenNowSheetToggle: View {
-    @Environment(ConnectionStore.self) private var connectionStore
     @Environment(Satellite.self) private var satellite
     
-    private var totalLibraryCount: Int {
-        connectionStore.libraries.reduce(0) { $0 + $1.value.count }
-    }
+    @Default(.listenTimeTarget) private var listenTimeTarget
     
     var body: some View {
-        if totalLibraryCount > 1 {
-            Button {
-                satellite.present(.listenNow)
-            } label: {
-                ListenedTodayLabel()
+        Menu {
+            ControlGroup {
+                Button("action.decrease", systemImage: "minus") {
+                    guard listenTimeTarget > 1 else {
+                        return
+                    }
+                    
+                    listenTimeTarget -= 1
+                }
+                
+                Button("action.increase", systemImage: "plus") {
+                    listenTimeTarget += 1
+                }
             }
-            .buttonStyle(.plain)
+        } label: {
+            ListenedTodayLabel()
+        } primaryAction: {
+            satellite.present(.listenNow)
         }
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+        .menuActionDismissBehavior(.disabled)
     }
 }
 

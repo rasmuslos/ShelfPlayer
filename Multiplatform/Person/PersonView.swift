@@ -154,6 +154,7 @@ struct PersonView: View {
                         ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
                     }
                 }
+                .menuActionDismissBehavior(.disabled)
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
