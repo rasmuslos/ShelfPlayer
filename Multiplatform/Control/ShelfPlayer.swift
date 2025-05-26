@@ -105,7 +105,7 @@ struct ShelfPlayer {
     
     // MARK: Cache invalidation
     
-    static func invalidateShortTermCache() async {
+    nonisolated static func invalidateShortTermCache() async {
         logger.info("Invalidating short term cache...")
         
         await ResolveCache.shared.invalidate()
@@ -114,6 +114,9 @@ struct ShelfPlayer {
         await DownloadTrackerCache.shared.invalidate()
         
         await ListenNowCache.shared.invalidate()
+        
+        await RFNotification[.downloadStatusChanged].send(payload: nil)
+        await RFNotification[.invalidateProgressEntities].send(payload: nil)
     }
     
     static func refreshItem(itemID: ItemIdentifier) async throws {

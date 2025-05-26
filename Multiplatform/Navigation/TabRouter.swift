@@ -15,20 +15,14 @@ struct TabRouter: View {
     
     @Environment(Satellite.self) private var satellite
     @Environment(ConnectionStore.self) private var connectionStore
-    
-    @Binding var selection: TabValue?
+    @Environment(ProgressViewModel.self) private var progressViewModel
     
     @State private var libraryPath = NavigationPath()
-    @State private var automaticOfflineModeDeadline: Date? = nil
-    
-    @State private var importedConnectionIDs = [String]()
-    @State private var importFailedConnectionIDs = [String]()
-    
     @State private var navigateToWhenReady: ItemIdentifier? = nil
     
     var selectionProxy: Binding<TabValue?> {
-        .init() { selection } set: {
-            if $0 == selection {
+        .init() { satellite.tabValue } set: {
+            if $0 == satellite.tabValue {
                 if case .audiobookLibrary = $0 {
                     RFNotification[.focusSearchField].send()
                 } else if case .podcastLibrary = $0 {
@@ -36,21 +30,21 @@ struct TabRouter: View {
                 }
             }
             
-            selection = $0
+            satellite.tabValue = $0
             
             // Update all download & progress trackers
             
-            Task {
+            Task.detached {
                 await ShelfPlayer.invalidateShortTermCache()
             }
         }
     }
     var isReady: Bool {
-        guard let selection else {
+        guard let selection = satellite.tabValue else {
             return false
         }
         
-        return importedConnectionIDs.contains(selection.library.connectionID)
+        return progressViewModel.importedConnectionIDs.contains(selection.library.connectionID)
     }
     
     private var isCompact: Bool {
@@ -61,95 +55,26 @@ struct TabRouter: View {
             return nil
         }
         
-        return selection?.library
-    }
-    private var connectionID: ItemIdentifier.ConnectionID? {
-        selection?.library.connectionID
-    }
-    
-    @ViewBuilder
-    private var syncFailedContent: some View {
-        ContentUnavailableView("navigation.sync.failed", systemImage: "circle.badge.xmark", description: Text("navigation.sync.failed"))
-            .symbolRenderingMode(.multicolor)
-            .symbolEffect(.wiggle, options: .nonRepeating)
-            .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
-            .safeAreaInset(edge: .bottom) {
-                VStack(spacing: 16) {
-                    Button {
-                        automaticOfflineModeDeadline = nil
-                        RFNotification[.changeOfflineMode].send(payload: true)
-                    } label: {
-                        if let automaticOfflineModeDeadline {
-                            Text("navigation.offline.automatic")
-                            + Text(automaticOfflineModeDeadline, style: .relative)
-                        }
-                    }
-                    .task {
-                        automaticOfflineModeDeadline = .now.addingTimeInterval(7)
-                        
-                        do {
-                            try await Task.sleep(for: .seconds(7))
-                            
-                            await RFNotification[.changeOfflineMode].send(payload: true)
-                            automaticOfflineModeDeadline = nil
-                        } catch {
-                            automaticOfflineModeDeadline = nil
-                        }
-                    }
-                    
-                    if horizontalSizeClass == .compact {
-                        Menu("navigation.library.select") {
-                            LibraryPicker()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                    }
-                }
-            }
+        return satellite.tabValue?.library
     }
     
     @ViewBuilder
     private func content(for tab: TabValue) -> some View {
-        @Bindable var satellite = satellite
-        
-        Group {
-            if importedConnectionIDs.contains(tab.library.connectionID) {
-                NavigationStackWrapper(tab: tab) {
-                    tab.content
-                }
-                .modifier(PlaybackTabContentModifier())
-                .task {
-                    ShelfPlayer.updateUIHook()
-                }
-            } else if importFailedConnectionIDs.contains(tab.library.connectionID) {
-                syncFailedContent
-            } else {
-                UserDataSynchroniser(connectionID: tab.library.connectionID) {
-                    if $0 {
-                        importedConnectionIDs.append(tab.library.connectionID)
-                        importFailedConnectionIDs.removeAll(where: { $0 == tab.library.connectionID })
-                    } else {
-                        importFailedConnectionIDs.append(tab.library.connectionID)
-                        importedConnectionIDs.removeAll(where: { $0 == tab.library.connectionID })
-                    }
-                    
-                    if importFailedConnectionIDs.count == connectionStore.connections.count {
-                        satellite.isOffline = true
-                    }
-                    
-                    navigateIfRequired(withDelay: true)
-                }
-                .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
+        SyncGate(library: tab.library) {
+            NavigationStackWrapper(tab: tab) {
+                tab.content
+            }
+            .modifier(PlaybackTabContentModifier())
+            .task {
+                ShelfPlayer.updateUIHook()
             }
         }
-        .animation(.smooth, value: importedConnectionIDs)
-        .animation(.smooth, value: importFailedConnectionIDs)
     }
     
     var body: some View {
         TabView(selection: selectionProxy) {
             if let current {
-                ForEach(TabValue.tabs(for: current)) { tab in
+                ForEach(TabValue.tabs(for: current, isCompact: true)) { tab in
                     Tab(tab.label, systemImage: tab.image, value: tab) {
                         content(for: tab)
                     }
@@ -160,7 +85,7 @@ struct TabRouter: View {
                 if let libraries = connectionStore.libraries[connection.id] {
                     ForEach(libraries) { library in
                         TabSection(library.name) {
-                            ForEach(TabValue.tabs(for: library)) { tab in
+                            ForEach(TabValue.tabs(for: library, isCompact: false)) { tab in
                                 Tab(tab.label, systemImage: tab.image, value: tab) {
                                     content(for: tab)
                                 }
@@ -175,7 +100,7 @@ struct TabRouter: View {
         .id(current)
         .modifier(CompactPlaybackModifier(ready: isReady))
         .environment(\.playbackBottomOffset, 52)
-        .sensoryFeedback(.error, trigger: importFailedConnectionIDs)
+        .sensoryFeedback(.error, trigger: progressViewModel.importFailedConnectionIDs)
         .onChange(of: current, initial: true) {
             let appearance = UINavigationBarAppearance()
             
@@ -190,34 +115,41 @@ struct TabRouter: View {
             appearance.configureWithDefaultBackground()
             UINavigationBar.appearance().compactAppearance = appearance
         }
-        .onChange(of: selection) {
+        .onChange(of: satellite.tabValue) {
             navigateIfRequired(withDelay: true)
         }
-        .onChange(of: selection?.library) {
+        .onChange(of: satellite.tabValue?.library) {
             while !libraryPath.isEmpty {
                 libraryPath.removeLast()
             }
+            
+            RFNotification[.performBackgroundSessionSync].send(payload: satellite.tabValue?.library.connectionID)
         }
         .onChange(of: connectionStore.libraries, initial: true) {
-            guard selection == nil, let library = connectionStore.libraries.first?.value.first else { return }
+            guard satellite.tabValue == nil, let library = connectionStore.libraries.first?.value.first else {
+                return
+            }
             
             select(library)
         }
         .onReceive(RFNotification[.changeLibrary].publisher()) {
             select($0)
         }
-        .onReceive(RFNotification[.navigateNotification].publisher()) {
+        .onReceive(RFNotification[.navigate].publisher()) {
             navigateToWhenReady = $0
             navigateIfRequired(withDelay: false)
+        }
+        .onReceive(RFNotification[.navigateConditionMet].publisher()) {
+            navigateIfRequired(withDelay: true)
         }
     }
     
     private func select(_ library: Library) {
         switch library.type {
         case .audiobooks:
-            selection = .audiobookHome(library)
+            satellite.tabValue = .audiobookHome(library)
         case .podcasts:
-            selection = .podcastHome(library)
+            satellite.tabValue = .podcastHome(library)
         }
     }
     private func navigateIfRequired(withDelay: Bool) {
@@ -237,19 +169,19 @@ struct TabRouter: View {
         
         switch navigateToWhenReady.type {
         case .audiobook, .author, .narrator, .series:
-            guard case .audiobookLibrary(_) = selection else {
-                selection = .audiobookLibrary(library)
+            guard case .audiobookLibrary(_) = satellite.tabValue else {
+                satellite.tabValue = .audiobookLibrary(library)
                 return
             }
         case .podcast, .episode:
-            guard case .podcastLibrary(_) = selection else {
-                selection = .podcastLibrary(library)
+            guard case .podcastLibrary(_) = satellite.tabValue else {
+                satellite.tabValue = .podcastLibrary(library)
                 return
             }
         }
         
-        guard importedConnectionIDs.contains(library.connectionID) else {
-            if importFailedConnectionIDs.contains(library.id) {
+        guard progressViewModel.importedConnectionIDs.contains(library.connectionID) else {
+            if progressViewModel.importFailedConnectionIDs.contains(library.id) {
                 self.navigateToWhenReady = nil
             }
             
@@ -261,7 +193,7 @@ struct TabRouter: View {
                 try await Task.sleep(for: .seconds(0.5))
             }
             
-            await RFNotification[._navigateNotification].send(payload: navigateToWhenReady)
+            await RFNotification[._navigate].send(payload: navigateToWhenReady)
         }
         
         self.navigateToWhenReady = nil
@@ -270,9 +202,7 @@ struct TabRouter: View {
 
 #if DEBUG
 #Preview {
-    @Previewable @State var selection: TabValue? = nil
-
-    TabRouter(selection: $selection)
+    TabRouter()
         .previewEnvironment()
 }
 #endif

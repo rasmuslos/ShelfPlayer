@@ -35,34 +35,22 @@ extension PersistenceManager {
         
         public func set<Value>(_ key: Key<Value>, _ value: Value?) throws {
             let identifier = key.identifier
-            
-            let predicate = #Predicate<KeyValueEntity> { $0.key == identifier }
-            let descriptor = FetchDescriptor<KeyValueEntity>(predicate: predicate)
-            
-            let existing = try? modelContext.fetch(descriptor).first
+            let existing = try? modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate<KeyValueEntity> { $0.key == identifier })).first
             
             if let value {
-                do {
-                    let data = try JSONEncoder().encode(value)
-                    
-                    if let existing {
-                        existing.value = data
-                    } else {
-                        let entity = KeyValueEntity(key: key.identifier, cluster: key.cluster, value: data, isCachePurgeable: key.isCachePurgeable)
-                        modelContext.insert(entity)
-                    }
-                    
-                    try modelContext.save()
-                } catch {
-                    logger.error("Failed to encode \(Value.self) or save: \(error)")
-                    throw error
+                let data = try JSONEncoder().encode(value)
+                
+                if let existing {
+                    existing.value = data
+                } else {
+                    let entity = KeyValueEntity(key: identifier, cluster: key.cluster, value: data, isCachePurgeable: key.isCachePurgeable)
+                    modelContext.insert(entity)
                 }
-            } else {
-                if existing != nil {
-                    try modelContext.delete(model: KeyValueEntity.self, where: #Predicate { $0.key == identifier })
-                    try modelContext.save()
-                }
+            } else if existing != nil {
+                try modelContext.delete(model: KeyValueEntity.self, where: #Predicate { $0.key == identifier })
             }
+            
+            try modelContext.save()
         }
         
         func remove(itemID: ItemIdentifier) {
@@ -104,9 +92,12 @@ extension PersistenceManager {
             try modelContext.save()
         }
         
-        private func entity<T>(for key: Key<T>) -> KeyValueEntity? where T: Decodable {
+        private func entity<T>(for key: Key<T>) -> KeyValueEntity? {
             let identifier = key.identifier
-            return try? modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.key == identifier })).first
+            
+            return try? modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate {
+                $0.key == identifier
+            })).first
         }
         public func entities<T: Decodable>(cluster: String, type: T.Type) -> [String: T] {
             do {

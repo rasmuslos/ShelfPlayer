@@ -10,10 +10,10 @@ import OSLog
 import Intents
 import ShelfPlayerKit
 
-struct ContextProvider {
+public struct ContextProvider {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ContextProvider")
     
-    static func updateUserContext() async {
+    public static func updateUserContext() async {
         let libraries = await ShelfPlayerKit.libraries
         let totalCount = await withTaskGroup {
             for library in libraries {

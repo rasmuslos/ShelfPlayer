@@ -1,35 +1,12 @@
 //
-//  AudiobooksApp.swift
-//  Audiobooks
+//  ImageColorPreview.swift
+//  Multiplatform
 //
-//  Created by Rasmus Krämer on 16.09.23.
+//  Created by Rasmus Krämer on 26.05.25.
 //
 
 import SwiftUI
-import Nuke
 import ShelfPlayerKit
-
-@main
-struct MultiplatformApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
-    init() {
-        #if !ENABLE_CENTRALIZED
-        ShelfPlayerKit.enableCentralized = false
-        #endif
-        
-        ShelfPlayer.launchHook()
-        
-        // BackgroundTaskHandler.setup()
-        // OfflineManager.shared.setupFinishedRemoveObserver()
-    }
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
-}
 
 #if DEBUG
 private struct ImageColorPreview: View {

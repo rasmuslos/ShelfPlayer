@@ -24,6 +24,7 @@ struct ContentView: View {
     @State private var playbackViewModel = PlaybackViewModel()
     
     @State private var connectionStore = ConnectionStore()
+    @State private var progressViewModel = ProgressViewModel()
     
     // try? await UserContext.run()
     // try? await BackgroundTaskHandler.updateDownloads()
@@ -31,14 +32,14 @@ struct ContentView: View {
     @ViewBuilder
     private func sheetContent(for sheet: Satellite.Sheet) -> some View {
         switch sheet {
-        case .listenNow:
-            ListenNowSheet()
-        case .preferences:
-            PreferencesView()
-        case .description(let item):
-            DescriptionSheet(item: item)
-        case .podcastConfiguration(let itemID):
-            PodcastConfigurationSheet(podcastID: itemID)
+            case .listenNow:
+                ListenNowSheet()
+            case .preferences:
+                PreferencesView()
+            case .description(let item):
+                DescriptionSheet(item: item)
+            case .podcastConfiguration(let itemID):
+                PodcastConfigurationSheet(podcastID: itemID)
         }
     }
     @ViewBuilder
@@ -68,7 +69,7 @@ struct ContentView: View {
             } else if satellite.isOffline {
                 OfflineView()
             } else {
-                TabRouter(selection: $satellite.lastTabValue)
+                TabRouter()
             }
         }
         .modify {
@@ -95,6 +96,7 @@ struct ContentView: View {
         .environment(satellite)
         .environment(playbackViewModel)
         .environment(connectionStore)
+        .environment(progressViewModel)
         .environment(\.namespace, namespace)
         .onAppear {
             ShelfPlayer.initializeUIHook()
@@ -102,10 +104,11 @@ struct ContentView: View {
         .onChange(of: scenePhase) {
             Task.detached { [scenePhase] in
                 switch scenePhase {
-                case .active:
-                    await ShelfPlayer.invalidateShortTermCache()
-                default:
-                    break
+                    case .active:
+                        await RFNotification[.performBackgroundSessionSync].send(payload: nil)
+                        await ShelfPlayer.invalidateShortTermCache()
+                    default:
+                        break
                 }
             }
         }

@@ -124,10 +124,17 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
 }
 
 extension TabValue {
-    static func tabs(for library: Library) -> [TabValue] {
+    static func tabs(for library: Library, isCompact: Bool) -> [TabValue] {
         switch library.type {
             case .audiobooks:
-                [.audiobookHome(library), .audiobookLibrary(library)]
+                isCompact ? [.audiobookHome(library), .audiobookLibrary(library)] : [
+                    .audiobookHome(library),
+                    .audiobookSeries(library),
+                    .audiobookAuthors(library),
+                    .audiobookNarrators(library),
+                    .audiobookBookmarks(library),
+                    .audiobookLibrary(library),
+                ]
             case .podcasts:
                 [.podcastHome(library), .podcastLatest(library), .podcastLibrary(library)]
         }

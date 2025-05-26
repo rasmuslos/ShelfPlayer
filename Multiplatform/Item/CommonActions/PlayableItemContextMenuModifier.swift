@@ -9,6 +9,8 @@ import SwiftUI
 import ShelfPlayerKit
 
 struct PlayableItemContextMenuModifier: ViewModifier {
+    @Environment(\.library) private var library
+    
     let item: PlayableItem
     
     func body(content: Content) -> some View {
@@ -24,12 +26,20 @@ struct PlayableItemContextMenuModifier: ViewModifier {
                 Divider()
                 
                 if let audiobook = item as? Audiobook {
-                    NavigationLink(destination: AudiobookView(audiobook)) {
-                        Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book")
+                    if library != nil {
+                        NavigationLink(destination: AudiobookView(audiobook)) {
+                            Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book")
+                        }
+                        
+                        ItemMenu(authors: audiobook.authors)
+                        ItemMenu(narrators: audiobook.narrators)
+                    } else {
+                        ItemLoadLink(itemID: item.id)
+                        
+                        // ItemMenu(authors: audiobook.authors)
+                        ItemMenu(narrators: audiobook.narrators.map { (Person.convertNarratorToID($0, libraryID: item.id.libraryID, connectionID: item.id.connectionID), $0) })
                     }
                     
-                    ItemMenu(authors: audiobook.authors)
-                    ItemMenu(narrators: audiobook.narrators)
                     ItemMenu(series: audiobook.series)
                 } else if let episode = item as? Episode {
                     ItemLoadLink(itemID: episode.id)

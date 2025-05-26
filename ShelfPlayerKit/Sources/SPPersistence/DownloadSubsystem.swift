@@ -81,10 +81,20 @@ extension PersistenceManager {
             return (try? modelContext.fetch(descriptor))?.first
         }
         
-        func remove(connectionID: ItemIdentifier.ConnectionID) {
+        func remove(connectionID: ItemIdentifier.ConnectionID) async {
             do {
                 try modelContext.delete(model: PersistedAudiobook.self, where: #Predicate { $0._id.contains(connectionID) })
                 try modelContext.delete(model: PersistedEpisode.self, where: #Predicate { $0._id.contains(connectionID) })
+                
+                // try modelContext.delete(model: PersistedEpisode.self)
+                for episode in try episodes() {
+                    guard episode.id.connectionID == connectionID else {
+                        continue
+                    }
+                    
+                    try await remove(episode.id)
+                }
+                
                 try modelContext.delete(model: PersistedPodcast.self, where: #Predicate { $0._id.contains(connectionID) })
                 
                 try modelContext.delete(model: PersistedAsset.self, where: #Predicate { $0._itemID.contains(connectionID) })
@@ -540,6 +550,10 @@ public extension PersistenceManager.DownloadSubsystem {
         return podcast.episodes.map(Episode.init)
     }
     
+    func podcasts() throws -> [Podcast] {
+        try modelContext.fetch(FetchDescriptor<PersistedPodcast>()).map(Podcast.init)
+    }
+    
     /// Performs the necessary work to add an item to the download queue.
     ///
     /// This method is atomic and progress tracking is available after it completes.
@@ -755,7 +769,12 @@ public extension PersistenceManager.DownloadSubsystem {
     func removeAll() async throws {
         do {
             try modelContext.delete(model: PersistedAudiobook.self)
-            try modelContext.delete(model: PersistedEpisode.self)
+            
+            // try modelContext.delete(model: PersistedEpisode.self)
+            for episode in try episodes() {
+                try await remove(episode.id)
+            }
+            
             try modelContext.delete(model: PersistedPodcast.self)
             
             try modelContext.delete(model: PersistedAsset.self)
