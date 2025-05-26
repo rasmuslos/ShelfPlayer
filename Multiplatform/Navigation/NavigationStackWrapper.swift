@@ -21,7 +21,7 @@ struct NavigationStackWrapper<Content: View>: View {
                 .navigationDestination(for: ItemLoadDestination.self) { destination in
                     ItemLoadView(destination.itemID)
                 }
-                .onReceive(RFNotification[._navigateNotification].publisher()) {
+                .onReceive(RFNotification[._navigate].publisher()) {
                     let libraryID: String?
                     
                     if case .audiobookLibrary(let library) = tab {

@@ -88,7 +88,7 @@ final class PlaybackViewModel {
             self?.stoppedPlayingAt = .now
         }
         
-        RFNotification[.navigateNotification].subscribe { [weak self] _ in
+        RFNotification[.navigate].subscribe { [weak self] _ in
             self?.isExpanded = false
         }
     }

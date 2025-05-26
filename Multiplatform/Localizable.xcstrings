@@ -122,9 +122,6 @@
         }
       }
     },
-    "arrow.down.circle" : {
-
-    },
     "carPlay.noConnections" : {
 
     },
@@ -933,6 +930,9 @@
       }
     },
     "item.collection.configure" : {
+
+    },
+    "item.convenienceDownload" : {
 
     },
     "item.count.audiobooks %lld" : {
@@ -2330,6 +2330,7 @@
       }
     },
     "navigation.offline.automatic" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

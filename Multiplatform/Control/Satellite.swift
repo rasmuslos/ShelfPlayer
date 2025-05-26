@@ -18,10 +18,10 @@ final class Satellite {
     
     // MARK: Navigation
     
-    var isOffline = Defaults[.startInOfflineMode]
+    private(set) var isOffline = Defaults[.startInOfflineMode]
     
     @ObservableDefault(.lastTabValue) @ObservationIgnored
-    var lastTabValue: TabValue?
+    var tabValue: TabValue?
     
     private(set) var sheetStack = [Sheet]()
     var warningAlertStack = [WarningAlert]()
@@ -788,10 +788,14 @@ private extension Satellite {
                 UINavigationBar.appearance().compactAppearance = appearance
             }
             
+            Task.detached {
+                await ShelfPlayer.invalidateShortTermCache()
+            }
+            
             self?.isOffline = $0
         }.store(in: &stash)
         
-        RFNotification[.navigateNotification].subscribe { [weak self] _ in
+        RFNotification[.navigate].subscribe { [weak self] _ in
             self?.dismissSheet()
         }.store(in: &stash)
         

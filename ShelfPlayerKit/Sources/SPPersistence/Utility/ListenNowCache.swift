@@ -22,6 +22,11 @@ public actor ListenNowCache: Sendable {
                 await self?.update()
             }
         }
+        RFNotification[.invalidateProgressEntities].subscribe { [weak self] _ in
+            Task {
+                await self?.update()
+            }
+        }
         
         Task {
             for await _ in Defaults.updates([.downloadListenNowItems], initial: false) {

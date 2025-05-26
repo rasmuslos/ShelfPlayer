@@ -12,7 +12,7 @@ import ShelfPlayerKit
 
 // MARK: Background Downloads
 
-internal final class AppDelegate: NSObject, UIApplicationDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate {
     private var backgroundCompletionHandler: (() -> Void)? = nil
     
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {

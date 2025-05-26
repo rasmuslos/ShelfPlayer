@@ -12,17 +12,23 @@ struct ItemCompactRow: View {
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
+    
+    let hideImage: Bool
     let trailingText: Text?
-    let callback: () -> Void
+    
+    let callback: (() -> Void)?
     
     @State private var item: PlayableItem?
     
     @State private var progress: ProgressTracker
     @State private var download: DownloadStatusTracker
     
-    init(itemID: ItemIdentifier, trailingText: Text? = nil, callback: @escaping () -> Void) {
+    init(itemID: ItemIdentifier, hideImage: Bool = false, trailingText: Text? = nil, callback: (() -> Void)? = nil) {
         self.itemID = itemID
+        
+        self.hideImage = hideImage
         self.trailingText = trailingText
+        
         self.callback = callback
         
         _item = .init(initialValue: nil)
@@ -30,25 +36,34 @@ struct ItemCompactRow: View {
         _progress = .init(initialValue: .init(itemID: itemID))
         _download = .init(initialValue: .init(itemID: itemID))
     }
-    init(item: PlayableItem, trailingText: Text? = nil, callback: @escaping () -> Void) {
-        itemID = item.id
+    init(item: PlayableItem, hideImage: Bool = false, trailingText: Text? = nil, callback: (() -> Void)? = nil) {
+        self.itemID = item.id
+        
+        self.hideImage = hideImage
         self.trailingText = trailingText
+        
         self.callback = callback
         
         _item = .init(initialValue: item)
         
-        _progress = .init(initialValue: .init(itemID: item.id))
-        _download = .init(initialValue: .init(itemID: item.id))
+        _progress = .init(initialValue: .init(itemID: itemID))
+        _download = .init(initialValue: .init(itemID: itemID))
     }
     
     var body: some View {
         HStack(spacing: 0) {
             Button {
-                callback()
+                if let callback {
+                    callback()
+                } else {
+                    satellite.start(itemID)
+                }
             } label: {
                 HStack(spacing: 8) {
-                    ItemImage(item: item, size: .small)
-                        .frame(width: 44)
+                    if !hideImage {
+                        ItemImage(item: item, size: .small)
+                            .frame(width: 44)
+                    }
                     
                     if let item {
                         VStack(alignment: .leading, spacing: 2) {
@@ -125,15 +140,16 @@ struct ItemCompactRow: View {
 
 #if DEBUG
 #Preview {
-    ItemCompactRow(item: Audiobook.fixture) {
-        
-    }
-    .previewEnvironment()
+    ItemCompactRow(item: Audiobook.fixture)
+        .previewEnvironment()
+}
+
+#Preview {
+    ItemCompactRow(item: Episode.fixture)
+        .previewEnvironment()
 }
 #Preview {
-    ItemCompactRow(item: Episode.fixture) {
-        
-    }
-    .previewEnvironment()
+    ItemCompactRow(item: Episode.fixture, hideImage: true)
+        .previewEnvironment()
 }
 #endif

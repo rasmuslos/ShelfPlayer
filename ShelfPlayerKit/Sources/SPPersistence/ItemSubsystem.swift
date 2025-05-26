@@ -38,7 +38,7 @@ public extension PersistenceManager.ItemSubsystem {
             return Color(red: components[0], green: components[1], blue: components[2])
         }
         
-        guard let image = await itemID.platformCover(size: .small), let extracted = try? await RFKVisuals.extractDominantColors(9, image: image) else {
+        guard let image = await itemID.platformCover(size: .small), let extracted = try? await RFKVisuals.extractDominantColors(5, image: image) else {
             return nil
         }
         
@@ -50,13 +50,7 @@ public extension PersistenceManager.ItemSubsystem {
             case .podcast:
                 result = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.1).first
             default:
-                let highlySaturated = RFKVisuals.saturationExtremeFilter(colors, threshold: 0.45)
-                
-                if !highlySaturated.isEmpty {
-                    result = highlySaturated.randomElement()
-                } else {
-                    result = RFKVisuals.saturationExtremeFilter(colors, threshold: 0.3).randomElement()
-                }
+                result = RFKVisuals.determineMostSaturated(RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.3))
         }
         
         guard let result else {
