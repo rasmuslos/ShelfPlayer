@@ -28,11 +28,13 @@ enum DisplayContext {
 extension RFNotification.IsolatedNotification {
     static var focusSearchField: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.focusSearchField") }
     
-    static var navigateNotification: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.one") }
-    static var _navigateNotification: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.two") }
+    static var navigate: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.one") }
+    static var navigateConditionMet: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.navigate.notify") }
+    static var _navigate: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.two") }
     
     static var changeLibrary: IsolatedNotification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
     static var changeOfflineMode: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
     
     static var reloadImages: IsolatedNotification<ItemIdentifier?> { .init("io.rfk.shelfPlayer.reloadImages") }
+    static var performBackgroundSessionSync: IsolatedNotification<ItemIdentifier.ConnectionID?> { .init("io.rfk.shelfPlayer.performBackgroundSessionSync") }
 }

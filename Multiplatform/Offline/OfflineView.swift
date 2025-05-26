@@ -11,8 +11,12 @@ import ShelfPlayerKit
 struct OfflineView: View {
     @Environment(Satellite.self) private var satellite
     
-    @State private var audiobooks: [Audiobook] = []
-    // @State private var podcasts: [Podcast] = .init(repeating: .fixture, count: 7)
+    @State private var audiobooks = [Audiobook]()
+    @State private var podcasts = [Podcast: [Episode]]()
+    
+    private var podcastsFlat: [Podcast] {
+        Array(podcasts.keys.sorted())
+    }
     
     @ViewBuilder
     private var goOnlineButton: some View {
@@ -31,6 +35,31 @@ struct OfflineView: View {
                                 ItemCompactRow(item: audiobook) {
                                     satellite.start(audiobook.id)
                                 }
+                            }
+                        }
+                    }
+                    
+                    ForEach(podcastsFlat) { podcast in
+                        Section {
+                            ForEach(podcasts[podcast] ?? []) { episode in
+                                ItemCompactRow(item: episode, hideImage: true) {
+                                    satellite.start(episode.id)
+                                }
+                            }
+                        } header: {
+                            HStack(spacing: 0) {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(podcast.authors, format: .list(type: .and, width: .short))
+                                        .font(.caption)
+                                    
+                                    Text(podcast.name)
+                                        .bold()
+                                }
+                                
+                                Spacer(minLength: 8)
+                                
+                                ItemImage(item: podcast, size: .small)
+                                    .frame(width: 44)
                             }
                         }
                     }
@@ -61,11 +90,20 @@ struct OfflineView: View {
     
     private nonisolated func loadItems() {
         Task {
-            let audiobooks = try await PersistenceManager.shared.download.audiobooks()
-            // let episodes = try await PersistenceManager.shared.download.episodes()
+            let (audiobooks, episodes, podcasts) = try await (
+                PersistenceManager.shared.download.audiobooks(),
+                PersistenceManager.shared.download.episodes(),
+                PersistenceManager.shared.download.podcasts(),
+            )
+            
+            let grouped = Dictionary(grouping: episodes, by: \.podcastID)
+            let mapped = Dictionary(uniqueKeysWithValues: podcasts.map {
+                ($0, grouped[$0.id] ?? [])
+            })
             
             await MainActor.withAnimation {
                 self.audiobooks = audiobooks
+                self.podcasts = mapped
             }
         }
     }

@@ -15,5 +15,11 @@ struct SpotlightIndexer {
     
     static func planRun() async throws {
         try await PersistenceManager.shared.authorization.fetchConnections()
+        let libraries = await ShelfPlayerKit.libraries.sorted { $0.name < $1.name }
+        let grouped = Dictionary(grouping: libraries, by: \.connectionID)
+        
+        grouped.map {
+            $0 + $1.map(\.id).joined(separator: ",")
+        }
     }
 }

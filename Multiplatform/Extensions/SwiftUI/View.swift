@@ -23,6 +23,7 @@ extension View {
             .environment(Satellite().debugPlayback())
             .environment(PlaybackViewModel())
             .environment(ConnectionStore())
+            .environment(ProgressViewModel())
             .environment(\.namespace, namespace)
     }
     #endif

@@ -13,9 +13,9 @@ extension SchemaV2 {
     @Model
     final class PersistedKeyValueEntity {
         #Index<PersistedKeyValueEntity>([\.id], [\.key], [\.cluster])
-        #Unique<PersistedKeyValueEntity>([\.id], [\.key], [\.cluster])
+        #Unique<PersistedKeyValueEntity>([\.id], [\.key])
         
-        private(set) var id = UUID()
+        private(set) var id: UUID
         
         private(set) var key: String
         private(set) var cluster: String
@@ -23,6 +23,8 @@ extension SchemaV2 {
         var value: Data
         
         init(key: String, cluster: String, value: Data, isCachePurgeable: Bool) {
+            id = UUID()
+            
             self.key = key
             self.cluster = cluster
             self.value = value

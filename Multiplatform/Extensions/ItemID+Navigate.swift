@@ -11,7 +11,7 @@ import ShelfPlayerKit
 extension ItemIdentifier {
     @MainActor
     func navigateIsolated() {
-        RFNotification[.navigateNotification].send(payload: self)
+        RFNotification[.navigate].send(payload: self)
     }
     func navigate() {
         Task {

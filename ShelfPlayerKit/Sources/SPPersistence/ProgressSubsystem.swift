@@ -133,6 +133,46 @@ extension PersistenceManager.ProgressSubsystem {
             await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
         }
     }
+    
+    func merge(duplicates entities: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws -> ProgressPayload? {
+        guard entities.count > 1 else {
+            logger.error("Invalid sequence passed to merge duplicates: \(entities)")
+            return nil
+        }
+        
+        logger.warning("Found \(entities.count) progress entities for the same item: \(entities).")
+        
+        let mostRecent = entities.max {
+            guard let lhs = $0.lastUpdate else {
+                return false
+            }
+            guard let rhs = $1.lastUpdate else {
+                return true
+            }
+            
+            guard lhs != rhs else {
+                guard let lhsCurrentTime = $0.currentTime else {
+                    return false
+                }
+                guard let rhsCurrentTime = $1.currentTime else {
+                    return true
+                }
+                
+                return lhsCurrentTime > rhsCurrentTime
+            }
+            
+            return lhs > rhs
+        }!
+        let remaining = entities.compactMap { $0.id == mostRecent.id ? nil : $0.id }
+        
+        for entityID in remaining {
+            try await ABSClient[connectionID].delete(progressID: entityID)
+        }
+        
+        logger.info("Merged progress entities. Now at \(mostRecent.currentTime?.formatted() ?? "?")")
+        
+        return mostRecent
+    }
 }
 
 public extension PersistenceManager.ProgressSubsystem {
@@ -297,6 +337,49 @@ public extension PersistenceManager.ProgressSubsystem {
             
             var hiddenIDs = [(ItemIdentifier.ConnectionID, String)]()
             
+            // MARK: Remove duplicates
+            
+            let duplicateIDs = Dictionary(grouping: payload, by: \.libraryItemId).filter { $0.value.count > 1 }
+            var mergedEntities = [ProgressPayload]()
+            
+            for (_, entities) in duplicateIDs {
+                // Always proceed with audiobooks and only continue with duplicate episodes
+                
+                let isAudiobook = entities.allSatisfy { $0.episodeId == nil }
+                
+                if isAudiobook, let merged = try? await merge(duplicates: entities, connectionID: connectionID) {
+                    mergedEntities.append(merged)
+                } else if !isAudiobook {
+                    let episodeIDs = Dictionary(grouping: entities, by: \.episodeId).filter { $0.value.count > 1 }
+                    
+                    guard !episodeIDs.isEmpty else {
+                        continue
+                    }
+                    
+                    for (_, entities) in episodeIDs {
+                        guard let entity = try? await merge(duplicates: entities, connectionID: connectionID) else {
+                            logger.info("Failed to merge duplicate episode progress: \(entities)")
+                            continue
+                        }
+                        
+                        mergedEntities.append(entity)
+                    }
+                } else {
+                    logger.info("Failed to merge duplicate audiobook progress: \(entities)")
+                }
+            }
+            
+            for merged in mergedEntities {
+                payload.removeAll {
+                    $0.libraryItemId == merged.libraryItemId
+                    && $0.episodeId == merged.episodeId
+                }
+                
+                payload.append(merged)
+            }
+            
+            // MARK: Enumerate database and update existing
+            
             try modelContext.transaction {
                 try modelContext.enumerate(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
                     $0.connectionID == connectionID
@@ -374,6 +457,8 @@ public extension PersistenceManager.ProgressSubsystem {
                 }
             }
             
+            // MARK: Hidden IDs
+            
             for (connectionID, ids) in Dictionary(hiddenIDs.map { ($0.0, [$0.1]) }, uniquingKeysWith: +) {
                 logger.info("\(ids.count) progress entities hidden from Continue Listening for connection \(connectionID)")
                 try await PersistenceManager.shared.keyValue.set(.hideFromContinueListening(connectionID: connectionID), .init(ids))
@@ -381,6 +466,8 @@ public extension PersistenceManager.ProgressSubsystem {
             
             signposter.emitEvent("transaction", id: signpostID)
             try Task.checkCancellation()
+            
+            // MARK: Create missing local
             
             // try modelContext.transaction {
             for payload in payload {
@@ -403,6 +490,8 @@ public extension PersistenceManager.ProgressSubsystem {
             signposter.emitEvent("create", id: signpostID)
             try Task.checkCancellation()
             
+            // MARK: Create & Update remote
+            
             let batch = pendingCreation + pendingUpdate
             let grouped = Dictionary(batch.map { ($0.connectionID, [$0]) }, uniquingKeysWith: +)
             
@@ -423,6 +512,8 @@ public extension PersistenceManager.ProgressSubsystem {
             signposter.emitEvent("batch", id: signpostID)
             try Task.checkCancellation()
             
+            // MARK: Delete remote
+            
             logger.info("Deleting \(pendingDeletion.count) progress entities")
             
             for (id, connectionID) in pendingDeletion {
@@ -439,9 +530,9 @@ public extension PersistenceManager.ProgressSubsystem {
                 try await delete(persisted)
             }
             
-            try modelContext.save()
-            
             signposter.emitEvent("delete", id: signpostID)
+            
+            // MARK: End
             
             try modelContext.save()
             

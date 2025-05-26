@@ -278,6 +278,10 @@ private extension DownloadButton {
         .previewEnvironment()
 }
 #Preview {
+    DownloadButton(itemID: .fixture, progressVisibility: .row)
+        .previewEnvironment()
+}
+#Preview {
     DownloadButton(itemID: .fixture, tint: true)
         .previewEnvironment()
 }

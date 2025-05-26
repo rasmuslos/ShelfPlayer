@@ -143,6 +143,8 @@ struct PreferencesView: View {
                 success = false
             }
             
+            try? await Task.sleep(for: .seconds(1))
+            
             load()
             
             await MainActor.withAnimation {
@@ -168,6 +170,8 @@ struct PreferencesView: View {
             } catch {
                 success = false
             }
+            
+            try? await Task.sleep(for: .seconds(1))
             
             load()
             
