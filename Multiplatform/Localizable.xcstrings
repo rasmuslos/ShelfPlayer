@@ -929,7 +929,7 @@
         }
       }
     },
-    "item.collection.configure" : {
+    "item.configure" : {
 
     },
     "item.convenienceDownload" : {
@@ -1362,6 +1362,15 @@
         }
       }
     },
+    "item.grouping.configure" : {
+
+    },
+    "item.grouping.configure.playback" : {
+
+    },
+    "item.grouping.configure.upNextStrategy" : {
+
+    },
     "item.lastPlayed" : {
 
     },
@@ -1481,6 +1490,7 @@
       }
     },
     "item.preferences" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1497,6 +1507,7 @@
       }
     },
     "item.preferences.allowUpNextQueueGeneration" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1513,6 +1524,7 @@
       }
     },
     "item.preferences.automaticDownload.amount %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "variations" : {
@@ -1553,6 +1565,7 @@
       }
     },
     "item.preferences.automaticDownload.enabled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1569,6 +1582,7 @@
       }
     },
     "item.preferences.automaticDownload.footer %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "variations" : {
@@ -1609,6 +1623,7 @@
       }
     },
     "item.preferences.automaticDownload.notificationsEnabled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1625,6 +1640,7 @@
       }
     },
     "item.preferences.automaticDownloads" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2398,6 +2414,7 @@
       }
     },
     "notification.permission.denied" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2414,6 +2431,7 @@
       }
     },
     "notification.permission.request" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4036,6 +4054,15 @@
           }
         }
       }
+    },
+    "upNextStrategy.default" : {
+
+    },
+    "upNextStrategy.disabled" : {
+
+    },
+    "upNextStrategy.listenNow" : {
+
     },
     "warning.playbackDownload.activeDownload" : {
 

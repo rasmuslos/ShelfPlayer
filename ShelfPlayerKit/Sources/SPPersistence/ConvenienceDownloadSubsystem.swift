@@ -30,7 +30,6 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     
     enum ConvenienceDownloadConfiguration: Codable, Sendable {
         case listenNow
-        case atNextPossibleTime(ItemIdentifier)
         case collection(ItemIdentifier, CollectionRetrieval)
     }
     enum CollectionRetrieval: Codable, Sendable {

@@ -22,14 +22,14 @@ public extension PersistenceManager.ItemSubsystem {
     func playbackRate(for itemID: ItemIdentifier) async -> Percentage? {
         await PersistenceManager.shared.keyValue[.playbackRate(for: itemID)]
     }
-    func setPlaybackRate(_ rate: Percentage, for itemID: ItemIdentifier) async throws {
+    func setPlaybackRate(_ rate: Percentage?, for itemID: ItemIdentifier) async throws {
         try await PersistenceManager.shared.keyValue.set(.playbackRate(for: itemID), rate)
     }
-    func allowUpNextQueueGeneration(for itemID: ItemIdentifier) async -> Bool {
-        await PersistenceManager.shared.keyValue[.allowUpNextQueueGeneration(for: itemID)] ?? true
+    func upNextStrategy(for itemID: ItemIdentifier) async -> ConfigureableUpNextStrategy? {
+        await PersistenceManager.shared.keyValue[.upNextStrategy(for: itemID)]
     }
-    func setAllowUpNextQueueGeneration(_ allow: Bool, for itemID: ItemIdentifier) async throws {
-        try await PersistenceManager.shared.keyValue.set(.allowUpNextQueueGeneration(for: itemID), allow)
+    func setUpNextStrategy(_ strategy: ConfigureableUpNextStrategy?, for itemID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.upNextStrategy(for: itemID), strategy)
     }
     
     func dominantColor(of itemID: ItemIdentifier) async -> Color? {
@@ -85,8 +85,8 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         return Key(identifier: "playbackRate-\(itemID)", cluster: "playbackRates", isCachePurgeable: isPurgeable)
     }
     
-    static func allowUpNextQueueGeneration(for itemID: ItemIdentifier) -> Key<Bool> {
-        Key(identifier: "allowUpNextQueueGeneration-\(itemID)", cluster: "allowUpNextQueueGeneration", isCachePurgeable: false)
+    static func upNextStrategy(for itemID: ItemIdentifier) -> Key<ConfigureableUpNextStrategy> {
+        Key(identifier: "upNextStrategy-\(itemID)", cluster: "upNextStrategy", isCachePurgeable: false)
     }
     
     static func dominantColor(of itemID: ItemIdentifier) -> Key<String> {

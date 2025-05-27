@@ -72,8 +72,8 @@ extension PodcastView.ToolbarModifier {
                     ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                 }
                 
-                Button("item.preferences", systemImage: "gearshape") {
-                    satellite.present(.podcastConfiguration(viewModel.podcast.id))
+                Button("item.configure", systemImage: "gearshape") {
+                    satellite.present(.configureGrouping(viewModel.podcast.id))
                 }
             }
             .menuActionDismissBehavior(.disabled)

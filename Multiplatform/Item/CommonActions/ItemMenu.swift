@@ -36,7 +36,7 @@ struct ItemMenu: View {
     }
     init(series: [(id: ItemIdentifier, name: String)]) {
         items = series
-        type = .author
+        type = .series
     }
     
     var body: some View {

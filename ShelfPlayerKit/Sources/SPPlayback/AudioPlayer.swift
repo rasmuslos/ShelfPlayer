@@ -36,15 +36,15 @@ public final actor AudioPlayer: Sendable {
 public extension AudioPlayer {
     var currentItemID: ItemIdentifier? {
         get async {
-            await current?.currentItemID
+            await current?.currentItem.itemID
         }
     }
-    var queue: [QueueItem] {
+    var queue: [AudioPlayerItem] {
         get async {
             await current?.queue ?? []
         }
     }
-    var upNextQueue: [QueueItem] {
+    var upNextQueue: [AudioPlayerItem] {
         get async {
             await current?.upNextQueue ?? []
         }
@@ -122,17 +122,17 @@ public extension AudioPlayer {
         }
     }
     
-    func start(_ itemID: ItemIdentifier, withoutListeningSession: Bool = false) async throws {
+    func start(_ item: AudioPlayerItem) async throws {
         await stop()
         
         do {
-            current = try await LocalAudioEndpoint(itemID: itemID, withoutListeningSession: withoutListeningSession)
+            current = try await LocalAudioEndpoint(item)
         } catch {
             await stop()
             throw error
         }
     }
-    func queue(_ items: [QueueItem]) async throws {
+    func queue(_ items: [AudioPlayerItem]) async throws {
         if let current {
             try await current.queue(items)
             return
@@ -145,7 +145,7 @@ public extension AudioPlayer {
         var items = items
         let item = items.removeFirst()
         
-        try await start(item.itemID, withoutListeningSession: item.startWithoutListeningSession)
+        try await start(item)
         try await current!.queue(items)
     }
     func stop() async {
@@ -217,7 +217,7 @@ public extension AudioPlayer {
     func setPlaybackRate(_ rate: Percentage) async {
         await current?.setPlaybackRate(rate)
         
-        if let itemID = await current?.currentItemID {
+        if let itemID = await currentItemID {
             Task {
                 do {
                     try await PersistenceManager.shared.item.setPlaybackRate(rate, for: itemID)
