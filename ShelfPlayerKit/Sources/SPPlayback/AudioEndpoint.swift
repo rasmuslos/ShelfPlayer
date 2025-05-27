@@ -11,12 +11,12 @@ import SPFoundation
 protocol AudioEndpoint: Identifiable, Sendable {
     var id: UUID { get }
     
-    init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws
+    init(_ item: AudioPlayerItem) async throws
     
-    var currentItemID: ItemIdentifier { get async }
+    var currentItem: AudioPlayerItem { get async }
     
-    var queue: [QueueItem] { get async }
-    var upNextQueue: [QueueItem] { get async }
+    var queue: [AudioPlayerItem] { get async }
+    var upNextQueue: [AudioPlayerItem] { get async }
     
     var chapters: [Chapter] { get async }
     var activeChapterIndex: Int? { get async }
@@ -38,7 +38,7 @@ protocol AudioEndpoint: Identifiable, Sendable {
     
     var pendingTimeSpendListening: TimeInterval { get async }
     
-    func queue(_ items: [QueueItem]) async throws
+    func queue(_ items: [AudioPlayerItem]) async throws
     func stop() async
 
     func play() async

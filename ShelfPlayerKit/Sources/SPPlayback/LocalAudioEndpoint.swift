@@ -24,10 +24,10 @@ final class LocalAudioEndpoint: AudioEndpoint {
     
     private var playbackReporter: PlaybackReporter!
     
-    private(set) var currentItemID: ItemIdentifier
+    private(set) var currentItem: AudioPlayerItem
     
-    private(set) var queue: [QueueItem]
-    private(set) var upNextQueue: [QueueItem]
+    private(set) var queue: [AudioPlayerItem]
+    private(set) var upNextQueue: [AudioPlayerItem]
     
     private(set) var audioTracks: [PlayableItem.AudioTrack]
     private(set) var activeAudioTrackIndex: Int
@@ -87,7 +87,6 @@ final class LocalAudioEndpoint: AudioEndpoint {
         }
     }
     
-    private var allowUpNextGeneration: Bool
     private var chapterValidUntil: TimeInterval?
     
     private var volumeSubscription: AnyCancellable?
@@ -96,15 +95,17 @@ final class LocalAudioEndpoint: AudioEndpoint {
     private var sleepLastPause: Date?
     private var sleepTimeoutTimer: Timer?
     
+    private var allowUpNextQueueGeneration: Bool
+    
     let audioPlayerVolume: Float = 1
     
-    init(itemID: ItemIdentifier, withoutListeningSession: Bool) async throws {
-        logger.info("Starting up local audio endpoint with item ID \(itemID) (without listening session: \(withoutListeningSession))")
+    init(_ item: AudioPlayerItem) async throws {
+        logger.info("Starting up local audio endpoint with item ID \(item.itemID) (without listening session: \(item.startWithoutListeningSession))")
         
         playbackReporter = nil
         audioPlayer = .init()
         
-        currentItemID = itemID
+        currentItem = item
         
         queue = .init()
         upNextQueue = .init()
@@ -130,14 +131,42 @@ final class LocalAudioEndpoint: AudioEndpoint {
         
         route = nil
         
-        allowUpNextGeneration = true
+        allowUpNextQueueGeneration = true
         
         setupObservers()
         
-        try await start(withoutListeningSession: withoutListeningSession)
+        try await start()
     }
     deinit {
         // bufferCheckTimer?.invalidate()
+    }
+    
+    var currentItemID: ItemIdentifier {
+        currentItem.itemID
+    }
+    var seriesID: ItemIdentifier? {
+        get async {
+            guard currentItemID.type == .audiobook else {
+                return nil
+            }
+            
+            if case .series(let seriesID) = currentItem.origin {
+                return seriesID
+            } else if let resolved = try? await currentItemID.resolved as? Audiobook, let seriesID = resolved.series.first?.id {
+                return seriesID
+            } else {
+                return nil
+            }
+        }
+    }
+    var podcastID: ItemIdentifier? {
+        get async {
+            guard currentItemID.type == .episode else {
+                return nil
+            }
+            
+            return ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
+        }
     }
     
     var isBusy: Bool {
@@ -176,7 +205,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
 }
 
 extension LocalAudioEndpoint {
-    func queue(_ items: [QueueItem]) async throws {
+    func queue(_ items: [AudioPlayerItem]) async throws {
         for item in items {
             queue.append(item)
         }
@@ -331,7 +360,7 @@ extension LocalAudioEndpoint {
         upNextQueue.removeAll()
         await nextUpQueueDidChange()
         
-        allowUpNextGeneration = false
+        allowUpNextQueueGeneration = false
     }
     
     func queueDidChange() async {
@@ -354,7 +383,7 @@ private extension LocalAudioEndpoint {
         await AudioPlayer.shared.playStateDidChange(endpointID: id, isPlaying: false, updateSessionActivation: updateSessionActivation)
     }
     
-    func start(withoutListeningSession: Bool) async throws {
+    func start() async throws {
         let downloadStatus = await PersistenceManager.shared.download.status(of: currentItemID)
         
         guard downloadStatus != .downloading else {
@@ -389,7 +418,7 @@ private extension LocalAudioEndpoint {
         let sessionID: String?
         
         do {
-            if withoutListeningSession {
+            if currentItem.startWithoutListeningSession {
                 throw AudioPlayerError.offline
             }
             
@@ -452,10 +481,13 @@ private extension LocalAudioEndpoint {
         
         let playbackRate: Percentage
         
+        let seriesID = await seriesID
+        let podcastID = await podcastID
+        
         if let itemPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: currentItemID) {
             playbackRate = itemPlaybackRate
-        } else if let podcastPlaybackRate = await PersistenceManager.shared.podcasts.playbackRate(for: currentItemID) {
-            playbackRate = podcastPlaybackRate
+        } else if let groupingID = seriesID ?? podcastID, let groupingPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: groupingID) {
+            playbackRate = groupingPlaybackRate
         } else {
             playbackRate = Defaults[.defaultPlaybackRate]
         }
@@ -636,81 +668,65 @@ private extension LocalAudioEndpoint {
     
     func updateUpNextQueue() {
         Task.detached { [weak self] in
-            guard let self else {
+            guard let self, await upNextQueue.isEmpty else {
                 return
             }
             
-            guard await allowUpNextGeneration else {
-                await clearUpNextQueue()
-                return
-            }
-            
-            guard await upNextQueue.isEmpty else {
-                return
-            }
-            
+            let currentItem = await currentItem
             let currentItemID = await currentItemID
             
+            let globalStrategy = Defaults[.upNextStrategy]
+            let strategy: ResolvedUpNextStrategy?
+            
             do {
-                if currentItemID.type == .episode {
-                    /*
-                     TODO: j
-                    guard Defaults[.queueNextEpisodes] else {
-                        return
-                    }
-                     */
+                if let resolved = currentItem.origin.resolvedUpNextStrategy {
+                    strategy = resolved
+                } else if let podcastID = await podcastID {
+                    let configured = await PersistenceManager.shared.item.upNextStrategy(for: podcastID) ?? globalStrategy
                     
-                    let podcastID = ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
-                    
-                    if let isAllowed = await PersistenceManager.shared.podcasts.allowNextUpQueueGeneration(for: podcastID), !isAllowed {
-                        return
-                    }
-                    
-                    let (_, episodes) = try await podcastID.resolvedComplex
-                    let sorted = await Podcast.filterSort(episodes, filter: Defaults[.episodesFilter(podcastID)], seasonFilter: Defaults[.episodesSeasonFilter(podcastID)], restrictToPersisted: Defaults[.episodesRestrictToPersisted(podcastID)], search: nil, sortOrder: Defaults[.episodesSortOrder(podcastID)], ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != currentItemID }
-                    
-                    let queueItems = sorted.map { QueueItem(itemID: $0.id, startWithoutListeningSession: false) }
-                    
-                    await MainActor.run {
-                        upNextQueue = queueItems
-                    }
-                } else if currentItemID.type == .audiobook {
-                    /*
-                    guard Defaults[.queueNextAudiobooksInSeries] else {
-                        return
-                    }
-                     */
-                    
-                    guard let audiobook = try await currentItemID.resolved as? Audiobook else {
-                        throw AudioPlayerError.invalidItemType
-                    }
-                    
-                    guard let series = audiobook.series.first else {
-                        logger.info("Skipping updating up next queue for audiobook \(audiobook.id) as it has no series")
-                        return
-                    }
-                    
-                    let seriesID = series.id
-                    
-                    guard let seriesID else {
-                        logger.error("Missing series ID for audiobook \(audiobook.id) while updating up next queue")
-                        return
-                    }
-                    
-                    let audiobooks = try await ABSClient[audiobook.id.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: nil, page: nil).0
-                    
-                    guard let index = audiobooks.firstIndex(of: audiobook) else {
-                        logger.error("Failed to find audiobook \(audiobook.id) in series \(seriesID) while updating up next queue")
-                        return
-                    }
-                    
-                    let queueItems = audiobooks[(index + 1)...].map { QueueItem(itemID: $0.id, startWithoutListeningSession: false) }
-                    
-                    await MainActor.run {
-                        self.upNextQueue = queueItems
-                    }
+                    strategy = configured.resolved(podcastID)
+                } else if let seriesID = await seriesID {
+                    let configured = await PersistenceManager.shared.item.upNextStrategy(for: seriesID) ?? globalStrategy
+                    strategy = configured.resolved(seriesID)
                 } else {
                     throw AudioPlayerError.invalidItemType
+                }
+                
+                guard let strategy else {
+                    throw AudioPlayerError.invalidItemType
+                }
+                
+                switch strategy {
+                    case .series(let seriesID):
+                        let audiobooks = try await ABSClient[seriesID.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: nil, page: nil).0
+                        
+                        guard let index = audiobooks.firstIndex(where: { $0.id == currentItemID }) else {
+                            logger.error("Failed to find audiobook \(currentItemID) in series \(seriesID) while updating up next queue")
+                            return
+                        }
+                        
+                        let queueItems = audiobooks[(index + 1)...].map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
+                        
+                        await MainActor.run {
+                            self.upNextQueue = queueItems
+                        }
+                    case .podcast(let podcastID):
+                        let (_, episodes) = try await podcastID.resolvedComplex
+                        let sorted = await Podcast.filterSort(episodes, filter: Defaults[.episodesFilter(podcastID)], seasonFilter: Defaults[.episodesSeasonFilter(podcastID)], restrictToPersisted: Defaults[.episodesRestrictToPersisted(podcastID)], search: nil, sortOrder: Defaults[.episodesSortOrder(podcastID)], ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != currentItemID }
+                        
+                        let queueItems = sorted.map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
+                        
+                        await MainActor.run {
+                            upNextQueue = queueItems
+                        }
+                    case .listenNow:
+                        let queueItems = await ShelfPlayerKit.listenNowItems.map(\.id).filter { $0 != currentItemID }.map { AudioPlayerItem(itemID: $0, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
+                        
+                        await MainActor.run {
+                            upNextQueue = queueItems
+                        }
+                    default:
+                        throw AudioPlayerError.invalidItemType
                 }
                 
                 await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
@@ -728,23 +744,14 @@ private extension LocalAudioEndpoint {
         
         await playbackReporter.finalize()
         
-        let nextItemID: ItemIdentifier
-        let startWithoutListeningSession: Bool
+        let nextItem: AudioPlayerItem
         
         if !queue.isEmpty {
-            let queueItem = queue.removeFirst()
-            
+            nextItem = queue.removeFirst()
             await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.map(\.itemID))
-            
-            nextItemID = queueItem.itemID
-            startWithoutListeningSession = queueItem.startWithoutListeningSession
         } else if !upNextQueue.isEmpty {
-            let queueItem = upNextQueue.removeFirst()
-            
+            nextItem = upNextQueue.removeFirst()
             await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
-            
-            nextItemID = queueItem.itemID
-            startWithoutListeningSession = queueItem.startWithoutListeningSession
         } else {
             await AudioPlayer.shared.stop(endpointID: id)
             return
@@ -752,10 +759,10 @@ private extension LocalAudioEndpoint {
         
         audioPlayer.removeAllItems()
         
-        currentItemID = nextItemID
+        currentItem = nextItem
         
         do {
-            try await start(withoutListeningSession: startWithoutListeningSession)
+            try await start()
         } catch {
             await AudioPlayer.shared.stop(endpointID: id)
         }
@@ -867,6 +874,40 @@ private extension LocalAudioEndpoint {
                     await AudioPlayer.shared.currentTimesDidChange(endpointID: id, itemCurrentTime: currentTime, chapterCurrentTime: chapterCurrentTime)
                 }
             }
+        }
+    }
+}
+
+enum ResolvedUpNextStrategy: Sendable {
+    case listenNow
+    
+    case series(ItemIdentifier)
+    case podcast(ItemIdentifier)
+    
+    case none
+}
+
+private extension AudioPlayerItem.PlaybackOrigin {
+    var resolvedUpNextStrategy: ResolvedUpNextStrategy? {
+        nil
+    }
+}
+private extension ConfigureableUpNextStrategy {
+    func resolved(_ itemID: ItemIdentifier) -> ResolvedUpNextStrategy {
+        switch self {
+            case .default:
+                switch itemID.type {
+                    case .series:
+                        return .series(itemID)
+                    case .podcast:
+                        return .podcast(itemID)
+                    default:
+                        fatalError("Not resolved: \(self)")
+                }
+            case .listenNow:
+                return .listenNow
+            case .disabled:
+                return .none
         }
     }
 }

@@ -10,6 +10,7 @@ import Defaults
 import ShelfPlayerKit
 
 struct SeriesView: View {
+    @Environment(Satellite.self) private var satellite
     @Environment(\.library) private var library
     
     @State private var viewModel: SeriesViewModel
@@ -88,6 +89,12 @@ struct SeriesView: View {
                     
                     Section("item.filter") {
                         ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
+                    }
+                    
+                    Divider()
+                    
+                    Button("item.configure", systemImage: "gearshape") {
+                        satellite.present(.configureGrouping(viewModel.series.id))
                     }
                 }
                 .menuActionDismissBehavior(.disabled)

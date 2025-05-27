@@ -7,20 +7,26 @@
 
 import SwiftUI
 import OSLog
+import Defaults
 import ShelfPlayerKit
+import SPPlayback
 
 @MainActor @Observable
 final class ProgressViewModel {
     let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ProgressViewModel")
     
+    private(set) var cachedTimeSpendListening = 0.0
+    let todaySessionLoader = SessionLoader(filter: .today)
+    
     private(set) var importedConnectionIDs = [String]()
     private(set) var importFailedConnectionIDs = [String]()
     
-    private(set) var currentlyPlayingItemID: ItemIdentifier?
-    
+    private var currentlyPlayingItemID: ItemIdentifier?
     private var tasks = [ItemIdentifier.ConnectionID: Task<Void, Never>]()
     
     init() {
+        updateCachedTimeSpendListening()
+        
         RFNotification[.changeOfflineMode].subscribe { [weak self] _ in
             self?.importedConnectionIDs.removeAll()
             self?.importFailedConnectionIDs.removeAll()
@@ -46,15 +52,12 @@ final class ProgressViewModel {
                 self?.syncAllConnections()
             }
         }
-    }
-    
-    func syncAllConnections() {
-        Task {
-            for connectionID in await PersistenceManager.shared.authorization.connections.keys {
-                attemptSync(for: connectionID)
-            }
+        
+        RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
+            self?.updateCachedTimeSpendListening()
         }
     }
+    
     func attemptSync(for connectionID: ItemIdentifier.ConnectionID) {
         guard tasks[connectionID] == nil else {
             logger.warning("Tried to start sync for \(connectionID) while it is already running")
@@ -103,6 +106,30 @@ final class ProgressViewModel {
                 
                 self.tasks[connectionID] = nil
             }
+        }
+    }
+}
+
+private extension ProgressViewModel {
+    func syncAllConnections() {
+        Task {
+            for connectionID in await PersistenceManager.shared.authorization.connections.keys {
+                attemptSync(for: connectionID)
+            }
+        }
+    }
+    
+    nonisolated func updateCachedTimeSpendListening() {
+        Task {
+            let cachedSessions = try await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
+            let pendingOpen = await AudioPlayer.shared.pendingTimeSpendListening ?? 0
+            
+            await MainActor.run {
+                self.cachedTimeSpendListening = cachedSessions + pendingOpen
+            }
+            
+            Defaults[.listenedTodayCache] = await .init(total: cachedSessions + pendingOpen + todaySessionLoader.totalTimeSpendListening, updated: .now)
+            logger.info("Cached time spent listening for widget")
         }
     }
 }

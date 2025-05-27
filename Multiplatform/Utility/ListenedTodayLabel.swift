@@ -11,18 +11,15 @@ import Defaults
 import SPPlayback
 
 struct ListenedTodayLabel: View {
-    @Environment(Satellite.self) private var satellite
-    
-    @Default(.tintColor) private var tintColor
-    
-    @State private var loader = SessionLoader(filter: .today)
-    
     private let availablePercentage: CGFloat = 0.75
     
+    @Environment(ProgressViewModel.self) private var progressViewModel
+    
+    @Default(.tintColor) private var tintColor
     @Default(.listenTimeTarget) private var listenTimeTarget
     
     private var totalMinutes: Int {
-        Int((loader.totalTimeSpendListening + satellite.cachedTimeSpendListening) / 60) + 16
+        Int((progressViewModel.todaySessionLoader.totalTimeSpendListening + progressViewModel.cachedTimeSpendListening) / 60)
     }
     
     var body: some View {
@@ -40,7 +37,7 @@ struct ListenedTodayLabel: View {
                 .rotationEffect(.degrees(135))
                 .frame(width: 22)
             
-            if loader.isLoading && totalMinutes == 0 {
+            if progressViewModel.todaySessionLoader.isLoading && totalMinutes == 0 {
                 ProgressView()
                     .scaleEffect(0.5)
             } else {
