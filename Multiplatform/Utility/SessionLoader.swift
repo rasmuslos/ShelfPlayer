@@ -24,6 +24,10 @@ final class SessionLoader {
     init(filter: SessionFilter) {
         self.filter = filter
         beginLoading()
+        
+        RFNotification[.synchronizedPlaybackSessions].subscribe { [weak self] in
+            self?.refresh()
+        }
     }
     
     var isFinished: Bool {
