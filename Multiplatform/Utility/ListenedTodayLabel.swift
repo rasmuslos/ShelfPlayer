@@ -11,16 +11,10 @@ import Defaults
 import SPPlayback
 
 struct ListenedTodayLabel: View {
-    private let availablePercentage: CGFloat = 0.75
-    
     @Environment(ProgressViewModel.self) private var progressViewModel
-    
     @Default(.tintColor) private var tintColor
-    @Default(.listenTimeTarget) private var listenTimeTarget
     
-    private var totalMinutes: Int {
-        Int((progressViewModel.todaySessionLoader.totalTimeSpendListening + progressViewModel.cachedTimeSpendListening) / 60)
-    }
+    private let availablePercentage: CGFloat = 0.75
     
     var body: some View {
         ZStack {
@@ -32,16 +26,16 @@ struct ListenedTodayLabel: View {
                 .frame(width: 22)
             
             Circle()
-                .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(totalMinutes) / CGFloat(listenTimeTarget)))))
+                .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(progressViewModel.totalMinutesListenedToday) / CGFloat(progressViewModel.listenTimeTarget)))))
                 .stroke(tintColor.color, lineWidth: 2)
                 .rotationEffect(.degrees(135))
                 .frame(width: 22)
             
-            if progressViewModel.todaySessionLoader.isLoading && totalMinutes == 0 {
+            if progressViewModel.todaySessionLoader.isLoading && progressViewModel.totalMinutesListenedToday == 0 {
                 ProgressView()
                     .scaleEffect(0.5)
             } else {
-                Text(totalMinutes, format: .number)
+                Text(progressViewModel.totalMinutesListenedToday, format: .number)
                     .font(.caption2.uppercaseSmallCaps())
                     .foregroundStyle(.primary)
                     .contentTransition(.numericText(countsDown: false))
@@ -50,14 +44,14 @@ struct ListenedTodayLabel: View {
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
                 
-                Text(listenTimeTarget, format: .number)
+                Text(progressViewModel.listenTimeTarget, format: .number)
                     .font(.caption2.uppercaseSmallCaps())
                     .foregroundStyle(tintColor.color)
                     .opacity(0.72)
             }
             .offset(x: 0, y: 6)
         }
-        .animation(.spring, value: totalMinutes)
+        .animation(.spring, value: progressViewModel.totalMinutesListenedToday)
     }
 }
 
