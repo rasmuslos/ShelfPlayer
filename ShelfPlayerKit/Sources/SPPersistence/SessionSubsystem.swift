@@ -131,6 +131,7 @@ public extension PersistenceManager.SessionSubsystem {
         
         try modelContext.save()
         
+        RFNotification[.synchronizedPlaybackSessions].dispatch()
         RFNotification[.cachedTimeSpendListeningChanged].dispatch()
     }
 }

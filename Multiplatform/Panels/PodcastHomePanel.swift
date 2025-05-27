@@ -10,6 +10,8 @@ import Defaults
 import ShelfPlayerKit
 
 struct PodcastHomePanel: View {
+    @Environment(ProgressViewModel.self) private var progressViewModel
+    
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -26,17 +28,12 @@ struct PodcastHomePanel: View {
     var body: some View {
         Group {
             if episodes.isEmpty && podcasts.isEmpty {
-                Group {
-                    if didFail {
-                        ErrorView()
-                    } else if isLoading {
-                        LoadingView()
-                    } else {
-                        EmptyCollectionView()
-                    }
-                }
-                .refreshable {
-                    fetchItems()
+                if didFail {
+                    ErrorView()
+                } else if isLoading {
+                    LoadingView()
+                } else {
+                    EmptyCollectionView()
                 }
             } else {
                 ScrollView {
@@ -66,9 +63,6 @@ struct PodcastHomePanel: View {
                         }
                     }
                 }
-                .refreshable {
-                    fetchItems()
-                }
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
@@ -85,14 +79,18 @@ struct PodcastHomePanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
+        .task {
+            fetchItems()
+        }
+        .refreshable {
+            fetchItems()
+            progressViewModel.refreshListenedToday()
+        }
         .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
             guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {
                 return
             }
             
-            fetchItems()
-        }
-        .task {
             fetchItems()
         }
     }

@@ -8,12 +8,16 @@
 import SwiftUI
 import OSLog
 import Defaults
+import DefaultsMacros
 import ShelfPlayerKit
 import SPPlayback
 
 @MainActor @Observable
 final class ProgressViewModel {
     let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ProgressViewModel")
+    
+    @ObservableDefault(.listenTimeTarget) @ObservationIgnored
+    var listenTimeTarget: Int
     
     private(set) var cachedTimeSpendListening = 0.0
     let todaySessionLoader = SessionLoader(filter: .today)
@@ -56,6 +60,10 @@ final class ProgressViewModel {
         RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
             self?.updateCachedTimeSpendListening()
         }
+    }
+    
+    var totalMinutesListenedToday: Int {
+        Int((todaySessionLoader.totalTimeSpendListening + cachedTimeSpendListening) / 60)
     }
     
     func attemptSync(for connectionID: ItemIdentifier.ConnectionID) {
@@ -107,6 +115,10 @@ final class ProgressViewModel {
                 self.tasks[connectionID] = nil
             }
         }
+    }
+    
+    func refreshListenedToday() {
+        todaySessionLoader.refresh()
     }
 }
 

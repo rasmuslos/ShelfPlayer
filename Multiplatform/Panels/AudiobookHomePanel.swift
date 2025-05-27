@@ -11,6 +11,8 @@ import ShelfPlayerKit
 import SPPlayback
 
 struct AudiobookHomePanel: View {
+    @Environment(ProgressViewModel.self) private var progressViewModel
+    
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.library) private var library
     
@@ -44,9 +46,6 @@ struct AudiobookHomePanel: View {
                         EmptyCollectionView()
                     }
                 }
-                .refreshable {
-                    fetchItems()
-                }
             } else {
                 ScrollView {
                     LazyVStack(spacing: 12) {
@@ -69,9 +68,6 @@ struct AudiobookHomePanel: View {
                          }
                     }
                 }
-                .refreshable {
-                    fetchItems()
-                }
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
@@ -90,6 +86,10 @@ struct AudiobookHomePanel: View {
         }
         .task {
             fetchItems()
+        }
+        .refreshable {
+            fetchItems()
+            progressViewModel.refreshListenedToday()
         }
         .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
             guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {
