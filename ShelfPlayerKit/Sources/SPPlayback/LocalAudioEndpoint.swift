@@ -696,37 +696,10 @@ private extension LocalAudioEndpoint {
                     throw AudioPlayerError.invalidItemType
                 }
                 
-                switch strategy {
-                    case .series(let seriesID):
-                        let audiobooks = try await ABSClient[seriesID.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: nil, page: nil).0
-                        
-                        guard let index = audiobooks.firstIndex(where: { $0.id == currentItemID }) else {
-                            logger.error("Failed to find audiobook \(currentItemID) in series \(seriesID) while updating up next queue")
-                            return
-                        }
-                        
-                        let queueItems = audiobooks[(index + 1)...].map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
-                        
-                        await MainActor.run {
-                            self.upNextQueue = queueItems
-                        }
-                    case .podcast(let podcastID):
-                        let (_, episodes) = try await podcastID.resolvedComplex
-                        let sorted = await Podcast.filterSort(episodes, filter: Defaults[.episodesFilter(podcastID)], seasonFilter: Defaults[.episodesSeasonFilter(podcastID)], restrictToPersisted: Defaults[.episodesRestrictToPersisted(podcastID)], search: nil, sortOrder: Defaults[.episodesSortOrder(podcastID)], ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != currentItemID }
-                        
-                        let queueItems = sorted.map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
-                        
-                        await MainActor.run {
-                            upNextQueue = queueItems
-                        }
-                    case .listenNow:
-                        let queueItems = await ShelfPlayerKit.listenNowItems.map(\.id).filter { $0 != currentItemID }.map { AudioPlayerItem(itemID: $0, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
-                        
-                        await MainActor.run {
-                            upNextQueue = queueItems
-                        }
-                    default:
-                        throw AudioPlayerError.invalidItemType
+                let items = try await strategy.resolve(cutoff: currentItemID).map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
+                
+                await MainActor.run {
+                    self.upNextQueue = items
                 }
                 
                 await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
@@ -876,15 +849,6 @@ private extension LocalAudioEndpoint {
             }
         }
     }
-}
-
-enum ResolvedUpNextStrategy: Sendable {
-    case listenNow
-    
-    case series(ItemIdentifier)
-    case podcast(ItemIdentifier)
-    
-    case none
 }
 
 private extension AudioPlayerItem.PlaybackOrigin {
