@@ -65,8 +65,6 @@ final class Satellite {
     
     private(set) var skipCache: TimeInterval?
     
-    private(set) var cachedTimeSpendListening = 0.0
-    
     @ObservationIgnored
     private(set) nonisolated(unsafe) var skipTask: Task<Void, Never>?
     
@@ -81,8 +79,6 @@ final class Satellite {
     
     init() {
         setupObservers()
-        
-        updateCachedTimeSpendListening()
         checkForResumablePlayback()
     }
     
@@ -135,8 +131,8 @@ extension Satellite {
         
         case preferences
         
-        case description(_ item: Item)
-        case podcastConfiguration(_ podcastID: ItemIdentifier)
+        case description(Item)
+        case configureGrouping(ItemIdentifier)
         
         var id: String {
             switch self {
@@ -145,13 +141,13 @@ extension Satellite {
             case .preferences:
                 "preferences"
             case .description(let item):
-                "description_\(item.id)"
-            case .podcastConfiguration(let itemID):
-                "podcastConfiguration_\(itemID)"
+                "description-\(item.id)"
+            case .configureGrouping(let itemID):
+                "configureGrouping-\(itemID)"
             }
         }
     }
-    enum WarningAlert: LocalizedError {
+    enum WarningAlert {
         case message(String)
         
         case resumePlayback(ItemIdentifier)
@@ -160,7 +156,7 @@ extension Satellite {
         case downloadStartWhilePlaying
         case downloadRemoveWhilePlaying
         
-        var errorDescription: String? {
+        var message: String {
             switch self {
                 case .message(let message):
                     message
@@ -418,7 +414,7 @@ extension Satellite {
         }
     }
 
-    nonisolated func start(_ itemID: ItemIdentifier, at: TimeInterval? = nil) {
+    nonisolated func start(_ itemID: ItemIdentifier, at: TimeInterval? = nil, origin: AudioPlayerItem.PlaybackOrigin = .unknown) {
         Task {
             guard await self.nowPlayingItemID != itemID else {
                 await togglePlaying()
@@ -433,7 +429,7 @@ extension Satellite {
             await startWorking(on: itemID)
 
             do {
-                try await AudioPlayer.shared.start(itemID, withoutListeningSession: isOffline)
+                try await AudioPlayer.shared.start(.init(itemID: itemID, origin: origin, startWithoutListeningSession: isOffline))
                 
                 if let at {
                     try await AudioPlayer.shared.seek(to: at, insideChapter: false)
@@ -462,7 +458,7 @@ extension Satellite {
             await startWorking(on: itemID)
 
             do {
-                try await AudioPlayer.shared.queue([.init(itemID: itemID, startWithoutListeningSession: isOffline)])
+                try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: isOffline)])
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 await endWorking(on: itemID, successfully: false)
@@ -762,17 +758,6 @@ private extension Satellite {
         
         warn(.resumePlayback(playbackResumeInfo.itemID))
     }
-    
-    nonisolated func updateCachedTimeSpendListening() {
-        Task {
-            let cachedSessions = try await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
-            let pendingOpen = await AudioPlayer.shared.pendingTimeSpendListening ?? 0
-            
-            await MainActor.run {
-                self.cachedTimeSpendListening = cachedSessions + pendingOpen
-            }
-        }
-    }
 
     // MARK: Observers
 
@@ -907,10 +892,6 @@ private extension Satellite {
             }
             
             self?.loadBookmarks(itemID: itemID)
-        }.store(in: &stash)
-        
-        RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
-            self?.updateCachedTimeSpendListening()
         }.store(in: &stash)
     }
 }

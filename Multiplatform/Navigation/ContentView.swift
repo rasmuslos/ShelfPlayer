@@ -38,8 +38,8 @@ struct ContentView: View {
                 PreferencesView()
             case .description(let item):
                 DescriptionSheet(item: item)
-            case .podcastConfiguration(let itemID):
-                PodcastConfigurationSheet(podcastID: itemID)
+            case .configureGrouping(let itemID):
+                GroupingConfigurationSheet(itemID: itemID)
         }
     }
     @ViewBuilder
@@ -88,9 +88,13 @@ struct ContentView: View {
         .sheet(item: satellite.presentedSheet) {
             sheetContent(for: $0)
         }
-        .alert(isPresented: satellite.isWarningAlertPresented, error: satellite.warningAlertStack.first) {
+        .alert(String(), isPresented: satellite.isWarningAlertPresented) {
             ForEach(satellite.warningAlertStack.first?.actions ?? []) {
                 warningButton(for: $0)
+            }
+        } message: {
+            if let message = satellite.warningAlertStack.first?.message {
+                Text(message)
             }
         }
         .environment(satellite)

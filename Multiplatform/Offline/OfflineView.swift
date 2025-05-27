@@ -51,9 +51,11 @@ struct OfflineView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(podcast.authors, format: .list(type: .and, width: .short))
                                         .font(.caption)
+                                        .lineLimit(1)
                                     
                                     Text(podcast.name)
                                         .bold()
+                                        .lineLimit(2)
                                 }
                                 
                                 Spacer(minLength: 8)

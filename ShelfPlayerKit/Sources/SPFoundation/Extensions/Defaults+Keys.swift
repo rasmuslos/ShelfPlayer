@@ -24,6 +24,7 @@ public extension Defaults.Keys {
     
     static let enableChapterTrack = Key("enableChapterTrack", default: true)
     static let enableSmartRewind = Key("enableSmartRewind", default: true)
+    static let upNextStrategy = Key("upNextStrategy", default: ConfigureableUpNextStrategy.default)
     
     // Sleep timer
     
@@ -46,9 +47,6 @@ public extension Defaults.Keys {
     static let startInOfflineMode = Key("startInOfflineMode", default: false)
     
     // MARK: In-App settings
-    
-    static let downloadListenNowItems = Key("downloadListenNowItems", default: false)
-    static let downloadedListenNowItems = Key<[ItemIdentifier]>("downloadedListenNowItems", default: [])
     
     static let playbackRates = Key<[Percentage]>("playbackRates", default: [0.5, 0.75, 1, 1.25, 1.5, 2])
     static let defaultPlaybackRate = Key<Percentage>("defaultPlaybackRate", default: 1)
