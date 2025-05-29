@@ -89,7 +89,7 @@ struct PlaybackControls: View {
     private func skipText(forwards: Bool) -> some View {
         if let skipCache = satellite.skipCache {
             if (Double(-viewModel.skipBackwardsInterval) > skipCache && !forwards) || (Double(viewModel.skipForwardsInterval) < skipCache && forwards) {
-                Text(abs(skipCache) ,format: .duration(unitsStyle: .abbreviated, allowedUnits: [.second, .minute], maximumUnitCount: 1))
+                Text(abs(skipCache) ,format: .duration(unitsStyle: .positional, allowedUnits: [.second, .minute], maximumUnitCount: 2))
                     .font(.caption2)
                     .fontDesign(.monospaced)
                     .contentTransition(.numericText(value: skipCache))

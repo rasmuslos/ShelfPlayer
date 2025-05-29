@@ -10,6 +10,8 @@ import Nuke
 import ShelfPlayerKit
 
 struct PreferencesView: View {
+    @State private var navigationPath = NavigationPath()
+    
     @State private var isLoading = false
     
     @State private var cacheDirectorySize: Int? = nil
@@ -97,7 +99,6 @@ struct PreferencesView: View {
                     }
                 }
                 .disabled(isLoading)
-                .foregroundStyle(.red)
             }
             .navigationTitle("preferences")
             .navigationBarTitleDisplayMode(.inline)

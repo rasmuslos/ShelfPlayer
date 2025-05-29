@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "abc" : {
-
-    },
     "action.cancel" : {
       "localizations" : {
         "de" : {
@@ -930,9 +927,6 @@
       }
     },
     "item.configure" : {
-
-    },
-    "item.convenienceDownload" : {
 
     },
     "item.count.audiobooks %lld" : {
@@ -4026,6 +4020,9 @@
           }
         }
       }
+    },
+    "statistics.listenedToday" : {
+
     },
     "timeline" : {
       "localizations" : {

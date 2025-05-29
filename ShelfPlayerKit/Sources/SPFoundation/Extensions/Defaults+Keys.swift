@@ -99,6 +99,11 @@ public extension Defaults.Keys {
     // MARK: Playback
     
     static let playbackResumeInfo = Key<PlaybackResumeInfo?>("playbackResumeInfo", default: nil)
+    
+    // MARK: Utility
+    
+    // may be used as a cutoff date for playback sessions, as earlier ones may be inaccurate
+    static let version3FirstInstallDate = Key("version3FirstInstallDate", default: Date.now, iCloud: true)
 }
 
 public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
