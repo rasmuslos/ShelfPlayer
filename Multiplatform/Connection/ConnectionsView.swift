@@ -57,11 +57,13 @@ struct ConnectionManager: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         List {
             ConnectionManager()
         }
     }
-    .environment(ConnectionStore())
+    .previewEnvironment()
 }
+#endif

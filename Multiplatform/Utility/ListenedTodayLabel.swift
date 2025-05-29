@@ -101,7 +101,7 @@ struct ListenedTodayListRow: View {
                     .frame(width: 40)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(TimeInterval(progressViewModel.totalMinutesListenedToday) * 60, format: .duration(unitsStyle: .spellOut, allowedUnits: [.second, .minute, .hour], maximumUnitCount: 1))
+                    Text(TimeInterval(progressViewModel.totalMinutesListenedToday) * 60, format: .duration(unitsStyle: .spellOut, allowedUnits: [.second, .minute, .hour], maximumUnitCount: 1, formattingContext: .standalone))
                         .font(.headline)
                     Text("statistics.listenedToday")
                     

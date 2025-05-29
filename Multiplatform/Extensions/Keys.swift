@@ -14,9 +14,6 @@ extension Defaults.Keys {
     
     static let tintColor = Key("tintColor", default: TintPicker.TintColor.shelfPlayer)
     
-    static let lastSpotlightIndex = Key<Date?>("lastSpotlightIndex", default: nil)
-    static let indexedIdentifiers = Key<[String]>("indexedIdentifiers", default: [])
-    
     static let carPlayTabBarLibraries = Key<[Library]?>("carPlayTabBarLibraries", default: nil)
     static let carPlayShowListenNow = Key<Bool>("carPlayShowListenNow", default: true)
     static let carPlayShowOtherLibraries = Key<Bool>("carPlayShowOtherLibraries", default: true)

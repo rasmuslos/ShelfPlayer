@@ -11,7 +11,7 @@ import Intents
 import ShelfPlayerKit
 
 internal struct UserContext {
-    static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "Intents & SpotLight")
+    static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "Intents & Spotlight")
     
     static func run() async throws {
         Task.detached {

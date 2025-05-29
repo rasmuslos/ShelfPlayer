@@ -44,6 +44,15 @@ final actor SpotlightIndexer: Sendable {
         }
     }
     
+    nonisolated func reset() async throws {
+        Defaults[.spotlightIndexCompletionDate] = nil
+        
+        try await index.deleteAllSearchableItems()
+        
+        try await PersistenceManager.shared.keyValue.remove(cluster: "libraryIndexedIDs")
+        try await PersistenceManager.shared.keyValue.remove(cluster: "libraryIndexMetadata")
+    }
+    
     static let shared = SpotlightIndexer()
 }
 
@@ -71,7 +80,7 @@ private extension SpotlightIndexer {
         let candidates = metadata.compactMap { $1.isFinished ? nil : $0 } + libraries.filter { !metadata.keys.contains($0) }
         
         guard let next = candidates.first else {
-            logger.info("SpotLight Indexer finished.")
+            logger.info("Spotlight Indexer finished.")
             
             if Defaults[.spotlightIndexCompletionDate] == nil {
                 Defaults[.spotlightIndexCompletionDate] = .now
