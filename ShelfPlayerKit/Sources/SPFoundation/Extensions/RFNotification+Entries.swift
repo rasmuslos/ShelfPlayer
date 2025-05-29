@@ -31,6 +31,8 @@ public extension RFNotification.IsolatedNotification {
     
     static var synchronizedPlaybackSessions: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.synchronizedPlaybackSessions") }
     static var cachedTimeSpendListeningChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.cachedTimeSpendListeningChanged") }
+    
+    static var listenNowItemsChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.listenNowItemsChanged") }
 }
 
 public extension RFNotification.NonIsolatedNotification {
