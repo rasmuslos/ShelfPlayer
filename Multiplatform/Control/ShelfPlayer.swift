@@ -41,6 +41,8 @@ struct ShelfPlayer {
         }
         #endif
         
+        SpotlightIndexer.shared.run()
+        
         Task {
             await withTaskGroup {
                 $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }
@@ -52,8 +54,9 @@ struct ShelfPlayer {
                     }
                 }
                 
-                $0.addTask { await ContextProvider.updateUserContext() }
                 $0.addTask { await ListenNowCache.shared.preload() }
+                
+                $0.addTask { await ContextProvider.updateUserContext() }
             }
         }
     }

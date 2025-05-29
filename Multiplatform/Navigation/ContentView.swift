@@ -121,15 +121,14 @@ struct ContentView: View {
                 return
             }
             
-            ""
+            ItemIdentifier(identifier).navigate()
         }
         .onContinueUserActivity("io.rfk.shelfPlayer.item") { activity in
             guard let identifier = activity.persistentIdentifier else {
                 return
             }
             
-            let itemID = ItemIdentifier(identifier)
-            itemID.navigate()
+            ItemIdentifier(identifier).navigate()
         }
     }
 }
