@@ -17,11 +17,13 @@ struct DurationComponentsFormatter: FormatStyle {
     var unitsStyle: DateComponentsFormatter.UnitsStyle
     var allowedUnits: NSCalendar.Unit
     var maximumUnitCount: Int
+    var formattingContext: Formatter.Context
     
-    init(unitsStyle: DateComponentsFormatter.UnitsStyle = .abbreviated, allowedUnits: NSCalendar.Unit = [.hour, .minute], maximumUnitCount: Int = 2) {
+    init(unitsStyle: DateComponentsFormatter.UnitsStyle = .abbreviated, allowedUnits: NSCalendar.Unit = [.hour, .minute], maximumUnitCount: Int = 2, formattingContext: Formatter.Context = .unknown) {
         self.unitsStyle = unitsStyle
         self.allowedUnits = allowedUnits
         self.maximumUnitCount = maximumUnitCount
+        self.formattingContext = formattingContext
     }
     
     mutating func unitsStyle(_ unitsStyle: DateComponentsFormatter.UnitsStyle) -> Self {
@@ -50,6 +52,8 @@ struct DurationComponentsFormatter: FormatStyle {
         formatter.collapsesLargestUnit = false
         formatter.maximumUnitCount = maximumUnitCount
         
+        formatter.formattingContext = formattingContext
+        
         if unitsStyle == .positional {
             formatter.zeroFormattingBehavior = .pad
         }
@@ -64,10 +68,11 @@ extension FormatStyle where Self == DurationComponentsFormatter {
     static var duration: DurationComponentsFormatter {
         .init()
     }
-    static func duration(unitsStyle: DateComponentsFormatter.UnitsStyle = .abbreviated, allowedUnits: NSCalendar.Unit = [.hour, .minute], maximumUnitCount: Int = 2) -> DurationComponentsFormatter {
-        .init(unitsStyle: unitsStyle, allowedUnits: allowedUnits, maximumUnitCount: maximumUnitCount)
+    static func duration(unitsStyle: DateComponentsFormatter.UnitsStyle = .abbreviated, allowedUnits: NSCalendar.Unit = [.hour, .minute], maximumUnitCount: Int = 2, formattingContext: Formatter.Context = .unknown) -> DurationComponentsFormatter {
+        .init(unitsStyle: unitsStyle, allowedUnits: allowedUnits, maximumUnitCount: maximumUnitCount, formattingContext: formattingContext)
     }
 }
 
 extension NSCalendar.Unit: Codable, @retroactive Hashable {}
 extension DateComponentsFormatter.UnitsStyle: Codable, @retroactive Hashable {}
+extension Formatter.Context: Codable {}
