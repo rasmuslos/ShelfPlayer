@@ -19,12 +19,6 @@ struct ListenNowSheet: View {
         NavigationStack {
             List {
                 Section {
-                    #if DEBUG
-                    NavigationLink(destination: StatisticsSheet()) {
-                        Label(String("Statistiken"), systemImage: "chart.line.uptrend.xyaxis")
-                    }
-                    #endif
-                    
                     ListenedTodayListRow()
                 }
                 

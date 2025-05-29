@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "a" : {
+
+    },
     "action.cancel" : {
       "localizations" : {
         "de" : {
@@ -1362,6 +1365,9 @@
     "item.grouping.configure.playback" : {
 
     },
+    "item.grouping.configure.playbackRate" : {
+
+    },
     "item.grouping.configure.upNextStrategy" : {
 
     },
@@ -1651,6 +1657,7 @@
       }
     },
     "item.preferences.playbackRate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3292,6 +3299,9 @@
         }
       }
     },
+    "preferences.purge.spotlight" : {
+
+    },
     "preferences.settings" : {
       "localizations" : {
         "de" : {
@@ -3371,6 +3381,12 @@
           }
         }
       }
+    },
+    "preferences.spotlightIndex %@" : {
+
+    },
+    "preferences.spotlightIndex.pending" : {
+
     },
     "preferences.support" : {
       "localizations" : {

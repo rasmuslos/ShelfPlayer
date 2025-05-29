@@ -25,7 +25,7 @@ struct GroupingConfigurationSheet: View {
                     @Bindable var viewModel = viewModel
                     
                     Section("item.grouping.configure.playback") {
-                        PlaybackRatePicker(label: "item.preferences.playbackRate", selection: $viewModel.playbackRate)
+                        PlaybackRatePicker(label: "item.grouping.configure.playbackRate", selection: $viewModel.playbackRate)
                             .bold(viewModel.isPlaybackRateCustomized)
                         
                         Picker("item.grouping.configure.upNextStrategy", selection: $viewModel.upNextStrategy) {

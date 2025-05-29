@@ -44,7 +44,9 @@ private extension CarPlayListenNowController {
         Task {
             let (sections, controllers) = await withTaskGroup {
                 $0.addTask { await self.buildListenNowSection() }
+                
                 $0.addTask { await self.buildPersistedAudiobooksSection() }
+                $0.addTask { await self.buildPersistedEpisodesSection() }
                 
                 var sections = [CPListSection]()
                 var controllers = [CarPlayItemController]()
@@ -77,22 +79,57 @@ private extension CarPlayListenNowController {
         }
     }
     nonisolated func buildPersistedAudiobooksSection() async -> ([CPListSection], [CarPlayItemController]) {
-        do {
-            let audiobooks = try await PersistenceManager.shared.download.audiobooks()
-            
-            guard !audiobooks.isEmpty else {
-                return ([], [])
-            }
-            
-            return await MainActor.run {
-                let controllers = audiobooks.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-                let section = CPListSection(items: controllers.map(\.row), header: String(localized: "row.downloaded.audiobooks"), headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil)
-                
-                return ([section], controllers)
-            }
-        } catch {
-            await CarPlayDelegate.logger.error("Failed to load audiobooks: \(error)")
+        let audiobooks = try? await PersistenceManager.shared.download.audiobooks()
+        
+        guard let audiobooks else {
             return ([], [])
+        }
+        
+        return await MainActor.run {
+            let controllers = audiobooks.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
+            let section = CPListSection(items: controllers.map(\.row), header: String(localized: "row.downloaded.audiobooks"), headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil)
+            
+            return ([section], controllers)
+        }
+    }
+    nonisolated func buildPersistedEpisodesSection() async -> ([CPListSection], [CarPlayItemController]) {
+        let (podcasts, episodes) = (try? await PersistenceManager.shared.download.podcasts(), try? await PersistenceManager.shared.download.episodes())
+        
+        guard let podcasts, let episodes else {
+            return ([], [])
+        }
+        
+        let grouped = Dictionary(grouping: episodes, by: \.podcastID).sorted { $0.key.description < $1.key.description }
+        
+        let images = await withTaskGroup {
+            for podcast in podcasts {
+                $0.addTask {
+                    (podcast.id, await podcast.id.platformCover(size: .small))
+                }
+            }
+            
+            return await $0.reduce(into: [:]) {
+                $0[$1.0] = $1.1
+            }
+        }
+        
+        return await MainActor.run {
+            var sections = [CPListSection]()
+            var controllers = [CarPlayItemController]()
+            
+            for (podcastID, contained) in grouped {
+                guard let podcast = podcasts.first(where: { $0.id == podcastID }) else {
+                    continue
+                }
+                
+                let items = contained.map { CarPlayPlayableItemController(item: $0, displayCover: false) }
+                let section = CPListSection(items: items.map(\.row), header: podcast.name, headerSubtitle: podcast.authors.formatted(.list(type: .and, width: .short)), headerImage: images[podcastID], headerButton: nil, sectionIndexTitle: nil)
+                
+                sections.append(section)
+                controllers += items
+            }
+            
+            return (sections, controllers)
         }
     }
 }

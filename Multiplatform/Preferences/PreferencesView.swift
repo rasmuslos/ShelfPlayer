@@ -6,19 +6,9 @@
 //
 
 import SwiftUI
-import Nuke
 import ShelfPlayerKit
 
 struct PreferencesView: View {
-    @State private var navigationPath = NavigationPath()
-    
-    @State private var isLoading = false
-    
-    @State private var cacheDirectorySize: Int? = nil
-    @State private var downloadDirectorySize: Int? = nil
-    
-    @State private var notifyError = false
-    
     @ViewBuilder
     private var connectionPreferences: some View {
         List {
@@ -60,129 +50,10 @@ struct PreferencesView: View {
                         Label("preferences.debug", systemImage: "ladybug.fill")
                     }
                 }
-                
-                Section {
-                    Button {
-                        clearCache()
-                    } label: {
-                        Label {
-                            HStack(spacing: 0) {
-                                Text("preferences.purge.cache")
-                                
-                                if let cacheDirectorySize {
-                                    Spacer(minLength: 8)
-                                    Text(cacheDirectorySize.formatted(.byteCount(style: .file)))
-                                        .foregroundStyle(.gray)
-                                }
-                            }
-                        } icon: {
-                            Image(systemName: "square.stack.3d.up.slash")
-                        }
-                    }
-                    
-                    Button {
-                        removeDownloads()
-                    } label: {
-                        Label {
-                            HStack(spacing: 0) {
-                                Text("preferences.purge.downloads")
-                                
-                                if let downloadDirectorySize {
-                                    Spacer(minLength: 8)
-                                    Text(downloadDirectorySize.formatted(.byteCount(style: .file)))
-                                        .foregroundStyle(.gray)
-                                }
-                            }
-                        } icon: {
-                            Image(systemName: "slash.circle")
-                        }
-                    }
-                }
-                .disabled(isLoading)
             }
             .navigationTitle("preferences")
             .navigationBarTitleDisplayMode(.inline)
             .foregroundStyle(.primary)
-        }
-        .sensoryFeedback(.error, trigger: notifyError)
-        .task {
-            load()
-        }
-    }
-    
-    private nonisolated func load() {
-        Task {
-            let (cacheSize, downloadsSize) = ((ImagePipeline.shared.configuration.dataCache as? DataCache)?.totalAllocatedSize, try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize())
-            
-            await MainActor.withAnimation {
-                if let cacheSize, cacheSize > 0 {
-                    cacheDirectorySize = cacheSize
-                } else {
-                    cacheDirectorySize = nil
-                }
-                
-                if let downloadsSize, downloadsSize > 0 {
-                    downloadDirectorySize = downloadsSize
-                } else {
-                    downloadDirectorySize = nil
-                }
-            }
-        }
-    }
-    private nonisolated func clearCache() {
-        Task {
-            await MainActor.withAnimation {
-                isLoading = true
-            }
-            
-            let success: Bool
-            
-            do {
-                try await ShelfPlayer.invalidateCache()
-                success = true
-            } catch {
-                success = false
-            }
-            
-            try? await Task.sleep(for: .seconds(1))
-            
-            load()
-            
-            await MainActor.withAnimation {
-                isLoading = false
-                
-                if !success {
-                    notifyError.toggle()
-                }
-            }
-        }
-    }
-    private nonisolated func removeDownloads() {
-        Task {
-            await MainActor.withAnimation {
-                isLoading = true
-            }
-            
-            let success: Bool
-            
-            do {
-                try await PersistenceManager.shared.download.removeAll()
-                success = true
-            } catch {
-                success = false
-            }
-            
-            try? await Task.sleep(for: .seconds(1))
-            
-            load()
-            
-            await MainActor.withAnimation {
-                isLoading = false
-                
-                if !success {
-                    notifyError.toggle()
-                }
-            }
         }
     }
 }
@@ -213,16 +84,14 @@ struct CompactPreferencesToolbarModifier: ViewModifier {
 
 #if DEBUG
 #Preview {
-    NavigationStack {
-        PreferencesView()
-    }
-    .previewEnvironment()
+    PreferencesView()
+        .previewEnvironment()
 }
 #endif
 
 /*
  
  guard let size = try? (ImagePipeline.shared.configuration.dataCache as? DataCache)?.path.directoryTotalAllocatedSize() else {
-     return
+ return
  }
  */
