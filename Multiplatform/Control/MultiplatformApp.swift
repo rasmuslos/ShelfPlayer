@@ -19,6 +19,10 @@ struct MultiplatformApp: App {
         #endif
         
         ShelfPlayer.launchHook()
+        
+        if ProcessInfo.processInfo.environment["RUN_SPOTLIGHT_INDEX"] == "YES" {
+            SpotlightIndexer.shared.run()
+        }
     }
     
     var body: some Scene {

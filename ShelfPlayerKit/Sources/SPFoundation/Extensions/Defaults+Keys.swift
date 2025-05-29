@@ -102,6 +102,8 @@ public extension Defaults.Keys {
     
     // MARK: Utility
     
+    static let spotlightIndexCompletionDate = Key<Date?>("spotlightIndexCompletionDate", default: nil)
+    
     // may be used as a cutoff date for playback sessions, as earlier ones may be inaccurate
     static let version3FirstInstallDate = Key("version3FirstInstallDate", default: Date.now, iCloud: true)
 }
