@@ -8,6 +8,14 @@
 import Foundation
 import Defaults
 
+private var sharedSuite: UserDefaults {
+    if ShelfPlayerKit.enableCentralized {
+        UserDefaults(suiteName: "group.io.rfk.shelfplayer")!
+    } else {
+        UserDefaults.standard
+    }
+}
+
 public extension Defaults.Keys {
     // MARK: Settings
     
@@ -58,6 +66,8 @@ public extension Defaults.Keys {
     static let enableConvenienceDownloads = Key("enableConvenienceDownloads", default: true)
     static let enableListenNowDownloads = Key("enableListenNowDownloads", default: true)
     
+    static let listenTimeTarget = Key<Int>("listenTimeTarget", default: 30, suite: sharedSuite)
+    
     // MARK: Filtering & Sorting
     
     static let audiobooksAscending = Key<Bool>("audiobooksAscending", default: false, iCloud: true)
@@ -102,6 +112,7 @@ public extension Defaults.Keys {
     
     // MARK: Utility
     
+    static let listenedTodayWidgetValue = Key<ListenedTodayPayload?>("listenedTodayWidgetValue", default: nil, suite: sharedSuite)
     static let spotlightIndexCompletionDate = Key<Date?>("spotlightIndexCompletionDate", default: nil)
     
     // may be used as a cutoff date for playback sessions, as earlier ones may be inaccurate
@@ -115,5 +126,15 @@ public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
     public init(itemID: ItemIdentifier, started: Date) {
         self.itemID = itemID
         self.started = started
+    }
+}
+
+public struct ListenedTodayPayload: Codable, Defaults.Serializable {
+    public var total: Int
+    public var updated: Date
+    
+    public init(total: Int, updated: Date) {
+        self.total = total
+        self.updated = updated
     }
 }

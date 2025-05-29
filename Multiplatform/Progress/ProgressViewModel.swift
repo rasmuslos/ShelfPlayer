@@ -28,6 +28,8 @@ final class ProgressViewModel {
     private var currentlyPlayingItemID: ItemIdentifier?
     private var tasks = [ItemIdentifier.ConnectionID: Task<Void, Never>]()
     
+    private var widgetUpdate: Task<Void, Never>?
+    
     init() {
         updateCachedTimeSpendListening()
         
@@ -138,10 +140,29 @@ private extension ProgressViewModel {
             
             await MainActor.run {
                 self.cachedTimeSpendListening = cachedSessions + pendingOpen
+                
+                if self.widgetUpdate == nil {
+                    widgetUpdate = .detached {
+                        while !Task.isCancelled {
+                            guard await self.todaySessionLoader.isFinished else {
+                                try? await Task.sleep(for: .seconds(1))
+                                continue
+                            }
+                            
+                            let totalMinutesListenedToday = await self.totalMinutesListenedToday
+                            
+                            WidgetManager.timeListenedTodayChanged(totalMinutesListenedToday)
+                            self.logger.info("Cached time spent listening for widget: \(totalMinutesListenedToday)")
+                            
+                            break
+                        }
+                        
+                        await MainActor.run {
+                            self.widgetUpdate = nil
+                        }
+                    }
+                }
             }
-            
-            Defaults[.listenedTodayCache] = await .init(total: cachedSessions + pendingOpen + todaySessionLoader.totalTimeSpendListening, updated: .now)
-            logger.info("Cached time spent listening for widget")
         }
     }
 }
