@@ -20,25 +20,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>CoreSpotlightActions</key>
-	<array>
-		<dict>
-			<key>CoreSpotlightActionIdentifier</key>
-			<string>play</string>
-			<key>CoreSpotlightActionSymbolImage</key>
-			<string>play.fill</string>
-			<key>CoreSpotlightActionTitle</key>
-			<string>Play</string>
-		</dict>
-		<dict>
-			<key>CoreSpotlightActionIdentifier</key>
-			<string>viewPodcast</string>
-			<key>CoreSpotlightActionSymbolImage</key>
-			<string>rectangle.stack</string>
-			<key>CoreSpotlightActionTitle</key>
-			<string>View Podcast</string>
-		</dict>
-	</array>
 	<key>CoreSpotlightContinuation</key>
 	<true/>
 	<key>INAlternativeAppNames</key>
