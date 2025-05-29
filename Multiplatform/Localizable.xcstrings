@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "a" : {
-
-    },
     "action.cancel" : {
       "localizations" : {
         "de" : {

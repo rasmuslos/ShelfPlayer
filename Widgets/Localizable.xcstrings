@@ -1,0 +1,26 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "widget.listenedToday.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows your listening time goal and your progress towards it."
+          }
+        }
+      }
+    },
+    "widget.listenedToday.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listened today"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

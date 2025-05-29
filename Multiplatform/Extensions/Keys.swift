@@ -17,9 +17,6 @@ extension Defaults.Keys {
     static let carPlayTabBarLibraries = Key<[Library]?>("carPlayTabBarLibraries", default: nil)
     static let carPlayShowListenNow = Key<Bool>("carPlayShowListenNow", default: true)
     static let carPlayShowOtherLibraries = Key<Bool>("carPlayShowOtherLibraries", default: true)
-    
-    static let listenTimeTarget = Key<Int>("listenTimeTarget", default: 30)
-    static let listenedTodayCache = Key<ListenedTodayPayload?>("listenedTodayCache", default: nil)
 }
 
 extension RFNotification.IsolatedNotification {
@@ -34,9 +31,4 @@ extension RFNotification.IsolatedNotification {
     
     static var reloadImages: IsolatedNotification<ItemIdentifier?> { .init("io.rfk.shelfPlayer.reloadImages") }
     static var performBackgroundSessionSync: IsolatedNotification<ItemIdentifier.ConnectionID?> { .init("io.rfk.shelfPlayer.performBackgroundSessionSync") }
-}
-
-struct ListenedTodayPayload: Codable, Defaults.Serializable {
-    var total: TimeInterval
-    var updated: Date
 }

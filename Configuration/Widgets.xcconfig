@@ -1,0 +1,8 @@
+//
+//  Widgets.xcconfig
+//  ShelfPlayer
+//
+//  Created by Rasmus Krämer on 29.05.25.
+//
+
+CODE_SIGN_ENTITLEMENTS = $(WIDGETS_CODE_SIGN_ENTITLEMENTS)
