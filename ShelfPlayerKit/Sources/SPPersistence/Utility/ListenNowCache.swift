@@ -14,7 +14,9 @@ import SPNetwork
 
 public actor ListenNowCache: Sendable {
     private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ListenNowCache")
+    
     private var items = [PlayableItem]()
+    private var currentProgressIDs = [String]()
     
     private init() {
         RFNotification[.progressEntityUpdated].subscribe { [weak self] _ in
@@ -43,6 +45,15 @@ public actor ListenNowCache: Sendable {
     private func update() async {
         do {
             let entities = try await PersistenceManager.shared.progress.activeProgressEntities.sorted { $0.lastUpdate > $1.lastUpdate }
+            
+            let idMapped = entities.map(\.id)
+            
+            guard idMapped != currentProgressIDs else {
+                return
+            }
+            
+            currentProgressIDs = idMapped
+            
             let items = await withTaskGroup {
                 for entity in entities {
                     $0.addTask {
@@ -64,6 +75,8 @@ public actor ListenNowCache: Sendable {
                     && $0.id.connectionID == entity.connectionID
                 }
             }
+            
+            await RFNotification[.listenNowItemsChanged].send()
         } catch {
             logger.error("Failed to update cache: \(error)")
         }

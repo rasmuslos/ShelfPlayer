@@ -19,15 +19,13 @@ struct ListenNowSheet: View {
         NavigationStack {
             List {
                 Section {
-                    NavigationLink(destination: Text("abc")) {
-                        Label("item.convenienceDownload", systemImage: "arrow.down.circle")
-                    }
-                    
                     #if DEBUG
-                    NavigationLink(destination: Text(verbatim: "stats")) {
+                    NavigationLink(destination: StatisticsSheet()) {
                         Label(String("Statistiken"), systemImage: "chart.line.uptrend.xyaxis")
                     }
                     #endif
+                    
+                    ListenedTodayListRow()
                 }
                 
                 if listenNowItems.isEmpty {
@@ -54,7 +52,7 @@ struct ListenNowSheet: View {
         .refreshable {
             load(refresh: true)
         }
-        .onReceive(RFNotification[.playbackItemChanged].publisher()) { _ in
+        .onReceive(RFNotification[.listenNowItemsChanged].publisher()) { _ in
             load(refresh: false)
         }
     }
@@ -82,25 +80,12 @@ struct ListenNowSheet: View {
 struct ListenNowSheetToggle: View {
     @Environment(Satellite.self) private var satellite
     
-    @Default(.listenTimeTarget) private var listenTimeTarget
-    
     var body: some View {
         Menu {
-            ControlGroup {
-                Button("action.decrease", systemImage: "minus") {
-                    guard listenTimeTarget > 1 else {
-                        return
-                    }
-                    
-                    listenTimeTarget -= 1
-                }
-                
-                Button("action.increase", systemImage: "plus") {
-                    listenTimeTarget += 1
-                }
-            }
+            ListenedTodayLabel.AdjustMenuInner()
         } label: {
             ListenedTodayLabel()
+                .frame(width: 22)
         } primaryAction: {
             satellite.present(.listenNow)
         }
