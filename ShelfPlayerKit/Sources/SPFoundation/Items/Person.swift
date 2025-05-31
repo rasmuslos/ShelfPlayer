@@ -14,4 +14,20 @@ public final class Person: Item, @unchecked Sendable {
         self.bookCount = bookCount
         super.init(id: id, name: name, authors: [], description: description, genres: [], addedAt: addedAt, released: nil)
     }
+    
+    required init(from decoder: Decoder) throws {
+        self.bookCount = try decoder.container(keyedBy: CodingKeys.self).decode(Int.self, forKey: .bookCount)
+        try super.init(from: decoder)
+    }
+    
+    public override func encode(to encoder: Encoder) throws {
+        try super.encode(to: encoder)
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(bookCount, forKey: .bookCount)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case bookCount
+    }
 }

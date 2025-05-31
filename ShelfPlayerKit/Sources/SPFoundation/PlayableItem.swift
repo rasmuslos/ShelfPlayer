@@ -17,6 +17,25 @@ public class PlayableItem: Item, @unchecked Sendable {
         
         super.init(id: id, name: name, authors: authors, description: description, genres: genres, addedAt: addedAt, released: released)
     }
+    
+    required init(from decoder: Decoder) throws {
+        self.size = try decoder.container(keyedBy: CodingKeys.self).decode(Int64.self, forKey: .size)
+        self.duration = try decoder.container(keyedBy: CodingKeys.self).decode(TimeInterval.self, forKey: .duration)
+        try super.init(from: decoder)
+    }
+    
+    public override func encode(to encoder: Encoder) throws {
+        try super.encode(to: encoder)
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(size, forKey: .size)
+        try container.encode(size, forKey: .duration)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case size
+        case duration
+    }
 }
 
 public extension PlayableItem {

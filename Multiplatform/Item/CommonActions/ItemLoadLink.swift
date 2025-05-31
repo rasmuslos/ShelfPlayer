@@ -75,21 +75,4 @@ extension ItemIdentifier.ItemType {
             "error.unavailable.episode"
         }
     }
-    
-    var icon: String {
-        switch self {
-        case .audiobook:
-            "book"
-        case .author:
-            "person"
-        case .narrator:
-            "microphone.fill"
-        case .series:
-            "rectangle.grid.2x2"
-        case .podcast:
-            "square.stack"
-        case .episode:
-            "play.square"
-        }
-    }
 }

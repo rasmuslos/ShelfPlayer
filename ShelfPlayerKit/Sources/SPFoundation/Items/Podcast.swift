@@ -25,6 +25,32 @@ public final class Podcast: Item, @unchecked Sendable {
         
         super.init(id: id, name: name, authors: authors, description: description, genres: genres, addedAt: addedAt, released: released)
     }
+    
+    required init(from decoder: Decoder) throws {
+        self.explicit = try decoder.container(keyedBy: CodingKeys.self).decode(Bool.self, forKey: .explicit)
+        self.episodeCount = try decoder.container(keyedBy: CodingKeys.self).decode(Int.self, forKey: .episodeCount)
+        self.incompleteEpisodeCount = try decoder.container(keyedBy: CodingKeys.self).decode(Int.self, forKey: .incompleteEpisodeCount)
+        self.publishingType = try decoder.container(keyedBy: CodingKeys.self).decode(PodcastType.self, forKey: .publishingType)
+        
+        try super.init(from: decoder)
+    }
+    
+    public override func encode(to encoder: Encoder) throws {
+        try super.encode(to: encoder)
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(explicit, forKey: .explicit)
+        try container.encode(episodeCount, forKey: .episodeCount)
+        try container.encode(incompleteEpisodeCount, forKey: .incompleteEpisodeCount)
+        try container.encode(publishingType, forKey: .publishingType)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case explicit
+        case episodeCount
+        case incompleteEpisodeCount
+        case publishingType
+    }
 }
 
 public extension Podcast {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class Item: Identifiable, @unchecked Sendable {
+public class Item: Identifiable, @unchecked Sendable, Codable {
     public let id: ItemIdentifier
     
     public let name: String

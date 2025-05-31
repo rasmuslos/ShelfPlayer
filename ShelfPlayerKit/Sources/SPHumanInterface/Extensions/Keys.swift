@@ -8,10 +8,10 @@
 import Foundation
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import SPFoundation
 
-extension EnvironmentValues {
-    @Entry var library: Library? = nil    
+public extension EnvironmentValues {
+    @Entry var library: Library? = nil
     @Entry var displayContext: DisplayContext = .unknown
     
     @Entry var connectionID: ItemIdentifier.ConnectionID? = nil
@@ -19,7 +19,7 @@ extension EnvironmentValues {
     @Entry var playbackBottomOffset: CGFloat = 0
 }
 
-enum DisplayContext {
+public enum DisplayContext {
     case unknown
     case person(person: Person)
     case series(series: Series)

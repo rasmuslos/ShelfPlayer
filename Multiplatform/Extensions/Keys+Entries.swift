@@ -29,6 +29,5 @@ extension RFNotification.IsolatedNotification {
     static var changeLibrary: IsolatedNotification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
     static var changeOfflineMode: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
     
-    static var reloadImages: IsolatedNotification<ItemIdentifier?> { .init("io.rfk.shelfPlayer.reloadImages") }
     static var performBackgroundSessionSync: IsolatedNotification<ItemIdentifier.ConnectionID?> { .init("io.rfk.shelfPlayer.performBackgroundSessionSync") }
 }

@@ -27,6 +27,34 @@ public final class Audiobook: PlayableItem, @unchecked Sendable {
         
         super.init(id: id, name: name, authors: authors, description: description, genres: genres, addedAt: addedAt, released: released, size: size, duration: duration)
     }
+    
+    required init(from decoder: Decoder) throws {
+        self.subtitle = try decoder.container(keyedBy: CodingKeys.self).decode(String?.self, forKey: .subtitle)
+        self.narrators = try decoder.container(keyedBy: CodingKeys.self).decode([String].self, forKey: .narrators)
+        self.series = try decoder.container(keyedBy: CodingKeys.self).decode([SeriesFragment].self, forKey: .series)
+        self.explicit = try decoder.container(keyedBy: CodingKeys.self).decode(Bool.self, forKey: .explicit)
+        self.abridged = try decoder.container(keyedBy: CodingKeys.self).decode(Bool.self, forKey: .abridged)
+        
+        try super.init(from: decoder)
+    }
+    
+    public override func encode(to encoder: Encoder) throws {
+        try super.encode(to: encoder)
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(subtitle, forKey: .subtitle)
+        try container.encode(narrators, forKey: .narrators)
+        try container.encode(series, forKey: .series)
+        try container.encode(abridged, forKey: .abridged)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case subtitle
+        case narrators
+        case series
+        case explicit
+        case abridged
+    }
 }
 
 public extension Audiobook {

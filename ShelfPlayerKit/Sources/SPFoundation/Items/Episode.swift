@@ -22,6 +22,29 @@ public final class Episode: PlayableItem, @unchecked Sendable {
         super.init(id: id, name: name, authors: authors, description: description, genres: [], addedAt: addedAt, released: released, size: size, duration: duration)
     }
     
+    required init(from decoder: Decoder) throws {
+        self.podcastName = try decoder.container(keyedBy: CodingKeys.self).decode(String.self, forKey: .podcastName)
+        self.type = try decoder.container(keyedBy: CodingKeys.self).decode(EpisodeType.self, forKey: .type)
+        self.index = try decoder.container(keyedBy: CodingKeys.self).decode(EpisodeIndex.self, forKey: .index)
+        
+        try super.init(from: decoder)
+    }
+    
+    public override func encode(to encoder: Encoder) throws {
+        try super.encode(to: encoder)
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(podcastName, forKey: .type)
+        try container.encode(type, forKey: .type)
+        try container.encode(index, forKey: .type)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case podcastName
+        case type
+        case index
+    }
+    
     public struct EpisodeIndex {
         public let season: String?
         public let episode: String

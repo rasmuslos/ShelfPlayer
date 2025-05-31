@@ -26,6 +26,7 @@ let package = Package(
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPNetwork", condition: .none),
             .targetItem(name: "SPPersistence", condition: .none),
+            .targetItem(name: "SPHumanInterface", condition: .none),
             
             .byName(name: "RFKit"),
         ]),
@@ -44,7 +45,8 @@ let package = Package(
         // Network
         .target(name: "SPNetwork", dependencies: [
             .byName(name: "RFKit"),
-            .byName(name: "Nuke"),
+            
+            .product(name: "Nuke", package: "Nuke"),
             
             .targetItem(name: "SPFoundation", condition: .none),
         ]),
@@ -56,6 +58,20 @@ let package = Package(
             
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPNetwork", condition: .none),
+        ]),
+        
+        // Human Interface
+        .target(name: "SPHumanInterface", dependencies: [
+            .byName(name: "RFKit"),
+            
+            .product(name: "Nuke", package: "Nuke"),
+            .product(name: "NukeUI", package: "Nuke"),
+            
+            .product(name: "Defaults", package: "Defaults"),
+            
+            .targetItem(name: "SPFoundation", condition: .none),
+            .targetItem(name: "SPNetwork", condition: .none),
+            .targetItem(name: "SPPersistence", condition: .none),
         ]),
         
         // Playback
