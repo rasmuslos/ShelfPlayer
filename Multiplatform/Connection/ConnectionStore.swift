@@ -11,11 +11,11 @@ import ShelfPlayerKit
 
 @Observable @MainActor
 final class ConnectionStore {
-    var current: PersistenceManager.AuthorizationSubsystem.Connection?
+    var current: Connection?
     
     private(set) var didLoad: Bool
     
-    private(set) var connections: [ItemIdentifier.ConnectionID: PersistenceManager.AuthorizationSubsystem.Connection]
+    private(set) var connections: [ItemIdentifier.ConnectionID: Connection]
     
     private(set) var libraries: [ItemIdentifier.ConnectionID: [Library]]
     private(set) var offlineConnections: [ItemIdentifier.ConnectionID]
@@ -67,7 +67,7 @@ final class ConnectionStore {
         }
     }
     
-    var flat: [PersistenceManager.AuthorizationSubsystem.Connection] {
+    var flat: [Connection] {
         connections.values.sorted { $0.friendlyName < $1.friendlyName }
     }
 }

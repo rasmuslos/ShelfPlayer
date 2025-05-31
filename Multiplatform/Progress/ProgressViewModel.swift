@@ -16,23 +16,13 @@ import SPPlayback
 final class ProgressViewModel {
     let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ProgressViewModel")
     
-    @ObservableDefault(.listenTimeTarget) @ObservationIgnored
-    var listenTimeTarget: Int
-    
-    private(set) var cachedTimeSpendListening = 0.0
-    let todaySessionLoader = SessionLoader(filter: .today)
-    
     private(set) var importedConnectionIDs = [String]()
     private(set) var importFailedConnectionIDs = [String]()
     
     private var currentlyPlayingItemID: ItemIdentifier?
     private var tasks = [ItemIdentifier.ConnectionID: Task<Void, Never>]()
     
-    private var widgetUpdate: Task<Void, Never>?
-    
     init() {
-        updateCachedTimeSpendListening()
-        
         RFNotification[.changeOfflineMode].subscribe { [weak self] _ in
             self?.importedConnectionIDs.removeAll()
             self?.importFailedConnectionIDs.removeAll()
@@ -58,14 +48,6 @@ final class ProgressViewModel {
                 self?.syncAllConnections()
             }
         }
-        
-        RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
-            self?.updateCachedTimeSpendListening()
-        }
-    }
-    
-    var totalMinutesListenedToday: Int {
-        Int((todaySessionLoader.totalTimeSpendListening + cachedTimeSpendListening) / 60)
     }
     
     func attemptSync(for connectionID: ItemIdentifier.ConnectionID) {
@@ -118,10 +100,6 @@ final class ProgressViewModel {
             }
         }
     }
-    
-    func refreshListenedToday() {
-        todaySessionLoader.refresh()
-    }
 }
 
 private extension ProgressViewModel {
@@ -129,39 +107,6 @@ private extension ProgressViewModel {
         Task {
             for connectionID in await PersistenceManager.shared.authorization.connections.keys {
                 attemptSync(for: connectionID)
-            }
-        }
-    }
-    
-    nonisolated func updateCachedTimeSpendListening() {
-        Task {
-            let cachedSessions = try await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
-            let pendingOpen = await AudioPlayer.shared.pendingTimeSpendListening ?? 0
-            
-            await MainActor.run {
-                self.cachedTimeSpendListening = cachedSessions + pendingOpen
-                
-                if self.widgetUpdate == nil {
-                    widgetUpdate = .detached {
-                        while !Task.isCancelled {
-                            guard await self.todaySessionLoader.isFinished else {
-                                try? await Task.sleep(for: .seconds(1))
-                                continue
-                            }
-                            
-                            let totalMinutesListenedToday = await self.totalMinutesListenedToday
-                            
-                            WidgetManager.timeListenedTodayChanged(totalMinutesListenedToday)
-                            self.logger.info("Cached time spent listening for widget: \(totalMinutesListenedToday)")
-                            
-                            break
-                        }
-                        
-                        await MainActor.run {
-                            self.widgetUpdate = nil
-                        }
-                    }
-                }
             }
         }
     }

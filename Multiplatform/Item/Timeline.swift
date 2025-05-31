@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import ShelfPlayerKit
+import SPPlayback
 
 struct Timeline: View {
     @Environment(Satellite.self) private var satellite

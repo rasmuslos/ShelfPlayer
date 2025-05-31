@@ -42,6 +42,7 @@ struct ShelfPlayer {
         #endif
         
         SpotlightIndexer.shared.run()
+        WidgetManager.setupObservers()
         
         Task {
             await withTaskGroup {

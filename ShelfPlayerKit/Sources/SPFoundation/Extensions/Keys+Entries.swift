@@ -7,6 +7,7 @@
 
 import Foundation
 import Defaults
+import RFNotifications
 
 private var sharedSuite: UserDefaults {
     if ShelfPlayerKit.enableCentralized {
@@ -15,6 +16,8 @@ private var sharedSuite: UserDefaults {
         UserDefaults.standard
     }
 }
+
+// MARK: Defaults
 
 public extension Defaults.Keys {
     // MARK: Settings
@@ -114,9 +117,6 @@ public extension Defaults.Keys {
     
     static let listenedTodayWidgetValue = Key<ListenedTodayPayload?>("listenedTodayWidgetValue", default: nil, suite: sharedSuite)
     static let spotlightIndexCompletionDate = Key<Date?>("spotlightIndexCompletionDate", default: nil)
-    
-    // may be used as a cutoff date for playback sessions, as earlier ones may be inaccurate
-    static let version3FirstInstallDate = Key("version3FirstInstallDate", default: Date.now, iCloud: true)
 }
 
 public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
@@ -138,3 +138,79 @@ public struct ListenedTodayPayload: Codable, Defaults.Serializable {
         self.updated = updated
     }
 }
+
+// MARK: Notifications
+
+public extension RFNotification.NonIsolatedNotification {
+    static var shake: NonIsolatedNotification<TimeInterval> { .init("io.rfk.shelfPlayer.shake") }
+    static var finalizePlaybackReporting: NonIsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.finalizePlaybackReporting") }
+}
+
+public extension RFNotification.IsolatedNotification {
+    // MARK: Authorization
+    
+    static var connectionsChanged: IsolatedNotification<[ItemIdentifier.ConnectionID: Connection]> {
+        .init("io.rfk.shelfPlayerKit.connectionsChanged")
+    }
+    static var removeConnection: IsolatedNotification<ItemIdentifier.ConnectionID> {
+        .init("io.rfk.shelfPlayerKit.removeConnection")
+    }
+    
+    // MARK: Progress
+    
+    static var progressEntityUpdated: IsolatedNotification<(connectionID: String, primaryID: String, groupingID: String?, ProgressEntity?)> {
+        .init("io.rfk.shelfPlayerKit.progressEntity.updated")
+    }
+    static var invalidateProgressEntities: IsolatedNotification<String?> {
+        .init("io.rfk.shelfPlayerKit.progressEntity.invalidate")
+    }
+    
+    // MARK: Download
+    
+    static var downloadStatusChanged: IsolatedNotification<(itemID: ItemIdentifier, status: DownloadStatus)?> {
+        .init("io.rfk.shelfPlayerKit.downloadStatus.updated")
+    }
+    static func downloadProgressChanged(_ itemID: ItemIdentifier) -> IsolatedNotification<(assetID: UUID, weight: Percentage, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)> {
+        .init("io.rfk.shelfPlayerKit.progress.updated_\(itemID.description)")
+    }
+    
+    // MARK: Bookmarks
+    
+    static var bookmarksChanged: IsolatedNotification<ItemIdentifier> {
+        .init("io.rfk.shelfPlayerKit.bookmarksChanged")
+    }
+    
+    // MARK: Playback
+    
+    static var playbackItemChanged: IsolatedNotification<(ItemIdentifier, [Chapter], TimeInterval)> { .init("io.rfk.shelfPlayerKit.playbackItemChanged") }
+    static var playStateChanged: IsolatedNotification<(Bool)> { .init("io.rfk.shelfPlayerKit.playStateChanged") }
+    
+    static var skipped: IsolatedNotification<(Bool)> { .init("io.rfk.shelfPlayerKit.skipped") }
+    
+    static var bufferHealthChanged: IsolatedNotification<(Bool)> { .init("io.rfk.shelfPlayerKit.bufferHealthChanged") }
+    
+    static var durationsChanged: IsolatedNotification<(itemDuration: TimeInterval?, chapterDuration: TimeInterval?)> { .init("io.rfk.shelfPlayerKit.durationsChanged") }
+    static var currentTimesChanged: IsolatedNotification<(itemDuration: TimeInterval?, chapterDuration: TimeInterval?)> { .init("io.rfk.shelfPlayerKit.currentTimesChanged") }
+    
+    static var chapterChanged: IsolatedNotification<Chapter?> { .init("io.rfk.shelfPlayerKit.chapterChanged") }
+    
+    static var volumeChanged: IsolatedNotification<Percentage> { .init("io.rfk.shelfPlayerKit.volumeChanged") }
+    static var playbackRateChanged: IsolatedNotification<Percentage> { .init("io.rfk.shelfPlayerKit.playbackRateChanged") }
+    
+    static var queueChanged: IsolatedNotification<[ItemIdentifier]> { .init("io.rfk.shelfPlayerKit.queueChanged") }
+    static var upNextQueueChanged: IsolatedNotification<[ItemIdentifier]> { .init("io.rfk.shelfPlayerKit.upNextQueueChanged") }
+    
+    static var playbackStopped: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackStopped") }
+    
+    // MARK: Utility
+    
+    // Sessions
+    
+    static var timeSpendListeningChanged: IsolatedNotification<Int> { .init("io.rfk.shelfPlayerKit.timeSpendListeningChanged") }
+    static var cachedTimeSpendListeningChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.cachedTimeSpendListeningChanged") }
+    
+    static var synchronizedPlaybackSessions: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.synchronizedPlaybackSessions") }
+    
+    static var listenNowItemsChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.listenNowItemsChanged") }
+}
+

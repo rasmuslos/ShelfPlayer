@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
 import Defaults
+import ShelfPlayerKit
 import SPPlayback
 
 struct ListenedTodayLabel: View {
-    @Environment(ProgressViewModel.self) private var progressViewModel
+    @Environment(ListenedTodayTracker.self) private var listenedTodayTracker
+    
     @Default(.tintColor) private var tintColor
     
     private let availablePercentage: CGFloat = 0.75
@@ -38,15 +39,15 @@ struct ListenedTodayLabel: View {
                     .rotationEffect(.degrees(135))
                 
                 Circle()
-                    .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(progressViewModel.totalMinutesListenedToday) / CGFloat(progressViewModel.listenTimeTarget)))))
+                    .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(listenedTodayTracker.totalMinutesListenedToday) / CGFloat(listenedTodayTracker.listenTimeTarget)))))
                     .stroke(tintColor.color, lineWidth: strokeWidth(geometryProxy.size.width))
                     .rotationEffect(.degrees(135))
                 
-                if progressViewModel.todaySessionLoader.isLoading && progressViewModel.totalMinutesListenedToday == 0 {
+                if listenedTodayTracker.todaySessionLoader.isLoading && listenedTodayTracker.totalMinutesListenedToday == 0 {
                     ProgressView()
                         .scaleEffect(0.5)
                 } else {
-                    Text(progressViewModel.totalMinutesListenedToday, format: .number)
+                    Text(listenedTodayTracker.totalMinutesListenedToday, format: .number)
                         .font(.system(size: geometryProxy.size.width / 2.2).smallCaps())
                         .foregroundStyle(.primary)
                         .contentTransition(.numericText(countsDown: false))
@@ -55,7 +56,7 @@ struct ListenedTodayLabel: View {
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
                     
-                    Text(progressViewModel.listenTimeTarget, format: .number)
+                    Text(listenedTodayTracker.listenTimeTarget, format: .number)
                         .font(.system(size: geometryProxy.size.width / 3))
                         .foregroundStyle(tintColor.color)
                         .opacity(0.72)
@@ -64,25 +65,25 @@ struct ListenedTodayLabel: View {
             }
         }
         .aspectRatio(1, contentMode: .fit)
-        .animation(.spring, value: progressViewModel.totalMinutesListenedToday)
+        .animation(.smooth, value: listenedTodayTracker.totalMinutesListenedToday)
         .compositingGroup()
     }
     
     struct AdjustMenuInner: View {
-        @Environment(ProgressViewModel.self) private var progressViewModel
+        @Environment(ListenedTodayTracker.self) private var listenedTodayTracker
         
         var body: some View {
             ControlGroup {
                 Button("action.decrease", systemImage: "minus") {
-                    guard progressViewModel.listenTimeTarget > 1 else {
+                    guard listenedTodayTracker.listenTimeTarget > 1 else {
                         return
                     }
                     
-                    progressViewModel.listenTimeTarget -= 1
+                    listenedTodayTracker.listenTimeTarget -= 1
                 }
                 
                 Button("action.increase", systemImage: "plus") {
-                    progressViewModel.listenTimeTarget += 1
+                    listenedTodayTracker.listenTimeTarget += 1
                 }
             }
         }
@@ -90,7 +91,7 @@ struct ListenedTodayLabel: View {
 }
 
 struct ListenedTodayListRow: View {
-    @Environment(ProgressViewModel.self) private var progressViewModel
+    @Environment(ListenedTodayTracker.self) private var listenedTodayTracker
     
     var body: some View {
         Menu {
@@ -101,10 +102,9 @@ struct ListenedTodayListRow: View {
                     .frame(width: 40)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(TimeInterval(progressViewModel.totalMinutesListenedToday) * 60, format: .duration(unitsStyle: .spellOut, allowedUnits: [.second, .minute, .hour], maximumUnitCount: 1, formattingContext: .standalone))
+                    Text(TimeInterval(listenedTodayTracker.totalMinutesListenedToday) * 60, format: .duration(unitsStyle: .spellOut, allowedUnits: [.second, .minute, .hour], maximumUnitCount: 1, formattingContext: .standalone))
                         .font(.headline)
                     Text("statistics.listenedToday")
-                    
                         .font(.subheadline)
                 }
                 

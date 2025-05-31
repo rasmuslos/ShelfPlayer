@@ -20,7 +20,7 @@ struct DownloadButton: View {
     let progressVisibility: ProgressVisibility
     let isPercentageTextVisible: Bool
     
-    init(itemID: ItemIdentifier, tint: Bool = false, progressVisibility: ProgressVisibility = ProgressVisibility.never, isPercentageTextVisible: Bool = false, initialStatus: PersistenceManager.DownloadSubsystem.DownloadStatus? = nil) {
+    init(itemID: ItemIdentifier, tint: Bool = false, progressVisibility: ProgressVisibility = ProgressVisibility.never, isPercentageTextVisible: Bool = false, initialStatus: DownloadStatus? = nil) {
         self.itemID = itemID
         
         self.tint = tint
@@ -35,7 +35,7 @@ struct DownloadButton: View {
     }
     
     @State private var baseProgress: Percentage? = nil
-    @State private var status: PersistenceManager.DownloadSubsystem.DownloadStatus?
+    @State private var status: DownloadStatus?
     
     @State private var progress = [UUID: Int64]()
     @State private var metadata = [UUID: (Percentage, Int64)]()
@@ -148,7 +148,7 @@ struct DownloadButton: View {
                     .contentTransition(.numericText())
             } else {
                 Button {
-                    if status == PersistenceManager.DownloadSubsystem.DownloadStatus.none {
+                    if status == DownloadStatus.none {
                         satellite.download(itemID: itemID)
                     } else {
                         satellite.removeDownload(itemID: itemID)

@@ -12,9 +12,9 @@ import ShelfPlayerKit
 struct ConnectionManageView: View {
     @Environment(\.dismiss) private var dismiss
     
-    let connection: PersistenceManager.AuthorizationSubsystem.Connection
+    let connection: Connection
     
-    init(connection: PersistenceManager.AuthorizationSubsystem.Connection) {
+    init(connection: Connection) {
         self.connection = connection
         
         _headers = .init(initialValue: connection.headers.map { .init(key: $0.key, value: $0.value) })

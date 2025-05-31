@@ -33,30 +33,6 @@ extension PersistenceManager {
         
         private(set) public var connections = [ItemIdentifier.ConnectionID: Connection]()
         
-        public struct Connection: Identifiable, Sendable, Hashable, Codable {
-            public let host: URL
-            public let user: String
-            public let token: String
-            public let headers: [HTTPHeader]
-            
-            public init(host: URL, user: String, token: String, headers: [HTTPHeader]) {
-                self.host = host
-                self.user = user
-                self.token = token
-                self.headers = headers
-            }
-            
-            public var friendlyName: String {
-                "\(host.formatted(.url.host())): \(user)"
-            }
-            
-            public var id: ItemIdentifier.ConnectionID {
-                SHA256.hash(data: "host:\(host).?.?.user:\(user)".data(using: .ascii)!).withUnsafeBytes {
-                    Data([UInt8]($0))
-                }.base64EncodedString()
-            }
-        }
-        
         public struct KnownConnection: Sendable, Identifiable, Equatable {
             public let id: String
             

@@ -11,6 +11,7 @@ import CoreSpotlight
 import SwiftData
 import Defaults
 import ShelfPlayerKit
+import SPPlayback
 
 struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -101,6 +102,7 @@ struct ContentView: View {
         .environment(playbackViewModel)
         .environment(connectionStore)
         .environment(progressViewModel)
+        .environment(ListenedTodayTracker.shared)
         .environment(\.namespace, namespace)
         .onAppear {
             ShelfPlayer.initializeUIHook()

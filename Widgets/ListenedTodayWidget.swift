@@ -10,6 +10,10 @@ import SwiftUI
 import Defaults
 import ShelfPlayerKit
 
+private var tomorrowMidnight: Date {
+    Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
+}
+
 struct ListenedTodayWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "io.rfk.shelfPlayer.listenedToday", provider: ListenedTodayWidgetProvider()) {
@@ -29,8 +33,6 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
         completion(getCurrent())
     }
     func getTimeline(in context: Context, completion: @escaping (Timeline<ListenedTodayTimelineEntry>) -> Void) {
-        let tomorrowMidnight = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
-        
         let timeline = Timeline(entries: [
             getCurrent(),
             ListenedTodayTimelineEntry(date: tomorrowMidnight, totalToday: 0),
@@ -46,7 +48,7 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
             return empty
         }
         
-        guard Calendar.current.isDateInToday(empty.date) else {
+        guard tomorrowMidnight.distance(to: current.updated) < 0 else {
             Defaults[.listenedTodayWidgetValue] = nil
             return empty
         }
@@ -76,15 +78,19 @@ private struct ListenedTodayWidgetContent: View {
     var body: some View {
         Gauge(value: entry.percentage, in: 0...1) {
             Text(entry.target, format: .number)
+                .contentTransition(.numericText(value: Double(entry.target)))
         } currentValueLabel: {
             if let totalToday = entry.totalToday {
                 Text(totalToday, format: .number)
+                    .contentTransition(.numericText(value: Double(totalToday)))
             } else {
                 Text(verbatim: "--")
             }
         }
         .gaugeStyle(.accessoryCircular)
         .containerBackground(for: .widget) {}
+        .animation(.smooth, value: entry.target)
+        .animation(.smooth, value: entry.totalToday)
     }
 }
 

@@ -84,7 +84,7 @@ public extension APIClient {
                               osVersion: await ShelfPlayerKit.osVersion,
                               deviceType: "iPhone",
                               manufacturer: "Apple",
-                              model: ShelfPlayerKit.model.trimmingCharacters(in: .whitespacesAndNewlines),
+                              model: ShelfPlayerKit.model,
                               clientName: "ShelfPlayer",
                               clientVersion: ShelfPlayerKit.clientVersion),
             date: dateFormatter.string(from: started),
