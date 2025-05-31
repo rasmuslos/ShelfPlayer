@@ -1,6 +1,36 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "intent.error" : {
+
+    },
+    "intent.error.noPlaybackItem" : {
+
+    },
+    "intent.pause" : {
+
+    },
+    "intent.pause.description" : {
+
+    },
+    "intent.play" : {
+
+    },
+    "intent.play.description" : {
+
+    },
+    "pause" : {
+
+    },
+    "play" : {
+
+    },
+    "widget.lastListened.description" : {
+
+    },
+    "widget.lastListened.title" : {
+
+    },
     "widget.listenedToday.description" : {
       "localizations" : {
         "en" : {

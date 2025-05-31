@@ -9,6 +9,7 @@
 
 @_exported import SPNetwork
 @_exported import SPPersistence
+@_exported import SPHumanInterface
 
 @_exported import RFVisuals
 @_exported import RFNetwork

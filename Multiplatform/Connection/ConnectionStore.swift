@@ -36,7 +36,11 @@ final class ConnectionStore {
             didLoad = true
         }
         
-        RFNotification[.changeOfflineMode].subscribe { [weak self] connections in
+        RFNotification[.changeOfflineMode].subscribe { [weak self] isEnabled in
+            guard !isEnabled else {
+                return
+            }
+            
             self?.update()
         }
         RFNotification[.connectionsChanged].subscribe { [weak self] connections in

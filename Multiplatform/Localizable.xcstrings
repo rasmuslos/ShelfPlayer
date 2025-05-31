@@ -813,6 +813,24 @@
     "filter.all" : {
 
     },
+    "intent.error" : {
+
+    },
+    "intent.error.noPlaybackItem" : {
+
+    },
+    "intent.pause" : {
+
+    },
+    "intent.pause.description" : {
+
+    },
+    "intent.play" : {
+
+    },
+    "intent.play.description" : {
+
+    },
     "item.abridged" : {
       "localizations" : {
         "de" : {

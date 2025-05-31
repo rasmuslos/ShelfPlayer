@@ -7,7 +7,10 @@
 
 import Foundation
 import SwiftUI
-import ShelfPlayerKit
+import RFNotifications
+import SPFoundation
+import SPNetwork
+import SPPersistence
 
 @MainActor @Observable
 public final class SessionLoader {
