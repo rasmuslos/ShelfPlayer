@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayerKit
 
 extension PersonView {
     struct Header: View {

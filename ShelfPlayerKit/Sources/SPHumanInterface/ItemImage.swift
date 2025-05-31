@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Nuke
 import NukeUI
 import Defaults
-import ShelfPlayerKit
+import RFNotifications
+import SPFoundation
+import SPPersistence
 
-struct RequestImage: View {
+public struct RequestImage: View {
     @Default(.forceAspectRatio) private var forceAspectRatio
     
     var request: ImageRequest?
@@ -24,7 +27,7 @@ struct RequestImage: View {
     
     @State private var id = UUID()
     
-    init(request: ImageRequest?, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, priority: ImageRequest.Priority = .normal, contrastConfiguration: ContrastConfiguration? = .init(), associatedItemID: ItemIdentifier? = nil) {
+    public init(request: ImageRequest?, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, priority: ImageRequest.Priority = .normal, contrastConfiguration: ContrastConfiguration? = .init(), associatedItemID: ItemIdentifier? = nil) {
         self.request = request
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
@@ -41,7 +44,7 @@ struct RequestImage: View {
         return aspectRatio
     }
     
-    var body: some View {
+    public var body: some View {
         Group {
             if aspectRatioPolicy == .none {
                 LazyImage(request: request) { phase in
@@ -102,22 +105,22 @@ struct RequestImage: View {
         id = UUID()
     }
     
-    enum AspectRatioPolicy {
+    public enum AspectRatioPolicy {
         case square
         case squareFit
         case none
     }
     
-    struct ContrastConfiguration {
+    public struct ContrastConfiguration {
         var shadowRadius: CGFloat = 4
         var shadowOpacity: CGFloat = 0.3
         
         var borderOpacity: CGFloat = 0.4
         var borderThickness: CGFloat = 1
         
-        init() {}
+        public init() {}
         
-        init(shadowRadius: CGFloat? = nil, shadowOpacity: CGFloat? = nil) {
+        public init(shadowRadius: CGFloat? = nil, shadowOpacity: CGFloat? = nil) {
             if let shadowRadius {
                 self.shadowRadius = shadowRadius
             }
@@ -126,7 +129,7 @@ struct RequestImage: View {
             }
         }
         
-        init(borderOpacity: CGFloat? = nil, borderThickness: CGFloat? = nil) {
+        public init(borderOpacity: CGFloat? = nil, borderThickness: CGFloat? = nil) {
             if let borderOpacity {
                 self.borderOpacity = borderOpacity
             }
@@ -137,7 +140,7 @@ struct RequestImage: View {
     }
 }
 
-struct ItemImage: View {
+public struct ItemImage: View {
     let itemID: ItemIdentifier?
     let size: ItemIdentifier.CoverSize
     
@@ -146,7 +149,7 @@ struct ItemImage: View {
     let priority: ImageRequest.Priority
     let contrastConfiguration: RequestImage.ContrastConfiguration?
     
-    init(itemID: ItemIdentifier?,
+    public init(itemID: ItemIdentifier?,
          size: ItemIdentifier.CoverSize,
          cornerRadius: CGFloat = 8,
          aspectRatio: RequestImage.AspectRatioPolicy = .square,
@@ -159,7 +162,7 @@ struct ItemImage: View {
         self.priority = priority
         self.contrastConfiguration = contrastConfiguration
     }
-    init(item: Item?,
+    public init(item: Item?,
          size: ItemIdentifier.CoverSize,
          cornerRadius: CGFloat = 8,
          aspectRatio: RequestImage.AspectRatioPolicy = .square,
@@ -170,7 +173,7 @@ struct ItemImage: View {
     
     @State private var request: ImageRequest?
     
-    var body: some View {
+    public var body: some View {
         if let request {
             RequestImage(request: request, cornerRadius: cornerRadius, aspectRatio: aspectRatio, priority: priority, contrastConfiguration: contrastConfiguration, associatedItemID: itemID)
         } else {
@@ -268,6 +271,25 @@ private struct ContrastModifier: ViewModifier {
             }
         } else {
             content
+        }
+    }
+}
+
+public extension ItemIdentifier.ItemType {
+    var icon: String {
+        switch self {
+            case .audiobook:
+                "book"
+            case .author:
+                "person"
+            case .narrator:
+                "microphone.fill"
+            case .series:
+                "rectangle.grid.2x2"
+            case .podcast:
+                "square.stack"
+            case .episode:
+                "play.square"
         }
     }
 }

@@ -113,9 +113,13 @@ public extension Defaults.Keys {
     
     static let playbackResumeInfo = Key<PlaybackResumeInfo?>("playbackResumeInfo", default: nil)
     
-    // MARK: Utility
+    // MARK: Widgets
     
     static let listenedTodayWidgetValue = Key<ListenedTodayPayload?>("listenedTodayWidgetValue", default: nil, suite: sharedSuite)
+    static let lastListened = Key<LastListenedPayload?>("lastListened", default: nil, suite: sharedSuite)
+    
+    // MARK: Utility
+    
     static let spotlightIndexCompletionDate = Key<Date?>("spotlightIndexCompletionDate", default: nil)
 }
 
@@ -136,6 +140,19 @@ public struct ListenedTodayPayload: Codable, Defaults.Serializable {
     public init(total: Int, updated: Date) {
         self.total = total
         self.updated = updated
+    }
+}
+
+public struct LastListenedPayload: Codable, Defaults.Serializable {
+    public let item: PlayableItem?
+    
+    public let isDownloaded: Bool
+    public let isPlaying: Bool?
+    
+    public init(item: PlayableItem?, isDownloaded: Bool, isPlaying: Bool?) {
+        self.item = item
+        self.isDownloaded = isDownloaded
+        self.isPlaying = isPlaying
     }
 }
 
@@ -204,13 +221,13 @@ public extension RFNotification.IsolatedNotification {
     
     // MARK: Utility
     
+    static var reloadImages: IsolatedNotification<ItemIdentifier?> { .init("io.rfk.shelfPlayer.reloadImages") }
+    static var listenNowItemsChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.listenNowItemsChanged") }
+    static var synchronizedPlaybackSessions: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.synchronizedPlaybackSessions") }
+    
     // Sessions
     
     static var timeSpendListeningChanged: IsolatedNotification<Int> { .init("io.rfk.shelfPlayerKit.timeSpendListeningChanged") }
     static var cachedTimeSpendListeningChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.cachedTimeSpendListeningChanged") }
-    
-    static var synchronizedPlaybackSessions: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.synchronizedPlaybackSessions") }
-    
-    static var listenNowItemsChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.listenNowItemsChanged") }
 }
 
