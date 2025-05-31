@@ -35,9 +35,9 @@ let package = Package(
             name: "SPFoundation",
             dependencies: [
                 .byName(name: "RFKit"),
-                
-                .byName(name: "Defaults"),
                 .byName(name: "SwiftSoup"),
+                
+                .product(name: "Defaults", package: "Defaults"),
             ]
         ),
         
@@ -52,7 +52,7 @@ let package = Package(
         // Persistence
         .target(name: "SPPersistence", dependencies: [
             .byName(name: "RFKit"),
-            .byName(name: "Defaults"),
+            .product(name: "Defaults", package: "Defaults"),
             
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPNetwork", condition: .none),
@@ -61,7 +61,9 @@ let package = Package(
         // Playback
         .target(name: "SPPlayback", dependencies: [
             .byName(name: "RFKit"),
-            .byName(name: "Defaults"),
+            
+            .product(name: "Defaults", package: "Defaults"),
+            .product(name: "DefaultsMacros", package: "Defaults"),
             
             .targetItem(name: "SPFoundation", condition: .none),
             .targetItem(name: "SPPersistence", condition: .none),

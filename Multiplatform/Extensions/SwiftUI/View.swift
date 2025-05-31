@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import SPPlayback
 
 extension View {
     @ViewBuilder
@@ -24,6 +25,7 @@ extension View {
             .environment(PlaybackViewModel())
             .environment(ConnectionStore())
             .environment(ProgressViewModel())
+            .environment(ListenedTodayTracker.shared)
             .environment(\.namespace, namespace)
     }
     #endif

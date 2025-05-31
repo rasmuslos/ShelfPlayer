@@ -11,8 +11,6 @@ import ShelfPlayerKit
 import SPPlayback
 
 struct AudiobookHomePanel: View {
-    @Environment(ProgressViewModel.self) private var progressViewModel
-    
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.library) private var library
     
@@ -89,7 +87,7 @@ struct AudiobookHomePanel: View {
         }
         .refreshable {
             fetchItems()
-            progressViewModel.refreshListenedToday()
+            ListenedTodayTracker.shared.refresh()
         }
         .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
             guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {

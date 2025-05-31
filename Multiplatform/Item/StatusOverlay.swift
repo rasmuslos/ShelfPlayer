@@ -50,7 +50,7 @@ struct StatusOverlay: View {
                     if showTriangle {
                         ZStack {
                             Triangle()
-                                .foregroundStyle(download.status == PersistenceManager.DownloadSubsystem.DownloadStatus.none ? Defaults[.tintColor].color : Defaults[.tintColor].accent)
+                                .foregroundStyle(download.status == DownloadStatus.none ? Defaults[.tintColor].color : Defaults[.tintColor].accent)
                                 .overlay(alignment: .topTrailing) {
                                     Group {
                                         if download.status == .downloading {

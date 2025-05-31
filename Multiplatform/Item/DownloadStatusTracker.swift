@@ -11,7 +11,7 @@ import ShelfPlayerKit
 @Observable @MainActor
 final class DownloadStatusTracker {
     let itemID: ItemIdentifier
-    var status: PersistenceManager.DownloadSubsystem.DownloadStatus?
+    var status: DownloadStatus?
     
     init(itemID: ItemIdentifier) {
         self.itemID = itemID
@@ -46,9 +46,9 @@ final class DownloadStatusTracker {
 }
 
 actor DownloadTrackerCache: Sendable {
-    private var cache = [ItemIdentifier: PersistenceManager.DownloadSubsystem.DownloadStatus]()
+    private var cache = [ItemIdentifier: DownloadStatus]()
     
-    fileprivate func resolve(_ itemID: ItemIdentifier) async -> PersistenceManager.DownloadSubsystem.DownloadStatus {
+    fileprivate func resolve(_ itemID: ItemIdentifier) async -> DownloadStatus {
         if let cached = cache[itemID] {
             return cached
         }

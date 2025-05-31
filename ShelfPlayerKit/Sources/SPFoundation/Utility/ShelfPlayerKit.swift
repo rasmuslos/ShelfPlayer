@@ -33,7 +33,10 @@ public extension ShelfPlayerKit {
         var systemInfo = utsname()
         uname(&systemInfo)
         
-        return String(decoding: withUnsafeBytes(of: systemInfo.machine.self) { [UInt8]($0) }, as: UTF8.self)
+        let bytes = withUnsafeBytes(of: systemInfo.machine.self) { [UInt8]($0) }
+        let firstWhitespaceIndex = bytes.firstIndex(of: 0x00) ?? bytes.endIndex
+        
+        return String(decoding: bytes[0..<firstWhitespaceIndex], as: UTF8.self)
     }()
     
     static var suite: UserDefaults {
