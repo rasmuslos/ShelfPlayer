@@ -46,16 +46,6 @@ extension PersistenceManager {
             return URLSession(configuration: config, delegate: URLSessionDelegate(), delegateQueue: nil)
         }()
         
-        public enum DownloadStatus: Int, Identifiable, Equatable, Codable, Hashable, Sendable, CaseIterable {
-            case none
-            case downloading
-            case completed
-            
-            public var id: Int {
-                rawValue
-            }
-        }
-        
         func persistedAudiobook(for itemID: ItemIdentifier) -> PersistedAudiobook? {
             var descriptor = FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
                 $0._id == itemID.description
@@ -563,7 +553,7 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         guard persistedAudiobook(for: itemID) == nil && persistedEpisode(for: itemID) == nil else {
-            if await PersistenceManager.shared.keyValue[.cachedDownloadStatus(itemID: itemID)] == PersistenceManager.DownloadSubsystem.DownloadStatus.none {
+            if await PersistenceManager.shared.keyValue[.cachedDownloadStatus(itemID: itemID)] == DownloadStatus.none {
                 let status = await status(of: itemID)
                 
                 try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)
@@ -901,7 +891,7 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
     static func assetFailedAttempts(assetID: UUID, itemID: ItemIdentifier) -> Key<Int> {
         Key(identifier: "assetFailedAttempts_\(assetID)", cluster: "assetFailedAttempts_\(itemID.description)", isCachePurgeable: false)
     }
-    static func cachedDownloadStatus(itemID: ItemIdentifier) -> Key<PersistenceManager.DownloadSubsystem.DownloadStatus> {
+    static func cachedDownloadStatus(itemID: ItemIdentifier) -> Key<DownloadStatus> {
         Key(identifier: "downloadStatus_\(itemID)", cluster: "downloadStatusCache", isCachePurgeable: true)
     }
     

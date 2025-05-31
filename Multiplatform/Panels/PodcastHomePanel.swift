@@ -8,10 +8,9 @@
 import SwiftUI
 import Defaults
 import ShelfPlayerKit
+import SPPlayback
 
 struct PodcastHomePanel: View {
-    @Environment(ProgressViewModel.self) private var progressViewModel
-    
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -84,7 +83,7 @@ struct PodcastHomePanel: View {
         }
         .refreshable {
             fetchItems()
-            progressViewModel.refreshListenedToday()
+            ListenedTodayTracker.shared.refresh()
         }
         .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
             guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {

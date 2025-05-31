@@ -11,8 +11,16 @@ import Defaults
 import ShelfPlayerKit
 
 struct WidgetManager {
-    static func timeListenedTodayChanged(_ value: Int) {
-        Defaults[.listenedTodayWidgetValue] = ListenedTodayPayload(total: value, updated: .now)
-        WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenedToday")
+    static func setupObservers() {
+        RFNotification[.timeSpendListeningChanged].subscribe { minutes in
+            Defaults[.listenedTodayWidgetValue] = ListenedTodayPayload(total: minutes, updated: .now)
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenedToday")
+        }
+        
+        Task {
+            for await _ in Defaults.updates(.listenTimeTarget) {
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenedToday")
+            }
+        }
     }
 }

@@ -10,19 +10,22 @@ import SwiftUI
 import ShelfPlayerKit
 
 @MainActor @Observable
-final class SessionLoader {
-    let PAGE_SIZE = 20
+public final class SessionLoader {
+    private let PAGE_SIZE = 20
     
-    var filter: SessionFilter
+    private let filter: SessionFilter
+    private let callback: (() -> Void)?
     
-    var page = [ItemIdentifier.ConnectionID: Int]()
-    var sessions = [SessionPayload]()
+    private var page = [ItemIdentifier.ConnectionID: Int]()
+    public private(set) var sessions = [SessionPayload]()
     
-    var isLoading = false
-    var finished = [ItemIdentifier.ConnectionID: Bool]()
+    public private(set) var isLoading = false
+    private var finished = [ItemIdentifier.ConnectionID: Bool]()
     
-    init(filter: SessionFilter) {
+    public init(filter: SessionFilter, callback: (() -> Void)? = nil) {
         self.filter = filter
+        self.callback = callback
+        
         beginLoading()
         
         RFNotification[.synchronizedPlaybackSessions].subscribe { [weak self] in
@@ -30,20 +33,20 @@ final class SessionLoader {
         }
     }
     
-    var isFinished: Bool {
+    public var isFinished: Bool {
         !finished.isEmpty && finished.reduce(true) {
             $0 && $1.1
         }
     }
     
-    var totalTimeSpendListening: TimeInterval {
+    public var totalTimeSpendListening: TimeInterval {
         sessions.reduce(0) { $0 + ($1.timeListening ?? 0) }
     }
-    var mostRecent: SessionPayload? {
+    public var mostRecent: SessionPayload? {
         sessions.max(by: { $0.startDate < $1.startDate })
     }
     
-    func refresh() {
+    public func refresh() {
         page.removeAll()
         sessions.removeAll()
         
@@ -81,6 +84,7 @@ final class SessionLoader {
                 return
             }
             
+            let existing = await self.sessions.map(\.id)
             let sessions = await withTaskGroup {
                 for connectionID in connectionIDs {
                     $0.addTask {
@@ -106,18 +110,22 @@ final class SessionLoader {
                 }
                 
                 return await $0.reduce([], +)
-            }
+            }.filter { !existing.contains($0.id) }
             
             await MainActor.run {
                 self.sessions += sessions
                 isLoading = false
+                
+                if isFinished {
+                    callback?()
+                }
             }
             
             beginLoading()
         }
     }
     
-    enum SessionFilter {
+    public enum SessionFilter: Sendable {
         case today
         case itemID(ItemIdentifier)
         
