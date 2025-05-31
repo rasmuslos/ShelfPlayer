@@ -109,17 +109,17 @@ private struct LastListenedWidgetContent: View {
                 
                 Spacer(minLength: 0)
                 
-                if entry.item != nil {
-                    Image(systemName: "bookmark.fill")
-                        .foregroundStyle(.secondary)
-                }
+                Image("shelfPlayer.fill")
+                    .foregroundStyle(.secondary)
             }
             
             Spacer(minLength: 0)
             
             Text(name)
-                .font(.headline)
-                .lineLimit(1)
+                .foregroundStyle(.ultraThickMaterial)
+                .colorScheme(.dark)
+                .font(.caption)
+                .lineLimit(2)
             
             Spacer(minLength: 0)
             
@@ -140,7 +140,7 @@ private struct LastListenedWidgetContent: View {
                 }
                 .font(.footnote)
                 .controlSize(.small)
-                .foregroundStyle(.accent)
+                .foregroundStyle(.black)
                 
                 Spacer(minLength: 12)
                 
@@ -151,9 +151,10 @@ private struct LastListenedWidgetContent: View {
                 }
             }
         }
+        .colorScheme(.light)
         .containerBackground(for: .widget) {
             Rectangle()
-                .fill(.background)
+                .fill(.accent.gradient)
         }
     }
 }
