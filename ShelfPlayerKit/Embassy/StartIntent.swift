@@ -21,10 +21,10 @@ public struct StartIntent: AppIntent {
     public var withoutPlaybackSession: Bool
     
     public init() {}
-    public init(item: PlayableItem) {
+    public init(item: Item) {
         self.item = .init(item: item)
     }
-    public init(item: PlayableItem) async {
+    public init(item: Item) async {
         self.item = await .init(item: item)
     }
     
@@ -33,7 +33,19 @@ public struct StartIntent: AppIntent {
     }
     
     public func perform() async throws -> some IntentResult {
-        try await audioPlayer.start(item.id, withoutPlaybackSession)
+        switch item.id.type {
+            case .audiobook, .episode:
+                try await audioPlayer.start(item.id, withoutPlaybackSession)
+            case .podcast:
+                guard let episode = try await ResolvedUpNextStrategy.podcast(item.id).resolve(cutoff: nil).first else {
+                    throw IntentError.notFound
+                }
+                
+                try await audioPlayer.start(episode.id, withoutPlaybackSession)
+            default:
+                throw IntentError.invalidItemType
+        }
+        
         return .result()
     }
 }
