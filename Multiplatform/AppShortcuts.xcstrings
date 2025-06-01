@@ -30,6 +30,19 @@
           }
         }
       }
+    },
+    "Spiele ${item} mit ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Spiele ${item} mit ${applicationName}"
+            ]
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

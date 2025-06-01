@@ -1,6 +1,27 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@" : {
+
+    },
+    "intent.entity.item" : {
+
+    },
+    "intent.entity.item %lld" : {
+
+    },
+    "intent.entity.item ${item}" : {
+
+    },
+    "intent.entity.item.audiobook" : {
+
+    },
+    "intent.entity.item.description" : {
+
+    },
+    "intent.entity.item.podcast" : {
+
+    },
     "intent.error" : {
 
     },
@@ -19,34 +40,16 @@
     "intent.play.description" : {
 
     },
-    "preferences.tint.aqua" : {
+    "intent.start" : {
 
     },
-    "preferences.tint.black" : {
+    "intent.start.description" : {
 
     },
-    "preferences.tint.blue" : {
+    "intent.start.withoutPlaybackSession" : {
 
     },
-    "preferences.tint.green" : {
-
-    },
-    "preferences.tint.mint" : {
-
-    },
-    "preferences.tint.purple" : {
-
-    },
-    "preferences.tint.red" : {
-
-    },
-    "preferences.tint.shelfPlayer" : {
-
-    },
-    "preferences.tint.violet" : {
-
-    },
-    "preferences.tint.yellow" : {
+    "intent.start.withoutPlaybackSession.description" : {
 
     }
   },

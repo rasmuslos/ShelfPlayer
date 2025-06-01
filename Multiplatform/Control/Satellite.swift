@@ -895,16 +895,6 @@ private extension Satellite {
             
             self?.loadBookmarks(itemID: itemID)
         }.store(in: &stash)
-        
-        // MARK: Intents
-        
-        RFNotification[.intentChangePlaybackState].subscribe { [weak self] in
-            if $0 {
-                self?.play()
-            } else {
-                self?.pause()
-            }
-        }
     }
 }
 

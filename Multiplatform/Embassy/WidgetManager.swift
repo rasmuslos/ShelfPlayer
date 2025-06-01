@@ -7,6 +7,7 @@
 
 import Foundation
 import WidgetKit
+import AppIntents
 import ShelfPlayback
 
 struct WidgetManager {
@@ -25,6 +26,8 @@ struct WidgetManager {
             } else {
                 await AudioPlayer.shared.pause()
             }
+        } start: {
+            try await AudioPlayer.shared.start(.init(itemID: $0, origin: .unknown, startWithoutListeningSession: $1))
         }
     }
     
@@ -42,12 +45,23 @@ struct WidgetManager {
             return
         }
         
+        if let current = Defaults[.lastListened], current.isPlaying != nil {
+            Defaults[.lastListened] = LastListenedPayload(item: current.item, isDownloaded: current.isDownloaded, isPlaying: nil)
+            
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
+        }
+        
         // MARK: General
         
         Task {
             for await _ in Defaults.updates(.tintColor) {
                 WidgetCenter.shared.reloadAllTimelines()
             }
+        }
+        
+        RFNotification[.listenNowItemsChanged].subscribe {
+            ShortcutProvider.updateAppShortcutParameters()
         }
         
         // MARK: Listening Time
@@ -88,6 +102,8 @@ struct WidgetManager {
             }
             
             Defaults[.lastListened] = nil
+            
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
         }
         RFNotification[.downloadStatusChanged].subscribe { payload in
@@ -108,7 +124,17 @@ struct WidgetManager {
                 }
                 
                 Defaults[.lastListened] = LastListenedPayload(item: current?.item, isDownloaded: isDownloaded, isPlaying: current?.isPlaying)
+                
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
+            }
+        }
+        
+        // MARK: Listen now
+        
+        RFNotification[.listenNowItemsChanged].subscribe {
+            Task {
+                Defaults[.listenNowWidgetItems] = ListenNowPayload(items: await ShelfPlayerKit.listenNowItems)
             }
         }
     }
@@ -146,6 +172,8 @@ private extension WidgetManager {
             }
             
             Defaults[.lastListened] = LastListenedPayload(item: item, isDownloaded: isDownloaded, isPlaying: isPlaying)
+            
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
         }
     }
