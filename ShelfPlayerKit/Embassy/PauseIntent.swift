@@ -7,6 +7,7 @@
 
 import Foundation
 import AppIntents
+import Defaults
 
 public struct PauseIntent: AppIntent, AudioPlaybackIntent {
     @AppDependency private var audioPlayer: IntentAudioPlayer
@@ -18,6 +19,9 @@ public struct PauseIntent: AppIntent, AudioPlaybackIntent {
     
     public func perform() async throws -> some IntentResult {
         guard await audioPlayer.isPlaying != nil else {
+            let current = Defaults[.lastListened]
+            Defaults[.lastListened] = .init(item: current?.item, isDownloaded: current?.isDownloaded ?? false, isPlaying: nil)
+            
             throw IntentError.noPlaybackItem
         }
         
