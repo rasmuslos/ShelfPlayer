@@ -8,8 +8,7 @@
 import Foundation
 import OSLog
 import SwiftUI
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 @Observable @MainActor
 final class EpisodeViewModel {

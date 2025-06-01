@@ -7,7 +7,7 @@
 
 import Foundation
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 extension HomeRow {
     var localizedLabel: String {

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ItemDisplayTypePicker: View {
     @Binding var displayType: ItemDisplayType

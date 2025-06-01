@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Nuke
-import ShelfPlayerKit
+import ShelfPlayback
 
 @main
 struct MultiplatformApp: App {

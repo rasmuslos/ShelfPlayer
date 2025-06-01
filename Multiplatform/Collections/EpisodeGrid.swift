@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayback
 
 struct EpisodeGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

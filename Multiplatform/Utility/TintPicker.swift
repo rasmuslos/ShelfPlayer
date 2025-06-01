@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Defaults
+import ShelfPlayback
 
 struct TintPicker: View {
     @Default(.tintColor) private var tintColor
@@ -26,7 +27,7 @@ struct TintPicker: View {
     struct Row: View {
         @Default(.tintColor) private var tintColor
         
-        let tint: TintPicker.TintColor
+        let tint: TintColor
         
         var body: some View {
             Button(tint.title, systemImage: "circle.fill") {
@@ -36,97 +37,6 @@ struct TintPicker: View {
             .tag(tint)
             .foregroundStyle(tint.color)
             .symbolRenderingMode(.palette)
-        }
-    }
-    
-    enum TintColor: Identifiable, Codable, Defaults.Serializable, CaseIterable {
-        case shelfPlayer
-        
-        case yellow
-        case red
-        case purple
-        case violet
-        case blue
-        case aqua
-        case mint
-        case green
-        case black
-        
-        var id: Self { self }
-        
-        var title: LocalizedStringKey {
-            switch self {
-            case .shelfPlayer:
-                "preferences.tint.shelfPlayer"
-            case .yellow:
-                "preferences.tint.yellow"
-            case .purple:
-                "preferences.tint.purple"
-            case .red:
-                "preferences.tint.red"
-            case .violet:
-                "preferences.tint.violet"
-            case .blue:
-                "preferences.tint.blue"
-            case .aqua:
-                "preferences.tint.aqua"
-            case .green:
-                "preferences.tint.green"
-            case .mint:
-                "preferences.tint.mint"
-            case .black:
-                "preferences.tint.black"
-            }
-        }
-        
-        var color: Color {
-            switch self {
-            case .shelfPlayer:
-                    .accent
-            case .yellow:
-                    .yellow
-            case .purple:
-                    .purple
-            case .red:
-                    .red
-            case .violet:
-                    .indigo
-            case .blue:
-                    .blue
-            case .aqua:
-                    .cyan
-            case .green:
-                    .green
-            case .mint:
-                    .mint
-            case .black:
-                    .black
-            }
-        }
-        
-        var accent: Color {
-            switch self {
-            case .shelfPlayer:
-                    .orange
-            case .yellow:
-                    .orange
-            case .red:
-                    .yellow
-            case .purple:
-                    .blue
-            case .violet:
-                    .blue
-            case .blue:
-                    .purple
-            case .aqua:
-                    .orange
-            case .mint:
-                    .blue
-            case .green:
-                    .blue
-            case .black:
-                    .gray
-            }
         }
     }
 }
@@ -139,7 +49,7 @@ struct TintPicker: View {
 
 #Preview {
     ScrollView {
-        ForEach(TintPicker.TintColor.allCases, id: \.hashValue) { tint in
+        ForEach(TintColor.allCases, id: \.hashValue) { tint in
             HStack {
                 Group {
                     Rectangle()

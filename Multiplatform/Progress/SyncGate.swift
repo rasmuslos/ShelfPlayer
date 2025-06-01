@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct SyncGate<Content: View>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct TabRouter: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

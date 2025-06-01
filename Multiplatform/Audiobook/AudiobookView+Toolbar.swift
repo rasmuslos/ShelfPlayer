@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 extension AudiobookView {
     struct ToolbarModifier: ViewModifier {

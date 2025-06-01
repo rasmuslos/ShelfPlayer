@@ -10,7 +10,7 @@ import SwiftUI
 import OSLog
 import Defaults
 import DefaultsMacros
-import ShelfPlayerKit
+import ShelfPlayback
 
 @Observable @MainActor
 final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Identifiable, O: Sendable {

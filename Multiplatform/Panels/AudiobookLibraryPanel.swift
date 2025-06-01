@@ -8,7 +8,7 @@
 import SwiftUI
 import Defaults
 import DefaultsMacros
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct AudiobookLibraryPanel: View {
     @Environment(\.library) private var library

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct NavigationStackWrapper<Content: View>: View {
     let tab: TabValue

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import OSLog
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ConnectionManager: View {
     @Environment(ConnectionStore.self) private var connectionStore

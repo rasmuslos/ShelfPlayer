@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct AudiobookView: View {
     @Environment(\.defaultMinListRowHeight) private var minimumHeight

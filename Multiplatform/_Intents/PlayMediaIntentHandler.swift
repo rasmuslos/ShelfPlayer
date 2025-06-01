@@ -9,8 +9,7 @@ import Foundation
 import Intents
 import OSLog
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 internal final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     let logger = Logger(subsystem: "Intents", category: "PlayMedia")

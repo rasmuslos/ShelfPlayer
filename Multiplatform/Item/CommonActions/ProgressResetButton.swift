@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ProgressResetButton: View {
     @Environment(Satellite.self) private var satellite

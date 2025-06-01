@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Defaults
 import DefaultsMacros
-import ShelfPlayerKit
+import ShelfPlayback
 
 @Observable @MainActor
 final class PersonViewModel {

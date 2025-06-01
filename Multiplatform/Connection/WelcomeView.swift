@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct WelcomeView: View {
     @State private var isConnectionAddViewPresented = false

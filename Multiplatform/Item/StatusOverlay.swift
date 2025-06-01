@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct StatusOverlay: View {
     @Default(.tintColor) private var tintColor

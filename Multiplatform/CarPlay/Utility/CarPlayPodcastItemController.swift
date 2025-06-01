@@ -7,8 +7,7 @@
 
 import Foundation
 @preconcurrency import CarPlay
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 @MainActor
 final class CarPlayPodcastItemController: CarPlayItemController {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct PodcastLatestPanel: View {
     @Environment(\.library) private var library

@@ -8,8 +8,7 @@
 import Foundation
 import SwiftUI
 import OSLog
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 @Observable @MainActor
 final class AudiobookViewModel: Sendable {

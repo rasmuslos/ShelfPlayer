@@ -8,8 +8,7 @@
 import Foundation
 @preconcurrency import CarPlay
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 @MainActor
 class CarPlayLibraryController: CarPlayTabBar.LibraryController {
