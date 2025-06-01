@@ -24,17 +24,11 @@ struct ShortcutProvider: AppShortcutsProvider {
             "Resume \(.applicationName)",
             "Resume playback with \(.applicationName)",
             "Continue playing \(.applicationName)",
-            
-            "Spiele \(.applicationName) weiter",
-            "Setzte die Wiedergabe mit \(.applicationName) fort",
         ], shortTitle: "intent.play", systemImageName: "play.fill")
         AppShortcut(intent: PauseIntent(), phrases: [
             "Pause \(.applicationName)",
             "Pause \(.applicationName) playback",
             "Stop playing \(.applicationName)",
-            
-            "Pausiere \(.applicationName)",
-            "Pausiere die Wiedergabe mit \(.applicationName)",
         ], shortTitle: "intent.pause", systemImageName: "pause.fill")
     }
 }

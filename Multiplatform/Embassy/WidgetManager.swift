@@ -72,7 +72,8 @@ struct WidgetManager {
             updateLastListenedWidget($0.0)
         }
         RFNotification[.playbackStopped].subscribe { _ in
-            updateLastListenedWidget()
+            let current = Defaults[.lastListened]
+            Defaults[.lastListened] = LastListenedPayload(item: current?.item, isDownloaded: current?.isDownloaded ?? false, isPlaying: nil)
         }
         
         RFNotification[.progressEntityUpdated].subscribe {
@@ -89,12 +90,37 @@ struct WidgetManager {
             Defaults[.lastListened] = nil
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
         }
+        RFNotification[.downloadStatusChanged].subscribe { payload in
+            Task {
+                let current = Defaults[.lastListened]
+                let isDownloaded: Bool
+                
+                if let (itemID, status) = payload {
+                    guard itemID == current?.item?.id else {
+                        return
+                    }
+                    
+                    isDownloaded = status == .completed
+                } else if let currentItemID = current?.item?.id {
+                    isDownloaded = await PersistenceManager.shared.download.status(of: currentItemID) == .completed
+                } else {
+                    isDownloaded = false
+                }
+                
+                Defaults[.lastListened] = LastListenedPayload(item: current?.item, isDownloaded: isDownloaded, isPlaying: current?.isPlaying)
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
+            }
+        }
     }
 }
 
 private extension WidgetManager {
     static func updateLastListenedWidget(_ itemID: ItemIdentifier? = nil) {
         Task {
+            guard await AudioPlayer.shared.currentItemID != nil || itemID != nil else {
+                return
+            }
+            
             let item: PlayableItem?
             
             if let provided = try? await itemID?.resolved as? PlayableItem {
@@ -110,8 +136,14 @@ private extension WidgetManager {
                 return
             }
             
-            let isDownloaded = await PersistenceManager.shared.download.status(of: item.id) == .downloading
-            let isPlaying = await AudioPlayer.shared.currentItemID == nil ? nil : AudioPlayer.shared.isPlaying
+            let isDownloaded = await PersistenceManager.shared.download.status(of: item.id) == .completed
+            let isPlaying: Bool?
+            
+            if itemID == nil {
+                isPlaying = await AudioPlayer.shared.currentItemID == nil ? nil : AudioPlayer.shared.isPlaying
+            } else {
+                isPlaying = true
+            }
             
             Defaults[.lastListened] = LastListenedPayload(item: item, isDownloaded: isDownloaded, isPlaying: isPlaying)
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
