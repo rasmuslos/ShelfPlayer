@@ -29,9 +29,9 @@ final class CarPlayTabBar {
         updateTemplate()
         updateLibraries()
         
-        Task {
+        Task { [weak self] in
             for await _ in Defaults.updates([.carPlayTabBarLibraries, .carPlayShowListenNow, .carPlayShowOtherLibraries], initial: false) {
-                updateTemplate()
+                self?.updateTemplate()
             }
         }
         

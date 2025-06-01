@@ -76,6 +76,18 @@ final class Satellite {
     // MARK: Init
     
     init() {
+        RFNotification[.scenePhaseDidChange].subscribe { [weak self] in
+            if $0 {
+                self?.setupObservers()
+                
+                Task {
+                    await self?.syncAudioPlayerState()
+                }
+            } else {
+                self?.stash.clear()
+            }
+        }
+        
         setupObservers()
         checkForResumablePlayback()
     }
@@ -760,6 +772,8 @@ private extension Satellite {
     // MARK: Observers
 
     func setupObservers() {
+        stash.clear()
+        
         // MARK: General
         
         RFNotification[.changeOfflineMode].subscribe { [weak self] in
@@ -895,6 +909,41 @@ private extension Satellite {
             
             self?.loadBookmarks(itemID: itemID)
         }.store(in: &stash)
+    }
+    
+    func syncAudioPlayerState() async {
+        nowPlayingItemID = await AudioPlayer.shared.currentItemID
+        
+        queue = await AudioPlayer.shared.queue.map(\.itemID)
+        upNextQueue = await AudioPlayer.shared.upNextQueue.map(\.itemID)
+        
+        if let activeChapterIndex = await AudioPlayer.shared.activeChapterIndex {
+            chapter = await AudioPlayer.shared.chapters[activeChapterIndex]
+        } else {
+            chapter = nil
+        }
+        
+        chapters = await AudioPlayer.shared.chapters
+        
+        isPlaying = await AudioPlayer.shared.isPlaying
+        isBuffering = await AudioPlayer.shared.isBusy
+        
+        currentTime = await AudioPlayer.shared.currentTime ?? 0
+        currentChapterTime = await AudioPlayer.shared.chapterCurrentTime ?? 0
+        
+        duration = await AudioPlayer.shared.duration ?? 0
+        chapterDuration = await AudioPlayer.shared.chapterDuration ?? 0
+        
+        playbackRate = await AudioPlayer.shared.playbackRate
+        
+        route = await AudioPlayer.shared.route
+        sleepTimer = await AudioPlayer.shared.sleepTimer
+        
+        resolvePlayingItem()
+        
+        if let nowPlayingItemID {
+            loadBookmarks(itemID: nowPlayingItemID)
+        }
     }
 }
 

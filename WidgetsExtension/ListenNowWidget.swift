@@ -164,8 +164,6 @@ private struct ListenNowWidgetContent: View {
                     }
                 }
             }
-            
-            Spacer(minLength: 2)
         }
         .containerBackground(for: .widget) {
             if colorScheme == .light {
