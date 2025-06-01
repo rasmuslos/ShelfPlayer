@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct EpisodeView: View {
     @Environment(\.namespace) private var namespace

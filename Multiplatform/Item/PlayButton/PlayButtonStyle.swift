@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 protocol PlayButtonStyle: Sendable {
     associatedtype MenuBody: View

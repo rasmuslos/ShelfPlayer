@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct PlaybackRateEditor: View {
     @Default(.playbackRates) private var playbackRates

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct CircularProgressIndicator: View {
     let completed: Percentage

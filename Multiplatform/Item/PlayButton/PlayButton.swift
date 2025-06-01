@@ -8,8 +8,7 @@
 import Foundation
 import SwiftUI
 import TipKit
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct PlayButton: View {
     @Environment(\.library) private var library

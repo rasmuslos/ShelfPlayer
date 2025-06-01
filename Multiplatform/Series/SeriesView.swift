@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct SeriesView: View {
     @Environment(Satellite.self) private var satellite

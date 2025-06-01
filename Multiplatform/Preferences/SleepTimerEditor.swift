@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct SleepTimerEditor: View {
     @Default(.sleepTimerIntervals) private var sleepTimerIntervals

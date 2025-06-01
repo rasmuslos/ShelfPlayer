@@ -8,7 +8,7 @@
 import UIKit
 import Intents
 import RFNotifications
-import ShelfPlayerKit
+import ShelfPlayback
 
 // MARK: Background Downloads
 

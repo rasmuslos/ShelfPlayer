@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ItemMenu: View {
     let items: [(id: ItemIdentifier?, name: String)]

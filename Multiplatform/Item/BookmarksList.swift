@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct BookmarksList: View {
     @Environment(Satellite.self) private var satellite

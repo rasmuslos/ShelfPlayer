@@ -7,8 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct ListenedTodayLabel: View {
     @Environment(ListenedTodayTracker.self) private var listenedTodayTracker
@@ -28,19 +27,22 @@ struct ListenedTodayLabel: View {
             20
         }
     }
+    private var color: Color {
+        tintColor.color
+    }
     
     var body: some View {
         GeometryReader { geometryProxy in
             ZStack {
                 Circle()
                     .trim(from: 0, to: availablePercentage)
-                    .stroke(tintColor.color, lineWidth: strokeWidth(geometryProxy.size.width))
+                    .stroke(color, lineWidth: strokeWidth(geometryProxy.size.width))
                     .opacity(0.2)
                     .rotationEffect(.degrees(135))
                 
                 Circle()
                     .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(listenedTodayTracker.totalMinutesListenedToday) / CGFloat(listenedTodayTracker.listenTimeTarget)))))
-                    .stroke(tintColor.color, lineWidth: strokeWidth(geometryProxy.size.width))
+                    .stroke(color, lineWidth: strokeWidth(geometryProxy.size.width))
                     .rotationEffect(.degrees(135))
                 
                 if listenedTodayTracker.todaySessionLoader.isLoading && listenedTodayTracker.totalMinutesListenedToday == 0 {
@@ -58,7 +60,7 @@ struct ListenedTodayLabel: View {
                     
                     Text(listenedTodayTracker.listenTimeTarget, format: .number)
                         .font(.system(size: geometryProxy.size.width / 3))
-                        .foregroundStyle(tintColor.color)
+                        .foregroundStyle(color)
                         .opacity(0.72)
                 }
                 .offset(x: 0, y: geometryProxy.size.width / 6)

@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPPersistence
+import ShelfPlayback
 
 extension EpisodeView {
     struct ToolbarModifier: ViewModifier {

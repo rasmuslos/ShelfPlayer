@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Defaults
-import SPFoundation
 
 struct RowTitle: View {
     @Default(.enableSerifFont) private var enableSerifFont

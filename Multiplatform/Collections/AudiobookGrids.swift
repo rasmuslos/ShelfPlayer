@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct AudiobookVGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

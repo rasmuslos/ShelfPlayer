@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayback
 
 struct DescriptionSheet: View {
     let item: Item

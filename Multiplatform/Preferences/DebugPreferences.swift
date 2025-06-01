@@ -8,7 +8,7 @@
 import SwiftUI
 import Nuke
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct DebugPreferences: View {
     #if DEBUG

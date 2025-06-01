@@ -8,7 +8,7 @@
 import Foundation
 import OSLog
 import Intents
-import ShelfPlayerKit
+import ShelfPlayback
 
 public struct ContextProvider {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ContextProvider")

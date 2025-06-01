@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ItemIDLoadView: View {
     @Environment(\.library) private var library

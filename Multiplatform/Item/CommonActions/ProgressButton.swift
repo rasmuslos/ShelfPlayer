@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
-import SPPersistence
+import ShelfPlayback
 
 struct ProgressButton: View {
     @Environment(Satellite.self) private var satellite

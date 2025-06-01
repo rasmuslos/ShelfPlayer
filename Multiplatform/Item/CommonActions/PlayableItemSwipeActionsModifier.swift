@@ -7,8 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct PlayableItemSwipeActionsModifier: ViewModifier {
     @Environment(Satellite.self) private var satellite

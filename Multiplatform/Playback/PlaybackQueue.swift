@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct PlaybackQueue: View {
     @Environment(PlaybackViewModel.self) private var viewModel

@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import SPPlayback
+import ShelfPlayback
 
 extension View {
     @ViewBuilder

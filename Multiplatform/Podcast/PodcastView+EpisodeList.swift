@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct PodcastEpisodesView: View {
     @Environment(PodcastViewModel.self) private var viewModel

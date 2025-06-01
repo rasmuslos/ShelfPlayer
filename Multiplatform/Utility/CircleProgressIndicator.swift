@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct CircleProgressIndicator: View {
     @Default(.tintColor) private var tintColor

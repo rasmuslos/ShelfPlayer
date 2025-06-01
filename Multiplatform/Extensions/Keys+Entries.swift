@@ -7,12 +7,10 @@
 
 import Foundation
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 extension Defaults.Keys {
     static let lastTabValue = Key<TabValue?>("lastTabValue")
-    
-    static let tintColor = Key("tintColor", default: TintPicker.TintColor.shelfPlayer)
     
     static let carPlayTabBarLibraries = Key<[Library]?>("carPlayTabBarLibraries", default: nil)
     static let carPlayShowListenNow = Key<Bool>("carPlayShowListenNow", default: true)

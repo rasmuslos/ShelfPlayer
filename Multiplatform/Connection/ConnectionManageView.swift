@@ -7,7 +7,7 @@
 
 import SwiftUI
 import OSLog
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ConnectionManageView: View {
     @Environment(\.dismiss) private var dismiss

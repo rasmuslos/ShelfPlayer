@@ -7,7 +7,7 @@
 
 import SwiftUI
 import OSLog
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct DownloadButton: View {
     fileprivate static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "DownloadButton")

@@ -10,8 +10,7 @@ import Intents
 import CoreSpotlight
 import SwiftData
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct PlayableItemContextMenuModifier: ViewModifier {
     @Environment(\.library) private var library

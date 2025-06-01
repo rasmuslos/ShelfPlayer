@@ -7,8 +7,7 @@
 
 import Foundation
 import Intents
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 import OSLog
 
 final class IntentDonator: Sendable {

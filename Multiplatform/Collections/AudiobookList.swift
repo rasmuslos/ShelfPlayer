@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct AudiobookList: View {
     let sections: [AudiobookSection]
