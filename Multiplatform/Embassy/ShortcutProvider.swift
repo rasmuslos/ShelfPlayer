@@ -19,7 +19,12 @@ struct ShortcutProvider: AppShortcutsProvider {
     static var shortcutTileColor: ShortcutTileColor {
         .yellow
     }
+    
     @AppShortcutsBuilder static var appShortcuts: [AppShortcut] {
+        AppShortcut(intent: StartIntent(), phrases: [
+            "Spiele \(\.$item) mit \(.applicationName)"
+        ], shortTitle: "intent.start", systemImageName: "play.square")
+        
         AppShortcut(intent: PlayIntent(), phrases: [
             "Resume \(.applicationName)",
             "Resume playback with \(.applicationName)",

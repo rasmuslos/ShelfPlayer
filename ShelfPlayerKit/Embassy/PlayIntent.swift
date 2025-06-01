@@ -7,13 +7,14 @@
 
 import Foundation
 import AppIntents
+import WidgetKit
 import Defaults
 
 public struct PlayIntent: AppIntent, AudioPlaybackIntent {
-    @AppDependency private var audioPlayer: IntentAudioPlayer
-    
     public static let title: LocalizedStringResource = "intent.play"
     public static let description = IntentDescription("intent.play.description")
+    
+    @AppDependency private var audioPlayer: IntentAudioPlayer
     
     public init() {}
     
@@ -21,6 +22,7 @@ public struct PlayIntent: AppIntent, AudioPlaybackIntent {
         guard await audioPlayer.isPlaying != nil else {
             let current = Defaults[.lastListened]
             Defaults[.lastListened] = .init(item: current?.item, isDownloaded: current?.isDownloaded ?? false, isPlaying: nil)
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
             
             throw IntentError.noPlaybackItem
         }

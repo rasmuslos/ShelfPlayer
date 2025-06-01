@@ -1028,9 +1028,9 @@
 				3A0AE69D2AB623F400ACCD68 /* Frameworks */,
 				3A0AE69E2AB623F400ACCD68 /* Resources */,
 				3ACD597E2BE29B8F0060A841 /* Embed Foundation Extensions */,
-				3AA954342AD2BAC10031C20D /* ShellScript */,
 				3A86D8D72C10983500676731 /* Embed ExtensionKit Extensions */,
 				3AB265FC2DEC5B9400F69B03 /* Embed Frameworks */,
+				3AA954342AD2BAC10031C20D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1053,6 +1053,7 @@
 				3A6AAF3E2DE8C7280090C886 /* Frameworks */,
 				3A6AAF3F2DE8C7280090C886 /* Resources */,
 				3AB266172DEC63A600F69B03 /* Embed Frameworks */,
+				3AC9A9282DEC83A8004BC123 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1077,6 +1078,7 @@
 				3A6EECA12DEC6D630000CAF2 /* Sources */,
 				3A6EECA22DEC6D630000CAF2 /* Frameworks */,
 				3A6EECA32DEC6D630000CAF2 /* Resources */,
+				3AC9A9292DEC83C1004BC123 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1107,6 +1109,7 @@
 				3AC9A8DA2DEC716F004BC123 /* Frameworks */,
 				3AC9A8DB2DEC716F004BC123 /* Resources */,
 				3AC9A8EC2DEC71BF004BC123 /* Embed Frameworks */,
+				3AC9A92B2DEC83CE004BC123 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1219,6 +1222,60 @@
 
 /* Begin PBXShellScriptBuildPhase section */
 		3AA954342AD2BAC10031C20D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    buildNumber=$(git rev-list --count head)\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n";
+		};
+		3AC9A9282DEC83A8004BC123 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    buildNumber=$(git rev-list --count head)\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n";
+		};
+		3AC9A9292DEC83C1004BC123 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    buildNumber=$(git rev-list --count head)\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n";
+		};
+		3AC9A92B2DEC83CE004BC123 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -1755,7 +1812,6 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1787,7 +1843,6 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

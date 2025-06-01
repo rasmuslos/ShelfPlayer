@@ -7,14 +7,14 @@
 
 import WidgetKit
 import SwiftUI
-import ShelfPlayback
+import ShelfPlayerKit
 
 struct LastListenedWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "io.rfk.shelfPlayer.lastListened", provider: LastListenedWidgetProvider()) {
             LastListenedWidgetContent(entry: $0)
         }
-        .configurationDisplayName(Text("widget.lastListened.title"))
+        .configurationDisplayName(Text("widget.lastListened"))
         .description(Text("widget.lastListened.description"))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
@@ -97,13 +97,10 @@ private struct LastListenedWidgetContent: View {
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             } else {
-                ItemImage(item: nil, size: .regular)
+                ItemImage(item: nil, size: .regular, cornerRadius: 8)
             }
         }
         .frame(width: 52)
-    }
-    private var color: Color {
-        tintColor.color
     }
     
     var body: some View {
@@ -120,9 +117,10 @@ private struct LastListenedWidgetContent: View {
             Spacer(minLength: 0)
             
             Text(name)
+                .bold()
+                .font(.caption)
                 .foregroundStyle(.ultraThickMaterial)
                 .colorScheme(colorScheme == .light ? .dark : .light)
-                .font(.caption)
                 .lineLimit(3)
             
             Spacer(minLength: 0)
@@ -136,7 +134,7 @@ private struct LastListenedWidgetContent: View {
                             Button("play", systemImage: "play.fill", intent: PlayIntent())
                         }
                     } else if let item = entry.item {
-                        Text(verbatim: ":(")
+                        Button("start", systemImage: "play.fill", intent: StartIntent(item: item))
                     } else {
                         Button("play", systemImage: "play.fill") {}
                             .disabled(true)
@@ -156,11 +154,10 @@ private struct LastListenedWidgetContent: View {
                 }
             }
         }
-        .colorScheme(.light)
         .containerBackground(for: .widget) {
             if colorScheme == .light {
                 Rectangle()
-                    .fill(color.gradient)
+                    .fill(tintColor.color.gradient)
             } else {
                 Rectangle()
                     .fill(.background.secondary)

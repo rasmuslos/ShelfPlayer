@@ -7,10 +7,16 @@
     "play" : {
 
     },
+    "start" : {
+
+    },
+    "widget.lastListened" : {
+
+    },
     "widget.lastListened.description" : {
 
     },
-    "widget.lastListened.title" : {
+    "widget.listenedToday" : {
 
     },
     "widget.listenedToday.description" : {
@@ -24,6 +30,7 @@
       }
     },
     "widget.listenedToday.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32,6 +39,15 @@
           }
         }
       }
+    },
+    "widget.listenNow" : {
+
+    },
+    "widget.listenNow.description" : {
+
+    },
+    "widget.listenNow.empty" : {
+
     }
   },
   "version" : "1.0"

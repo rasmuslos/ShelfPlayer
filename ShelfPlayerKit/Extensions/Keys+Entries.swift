@@ -120,6 +120,7 @@ public extension Defaults.Keys {
     
     static let listenedTodayWidgetValue = Key<ListenedTodayPayload?>("listenedTodayWidgetValue", default: nil, suite: .shared)
     static let lastListened = Key<LastListenedPayload?>("lastListened", default: nil, suite: .shared)
+    static let listenNowWidgetItems = Key<ListenNowPayload?>("listenNowWidgetItems", default: nil, suite: .shared)
     
     // MARK: Utility
     
@@ -156,6 +157,14 @@ public struct LastListenedPayload: Codable, Defaults.Serializable {
         self.item = item
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
+    }
+}
+
+public struct ListenNowPayload: Codable, Defaults.Serializable {
+    public let items: [PlayableItem]
+    
+    public init(items: [PlayableItem]) {
+        self.items = items
     }
 }
 

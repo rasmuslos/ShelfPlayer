@@ -7,7 +7,7 @@
 
 import WidgetKit
 import SwiftUI
-import ShelfPlayback
+import ShelfPlayerKit
 
 private var tomorrowMidnight: Date {
     Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
@@ -18,7 +18,7 @@ struct ListenedTodayWidget: Widget {
         StaticConfiguration(kind: "io.rfk.shelfPlayer.listenedToday", provider: ListenedTodayWidgetProvider()) {
             ListenedTodayWidgetContent(entry: $0)
         }
-        .configurationDisplayName(Text("widget.listenedToday.title"))
+        .configurationDisplayName(Text("widget.listenedToday"))
         .description(Text("widget.listenedToday.description"))
         .supportedFamilies([.accessoryCircular])
     }
