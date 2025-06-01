@@ -110,8 +110,7 @@ private struct LastListenedWidgetContent: View {
                 
                 Spacer(minLength: 0)
                 
-                Image("shelfPlayer.fill")
-                    .foregroundStyle(colorScheme == .light ? .secondary : Color.white)
+                WidgetAppIcon()
             }
             
             Spacer(minLength: 0)
@@ -126,24 +125,11 @@ private struct LastListenedWidgetContent: View {
             Spacer(minLength: 0)
             
             HStack(spacing: 0) {
-                Group {
-                    if let isPlaying = entry.isPlaying {
-                        if isPlaying {
-                            Button("pause", systemImage: "pause.fill", intent: PauseIntent())
-                        } else {
-                            Button("play", systemImage: "play.fill", intent: PlayIntent())
-                        }
-                    } else if let item = entry.item {
-                        Button("start", systemImage: "play.fill", intent: StartIntent(item: item))
-                    } else {
-                        Button("play", systemImage: "play.fill") {}
-                            .disabled(true)
-                    }
-                }
-                .font(.footnote)
-                .controlSize(.small)
-                .tint(colorScheme == .light ? .black : .white)
-                .foregroundStyle(colorScheme == .light ? .black : .white)
+                WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying)
+                    .font(.footnote)
+                    .controlSize(.small)
+                    .tint(colorScheme == .light ? .black : .white)
+                    .foregroundStyle(colorScheme == .light ? .black : .white)
                 
                 Spacer(minLength: 12)
                 
