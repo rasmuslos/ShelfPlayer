@@ -109,9 +109,9 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         
         self.loadMore = loadMore
         
-        Task {
+        Task { [weak self] in
             for await _ in Defaults.updates([.groupAudiobooksInSeries, .showSingleEntryGroupedSeries], initial: false) {
-                refresh()
+                self?.refresh()
             }
         }
     }
@@ -139,7 +139,11 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     }
     
     nonisolated func didReachEndOfLoadedContent(bypassWorking: Bool = false) {
-        Task {
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+            
             guard let library = await library else {
                 #if DEBUG
                 if await self.items.isEmpty {

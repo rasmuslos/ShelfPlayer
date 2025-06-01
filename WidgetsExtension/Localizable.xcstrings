@@ -29,17 +29,6 @@
         }
       }
     },
-    "widget.listenedToday.title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listened today"
-          }
-        }
-      }
-    },
     "widget.listenNow" : {
 
     },

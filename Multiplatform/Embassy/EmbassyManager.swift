@@ -10,10 +10,14 @@ import WidgetKit
 import AppIntents
 import ShelfPlayback
 
-struct EmbassyManager {
-    @MainActor private static var isRegistered = false
+final class EmbassyManager: Sendable {
+    private init() {
+        Task {
+            await setupObservers()
+        }
+    }
     
-    static var intentAudioPlayer: IntentAudioPlayer {
+    let intentAudioPlayer: IntentAudioPlayer = {
         IntentAudioPlayer() {
             if await AudioPlayer.shared.currentItemID == nil {
                 return nil
@@ -29,22 +33,9 @@ struct EmbassyManager {
         } start: {
             try await AudioPlayer.shared.start(.init(itemID: $0, origin: .unknown, startWithoutListeningSession: $1))
         }
-    }
+    }()
     
-    static func setupObservers() async {
-        let shouldRun = await MainActor.run {
-            guard !isRegistered else {
-                return false
-            }
-            
-            isRegistered = true
-            return true
-        }
-        
-        guard shouldRun else {
-            return
-        }
-        
+    func setupObservers() async {
         if let current = Defaults[.lastListened], current.isPlaying != nil {
             Defaults[.lastListened] = LastListenedPayload(item: current.item, isDownloaded: current.isDownloaded, isPlaying: nil)
             
@@ -94,10 +85,10 @@ struct EmbassyManager {
         // MARK: Last listened
         
         RFNotification[.playStateChanged].subscribe { _ in
-            updateLastListenedWidget()
+            self.updateLastListenedWidget()
         }
         RFNotification[.playbackItemChanged].subscribe {
-            updateLastListenedWidget($0.0)
+            self.updateLastListenedWidget($0.0)
         }
         RFNotification[.playbackStopped].subscribe { _ in
             let current = Defaults[.lastListened]
@@ -152,10 +143,12 @@ struct EmbassyManager {
             }
         }
     }
+    
+    static let shared = EmbassyManager()
 }
 
 private extension EmbassyManager {
-    static func updateLastListenedWidget(_ itemID: ItemIdentifier? = nil) {
+    func updateLastListenedWidget(_ itemID: ItemIdentifier? = nil) {
         Task {
             guard await AudioPlayer.shared.currentItemID != nil || itemID != nil else {
                 return
