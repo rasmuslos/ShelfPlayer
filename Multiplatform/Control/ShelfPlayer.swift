@@ -55,7 +55,7 @@ struct ShelfPlayer {
                 $0.addTask { await ListenNowCache.shared.preload() }
                 
                 $0.addTask { await ContextProvider.updateUserContext() }
-                $0.addTask { await WidgetManager.setupObservers() }
+                $0.addTask { await EmbassyManager.setupObservers() }
             }
         }
     }

@@ -10,7 +10,7 @@ import WidgetKit
 import AppIntents
 import ShelfPlayback
 
-struct WidgetManager {
+struct EmbassyManager {
     @MainActor private static var isRegistered = false
     
     static var intentAudioPlayer: IntentAudioPlayer {
@@ -62,6 +62,20 @@ struct WidgetManager {
         
         RFNotification[.listenNowItemsChanged].subscribe {
             ShortcutProvider.updateAppShortcutParameters()
+        }
+        
+        // MARK: Donate Intents
+        
+        RFNotification[.playbackItemChanged].subscribe {
+            var itemID = $0.0
+            
+            Task {
+                if itemID.type == .episode {
+                    itemID = ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast)
+                }
+                
+                try await StartIntent(item: itemID.resolved).donate()
+            }
         }
         
         // MARK: Listening Time
@@ -140,7 +154,7 @@ struct WidgetManager {
     }
 }
 
-private extension WidgetManager {
+private extension EmbassyManager {
     static func updateLastListenedWidget(_ itemID: ItemIdentifier? = nil) {
         Task {
             guard await AudioPlayer.shared.currentItemID != nil || itemID != nil else {

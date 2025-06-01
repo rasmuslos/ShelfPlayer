@@ -25,7 +25,13 @@
     "intent.error" : {
 
     },
+    "intent.error.invalidItemType" : {
+
+    },
     "intent.error.noPlaybackItem" : {
+
+    },
+    "intent.error.notFound" : {
 
     },
     "intent.pause" : {

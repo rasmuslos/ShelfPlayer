@@ -25,7 +25,7 @@ struct MultiplatformApp: App {
         }
         
         AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
-        AppDependencyManager.shared.add(dependency: WidgetManager.intentAudioPlayer)
+        AppDependencyManager.shared.add(dependency: EmbassyManager.intentAudioPlayer)
     }
     
     var body: some Scene {
