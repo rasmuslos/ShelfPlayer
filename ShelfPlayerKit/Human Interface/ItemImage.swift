@@ -8,7 +8,6 @@
 import SwiftUI
 import Nuke
 import NukeUI
-import Defaults
 import RFNotifications
 
 public struct RequestImage: View {

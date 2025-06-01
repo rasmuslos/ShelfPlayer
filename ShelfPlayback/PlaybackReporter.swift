@@ -7,7 +7,6 @@
 
 import Foundation
 import OSLog
-import Defaults
 import RFNotifications
 import ShelfPlayerKit
 

@@ -9,7 +9,6 @@ import Foundation
 import AVKit
 import MediaPlayer
 import OSLog
-import Defaults
 import RFNotifications
 import ShelfPlayerKit
 

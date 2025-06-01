@@ -7,7 +7,6 @@
 
 import WidgetKit
 import SwiftUI
-import Nuke
 import ShelfPlayback
 
 struct LastListenedWidget: Widget {
@@ -37,14 +36,13 @@ struct LastListenedWidgetProvider: TimelineProvider {
     }
     
     private func getCurrent() async -> LastListenedWidgetTimelineEntry {
-        // guard let payload = Defaults[.lastListened] else {
-        guard false else {
+        guard let payload = Defaults[.lastListened] else {
             return await LastListenedWidgetTimelineEntry(item: nil, isDownloaded: false, isPlaying: nil)
         }
         
         try? await PersistenceManager.shared.authorization.fetchConnections()
         
-        // return await LastListenedWidgetTimelineEntry(item: payload.item, isDownloaded: payload.isDownloaded, isPlaying: payload.isPlaying)
+        return await LastListenedWidgetTimelineEntry(item: payload.item, isDownloaded: payload.isDownloaded, isPlaying: payload.isPlaying)
     }
 }
 
@@ -79,6 +77,7 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
 
 private struct LastListenedWidgetContent: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Default(.tintColor) private var tintColor
     
     let entry: LastListenedWidgetTimelineEntry
     
@@ -103,8 +102,8 @@ private struct LastListenedWidgetContent: View {
         }
         .frame(width: 52)
     }
-    private var tintColor: Color {
-        .red
+    private var color: Color {
+        tintColor.color
     }
     
     var body: some View {
@@ -161,7 +160,7 @@ private struct LastListenedWidgetContent: View {
         .containerBackground(for: .widget) {
             if colorScheme == .light {
                 Rectangle()
-                    .fill(tintColor.gradient)
+                    .fill(color.gradient)
             } else {
                 Rectangle()
                     .fill(.background.secondary)

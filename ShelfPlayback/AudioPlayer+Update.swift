@@ -7,7 +7,6 @@
 
 import Foundation
 import MediaPlayer
-import Defaults
 import RFNotifications
 import ShelfPlayerKit
 

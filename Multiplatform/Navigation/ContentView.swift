@@ -9,7 +9,6 @@ import SwiftUI
 import Intents
 import CoreSpotlight
 import SwiftData
-import Defaults
 import ShelfPlayback
 
 struct ContentView: View {

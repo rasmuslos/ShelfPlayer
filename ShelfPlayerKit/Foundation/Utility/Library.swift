@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Defaults
 
 public struct Library {
     public let id: String

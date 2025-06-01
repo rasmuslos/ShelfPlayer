@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import Defaults
 import ShelfPlayback
 
 struct StatusOverlay: View {

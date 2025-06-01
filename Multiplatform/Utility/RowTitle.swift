@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Defaults
+import ShelfPlayback
 
 struct RowTitle: View {
     @Default(.enableSerifFont) private var enableSerifFont

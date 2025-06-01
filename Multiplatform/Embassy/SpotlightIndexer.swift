@@ -9,7 +9,6 @@ import Foundation
 @preconcurrency import CoreSpotlight
 import Network
 import OSLog
-import Defaults
 import ShelfPlayback
 
 final actor SpotlightIndexer: Sendable {
