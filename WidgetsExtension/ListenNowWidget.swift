@@ -110,6 +110,7 @@ private struct ListenNowWidgetContent: View {
                 Text(item.name)
                     .bold()
                     .lineLimit(1)
+                
                 Text(item.authors, format: .list(type: .and))
                     .lineLimit(1)
             }
@@ -117,25 +118,15 @@ private struct ListenNowWidgetContent: View {
             
             Spacer(minLength: 0)
             
-            Group {
-                if let (playbackItem, isPlaying) = entry.playbackItem, playbackItem == item.id {
-                    if isPlaying {
-                        Button("pause", systemImage: "pause.fill", intent: PauseIntent())
-                    } else {
-                        Button("play", systemImage: "play.fill", intent: PlayIntent())
-                    }
-                } else {
-                    Button("start", systemImage: "play.fill", intent: StartIntent(item: item))
-                }
-            }
-            .buttonStyle(.plain)
-            .controlSize(.small)
-            .labelStyle(.iconOnly)
-            .padding(6)
-            .foregroundStyle(colorScheme == .light ? .black : .white)
-            .background(.ultraThinMaterial, in: .circle)
-            .colorScheme(colorScheme == .dark ? .light : .dark)
-            .font(.caption2)
+            WidgetItemButton(item: item, isPlaying: entry.playbackItem?.0 == item.id ? entry.playbackItem?.1 : nil)
+                .buttonStyle(.plain)
+                .controlSize(.small)
+                .labelStyle(.iconOnly)
+                .padding(6)
+                .foregroundStyle(colorScheme == .light ? .black : .white)
+                .background(.ultraThinMaterial, in: .circle)
+                .colorScheme(colorScheme == .dark ? .light : .dark)
+                .font(.caption2)
         }
     }
     
@@ -188,6 +179,7 @@ private struct ListenNowWidgetContent: View {
     }
 }
 
+#if DEBUG
 #Preview(as: .systemMedium) {
     ListenNowWidget()
 } timeline: {
@@ -200,3 +192,4 @@ private struct ListenNowWidgetContent: View {
     ListenNowTimelineEntry(playbackItem: (.fixture, false), items: [Audiobook.fixture], covers: [:])
     ListenNowTimelineEntry(playbackItem: (.fixture, true), items: [Audiobook.fixture, Episode.fixture, Episode.fixture, Audiobook.fixture, Audiobook.fixture, Episode.fixture], covers: [:])
 }
+#endif
