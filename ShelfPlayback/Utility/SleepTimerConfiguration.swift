@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Defaults
 
 public enum SleepTimerConfiguration: Sendable, Hashable {
     case interval(Date)

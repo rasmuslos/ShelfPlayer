@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Nuke
+import AppIntents
 import ShelfPlayback
 
 @main
@@ -23,6 +23,9 @@ struct MultiplatformApp: App {
         if ProcessInfo.processInfo.environment["RUN_SPOTLIGHT_INDEX"] == "YES" {
             SpotlightIndexer.shared.run()
         }
+        
+        AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
+        AppDependencyManager.shared.add(dependency: WidgetManager.intentAudioPlayer)
     }
     
     var body: some Scene {

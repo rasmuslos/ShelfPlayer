@@ -159,9 +159,8 @@
 		3AC9A8E32DEC716F004BC123 /* ShelfPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */; };
 		3AC9A8E42DEC716F004BC123 /* ShelfPlayback.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3AC9A8E82DEC71BF004BC123 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
-		3AC9A8E92DEC71BF004BC123 /* ShelfPlayerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3AC9A9092DEC71E6004BC123 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
-		3AC9A90A2DEC71E6004BC123 /* ShelfPlayerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3AC9A91E2DEC7488004BC123 /* ShelfPlayerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
 		3ACB8D042DDCA124005336C0 /* AudiobookBookmarksPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */; };
 		3ACB8D082DDCA860005336C0 /* TimeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D072DDCA860005336C0 /* TimeRow.swift */; };
@@ -241,6 +240,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3AC9A91E2DEC7488004BC123 /* ShelfPlayerKit.framework in Embed Frameworks */,
 				3AC9A8E42DEC716F004BC123 /* ShelfPlayback.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -252,7 +252,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3AC9A90A2DEC71E6004BC123 /* ShelfPlayerKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,7 +262,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3AC9A8E92DEC71BF004BC123 /* ShelfPlayerKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

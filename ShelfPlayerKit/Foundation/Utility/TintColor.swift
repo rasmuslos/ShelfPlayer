@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Defaults
 
 public enum TintColor: Identifiable, Codable, Defaults.Serializable, CaseIterable {
     case shelfPlayer

@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Defaults
 import ShelfPlayback
 
 enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {

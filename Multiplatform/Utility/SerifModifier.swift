@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Defaults
+import ShelfPlayback
 
 struct SerifModifier: ViewModifier {
     @Default(.enableSerifFont) private var enableSerifFont

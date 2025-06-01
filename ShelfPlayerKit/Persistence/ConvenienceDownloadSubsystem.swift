@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Defaults
 
 
 private typealias ConvenienceDownloadConfiguration = PersistenceManager.ConvenienceDownloadSubsystem.ConvenienceDownloadConfiguration

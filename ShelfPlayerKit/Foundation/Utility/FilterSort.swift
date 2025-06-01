@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Defaults
 
 public enum ItemDisplayType: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable, Defaults.Serializable {
     case grid

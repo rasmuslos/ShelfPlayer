@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Defaults
 import DefaultsMacros
 import ShelfPlayback
 

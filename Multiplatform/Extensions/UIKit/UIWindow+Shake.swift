@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import RFNotifications
+import ShelfPlayback
 
 #if os(iOS)
 import UIKit

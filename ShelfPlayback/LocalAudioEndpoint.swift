@@ -10,7 +10,6 @@ import Combine
 @preconcurrency import AVKit
 import MediaPlayer
 import OSLog
-import Defaults
 import ShelfPlayerKit
 
 @MainActor

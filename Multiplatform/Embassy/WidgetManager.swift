@@ -7,11 +7,26 @@
 
 import Foundation
 import WidgetKit
-import Defaults
 import ShelfPlayback
 
 struct WidgetManager {
     @MainActor private static var isRegistered = false
+    
+    static var intentAudioPlayer: IntentAudioPlayer {
+        IntentAudioPlayer() {
+            if await AudioPlayer.shared.currentItemID == nil {
+                return nil
+            }
+            
+            return await AudioPlayer.shared.isPlaying
+        } setPlaying: {
+            if $0 {
+                await AudioPlayer.shared.play()
+            } else {
+                await AudioPlayer.shared.pause()
+            }
+        }
+    }
     
     static func setupObservers() async {
         let shouldRun = await MainActor.run {
@@ -97,8 +112,6 @@ private extension WidgetManager {
             
             let isDownloaded = await PersistenceManager.shared.download.status(of: item.id) == .downloading
             let isPlaying = await AudioPlayer.shared.currentItemID == nil ? nil : AudioPlayer.shared.isPlaying
-            
-            print(isPlaying)
             
             Defaults[.lastListened] = LastListenedPayload(item: item, isDownloaded: isDownloaded, isPlaying: isPlaying)
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")

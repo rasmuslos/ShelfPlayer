@@ -8,7 +8,6 @@
 import Foundation
 import Intents
 import OSLog
-import Defaults
 import ShelfPlayback
 
 internal final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
