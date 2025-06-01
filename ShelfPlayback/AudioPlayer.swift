@@ -354,9 +354,9 @@ private extension AudioPlayer {
             }
         }
         
-        Task {
+        Task { [weak self] in
             for await _ in Defaults.updates(.playbackRates, initial: false) {
-                updateCommandCenterPlaybackRates()
+                self?.updateCommandCenterPlaybackRates()
             }
         }
     }

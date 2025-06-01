@@ -111,6 +111,10 @@ struct ContentView: View {
                     case .active:
                         await RFNotification[.performBackgroundSessionSync].send(payload: nil)
                         await ShelfPlayer.invalidateShortTermCache()
+                        
+                        await RFNotification[.scenePhaseDidChange].send(payload: true)
+                    case .inactive:
+                        await RFNotification[.scenePhaseDidChange].send(payload: false)
                     default:
                         break
                 }
