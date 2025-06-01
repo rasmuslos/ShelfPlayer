@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     case audiobookHome(Library)

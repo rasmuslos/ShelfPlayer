@@ -7,7 +7,7 @@
 
 import SwiftUI
 import OSLog
-import ShelfPlayerKit
+import ShelfPlayback
 
 @Observable @MainActor
 final class ProgressTracker {

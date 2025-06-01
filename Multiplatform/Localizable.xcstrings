@@ -813,22 +813,10 @@
     "filter.all" : {
 
     },
-    "intent.error" : {
-
-    },
-    "intent.error.noPlaybackItem" : {
-
-    },
     "intent.pause" : {
 
     },
-    "intent.pause.description" : {
-
-    },
     "intent.play" : {
-
-    },
-    "intent.play.description" : {
 
     },
     "item.abridged" : {
@@ -3436,6 +3424,7 @@
       }
     },
     "preferences.tint.aqua" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3452,6 +3441,7 @@
       }
     },
     "preferences.tint.black" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3468,6 +3458,7 @@
       }
     },
     "preferences.tint.blue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3484,6 +3475,7 @@
       }
     },
     "preferences.tint.green" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3500,6 +3492,7 @@
       }
     },
     "preferences.tint.mint" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3516,6 +3509,7 @@
       }
     },
     "preferences.tint.purple" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3532,6 +3526,7 @@
       }
     },
     "preferences.tint.red" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3548,6 +3543,7 @@
       }
     },
     "preferences.tint.shelfPlayer" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3564,6 +3560,7 @@
       }
     },
     "preferences.tint.violet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3580,6 +3577,7 @@
       }
     },
     "preferences.tint.yellow" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -8,6 +8,13 @@
 import Foundation
 import Defaults
 import AppIntents
+import ShelfPlayback
+
+struct ShelfPlayerPackage: AppIntentsPackage {
+    static let includedPackages: [any AppIntentsPackage.Type] = [
+        ShelfPlayerKitPackage.self,
+    ]
+}
 
 struct ShortcutProvider: AppShortcutsProvider {
     static var shortcutTileColor: ShortcutTileColor {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct CarPlayPreferences: View {
     @Environment(ConnectionStore.self) private var connectionStore

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 extension PodcastView {
     struct Header: View {

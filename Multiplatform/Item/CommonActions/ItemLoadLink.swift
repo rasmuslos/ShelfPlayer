@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ItemLoadLink: View {
     @Environment(Satellite.self) private var satellite

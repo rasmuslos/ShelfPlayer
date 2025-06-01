@@ -1,0 +1,54 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "intent.error" : {
+
+    },
+    "intent.error.noPlaybackItem" : {
+
+    },
+    "intent.pause" : {
+
+    },
+    "intent.pause.description" : {
+
+    },
+    "intent.play" : {
+
+    },
+    "intent.play.description" : {
+
+    },
+    "preferences.tint.aqua" : {
+
+    },
+    "preferences.tint.black" : {
+
+    },
+    "preferences.tint.blue" : {
+
+    },
+    "preferences.tint.green" : {
+
+    },
+    "preferences.tint.mint" : {
+
+    },
+    "preferences.tint.purple" : {
+
+    },
+    "preferences.tint.red" : {
+
+    },
+    "preferences.tint.shelfPlayer" : {
+
+    },
+    "preferences.tint.violet" : {
+
+    },
+    "preferences.tint.yellow" : {
+
+    }
+  },
+  "version" : "1.0"
+}

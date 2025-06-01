@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 @Observable @MainActor
 final class DownloadStatusTracker {

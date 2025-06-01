@@ -8,8 +8,7 @@
 import SwiftUI
 import Defaults
 import DefaultsMacros
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 @Observable @MainActor
 final class PlaybackViewModel {

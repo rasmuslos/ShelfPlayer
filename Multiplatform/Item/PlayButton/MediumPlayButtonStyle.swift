@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct MediumPlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {

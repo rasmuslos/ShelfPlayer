@@ -7,7 +7,7 @@
 
 import SwiftUI
 import AuthenticationServices
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ConnectionAddView: View {
     let finished: () -> Void

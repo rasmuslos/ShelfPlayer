@@ -9,8 +9,7 @@ import SwiftUI
 import OSLog
 import Defaults
 import DefaultsMacros
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 @Observable @MainActor
 final class Satellite {
@@ -762,6 +761,8 @@ private extension Satellite {
     // MARK: Observers
 
     func setupObservers() {
+        // MARK: General
+        
         RFNotification[.changeOfflineMode].subscribe { [weak self] in
             if $0 {
                 let appearance = UINavigationBarAppearance()
@@ -783,6 +784,8 @@ private extension Satellite {
         RFNotification[.navigate].subscribe { [weak self] _ in
             self?.dismissSheet()
         }.store(in: &stash)
+        
+        // MARK: Audio Player state synchronisation
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.nowPlayingItemID = $0.0
@@ -893,6 +896,16 @@ private extension Satellite {
             
             self?.loadBookmarks(itemID: itemID)
         }.store(in: &stash)
+        
+        // MARK: Intents
+        
+        RFNotification[.intentChangePlaybackState].subscribe { [weak self] in
+            if $0 {
+                self?.play()
+            } else {
+                self?.pause()
+            }
+        }
     }
 }
 

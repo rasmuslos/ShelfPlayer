@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import ShelfPlayerKit
+import ShelfPlayback
 
 extension Chapter {
     var timeOffsetFormatted: String {

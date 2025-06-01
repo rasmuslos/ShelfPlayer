@@ -7,8 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct AudiobookHomePanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

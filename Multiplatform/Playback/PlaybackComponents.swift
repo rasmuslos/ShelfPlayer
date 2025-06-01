@@ -8,8 +8,7 @@
 import SwiftUI
 import AVKit
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct PlaybackTitle: View {
     @Environment(PlaybackViewModel.self) private var viewModel

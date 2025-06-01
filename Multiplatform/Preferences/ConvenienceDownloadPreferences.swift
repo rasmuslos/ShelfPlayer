@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ConvenienceDownloadPreferences: View {
     @Default(.enableListenNowDownloads) private var enableConvenienceDownloads

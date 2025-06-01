@@ -8,8 +8,7 @@
 import SwiftUI
 import Defaults
 import DefaultsMacros
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct GroupingConfigurationSheet: View {
     @Environment(Satellite.self) private var satellite

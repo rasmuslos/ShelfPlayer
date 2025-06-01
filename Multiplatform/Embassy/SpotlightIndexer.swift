@@ -10,7 +10,7 @@ import Foundation
 import Network
 import OSLog
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 final actor SpotlightIndexer: Sendable {
     let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "SpotlightIndexer")

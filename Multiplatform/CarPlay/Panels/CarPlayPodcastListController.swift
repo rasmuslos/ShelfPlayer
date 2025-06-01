@@ -8,7 +8,7 @@
 import Foundation
 @preconcurrency import CarPlay
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 @MainActor
 class CarPlayPodcastListController {

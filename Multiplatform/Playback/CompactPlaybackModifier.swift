@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct CompactPlaybackModifier: ViewModifier {
     @Environment(\.playbackBottomOffset) private var playbackBottomOffset

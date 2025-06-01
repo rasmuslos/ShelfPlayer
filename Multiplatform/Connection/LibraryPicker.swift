@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct LibraryPicker: View {
     @Environment(ConnectionStore.self) private var connectionStore

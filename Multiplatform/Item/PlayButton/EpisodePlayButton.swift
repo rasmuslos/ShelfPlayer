@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct EpisodePlayButton: View {
     @Environment(\.colorScheme) private var colorScheme

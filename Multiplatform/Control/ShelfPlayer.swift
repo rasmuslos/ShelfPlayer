@@ -11,7 +11,7 @@ import Intents
 import TipKit
 import Nuke
 import Defaults
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct ShelfPlayer {
     static let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "Hooks")

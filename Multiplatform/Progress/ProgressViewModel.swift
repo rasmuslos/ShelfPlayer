@@ -9,8 +9,7 @@ import SwiftUI
 import OSLog
 import Defaults
 import DefaultsMacros
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 @MainActor @Observable
 final class ProgressViewModel {

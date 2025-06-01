@@ -8,8 +8,7 @@
 import Foundation
 import WidgetKit
 import Defaults
-import ShelfPlayerKit
-import SPPlayback
+import ShelfPlayback
 
 struct WidgetManager {
     @MainActor private static var isRegistered = false
@@ -26,6 +25,14 @@ struct WidgetManager {
         
         guard shouldRun else {
             return
+        }
+        
+        // MARK: General
+        
+        Task {
+            for await _ in Defaults.updates(.tintColor) {
+                WidgetCenter.shared.reloadAllTimelines()
+            }
         }
         
         // MARK: Listening Time
@@ -49,7 +56,7 @@ struct WidgetManager {
         RFNotification[.playbackItemChanged].subscribe {
             updateLastListenedWidget($0.0)
         }
-        RFNotification[.playStateChanged].subscribe { _ in
+        RFNotification[.playbackStopped].subscribe { _ in
             updateLastListenedWidget()
         }
         
@@ -90,6 +97,8 @@ private extension WidgetManager {
             
             let isDownloaded = await PersistenceManager.shared.download.status(of: item.id) == .downloading
             let isPlaying = await AudioPlayer.shared.currentItemID == nil ? nil : AudioPlayer.shared.isPlaying
+            
+            print(isPlaying)
             
             Defaults[.lastListened] = LastListenedPayload(item: item, isDownloaded: isDownloaded, isPlaying: isPlaying)
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")

@@ -8,7 +8,7 @@
 import Foundation
 import OSLog
 @preconcurrency import CarPlay
-import ShelfPlayerKit
+import ShelfPlayback
 
 @MainActor
 public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {

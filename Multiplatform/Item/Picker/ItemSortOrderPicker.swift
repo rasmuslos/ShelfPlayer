@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SPFoundation
+import ShelfPlayback
 
 struct ItemSortOrderPicker<O: ItemSortOrder>: View {
     @Environment(\.library) private var library

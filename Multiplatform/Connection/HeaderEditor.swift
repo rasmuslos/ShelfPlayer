@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayerKit
+import ShelfPlayback
 
 struct HeaderEditor: View {
     @Binding var headers: [HeaderShadow]
