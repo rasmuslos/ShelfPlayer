@@ -9,8 +9,6 @@ import Foundation
 import OSLog
 import Intents
 import TipKit
-import Nuke
-import Defaults
 import ShelfPlayback
 
 struct ShelfPlayer {

@@ -43,19 +43,16 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
     private func getCurrent() -> ListenedTodayTimelineEntry {
         let empty = ListenedTodayTimelineEntry(totalToday: 0)
         
-        // guard let current = Defaults[.listenedTodayWidgetValue] else {
-        guard false else {
+        guard let current = Defaults[.listenedTodayWidgetValue] else {
             return empty
         }
         
-        /*
         guard tomorrowMidnight.distance(to: current.updated) < 0 else {
             Defaults[.listenedTodayWidgetValue] = nil
             return empty
         }
         
         return .init(totalToday: current.total)
-         */
     }
 }
 

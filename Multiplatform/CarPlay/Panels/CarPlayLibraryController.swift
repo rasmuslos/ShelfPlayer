@@ -7,7 +7,6 @@
 
 import Foundation
 @preconcurrency import CarPlay
-import Defaults
 import ShelfPlayback
 
 @MainActor

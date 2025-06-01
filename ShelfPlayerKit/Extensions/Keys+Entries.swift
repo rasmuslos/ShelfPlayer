@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Defaults
 import RFNotifications
 
 public extension UserDefaults {

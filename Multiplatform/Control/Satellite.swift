@@ -7,7 +7,6 @@
 
 import SwiftUI
 import OSLog
-import Defaults
 import DefaultsMacros
 import ShelfPlayback
 

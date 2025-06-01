@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Defaults
 
 /**
  ShelfPlayer Item Identifier

@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Defaults
 
 
 public extension EnvironmentValues {

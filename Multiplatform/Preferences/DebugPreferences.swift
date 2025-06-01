@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-import Nuke
-import Defaults
 import ShelfPlayback
 
 struct DebugPreferences: View {

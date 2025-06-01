@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AVKit
-import Defaults
 import ShelfPlayback
 
 struct PlaybackTitle: View {

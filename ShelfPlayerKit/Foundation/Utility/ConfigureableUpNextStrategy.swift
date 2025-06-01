@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Defaults
 
 public enum ConfigureableUpNextStrategy: String, Sendable, Hashable, CaseIterable, Equatable, Identifiable, Codable, Defaults.Serializable, Defaults.PreferRawRepresentable {
     case `default`
