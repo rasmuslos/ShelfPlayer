@@ -24,6 +24,8 @@ final class EmbassyManager: Sendable {
             }
             
             return await AudioPlayer.shared.isPlaying
+        } resolveCurrentItemID: {
+            await AudioPlayer.shared.currentItemID
         } setPlaying: {
             if $0 {
                 await AudioPlayer.shared.play()

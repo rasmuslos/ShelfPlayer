@@ -7,11 +7,14 @@
 
 public final class IntentAudioPlayer: Sendable {
     let resolveIsPlaying: @Sendable () async -> Bool?
+    let resolveCurrentItemID: @Sendable () async -> ItemIdentifier?
+    
     let _setPlaying: @Sendable (Bool) async -> Void
     let _start: @Sendable (ItemIdentifier, Bool) async throws -> Void
     
-    public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?, setPlaying: @Sendable @escaping (Bool) async -> Void, start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void) {
+    public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?, resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?, setPlaying: @Sendable @escaping (Bool) async -> Void, start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void) {
         self.resolveIsPlaying = resolveIsPlaying
+        self.resolveCurrentItemID = resolveCurrentItemID
         self._setPlaying = setPlaying
         self._start = start
     }
@@ -21,6 +24,12 @@ public final class IntentAudioPlayer: Sendable {
             await resolveIsPlaying()
         }
     }
+    var currentItemID: ItemIdentifier? {
+        get async {
+            await resolveCurrentItemID()
+        }
+    }
+    
     func setPlaying(_ playing: Bool) async {
         await _setPlaying(playing)
     }

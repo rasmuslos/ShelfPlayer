@@ -142,6 +142,8 @@ private extension SpotlightIndexer {
                         $0.addTask {
                             let attributes = CSSearchableItemAttributeSet(contentType: .audio)
                             
+                            attributes.identifier = audiobook.id.description
+                            
                             attributes.displayName = audiobook.name
                             attributes.thumbnailData = await audiobook.id.data(size: .small)
                             attributes.title = audiobook.name
@@ -176,6 +178,8 @@ private extension SpotlightIndexer {
                     for podcast in podcasts {
                         $0.addTask {
                             let attributes = CSSearchableItemAttributeSet(contentType: .audio)
+                            
+                            attributes.identifier = podcast.id.description
                             
                             attributes.displayName = podcast.name
                             attributes.thumbnailData = await podcast.id.data(size: .small)

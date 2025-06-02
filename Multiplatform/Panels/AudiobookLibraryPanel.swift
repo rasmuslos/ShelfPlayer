@@ -333,7 +333,7 @@ private extension LibraryViewModel {
             }
             
             do {
-                var (audiobooks, authors, narrators, series) = try await ABSClient[library.connectionID].items(in: library, search: search)
+                var (audiobooks, authors, narrators, series, _) = try await ABSClient[library.connectionID].items(in: library, search: search)
                 
                 if Task.isCancelled {
                     return
