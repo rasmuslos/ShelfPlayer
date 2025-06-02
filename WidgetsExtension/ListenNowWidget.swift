@@ -23,7 +23,7 @@ struct ListenNowWidget: Widget {
 
 struct ListenNowWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> ListenNowTimelineEntry {
-        ListenNowTimelineEntry(playbackItem: nil, items: [], covers: [:])
+        ListenNowTimelineEntry(playbackItem: nil, items: [], covers: [:], entities: [:])
     }
     func getSnapshot(in context: Context, completion: @Sendable @escaping (ListenNowTimelineEntry) -> Void) {
         Task {
@@ -37,29 +37,20 @@ struct ListenNowWidgetProvider: TimelineProvider {
     }
     
     private func getCurrent() async -> ListenNowTimelineEntry {
-        guard let items = Defaults[.listenNowWidgetItems]?.items else {
-            return ListenNowTimelineEntry(playbackItem: nil, items: [], covers: [:])
-        }
-        
-        let covers = await withTaskGroup {
-            for item in items {
-                $0.addTask {
-                    (item.id, await item.id.data(size: .regular))
-                }
-            }
-            
-            return await $0.reduce(into: [:]) { $0[$1.0] = $1.1 }
+        guard let payload = Defaults[.playbackInfoWidgetValue] else {
+            return ListenNowTimelineEntry(playbackItem: nil, items: [], covers: [:], entities: [:])
         }
         
         let playbackItem: (ItemIdentifier, Bool)?
         
-        if let lastListened = Defaults[.lastListened], let itemID = lastListened.item?.id, let isPlaying = lastListened.isPlaying {
-            playbackItem = (itemID, isPlaying)
+        if let currentItemID = payload.currentItemID, let isPlaying = payload.isPlaying {
+            playbackItem = (currentItemID, isPlaying)
         } else {
             playbackItem = nil
         }
         
-        return ListenNowTimelineEntry(playbackItem: playbackItem, items: items, covers: covers)
+        let itemIDs = payload.listenNowItems.map(\.id)
+        return ListenNowTimelineEntry(playbackItem: playbackItem, items: payload.listenNowItems, covers: await Cache.shared.covers(for: itemIDs), entities: await Cache.shared.entities(for: itemIDs))
     }
 }
 
@@ -69,14 +60,14 @@ struct ListenNowTimelineEntry: TimelineEntry {
     let playbackItem: (ItemIdentifier, Bool)?
     
     var items: [PlayableItem]
+    
     var covers: [ItemIdentifier: Data]
+    var entities: [ItemIdentifier: ItemEntity]
 }
 
 private struct ListenNowWidgetContent: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.widgetFamily) var widgetFamily
-    
-    @Default(.tintColor) private var tintColor
     
     let entry: ListenNowTimelineEntry
     
@@ -95,30 +86,41 @@ private struct ListenNowWidgetContent: View {
     }
     
     @ViewBuilder
+    private func label(item: PlayableItem) -> some View {
+        if let imageData = entry.covers[item.id], let image = UIImage(data: imageData) {
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(1, contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        } else {
+            ItemImage(item: nil, size: .regular, cornerRadius: 8)
+        }
+        
+        VStack(alignment: .leading, spacing: 2) {
+            Text(item.name)
+                .bold()
+                .lineLimit(1)
+            
+            Text(item.authors, format: .list(type: .and))
+                .lineLimit(1)
+        }
+        .font(.caption)
+    }
+    @ViewBuilder
     private func row(item: PlayableItem) -> some View {
         HStack(spacing: 8) {
-            if let imageData = entry.covers[item.id], let image = UIImage(data: imageData) {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            if let entity = entry.entities[item.id] {
+                Button(intent: OpenIntent(item: entity)) {
+                    label(item: item)
+                }
+                .buttonStyle(.plain)
             } else {
-                ItemImage(item: nil, size: .regular, cornerRadius: 8)
+                label(item: item)
             }
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name)
-                    .bold()
-                    .lineLimit(1)
-                
-                Text(item.authors, format: .list(type: .and))
-                    .lineLimit(1)
-            }
-            .font(.caption)
             
             Spacer(minLength: 0)
             
-            WidgetItemButton(item: item, isPlaying: entry.playbackItem?.0 == item.id ? entry.playbackItem?.1 : nil)
+            WidgetItemButton(item: item, isPlaying: entry.playbackItem?.0 == item.id ? entry.playbackItem?.1 : nil, entity: entry.entities[item.id])
                 .buttonStyle(.plain)
                 .controlSize(.small)
                 .labelStyle(.iconOnly)
@@ -128,6 +130,7 @@ private struct ListenNowWidgetContent: View {
                 .colorScheme(colorScheme == .dark ? .light : .dark)
                 .font(.caption2)
         }
+        .contentShape(.rect)
     }
     
     var body: some View {
@@ -138,20 +141,21 @@ private struct ListenNowWidgetContent: View {
                 
                 Spacer(minLength: 8)
                 
-                Image("shelfPlayer.fill")
-                    .foregroundStyle(colorScheme == .light ? .secondary : Color.white)
+                WidgetAppIcon()
             }
             
             if entry.items.isEmpty {
-                Spacer(minLength: 2)
+                Spacer(minLength: 0)
                 
                 Text("widget.listenNow.empty")
                     .font(.footnote.smallCaps())
                     .foregroundStyle(.secondary)
+                
+                Spacer(minLength: 0)
             } else {
-                ForEach(items) {
+                ForEach(items) { item in
                     Spacer(minLength: 2)
-                    row(item: $0)
+                    row(item: item)
                 }
                 
                 let missing = rowCount - items.count
@@ -166,13 +170,7 @@ private struct ListenNowWidgetContent: View {
             }
         }
         .containerBackground(for: .widget) {
-            if colorScheme == .light {
-                Rectangle()
-                    .fill(tintColor.color.gradient)
-            } else {
-                Rectangle()
-                    .fill(.background.secondary)
-            }
+            WidgetBackground()
         }
     }
 }
@@ -181,13 +179,13 @@ private struct ListenNowWidgetContent: View {
 #Preview(as: .systemMedium) {
     ListenNowWidget()
 } timeline: {
-    ListenNowTimelineEntry(playbackItem: (.fixture, true), items: [Audiobook.fixture], covers: [:])
-    ListenNowTimelineEntry(playbackItem: (.fixture, false), items: [Audiobook.fixture, Episode.fixture], covers: [:])
+    ListenNowTimelineEntry(playbackItem: (.fixture, true), items: [Audiobook.fixture], covers: [:], entities: [:])
+    ListenNowTimelineEntry(playbackItem: (.fixture, false), items: [Audiobook.fixture, Episode.fixture], covers: [:], entities: [:])
 }
 #Preview(as: .systemLarge) {
     ListenNowWidget()
 } timeline: {
-    ListenNowTimelineEntry(playbackItem: (.fixture, false), items: [Audiobook.fixture], covers: [:])
-    ListenNowTimelineEntry(playbackItem: (.fixture, true), items: [Audiobook.fixture, Episode.fixture, Episode.fixture, Audiobook.fixture, Audiobook.fixture, Episode.fixture], covers: [:])
+    ListenNowTimelineEntry(playbackItem: (.fixture, false), items: [Audiobook.fixture], covers: [:], entities: [:])
+    ListenNowTimelineEntry(playbackItem: (.fixture, true), items: [Audiobook.fixture, Episode.fixture, Episode.fixture, Audiobook.fixture, Audiobook.fixture, Episode.fixture], covers: [:], entities: [:])
 }
 #endif

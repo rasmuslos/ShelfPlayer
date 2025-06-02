@@ -36,13 +36,11 @@ struct LastListenedWidgetProvider: TimelineProvider {
     }
     
     private func getCurrent() async -> LastListenedWidgetTimelineEntry {
-        guard let payload = Defaults[.lastListened] else {
+        guard let payload = Defaults[.playbackInfoWidgetValue] else {
             return await LastListenedWidgetTimelineEntry(item: nil, isDownloaded: false, isPlaying: nil)
         }
         
-        try? await PersistenceManager.shared.authorization.fetchConnections()
-        
-        return await LastListenedWidgetTimelineEntry(item: payload.item, isDownloaded: payload.isDownloaded, isPlaying: payload.isPlaying)
+        return await LastListenedWidgetTimelineEntry(item: try? payload.currentItemID?.resolved as? PlayableItem, isDownloaded: payload.isDownloaded, isPlaying: payload.isPlaying)
     }
 }
 
@@ -50,7 +48,9 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
     var date: Date = .now
     
     var item: PlayableItem?
+    
     var imageData: Data?
+    var entity: ItemEntity?
     
     var isDownloaded: Bool
     var isPlaying: Bool? = nil
@@ -59,7 +59,9 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
         self.date = date
         
         self.item = item
+        
         imageData = nil
+        entity = nil
         
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
@@ -68,7 +70,14 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
         self.date = date
         
         self.item = item
-        imageData = await item?.id.data(size: .regular)
+        
+        if let item {
+            imageData = await Cache.shared.cover(for: item.id)
+            entity = await ItemEntity(item: item)
+        } else {
+            imageData = nil
+            entity = nil
+        }
         
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
@@ -77,7 +86,6 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
 
 private struct LastListenedWidgetContent: View {
     @Environment(\.colorScheme) private var colorScheme
-    @Default(.tintColor) private var tintColor
     
     let entry: LastListenedWidgetTimelineEntry
     
@@ -103,7 +111,8 @@ private struct LastListenedWidgetContent: View {
         .frame(width: 52)
     }
     
-    var body: some View {
+    @ViewBuilder
+    private var label: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 0) {
                 image
@@ -125,7 +134,7 @@ private struct LastListenedWidgetContent: View {
             Spacer(minLength: 0)
             
             HStack(spacing: 0) {
-                WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying)
+                WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
                     .font(.footnote)
                     .controlSize(.small)
                     .tint(colorScheme == .light ? .black : .white)
@@ -140,14 +149,22 @@ private struct LastListenedWidgetContent: View {
                 }
             }
         }
-        .containerBackground(for: .widget) {
-            if colorScheme == .light {
-                Rectangle()
-                    .fill(tintColor.color.gradient)
+        .contentShape(.rect)
+    }
+    
+    var body: some View {
+        Group {
+            if let entity = entry.entity {
+                Button(intent: OpenIntent(item: entity)) {
+                    label
+                }
+                .buttonStyle(.plain)
             } else {
-                Rectangle()
-                    .fill(.background.secondary)
+                label
             }
+        }
+        .containerBackground(for: .widget) {
+            WidgetBackground()
         }
     }
 }

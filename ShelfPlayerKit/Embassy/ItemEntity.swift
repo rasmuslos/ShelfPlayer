@@ -18,11 +18,7 @@ public struct ItemEntity: AppEntity {
     public let item: Item
     public let imageData: Data?
     
-    init(item: Item) {
-        self.item = item
-        imageData = nil
-    }
-    init(item: Item) async {
+    public init(item: Item) async {
         self.item = item
         imageData = await item.id.data(size: .regular)
     }
@@ -58,19 +54,18 @@ public struct ItemEntityQuery: EntityQuery {
         }
     }
     public func suggestedEntities() async throws -> [ItemEntity] {
-        var result: [ItemEntity] = []
-        
-        for item in await ShelfPlayerKit.listenNowItems {
-            result.append(await ItemEntity(item: item))
-        }
-        
-        return result
+        await listenNowAppEntities()
     }
 }
 
 extension ItemEntityQuery: EntityStringQuery {
     public func entities(matching string: String) async throws -> [ItemEntity] {
         []
+    }
+}
+struct ItemEntityOptionsProvider: DynamicOptionsProvider {
+    public func results() async throws -> [ItemEntity] {
+        await listenNowAppEntities()
     }
 }
 
@@ -82,4 +77,14 @@ extension ItemIdentifier: EntityIdentifierConvertible {
     public static func entityIdentifier(for entityIdentifierString: String) -> ItemIdentifier? {
         ItemIdentifier(entityIdentifierString)
     }
+}
+
+private func listenNowAppEntities() async -> [ItemEntity] {
+    var result: [ItemEntity] = []
+    
+    for item in await ShelfPlayerKit.listenNowItems {
+        result.append(await ItemEntity(item: item))
+    }
+    
+    return result
 }

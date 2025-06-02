@@ -67,7 +67,7 @@ struct ListenedTodayTimelineEntry: TimelineEntry {
             return 0
         }
         
-        return Double(totalToday) / Double(target)
+        return min(1, max(0, Double(totalToday) / Double(target)))
     }
 }
 

@@ -22,7 +22,11 @@ struct ShortcutProvider: AppShortcutsProvider {
     
     @AppShortcutsBuilder static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: StartIntent(), phrases: [
-            "Spiele \(\.$item) mit \(.applicationName)"
+            "Play an item using \(.applicationName)",
+            "Play an audiobook using \(.applicationName)",
+            "Play an episode using \(.applicationName)",
+            "Play an podcast using \(.applicationName)",
+            "Play \(\.$item) using \(.applicationName)",
         ], shortTitle: "intent.start", systemImageName: "play.square")
         
         AppShortcut(intent: PlayIntent(), phrases: [

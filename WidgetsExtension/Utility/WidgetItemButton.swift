@@ -12,6 +12,8 @@ struct WidgetItemButton: View {
     let item: PlayableItem?
     let isPlaying: Bool?
     
+    let entity: ItemEntity?
+    
     var body: some View {
         if let isPlaying {
             if isPlaying {
@@ -19,8 +21,8 @@ struct WidgetItemButton: View {
             } else {
                 Button("play", systemImage: "play.fill", intent: PlayIntent())
             }
-        } else if let item {
-            Button("start", systemImage: "play.fill", intent: StartIntent(item: item))
+        } else if let entity {
+            Button("start", systemImage: "play.fill", intent: StartIntent(item: entity))
         } else {
             Button("play", systemImage: "play.fill") {}
                 .disabled(true)

@@ -10,9 +10,6 @@
     "intent.entity.item %lld" : {
 
     },
-    "intent.entity.item ${item}" : {
-
-    },
     "intent.entity.item.audiobook" : {
 
     },
@@ -34,6 +31,15 @@
     "intent.error.notFound" : {
 
     },
+    "intent.open" : {
+
+    },
+    "intent.open ${item}" : {
+
+    },
+    "intent.open.description" : {
+
+    },
     "intent.pause" : {
 
     },
@@ -47,6 +53,9 @@
 
     },
     "intent.start" : {
+
+    },
+    "intent.start ${item}" : {
 
     },
     "intent.start.description" : {
