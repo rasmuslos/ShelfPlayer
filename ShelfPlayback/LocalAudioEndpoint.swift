@@ -423,6 +423,8 @@ private extension LocalAudioEndpoint {
             // Attempt to start a playback session
             
             (audioTracks, chapters, startTime, sessionID) = try await ABSClient[currentItemID.connectionID].startPlaybackSession(itemID: currentItemID)
+            
+            Defaults[.openPlaybackSessions].append(OpenPlaybackSessionPayload(sessionID: sessionID!, itemID: currentItemID))
         } catch {
             // Fall back to resolving and reporting locally
             

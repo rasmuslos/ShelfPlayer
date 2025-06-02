@@ -121,6 +121,7 @@ final actor PlaybackReporter {
             if let sessionID, let duration, let currentTime {
                 do {
                     try await ABSClient[itemID.connectionID].closeSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: 0)
+                    Defaults[.openPlaybackSessions].removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
                 } catch {
                     logger.error("Failed to close session: \(error)")
                 }

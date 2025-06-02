@@ -8,8 +8,8 @@
 import Foundation
 import SwiftData
 import OSLog
+import Defaults
 import RFNotifications
-
 
 typealias PersistedPlaybackSession = SchemaV2.PersistedPlaybackSession
 
@@ -133,5 +133,31 @@ public extension PersistenceManager.SessionSubsystem {
         
         RFNotification[.synchronizedPlaybackSessions].dispatch()
         RFNotification[.cachedTimeSpendListeningChanged].dispatch()
+    }
+    
+    nonisolated func cleanupOpenPlaybackSessions() async {
+        let sessions = Defaults[.openPlaybackSessions]
+        
+        guard !sessions.isEmpty else {
+            return
+        }
+        
+        logger.warning("There are \(sessions.count) open playback sessions. Closing...")
+        
+        for session in sessions {
+            do {
+                let entity = await PersistenceManager.shared.progress[session.itemID]
+                try await ABSClient[session.itemID.connectionID].closeSession(sessionID: session.sessionID, currentTime: entity.currentTime, duration: entity.duration ?? 0, timeListened: 0)
+                
+                // we are fucked so we delete the session
+                if entity.duration == nil {
+                    try await ABSClient[session.itemID.connectionID].deleteSession(sessionID: session.sessionID)
+                }
+            } catch {
+                continue
+            }
+        }
+        
+        Defaults[.openPlaybackSessions] = []
     }
 }
