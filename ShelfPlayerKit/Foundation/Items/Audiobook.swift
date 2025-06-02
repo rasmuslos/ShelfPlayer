@@ -70,6 +70,13 @@ public extension Audiobook {
             self.sequence = sequence
         }
         
+        public var formattedName: String {
+            if let formattedSequence {
+                "\(name) #\(formattedSequence)"
+            } else {
+                "\(name)"
+            }
+        }
         public var formattedSequence: String? {
             guard let sequence else {
                 return nil

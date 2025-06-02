@@ -59,7 +59,7 @@ final class EmbassyManager: Sendable {
                     itemID = ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast)
                 }
                 
-                try await IntentDonationManager.shared.donate(intent: StartIntent(item: itemID.resolved))
+                try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(item: itemID.resolved))
             }
         }
         

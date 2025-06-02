@@ -8,24 +8,58 @@
 import Foundation
 import AppIntents
 
-public struct ItemEntity: AppEntity {
+@AssistantEntity(schema: .books.audiobook)
+public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
+    /*
     public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.item", numericFormat: "intent.entity.item \(placeholder: .int)", synonyms: [
         "intent.entity.item.audiobook",
         "intent.entity.item.podcast",
     ])
+     */
     public static let defaultQuery = ItemEntityQuery()
+    
+    public let hideInSpotlight: Bool = true
     
     public let item: Item
     public let imageData: Data?
     
-    public init(item: Item) async {
-        self.item = item
-        imageData = await item.id.data(size: .regular)
-    }
+    // Properties
     
     public var id: ItemIdentifier {
         item.id
     }
+    
+    @Property
+    public var title: String?
+    @Property
+    public var author: String?
+    @Property
+    public var genre: String?
+    @Property
+    public var purchaseDate: Date?
+    @Property
+    public var seriesTitle: String?
+    @Property
+    public var url: URL?
+    
+    public init(item: Item) async {
+        self.item = item
+        imageData = await item.id.data(size: .regular)
+        
+        title = item.name
+        author = item.authors.formatted(.list(type: .and))
+        genre = item.genres.formatted(.list(type: .and))
+        purchaseDate = item.addedAt
+        
+        if let audiobook = item as? Audiobook, !audiobook.series.isEmpty {
+            seriesTitle = audiobook.series.map(\.formattedName).formatted(.list(type: .and))
+        } else {
+            seriesTitle = nil
+        }
+        
+        url = try? await item.id.url
+    }
+    
     public var displayRepresentation: DisplayRepresentation {
         let image: DisplayRepresentation.Image?
         
