@@ -67,7 +67,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
         return (audiobook, tracks.map(PlayableItem.AudioFile.init), chapters.map(Chapter.init), supplementaryPDFs)
     }
     
-    func items(in library: Library, search: String) async throws -> ([Audiobook], [Person], [Person], [Series]) {
+    func items(in library: Library, search: String) async throws -> ([Audiobook], [Person], [Person], [Series], [Podcast]) {
         let payload = try await response(for: ClientRequest<SearchResponse>(path: "api/libraries/\(library.id)/search", method: .get, query: [
             URLQueryItem(name: "q", value: search),
         ]))
@@ -76,7 +76,8 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
             payload.book?.compactMap { Audiobook(payload: $0.libraryItem, libraryID: library.id, connectionID: connectionID) } ?? [],
             payload.authors?.map { Person(author: $0, connectionID: connectionID) } ?? [],
             payload.narrators?.map { Person(narrator: $0, libraryID: library.id, connectionID: connectionID) } ?? [],
-            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, libraryID: library.id, connectionID: connectionID) } ?? []
+            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, libraryID: library.id, connectionID: connectionID) } ?? [],
+            payload.podcast?.map { Podcast(payload: $0.libraryItem, connectionID: connectionID) } ?? []
         )
     }
     

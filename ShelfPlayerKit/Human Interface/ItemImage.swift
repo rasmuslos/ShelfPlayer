@@ -272,25 +272,6 @@ private struct ContrastModifier: ViewModifier {
     }
 }
 
-public extension ItemIdentifier.ItemType {
-    var icon: String {
-        switch self {
-            case .audiobook:
-                "book"
-            case .author:
-                "person"
-            case .narrator:
-                "microphone.fill"
-            case .series:
-                "rectangle.grid.2x2"
-            case .podcast:
-                "square.stack"
-            case .episode:
-                "play.square"
-        }
-    }
-}
-
 #if DEBUG
 #Preview {
     RequestImage(request: .init(url: .init(string: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmacjeux.fr%2Fwp-content%2Fuploads%2F2021%2F02%2Fsynd1.jpg&f=1&nofb=1&ipt=a414ab5944af23112c3d36713648379879e8fce234a20df58727c714645a11c5&ipo=images")!), cornerRadius: 0, aspectRatio: .none, contrastConfiguration: nil)

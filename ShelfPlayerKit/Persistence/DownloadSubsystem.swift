@@ -820,6 +820,15 @@ public extension PersistenceManager.DownloadSubsystem {
         
         RFNotification[.downloadStatusChanged].dispatch(payload: nil)
     }
+    
+    func search(query: String) async throws -> [ItemIdentifier] {
+        let descriptor = FetchDescriptor<SchemaV2.PersistedSearchIndexEntry>(predicate: #Predicate {
+            $0.primaryName.localizedStandardContains(query)
+            || $0.secondaryName?.localizedStandardContains(query) == true
+            || $0.authorName.localizedStandardContains(query)
+        })
+        return try modelContext.fetch(descriptor).map(\.itemID)
+    }
 }
 
 private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {

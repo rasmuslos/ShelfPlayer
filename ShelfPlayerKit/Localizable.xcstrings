@@ -31,6 +31,12 @@
     "intent.error.notFound" : {
 
     },
+    "intent.nowPlaying" : {
+
+    },
+    "intent.nowPlaying.description" : {
+
+    },
     "intent.open" : {
 
     },
@@ -52,6 +58,27 @@
     "intent.play.description" : {
 
     },
+    "intent.search" : {
+
+    },
+    "intent.search ${search}" : {
+
+    },
+    "intent.search.description" : {
+
+    },
+    "intent.search.includeOnlineSearchResults" : {
+
+    },
+    "intent.search.includeOnlineSearchResults.description" : {
+
+    },
+    "intent.search.query" : {
+
+    },
+    "intent.search.query.description" : {
+
+    },
     "intent.start" : {
 
     },
@@ -65,6 +92,24 @@
 
     },
     "intent.start.withoutPlaybackSession.description" : {
+
+    },
+    "item.audiobook" : {
+
+    },
+    "item.author" : {
+
+    },
+    "item.episode" : {
+
+    },
+    "item.narrator" : {
+
+    },
+    "item.podcast" : {
+
+    },
+    "item.series" : {
 
     }
   },
