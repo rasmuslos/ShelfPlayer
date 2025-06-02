@@ -7,16 +7,7 @@
     "intent.entity.item" : {
 
     },
-    "intent.entity.item %lld" : {
-
-    },
-    "intent.entity.item.audiobook" : {
-
-    },
     "intent.entity.item.description" : {
-
-    },
-    "intent.entity.item.podcast" : {
 
     },
     "intent.error" : {
