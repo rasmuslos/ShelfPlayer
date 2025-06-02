@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import ShelfPlayback
 
-extension ItemIdentifier {
+public extension ItemIdentifier {
     @MainActor
     func navigateIsolated() {
         RFNotification[.navigate].send(payload: self)

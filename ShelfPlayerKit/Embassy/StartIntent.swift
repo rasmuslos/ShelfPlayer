@@ -21,31 +21,37 @@ public struct StartIntent: AppIntent {
     public var withoutPlaybackSession: Bool
     
     public init() {}
-    public init(item: Item) {
-        self.item = .init(item: item)
-    }
+    
     public init(item: Item) async {
         self.item = await .init(item: item)
     }
-    
-    public static var parameterSummary: some ParameterSummary {
-        Summary("intent.entity.item \(\.$item)")
+    public init(item: ItemEntity) {
+        self.item = item
     }
     
-    public func perform() async throws -> some IntentResult {
+    public static var parameterSummary: some ParameterSummary {
+        Summary("intent.start \(\.$item)")
+    }
+    
+    public func perform() async throws -> some ReturnsValue<ItemEntity> {
+        let itemID: ItemIdentifier
+        
         switch item.id.type {
             case .audiobook, .episode:
-                try await audioPlayer.start(item.id, withoutPlaybackSession)
+                itemID = item.id
             case .podcast:
                 guard let episode = try await ResolvedUpNextStrategy.podcast(item.id).resolve(cutoff: nil).first else {
                     throw IntentError.notFound
                 }
                 
-                try await audioPlayer.start(episode.id, withoutPlaybackSession)
+                itemID = episode.id
             default:
                 throw IntentError.invalidItemType
         }
         
-        return .result()
+        try await audioPlayer.start(itemID, withoutPlaybackSession)
+        let entity = try await ItemEntity(item: itemID.resolved)
+        
+        return .result(value: entity)
     }
 }

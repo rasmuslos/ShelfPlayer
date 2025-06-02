@@ -36,12 +36,8 @@ final class EmbassyManager: Sendable {
     }()
     
     func setupObservers() async {
-        if let current = Defaults[.lastListened], current.isPlaying != nil {
-            Defaults[.lastListened] = LastListenedPayload(item: current.item, isDownloaded: current.isDownloaded, isPlaying: nil)
-            
-            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
-            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
-        }
+        Embassy.unsetWidgetIsPlaying()
+        ShortcutProvider.updateAppShortcutParameters()
         
         // MARK: General
         
@@ -49,10 +45,6 @@ final class EmbassyManager: Sendable {
             for await _ in Defaults.updates(.tintColor) {
                 WidgetCenter.shared.reloadAllTimelines()
             }
-        }
-        
-        RFNotification[.listenNowItemsChanged].subscribe {
-            ShortcutProvider.updateAppShortcutParameters()
         }
         
         // MARK: Donate Intents
@@ -65,7 +57,7 @@ final class EmbassyManager: Sendable {
                     itemID = ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast)
                 }
                 
-                try await StartIntent(item: itemID.resolved).donate()
+                try await IntentDonationManager.shared.donate(intent: StartIntent(item: itemID.resolved))
             }
         }
         
@@ -91,14 +83,11 @@ final class EmbassyManager: Sendable {
             self.updateLastListenedWidget($0.0)
         }
         RFNotification[.playbackStopped].subscribe { _ in
-            let current = Defaults[.lastListened]
-            Defaults[.lastListened] = LastListenedPayload(item: current?.item, isDownloaded: current?.isDownloaded ?? false, isPlaying: nil)
+            Embassy.unsetWidgetIsPlaying()
         }
         
         RFNotification[.progressEntityUpdated].subscribe {
-            let itemID = Defaults[.lastListened]?.item?.id
-            
-            guard itemID?.primaryID == $0.primaryID && itemID?.groupingID == $0.groupingID && itemID?.connectionID == $0.connectionID else {
+            guard let current = Defaults[.playbackInfoWidgetValue], let itemID = current.currentItemID, itemID.primaryID == $0.primaryID && itemID.groupingID == $0.groupingID && itemID.connectionID == $0.connectionID else {
                 return
             }
             
@@ -106,29 +95,32 @@ final class EmbassyManager: Sendable {
                 return
             }
             
-            Defaults[.lastListened] = nil
+            Defaults[.playbackInfoWidgetValue] = .init(currentItemID: nil, isDownloaded: false, isPlaying: nil, listenNowItems: current.listenNowItems)
             
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
         }
         RFNotification[.downloadStatusChanged].subscribe { payload in
             Task {
-                let current = Defaults[.lastListened]
+                guard let current = Defaults[.playbackInfoWidgetValue] else {
+                    return
+                }
+                
                 let isDownloaded: Bool
                 
                 if let (itemID, status) = payload {
-                    guard itemID == current?.item?.id else {
+                    guard itemID == current.currentItemID else {
                         return
                     }
                     
                     isDownloaded = status == .completed
-                } else if let currentItemID = current?.item?.id {
+                } else if let currentItemID = current.currentItemID {
                     isDownloaded = await PersistenceManager.shared.download.status(of: currentItemID) == .completed
                 } else {
                     isDownloaded = false
                 }
                 
-                Defaults[.lastListened] = LastListenedPayload(item: current?.item, isDownloaded: isDownloaded, isPlaying: current?.isPlaying)
+                Defaults[.playbackInfoWidgetValue] = .init(currentItemID: current.currentItemID, isDownloaded: isDownloaded, isPlaying: current.isPlaying, listenNowItems: current.listenNowItems)
                 
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
@@ -138,8 +130,13 @@ final class EmbassyManager: Sendable {
         // MARK: Listen now
         
         RFNotification[.listenNowItemsChanged].subscribe {
+            ShortcutProvider.updateAppShortcutParameters()
+            
             Task {
-                Defaults[.listenNowWidgetItems] = ListenNowPayload(items: await ShelfPlayerKit.listenNowItems)
+                let current = Defaults[.playbackInfoWidgetValue]
+                Defaults[.playbackInfoWidgetValue] = await .init(currentItemID: current?.currentItemID, isDownloaded: current?.isDownloaded ?? false, isPlaying: current?.isPlaying, listenNowItems: ShelfPlayerKit.listenNowItems)
+                
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
             }
         }
     }
@@ -148,37 +145,41 @@ final class EmbassyManager: Sendable {
 }
 
 private extension EmbassyManager {
-    func updateLastListenedWidget(_ itemID: ItemIdentifier? = nil) {
+    func updateLastListenedWidget(_ provided: ItemIdentifier? = nil) {
         Task {
-            guard await AudioPlayer.shared.currentItemID != nil || itemID != nil else {
+            guard await AudioPlayer.shared.currentItemID != nil || provided != nil else {
                 return
             }
             
-            let item: PlayableItem?
+            let itemID: ItemIdentifier?
             
-            if let provided = try? await itemID?.resolved as? PlayableItem {
-                item = provided
-            } else if let playing = try? await (AudioPlayer.shared.currentItemID)?.resolved as? PlayableItem {
-                item = playing
+            if let provided {
+                itemID = provided
+            } else if let currentItemID = await AudioPlayer.shared.currentItemID {
+                itemID = currentItemID
             } else {
-                item = Defaults[.lastListened]?.item
+                itemID = Defaults[.playbackResumeInfo]?.itemID
             }
             
-            guard let item else {
-                Defaults[.lastListened] = nil
+            guard let itemID else {
+                Defaults[.playbackInfoWidgetValue] = await .init(currentItemID: nil, isDownloaded: false, isPlaying: nil, listenNowItems: ShelfPlayerKit.listenNowItems)
+                
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
+                
                 return
             }
             
-            let isDownloaded = await PersistenceManager.shared.download.status(of: item.id) == .completed
+            let isDownloaded = await PersistenceManager.shared.download.status(of: itemID) == .completed
             let isPlaying: Bool?
             
-            if itemID == nil {
+            if provided == nil {
                 isPlaying = await AudioPlayer.shared.currentItemID == nil ? nil : AudioPlayer.shared.isPlaying
             } else {
                 isPlaying = true
             }
             
-            Defaults[.lastListened] = LastListenedPayload(item: item, isDownloaded: isDownloaded, isPlaying: isPlaying)
+            Defaults[.playbackInfoWidgetValue] = await .init(currentItemID: itemID, isDownloaded: isDownloaded, isPlaying: isPlaying, listenNowItems: ShelfPlayerKit.listenNowItems)
             
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
             WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
