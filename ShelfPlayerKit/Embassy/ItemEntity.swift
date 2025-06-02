@@ -35,7 +35,16 @@ public struct ItemEntity: AppEntity {
             image = nil
         }
         
-        return .init(title: "\(item.name)", subtitle: "\(item.authors.formatted(.list(type: .and)))", image: image)
+        let subtitle: String
+        
+        switch item.id.type {
+            case .audiobook, .episode:
+                subtitle = item.authors.formatted(.list(type: .and))
+            default:
+                subtitle = item.id.type.label
+        }
+        
+        return .init(title: "\(item.name)", subtitle: "\(subtitle)", image: image)
     }
 }
 
@@ -60,7 +69,20 @@ public struct ItemEntityQuery: EntityQuery {
 
 extension ItemEntityQuery: EntityStringQuery {
     public func entities(matching string: String) async throws -> [ItemEntity] {
-        []
+        try await Self.entities(matching: string, includeSuggestedEntities: true)
+    }
+    public static func entities(matching string: String, includeSuggestedEntities: Bool) async throws -> [ItemEntity] {
+        let items = try await ShelfPlayerKit.globalSearch(query: string, includeOnlineSearchResults: includeSuggestedEntities)
+        
+        return await withTaskGroup {
+            for item in items {
+                $0.addTask {
+                    await ItemEntity(item: item)
+                }
+            }
+            
+            return await $0.reduce(into: []) { $0.append($1) }
+        }
     }
 }
 struct ItemEntityOptionsProvider: DynamicOptionsProvider {

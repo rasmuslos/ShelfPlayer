@@ -14,8 +14,6 @@ public struct OpenIntent: AppIntent {
     
     public static let openAppWhenRun: Bool = true
     
-    @AppDependency private var audioPlayer: IntentAudioPlayer
-    
     @Parameter(title: "intent.entity.item", description: "intent.entity.item.description")
     public var item: ItemEntity
     
