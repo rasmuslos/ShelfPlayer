@@ -119,8 +119,7 @@ public extension Defaults.Keys {
     // MARK: Widgets
     
     static let listenedTodayWidgetValue = Key<ListenedTodayPayload?>("listenedTodayWidgetValue", default: nil, suite: .shared)
-    static let lastListened = Key<LastListenedPayload?>("lastListened", default: nil, suite: .shared)
-    static let listenNowWidgetItems = Key<ListenNowPayload?>("listenNowWidgetItems", default: nil, suite: .shared)
+    static let playbackInfoWidgetValue = Key<PlaybackInfoPayload?>("playbackInfoWidgetValue", default: nil, suite: .shared)
     
     // MARK: Utility
     
@@ -147,24 +146,19 @@ public struct ListenedTodayPayload: Codable, Defaults.Serializable {
     }
 }
 
-public struct LastListenedPayload: Codable, Defaults.Serializable {
-    public let item: PlayableItem?
+public struct PlaybackInfoPayload: Codable, Defaults.Serializable {
+    public let currentItemID: ItemIdentifier?
     
     public let isDownloaded: Bool
     public let isPlaying: Bool?
     
-    public init(item: PlayableItem?, isDownloaded: Bool, isPlaying: Bool?) {
-        self.item = item
+    public let listenNowItems: [PlayableItem]
+    
+    public init(currentItemID: ItemIdentifier?, isDownloaded: Bool, isPlaying: Bool?, listenNowItems: [PlayableItem]) {
+        self.currentItemID = currentItemID
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
-    }
-}
-
-public struct ListenNowPayload: Codable, Defaults.Serializable {
-    public let items: [PlayableItem]
-    
-    public init(items: [PlayableItem]) {
-        self.items = items
+        self.listenNowItems = listenNowItems
     }
 }
 
@@ -232,6 +226,8 @@ public extension RFNotification.IsolatedNotification {
     static var playbackStopped: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackStopped") }
     
     // MARK: Utility
+    
+    static var navigate: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.one") }
     
     static var reloadImages: IsolatedNotification<ItemIdentifier?> { .init("io.rfk.shelfPlayer.reloadImages") }
     static var listenNowItemsChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.listenNowItemsChanged") }

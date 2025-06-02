@@ -16,6 +16,23 @@
         }
       }
     },
+    "Play an item using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Play an item using ${applicationName}",
+              "Play an audiobook using ${applicationName}",
+              "Play an episode using ${applicationName}",
+              "Play an podcast using ${applicationName}",
+              "Play ${item} using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
     "Resume ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -26,19 +43,6 @@
               "Resume ${applicationName}",
               "Resume playback with ${applicationName}",
               "Continue playing ${applicationName}"
-            ]
-          }
-        }
-      }
-    },
-    "Spiele ${item} mit ${applicationName}" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringSet" : {
-            "state" : "new",
-            "values" : [
-              "Spiele ${item} mit ${applicationName}"
             ]
           }
         }
