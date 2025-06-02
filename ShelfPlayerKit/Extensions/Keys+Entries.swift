@@ -123,6 +123,7 @@ public extension Defaults.Keys {
     
     // MARK: Utility
     
+    static let openPlaybackSessions = Key<[OpenPlaybackSessionPayload]>("openPlaybackSessions", default: [])
     static let spotlightIndexCompletionDate = Key<Date?>("spotlightIndexCompletionDate", default: nil)
 }
 
@@ -159,6 +160,20 @@ public struct PlaybackInfoPayload: Codable, Defaults.Serializable {
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
         self.listenNowItems = listenNowItems
+    }
+}
+
+public struct OpenPlaybackSessionPayload: Identifiable, Codable, Defaults.Serializable {
+    public let sessionID: String
+    public let itemID: ItemIdentifier
+    
+    public init(sessionID: String, itemID: ItemIdentifier) {
+        self.sessionID = sessionID
+        self.itemID = itemID
+    }
+    
+    public var id: String {
+        "\(itemID)-\(sessionID)"
     }
 }
 
