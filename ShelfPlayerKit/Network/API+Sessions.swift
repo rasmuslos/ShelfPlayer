@@ -113,4 +113,7 @@ public extension APIClient {
             "timeListened": timeListened,
         ]))
     }
+    func deleteSession(sessionID: String) async throws {
+        try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)", method: .delete))
+    }
 }
