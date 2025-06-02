@@ -53,6 +53,6 @@ public final class ListenedTodayTracker {
         }
     }
     
-    public static var shared = ListenedTodayTracker()
+    public static let shared = ListenedTodayTracker()
 }
 

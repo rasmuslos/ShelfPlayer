@@ -48,6 +48,10 @@ public final class SessionLoader {
     }
     
     public func refresh() {
+        guard !isLoading else {
+            return
+        }
+        
         page.removeAll()
         sessions.removeAll()
         
@@ -120,6 +124,8 @@ public final class SessionLoader {
                 if isFinished {
                     callback?()
                 }
+                
+                print(totalTimeSpendListening)
             }
             
             beginLoading()
