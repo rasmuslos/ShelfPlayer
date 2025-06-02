@@ -133,19 +133,21 @@ private struct LastListenedWidgetContent: View {
             
             Spacer(minLength: 0)
             
-            HStack(spacing: 0) {
-                WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
-                    .font(.footnote)
-                    .controlSize(.small)
-                    .tint(colorScheme == .light ? .black : .white)
-                    .foregroundStyle(colorScheme == .light ? .black : .white)
-                
-                Spacer(minLength: 12)
-                
-                if entry.isDownloaded {
-                    Image(systemName: "arrow.down.circle.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+            if entry.item != nil {
+                HStack(spacing: 0) {
+                    WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
+                        .font(.footnote)
+                        .controlSize(.small)
+                        .tint(colorScheme == .light ? .black : .white)
+                        .foregroundStyle(colorScheme == .light ? .black : .white)
+                    
+                    Spacer(minLength: 12)
+                    
+                    if entry.isDownloaded {
+                        Image(systemName: "arrow.down.circle.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
         }
