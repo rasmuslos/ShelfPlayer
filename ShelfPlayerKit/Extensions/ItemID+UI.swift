@@ -30,11 +30,11 @@ public extension ItemIdentifier.ItemType {
             case .audiobook:
                 "book"
             case .author:
-                "person"
+                "person.fill"
             case .narrator:
                 "microphone.fill"
             case .series:
-                "rectangle.grid.2x2"
+                "rectangle.grid.2x2.fill"
             case .podcast:
                 "square.stack"
             case .episode:

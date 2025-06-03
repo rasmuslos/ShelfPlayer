@@ -416,6 +416,8 @@ private extension LocalAudioEndpoint {
         let sessionID: String?
         
         do {
+            await PersistenceManager.shared.session.cleanupOpenPlaybackSessions()
+            
             if currentItem.startWithoutListeningSession {
                 throw AudioPlayerError.offline
             }
