@@ -44,7 +44,6 @@ struct ShelfPlayer {
         Task {
             await withTaskGroup {
                 $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }
-                $0.addTask { await PersistenceManager.shared.session.cleanupOpenPlaybackSessions() }
                 $0.addTask {
                     do {
                         try await PersistenceManager.shared.session.attemptSync(early: false)

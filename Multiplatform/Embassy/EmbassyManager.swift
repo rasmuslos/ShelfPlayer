@@ -55,11 +55,14 @@ final class EmbassyManager: Sendable {
             var itemID = $0.0
             
             Task {
-                if itemID.type == .episode {
-                    itemID = ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast)
+                switch itemID.type {
+                    case .episode:
+                        try await IntentDonationManager.shared.donate(intent: StartIntent(item: ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast).resolved))
+                    case .audiobook:
+                        try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(item: itemID.resolved))
+                    default:
+                        return
                 }
-                
-                try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(item: itemID.resolved))
             }
         }
         
