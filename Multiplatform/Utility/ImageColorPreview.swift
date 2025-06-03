@@ -45,7 +45,6 @@ private struct ImageColorPreview: View {
                         .overlay {
                             VStack {
                                 Text(color.percentage, format: .number)
-                                    .foregroundStyle(color.color.isLight == true ? .black : .white)
                                 
                                 Circle()
                                     .fill(brightnessFiltered.contains { $0 == color.color } ? .green : .red)
@@ -53,6 +52,7 @@ private struct ImageColorPreview: View {
                                 Circle()
                                     .fill(saturationFiltered.contains { $0 == color.color } ? .green : .red)
                             }
+                            .foregroundStyle(color.color.isLight == true ? .black : .white)
                         }
                 }
             }

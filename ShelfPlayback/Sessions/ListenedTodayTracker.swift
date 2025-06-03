@@ -18,6 +18,7 @@ public final class ListenedTodayTracker {
     public private(set) var todaySessionLoader: SessionLoader!
     
     private(set) var cachedTimeSpendListening = 0.0
+    private var timer: DispatchSourceTimer?
     
     private init() {
         todaySessionLoader = SessionLoader(filter: .today) {
@@ -27,6 +28,8 @@ public final class ListenedTodayTracker {
         RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
             self?.updateCachedTimeSpendListening()
         }
+        
+        scheduleResetTimer()
     }
     
     public var totalMinutesListenedToday: Int {
@@ -51,6 +54,19 @@ public final class ListenedTodayTracker {
                 RFNotification[.timeSpendListeningChanged].send(payload: totalMinutesListenedToday)
             }
         }
+    }
+    private func scheduleResetTimer() {
+        timer = DispatchSource.makeTimerSource(flags: .strict, queue: .main)
+        timer!.setEventHandler {
+            self.refresh()
+            self.scheduleResetTimer()
+        }
+        
+        let midnight = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
+        let timeIntervalToMidnight = Int(Date.now.distance(to: midnight))
+        
+        timer!.schedule(deadline: .now().advanced(by: .seconds(timeIntervalToMidnight)))
+        timer!.activate()
     }
     
     public static let shared = ListenedTodayTracker()

@@ -49,6 +49,7 @@ struct SeriesView: View {
                 case .grid:
                     ScrollView {
                         Header()
+                            .padding(.bottom, 12)
                         
                         rowTitle
                             .padding(.horizontal, 20)
@@ -132,5 +133,6 @@ struct SeriesView: View {
     NavigationStack {
         SeriesView(.fixture)
     }
+    .previewEnvironment()
 }
 #endif

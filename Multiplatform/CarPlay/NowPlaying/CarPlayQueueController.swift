@@ -89,7 +89,7 @@ final class CarPlayQueueController {
     private func updateSections() {
         template.updateSections([
             CPListSection(items: queue.enumerated().map { buildRow(for: $1, index: $0, isUpNextQueue: false) }, header: String(localized: "playback.queue"), sectionIndexTitle: nil),
-            CPListSection(items: upNextQueue.enumerated().map { buildRow(for: $1, index: $0, isUpNextQueue: false) }, header: String(localized: "playback.upNextQueue"), sectionIndexTitle: nil),
+            CPListSection(items: upNextQueue.enumerated().map { buildRow(for: $1, index: $0, isUpNextQueue: false) }, header: String(localized: "playback.nextUpQueue"), sectionIndexTitle: nil),
         ])
     }
     

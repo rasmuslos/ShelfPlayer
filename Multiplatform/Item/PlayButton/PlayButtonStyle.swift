@@ -20,6 +20,8 @@ protocol PlayButtonStyle: Sendable {
     func makeLabel(configuration: Self.Configuration) -> Self.LabelBody
     
     var cornerRadius: CGFloat { get }
+    
+    var tint: Bool { get }
     var hideRemainingWhenUnplayed: Bool { get }
 }
 extension PlayButtonStyle where Self == LargePlayButtonStyle {
@@ -34,6 +36,8 @@ struct AnyLargePlayButtonStyle: PlayButtonStyle {
     private var _makeLabel: @Sendable (Configuration) -> AnyView
     
     private var _cornerRadius: CGFloat
+    
+    private var _tint: Bool
     private var _hideRemainingWhenUnplayed: Bool
     
     init<S: PlayButtonStyle>(style: S) {
@@ -44,6 +48,7 @@ struct AnyLargePlayButtonStyle: PlayButtonStyle {
             AnyView(style.makeLabel(configuration: configuration))
         }
         
+        _tint = style.tint
         _cornerRadius = style.cornerRadius
         _hideRemainingWhenUnplayed = style.hideRemainingWhenUnplayed
     }
@@ -57,6 +62,10 @@ struct AnyLargePlayButtonStyle: PlayButtonStyle {
     
     var cornerRadius: CGFloat {
         _cornerRadius
+    }
+    
+    var tint: Bool {
+        _tint
     }
     var hideRemainingWhenUnplayed: Bool {
         _hideRemainingWhenUnplayed

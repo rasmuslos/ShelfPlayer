@@ -274,7 +274,7 @@ private final class LibraryViewModel {
         return !lazyLoader.didLoad
     }
     var isLoading: Bool {
-        (lazyLoader.working && !lazyLoader.failed) || (!search.isEmpty && searchResult == nil)
+        (search.isEmpty && lazyLoader.working && !lazyLoader.failed) || (!search.isEmpty && searchResult == nil)
     }
     
     nonisolated func load() {
@@ -414,11 +414,11 @@ private enum SearchScope: Int, Hashable, Identifiable, CaseIterable {
             case .series:
                 "item.series"
             case .authors:
-                "item.authors"
+                "item.author"
             case .narrators:
-                "item.narrators"
+                "item.narrator"
             case .audiobooks:
-                "item.audiobooks"
+                "item.audiobook"
         }
     }
     

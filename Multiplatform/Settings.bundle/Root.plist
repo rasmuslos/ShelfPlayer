@@ -92,16 +92,6 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Create up next queue</string>
-			<key>Key</key>
-			<string>createUpNextQueue</string>
-			<key>DefaultValue</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
 			<string>Up Next Queue</string>

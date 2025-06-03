@@ -104,7 +104,7 @@ struct ItemCompactRow: View {
                 DownloadButton(itemID: itemID, progressVisibility: .row)
                     .labelStyle(.iconOnly)
             } else if let progress = progress.progress {
-                CircleProgressIndicator(progress: progress)
+                CircleProgressIndicator(progress: progress, invertColors: download.status == .completed)
                     .frame(width: 16)
             } else {
                 ProgressView()
