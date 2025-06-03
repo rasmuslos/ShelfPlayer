@@ -55,6 +55,7 @@ struct PreferencesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .foregroundStyle(.primary)
         }
+        .presentationDetents([.medium, .large])
     }
 }
 
@@ -88,10 +89,3 @@ struct CompactPreferencesToolbarModifier: ViewModifier {
         .previewEnvironment()
 }
 #endif
-
-/*
- 
- guard let size = try? (ImagePipeline.shared.configuration.dataCache as? DataCache)?.path.directoryTotalAllocatedSize() else {
- return
- }
- */

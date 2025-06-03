@@ -101,7 +101,6 @@ private extension CarPlayTabBar {
         template.tabImage = UIImage(systemName: "xmark")
         
         template.emptyViewTitleVariants = [String(localized: "carPlay.tabBar.empty")]
-        template.emptyViewSubtitleVariants = [String(localized: "carPlay.tabBar.empty.message")]
         
         return template
     }

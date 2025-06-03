@@ -140,7 +140,7 @@ private struct CompactPresentation: View {
                 .padding(.top, 8)
                 .padding(.bottom, 16)
             
-            PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
+            PlayButton(item: viewModel.episode)
             
             TypeLabel()
         }
@@ -170,7 +170,7 @@ private struct RegularPresentation: View {
                         
                         Spacer()
                         
-                        PlayButton(item: viewModel.episode, color: viewModel.dominantColor)
+                        PlayButton(item: viewModel.episode)
                         
                         TypeLabel()
                     }

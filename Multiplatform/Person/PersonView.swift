@@ -27,11 +27,11 @@ struct PersonView: View {
         }
     }
     
-    private var audiobooksRowTitle: String {
-        if viewModel.person.id.type == .narrator {
-            String(localized: "item.related.narrator.audiobooks")
-        } else {
+    private var audiobooksRowTitle: String? {
+        if viewModel.person.id.type == .author {
             String(localized: "item.related.author.audiobooks")
+        } else {
+            nil
         }
     }
     
@@ -50,7 +50,9 @@ struct PersonView: View {
             }
             
             if !viewModel.sections.isEmpty {
-                gridTitle(audiobooksRowTitle, count: viewModel.audiobooksLoader.totalCount)
+                if let audiobooksRowTitle {
+                    gridTitle(audiobooksRowTitle, count: viewModel.audiobooksLoader.totalCount)
+                }
                 
                 AudiobookVGrid(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)
@@ -75,7 +77,9 @@ struct PersonView: View {
             }
             
             if !viewModel.sections.isEmpty {
-                listTitle(audiobooksRowTitle, count: viewModel.audiobooksLoader.totalCount)
+                if let audiobooksRowTitle {
+                    listTitle(audiobooksRowTitle, count: viewModel.audiobooksLoader.totalCount)
+                }
                 
                 AudiobookList(sections: viewModel.sections) {
                     viewModel.audiobooksLoader.performLoadIfRequired($0, in: viewModel.sections)

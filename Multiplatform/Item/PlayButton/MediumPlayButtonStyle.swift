@@ -23,6 +23,9 @@ struct MediumPlayButtonStyle: PlayButtonStyle {
             .padding(.horizontal, 20)
     }
     
+    var tint: Bool {
+        false
+    }
     var cornerRadius: CGFloat {
         12
     }
@@ -34,7 +37,7 @@ struct MediumPlayButtonStyle: PlayButtonStyle {
 #if DEBUG
 #Preview {
     VStack {
-        PlayButton(item: Audiobook.fixture, color: .accent)
+        PlayButton(item: Audiobook.fixture)
             .playButtonSize(.medium)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

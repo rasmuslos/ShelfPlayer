@@ -35,6 +35,9 @@ struct LargePlayButtonStyle: PlayButtonStyle {
             .padding(.vertical, 16)
     }
     
+    var tint: Bool {
+        true
+    }
     var cornerRadius: CGFloat {
         8
     }
@@ -45,13 +48,13 @@ struct LargePlayButtonStyle: PlayButtonStyle {
 
 #if DEBUG
 #Preview {
-    PlayButton(item: Audiobook.fixture, color: .accent)
+    PlayButton(item: Audiobook.fixture)
         .playButtonSize(.large)
         .previewEnvironment()
 }
 
 #Preview {
-    PlayButton(item: Audiobook.fixture, color: nil)
+    PlayButton(item: Audiobook.fixture)
         .playButtonSize(.large)
         .previewEnvironment()
 }

@@ -12,6 +12,7 @@ struct CircleProgressIndicator: View {
     @Default(.tintColor) private var tintColor
     
     let progress: Percentage
+    let invertColors: Bool
     
     var body: some View {
         if progress < 0 {
@@ -25,7 +26,7 @@ struct CircleProgressIndicator: View {
                     Label(1.formatted(.percent.notation(.compactName)), systemImage: "checkmark")
                         .labelStyle(.iconOnly)
                         .font(.caption)
-                        .foregroundStyle(tintColor.accent)
+                        .foregroundStyle(invertColors ? tintColor.color : tintColor.accent)
                 } else {
                     Circle()
                         .fill(Color.accentColor.quaternary)
@@ -35,7 +36,7 @@ struct CircleProgressIndicator: View {
                         Circle()
                             .inset(by: proxy.size.width / 4)
                             .trim(from: 0, to: CGFloat(progress))
-                            .stroke(tintColor.accent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
+                            .stroke(invertColors ? tintColor.color : tintColor.accent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
                             .rotationEffect(.degrees(-90))
                             .animation(.spring, value: progress)
                     }

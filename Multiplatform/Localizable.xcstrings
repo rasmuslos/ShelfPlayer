@@ -66,7 +66,20 @@
       }
     },
     "action.proceed" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proceed"
+          }
+        }
+      }
     },
     "action.reset" : {
       "localizations" : {
@@ -85,7 +98,20 @@
       }
     },
     "action.retry" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erneut versuchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
+          }
+        }
+      }
     },
     "action.save" : {
       "localizations" : {
@@ -120,22 +146,78 @@
       }
     },
     "carPlay.noConnections" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Connections"
+          }
+        }
+      }
     },
     "carPlay.noConnections.subtitle" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich mit deinem iPhone an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login using your iPhone."
+          }
+        }
+      }
     },
     "carPlay.otherLibraries" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfigurieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure"
+          }
+        }
+      }
     },
     "carPlay.tabBar.empty" : {
-
-    },
-    "carPlay.tabBar.empty.message" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Bibliotheken"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Libraries"
+          }
+        }
+      }
     },
     "carPlay.tabBar.preferencesTip" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure the tab bar in the in-app preferences."
+          }
+        }
+      }
     },
     "carPlay.tabBar.preferencesTip.message" : {
       "localizations" : {
@@ -154,7 +236,20 @@
       }
     },
     "chapter.finishedAt %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossen um: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finished at: %@"
+          }
+        }
+      }
     },
     "connection.add" : {
       "localizations" : {
@@ -253,7 +348,14 @@
       }
     },
     "connection.add.strategy.openID.hint" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make sure \"shelfPlayer://callback\" is configured as a allowed callback URL in the Audiobookshelf settings."
+          }
+        }
+      }
     },
     "connection.add.strategy.select" : {
       "localizations" : {
@@ -672,7 +774,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autor nicht verfügbar"
+            "value" : "Autor:in nicht verfügbar"
           }
         },
         "en" : {
@@ -724,7 +826,20 @@
       }
     },
     "error.unavailable.narrator" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erzähler:in nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narrator unavailable"
+          }
+        }
+      }
     },
     "error.unavailable.podcast" : {
       "localizations" : {
@@ -811,16 +926,68 @@
       }
     },
     "filter.all" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
     },
     "intent.pause" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        }
+      }
     },
     "intent.play" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsetzten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        }
+      }
     },
     "intent.start" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abspielen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        }
+      }
     },
     "item.abridged" : {
       "localizations" : {
@@ -838,11 +1005,37 @@
         }
       }
     },
-    "item.audiobooks" : {
-
+    "item.audiobook" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hörbuch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiobook"
+          }
+        }
+      }
     },
-    "item.authors" : {
-
+    "item.author" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Author:in"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Author"
+          }
+        }
+      }
     },
     "item.bonus" : {
       "localizations" : {
@@ -877,7 +1070,20 @@
       }
     },
     "item.bookmarks %lld" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Lesezeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Bookmarks"
+          }
+        }
+      }
     },
     "item.chapters" : {
       "localizations" : {
@@ -1315,7 +1521,20 @@
       }
     },
     "item.filter.downloaded" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heruntergeladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloaded"
+          }
+        }
+      }
     },
     "item.filter.finished" : {
       "localizations" : {
@@ -1378,10 +1597,36 @@
 
     },
     "item.lastPlayed" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt gespielt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last played"
+          }
+        }
+      }
     },
-    "item.narrators" : {
-
+    "item.narrator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erzähler:in"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narrator"
+          }
+        }
+      }
     },
     "item.options" : {
       "localizations" : {
@@ -1495,190 +1740,6 @@
         }
       }
     },
-    "item.preferences" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Einstellungen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preferences"
-          }
-        }
-      }
-    },
-    "item.preferences.allowUpNextQueueGeneration" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erstelle als-Nächstes Warteschlange"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create up-next queue"
-          }
-        }
-      }
-    },
-    "item.preferences.automaticDownload.amount %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Lade %lld Episode"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Lade %lld Episoden"
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Download %lld episode"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Download %lld episodes"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "item.preferences.automaticDownload.enabled" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktiviere automatische Downloads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable automatic downloads"
-          }
-        }
-      }
-    },
-    "item.preferences.automaticDownload.footer %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ShelfPlayer wird %lld Episode herunterladen, wobei die Filter- & Sortierungseinstellungen beachtet werden."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ShelfPlayer wird %lld Episoden herunterladen, wobei die Filter- & Sortierungseinstellungen beachtet werden."
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ShelfPlayer will download %lld episode of this podcast, taking your sorting- & filtering preferences into account."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ShelfPlayer will download %lld episodes of this podcast, taking your sorting- & filtering preferences into account."
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "item.preferences.automaticDownload.notificationsEnabled" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktiviere Mitteilungen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable notifications"
-          }
-        }
-      }
-    },
-    "item.preferences.automaticDownloads" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatische Downloads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatic downloads"
-          }
-        }
-      }
-    },
-    "item.preferences.playbackRate" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wiedergabegeschwindigkeit"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playback speed"
-          }
-        }
-      }
-    },
     "item.progress.finished" : {
       "localizations" : {
         "de" : {
@@ -1761,7 +1822,20 @@
       }
     },
     "item.progress.resolving" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lade…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolving…"
+          }
+        }
+      }
     },
     "item.publishing.episodic" : {
       "localizations" : {
@@ -1891,9 +1965,6 @@
         }
       }
     },
-    "item.related.narrator.audiobooks" : {
-
-    },
     "item.related.podcast.episodes" : {
       "localizations" : {
         "de" : {
@@ -1999,7 +2070,20 @@
       }
     },
     "item.series" : {
-      "comment" : "Plural."
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serien"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series"
+          }
+        }
+      }
     },
     "item.sort" : {
       "localizations" : {
@@ -2038,7 +2122,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autor"
+            "value" : "Autor:in"
           }
         },
         "en" : {
@@ -2178,20 +2262,52 @@
       }
     },
     "item.timeline.playing" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läuft gerade"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now playing"
+          }
+        }
+      }
     },
     "item.timeline.row %@ %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ gespielt für %1$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "item.timeline.row %1$@ %2$@"
+            "state" : "translated",
+            "value" : "Played %2$@ for %1$@ "
           }
         }
       }
     },
     "item.timeline.total" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        }
+      }
     },
     "item.trailer" : {
       "localizations" : {
@@ -2230,7 +2346,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zum Autor"
+            "value" : "Zum:r Autor:in"
           }
         },
         "en" : {
@@ -2258,7 +2374,20 @@
       }
     },
     "item.view.narrator" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Erzähler:in"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View narrator"
+          }
+        }
+      }
     },
     "item.view.podcast" : {
       "localizations" : {
@@ -2352,25 +2481,21 @@
         }
       }
     },
-    "navigation.offline.automatic" : {
-      "extractionState" : "stale",
+    "navigation.offline.disable" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gehe offline in: "
+            "value" : "Online gehen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Going offline in: "
+            "value" : "Go online"
           }
         }
       }
-    },
-    "navigation.offline.disable" : {
-
     },
     "navigation.offline.enable" : {
       "localizations" : {
@@ -2420,46 +2545,12 @@
         }
       }
     },
-    "notification.permission.denied" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benachrichtigungen verboten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifications forbidden"
-          }
-        }
-      }
-    },
-    "notification.permission.request" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benachrichtigungen erlauben"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allow notifications"
-          }
-        }
-      }
-    },
     "panel.authors" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autoren"
+            "value" : "Autoren:innen"
           }
         },
         "en" : {
@@ -2483,7 +2574,20 @@
       }
     },
     "panel.bookmarks" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesezeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bookmarks"
+          }
+        }
+      }
     },
     "panel.home" : {
       "localizations" : {
@@ -2586,13 +2690,52 @@
       }
     },
     "panel.listenNow" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt hören"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen now"
+          }
+        }
+      }
     },
     "panel.narrators" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erzähler:innen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narrators"
+          }
+        }
+      }
     },
     "panel.offline" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline"
+          }
+        }
+      }
     },
     "panel.search" : {
       "localizations" : {
@@ -2643,7 +2786,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autoren"
+            "value" : "Autoren:innen"
           }
         },
         "en" : {
@@ -2654,56 +2797,18 @@
         }
       }
     },
-    "panel.search.empty" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Ergebnisse"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No result"
-          }
-        }
-      }
-    },
-    "panel.search.empty.description" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deine Suche ergab keine Ergebnisse"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nothing matching your search could be found."
-          }
-        }
-      }
-    },
     "panel.search.narrators" : {
-
-    },
-    "panel.search.placeholder" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suche nach Hörbüchern, Autoren und Serien"
+            "value" : "Erzähler:innen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Search for audiobooks, authors & series"
+            "value" : "Narrators"
           }
         }
       }
@@ -2816,40 +2921,6 @@
         }
       }
     },
-    "playback.alert.resume" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wiedergabe forsetzten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resume playback"
-          }
-        }
-      }
-    },
-    "playback.alert.resume.action" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weiterspielen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue playing"
-          }
-        }
-      }
-    },
     "playback.alert.resume.message" : {
       "localizations" : {
         "de" : {
@@ -2947,7 +3018,20 @@
       }
     },
     "playback.queue.add.short" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        }
+      }
     },
     "playback.queue.clear" : {
       "localizations" : {
@@ -3137,9 +3221,6 @@
         }
       }
     },
-    "playback.upNextQueue" : {
-
-    },
     "preferences" : {
       "localizations" : {
         "de" : {
@@ -3173,7 +3254,14 @@
       }
     },
     "preferences.carPlay.tabBar.footer" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure which libraries show up in the CarPlay tab bar."
+          }
+        }
+      }
     },
     "preferences.carPlay.tabBar.warning" : {
 
@@ -3191,7 +3279,20 @@
 
     },
     "preferences.debug" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortgeschritten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
+          }
+        }
+      }
     },
     "preferences.generateLogFile" : {
       "localizations" : {
@@ -3306,7 +3407,20 @@
       }
     },
     "preferences.purge.spotlight" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight-Index entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purge Spotlight Index"
+          }
+        }
+      }
     },
     "preferences.settings" : {
       "localizations" : {
@@ -3389,10 +3503,36 @@
       }
     },
     "preferences.spotlightIndex %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight-Index: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight index: %@"
+          }
+        }
+      }
     },
     "preferences.spotlightIndex.pending" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight index ausstehend"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending Spotlight index"
+          }
+        }
+      }
     },
     "preferences.support" : {
       "localizations" : {
@@ -3731,10 +3871,36 @@
       }
     },
     "row.downloaded" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloaded"
+          }
+        }
+      }
     },
     "row.downloaded.audiobooks" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geladene Hörbücher"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloaded audiobooks"
+          }
+        }
+      }
     },
     "row.latestEpisodes" : {
       "localizations" : {
@@ -3797,7 +3963,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neuste Autoren"
+            "value" : "Neuste Autoren:innen"
           }
         },
         "en" : {
@@ -3969,7 +4135,14 @@
       }
     },
     "sleepTimer.chapter.set" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set sleep timer"
+          }
+        }
+      }
     },
     "sleepTimer.extend" : {
       "localizations" : {
@@ -4044,7 +4217,20 @@
       }
     },
     "statistics.listenedToday" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute gehört"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listened today"
+          }
+        }
+      }
     },
     "timeline" : {
       "localizations" : {
@@ -4075,22 +4261,76 @@
       }
     },
     "upNextStrategy.default" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default"
+          }
+        }
+      }
     },
     "upNextStrategy.disabled" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deaktiviert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabled"
+          }
+        }
+      }
     },
     "upNextStrategy.listenNow" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jetzt hören"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen now"
+          }
+        }
+      }
     },
     "warning.playbackDownload.activeDownload" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The item you tried to play is currently being downloaded. Abort download and begin playback?"
+          }
+        }
+      }
     },
     "warning.playbackDownload.activePlayback" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The item you tried to download is currently being downloaded. End playback and begin download?"
+          }
+        }
+      }
     },
     "warning.playbackDownload.removeDownload" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The item you tried to remove is currently being played. End playback and remove download?"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
