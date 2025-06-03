@@ -258,7 +258,7 @@ private struct ExpandedForeground: View {
                 .contentShape(.rect)
                 .modifier(PlaybackDragGestureCatcher(active: true))
                 .padding(-40)
-                .offset(y: safeAreTopInset - 8)
+                .offset(y: safeAreTopInset)
                 .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.3)), removal: .identity))
             }
         }
