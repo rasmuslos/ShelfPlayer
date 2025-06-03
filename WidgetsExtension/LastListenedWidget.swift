@@ -82,6 +82,14 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
     }
+    
+    var relevance: TimelineEntryRelevance? {
+        if let isPlaying {
+            TimelineEntryRelevance(score: isPlaying ? 0.5 : 0.25)
+        } else {
+            TimelineEntryRelevance(score: 0)
+        }
+    }
 }
 
 private struct LastListenedWidgetContent: View {

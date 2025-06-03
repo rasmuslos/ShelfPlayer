@@ -27,8 +27,6 @@ final class AudiobookViewModel: Sendable {
     var sessionsVisible: Bool
     var supplementaryPDFsVisible: Bool
     
-    private(set) var dominantColor: Color?
-    
     private(set) var chapters: [Chapter]
     private(set) var supplementaryPDFs: [PlayableItem.SupplementaryPDF]
     
@@ -56,8 +54,6 @@ final class AudiobookViewModel: Sendable {
         chaptersVisible = false
         sessionsVisible = false
         supplementaryPDFsVisible = false
-        
-        dominantColor = nil
         
         chapters = []
         supplementaryPDFs = []
@@ -88,8 +84,6 @@ extension AudiobookViewModel {
                 $0.addTask { await self.loadNarrators() }
                 
                 $0.addTask { await self.loadBookmarks() }
-                
-                $0.addTask { await self.extractColor() }
                 
                 if refresh {
                     $0.addTask { await self.sessionLoader.refresh() }
@@ -260,14 +254,6 @@ private extension AudiobookViewModel {
         
         await MainActor.withAnimation {
             self.sameNarrator = resolved
-        }
-    }
-    
-    nonisolated func extractColor() async {
-        let color = await PersistenceManager.shared.item.dominantColor(of: audiobook.id)
-        
-        await MainActor.withAnimation {
-            self.dominantColor = color
         }
     }
     

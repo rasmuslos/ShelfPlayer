@@ -66,7 +66,7 @@ struct StatusOverlay: View {
                                                     .font(.system(size: fontSize))
                                                     .fontWeight(.heavy)
                                             } else {
-                                                CircularProgressIndicator(completed: progress, background: .white.opacity(0.3), tint: .white)
+                                                CircularProgressIndicator(completed: min(0.92, progress), background: .white.opacity(0.3), tint: .white)
                                             }
                                         } else {
                                             Image(systemName: "checkmark")

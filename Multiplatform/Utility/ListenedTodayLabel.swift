@@ -35,13 +35,13 @@ struct ListenedTodayLabel: View {
             ZStack {
                 Circle()
                     .trim(from: 0, to: availablePercentage)
-                    .stroke(color, lineWidth: strokeWidth(geometryProxy.size.width))
+                    .stroke(color, style: .init(lineWidth: strokeWidth(geometryProxy.size.width), lineCap: .round))
                     .opacity(0.2)
                     .rotationEffect(.degrees(135))
                 
                 Circle()
                     .trim(from: 0, to: min(availablePercentage, max(0, availablePercentage * (CGFloat(listenedTodayTracker.totalMinutesListenedToday) / CGFloat(listenedTodayTracker.listenTimeTarget)))))
-                    .stroke(color, lineWidth: strokeWidth(geometryProxy.size.width))
+                    .stroke(color, style: .init(lineWidth: strokeWidth(geometryProxy.size.width), lineCap: .round))
                     .rotationEffect(.degrees(135))
                 
                 if listenedTodayTracker.todaySessionLoader.isLoading && listenedTodayTracker.totalMinutesListenedToday == 0 {

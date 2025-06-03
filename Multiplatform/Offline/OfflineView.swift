@@ -70,6 +70,7 @@ struct OfflineView: View {
                 }
                 .navigationTitle("panel.offline")
                 .modifier(CompactPreferencesToolbarModifier())
+                .modifier(PlaybackSafeAreaPaddingModifier())
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         goOnlineButton
@@ -77,7 +78,7 @@ struct OfflineView: View {
                 }
             }
             .modifier(CompactPlaybackModifier(ready: true))
-            .environment(\.playbackBottomOffset, max(16, geometryProxy.safeAreaInsets.bottom))
+            .environment(\.playbackBottomOffset, 16)
             .onAppear {
                 loadItems()
             }

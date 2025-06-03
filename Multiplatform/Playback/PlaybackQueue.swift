@@ -138,7 +138,7 @@ private struct QueueChapterRow: View {
         satellite.currentTime > chapter.endOffset
     }
     private var isActive: Bool {
-        satellite.currentTime >= chapter.startOffset && !isFinished
+        satellite.currentTime >= chapter.startOffset
     }
     
     @ViewBuilder

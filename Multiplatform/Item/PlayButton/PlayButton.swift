@@ -18,16 +18,15 @@ struct PlayButton: View {
     @Environment(Satellite.self) private var satellite
     
     let item: PlayableItem
-    let color: Color?
     
     @State private var tracker: ProgressTracker
     
-    init(item: PlayableItem, color: Color?) {
+    init(item: PlayableItem) {
         self.item = item
-        self.color = color
-        
         _tracker = .init(initialValue: .init(itemID: item.id))
     }
+    
+    @State private var color: Color?
     
     private var background: Color {
         if let color {
@@ -162,10 +161,34 @@ struct PlayButton: View {
         playButtonStyle.makeMenu(configuration: .init(progress: progress, background: background, content: .init(content: menuContent)))
             .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
             .modifier(ButtonHoverEffectModifier(cornerRadius: playButtonStyle.cornerRadius, hoverEffect: .lift))
+            .onReceive(RFNotification[.reloadImages].publisher()) {
+                if let itemID = $0, itemID == item.id {
+                    loadColor()
+                } else if $0 == nil {
+                    loadColor()
+                }
+            }
+            .task {
+                loadColor()
+            }
     }
     
     public func playButtonSize(_ playButtonStyle: any PlayButtonStyle) -> some View {
         self
             .environment(\.playButtonStyle, .init(style: playButtonStyle))
+    }
+    
+    private nonisolated func loadColor() {
+        Task {
+            guard await playButtonStyle.tint else {
+                return
+            }
+            
+            let color = await PersistenceManager.shared.item.dominantColor(of: item.id)
+            
+            await MainActor.run {
+                self.color = color
+            }
+        }
     }
 }

@@ -14,13 +14,22 @@ struct ChaptersList: View {
     let itemID: ItemIdentifier
     let chapters: [Chapter]
     
-    private var isPlaying: Bool {
-        satellite.nowPlayingItemID == itemID
+    @State private var progress: ProgressTracker
+    
+    init(itemID: ItemIdentifier, chapters: [Chapter]) {
+        self.itemID = itemID
+        self.chapters = chapters
+        
+        _progress = .init(initialValue: .init(itemID: itemID))
+    }
+    
+    private var currentTime: TimeInterval {
+        progress.currentTime ?? 0
     }
     
     @ViewBuilder
     private func row(for chapter: Chapter) -> some View {
-        TimeRow(title: chapter.title, time: chapter.startOffset, isActive: isPlaying && satellite.currentTime >= chapter.startOffset, isFinished: isPlaying && satellite.currentTime > chapter.endOffset) {
+        TimeRow(title: chapter.title, time: chapter.startOffset, isActive: currentTime >= chapter.startOffset, isFinished: currentTime > chapter.endOffset) {
             satellite.start(itemID, at: chapter.startOffset)
         }
     }

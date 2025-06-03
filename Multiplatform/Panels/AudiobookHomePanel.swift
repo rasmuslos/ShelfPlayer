@@ -84,7 +84,7 @@ struct AudiobookHomePanel: View {
             fetchItems()
         }
         .refreshable {
-            fetchItems()
+            fetchItems(refresh: true)
             ListenedTodayTracker.shared.refresh()
         }
         .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
@@ -107,7 +107,7 @@ struct AudiobookHomePanel: View {
 }
 
 private extension AudiobookHomePanel {
-    nonisolated func fetchItems() {
+    nonisolated func fetchItems(refresh: Bool = false) {
         Task {
             await MainActor.withAnimation {
                 isLoading = true
@@ -116,7 +116,7 @@ private extension AudiobookHomePanel {
             
             await withTaskGroup {
                 $0.addTask { await fetchLocalItems() }
-                $0.addTask { await fetchRemoteItems() }
+                $0.addTask { await fetchRemoteItems(refresh: refresh) }
             }
             
             await MainActor.withAnimation {
@@ -141,14 +141,22 @@ private extension AudiobookHomePanel {
             }
         }
     }
-    nonisolated func fetchRemoteItems() async {
+    nonisolated func fetchRemoteItems(refresh: Bool) async {
         guard let library = await library else {
             return
         }
         
+        let discoverRow = refresh ? nil : await audiobooks.first { $0.id == "discover" }
+        
         do {
             let home: ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[library.connectionID].home(for: library.id)
-            let audiobooks = await HomeRow.prepareForPresentation(home.0, connectionID: library.connectionID)
+            let audiobooks = await HomeRow.prepareForPresentation(home.0, connectionID: library.connectionID).map {
+                if $0.id == "discover", let discoverRow {
+                    discoverRow
+                } else {
+                    $0
+                }
+            }
             
             await MainActor.withAnimation {
                 _authors = home.1
