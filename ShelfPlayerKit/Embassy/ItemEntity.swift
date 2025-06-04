@@ -7,6 +7,7 @@
 
 import Foundation
 import AppIntents
+import CoreTransferable
 
 @AssistantEntity(schema: .books.audiobook)
 public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
@@ -79,6 +80,13 @@ public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
         }
         
         return .init(title: "\(item.name)", subtitle: "\(subtitle)", image: image)
+    }
+}
+extension ItemEntity: Transferable {
+    public static var transferRepresentation: some TransferRepresentation {
+        ProxyRepresentation {
+            $0.item
+        }
     }
 }
 
