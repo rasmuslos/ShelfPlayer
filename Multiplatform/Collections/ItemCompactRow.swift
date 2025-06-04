@@ -18,10 +18,10 @@ struct ItemCompactRow: View {
     
     let callback: (() -> Void)?
     
-    @State private var item: PlayableItem?
+    @State private var item: Item?
     
-    @State private var progress: ProgressTracker
-    @State private var download: DownloadStatusTracker
+    @State private var progress: ProgressTracker?
+    @State private var download: DownloadStatusTracker?
     
     init(itemID: ItemIdentifier, hideImage: Bool = false, trailingText: Text? = nil, callback: (() -> Void)? = nil) {
         self.itemID = itemID
@@ -33,10 +33,12 @@ struct ItemCompactRow: View {
         
         _item = .init(initialValue: nil)
         
-        _progress = .init(initialValue: .init(itemID: itemID))
-        _download = .init(initialValue: .init(itemID: itemID))
+        if itemID.isPlayable {
+            _progress = .init(initialValue: .init(itemID: itemID))
+            _download = .init(initialValue: .init(itemID: itemID))
+        }
     }
-    init(item: PlayableItem, hideImage: Bool = false, trailingText: Text? = nil, callback: (() -> Void)? = nil) {
+    init(item: Item, hideImage: Bool = false, trailingText: Text? = nil, callback: (() -> Void)? = nil) {
         self.itemID = item.id
         
         self.hideImage = hideImage
@@ -46,8 +48,24 @@ struct ItemCompactRow: View {
         
         _item = .init(initialValue: item)
         
-        _progress = .init(initialValue: .init(itemID: itemID))
-        _download = .init(initialValue: .init(itemID: itemID))
+        if itemID.isPlayable {
+            _progress = .init(initialValue: .init(itemID: itemID))
+            _download = .init(initialValue: .init(itemID: itemID))
+        }
+    }
+    
+    private var subtitle: String {
+        guard itemID.isPlayable || itemID.type == .podcast, let item else {
+            return itemID.type.label
+        }
+        
+        let authors = item.authors.formatted(.list(type: .and, width: .short))
+        
+        if let episode = item as? Episode, episode.podcastName != authors {
+            return "\(episode.podcastName) • \(authors)"
+        } else {
+            return authors
+        }
     }
     
     var body: some View {
@@ -71,15 +89,7 @@ struct ItemCompactRow: View {
                                 .lineLimit(1)
                                 .font(.headline)
                             
-                            Group {
-                                let authors = item.authors.formatted(.list(type: .and, width: .short))
-                                
-                                if let episode = item as? Episode, episode.podcastName != authors {
-                                    Text(verbatim: "\(episode.podcastName) • \(authors)")
-                                } else {
-                                    Text(authors)
-                                }
-                            }
+                            Text(subtitle)
                             .lineLimit(1)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -100,22 +110,27 @@ struct ItemCompactRow: View {
             
             if let trailingText {
                 trailingText
-            } else if download.status == .downloading {
+            } else if download?.status == .downloading {
                 DownloadButton(itemID: itemID, progressVisibility: .row)
                     .labelStyle(.iconOnly)
-            } else if let progress = progress.progress {
-                CircleProgressIndicator(progress: progress, invertColors: download.status == .completed)
+            } else if let progress = progress?.progress {
+                CircleProgressIndicator(progress: progress, invertColors: download?.status == .completed)
                     .frame(width: 16)
-            } else {
+            } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
+                Text(incompleteEpisodeCount, format: .number)
+                    .font(.caption)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(.secondary)
+            } else if itemID.isPlayable {
                 ProgressView()
                     .scaleEffect(0.75)
             }
         }
         .modifier(PlayableItemSwipeActionsModifier(itemID: itemID))
         .modify {
-            if let item {
+            if let playableItem = item as? PlayableItem {
                 $0
-                    .modifier(PlayableItemContextMenuModifier(item: item))
+                    .modifier(PlayableItemContextMenuModifier(item: playableItem))
             } else {
                 $0
             }
@@ -124,12 +139,8 @@ struct ItemCompactRow: View {
     }
     
     private nonisolated func load() {
-        guard itemID.type == .audiobook || itemID.type == .episode else {
-            return
-        }
-        
         Task {
-            let item = try? await itemID.resolved as? PlayableItem
+            let item = try? await itemID.resolved
             
             await MainActor.withAnimation {
                 self.item = item
