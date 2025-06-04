@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct LibraryPicker: View {
     @Environment(ConnectionStore.self) private var connectionStore
+    @Environment(Satellite.self) private var satellite
     
     var callback: (() -> Void)? = nil
     
@@ -27,16 +28,20 @@ struct LibraryPicker: View {
             }
         }
         
+        Button("panel.search", systemImage: "magnifyingglass") {
+            satellite.present(.globalSearch)
+        }
+        
+        Button("navigation.offline.enable", systemImage: "network.slash") {
+            RFNotification[.changeOfflineMode].send(payload: true)
+        }
+        
         if connectionStore.libraries.count + connectionStore.offlineConnections.count < connectionStore.connections.count {
             Text("connection.loading \(connectionStore.connections.count - (connectionStore.libraries.count + connectionStore.offlineConnections.count))")
         } else if !connectionStore.offlineConnections.isEmpty {
             Button("connection.offline \(connectionStore.offlineConnections.count)", role: .destructive) {
                 connectionStore.update()
             }
-        }
-        
-        Button("navigation.offline.enable", systemImage: "network.slash") {
-            RFNotification[.changeOfflineMode].send(payload: true)
         }
     }
 }

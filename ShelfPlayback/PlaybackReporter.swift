@@ -153,8 +153,6 @@ private extension PlaybackReporter {
         
         let timeListened: TimeInterval
         
-        print(lastTimeSpendListeningCalculation)
-        
         if let delta = lastTimeSpendListeningCalculation?.distance(to: .now) {
             timeListened = accumulatedTimeSpendListening + delta
             lastTimeSpendListeningCalculation = .now
