@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>E8HaDg</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>24A348</string>
+	<string>24F74</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>16A242d</string>
+	<string>16F6</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>16.0</string>
+	<string>16.4</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -46,7 +46,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Play</string>
+					<string>Play media</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>f3d3kn</string>
 				</dict>
@@ -59,28 +59,6 @@
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>YYfsKp</string>
 				</dict>
-				<key>mediaContainer,mediaItems,resumePlayback</key>
-				<dict>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>${mediaItems}</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>vUAqfM</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Resume ${mediaContainer}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>o6CuZu</string>
-				</dict>
-				<key>mediaContainer,resumePlayback</key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Resume ${mediaContainer}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>sLPQxZ</string>
-				</dict>
 				<key>mediaItems</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -89,28 +67,6 @@
 					<string>Play ${mediaItems}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>KcCcQu</string>
-				</dict>
-				<key>mediaItems,mediaContainer</key>
-				<dict>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>${mediaItems}</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>ApUiZd</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Play ${mediaContainer}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>WEjMGd</string>
-				</dict>
-				<key>mediaItems,resumePlayback</key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Resume ${mediaItems}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>mIvv3D</string>
 				</dict>
 			</dict>
 			<key>INIntentParameters</key>

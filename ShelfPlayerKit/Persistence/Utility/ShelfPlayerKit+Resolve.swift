@@ -97,7 +97,7 @@ public extension ShelfPlayerKit {
  
 private extension ShelfPlayerKit {
     static func resolveSpotlightItems(query: String) async throws -> [Item] {
-        let query = "title == '*\(query)*'cd || artist == '*\(query)*'cd"
+        let query = "title == '*\(query)*'cdw || artist == '*\(query)*'cdw"
         
         let context = CSSearchQueryContext()
         context.fetchAttributes = ["identifier"]

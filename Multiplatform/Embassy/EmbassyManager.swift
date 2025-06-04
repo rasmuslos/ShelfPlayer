@@ -8,6 +8,7 @@
 import Foundation
 import WidgetKit
 import AppIntents
+import Intents
 import ShelfPlayback
 
 final class EmbassyManager: Sendable {
@@ -34,6 +35,8 @@ final class EmbassyManager: Sendable {
             }
         } start: {
             try await AudioPlayer.shared.start(.init(itemID: $0, origin: .unknown, startWithoutListeningSession: $1))
+        } startGrouping: {
+            try await AudioPlayer.shared.startGrouping($0, startWithoutListeningSession: $1)
         }
     }()
     
@@ -52,9 +55,11 @@ final class EmbassyManager: Sendable {
         // MARK: Donate Intents
         
         RFNotification[.playbackItemChanged].subscribe {
-            var itemID = $0.0
+            let itemID = $0.0
             
             Task {
+                // App Intent
+                
                 switch itemID.type {
                     case .episode:
                         try await IntentDonationManager.shared.donate(intent: StartIntent(item: ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast).resolved))
@@ -62,6 +67,12 @@ final class EmbassyManager: Sendable {
                         try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(item: itemID.resolved))
                     default:
                         return
+                }
+                
+                // SiriKit Intent
+                
+                if let item = try? await itemID.resolved as? PlayableItem, let intent = try? await PlayMediaIntentHandler.buildPlayMediaIntent(item) {
+                    try? await INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: nil)).donate()
                 }
             }
         }

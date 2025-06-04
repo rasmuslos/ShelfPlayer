@@ -56,6 +56,7 @@ struct ShelfPlayer {
                 
                 $0.addTask { await ContextProvider.updateUserContext() }
                 $0.addTask { await EmbassyManager.shared.setupObservers() }
+                $0.addTask { await PlayMediaIntentHandler.donateListenNowIntents() }
             }
         }
     }

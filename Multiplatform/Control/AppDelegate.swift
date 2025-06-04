@@ -18,6 +18,19 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         backgroundCompletionHandler = completionHandler
     }
     
+    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
+        switch intent {
+            case is INPlayMediaIntent:
+                PlayMediaIntentHandler()
+            default:
+                nil
+        }
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        RFNotification[.finalizePlaybackReporting].send()
+    }
+    
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate, let backgroundCompletionHandler = appDelegate.backgroundCompletionHandler else {
             return
@@ -53,21 +66,4 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
     }
      */
-}
-
-// MARK: Intents
-
-internal extension AppDelegate {
-    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        switch intent {
-        case is INPlayMediaIntent:
-            PlayMediaIntentHandler()
-        default:
-            nil
-        }
-    }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        RFNotification[.finalizePlaybackReporting].send()
-    }
 }

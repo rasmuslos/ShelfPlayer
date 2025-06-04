@@ -17,19 +17,22 @@ struct GlobalSearchSheet: View {
     
     var body: some View {
         NavigationStack {
-            List {
+            Group {
                 if items.isEmpty {
                     if isLoading {
-                        LoadingView.Inner()
+                        LoadingView()
                     } else {
-                        EmptyCollectionView.Inner()
+                        EmptyCollectionView()
                     }
                 } else {
-                    ForEach(items) { item in
-                        ItemCompactRow(item: item) {
-                            item.id.navigate()
+                    List {
+                        ForEach(items) { item in
+                            ItemCompactRow(item: item) {
+                                item.id.navigate()
+                            }
                         }
                     }
+                    .listStyle(.plain)
                 }
             }
             .navigationTitle("panel.search")
