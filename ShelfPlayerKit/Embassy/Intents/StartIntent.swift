@@ -39,17 +39,13 @@ public struct StartIntent: AudioPlaybackIntent {
         switch item.id.type {
             case .audiobook, .episode:
                 itemID = item.id
-            case .podcast:
-                guard let episode = try await ResolvedUpNextStrategy.podcast(item.id).resolve(cutoff: nil).first else {
-                    throw IntentError.notFound
-                }
-                
-                itemID = episode.id
+                try await audioPlayer.start(itemID, withoutPlaybackSession)
+            case .series, .podcast:
+                itemID = try await audioPlayer.startGrouping(item.id, withoutPlaybackSession)
             default:
                 throw IntentError.invalidItemType
         }
         
-        try await audioPlayer.start(itemID, withoutPlaybackSession)
         let entity = try await ItemEntity(item: itemID.resolved)
         
         return .result(value: entity)
