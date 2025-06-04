@@ -75,6 +75,10 @@ public final class ItemIdentifier: NSObject {
         return true
     }
     
+    public var isPlayable: Bool {
+        type == .audiobook || type == .episode
+    }
+    
     public override var description: String {
         get {
             let base = "1::\(type)::\(connectionID)::\(libraryID)::\(primaryID)"

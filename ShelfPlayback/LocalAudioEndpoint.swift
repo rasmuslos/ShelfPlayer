@@ -805,6 +805,16 @@ private extension LocalAudioEndpoint {
             }
         }
         
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
+            Task {
+                guard let self else {
+                    return
+                }
+                
+                await AudioPlayer.shared.stop(endpointID: self.id)
+            }
+        }
+        
         audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { [weak self] _ in
             guard let self else {
                 return

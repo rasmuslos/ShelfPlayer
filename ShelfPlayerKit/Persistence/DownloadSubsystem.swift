@@ -430,7 +430,7 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     
     func status(of itemID: ItemIdentifier) async -> DownloadStatus {
-        guard itemID.type == .audiobook || itemID.type == .episode else {
+        guard itemID.isPlayable else {
             return .none
         }
         
@@ -546,7 +546,7 @@ public extension PersistenceManager.DownloadSubsystem {
     ///
     /// This method is atomic and progress tracking is available after it completes.
     func download(_ itemID: ItemIdentifier) async throws {
-        guard itemID.type == .audiobook || itemID.type == .episode else {
+        guard itemID.isPlayable else {
             throw PersistenceError.unsupportedItemType
         }
         
@@ -704,7 +704,7 @@ public extension PersistenceManager.DownloadSubsystem {
             // TODO:
         }
         
-        guard itemID.type == .audiobook || itemID.type == .episode else {
+        guard itemID.isPlayable else {
             throw PersistenceError.unsupportedItemType
         }
         

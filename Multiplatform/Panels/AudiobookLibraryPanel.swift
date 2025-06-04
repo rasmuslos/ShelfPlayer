@@ -102,24 +102,24 @@ struct AudiobookLibraryPanel: View {
                 if let searchResult = viewModel.searchResult {
                     List {
                         if viewModel.searchScope.shouldShow(.authors) && !searchResult.1.isEmpty {
-                            Section("panel.search.authors") {
+                            Section(ItemIdentifier.ItemType.author.label) {
                                 PersonList(people: searchResult.1, showImage: true) { _ in }
                             }
                         }
                         if viewModel.searchScope.shouldShow(.narrators) && !searchResult.2.isEmpty {
-                            Section("panel.search.narrators") {
+                            Section(ItemIdentifier.ItemType.narrator.label) {
                                 PersonList(people: searchResult.2, showImage: false) { _ in }
                             }
                         }
                         
                         if viewModel.searchScope.shouldShow(.series) && !searchResult.3.isEmpty {
-                            Section("panel.search.series") {
+                            Section(ItemIdentifier.ItemType.series.label) {
                                 SeriesList(series: searchResult.3) { _ in }
                             }
                         }
                         
                         if viewModel.searchScope.shouldShow(.audiobooks) && !searchResult.0.isEmpty {
-                            Section("panel.search.audiobooks") {
+                            Section(ItemIdentifier.ItemType.audiobook.label) {
                                 AudiobookList(sections: searchResult.0.map { .audiobook(audiobook: $0) }) { _ in }
                             }
                         }

@@ -2074,7 +2074,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Serien"
+            "value" : "Serie"
           }
         },
         "en" : {
@@ -2766,6 +2766,7 @@
       }
     },
     "panel.search.audiobooks" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2782,6 +2783,7 @@
       }
     },
     "panel.search.authors" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2798,6 +2800,7 @@
       }
     },
     "panel.search.narrators" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2814,6 +2817,7 @@
       }
     },
     "panel.search.series" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

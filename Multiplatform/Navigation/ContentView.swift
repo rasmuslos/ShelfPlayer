@@ -33,6 +33,8 @@ struct ContentView: View {
         switch sheet {
             case .listenNow:
                 ListenNowSheet()
+            case .globalSearch:
+                GlobalSearchSheet()
             case .preferences:
                 PreferencesView()
             case .description(let item):
