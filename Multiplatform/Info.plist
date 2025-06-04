@@ -7,6 +7,8 @@
 		<string>io.rfk.shelfPlayer.automaticDownload</string>
 		<string>io.rfk.shelfPlayer.spotlightIndex</string>
 	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -40,8 +42,6 @@
 		<string>INMediaCategoryPodcasts</string>
 		<string>INMediaCategoryAudiobooks</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -81,9 +81,18 @@
 		<string>fetch</string>
 		<string>processing</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Grant access to connect to a Audiobookshelf-Instance inside your local network.</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeDescription</key>
+			<string>An audiobookshelf item</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>io.rfk.shelfPlayer.item</string>
+			<key>UTTypeTagSpecification</key>
+			<dict/>
+		</dict>
+	</array>
 </dict>
 </plist>

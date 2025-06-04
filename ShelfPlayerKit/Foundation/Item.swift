@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreTransferable
 
 public class Item: Identifiable, @unchecked Sendable, Codable {
     public let id: ItemIdentifier
@@ -53,6 +54,53 @@ extension Item: Comparable {
     }
 }
 
+extension Item: Transferable {
+    var transferableDescription: String {
+        let subtitle: String
+        let tertiaryTitle: String
+        
+        if id.isPlayable || id.type == .podcast {
+            subtitle = authors.formatted(.list(type: .and, width: .short))
+        } else {
+            subtitle = id.type.label
+        }
+        
+        if let audiobook = self as? Audiobook {
+            tertiaryTitle = audiobook.narrators.formatted(.list(type: .and))
+        } else if let episode = self as? Episode {
+            tertiaryTitle = episode.podcastName
+        } else if let podcast = self as? Podcast {
+            tertiaryTitle = String(localized: "item.count.episodes.unplayed \(podcast.incompleteEpisodeCount ?? 0)")
+        } else {
+            tertiaryTitle = addedAt.formatted(date: .abbreviated, time: .standard)
+        }
+        
+        return """
+        \(name)
+        \(subtitle)
+        \(tertiaryTitle)
+        
+        \(description ?? "?")
+        """
+    }
+    
+    public static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
+        
+        ProxyRepresentation {
+            $0.transferableDescription
+        }
+
+        DataRepresentation(exportedContentType: .png) {
+            guard let data = await $0.id.data(size: .large) else {
+                throw TransferableError.missingImageData
+            }
+            
+            return data
+        }
+    }
+}
+
 public extension Item {
     var sortName: String {
         get {
@@ -71,4 +119,8 @@ public extension Item {
             return sortName
         }
     }
+}
+
+private enum TransferableError: Error {
+    case missingImageData
 }
