@@ -100,13 +100,13 @@ struct ItemCompactRow: View {
                                 load()
                             }
                     }
+                    
+                    Spacer(minLength: 12)
                 }
                 .contentShape(.rect)
             }
             .buttonStyle(.plain)
             .disabled(satellite.isLoading(observing: itemID))
-            
-            Spacer(minLength: 12)
             
             if let trailingText {
                 trailingText

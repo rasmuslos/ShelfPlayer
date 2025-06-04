@@ -11,12 +11,14 @@ public final class IntentAudioPlayer: Sendable {
     
     let _setPlaying: @Sendable (Bool) async -> Void
     let _start: @Sendable (ItemIdentifier, Bool) async throws -> Void
+    let _startGrouping: @Sendable (ItemIdentifier, Bool) async throws -> ItemIdentifier
     
-    public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?, resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?, setPlaying: @Sendable @escaping (Bool) async -> Void, start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void) {
+    public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?, resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?, setPlaying: @Sendable @escaping (Bool) async -> Void, start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void, startGrouping: @Sendable @escaping (ItemIdentifier, Bool) async throws -> ItemIdentifier) {
         self.resolveIsPlaying = resolveIsPlaying
         self.resolveCurrentItemID = resolveCurrentItemID
         self._setPlaying = setPlaying
         self._start = start
+        self._startGrouping = startGrouping
     }
     
     var isPlaying: Bool? {
@@ -35,5 +37,8 @@ public final class IntentAudioPlayer: Sendable {
     }
     func start(_ item: ItemIdentifier, _ withoutPlaybackSession: Bool) async throws {
         try await _start(item, withoutPlaybackSession)
+    }
+    func startGrouping(_ item: ItemIdentifier, _ withoutPlaybackSession: Bool) async throws -> ItemIdentifier {
+        try await _startGrouping(item, withoutPlaybackSession)
     }
 }
