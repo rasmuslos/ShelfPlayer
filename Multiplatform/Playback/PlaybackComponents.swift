@@ -225,6 +225,7 @@ struct PlaybackControls: View {
             Spacer(minLength: 8)
             
             BottomSlider()
+                .border(.red)
         }
         .aspectRatio(2, contentMode: .fit)
         .compositingGroup()
@@ -486,6 +487,7 @@ private struct PlaybackSlider<MiddleContent: View>: View {
             }
         }
         .font(seeking == nil ? .system(size: mutedHeight, design: .rounded) : .system(size: activeHeight, design: .rounded))
+        .frame(height: activeHeight)
         .foregroundStyle(seeking == nil ? .secondary : .primary)
     }
     

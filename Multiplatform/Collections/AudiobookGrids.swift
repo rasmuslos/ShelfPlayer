@@ -31,10 +31,16 @@ struct AudiobookVGrid: View {
                                 .modifier(PlayableItemContextMenuModifier(item: audiobook))
                                 .hoverEffect(.highlight)
                         }
-                    case .series(let seriesID, _, let audiobookIDs):
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(.isLink)
+                        .accessibilityLabel(audiobook.name)
+                    case .series(let seriesID, let seriesName, let audiobookIDs):
                         NavigationLink(destination: ItemLoadView(seriesID)) {
                             SeriesGrid.SeriesGridItem(name: nil, audiobookIDs: audiobookIDs)
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(.isLink)
+                        .accessibilityLabel(seriesName)
                     }
                     
                     Spacer(minLength: 0)
@@ -97,6 +103,8 @@ struct AudiobookHGrid: View {
                                 .hoverEffect(.highlight)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityAddTraits(.isLink)
+                        .accessibilityLabel(audiobook.name)
                     }
                 }
                 .scrollTargetLayout()

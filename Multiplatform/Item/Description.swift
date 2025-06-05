@@ -29,6 +29,7 @@ struct Description: View {
                         .bold()
                         .underline()
                         .padding(.bottom, 8)
+                        .accessibilityAddTraits(.isHeader)
                     
                     if let description {
                         HTMLTextView(height: $height, html: description, width: availableWidth)

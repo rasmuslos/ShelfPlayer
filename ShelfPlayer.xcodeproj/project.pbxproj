@@ -165,7 +165,6 @@
 		3ACB8D082DDCA860005336C0 /* TimeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D072DDCA860005336C0 /* TimeRow.swift */; };
 		3ACB8D0B2DDDAD0E005336C0 /* BookmarksList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D0A2DDDAD0E005336C0 /* BookmarksList.swift */; };
 		3ACB8D0D2DDDB35D005336C0 /* ChaptersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D0C2DDDB35A005336C0 /* ChaptersList.swift */; };
-		3ACB8D0F2DDDCE71005336C0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ACB8D0E2DDDCE71005336C0 /* Preview Assets.xcassets */; };
 		3ACB8DEC2DE2FD7C005336C0 /* DebugPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8DEB2DE2FD7C005336C0 /* DebugPreferences.swift */; };
 		3ACD19B52ACB58EB007D01FE /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B42ACB58EB007D01FE /* LoadingView.swift */; };
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
@@ -565,8 +564,8 @@
 				3A6924A92D6B9670004E291E /* Collections */,
 				3AA1642B2D6DBA4B00343214 /* Playback */,
 				3A262E962DA1558B002F927A /* Offline */,
-				3AAE5A6F2D33DCA10097DB77 /* DONE */,
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
+				3AAE5A6F2D33DCA10097DB77 /* DONE */,
 				3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */,
 				3A2E32312DC3A17B00073C82 /* BackgroundTaskHandler.swift */,
 				3A27A66D2AB7631900F80C92 /* Info.plist */,
@@ -1173,7 +1172,6 @@
 				3AC9A9272DEC823A004BC123 /* AppShortcuts.xcstrings in Resources */,
 				3A2BC1952AD8121400054727 /* Settings.bundle in Resources */,
 				3A792B972B6F9F53002A48E6 /* InfoPlist.xcstrings in Resources */,
-				3ACB8D0F2DDDCE71005336C0 /* Preview Assets.xcassets in Resources */,
 				3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */,
 				3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */,
 				3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */,
