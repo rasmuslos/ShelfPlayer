@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreTransferable
+import SwiftSoup
 
 public class Item: Identifiable, @unchecked Sendable, Codable {
     public let id: ItemIdentifier
@@ -75,13 +76,21 @@ extension Item: Transferable {
             tertiaryTitle = addedAt.formatted(date: .abbreviated, time: .standard)
         }
         
-        return """
-        \(name)
-        \(subtitle)
-        \(tertiaryTitle)
-        
-        \(description ?? "?")
-        """
+        if let descriptionText {
+            return  """
+                    \(name)
+                    \(subtitle)
+                    \(tertiaryTitle)
+                    
+                    \(descriptionText)
+                    """
+        } else {
+            return  """
+                    \(name)
+                    \(subtitle)
+                    \(tertiaryTitle)
+                    """
+        }
     }
     
     public static var transferRepresentation: some TransferRepresentation {
@@ -118,6 +127,14 @@ public extension Item {
             
             return sortName
         }
+    }
+    
+    var descriptionText: String? {
+        guard let description = description, let document = try? SwiftSoup.parse(description) else {
+            return nil
+        }
+        
+        return try? document.text()
     }
 }
 

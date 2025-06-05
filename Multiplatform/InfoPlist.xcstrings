@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "An audiobookshelf item" : {
-
-    },
     "CFBundleDisplayName" : {
       "comment" : "Bundle display name",
       "extractionState" : "extracted_with_value",
@@ -41,6 +38,9 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Item" : {
+
     },
     "NSHumanReadableCopyright" : {
       "comment" : "Copyright (human-readable)",
