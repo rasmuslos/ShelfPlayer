@@ -129,6 +129,22 @@
         }
       }
     },
+    "action.share" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teilen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        }
+      }
+    },
     "airPlay" : {
       "localizations" : {
         "de" : {

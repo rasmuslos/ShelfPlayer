@@ -28,7 +28,9 @@ struct ItemIDLoadLink: View {
     var body: some View {
         if library == nil {
             #if DEBUG
-            let _ = fatalError("Cannot load itemIDs without a library.")
+            if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {
+                let _ = fatalError("Cannot load itemIDs without a library.")
+            }
             #endif
         } else {
             NavigationLink(destination: ItemIDLoadView(name: name, type: type)) {
