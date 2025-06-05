@@ -93,7 +93,7 @@ struct Timeline: View {
                 }
                 
                 ForEach(sessionLoader.sessions) { session in
-                    row(text: Text("item.timeline.row \(session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute], maximumUnitCount: 1)) ?? "?") \(session.startDate.formatted(.relative(presentation: .named)))"),
+                    row(text: Text("item.timeline.row \(session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute, .second], maximumUnitCount: 1)) ?? "?") \(session.startDate.formatted(.relative(presentation: .named)))"),
                         color: .accentColor,
                         systemImage: "play.fill")
                 }

@@ -41,6 +41,12 @@ extension EpisodeView {
                             .labelStyle(.iconOnly)
                         
                         Menu {
+                            ShareLink(item: viewModel.episode, preview: SharePreview(viewModel.episode.name, image: viewModel.episode)) {
+                                Label("action.share", systemImage: "square.and.arrow.up")
+                            }
+                            
+                            Divider()
+                            
                             QueuePlayButton(itemID: viewModel.episode.id)
                             QueueButton(itemID: viewModel.episode.id)
                             

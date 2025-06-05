@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftSoup
 
 public final class Episode: PlayableItem, @unchecked Sendable {
     public let podcastName: String
@@ -93,13 +92,5 @@ public extension Episode {
         }
         
         return Date(timeIntervalSince1970: milliseconds / 1000)
-    }
-    
-    var descriptionText: String? {
-        guard let description = description, let document = try? SwiftSoup.parse(description) else {
-            return nil
-        }
-        
-        return try? document.text()
     }
 }
