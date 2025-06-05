@@ -85,6 +85,8 @@ struct ListenNowSheetToggle: View {
         .menuStyle(.button)
         .buttonStyle(.plain)
         .menuActionDismissBehavior(.disabled)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(Text("panel.listenNow"))
     }
 }
 

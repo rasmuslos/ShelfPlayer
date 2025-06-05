@@ -39,6 +39,7 @@ private struct Title: View {
     private var authorLabel: some View {
         if !viewModel.audiobook.authors.isEmpty {
             Text(viewModel.audiobook.authors, format: .list(type: .and, width: .short))
+                .accessibilityLabel(Text(verbatim: "\(ItemIdentifier.ItemType.author.label): \(viewModel.audiobook.authors.formatted(.list(type: .and)))"))
                 .font(largeFont ? .title2 : .subheadline)
                 .lineLimit(1)
                 .overlay(alignment: .trailingLastTextBaseline) {
@@ -64,36 +65,43 @@ private struct Title: View {
                 .modifier(SerifModifier())
                 .lineLimit(4)
                 .multilineTextAlignment(alignment.textAlignment)
+                .accessibilityLabel(Text(verbatim: "\(ItemIdentifier.ItemType.audiobook.label): \(viewModel.audiobook.name)"))
             
             if let subtitle = viewModel.audiobook.subtitle {
                 Text(subtitle)
                     .font(.caption)
             }
             
-            if viewModel.audiobook.authors.count > 1 {
-                Menu {
-                    ItemMenu.MenuInner(authors: viewModel.audiobook.authors)
-                } label: {
-                    authorLabel
+            Group {
+                if viewModel.audiobook.authors.count > 1 {
+                    Menu {
+                        ItemMenu.MenuInner(authors: viewModel.audiobook.authors)
+                    } label: {
+                        authorLabel
+                    }
+                    .menuStyle(.button)
+                    .buttonStyle(.plain)
+                } else if let authorName = viewModel.audiobook.authors.first {
+                    NavigationLink(destination: ItemIDLoadView(name: authorName, type: .author)) {
+                        authorLabel
+                    }
+                    .buttonStyle(.plain)
                 }
-                .menuStyle(.button)
-                .buttonStyle(.plain)
-            } else if let authorName = viewModel.audiobook.authors.first {
-                NavigationLink(destination: ItemIDLoadView(name: authorName, type: .author)) {
-                    authorLabel
-                }
-                .buttonStyle(.plain)
             }
+            .accessibilityAddTraits(.isButton)
             
             HStack(spacing: 2) {
-                if viewModel.audiobook.explicit {
-                    Label("item.explicit", systemImage: "e.square.fill")
-                        .labelStyle(.iconOnly)
+                Group {
+                    if viewModel.audiobook.explicit {
+                        Label("item.explicit", systemImage: "e.square.fill")
+                            .labelStyle(.iconOnly)
+                    }
+                    if viewModel.audiobook.abridged {
+                        Label("item.abridged", systemImage: "a.square.fill")
+                            .labelStyle(.iconOnly)
+                    }
                 }
-                if viewModel.audiobook.abridged {
-                    Label("item.abridged", systemImage: "a.square.fill")
-                        .labelStyle(.iconOnly)
-                }
+                .accessibilityRemoveTraits(.isImage)
                 
                 if viewModel.audiobook.narrators.count > 1 {
                     Menu {
@@ -113,6 +121,7 @@ private struct Title: View {
                 Group {
                     if !viewModel.audiobook.narrators.isEmpty || viewModel.audiobook.explicit || viewModel.audiobook.abridged {
                         Text(verbatim: " • ")
+                            .accessibilityHidden(true)
                     }
                     
                     Text(viewModel.audiobook.duration, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
@@ -134,7 +143,7 @@ private struct SeriesName: View {
             Group {
                 if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
                     NavigationLink(destination: ItemIDLoadView(name: series.name, type: .series)) {
-                        seriesNameComponent(series.name)
+                        seriesNameComponent(series.formattedName)
                     }
                     .buttonStyle(.plain)
                 } else {
@@ -151,6 +160,8 @@ private struct SeriesName: View {
                 }
             }
             .padding(.top, 8)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(Text(verbatim: "\(ItemIdentifier.ItemType.series.label): \(seriesName)"))
         }
     }
 }

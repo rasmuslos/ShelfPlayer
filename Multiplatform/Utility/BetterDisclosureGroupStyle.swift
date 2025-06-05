@@ -19,6 +19,7 @@ struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
                 HStack(spacing: 0) {
                     configuration.label
                         .font(.headline)
+                        .accessibilityAddTraits(.isHeader)
                     
                     Spacer(minLength: 8)
                     
@@ -37,6 +38,7 @@ struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
                 .frame(maxHeight: configuration.isExpanded ? .infinity : 0, alignment: .top)
                 .clipped()
                 .allowsHitTesting(configuration.isExpanded)
+                .accessibilityHidden(!configuration.isExpanded)
         }
     }
 }

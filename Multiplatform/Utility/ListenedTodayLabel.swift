@@ -63,11 +63,13 @@ struct ListenedTodayLabel: View {
                         .opacity(0.72)
                 }
                 .offset(x: 0, y: geometryProxy.size.width / 6)
+                .accessibilityValue(Text(verbatim: "\(listenedTodayTracker.totalMinutesListenedToday) / \(listenedTodayTracker.listenTimeTarget)"))
             }
         }
         .aspectRatio(1, contentMode: .fit)
         .animation(.smooth, value: listenedTodayTracker.totalMinutesListenedToday)
         .compositingGroup()
+        // .accessibilityLabel(Text(("statistics.listenedToday")))
     }
     
     struct AdjustMenuInner: View {
@@ -101,6 +103,7 @@ struct ListenedTodayListRow: View {
             HStack(spacing: 12) {
                 ListenedTodayLabel()
                     .frame(width: 40)
+                    .accessibilityHidden(true)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(TimeInterval(listenedTodayTracker.totalMinutesListenedToday) * 60, format: .duration(unitsStyle: .spellOut, allowedUnits: [.second, .minute, .hour], maximumUnitCount: 1, formattingContext: .standalone))
