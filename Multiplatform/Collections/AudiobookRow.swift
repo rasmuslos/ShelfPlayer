@@ -27,6 +27,8 @@ struct AudiobookRow: View {
                         }
                     }
                     .buttonStyle(.plain)
+                    .accessibilityAddTraits(.isLink)
+                    .accessibilityLabel(Text(title))
                 } else {
                     RowTitle(title: title, fontDesign: .serif)
                 }

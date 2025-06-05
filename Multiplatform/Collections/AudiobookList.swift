@@ -23,6 +23,9 @@ struct AudiobookList: View {
                         SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
                     }
                     .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(.isLink)
+                    .accessibilityLabel(Text(seriesName))
                 }
             }
             .onAppear {
@@ -140,6 +143,9 @@ private struct Row: View {
         .modifier(PlayableItemContextMenuModifier(item: audiobook))
         .modifier(PlayableItemSwipeActionsModifier(itemID: audiobook.id))
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(.isLink)
+        .accessibilityLabel(audiobook.name)
     }
 }
 

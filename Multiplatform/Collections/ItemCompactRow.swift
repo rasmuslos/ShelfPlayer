@@ -136,6 +136,8 @@ struct ItemCompactRow: View {
             }
         }
         .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(Text(item?.name ?? "loading"))
     }
     
     private nonisolated func load() {

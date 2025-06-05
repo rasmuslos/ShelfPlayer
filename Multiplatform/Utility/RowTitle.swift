@@ -18,6 +18,8 @@ struct RowTitle: View {
         Text(title)
             .font(.headline)
             .fontDesign(fontDesign == .serif && !enableSerifFont ? nil : fontDesign)
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityRemoveTraits(.isStaticText)
     }
 }
 
