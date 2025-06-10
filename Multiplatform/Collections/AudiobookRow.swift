@@ -24,6 +24,7 @@ struct AudiobookRow: View {
                             Image(systemName: "chevron.right")
                                 .symbolVariant(.circle.fill)
                                 .font(.caption)
+                                .accessibilityHidden(true)
                         }
                     }
                     .buttonStyle(.plain)

@@ -27,6 +27,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         }
     }
     
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let configuration = UISceneConfiguration(name: "ShelfPlayer Configuration", sessionRole: connectingSceneSession.role)
+        configuration.delegateClass = SceneDelegate.self
+        
+        return configuration
+    }
+    
     func applicationWillTerminate(_ application: UIApplication) {
         RFNotification[.finalizePlaybackReporting].send()
     }
@@ -66,4 +73,31 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
     }
      */
+}
+
+// MARK: Scene Delegate
+
+private final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem) async -> Bool {
+        switch shortcutItem.type {
+        case "search":
+            await RFNotification[.presentGlobalSearch].send()
+        case "play":
+            guard let itemIDDescription = shortcutItem.userInfo?["itemID"] as? String else {
+                return false
+            }
+            
+            let itemID = ItemIdentifier(itemIDDescription)
+            
+            do {
+                try await AudioPlayer.shared.start(.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: Defaults[.startInOfflineMode]))
+            } catch {
+                return false
+            }
+        default:
+            return false
+        }
+        
+        return true
+    }
 }

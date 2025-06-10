@@ -59,6 +59,7 @@ struct Timeline: View {
                     .foregroundStyle(color.isLight == true ? .black : .white)
             }
             .padding(.trailing, 8)
+            .accessibilityHidden(true)
             
             text
                 .font(.caption)

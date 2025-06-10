@@ -17,6 +17,9 @@ extension Defaults.Keys {
 }
 
 extension RFNotification.IsolatedNotification {
+    static var setGlobalSearch: IsolatedNotification<String> { .init("io.rfk.shelfPlayer.setGlobalSearch") }
+    static var presentGlobalSearch: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.presentGlobalSearch") }
+    
     static var focusSearchField: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.focusSearchField") }
     
     static var navigateConditionMet: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.navigate.notify") }

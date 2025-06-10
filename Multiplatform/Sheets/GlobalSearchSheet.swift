@@ -10,7 +10,7 @@ import ShelfPlayback
 
 struct GlobalSearchSheet: View {
     @State private var items = [Item]()
-    @State private var search: String = ""
+    @State private var query: String = ""
     
     @State private var isLoading = false
     @State private var task: Task<Void, Never>?
@@ -37,7 +37,7 @@ struct GlobalSearchSheet: View {
             }
             .navigationTitle("panel.search")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $search, placement: .navigationBarDrawer)
+            .searchable(text: $query, placement: .navigationBarDrawer)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     if isLoading {
@@ -45,8 +45,11 @@ struct GlobalSearchSheet: View {
                     }
                 }
             }
-            .onChange(of: search) {
+            .onChange(of: query) {
                 loadItems()
+            }
+            .onReceive(RFNotification[.setGlobalSearch].publisher()) {
+                query = $0
             }
         }
         .presentationDetents([.medium, .large])
@@ -67,7 +70,7 @@ struct GlobalSearchSheet: View {
                     self.isLoading = true
                 }
                 
-                let items = try await ShelfPlayerKit.globalSearch(query: search, includeOnlineSearchResults: true)
+                let items = try await ShelfPlayerKit.globalSearch(query: query, includeOnlineSearchResults: true)
                 
                 await MainActor.withAnimation {
                     self.items = items

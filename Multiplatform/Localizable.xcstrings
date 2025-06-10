@@ -1440,6 +1440,9 @@
         }
       }
     },
+    "item.downloaded" : {
+
+    },
     "item.downloading" : {
 
     },
@@ -4127,16 +4130,10 @@
     },
     "setup.welcome.description" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Danke für deinen Kauf! Füge eine Verbindung hinzu, um zu beginnen."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thank you for your purchase. Add a connection to get started."
+            "value" : "Thank you for choosing ShelfPlayer. Add a connection to your Audiobookshelf instance to get started."
           }
         }
       }
