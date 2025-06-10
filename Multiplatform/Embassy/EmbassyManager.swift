@@ -11,6 +11,10 @@ import AppIntents
 import Intents
 import ShelfPlayback
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 final class EmbassyManager: Sendable {
     private init() {
         Task {
@@ -61,12 +65,12 @@ final class EmbassyManager: Sendable {
                 // App Intent
                 
                 switch itemID.type {
-                    case .episode:
-                        try await IntentDonationManager.shared.donate(intent: StartIntent(item: ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast).resolved))
-                    case .audiobook:
-                        try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(item: itemID.resolved))
-                    default:
-                        return
+                case .episode:
+                    try await IntentDonationManager.shared.donate(intent: StartIntent(item: ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast).resolved))
+                case .audiobook:
+                    try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(item: itemID.resolved))
+                default:
+                    return
                 }
                 
                 // SiriKit Intent
@@ -74,6 +78,33 @@ final class EmbassyManager: Sendable {
                 if let item = try? await itemID.resolved as? PlayableItem, let intent = try? await PlayMediaIntentHandler.buildPlayMediaIntent(item) {
                     try? await INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: nil)).donate()
                 }
+            }
+        }
+        
+        // MARK: Quick Actions
+        
+        RFNotification[.listenNowItemsChanged].subscribe {
+            Task { @MainActor in
+                let items = await ShelfPlayerKit.listenNowItems.prefix(4)
+                
+                var shortcuts = [UIApplicationShortcutItem]()
+                
+                for item in items {
+                    let progres = await PersistenceManager.shared.progress[item.id]
+                    let subtitle: String?
+                    
+                    if let duration = progres.duration {
+                        subtitle = (duration - progres.currentTime).formatted(.duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
+                    } else {
+                        subtitle = item.authors.formatted(.list(type: .and))
+                    }
+                    
+                    shortcuts.append(UIApplicationShortcutItem(type: "play", localizedTitle: item.name, localizedSubtitle: subtitle, icon: nil, userInfo: [
+                        "itemID": item.id.description as NSString,
+                    ]))
+                }
+                
+                UIApplication.shared.shortcutItems = shortcuts
             }
         }
         

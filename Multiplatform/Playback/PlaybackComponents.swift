@@ -225,7 +225,6 @@ struct PlaybackControls: View {
             Spacer(minLength: 8)
             
             BottomSlider()
-                .border(.red)
         }
         .aspectRatio(2, contentMode: .fit)
         .compositingGroup()

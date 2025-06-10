@@ -122,12 +122,17 @@ struct ContentView: View {
                 }
             }
         }
-        .onContinueUserActivity(CSSearchableItemActionType) {
-            guard let identifier = $0.userInfo?[CSSearchableItemActivityIdentifier] as? String else {
+        .onContinueUserActivity(CSQueryContinuationActionType) {
+            guard let query = $0.userInfo?[CSSearchQueryString] as? String else {
                 return
             }
             
-            ItemIdentifier(identifier).navigate()
+            satellite.present(.globalSearch)
+            
+            Task {
+                try await Task.sleep(for: .seconds(0.4))
+                await RFNotification[.setGlobalSearch].send(payload: query)
+            }
         }
         .onContinueUserActivity("io.rfk.shelfPlayer.item") { activity in
             guard let identifier = activity.persistentIdentifier else {
