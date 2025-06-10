@@ -92,6 +92,7 @@ struct StatusOverlay: View {
                             .font(.system(size: fontSize))
                             .foregroundStyle(.ultraThickMaterial)
                             .padding(size / 7)
+                            .accessibilityValue(Text("item.downloaded"))
                     }
                 }
             }

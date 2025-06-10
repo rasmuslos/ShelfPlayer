@@ -22,16 +22,11 @@ public struct AudioPlayerItem: Sendable {
     }
     
     public enum PlaybackOrigin: Sendable {
-        case author(ItemIdentifier)
-        case narrator(ItemIdentifier)
         case series(ItemIdentifier)
-        case audiobook(ItemIdentifier)
-        
-        case episode(ItemIdentifier)
         case podcast(ItemIdentifier)
         
-        case carPlay
         case upNextQueue
+        case carPlay
         
         case unknown
     }

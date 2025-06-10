@@ -92,6 +92,23 @@
 			<string>io.rfk.shelfPlayer.item</string>
 			<key>UTTypeTagSpecification</key>
 			<dict/>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string></string>
+			</array>
+		</dict>
+	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>search</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeSearch</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Search</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Search all libraries</string>
 		</dict>
 	</array>
 </dict>

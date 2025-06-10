@@ -801,6 +801,10 @@ private extension Satellite {
             self?.dismissSheet()
         }.store(in: &stash)
         
+        RFNotification[.presentGlobalSearch].subscribe { [weak self] in
+            self?.present(.globalSearch)
+        }
+        
         // MARK: Audio Player state synchronisation
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
