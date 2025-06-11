@@ -16,14 +16,15 @@ public final class PersistenceManager: Sendable {
     public let keyValue: KeyValueSubsystem
     public let authorization: AuthorizationSubsystem
     
-    public let bookmark: BookmarkSubsystem
     
     public let progress: ProgressSubsystem
     public let session: SessionSubsystem
     
     public let download: DownloadSubsystem
+    public let convenienceDownload: ConvenienceDownloadSubsystem
+    
     public let item: ItemSubsystem
-    public let podcasts: PodcastSubsystem
+    public let bookmark: BookmarkSubsystem
     
     private init() {
         let schema = Schema(versionedSchema: SchemaV2.self)
@@ -46,30 +47,32 @@ public final class PersistenceManager: Sendable {
         keyValue = .init(modelContainer: modelContainer)
         authorization = .init(modelContainer: modelContainer)
         
-        bookmark = .init(modelContainer: modelContainer)
-        
         progress = .init(modelContainer: modelContainer)
         session = .init(modelContainer: modelContainer)
         
         download = .init(modelContainer: modelContainer)
+        convenienceDownload = .init()
+        
         item = .init()
-        podcasts = .init()
+        bookmark = .init(modelContainer: modelContainer)
     }
     
     public func remove(itemID: ItemIdentifier) async {
         await keyValue.remove(itemID: itemID)
-        await bookmark.remove(itemID: itemID)
         await progress.remove(itemID: itemID)
         await session.remove(itemID: itemID)
+        
         try? await download.remove(itemID)
+        
+        await bookmark.remove(itemID: itemID)
     }
     public func remove(connectionID: ItemIdentifier.ConnectionID) async {
         await keyValue.remove(connectionID: connectionID)
         await authorization.remove(connectionID: connectionID)
-        await bookmark.remove(connectionID: connectionID)
         await progress.remove(connectionID: connectionID)
         await session.remove(connectionID: connectionID)
         await download.remove(connectionID: connectionID)
+        await bookmark.remove(connectionID: connectionID)
         
         await RFNotification[.removeConnection].send(payload: connectionID)
     }

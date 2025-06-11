@@ -460,7 +460,7 @@ public extension PersistenceManager.DownloadSubsystem {
     
     func cover(for itemID: ItemIdentifier, size: ItemIdentifier.CoverSize) async -> URL? {
         if let cached = await PersistenceManager.shared.keyValue[.coverURLCache(itemID: itemID, size: size)] {
-            if FileManager.default.fileExists(atPath: cached.absoluteString) {
+            if FileManager.default.fileExists(atPath: cached.path()) {
                 return cached
             } else {
                 return nil
@@ -482,7 +482,7 @@ public extension PersistenceManager.DownloadSubsystem {
         
         let path = asset?.path
         
-        guard let path, FileManager.default.fileExists(atPath: path.absoluteString) else {
+        guard let path, FileManager.default.fileExists(atPath: path.path()) else {
             return nil
         }
         
