@@ -20,8 +20,12 @@ struct MultiplatformApp: App {
         
         ShelfPlayer.launchHook()
         
-        if ProcessInfo.processInfo.environment["RUN_SPOTLIGHT_INDEX"] == "YES" {
-            SpotlightIndexer.shared.run()
+        Defaults[.enableListenNowDownloads] = false
+        
+        if ProcessInfo.processInfo.environment["RUN_CONVENIENCE_DOWNLOAD"] == "YES" {
+            Task {
+                await PersistenceManager.shared.convenienceDownload.scheduleAll()
+            }
         }
         
         AppDependencyManager.shared.add(dependency: PersistenceManager.shared)

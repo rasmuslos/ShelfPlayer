@@ -43,13 +43,9 @@ public actor ListenNowCache: Sendable {
         do {
             let entities = try await PersistenceManager.shared.progress.activeProgressEntities.sorted { $0.lastUpdate > $1.lastUpdate }
             
-            let idMapped = entities.map(\.id)
-            
-            guard idMapped != currentProgressIDs else {
+            guard entities.map(\.id) != currentProgressIDs else {
                 return
             }
-            
-            currentProgressIDs = idMapped
             
             let items = await withTaskGroup {
                 for entity in entities {
@@ -65,13 +61,16 @@ public actor ListenNowCache: Sendable {
                 }
             }
             
-            self.items = entities.compactMap { entity in
-                items.first {
+            let mapped = entities.map { entity in
+                (items.first {
                     $0.id.primaryID == entity.primaryID
                     && $0.id.groupingID == entity.groupingID
                     && $0.id.connectionID == entity.connectionID
-                }
+                }, entity)
             }
+            
+            currentProgressIDs = mapped.filter { $0.0 != nil }.map(\.1.id)
+            self.items = mapped.compactMap(\.0)
             
             await RFNotification[.listenNowItemsChanged].send()
         } catch {
@@ -90,11 +89,11 @@ public actor ListenNowCache: Sendable {
     
     var current: [PlayableItem] {
         get async {
-            guard items.isEmpty else {
+            guard !items.isEmpty else {
+                await update()
                 return items
             }
             
-            await update()
             return items
         }
     }

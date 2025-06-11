@@ -37,13 +37,13 @@ struct GroupingConfigurationSheet: View {
                     }
                     
                     Section {
-                        Picker("item.convienienceDownload.configure", selection: $viewModel.retreival) {
-                            ForEach(ConvinienceDownloadRetreivalOption.allCases) { strategy in
+                        Picker("item.convienienceDownload.configure", selection: $viewModel.retrieval) {
+                            ForEach(ConvenienceDownloadRetrievalOption.allCases) { strategy in
                                 Text(strategy.label)
                                     .tag(strategy)
                             }
                         }
-                        .bold(viewModel.retreival != .disabled)
+                        .bold(viewModel.retrieval != .disabled)
                     } header: {
                         Text("item.convienienceDownload")
                     } footer: {
@@ -99,21 +99,21 @@ private final class ViewModel {
     var playbackRate: Percentage
     var upNextStrategy: ConfigureableUpNextStrategy
     
-    var retreival: ConvinienceDownloadRetreivalOption
+    var retrieval: ConvenienceDownloadRetrievalOption
     
     var notifyError = false
     
     init(itemID: ItemIdentifier) async {
         self.itemID = itemID
         
-        if let retreival = await PersistenceManager.shared.convenienceDownload.retreival(for: itemID), let parsed = ConvinienceDownloadRetreivalOption.parse(retreival) {
-            self.retreival = parsed
-        } else {
-            retreival = .disabled
-        }
-        
         playbackRate = await PersistenceManager.shared.item.playbackRate(for: itemID) ?? Defaults[.defaultPlaybackRate]
         upNextStrategy = await PersistenceManager.shared.item.upNextStrategy(for: itemID) ?? Defaults[.upNextStrategy]
+        
+        if let retrieval = await PersistenceManager.shared.convenienceDownload.retrieval(for: itemID), let parsed = ConvenienceDownloadRetrievalOption.parse(retrieval) {
+            self.retrieval = parsed
+        } else {
+            retrieval = .disabled
+        }
     }
     
     var isPlaybackRateCustomized: Bool {
@@ -148,7 +148,7 @@ private final class ViewModel {
             }
             
             do {
-                try await PersistenceManager.shared.convenienceDownload.setRetreival(for: itemID, retreival: retreival.resolved)
+                try await PersistenceManager.shared.convenienceDownload.setRetrieval(for: itemID, retrieval: retrieval.resolved)
             } catch {
                 failedCount += 1
             }
@@ -177,7 +177,7 @@ private extension ConfigureableUpNextStrategy {
     }
 }
 
-private enum ConvinienceDownloadRetreivalOption: String, CaseIterable, Identifiable {
+private enum ConvenienceDownloadRetrievalOption: String, CaseIterable, Identifiable {
     case disabled
     
     case one
@@ -255,8 +255,8 @@ private enum ConvinienceDownloadRetreivalOption: String, CaseIterable, Identifia
         }
     }
     
-    static func parse(_ retreival: PersistenceManager.ConvenienceDownloadSubsystem.GroupingRetrieval) -> Self? {
-        switch retreival {
+    static func parse(_ retrieval: PersistenceManager.ConvenienceDownloadSubsystem.GroupingRetrieval) -> Self? {
+        switch retrieval {
             case .amount(let amount):
                 switch amount {
                     case 1: return .one

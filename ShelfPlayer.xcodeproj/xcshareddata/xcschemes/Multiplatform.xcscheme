@@ -61,7 +61,7 @@
       </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "RUN_SPOTLIGHT_INDEX"
+            key = "RUN_CONVENIENCE_DOWNLOAD"
             value = "YES"
             isEnabled = "YES">
          </EnvironmentVariable>
