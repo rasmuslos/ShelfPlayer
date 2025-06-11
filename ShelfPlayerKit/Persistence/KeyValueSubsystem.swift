@@ -101,13 +101,16 @@ extension PersistenceManager {
         }
         public func entities<T: Decodable>(cluster: String, type: T.Type) -> [String: T] {
             do {
-                return Dictionary(uniqueKeysWithValues: try modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.cluster == cluster })).compactMap { entity -> (key: String, value: T)? in
+                let entities = try modelContext.fetch(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.cluster == cluster }))
+                let mapped = entities.compactMap { entity -> (key: String, value: T)? in
                     guard let value = value(for: entity, type: T.self) else {
                         return nil
                     }
                     
                     return (entity.key, value)
-                })
+                }
+                
+                return Dictionary(uniqueKeysWithValues: mapped)
             } catch {
                 return [:]
             }

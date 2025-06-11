@@ -22,6 +22,8 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
     public let addedAt: Date
     public let released: String?
     
+    private var url: URL?
+    
     init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
         
@@ -34,6 +36,10 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
         
         self.addedAt = addedAt
         self.released = released
+        
+        Task.detached {
+            self.url = try? await id.url
+        }
     }
 }
 
@@ -98,6 +104,9 @@ extension Item: Transferable {
         
         ProxyRepresentation {
             $0.transferableDescription
+        }
+        ProxyRepresentation {
+            $0.url ?? .temporaryDirectory
         }
 
         DataRepresentation(exportedContentType: .png) {

@@ -21,12 +21,14 @@ final class PodcastViewModel {
         didSet {
             Defaults[.episodesAscending(podcast.id)] = ascending
             updateVisible()
+            requestConvenienceDownload()
         }
     }
     var sortOrder: EpisodeSortOrder {
         didSet {
             Defaults[.episodesSortOrder(podcast.id)] = sortOrder
             updateVisible()
+            requestConvenienceDownload()
         }
     }
     
@@ -34,18 +36,21 @@ final class PodcastViewModel {
         didSet {
             Defaults[.episodesFilter(podcast.id)] = filter
             updateVisible()
+            requestConvenienceDownload()
         }
     }
     var seasonFilter: String? {
         didSet {
             Defaults[.episodesSeasonFilter(podcast.id)] = seasonFilter
             updateVisible()
+            requestConvenienceDownload()
         }
     }
     var restrictToPersisted: Bool {
         didSet {
             Defaults[.episodesFilter(podcast.id)] = filter
             updateVisible()
+            requestConvenienceDownload()
         }
     }
     
@@ -153,6 +158,12 @@ extension PodcastViewModel {
             await MainActor.withAnimation {
                 self.visible = episodes
             }
+        }
+    }
+    
+    nonisolated func requestConvenienceDownload() {
+        Task {
+            await PersistenceManager.shared.convenienceDownload.scheduleUpdate(itemID: podcast.id)
         }
     }
 }
