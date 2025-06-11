@@ -8,7 +8,6 @@
 import Foundation
 import SwiftData
 
-
 extension SchemaV2 {
     @Model
     final class PersistedKeyValueEntity {

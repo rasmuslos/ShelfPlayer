@@ -1160,6 +1160,51 @@
     "item.configure" : {
 
     },
+    "item.convenienceDownload.all" : {
+
+    },
+    "item.convenienceDownload.disabled" : {
+
+    },
+    "item.convenienceDownload.five" : {
+
+    },
+    "item.convenienceDownload.four" : {
+
+    },
+    "item.convenienceDownload.one" : {
+
+    },
+    "item.convenienceDownload.oneDay" : {
+
+    },
+    "item.convenienceDownload.oneMonth" : {
+
+    },
+    "item.convenienceDownload.oneWeek" : {
+
+    },
+    "item.convenienceDownload.ten" : {
+
+    },
+    "item.convenienceDownload.three" : {
+
+    },
+    "item.convenienceDownload.two" : {
+
+    },
+    "item.convenienceDownload.twoWeeks" : {
+
+    },
+    "item.convienienceDownload" : {
+
+    },
+    "item.convienienceDownload.configure" : {
+
+    },
+    "item.convienienceDownload.description" : {
+
+    },
     "item.count.audiobooks %lld" : {
       "localizations" : {
         "de" : {

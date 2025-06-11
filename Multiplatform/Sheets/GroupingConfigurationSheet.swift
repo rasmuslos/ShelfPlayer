@@ -11,6 +11,7 @@ import ShelfPlayback
 
 struct GroupingConfigurationSheet: View {
     @Environment(Satellite.self) private var satellite
+    @Default(.enableConvenienceDownloads) private var enableConvenienceDownloads
     
     let itemID: ItemIdentifier
     
@@ -27,13 +28,28 @@ struct GroupingConfigurationSheet: View {
                             .bold(viewModel.isPlaybackRateCustomized)
                         
                         Picker("item.grouping.configure.upNextStrategy", selection: $viewModel.upNextStrategy) {
-                            ForEach(ConfigureableUpNextStrategy.allCases) { strategy in
-                                Text(strategy.label)
-                                    .tag(strategy)
+                            ForEach(ConfigureableUpNextStrategy.allCases) {
+                                Text($0.label)
+                                    .tag($0)
                             }
                         }
                         .bold(viewModel.isUpNextStrategyCustomized)
                     }
+                    
+                    Section {
+                        Picker("item.convienienceDownload.configure", selection: $viewModel.retreival) {
+                            ForEach(ConvinienceDownloadRetreivalOption.allCases) { strategy in
+                                Text(strategy.label)
+                                    .tag(strategy)
+                            }
+                        }
+                        .bold(viewModel.retreival != .disabled)
+                    } header: {
+                        Text("item.convienienceDownload")
+                    } footer: {
+                        Text("item.convienienceDownload.description")
+                    }
+                    .disabled(!enableConvenienceDownloads)
                     
                     Color.clear
                         .listRowBackground(Color.clear)
@@ -83,10 +99,18 @@ private final class ViewModel {
     var playbackRate: Percentage
     var upNextStrategy: ConfigureableUpNextStrategy
     
+    var retreival: ConvinienceDownloadRetreivalOption
+    
     var notifyError = false
     
     init(itemID: ItemIdentifier) async {
         self.itemID = itemID
+        
+        if let retreival = await PersistenceManager.shared.convenienceDownload.retreival(for: itemID), let parsed = ConvinienceDownloadRetreivalOption.parse(retreival) {
+            self.retreival = parsed
+        } else {
+            retreival = .disabled
+        }
         
         playbackRate = await PersistenceManager.shared.item.playbackRate(for: itemID) ?? Defaults[.defaultPlaybackRate]
         upNextStrategy = await PersistenceManager.shared.item.upNextStrategy(for: itemID) ?? Defaults[.upNextStrategy]
@@ -123,6 +147,12 @@ private final class ViewModel {
                 failedCount += 1
             }
             
+            do {
+                try await PersistenceManager.shared.convenienceDownload.setRetreival(for: itemID, retreival: retreival.resolved)
+            } catch {
+                failedCount += 1
+            }
+            
             if failedCount > 0 {
                 await MainActor.run {
                     notifyError.toggle()
@@ -137,12 +167,120 @@ private final class ViewModel {
 private extension ConfigureableUpNextStrategy {
     var label: LocalizedStringKey {
         switch self {
-            case .default:
-                "upNextStrategy.default"
-            case .listenNow:
-                "upNextStrategy.listenNow"
-            case .disabled:
-                "upNextStrategy.disabled"
+        case .default:
+            "upNextStrategy.default"
+        case .listenNow:
+            "upNextStrategy.listenNow"
+        case .disabled:
+            "upNextStrategy.disabled"
+        }
+    }
+}
+
+private enum ConvinienceDownloadRetreivalOption: String, CaseIterable, Identifiable {
+    case disabled
+    
+    case one
+    case two
+    case three
+    case four
+    case five
+    case ten
+    
+    case oneDay
+    case oneWeek
+    case twoWeeks
+    case oneMonth
+    
+    case all
+    
+    var id: String {
+        rawValue
+    }
+    var label: LocalizedStringKey {
+        switch self {
+        case .disabled:
+            "item.convenienceDownload.disabled"
+        case .one:
+            "item.convenienceDownload.one"
+        case .two:
+            "item.convenienceDownload.two"
+        case .three:
+            "item.convenienceDownload.three"
+        case .four:
+            "item.convenienceDownload.four"
+        case .five:
+            "item.convenienceDownload.five"
+        case .ten:
+            "item.convenienceDownload.ten"
+        case .oneDay:
+            "item.convenienceDownload.oneDay"
+        case .oneWeek:
+            "item.convenienceDownload.oneWeek"
+        case .twoWeeks:
+            "item.convenienceDownload.twoWeeks"
+        case .oneMonth:
+            "item.convenienceDownload.oneMonth"
+        case .all:
+            "item.convenienceDownload.all"
+        }
+    }
+    
+    var resolved: PersistenceManager.ConvenienceDownloadSubsystem.GroupingRetrieval? {
+        switch self {
+        case .disabled:
+            nil
+        case .one:
+                .amount(1)
+        case .two:
+                .amount(2)
+        case .three:
+                .amount(3)
+            case .four:
+                    .amount(4)
+            case .five:
+                    .amount(5)
+            case .ten:
+                    .amount(10)
+            case .oneDay:
+                    .cutoff(24)
+            case .oneWeek:
+                    .cutoff(168)
+            case .twoWeeks:
+                    .cutoff(336)
+            case .oneMonth:
+                    .cutoff(672)
+            case .all:
+                    .all
+        }
+    }
+    
+    static func parse(_ retreival: PersistenceManager.ConvenienceDownloadSubsystem.GroupingRetrieval) -> Self? {
+        switch retreival {
+            case .amount(let amount):
+                switch amount {
+                    case 1: return .one
+                    case 2: return .two
+                    case 3: return .three
+                    case 4: return .four
+                    case 5: return .five
+                    case 10: return .ten
+                        
+                    default:
+                        return nil
+                }
+            case .cutoff(let cutoff):
+                switch cutoff {
+                    case 24: return .oneDay
+                    case 168: return .oneWeek
+                    case 336: return .twoWeeks
+                    case 672: return .oneMonth
+                        
+                    default:
+                        return nil
+                }
+            case .all:
+                return .all
         }
     }
 }
