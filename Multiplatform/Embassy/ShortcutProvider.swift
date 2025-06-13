@@ -28,6 +28,10 @@ struct ShortcutProvider: AppShortcutsProvider {
             "Play an podcast using \(.applicationName)",
             "Play \(\.$item) using \(.applicationName)",
         ], shortTitle: "intent.start", systemImageName: "play.square")
+        AppShortcut(intent: PlayAudiobookIntent(), phrases: [
+            "Play an audiobook using \(.applicationName)",
+            "Play \(\.$target) using \(.applicationName)",
+        ], shortTitle: "intent.start", systemImageName: "bookmark.square")
         
         AppShortcut(intent: PlayIntent(), phrases: [
             "Resume \(.applicationName)",

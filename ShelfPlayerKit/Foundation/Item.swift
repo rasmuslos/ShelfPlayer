@@ -23,9 +23,6 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
     public let addedAt: Date
     public let released: String?
     
-    private var url: URL?
-    private var image: Image?
-    
     init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
         
@@ -38,10 +35,6 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
         
         self.addedAt = addedAt
         self.released = released
-        
-        Task.detached {
-            self.url = try? await id.url
-        }
     }
     
     enum CodingKeys: CodingKey {
@@ -112,18 +105,28 @@ extension Item: Transferable {
     }
     
     public static var transferRepresentation: some TransferRepresentation {
-        ProxyRepresentation {
-            $0.url ?? .temporaryDirectory
+        ProxyRepresentation(exporting: \.transferableDescription)
+        
+        DataRepresentation(exportedContentType: .utf8PlainText) {
+            Data($0.transferableDescription.utf8)
         }
-        ProxyRepresentation {
-            $0.image ?? Image(systemName: "command")
+        DataRepresentation(exportedContentType: .plainText) {
+            Data($0.transferableDescription.utf8)
         }
-        ProxyRepresentation {
-            $0.transferableDescription
+        DataRepresentation(exportedContentType: .text) {
+            Data($0.transferableDescription.utf8)
+        }
+        DataRepresentation(exportedContentType: .rtf) {
+            Data($0.transferableDescription.utf8)
         }
         
-        CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
-
+        DataRepresentation(exportedContentType: .url) {
+            guard let data = try? await $0.id.url.absoluteString.utf8 else {
+                throw TransferableError.missingImageData
+            }
+            
+            return Data(data)
+        }
         DataRepresentation(exportedContentType: .png) {
             guard let data = await $0.id.data(size: .large) else {
                 throw TransferableError.missingImageData
@@ -131,6 +134,8 @@ extension Item: Transferable {
             
             return data
         }
+        
+        CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
     }
 }
 
