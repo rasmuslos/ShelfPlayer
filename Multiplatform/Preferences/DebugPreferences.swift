@@ -21,6 +21,23 @@ struct DebugPreferences: View {
     
     var body: some View {
         List {
+            Section {
+                VStack(spacing: 12) {
+                    HStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        
+                        Image(systemName: "lifepreserver")
+                            .font(.system(size: 92))
+                        
+                        Spacer(minLength: 0)
+                    }
+                    
+                    Text("preferences.support")
+                        .bold()
+                }
+                .listRowBackground(Color.clear)
+            }
+            
             #if DEBUG
             Section(String("Item")) {
                 TextField(String("ItemID"), text: $_itemID)
@@ -39,9 +56,6 @@ struct DebugPreferences: View {
             Section {
                 Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer")!) {
                     Label("preferences.github", systemImage: "chevron.left.forwardslash.chevron.right")
-                }
-                Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/Support.md")!) {
-                    Label("preferences.support", systemImage: "lifepreserver")
                 }
                 
                 CreateLogArchiveButton()
@@ -63,7 +77,6 @@ struct DebugPreferences: View {
             .foregroundStyle(.secondary)
             .font(.caption)
         }
-        .navigationTitle("preferences.debug")
     }
 }
 

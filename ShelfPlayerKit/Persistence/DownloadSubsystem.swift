@@ -760,7 +760,11 @@ public extension PersistenceManager.DownloadSubsystem {
             
             // try modelContext.delete(model: PersistedEpisode.self)
             for episode in try episodes() {
-                try await remove(episode.id)
+                do {
+                    try await remove(episode.id)
+                } catch {
+                    logger.error("Failed to remove episode \(episode.id): \(error)")
+                }
             }
             
             try modelContext.delete(model: PersistedPodcast.self)
