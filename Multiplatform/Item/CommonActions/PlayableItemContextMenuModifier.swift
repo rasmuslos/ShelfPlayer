@@ -16,9 +16,7 @@ struct PlayableItemContextMenuModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contextMenu {
-                ShareLink(item: item, preview: SharePreview(item.name, image: item)) {
-                    Label("action.share", systemImage: "square.and.arrow.up")
-                }
+                ItemShareButton(item: item)
                 
                 Divider()
                 

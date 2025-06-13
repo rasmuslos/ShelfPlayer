@@ -7,7 +7,25 @@
     "intent.entity.item" : {
 
     },
+    "intent.entity.item %lld" : {
+
+    },
+    "intent.entity.item.audiobook" : {
+
+    },
+    "intent.entity.item.author" : {
+
+    },
     "intent.entity.item.description" : {
+
+    },
+    "intent.entity.item.episode" : {
+
+    },
+    "intent.entity.item.podcast" : {
+
+    },
+    "intent.entity.item.series" : {
 
     },
     "intent.error" : {
@@ -20,6 +38,12 @@
 
     },
     "intent.error.notFound" : {
+
+    },
+    "intent.listenNow" : {
+
+    },
+    "intent.listenNow.description" : {
 
     },
     "intent.nowPlaying" : {

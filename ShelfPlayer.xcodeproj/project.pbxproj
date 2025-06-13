@@ -153,6 +153,7 @@
 		3AC41F932CC52F86009ABBFA /* HomeRow+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F922CC52F84009ABBFA /* HomeRow+Helper.swift */; };
 		3AC41F972CC5372C009ABBFA /* CarPlayPodcastListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */; };
 		3AC41F992CC53E49009ABBFA /* CarPlayChaptersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */; };
+		3AC5F63C2DFCD82B0080649A /* ItemShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */; };
 		3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC9A8D62DEC713A004BC123 /* SwiftSoup */; };
 		3AC9A8E32DEC716F004BC123 /* ShelfPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */; };
 		3AC9A8E42DEC716F004BC123 /* ShelfPlayback.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -427,6 +428,7 @@
 		3AC41F922CC52F84009ABBFA /* HomeRow+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeRow+Helper.swift"; sourceTree = "<group>"; };
 		3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPodcastListController.swift; sourceTree = "<group>"; };
 		3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayChaptersController.swift; sourceTree = "<group>"; };
+		3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShareButton.swift; sourceTree = "<group>"; };
 		3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AC9A9252DEC8230004BC123 /* AppShortcuts.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = AppShortcuts.xcstrings; sourceTree = "<group>"; };
 		3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGrid.swift; sourceTree = "<group>"; };
@@ -872,6 +874,7 @@
 				3A5891142CD3F1E9005C3289 /* ItemMenu.swift */,
 				3A9825E52D4A3C1900A65826 /* ItemLoadLink.swift */,
 				3A65DB002D771D3B00332BF3 /* ItemIDLoadLink.swift */,
+				3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */,
 				3A2B93342B00D71B00638AE9 /* ProgressButton.swift */,
 				3A9825E22D4A2C1E00A65826 /* ProgressResetButton.swift */,
 				3ADD29612B6D88EF0060248E /* DownloadButton.swift */,
@@ -1423,6 +1426,7 @@
 				3A6DC0862DE4981B00FB7D21 /* ProgressViewModel.swift in Sources */,
 				3A262E992DA155A1002F927A /* OfflineView.swift in Sources */,
 				3ABCC7E02AD4647D004AEADF /* EpisodeView+Toolbar.swift in Sources */,
+				3AC5F63C2DFCD82B0080649A /* ItemShareButton.swift in Sources */,
 				3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */,
 				3A9825E12D4A2AD800A65826 /* QueuePlayButton.swift in Sources */,
 				3A90A6432D9BD01E009BDA84 /* CarPlayPreferences.swift in Sources */,

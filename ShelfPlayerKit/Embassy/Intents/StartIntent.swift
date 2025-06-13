@@ -14,7 +14,7 @@ public struct StartIntent: AudioPlaybackIntent {
     
     @AppDependency private var audioPlayer: IntentAudioPlayer
     
-    @Parameter(title: "intent.entity.item", description: "intent.entity.item.description")
+    @Parameter(title: "intent.entity.item", description: "intent.entity.item.description", optionsProvider: ItemEntityOptionsProvider())
     public var item: ItemEntity
     
     @Parameter(title: "intent.start.withoutPlaybackSession", description: "intent.start.withoutPlaybackSession.description", default: false)

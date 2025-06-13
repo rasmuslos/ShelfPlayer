@@ -65,12 +65,17 @@ final class EmbassyManager: Sendable {
                 // App Intent
                 
                 switch itemID.type {
-                case .episode:
-                    try await IntentDonationManager.shared.donate(intent: StartIntent(item: ItemIdentifier(primaryID: itemID.groupingID!, groupingID: nil, libraryID: itemID.libraryID, connectionID: itemID.connectionID, type: .podcast).resolved))
-                case .audiobook:
-                    try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(item: itemID.resolved))
-                default:
-                    return
+                    case .episode:
+                        let podcastID = convertEpisodeIdentifierToPodcastIdentifier(itemID)
+                        try await IntentDonationManager.shared.donate(intent: StartIntent(item: podcastID.resolved))
+                    case .audiobook:
+                        guard let audiobook = try? await itemID.resolved as? Audiobook else {
+                            break
+                        }
+                        
+                        try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(audiobook: audiobook))
+                    default:
+                        return
                 }
                 
                 // SiriKit Intent
