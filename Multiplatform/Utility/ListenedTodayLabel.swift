@@ -121,6 +121,7 @@ struct ListenedTodayListRow: View {
         }
         .buttonStyle(.plain)
         .menuActionDismissBehavior(.disabled)
+        .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
     }
 }
 
