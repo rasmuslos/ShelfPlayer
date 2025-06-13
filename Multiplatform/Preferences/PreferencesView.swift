@@ -37,8 +37,12 @@ struct PreferencesView: View {
                         Label("connection.manage", systemImage: "server.rack")
                     }
                     
+                    NavigationLink(destination: ConvenienceDownloadPreferences()) {
+                        Label("preferences.convenienceDownload", systemImage: "arrow.down.circle")
+                    }
+                    
                     NavigationLink(destination: CarPlayPreferences()) {
-                        Label("preferences.carPlay", systemImage: "car.badge.gearshape.fill")
+                        Label("preferences.carPlay", systemImage: "car.badge.gearshape")
                     }
                 }
                 
@@ -55,7 +59,6 @@ struct PreferencesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .foregroundStyle(.primary)
         }
-        .presentationDetents([.medium, .large])
     }
 }
 

@@ -11,6 +11,9 @@ import ShelfPlayback
 struct ListenNowSheet: View {
     @Environment(Satellite.self) private var satellite
     
+    @Default(.enableConvenienceDownloads) private var enableConvenienceDownloads
+    @Default(.enableListenNowDownloads) private var enableListenNowDownloads
+    
     @State private var listenNowItems = [PlayableItem]()
     @State private var isLoading = false
     
@@ -33,6 +36,12 @@ struct ListenNowSheet: View {
                             satellite.start(item.id)
                             satellite.dismissSheet()
                         }
+                    }
+                }
+                
+                if enableConvenienceDownloads {
+                    Section {
+                        Toggle("preferences.convenienceDownload.enableListenNowDownloads", isOn: $enableListenNowDownloads)
                     }
                 }
             }

@@ -28,7 +28,7 @@ public extension ItemIdentifier.ItemType {
     var icon: String {
         switch self {
             case .audiobook:
-                "book"
+                "book.fill"
             case .author:
                 "person.fill"
             case .narrator:

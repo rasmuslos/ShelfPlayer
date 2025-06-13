@@ -115,6 +115,9 @@ extension PersistenceManager {
                 return [:]
             }
         }
+        public func entityCount(cluster: String) -> Int {
+            (try? modelContext.fetchCount(FetchDescriptor<KeyValueEntity>(predicate: #Predicate { $0.cluster == cluster }))) ?? 0
+        }
         
         public struct Key<Value: Codable>: Sendable {
             public typealias Key = PersistenceManager.KeyValueSubsystem.Key

@@ -242,6 +242,7 @@ struct PlaybackMenuActions: View {
                 Button(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book") {
                     audiobook.id.navigateIsolated()
                 }
+                .disabled(satellite.isOffline)
                 
                 ItemMenu(authors: viewModel.authorIDs)
                 ItemMenu(narrators: viewModel.narratorIDs)

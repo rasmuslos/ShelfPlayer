@@ -8,13 +8,14 @@
 import SwiftUI
 import ShelfPlayback
 
-struct ItemCompactRow: View {
+struct ItemCompactRow<TrailingContent: View>: View {
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
     
     let hideImage: Bool
-    let trailingText: Text?
+    
+    let trailingContent: TrailingContent?
     
     let callback: (() -> Void)?
     
@@ -23,11 +24,11 @@ struct ItemCompactRow: View {
     @State private var progress: ProgressTracker?
     @State private var download: DownloadStatusTracker?
     
-    init(itemID: ItemIdentifier, hideImage: Bool = false, trailingText: Text? = nil, callback: (() -> Void)? = nil) {
+    init(itemID: ItemIdentifier, hideImage: Bool = false, @ViewBuilder trailingContent: () -> TrailingContent, callback: (() -> Void)? = nil) {
         self.itemID = itemID
         
         self.hideImage = hideImage
-        self.trailingText = trailingText
+        self.trailingContent = trailingContent()
         
         self.callback = callback
         
@@ -38,11 +39,11 @@ struct ItemCompactRow: View {
             _download = .init(initialValue: .init(itemID: itemID))
         }
     }
-    init(item: Item, hideImage: Bool = false, trailingText: Text? = nil, callback: (() -> Void)? = nil) {
+    init(item: Item, hideImage: Bool = false, @ViewBuilder trailingContent: () -> TrailingContent, callback: (() -> Void)? = nil) {
         self.itemID = item.id
         
         self.hideImage = hideImage
-        self.trailingText = trailingText
+        self.trailingContent = trailingContent()
         
         self.callback = callback
         
@@ -108,8 +109,8 @@ struct ItemCompactRow: View {
             .buttonStyle(.plain)
             .disabled(satellite.isLoading(observing: itemID))
             
-            if let trailingText {
-                trailingText
+            if let trailingContent {
+                trailingContent
             } else if download?.status == .downloading {
                 DownloadButton(itemID: itemID, progressVisibility: .row)
                     .labelStyle(.iconOnly)
@@ -126,7 +127,14 @@ struct ItemCompactRow: View {
                     .scaleEffect(0.75)
             }
         }
-        .modifier(PlayableItemSwipeActionsModifier(itemID: itemID))
+        .modify {
+            if itemID.isPlayable {
+                $0
+                    .modifier(PlayableItemSwipeActionsModifier(itemID: itemID))
+            } else {
+                $0
+            }
+        }
         .modify {
             if let playableItem = item as? PlayableItem {
                 $0
@@ -147,6 +155,39 @@ struct ItemCompactRow: View {
             await MainActor.withAnimation {
                 self.item = item
             }
+        }
+    }
+}
+
+extension ItemCompactRow where TrailingContent == EmptyView {
+    init(itemID: ItemIdentifier, hideImage: Bool = false, callback: (() -> Void)? = nil) {
+        self.itemID = itemID
+        
+        self.hideImage = hideImage
+        self.trailingContent = nil
+        
+        self.callback = callback
+        
+        _item = .init(initialValue: nil)
+        
+        if itemID.isPlayable {
+            _progress = .init(initialValue: .init(itemID: itemID))
+            _download = .init(initialValue: .init(itemID: itemID))
+        }
+    }
+    init(item: Item, hideImage: Bool = false, callback: (() -> Void)? = nil) {
+        self.itemID = item.id
+        
+        self.hideImage = hideImage
+        self.trailingContent = nil
+        
+        self.callback = callback
+        
+        _item = .init(initialValue: item)
+        
+        if itemID.isPlayable {
+            _progress = .init(initialValue: .init(itemID: itemID))
+            _download = .init(initialValue: .init(itemID: itemID))
         }
     }
 }

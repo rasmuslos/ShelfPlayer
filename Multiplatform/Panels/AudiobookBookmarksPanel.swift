@@ -21,7 +21,9 @@ struct AudiobookBookmarksPanel: View {
                 List {
                     ForEach(Array(items), id: \.key) { (item, amount) in
                         NavigationLink(destination: AudiobookView(item)) {
-                            ItemCompactRow(item: item, trailingText: Text(amount, format: .number).foregroundStyle(.secondary)) {}
+                            ItemCompactRow(item: item) {
+                                Text(amount, format: .number).foregroundStyle(.secondary)
+                            } callback: {}
                         }
                     }
                     

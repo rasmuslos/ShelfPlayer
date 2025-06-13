@@ -11,7 +11,10 @@ import Defaults
 import RFNotifications
 
 let LISTEN_NOW_CONFIGURATION_ID = "listen-now"
-let KEY_VALUE_CLUSTER = "convenienceDownloadRetrievals"
+
+let RETRIEVALS_KEY_VALUE_CLUSTER = "convenienceDownloadRetrievals"
+let DOWNLOADED_KEY_VALUE_CLUSTER = "downloadedItemIDs"
+let ASSOCIATED_KEY_VALUE_CLUSTER = "associatedConfigurationIDs"
 
 extension PersistenceManager {
     public final actor ConvenienceDownloadSubsystem {
@@ -28,6 +31,12 @@ extension PersistenceManager {
                 
                 Task {
                     await self?.scheduleDownload(configurationID: LISTEN_NOW_CONFIGURATION_ID)
+                }
+            }
+            
+            Task {
+                for await _ in Defaults.updates([.enableConvenienceDownloads, .enableListenNowDownloads]) {
+                    await RFNotification[.convenienceDownloadConfigurationsChanged].send()
                 }
             }
         }
@@ -186,6 +195,9 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
         
         throw ConvenienceDownloadError.notFound
     }
+}
+
+public extension PersistenceManager.ConvenienceDownloadSubsystem {
     nonisolated func resolveItemID(from configurationID: String) -> ItemIdentifier? {
         guard configurationID.starts(with: "grouping-") else {
             return nil
@@ -194,9 +206,7 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
         let itemIDDescription = configurationID[configurationID.index(after: configurationID.firstIndex(of: "-")!)..<configurationID.endIndex]
         return ItemIdentifier(String(itemIDDescription))
     }
-}
-
-public extension PersistenceManager.ConvenienceDownloadSubsystem {
+    
     // MARK: Retrieval
     
     nonisolated func retrieval(for itemID: ItemIdentifier) async -> GroupingRetrieval? {
@@ -211,17 +221,23 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         } else {
             await remove(itemID: itemID, configurationID: buildGroupingConfigurationID(itemID))
         }
+        
+        await RFNotification[.convenienceDownloadConfigurationsChanged].send()
     }
     
     nonisolated var activeConfigurations: [ConvenienceDownloadConfiguration] {
         get async {
+            guard Defaults[.enableConvenienceDownloads] else {
+                return []
+            }
+            
             var configurations = [ConvenienceDownloadConfiguration]()
             
             if Defaults[.enableListenNowDownloads] {
                 configurations.append(.listenNow)
             }
             
-            let retrievals = await PersistenceManager.shared.keyValue.entities(cluster: KEY_VALUE_CLUSTER, type: GroupingRetrieval.self)
+            let retrievals = await PersistenceManager.shared.keyValue.entities(cluster: RETRIEVALS_KEY_VALUE_CLUSTER, type: GroupingRetrieval.self)
             
             configurations += retrievals.compactMap { (key, retrieval) -> ConvenienceDownloadConfiguration? in
                 let configurationID = String(key[key.index(after: key.firstIndex(of: "-")!)..<key.endIndex])
@@ -234,6 +250,11 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
             }
             
             return configurations
+        }
+    }
+    nonisolated var totalDownloadCount: Int {
+        get async {
+            await PersistenceManager.shared.keyValue.entityCount(cluster: ASSOCIATED_KEY_VALUE_CLUSTER)
         }
     }
     
@@ -357,17 +378,17 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         convenienceDownloadRetrieval(configurationID: buildGroupingConfigurationID(itemID))
     }
     static func convenienceDownloadRetrieval(configurationID: String) -> Key<PersistenceManager.ConvenienceDownloadSubsystem.GroupingRetrieval> {
-        .init(identifier: "convenienceDownloadRetrieval-\(configurationID)", cluster: KEY_VALUE_CLUSTER, isCachePurgeable: false)
+        .init(identifier: "convenienceDownloadRetrieval-\(configurationID)", cluster: RETRIEVALS_KEY_VALUE_CLUSTER, isCachePurgeable: false)
     }
     
     static func downloadedItemIDs(itemID: ItemIdentifier) -> Key<Set<ItemIdentifier>> {
         downloadedItemIDs(configurationID: buildGroupingConfigurationID(itemID))
     }
     static func downloadedItemIDs(configurationID: String) -> Key<Set<ItemIdentifier>> {
-        .init(identifier: "downloadedItemIDs-\(configurationID)", cluster: "downloadedItemIDs", isCachePurgeable: false)
+        .init(identifier: "downloadedItemIDs-\(configurationID)", cluster: DOWNLOADED_KEY_VALUE_CLUSTER, isCachePurgeable: false)
     }
     
     static func associatedConfigurationIDs(itemID: ItemIdentifier) -> Key<Set<String>> {
-        .init(identifier: "associatedConfigurationIDs-\(itemID)", cluster: "associatedConfigurationIDs", isCachePurgeable: false)
+        .init(identifier: "associatedConfigurationIDs-\(itemID)", cluster: ASSOCIATED_KEY_VALUE_CLUSTER, isCachePurgeable: false)
     }
 }
