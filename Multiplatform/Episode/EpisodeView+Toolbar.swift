@@ -41,9 +41,7 @@ extension EpisodeView {
                             .labelStyle(.iconOnly)
                         
                         Menu {
-                            ShareLink(item: viewModel.episode, preview: SharePreview(viewModel.episode.name, image: viewModel.episode)) {
-                                Label("action.share", systemImage: "square.and.arrow.up")
-                            }
+                            ItemShareButton(item: viewModel.episode)
                             
                             Divider()
                             

@@ -26,6 +26,20 @@
         }
       }
     },
+    "Play an audiobook using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Play an audiobook using ${applicationName}",
+              "Play ${target} using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
     "Play an item using ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
