@@ -94,8 +94,6 @@ final actor PlaybackReporter {
             self.currentTime = currentTime
         }
         
-        print(currentTime)
-        
         Task {
             await update(force: true)
             
@@ -165,6 +163,12 @@ private extension PlaybackReporter {
         
         // Async operations (suspension) begins here
         
+        do {
+            try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration, notifyServer: false)
+        } catch {
+            logger.warning("Cannot update progress: \(error).")
+        }
+        
         var updateLocalSession = true
         
         do {
@@ -189,12 +193,6 @@ private extension PlaybackReporter {
             } catch {
                 logger.warning("Failed to update local session: \(error).")
             }
-        }
-        
-        do {
-            try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration, notifyServer: false)
-        } catch {
-            logger.warning("Cannot update progress: \(error).")
         }
     }
 }

@@ -262,8 +262,6 @@ public extension PersistenceManager.ProgressSubsystem {
     func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double, notifyServer: Bool) async throws {
         let targetEntity: PersistedProgress
         
-        print(currentTime)
-        
         let progress = currentTime / duration
         
         if let existingEntity = entity(itemID) {

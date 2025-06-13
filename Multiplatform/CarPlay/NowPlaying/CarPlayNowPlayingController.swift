@@ -110,7 +110,7 @@ extension CarPlayNowPlayingController: @preconcurrency CPNowPlayingTemplateObser
             if currentItemID.type == .audiobook {
                 try await interfaceController.pushTemplate(chaptersController.template, animated: true)
             } else if currentItemID.type == .episode {
-                let podcastID = ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
+                let podcastID = convertEpisodeIdentifierToPodcastIdentifier(currentItemID)
                 
                 guard let podcast = try await podcastID.resolved as? Podcast else {
                     return
