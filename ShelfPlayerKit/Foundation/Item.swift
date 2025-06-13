@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreTransferable
+import SwiftUI
 import SwiftSoup
 
 public class Item: Identifiable, @unchecked Sendable, Codable {
@@ -23,6 +24,7 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
     public let released: String?
     
     private var url: URL?
+    private var image: Image?
     
     init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
@@ -40,6 +42,16 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
         Task.detached {
             self.url = try? await id.url
         }
+    }
+    
+    enum CodingKeys: CodingKey {
+        case id
+        case name
+        case authors
+        case description
+        case genres
+        case addedAt
+        case released
     }
 }
 
@@ -62,7 +74,7 @@ extension Item: Comparable {
 }
 
 extension Item: Transferable {
-    var transferableDescription: String {
+    public var transferableDescription: String {
         let subtitle: String
         let tertiaryTitle: String
         
@@ -100,14 +112,17 @@ extension Item: Transferable {
     }
     
     public static var transferRepresentation: some TransferRepresentation {
-        CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
-        
-        ProxyRepresentation {
-            $0.transferableDescription
-        }
         ProxyRepresentation {
             $0.url ?? .temporaryDirectory
         }
+        ProxyRepresentation {
+            $0.image ?? Image(systemName: "command")
+        }
+        ProxyRepresentation {
+            $0.transferableDescription
+        }
+        
+        CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
 
         DataRepresentation(exportedContentType: .png) {
             guard let data = await $0.id.data(size: .large) else {

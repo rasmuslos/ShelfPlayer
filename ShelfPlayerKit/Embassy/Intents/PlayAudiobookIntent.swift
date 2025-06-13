@@ -13,12 +13,12 @@ public struct PlayAudiobookIntent: AudioPlaybackIntent {
     @AppDependency private var audioPlayer: IntentAudioPlayer
     
     public init() {}
-    public init(item: Item) async {
-        self.target = await .init(item: item)
+    public init(audiobook: Audiobook) async {
+        self.target = await .init(audiobook: audiobook)
     }
     
-    @Parameter
-    public var target: ItemEntity
+    @Parameter(optionsProvider: AudiobookEntityOptionsProvider())
+    public var target: AudiobookEntity
     
     public func perform() async throws -> some IntentResult {
         try await audioPlayer.start(target.id, false)

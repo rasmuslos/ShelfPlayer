@@ -4,6 +4,16 @@
     "Pause ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Pausiere ${applicationName}",
+              "Pausiere die ${applicationName} Wiedergabe",
+              "Stoppe ${applicationName}"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
@@ -19,6 +29,17 @@
     "Play an item using ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Spiele ein Hörbuch mit ${applicationName}",
+              "Spiele eine Episode mit ${applicationName}",
+              "Spiele einen Podcast mit ${applicationName}",
+              "Spiele ${item} mit ${applicationName}"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
@@ -36,6 +57,16 @@
     "Resume ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Setzte ${applicationName} fort",
+              "Setzte die ${applicationName} Wiedergabe fort",
+              "Spiele ${applicationName} weiter"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",

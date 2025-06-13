@@ -9,14 +9,14 @@ import Foundation
 import AppIntents
 import CoreTransferable
 
-@AssistantEntity(schema: .books.audiobook)
 public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
-    /*
     public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.item", numericFormat: "intent.entity.item \(placeholder: .int)", synonyms: [
         "intent.entity.item.audiobook",
+        "intent.entity.item.series",
+        "intent.entity.item.author",
+        "intent.entity.item.episode",
         "intent.entity.item.podcast",
     ])
-     */
     public static let defaultQuery = ItemEntityQuery()
     
     public let hideInSpotlight: Bool = true
@@ -30,17 +30,11 @@ public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
         item.id
     }
     
-    @Property
     public var title: String?
-    @Property
     public var author: String?
-    @Property
     public var genre: String?
-    @Property
     public var purchaseDate: Date?
-    @Property
     public var seriesTitle: String?
-    @Property
     public var url: URL?
     
     public init(item: Item) async {
@@ -90,7 +84,7 @@ extension ItemEntity: Transferable {
     }
 }
 
-public struct ItemEntityQuery: EntityQuery {
+public struct ItemEntityQuery: EntityQuery, EntityStringQuery {
     public init() {}
     
     public func entities(for identifiers: [ItemIdentifier]) async throws -> [ItemEntity] {
@@ -105,11 +99,9 @@ public struct ItemEntityQuery: EntityQuery {
         }
     }
     public func suggestedEntities() async throws -> [ItemEntity] {
-        await listenNowAppEntities()
+        await listenNowItemEntities()
     }
-}
-
-extension ItemEntityQuery: EntityStringQuery {
+    
     public func entities(matching string: String) async throws -> [ItemEntity] {
         try await Self.entities(matching: string, includeSuggestedEntities: true)
     }
@@ -129,7 +121,7 @@ extension ItemEntityQuery: EntityStringQuery {
 }
 struct ItemEntityOptionsProvider: DynamicOptionsProvider {
     public func results() async throws -> [ItemEntity] {
-        await listenNowAppEntities()
+        await listenNowItemEntities()
     }
 }
 
@@ -143,7 +135,7 @@ extension ItemIdentifier: EntityIdentifierConvertible {
     }
 }
 
-private func listenNowAppEntities() async -> [ItemEntity] {
+func listenNowItemEntities() async -> [ItemEntity] {
     var result: [ItemEntity] = []
     
     for item in await ShelfPlayerKit.listenNowItems {

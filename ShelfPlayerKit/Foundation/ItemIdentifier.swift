@@ -174,3 +174,7 @@ public extension ItemIdentifier {
         }
     }
 }
+
+public func convertEpisodeIdentifierToPodcastIdentifier(_ episodeID: ItemIdentifier) -> ItemIdentifier {
+    ItemIdentifier(primaryID: episodeID.groupingID!, groupingID: nil, libraryID: episodeID.libraryID, connectionID: episodeID.connectionID, type: .podcast)
+}

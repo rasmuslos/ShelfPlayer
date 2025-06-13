@@ -289,7 +289,6 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                 await scheduleDownload(configurationID: configurationID)
             }
         } else if Defaults[.removeFinishedDownloads] {
-            print(await PersistenceManager.shared.progress[itemID])
             guard await PersistenceManager.shared.progress[itemID].isFinished else {
                 return
             }
