@@ -70,7 +70,7 @@ public extension Defaults.Keys {
     static let tintColor = Key("tintColor", default: TintColor.shelfPlayer, suite: .shared)
     
     static let enableConvenienceDownloads = Key("enableConvenienceDownloads", default: true)
-    static let enableListenNowDownloads = Key("enableListenNowDownloads", default: true)
+    static let enableListenNowDownloads = Key("enableListenNowDownloads", default: false)
     
     static let listenTimeTarget = Key<Int>("listenTimeTarget", default: 30, suite: .shared)
     
@@ -210,6 +210,10 @@ public extension RFNotification.IsolatedNotification {
     }
     static func downloadProgressChanged(_ itemID: ItemIdentifier) -> IsolatedNotification<(assetID: UUID, weight: Percentage, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)> {
         .init("io.rfk.shelfPlayerKit.progress.updated_\(itemID.description)")
+    }
+    
+    static var convenienceDownloadConfigurationsChanged: IsolatedNotification<RFNotificationEmptyPayload> {
+        .init("io.rfk.shelfPlayerKit.convenienceDownloadConfigurationsChanged")
     }
     
     // MARK: Bookmarks

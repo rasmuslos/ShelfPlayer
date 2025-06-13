@@ -1160,7 +1160,16 @@
     "item.configure" : {
 
     },
+    "item.convenienceDownload" : {
+
+    },
     "item.convenienceDownload.all" : {
+
+    },
+    "item.convenienceDownload.configure" : {
+
+    },
+    "item.convenienceDownload.description" : {
 
     },
     "item.convenienceDownload.disabled" : {
@@ -1194,15 +1203,6 @@
 
     },
     "item.convenienceDownload.twoWeeks" : {
-
-    },
-    "item.convienienceDownload" : {
-
-    },
-    "item.convienienceDownload.configure" : {
-
-    },
-    "item.convienienceDownload.description" : {
 
     },
     "item.count.audiobooks %lld" : {
@@ -3341,6 +3341,9 @@
 
     },
     "preferences.convenienceDownload.configurations" : {
+
+    },
+    "preferences.convenienceDownload.downloadedTotal %@" : {
 
     },
     "preferences.convenienceDownload.enable" : {

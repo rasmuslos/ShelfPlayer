@@ -240,6 +240,10 @@ extension Satellite {
         }
         
         sheetStack.removeFirst()
+        
+        Task.detached {
+            await ShelfPlayer.invalidateShortTermCache()
+        }
     }
 
     func cancelWarningAlert() {

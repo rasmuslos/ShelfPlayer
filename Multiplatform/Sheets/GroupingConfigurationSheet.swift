@@ -37,17 +37,11 @@ struct GroupingConfigurationSheet: View {
                     }
                     
                     Section {
-                        Picker("item.convienienceDownload.configure", selection: $viewModel.retrieval) {
-                            ForEach(ConvenienceDownloadRetrievalOption.allCases) { strategy in
-                                Text(strategy.label)
-                                    .tag(strategy)
-                            }
-                        }
-                        .bold(viewModel.retrieval != .disabled)
+                        ConvenienceDownloadRetrievalPicker(retrieval: $viewModel.retrieval)
                     } header: {
-                        Text("item.convienienceDownload")
+                        Text("item.convenienceDownload")
                     } footer: {
-                        Text("item.convienienceDownload.description")
+                        Text("item.convenienceDownload.description")
                     }
                     .disabled(!enableConvenienceDownloads)
                     
@@ -83,6 +77,20 @@ struct GroupingConfigurationSheet: View {
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
         .interactiveDismissDisabled()
+    }
+    
+    struct ConvenienceDownloadRetrievalPicker: View {
+        @Binding var retrieval: ConvenienceDownloadRetrievalOption
+        
+        var body: some View {
+            Picker("item.convenienceDownload.configure", selection: $retrieval) {
+                ForEach(ConvenienceDownloadRetrievalOption.allCases) { strategy in
+                    Text(strategy.label)
+                        .tag(strategy)
+                }
+            }
+            .bold(retrieval != .disabled)
+        }
     }
 }
 
@@ -177,7 +185,7 @@ private extension ConfigureableUpNextStrategy {
     }
 }
 
-private enum ConvenienceDownloadRetrievalOption: String, CaseIterable, Identifiable {
+enum ConvenienceDownloadRetrievalOption: String, CaseIterable, Identifiable {
     case disabled
     
     case one
