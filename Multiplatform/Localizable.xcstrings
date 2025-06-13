@@ -130,6 +130,7 @@
       }
     },
     "action.share" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -994,7 +995,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abspielen"
+            "value" : "Wiedergeben"
           }
         },
         "en" : {
@@ -1716,7 +1717,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abspielen"
+            "value" : "Wiedergeben"
           }
         },
         "en" : {

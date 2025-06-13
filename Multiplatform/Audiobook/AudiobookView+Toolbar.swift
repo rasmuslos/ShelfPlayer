@@ -85,9 +85,7 @@ extension AudiobookView {
                             .labelStyle(.iconOnly)
                         
                         Menu {
-                            ShareLink(item: viewModel.audiobook, preview: SharePreview(viewModel.audiobook.name, image: viewModel.audiobook)) {
-                                Label("action.share", systemImage: "square.and.arrow.up")
-                            }
+                            ItemShareButton(item: viewModel.audiobook)
                             
                             Divider()
                             
