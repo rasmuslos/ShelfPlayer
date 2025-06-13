@@ -47,7 +47,7 @@ struct PreferencesView: View {
                         Label("preferences.settings", systemImage: "gear")
                     }
                     NavigationLink(destination: DebugPreferences()) {
-                        Label("preferences.debug", systemImage: "ladybug.fill")
+                        Label("preferences.support", systemImage: "lifepreserver")
                     }
                 }
             }

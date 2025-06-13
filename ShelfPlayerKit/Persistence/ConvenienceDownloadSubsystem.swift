@@ -27,146 +27,193 @@ extension PersistenceManager {
                 }
                 
                 Task {
-                    await self?.scheduleDownload(configuration: .listenNow)
+                    await self?.scheduleDownload(configurationID: LISTEN_NOW_CONFIGURATION_ID)
                 }
             }
         }
         
-        func scheduleDownload(configuration: ConvenienceDownloadConfiguration) {
-            pendingConfigurationIDs.insert(configuration.id)
-            scheduleTask()
-        }
+        // MARK: Removal
         
-        // MARK: Task
-        
-        func scheduleTask() {
-            guard Defaults[.enableConvenienceDownloads] else {
-                logger.warning("Not running convenience download task because feature is disabled")
-                return
-            }
-            
-            guard task == nil else {
-                logger.warning("Not running convenience download task because one is already running")
-                return
-            }
-            
-            guard !pendingConfigurationIDs.isEmpty else {
-                logger.info("Finished running convenience download task. Cleaning up orphaned downloads...")
-                return
-            }
-            
-            let configurationID = pendingConfigurationIDs.removeFirst()
-            
-            task = .detached {
-                await self.download(configurationID: configurationID)
-                
-                await self.unscheduleTask()
-                await self.scheduleTask()
-            }
-        }
-        func unscheduleTask() {
-            task = nil
-        }
-        
-        // MARK: Download
-        
-        func download(configurationID: String) async {
-            guard let configuration = try? await resolveConfiguration(id: configurationID) else {
-                logger.error("Failed to resolve configuration: \(configurationID)")
-                return
-            }
-            
-            logger.info("Begin convenience download of configuration: \(configurationID)")
-            
+        nonisolated func remove(itemID: ItemIdentifier, configurationID: String?) async {
             do {
-                let items = try await configuration.items
-                let itemIDs = Set(items.map(\.id))
-                let downloaded = await PersistenceManager.shared.keyValue[.downloadedItemIDs(configurationID: configurationID)] ?? []
-                
-                let missingDownloads = itemIDs.subtracting(downloaded)
-                var queuedDownloads = Set<ItemIdentifier>()
-                
-                if missingDownloads.isEmpty {
-                    logger.info("Nothing to download for configuration: \(configurationID)")
-                } else {
-                    for itemID in missingDownloads {
-                        do {
-                            try await PersistenceManager.shared.download.download(itemID)
-                            queuedDownloads.insert(itemID)
-                        } catch {
-                            logger.error("Failed to download item: \(error)")
-                        }
-                    }
-                }
-                
-                let updatedDownloadedIDs = downloaded.intersection(itemIDs).union(queuedDownloads)
-                let orphanedDownloads = downloaded.subtracting(updatedDownloadedIDs)
-                
-                try await PersistenceManager.shared.keyValue.set(.downloadedItemIDs(configurationID: configurationID), updatedDownloadedIDs)
-                
-                if !orphanedDownloads.isEmpty {
-                    for itemID in orphanedDownloads {
-                        do {
-                            try await PersistenceManager.shared.download.remove(itemID)
-                        } catch {
-                            logger.error("Failed to remove orphaned download item: \(error)")
-                        }
-                    }
-                }
+                try await PersistenceManager.shared.keyValue.set(.convenienceDownloadRetrieval(itemID: itemID), nil)
             } catch {
-                logger.error("Failed to download configuration: \(error)")
-            }
-        }
-        func resolveConfiguration(id: String) async throws -> ConvenienceDownloadConfiguration {
-            if id == LISTEN_NOW_CONFIGURATION_ID {
-                return .listenNow
+                logger.error("Failed to remove convenience download configuration for item \(itemID): \(error)")
             }
             
-            if let itemID = resolveItemID(from: id), let retrieval = await PersistenceManager.shared.keyValue[.convenienceDownloadRetrieval(configurationID: id)] {
-                return .grouping(itemID, retrieval)
+            if let downloaded = await PersistenceManager.shared.keyValue[.downloadedItemIDs(itemID: itemID)] {
+                for itemID in downloaded {
+                    await remove(itemID: itemID, configurationID: configurationID)
+                }
+                
+                do {
+                    try await PersistenceManager.shared.keyValue.set(.downloadedItemIDs(itemID: itemID), nil)
+                } catch {
+                    logger.error("Failed to remove convenience download configuration for item \(itemID): \(error)")
+                }
             }
             
-            throw ConvenienceDownloadError.notFound
-        }
-        func resolveItemID(from configurationID: String) -> ItemIdentifier? {
-            guard configurationID.starts(with: "grouping-") else {
-                return nil
+            if var associatedConfigurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)] {
+                do {
+                    if (associatedConfigurationIDs.count == 1 && associatedConfigurationIDs.first == configurationID) || configurationID == nil {
+                        try await PersistenceManager.shared.download.remove(itemID)
+                        try await PersistenceManager.shared.keyValue.set(.associatedConfigurationIDs(itemID: itemID), nil)
+                    } else if let configurationID {
+                        associatedConfigurationIDs.remove(configurationID)
+                        try await PersistenceManager.shared.keyValue.set(.associatedConfigurationIDs(itemID: itemID), associatedConfigurationIDs)
+                    }
+                } catch {
+                    logger.error("Failed to remove associated configuration IDs for item \(itemID): \(error)")
+                }
             }
-            
-            let itemIDDescription = configurationID[configurationID.index(after: configurationID.firstIndex(of: "-")!)..<configurationID.endIndex]
-            return ItemIdentifier(String(itemIDDescription))
         }
     }
 }
 
+private extension PersistenceManager.ConvenienceDownloadSubsystem {
+    func scheduleDownload(configurationID: String) {
+        pendingConfigurationIDs.insert(configurationID)
+        scheduleTask()
+    }
+    
+    // MARK: Task
+    
+    func scheduleTask() {
+        guard Defaults[.enableConvenienceDownloads] else {
+            logger.warning("Not running convenience download task because feature is disabled")
+            return
+        }
+        
+        guard task == nil else {
+            logger.warning("Not running convenience download task because one is already running")
+            return
+        }
+        
+        guard !pendingConfigurationIDs.isEmpty else {
+            logger.info("Finished running convenience download task.")
+            return
+        }
+        
+        let configurationID = pendingConfigurationIDs.removeFirst()
+        
+        task = .detached {
+            await self.download(configurationID: configurationID)
+            
+            await self.unscheduleTask()
+            await self.scheduleTask()
+        }
+    }
+    func unscheduleTask() {
+        task = nil
+    }
+    
+    // MARK: Download
+    
+    nonisolated func download(configurationID: String) async {
+        guard let configuration = try? await resolveConfiguration(id: configurationID) else {
+            logger.error("Failed to resolve configuration: \(configurationID)")
+            return
+        }
+        
+        logger.info("Begin convenience download of configuration: \(configurationID)")
+        
+        do {
+            let items = try await configuration.items
+            
+            let itemIDs = Set(items.map(\.id))
+            var downloaded = await PersistenceManager.shared.keyValue[.downloadedItemIDs(configurationID: configurationID)] ?? []
+            
+            for itemID in downloaded {
+                if await PersistenceManager.shared.download.status(of: itemID) == .none {
+                    downloaded.remove(itemID)
+                }
+            }
+            
+            let missingDownloads = itemIDs.subtracting(downloaded)
+            var queuedDownloads = Set<ItemIdentifier>()
+            
+            if missingDownloads.isEmpty {
+                logger.info("Nothing to download for configuration: \(configurationID)")
+            } else {
+                for itemID in missingDownloads {
+                    if await PersistenceManager.shared.download.status(of: itemID) == .none {
+                        do {
+                            try await PersistenceManager.shared.download.download(itemID)
+                        } catch {
+                            logger.error("Failed to download item: \(error)")
+                            continue
+                        }
+                    }
+                    
+                    var associatedConfigurations = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)] ?? .init()
+                    associatedConfigurations.insert(configurationID)
+                    
+                    do {
+                        try await PersistenceManager.shared.keyValue.set(.associatedConfigurationIDs(itemID: itemID), associatedConfigurations)
+                    } catch {
+                        logger.error("Failed to store associated configurations for \(itemID): \(error)")
+                        continue
+                    }
+                    
+                    queuedDownloads.insert(itemID)
+                }
+            }
+            
+            let updatedDownloadedIDs = downloaded.intersection(itemIDs).union(queuedDownloads)
+            let orphanedDownloads = downloaded.subtracting(updatedDownloadedIDs)
+            
+            try await PersistenceManager.shared.keyValue.set(.downloadedItemIDs(configurationID: configurationID), updatedDownloadedIDs)
+            
+            if !orphanedDownloads.isEmpty {
+                for itemID in orphanedDownloads {
+                    await remove(itemID: itemID, configurationID: configurationID)
+                }
+            }
+            
+            logger.info("Finished evaluating downloads for \(configurationID). D: \(downloaded.count), Q: \(queuedDownloads.count), O: \(orphanedDownloads.count)")
+        } catch {
+            logger.error("Failed to download configuration: \(error)")
+        }
+    }
+    nonisolated func resolveConfiguration(id: String) async throws -> ConvenienceDownloadConfiguration {
+        if id == LISTEN_NOW_CONFIGURATION_ID {
+            return .listenNow
+        }
+        
+        if let itemID = resolveItemID(from: id), let retrieval = await PersistenceManager.shared.keyValue[.convenienceDownloadRetrieval(configurationID: id)] {
+            return .grouping(itemID, retrieval)
+        }
+        
+        throw ConvenienceDownloadError.notFound
+    }
+    nonisolated func resolveItemID(from configurationID: String) -> ItemIdentifier? {
+        guard configurationID.starts(with: "grouping-") else {
+            return nil
+        }
+        
+        let itemIDDescription = configurationID[configurationID.index(after: configurationID.firstIndex(of: "-")!)..<configurationID.endIndex]
+        return ItemIdentifier(String(itemIDDescription))
+    }
+}
+
 public extension PersistenceManager.ConvenienceDownloadSubsystem {
-    func retrieval(for itemID: ItemIdentifier) async -> GroupingRetrieval? {
+    // MARK: Retrieval
+    
+    nonisolated func retrieval(for itemID: ItemIdentifier) async -> GroupingRetrieval? {
         await PersistenceManager.shared.keyValue[.convenienceDownloadRetrieval(itemID: itemID)]
     }
     nonisolated func setRetrieval(for itemID: ItemIdentifier, retrieval: GroupingRetrieval?) async throws {
         if let retrieval {
-            let configuration = ConvenienceDownloadConfiguration.grouping(itemID, retrieval)
-            try await PersistenceManager.shared.keyValue.set(.convenienceDownloadRetrieval(configurationID: configuration.id), retrieval)
+            let configurationID = buildGroupingConfigurationID(itemID)
             
-            await scheduleDownload(configuration: configuration)
+            try await PersistenceManager.shared.keyValue.set(.convenienceDownloadRetrieval(configurationID: configurationID), retrieval)
+            await scheduleDownload(configurationID: configurationID)
         } else {
-            try await PersistenceManager.shared.keyValue.set(.convenienceDownloadRetrieval(itemID: itemID), nil)
-            
-            if let downloaded = await PersistenceManager.shared.keyValue[.downloadedItemIDs(itemID: itemID)] {
-                for itemID in downloaded {
-                    do {
-                        try await PersistenceManager.shared.download.remove(itemID)
-                    } catch {
-                        logger.error("Failed to remove downloaded item \(itemID): \(error)")
-                    }
-                }
-                
-                try await PersistenceManager.shared.keyValue.set(.downloadedItemIDs(itemID: itemID), nil)
-            }
+            await remove(itemID: itemID, configurationID: buildGroupingConfigurationID(itemID))
         }
     }
     
-    var activeConfigurations: [ConvenienceDownloadConfiguration] {
+    nonisolated var activeConfigurations: [ConvenienceDownloadConfiguration] {
         get async {
             var configurations = [ConvenienceDownloadConfiguration]()
             
@@ -190,12 +237,14 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         }
     }
     
+    // MARK: Schedule
+    
     func scheduleUpdate(itemID: ItemIdentifier) async {
-        guard let retrieval = await PersistenceManager.shared.keyValue[.convenienceDownloadRetrieval(itemID: itemID)] else {
+        guard await PersistenceManager.shared.keyValue[.convenienceDownloadRetrieval(itemID: itemID)] != nil else {
             return
         }
         
-        scheduleDownload(configuration: .grouping(itemID, retrieval))
+        scheduleDownload(configurationID: buildGroupingConfigurationID(itemID))
     }
     func scheduleAll() async {
         if await PersistenceManager.shared.authorization.connections.isEmpty {
@@ -205,11 +254,29 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         let configurations = await activeConfigurations
         
         for configuration in configurations {
-            scheduleDownload(configuration: configuration)
+            scheduleDownload(configurationID: configuration.id)
         }
         
         logger.info("Queued \(configurations.count) configurations for download")
     }
+    
+    // MARK: Events
+    
+    nonisolated func itemDidFinishPlaying(_ itemID: ItemIdentifier) async {
+        if let associatedConfigurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)], associatedConfigurationIDs.count > 0 {
+            for configurationID in associatedConfigurationIDs {
+                await scheduleDownload(configurationID: configurationID)
+            }
+        } else if Defaults[.removeFinishedDownloads] {
+            do {
+                try await PersistenceManager.shared.download.remove(itemID)
+            } catch {
+                logger.error("Failed to remove downloaded item \(itemID) after it finished playing: \(error)")
+            }
+        }
+    }
+    
+    // MARK: Types
     
     enum ConvenienceDownloadConfiguration: Codable, Sendable, Identifiable {
         case listenNow
@@ -293,5 +360,9 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
     }
     static func downloadedItemIDs(configurationID: String) -> Key<Set<ItemIdentifier>> {
         .init(identifier: "downloadedItemIDs-\(configurationID)", cluster: "downloadedItemIDs", isCachePurgeable: false)
+    }
+    
+    static func associatedConfigurationIDs(itemID: ItemIdentifier) -> Key<Set<String>> {
+        .init(identifier: "associatedConfigurationIDs-\(itemID)", cluster: "associatedConfigurationIDs", isCachePurgeable: false)
     }
 }

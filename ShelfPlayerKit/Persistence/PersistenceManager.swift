@@ -63,6 +63,7 @@ public final class PersistenceManager: Sendable {
         await session.remove(itemID: itemID)
         
         try? await download.remove(itemID)
+        await convenienceDownload.remove(itemID: itemID, configurationID: nil)
         
         await bookmark.remove(itemID: itemID)
     }

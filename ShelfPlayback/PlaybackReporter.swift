@@ -88,26 +88,11 @@ final actor PlaybackReporter {
             return
         }
         
-        update()
         isFinished = true
         
-        if let duration, let currentTime {
-            if duration - currentTime < 10 {
-                self.currentTime = duration
-                
-                if Defaults[.removeFinishedDownloads] {
-                    Task {
-                        do {
-                            try await PersistenceManager.shared.download.remove(itemID)
-                        } catch {
-                            logger.error("Failed to remove finished download: \(error)")
-                        }
-                    }
-                }
-            }
-        }
-        
         Task {
+            await update()
+            
             let task = await UIApplication.shared.beginBackgroundTask(withName: "PlaybackReporter::finalize")
             
             if let localSessionID {
@@ -142,6 +127,13 @@ private extension PlaybackReporter {
         }
     }
     func update() {
+        Task {
+            await update()
+        }
+    }
+    func update() async {
+        // No async operations here
+        
         guard !isFinished else {
             logger.warning("Attempt to update playback reporter after finalized")
             return
@@ -163,38 +155,38 @@ private extension PlaybackReporter {
         accumulatedTimeSpendListening = 0
         lastUpdate = .now
         
-        Task {
-            var updateLocalSession = true
-            
+        // Async operations (suspension) begins here
+        
+        var updateLocalSession = true
+        
+        do {
+            if let sessionID {
+                try await ABSClient[itemID.connectionID].syncSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
+                updateLocalSession = false
+                
+                accumulatedServerReportedTimeListening += timeListened
+                await RFNotification[.cachedTimeSpendListeningChanged].send()
+            }
+        } catch {
+            logger.warning("Failed to update session: \(error). Update local session instead.")
+        }
+        
+        if updateLocalSession {
             do {
-                if let sessionID {
-                    try await ABSClient[itemID.connectionID].syncSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
-                    updateLocalSession = false
-                    
-                    accumulatedServerReportedTimeListening += timeListened
-                    await RFNotification[.cachedTimeSpendListeningChanged].send()
+                if let localSessionID {
+                    try await PersistenceManager.shared.session.updateLocalPlaybackSession(sessionID: localSessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
+                } else {
+                    localSessionID = try await PersistenceManager.shared.session.createLocalPlaybackSession(for: itemID, startTime: startTime, currentTime: currentTime, duration: duration, timeListened: timeListened)
                 }
             } catch {
-                logger.warning("Failed to update session: \(error). Update local session instead.")
+                logger.warning("Failed to update local session: \(error).")
             }
-            
-            if updateLocalSession {
-                do {
-                    if let localSessionID {
-                        try await PersistenceManager.shared.session.updateLocalPlaybackSession(sessionID: localSessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
-                    } else {
-                        localSessionID = try await PersistenceManager.shared.session.createLocalPlaybackSession(for: itemID, startTime: startTime, currentTime: currentTime, duration: duration, timeListened: timeListened)
-                    }
-                } catch {
-                    logger.warning("Failed to update local session: \(error).")
-                }
-            }
-            
-            do {
-                try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration, notifyServer: false)
-            } catch {
-                logger.warning("Cannot update progress: \(error).")
-            }
+        }
+        
+        do {
+            try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration, notifyServer: false)
+        } catch {
+            logger.warning("Cannot update progress: \(error).")
         }
     }
 }
