@@ -623,6 +623,9 @@ extension Satellite {
                 while let index = await queue.firstIndex(of: itemID) {
                     remove(queueIndex: index)
                 }
+                while let index = await upNextQueue.firstIndex(of: itemID) {
+                    remove(upNextQueueIndex: index)
+                }
                 
                 await endWorking(on: itemID, successfully: true)
             } catch {

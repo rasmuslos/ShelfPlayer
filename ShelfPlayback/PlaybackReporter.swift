@@ -45,7 +45,7 @@ final actor PlaybackReporter {
         
         RFNotification[.finalizePlaybackReporting].subscribe { [weak self] in
             Task {
-                await self?.finalize()
+                await self?.finalize(currentTime: nil)
             }
         }
     }
@@ -82,7 +82,7 @@ final actor PlaybackReporter {
         update()
     }
     
-    func finalize() {
+    func finalize(currentTime: TimeInterval?) {
         guard !isFinished else {
             logger.warning("Attempt to finalize playback reporter after being already finalized")
             return
@@ -90,8 +90,14 @@ final actor PlaybackReporter {
         
         isFinished = true
         
+        if let currentTime {
+            self.currentTime = currentTime
+        }
+        
+        print(currentTime)
+        
         Task {
-            await update()
+            await update(force: true)
             
             let task = await UIApplication.shared.beginBackgroundTask(withName: "PlaybackReporter::finalize")
             
@@ -113,6 +119,8 @@ final actor PlaybackReporter {
             }
             
             await UIApplication.shared.endBackgroundTask(task)
+            
+            await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(itemID)
         }
     }
 }
@@ -131,10 +139,10 @@ private extension PlaybackReporter {
             await update()
         }
     }
-    func update() async {
+    func update(force: Bool = false) async {
         // No async operations here
         
-        guard !isFinished else {
+        guard (!isFinished || force) else {
             logger.warning("Attempt to update playback reporter after finalized")
             return
         }
