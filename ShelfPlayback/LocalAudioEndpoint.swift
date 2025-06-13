@@ -214,11 +214,7 @@ extension LocalAudioEndpoint {
     func stop() async {
         await PersistenceManager.shared.download.removeBlock(from: currentItemID)
         
-        if let currentTime {
-            await playbackReporter.update(currentTime: currentTime)
-        }
-        
-        await playbackReporter.finalize()
+        await playbackReporter.finalize(currentTime: currentTime)
         
         audioPlayer.removeAllItems()
         
@@ -709,13 +705,7 @@ private extension LocalAudioEndpoint {
         }
     }
     func didPlayToEnd(finishedCurrentItem: Bool) async {
-        if finishedCurrentItem {
-            if let duration {
-                await playbackReporter.update(currentTime: duration)
-            }
-        }
-        
-        await playbackReporter.finalize()
+        await playbackReporter.finalize(currentTime: finishedCurrentItem ? duration : currentTime)
         
         let nextItem: AudioPlayerItem
         
