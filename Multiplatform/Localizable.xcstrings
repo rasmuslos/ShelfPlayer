@@ -3350,6 +3350,7 @@
 
     },
     "preferences.debug" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3594,7 +3595,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight index ausstehend"
+            "value" : "Spotlight-Index ausstehend"
           }
         },
         "en" : {
