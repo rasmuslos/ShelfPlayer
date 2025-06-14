@@ -63,7 +63,7 @@
          <EnvironmentVariable
             key = "RUN_CONVENIENCE_DOWNLOAD"
             value = "YES"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "LISTEN_NOW_DOWNLOADS_DISABLE"

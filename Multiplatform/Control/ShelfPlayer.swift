@@ -9,6 +9,8 @@ import Foundation
 import OSLog
 import Intents
 import TipKit
+import AppIntents
+import BackgroundTasks
 import ShelfPlayback
 
 struct ShelfPlayer {
@@ -23,6 +25,13 @@ struct ShelfPlayer {
             try Tips.configure()
         } catch {
             logger.error("Failed to configure tips: \(error)")
+        }
+        
+        AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
+        AppDependencyManager.shared.add(dependency: EmbassyManager.shared.intentAudioPlayer)
+        
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: PersistenceManager.ConvenienceDownloadSubsystem.BACKGROUND_TASK_IDENTIFIER, using: nil) {
+            PersistenceManager.shared.convenienceDownload.handleBackgroundTask($0)
         }
         
         RFNotification[.removeConnection].subscribe { connectionID in
@@ -57,6 +66,8 @@ struct ShelfPlayer {
                 $0.addTask { await ContextProvider.updateUserContext() }
                 $0.addTask { await EmbassyManager.shared.setupObservers() }
                 $0.addTask { await PlayMediaIntentHandler.donateListenNowIntents() }
+                
+                $0.addTask { await PersistenceManager.shared.convenienceDownload.scheduleBackgroundTask(shouldWait: false) }
             }
         }
     }

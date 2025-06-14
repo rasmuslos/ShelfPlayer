@@ -44,19 +44,26 @@ struct LastListenedWidgetProvider: TimelineProvider {
     }
 }
 
-struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
-    var date: Date = .now
+struct LastListenedWidgetTimelineEntry: TimelineEntry {
+    let date: Date
+    let relevance: TimelineEntryRelevance?
     
-    var item: PlayableItem?
+    let item: PlayableItem?
     
-    var imageData: Data?
-    var entity: ItemEntity?
+    let imageData: Data?
+    let entity: ItemEntity?
     
-    var isDownloaded: Bool
-    var isPlaying: Bool? = nil
+    let isDownloaded: Bool
+    let isPlaying: Bool?
     
     init(date: Date = .now, item: PlayableItem?, isDownloaded: Bool, isPlaying: Bool?) {
         self.date = date
+        
+        if let isPlaying {
+            relevance = TimelineEntryRelevance(score: isPlaying ? 0.5 : 0.25)
+        } else {
+            relevance = TimelineEntryRelevance(score: 0)
+        }
         
         self.item = item
         
@@ -68,6 +75,12 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
     }
     init(date: Date = .now, item: PlayableItem?, isDownloaded: Bool, isPlaying: Bool?) async {
         self.date = date
+        
+        if let isPlaying {
+            relevance = TimelineEntryRelevance(score: isPlaying ? 0.5 : 0.25)
+        } else {
+            relevance = TimelineEntryRelevance(score: 0)
+        }
         
         self.item = item
         
@@ -81,14 +94,6 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry, Sendable {
         
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
-    }
-    
-    var relevance: TimelineEntryRelevance? {
-        if let isPlaying {
-            TimelineEntryRelevance(score: isPlaying ? 0.5 : 0.25)
-        } else {
-            TimelineEntryRelevance(score: 0)
-        }
     }
 }
 

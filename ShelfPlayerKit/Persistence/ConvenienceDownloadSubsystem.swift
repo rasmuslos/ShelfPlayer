@@ -7,21 +7,26 @@
 
 import Foundation
 import OSLog
+@preconcurrency import BackgroundTasks
 import Defaults
 import RFNotifications
 
-let LISTEN_NOW_CONFIGURATION_ID = "listen-now"
+private let LISTEN_NOW_CONFIGURATION_ID = "listen-now"
 
-let RETRIEVALS_KEY_VALUE_CLUSTER = "convenienceDownloadRetrievals"
-let DOWNLOADED_KEY_VALUE_CLUSTER = "downloadedItemIDs"
-let ASSOCIATED_KEY_VALUE_CLUSTER = "associatedConfigurationIDs"
+private let RETRIEVALS_KEY_VALUE_CLUSTER = "convenienceDownloadRetrievals"
+private let DOWNLOADED_KEY_VALUE_CLUSTER = "downloadedItemIDs"
+private let ASSOCIATED_KEY_VALUE_CLUSTER = "associatedConfigurationIDs"
 
 extension PersistenceManager {
     public final actor ConvenienceDownloadSubsystem {
+        public static let BACKGROUND_TASK_IDENTIFIER = "io.rfk.shelfPlayer.convenienceDownload"
+        
         let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ConvenienceDownloadSubsystem")
         
         var task: Task<Void, Never>?
         var pendingConfigurationIDs = Set<String>()
+        
+        nonisolated(unsafe) var shouldComeToEnd = false
         
         init() {
             RFNotification[.listenNowItemsChanged].subscribe { [weak self] in
@@ -34,6 +39,15 @@ extension PersistenceManager {
                 }
             }
             
+            Task {
+                for await enabled in Defaults.updates(.enableListenNowDownloads) {
+                    if enabled {
+                        await download(configurationID: LISTEN_NOW_CONFIGURATION_ID)
+                    } else {
+                        await removeOrphans(configurationID: LISTEN_NOW_CONFIGURATION_ID)
+                    }
+                }
+            }
             Task {
                 for await _ in Defaults.updates([.enableConvenienceDownloads, .enableListenNowDownloads]) {
                     await RFNotification[.convenienceDownloadConfigurationsChanged].send()
@@ -50,17 +64,7 @@ extension PersistenceManager {
                 logger.error("Failed to remove convenience download configuration for item \(itemID): \(error)")
             }
             
-            if let downloaded = await PersistenceManager.shared.keyValue[.downloadedItemIDs(itemID: itemID)] {
-                for itemID in downloaded {
-                    await remove(itemID: itemID, configurationID: configurationID)
-                }
-                
-                do {
-                    try await PersistenceManager.shared.keyValue.set(.downloadedItemIDs(itemID: itemID), nil)
-                } catch {
-                    logger.error("Failed to remove convenience download configuration for item \(itemID): \(error)")
-                }
-            }
+            await removeOrphans(configurationID: buildGroupingConfigurationID(itemID))
             
             if var associatedConfigurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)] {
                 do {
@@ -73,6 +77,19 @@ extension PersistenceManager {
                     }
                 } catch {
                     logger.error("Failed to remove associated configuration IDs for item \(itemID): \(error)")
+                }
+            }
+        }
+        nonisolated func removeOrphans(configurationID: String) async {
+            if let downloaded = await PersistenceManager.shared.keyValue[.downloadedItemIDs(configurationID: configurationID)] {
+                for itemID in downloaded {
+                    await remove(itemID: itemID, configurationID: configurationID)
+                }
+                
+                do {
+                    try await PersistenceManager.shared.keyValue.set(.downloadedItemIDs(configurationID: configurationID), nil)
+                } catch {
+                    logger.error("Failed to remove orphaned downloads for configuration \(configurationID): \(error)")
                 }
             }
         }
@@ -107,9 +124,13 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
         
         task = .detached {
             await self.download(configurationID: configurationID)
+            await RFNotification[.convenienceDownloadIteration].send()
             
             await self.unscheduleTask()
-            await self.scheduleTask()
+            
+            if !self.shouldComeToEnd {
+                await self.scheduleTask()
+            }
         }
     }
     func unscheduleTask() {
@@ -198,6 +219,24 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
 }
 
 public extension PersistenceManager.ConvenienceDownloadSubsystem {
+    var currentProgress: Percentage {
+        get async {
+            var total = await PersistenceManager.shared.keyValue.entityCount(cluster: RETRIEVALS_KEY_VALUE_CLUSTER)
+            
+            if Defaults[.enableListenNowDownloads] {
+                total += 1
+            }
+            
+            var pending = pendingConfigurationIDs.count
+            
+            if task != nil {
+                pending += 1
+            }
+            
+            return Double(total - pending) / Double(total)
+        }
+    }
+    
     nonisolated func resolveItemID(from configurationID: String) -> ItemIdentifier? {
         guard configurationID.starts(with: "grouping-") else {
             return nil
@@ -301,6 +340,65 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         }
     }
     
+    // MARK: Background-Task
+    
+    nonisolated func scheduleBackgroundTask(shouldWait: Bool) async {
+        guard await BGTaskScheduler.shared.pendingTaskRequests().first(where: {$0.identifier == Self.BACKGROUND_TASK_IDENTIFIER }) == nil else {
+            logger.warning("Requested background task even though it is already scheduled")
+            return
+        }
+        
+        let request: BGTaskRequest
+        
+        if await PersistenceManager.shared.keyValue[.runExtendedBackgroundTask] == true {
+            request = BGProcessingTaskRequest(identifier: Self.BACKGROUND_TASK_IDENTIFIER)
+            request.earliestBeginDate = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
+        } else {
+            request = BGAppRefreshTaskRequest(identifier: Self.BACKGROUND_TASK_IDENTIFIER)
+            
+            if shouldWait {
+                request.earliestBeginDate =  .now.advanced(by: 60 * 60 * 3)
+            }
+        }
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            logger.info("Scheduled background task: \(request)")
+        } catch {
+            logger.error("Failed to schedule background task: \(error)")
+        }
+    }
+    
+    nonisolated func handleBackgroundTask(_ task: BGTask) {
+        task.expirationHandler = {
+            self.logger.info("Expiration handler called on background task for identifier: \(task.identifier)")
+            self.shouldComeToEnd = true
+            
+            Task {
+                try? await PersistenceManager.shared.keyValue.set(.runExtendedBackgroundTask, true)
+            }
+        }
+        
+        // Detect finish
+        
+        RFNotification[.convenienceDownloadIteration].subscribe { [weak self] in
+            Task {
+                guard let currentProgress = await self?.currentProgress, currentProgress >= 1 else {
+                    return
+                }
+                
+                await self?.scheduleBackgroundTask(shouldWait: true)
+                task.setTaskCompleted(success: true)
+            }
+        }
+        
+        // Schedule task
+        
+        Task {
+            await self.scheduleAll()
+        }
+    }
+    
     // MARK: Types
     
     enum ConvenienceDownloadConfiguration: Codable, Sendable, Identifiable {
@@ -389,5 +487,9 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
     
     static func associatedConfigurationIDs(itemID: ItemIdentifier) -> Key<Set<String>> {
         .init(identifier: "associatedConfigurationIDs-\(itemID)", cluster: ASSOCIATED_KEY_VALUE_CLUSTER, isCachePurgeable: false)
+    }
+    
+    static var runExtendedBackgroundTask: Key<Bool> {
+        .init(identifier: "runExtendedBackgroundTask", cluster: "_", isCachePurgeable: true)
     }
 }
