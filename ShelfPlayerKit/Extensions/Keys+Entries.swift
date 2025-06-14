@@ -212,6 +212,9 @@ public extension RFNotification.IsolatedNotification {
         .init("io.rfk.shelfPlayerKit.progress.updated_\(itemID.description)")
     }
     
+    static var convenienceDownloadIteration: IsolatedNotification<RFNotificationEmptyPayload> {
+        .init("io.rfk.shelfPlayerKit.convenienceDownloadIteration")
+    }
     static var convenienceDownloadConfigurationsChanged: IsolatedNotification<RFNotificationEmptyPayload> {
         .init("io.rfk.shelfPlayerKit.convenienceDownloadConfigurationsChanged")
     }

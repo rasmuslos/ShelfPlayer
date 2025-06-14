@@ -30,6 +30,7 @@ public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
         item.id
     }
     
+    // TODO: Properties
     public var title: String?
     public var author: String?
     public var genre: String?
