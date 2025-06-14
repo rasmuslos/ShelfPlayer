@@ -26,30 +26,13 @@
         }
       }
     },
-    "Play an audiobook using ${applicationName}" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringSet" : {
-            "state" : "new",
-            "values" : [
-              "Play an audiobook using ${applicationName}",
-              "Play ${target} using ${applicationName}"
-            ]
-          }
-        }
-      }
-    },
-    "Play an item using ${applicationName}" : {
+    "Play ${item} using ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Spiele ein Hörbuch mit ${applicationName}",
-              "Spiele eine Episode mit ${applicationName}",
-              "Spiele einen Podcast mit ${applicationName}",
               "Spiele ${item} mit ${applicationName}"
             ]
           }
@@ -58,11 +41,28 @@
           "stringSet" : {
             "state" : "new",
             "values" : [
-              "Play an item using ${applicationName}",
-              "Play an audiobook using ${applicationName}",
-              "Play an episode using ${applicationName}",
-              "Play an podcast using ${applicationName}",
               "Play ${item} using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Play ${target} using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Spiele ${target} mit ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Play ${target} using ${applicationName}"
             ]
           }
         }

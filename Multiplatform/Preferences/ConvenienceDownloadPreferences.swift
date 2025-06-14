@@ -103,7 +103,9 @@ struct ConvenienceDownloadPreferences: View {
         Task {
             await withTaskGroup {
                 $0.addTask {
-                    let configurations = await PersistenceManager.shared.convenienceDownload.activeConfigurations
+                    let configurations = await PersistenceManager.shared.convenienceDownload.activeConfigurations.sorted {
+                        $0.id < $1.id
+                    }
                     
                     await MainActor.withAnimation {
                         self.configurations = configurations

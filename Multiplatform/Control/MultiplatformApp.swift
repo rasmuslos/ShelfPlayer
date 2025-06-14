@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AppIntents
 import ShelfPlayback
 
 @main
@@ -29,9 +28,6 @@ struct MultiplatformApp: App {
                 await PersistenceManager.shared.convenienceDownload.scheduleAll()
             }
         }
-        
-        AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
-        AppDependencyManager.shared.add(dependency: EmbassyManager.shared.intentAudioPlayer)
     }
     
     var body: some Scene {

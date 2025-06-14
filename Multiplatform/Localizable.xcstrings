@@ -129,23 +129,6 @@
         }
       }
     },
-    "action.share" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teilen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Share"
-          }
-        }
-      }
-    },
     "airPlay" : {
       "localizations" : {
         "de" : {
@@ -1005,6 +988,9 @@
           }
         }
       }
+    },
+    "intent.start.audiobook" : {
+
     },
     "item.abridged" : {
       "localizations" : {
@@ -2833,74 +2819,6 @@
         }
       }
     },
-    "panel.search.audiobooks" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hörbücher"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Audiobooks"
-          }
-        }
-      }
-    },
-    "panel.search.authors" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoren:innen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Authors"
-          }
-        }
-      }
-    },
-    "panel.search.narrators" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erzähler:innen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Narrators"
-          }
-        }
-      }
-    },
-    "panel.search.series" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serien"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Series"
-          }
-        }
-      }
-    },
     "panel.series" : {
       "localizations" : {
         "de" : {
@@ -3352,23 +3270,6 @@
     },
     "preferences.convenienceDownload.enableListenNowDownloads" : {
 
-    },
-    "preferences.debug" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortgeschritten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Advanced"
-          }
-        }
-      }
     },
     "preferences.generateLogFile" : {
       "localizations" : {
