@@ -8,7 +8,7 @@
 import Foundation
 import AppIntents
 
-public struct ListenNowIntent: AudioPlaybackIntent {
+public struct ListenNowIntent: AppIntent {
     public static let title: LocalizedStringResource = "intent.listenNow"
     public static let description = IntentDescription("intent.listenNow.description")
     

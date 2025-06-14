@@ -941,6 +941,9 @@
         }
       }
     },
+    "intent.checkForDownloads" : {
+
+    },
     "intent.pause" : {
       "localizations" : {
         "de" : {

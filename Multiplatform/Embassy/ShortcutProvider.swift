@@ -39,5 +39,10 @@ struct ShortcutProvider: AppShortcutsProvider {
             "Pause \(.applicationName) playback",
             "Stop playing \(.applicationName)",
         ], shortTitle: "intent.pause", systemImageName: "pause.fill")
+        
+        AppShortcut(intent: CheckForDownloadsIntent(), phrases: [
+            "Search for new downloads using \(.applicationName)",
+            "Check for new downloads using \(.applicationName)",
+        ], shortTitle: "intent.checkForDownloads", systemImageName: "arrow.down")
     }
 }

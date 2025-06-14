@@ -92,6 +92,20 @@
           }
         }
       }
+    },
+    "Search for new downloads using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Search for new downloads using ${applicationName}",
+              "Check for new downloads using ${applicationName}"
+            ]
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
