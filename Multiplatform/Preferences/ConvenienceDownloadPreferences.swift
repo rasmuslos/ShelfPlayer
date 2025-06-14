@@ -30,6 +30,7 @@ struct ConvenienceDownloadPreferences: View {
                         case .listenNow:
                             EmptyView()
                         case .grouping(let itemID, let retrieval):
+                            let _ = print(itemID)
                             ItemCompactRow(itemID: itemID) {
                                 if loading[itemID] == true {
                                     ProgressView()

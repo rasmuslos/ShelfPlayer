@@ -36,6 +36,7 @@ extension PersistenceManager {
         private lazy var urlSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: "io.rfk.shelfPlayerKit.download")
             config.sessionSendsLaunchEvents = true
+            config.waitsForConnectivity = true
             
             if ShelfPlayerKit.enableCentralized {
                 config.sharedContainerIdentifier = "group.io.rfk.shelfplayer"

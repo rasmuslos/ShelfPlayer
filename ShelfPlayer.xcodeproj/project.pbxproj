@@ -35,7 +35,6 @@
 		3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B93342B00D71B00638AE9 /* ProgressButton.swift */; };
 		3A2BC1952AD8121400054727 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3A2BC1942AD8121400054727 /* Settings.bundle */; };
 		3A2CA28A2CC100CF0004BAAB /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2CA2892CC100CC0004BAAB /* View.swift */; };
-		3A2E32322DC3A17F00073C82 /* BackgroundTaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2E32312DC3A17B00073C82 /* BackgroundTaskHandler.swift */; };
 		3A3129A12D24140F00D143B4 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A02D24140B00D143B4 /* WelcomeView.swift */; };
 		3A3129A32D2414F100D143B4 /* ConnectionAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A22D2414E100D143B4 /* ConnectionAddView.swift */; };
 		3A3129A52D24190900D143B4 /* HeaderEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A42D24190200D143B4 /* HeaderEditor.swift */; };
@@ -310,7 +309,6 @@
 		3A2B93342B00D71B00638AE9 /* ProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressButton.swift; sourceTree = "<group>"; };
 		3A2BC1942AD8121400054727 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		3A2CA2892CC100CC0004BAAB /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
-		3A2E32312DC3A17B00073C82 /* BackgroundTaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskHandler.swift; sourceTree = "<group>"; };
 		3A3129A02D24140B00D143B4 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		3A3129A22D2414E100D143B4 /* ConnectionAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionAddView.swift; sourceTree = "<group>"; };
 		3A3129A42D24190200D143B4 /* HeaderEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEditor.swift; sourceTree = "<group>"; };
@@ -569,7 +567,6 @@
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
 				3AAE5A6F2D33DCA10097DB77 /* DONE */,
 				3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */,
-				3A2E32312DC3A17B00073C82 /* BackgroundTaskHandler.swift */,
 				3A27A66D2AB7631900F80C92 /* Info.plist */,
 				3A792B962B6F9F53002A48E6 /* InfoPlist.xcstrings */,
 				3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */,
@@ -1352,7 +1349,6 @@
 				3A27F0F12CA15E0F005DE87D /* TabRouter.swift in Sources */,
 				3A65DAFF2D770AC200332BF3 /* ShelfPlayer.swift in Sources */,
 				3A102EAD2D4511B20075FA0B /* Satellite.swift in Sources */,
-				3A2E32322DC3A17F00073C82 /* BackgroundTaskHandler.swift in Sources */,
 				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
 				3A90A6412D9AE268009BDA84 /* CreateLogArchiveButton.swift in Sources */,
 				3A5891152CD3F1EF005C3289 /* ItemMenu.swift in Sources */,

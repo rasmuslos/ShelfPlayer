@@ -17,10 +17,6 @@ struct MultiplatformApp: App {
         ShelfPlayerKit.enableCentralized = false
         #endif
         
-        if ProcessInfo.processInfo.environment["LISTEN_NOW_DOWNLOADS_DISABLE"] == "YES" {
-            Defaults[.enableListenNowDownloads] = false
-        }
-        
         ShelfPlayer.launchHook()
         
         if ProcessInfo.processInfo.environment["RUN_CONVENIENCE_DOWNLOAD"] == "YES" {

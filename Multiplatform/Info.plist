@@ -5,6 +5,7 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>io.rfk.shelfPlayer.convenienceDownload</string>
+		<string>io.rfk.shelfPlayer.spotlightIndex</string>
 	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>

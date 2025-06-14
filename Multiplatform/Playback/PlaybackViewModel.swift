@@ -208,20 +208,16 @@ final class PlaybackViewModel {
             
             let note = await bookmarkNote.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            guard !note.isEmpty else {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
-                
-                return
-            }
-            
             await MainActor.withAnimation {
                 isCreatingBookmark = true
             }
             
             do {
-                try await PersistenceManager.shared.bookmark.create(at: bookmarkCapturedTime, note: await bookmarkNote, for: currentItemID)
+                if note.isEmpty {
+                    try await AudioPlayer.shared.createQuickBookmark()
+                } else {
+                    try await PersistenceManager.shared.bookmark.create(at: bookmarkCapturedTime, note: await bookmarkNote, for: currentItemID)
+                }
             
                 await MainActor.run {
                     notifySuccess.toggle()
