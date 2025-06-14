@@ -342,6 +342,15 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     
     // MARK: Background-Task
     
+    nonisolated var runsInExtendedBackgroundTask: Bool {
+        get async {
+            await PersistenceManager.shared.keyValue[.runExtendedBackgroundTask] == true
+        }
+    }
+    func resetRunsInExtendedBackgroundTask() async throws {
+        try await PersistenceManager.shared.keyValue.set(.runExtendedBackgroundTask, nil)
+    }
+    
     nonisolated func scheduleBackgroundTask(shouldWait: Bool) async {
         guard await BGTaskScheduler.shared.pendingTaskRequests().first(where: {$0.identifier == Self.BACKGROUND_TASK_IDENTIFIER }) == nil else {
             logger.warning("Requested background task even though it is already scheduled")
@@ -350,9 +359,17 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         
         let request: BGTaskRequest
         
-        if await PersistenceManager.shared.keyValue[.runExtendedBackgroundTask] == true {
-            request = BGProcessingTaskRequest(identifier: Self.BACKGROUND_TASK_IDENTIFIER)
-            request.earliestBeginDate = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
+        if await runsInExtendedBackgroundTask {
+            let processingRequest = BGProcessingTaskRequest(identifier: Self.BACKGROUND_TASK_IDENTIFIER)
+            
+            processingRequest.earliestBeginDate = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
+            processingRequest.requiresNetworkConnectivity = true
+            
+            request = processingRequest
+            
+            if Int.random(in: 0..<100) == 0 {
+                try? await PersistenceManager.shared.keyValue.set(.runExtendedBackgroundTask, nil)
+            }
         } else {
             request = BGAppRefreshTaskRequest(identifier: Self.BACKGROUND_TASK_IDENTIFIER)
             

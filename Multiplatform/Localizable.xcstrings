@@ -3480,6 +3480,7 @@
       }
     },
     "preferences.spotlightIndex %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3491,6 +3492,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spotlight index: %@"
+          }
+        }
+      }
+    },
+    "preferences.spotlightIndex %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "preferences.spotlightIndex %1$@ %2$@"
           }
         }
       }

@@ -9,6 +9,8 @@ import SwiftUI
 import ShelfPlayback
 
 struct DebugPreferences: View {
+    @Default(.spotlightIndexCompletionDate) private var spotlightIndexCompletionDate
+    
     #if DEBUG
     @State private var _itemID: String = "1::audiobook::Mn5Uwo+RZPPRUFZcewyMSWva5dUcftExIlOdw1ULo5o=::44e2d00a-402a-42ae-9bd3-3f339df44aef::75a7eaa0-0aed-46aa-8cb1-b5f43dbae985"
     
@@ -17,7 +19,7 @@ struct DebugPreferences: View {
     }
     #endif
     
-    @Default(.spotlightIndexCompletionDate) private var spotlightIndexCompletionDate
+    @State private var downloadRunsInExtendedBackgroundTask: Bool? = nil
     
     var body: some View {
         List {
@@ -66,7 +68,7 @@ struct DebugPreferences: View {
             
             Section {
                 if let spotlightIndexCompletionDate {
-                    Text("preferences.spotlightIndex \(spotlightIndexCompletionDate.formatted(.relative(presentation: .named)))")
+                    Text("preferences.spotlightIndex \(spotlightIndexCompletionDate.formatted(.relative(presentation: .named))) \(downloadRunsInExtendedBackgroundTask == nil ? "?" : downloadRunsInExtendedBackgroundTask == true ? "E" : "R")")
                 } else {
                     Text("preferences.spotlightIndex.pending")
                 }
@@ -76,6 +78,9 @@ struct DebugPreferences: View {
             }
             .foregroundStyle(.secondary)
             .font(.caption)
+        }
+        .task {
+            downloadRunsInExtendedBackgroundTask = await PersistenceManager.shared.convenienceDownload.runsInExtendedBackgroundTask
         }
     }
 }
@@ -142,7 +147,10 @@ private struct FlushButtons: View {
     
     nonisolated func load() {
         Task {
-            let (cacheSize, downloadsSize) = ((ImagePipeline.shared.configuration.dataCache as? DataCache)?.totalAllocatedSize, try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize())
+            let (cacheSize, downloadsSize) = (
+                (ImagePipeline.shared.configuration.dataCache as? DataCache)?.totalAllocatedSize,
+                try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize()
+            )
             
             await MainActor.withAnimation {
                 if let cacheSize, cacheSize > 0 {
@@ -222,11 +230,16 @@ private struct FlushButtons: View {
                 isLoading = true
             }
             
-            let success: Bool
+            var success = true
+            
+            do {
+                try await PersistenceManager.shared.convenienceDownload.resetRunsInExtendedBackgroundTask()
+            } catch {
+                success = false
+            }
             
             do {
                 try await SpotlightIndexer.shared.reset()
-                success = true
             } catch {
                 success = false
             }
