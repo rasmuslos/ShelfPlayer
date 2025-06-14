@@ -10,7 +10,7 @@ import AppIntents
 import WidgetKit
 import Defaults
 
-public struct PauseIntent: AppIntent, AudioPlaybackIntent {
+public struct PauseIntent: AudioPlaybackIntent {
     public static let title: LocalizedStringResource = "intent.pause"
     public static let description = IntentDescription("intent.pause.description")
     
