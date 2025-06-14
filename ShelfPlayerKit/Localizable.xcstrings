@@ -4,6 +4,12 @@
     "%@" : {
 
     },
+    "intent.checkForDownloads" : {
+
+    },
+    "intent.checkForDownloads.description" : {
+
+    },
     "intent.entity.item" : {
 
     },
