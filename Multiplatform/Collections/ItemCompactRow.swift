@@ -80,7 +80,7 @@ struct ItemCompactRow<TrailingContent: View>: View {
             } label: {
                 HStack(spacing: 8) {
                     if !hideImage {
-                        ItemImage(item: item, size: .small)
+                        ItemImage(itemID: itemID, size: .small)
                             .frame(width: 44)
                     }
                     

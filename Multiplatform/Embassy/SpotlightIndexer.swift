@@ -7,17 +7,65 @@
 
 import Foundation
 @preconcurrency import CoreSpotlight
+@preconcurrency import BackgroundTasks
 import Network
 import OSLog
 import ShelfPlayback
 
 final actor SpotlightIndexer: Sendable {
+    static let BACKGROUND_TASK_IDENTIFIER = "io.rfk.shelfPlayer.spotlightIndex"
+    
     let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "SpotlightIndexer")
     
     private(set) var isRunning = false
-    var shouldComeToEnd = false
+    private nonisolated(unsafe) var shouldComeToEnd = false
     
     let index = CSSearchableIndex(name: "ShelfPlayer-Items", protectionClass: .completeUntilFirstUserAuthentication)
+    
+    nonisolated func scheduleBackgroundTask() async {
+        guard await BGTaskScheduler.shared.pendingTaskRequests().first(where: {$0.identifier == Self.BACKGROUND_TASK_IDENTIFIER }) == nil else {
+            logger.warning("Requested background task even though it is already scheduled")
+            return
+        }
+        
+        let request = BGProcessingTaskRequest(identifier: Self.BACKGROUND_TASK_IDENTIFIER)
+        request.requiresNetworkConnectivity = true
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            logger.info("Scheduled background task: \(request)")
+        } catch {
+            logger.error("Failed to schedule background task: \(error)")
+        }
+    }
+    
+    nonisolated func handleBackgroundTask(_ task: BGTask) {
+        task.expirationHandler = {
+            self.logger.info("Expiration handler called on background task for identifier: \(task.identifier)")
+            self.shouldComeToEnd = true
+        }
+        
+        // Detect finish
+        
+        Task {
+            while !Task.isCancelled {
+                try await Task.sleep(for: .seconds(0.25))
+                
+                guard await !isRunning else {
+                    continue
+                }
+                
+                task.setTaskCompleted(success: true)
+                logger.info("Finished Spotlight indexing task")
+                
+                break
+            }
+        }
+        
+        // Schedule task
+        
+        run()
+    }
     
     nonisolated func run() {
         Task {
@@ -25,7 +73,6 @@ final actor SpotlightIndexer: Sendable {
                 return
             }
             
-            let shouldComeToEnd = await shouldComeToEnd
             var shouldContinue = !shouldComeToEnd
             
             do {
