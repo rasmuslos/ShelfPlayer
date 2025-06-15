@@ -381,6 +381,12 @@ private extension PersistenceManager.DownloadSubsystem {
                 logger.error("Error removing podcast \(podcastID): \(error)")
             }
         }
+        
+        do {
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to save after removing empty podcasts: \(error)")
+        }
     }
     
     static func temporaryLocation(taskIdentifier: Int) -> URL {
