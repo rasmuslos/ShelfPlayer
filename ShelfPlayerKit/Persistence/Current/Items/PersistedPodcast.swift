@@ -34,9 +34,6 @@ extension SchemaV2 {
         @Relationship(deleteRule: .cascade, inverse: \PersistedEpisode.podcast)
         var episodes: [PersistedEpisode]
         
-        @Relationship(deleteRule: .cascade, minimumModelCount: 1, maximumModelCount: 1)
-        private(set) var searchIndexEntry: PersistedSearchIndexEntry
-        
         init(id: ItemIdentifier, name: String, authors: [String], overview: String? = nil, genres: [String], addedAt: Date, released: String?, explicit: Bool, publishingType: Podcast.PodcastType?, totalEpisodeCount: Int, episodes: [PersistedEpisode]) {
             _id = id.description
             self.name = name
@@ -49,8 +46,6 @@ extension SchemaV2 {
             self.publishingType = publishingType
             self.totalEpisodeCount = totalEpisodeCount
             self.episodes = episodes
-            
-            searchIndexEntry = .init(itemID: id, primaryName: name, authors: authors)
         }
         
         var id: ItemIdentifier {

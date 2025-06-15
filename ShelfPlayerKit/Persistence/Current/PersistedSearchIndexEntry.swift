@@ -23,7 +23,7 @@ extension SchemaV2 {
         private(set) var authors: [String]
         private(set) var authorName: String
         
-        init(itemID: ItemIdentifier, primaryName: String, secondaryName: String? = nil, authors: [String]) {
+        init(itemID: ItemIdentifier, primaryName: String, secondaryName: String?, authors: [String]) {
             _itemID = itemID.description
             self.primaryName = primaryName
             self.secondaryName = secondaryName
