@@ -13,7 +13,11 @@ public actor ListenNowCache: Sendable {
     private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ListenNowCache")
     
     private var items = [PlayableItem]()
+    
     private var currentProgressIDs = [String]()
+    private var unavailableProgressIDs = [String]()
+    
+    private var isEmpty = false
     
     private init() {
         RFNotification[.progressEntityUpdated].subscribe { [weak self] _ in
@@ -47,8 +51,14 @@ public actor ListenNowCache: Sendable {
                 return
             }
             
+            let available = entities.filter { !unavailableProgressIDs.contains($0.id) }
+            
+            if available.isEmpty {
+                isEmpty = true
+            }
+            
             let items = await withTaskGroup {
-                for entity in entities {
+                for entity in available {
                     $0.addTask {
                         try? await ABSClient[entity.connectionID].playableItem(primaryID: entity.primaryID, groupingID: entity.groupingID).0
                     }
@@ -70,6 +80,8 @@ public actor ListenNowCache: Sendable {
             }
             
             currentProgressIDs = mapped.filter { $0.0 != nil }.map(\.1.id)
+            unavailableProgressIDs = mapped.filter { $0.0 == nil }.map(\.1.id)
+            
             self.items = mapped.compactMap(\.0)
             
             await RFNotification[.listenNowItemsChanged].send()
@@ -82,6 +94,11 @@ public actor ListenNowCache: Sendable {
         invalidate()
     }
     public func invalidate() {
+        isEmpty = false
+        
+        currentProgressIDs.removeAll()
+        unavailableProgressIDs.removeAll()
+        
         Task {
             await update()
         }
@@ -89,7 +106,7 @@ public actor ListenNowCache: Sendable {
     
     var current: [PlayableItem] {
         get async {
-            guard !items.isEmpty else {
+            guard !items.isEmpty || isEmpty else {
                 await update()
                 return items
             }
