@@ -269,7 +269,12 @@ extension Satellite {
                     start(itemID)
                     
                 case .playbackStartWhileDownloading(let itemID):
-                    try? await PersistenceManager.shared.download.remove(itemID)
+                    do {
+                        try await PersistenceManager.shared.download.remove(itemID)
+                    } catch {
+                        notifyError.toggle()
+                    }
+                    
                     start(itemID)
                 case .downloadStartWhilePlaying:
                     guard let nowPlayingItemID else {
