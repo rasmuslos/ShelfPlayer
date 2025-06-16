@@ -77,8 +77,6 @@ struct OfflineView: View {
                     }
                 }
             }
-            .modifier(CompactPlaybackModifier(ready: true))
-            .environment(\.playbackBottomOffset, 16)
             .onAppear {
                 loadItems()
             }
@@ -88,6 +86,8 @@ struct OfflineView: View {
             .onReceive(RFNotification[.downloadStatusChanged].publisher()) { _ in
                 loadItems()
             }
+            .modifier(CompactPlaybackModifier(ready: true))
+            .environment(\.playbackBottomOffset, 16)
         }
     }
     
