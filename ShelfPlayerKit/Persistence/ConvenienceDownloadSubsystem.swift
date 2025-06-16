@@ -323,11 +323,7 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     // MARK: Events
     
     nonisolated func itemDidFinishPlaying(_ itemID: ItemIdentifier) async {
-        if let associatedConfigurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)], associatedConfigurationIDs.count > 0 {
-            for configurationID in associatedConfigurationIDs {
-                await scheduleDownload(configurationID: configurationID)
-            }
-        } else if Defaults[.removeFinishedDownloads] {
+        if Defaults[.removeFinishedDownloads] {
             guard await PersistenceManager.shared.progress[itemID].isFinished else {
                 return
             }
@@ -336,6 +332,12 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                 try await PersistenceManager.shared.download.remove(itemID)
             } catch {
                 logger.error("Failed to remove downloaded item \(itemID) after it finished playing: \(error)")
+            }
+        }
+        
+        if let associatedConfigurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)], associatedConfigurationIDs.count > 0 {
+            for configurationID in associatedConfigurationIDs {
+                await scheduleDownload(configurationID: configurationID)
             }
         }
     }
