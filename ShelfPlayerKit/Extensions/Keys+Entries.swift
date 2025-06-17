@@ -56,6 +56,8 @@ public extension Defaults.Keys {
     static let lockSeekBar = Key("lockSeekBar", default: false)
     static let replaceVolumeWithTotalProgress = Key("replaceVolumeWithTotalProgress", default: false)
     
+    static let allowCellularDownloads = Key("allowCellularDownloads", default: false)
+    
     static let startInOfflineMode = Key("startInOfflineMode", default: false)
     
     // MARK: In-App settings

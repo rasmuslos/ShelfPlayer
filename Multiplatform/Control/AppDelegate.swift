@@ -43,7 +43,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             return
         }
         
-        backgroundCompletionHandler()
+        DispatchQueue.main.async {
+            backgroundCompletionHandler()
+        }
     }
 }
 

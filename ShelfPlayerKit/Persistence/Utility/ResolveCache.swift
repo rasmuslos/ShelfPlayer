@@ -38,26 +38,40 @@ public actor ResolveCache: Sendable {
                 }
             } else {
                 switch itemID.type {
-                case .audiobook, .episode:
-                    item = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID).0
-                    episodes = []
-                case .author:
-                    item = try await ABSClient[itemID.connectionID].author(with: itemID)
-                    episodes = []
-                case .narrator:
-                    let narrators = try await ABSClient[itemID.connectionID].narrators(from: itemID.libraryID)
-                    
-                    guard let narrator = narrators.first(where: { $0.id == itemID }) else {
-                        throw ResolveError.notFound
-                    }
-                    
-                    item = narrator
-                    episodes = []
-                case .series:
-                    item = try await ABSClient[itemID.connectionID].series(with: itemID)
-                    episodes = []
-                case .podcast:
-                    (item, episodes) = try await ABSClient[itemID.connectionID].podcast(with: itemID)
+                    case .audiobook:
+                        item = try await ABSClient[itemID.connectionID].playableItem(itemID: itemID).0
+                        episodes = []
+                    case .author:
+                        item = try await ABSClient[itemID.connectionID].author(with: itemID)
+                        episodes = []
+                    case .narrator:
+                        let narrators = try await ABSClient[itemID.connectionID].narrators(from: itemID.libraryID)
+                        
+                        guard let narrator = narrators.first(where: { $0.id == itemID }) else {
+                            throw ResolveError.notFound
+                        }
+                        
+                        item = narrator
+                        episodes = []
+                    case .series:
+                        item = try await ABSClient[itemID.connectionID].series(with: itemID)
+                        episodes = []
+                    case .podcast:
+                        (item, episodes) = try await ABSClient[itemID.connectionID].podcast(with: itemID)
+                        episodeCache[item.id] = episodes
+                    case .episode:
+                        let podcast: Podcast
+                        
+                        (podcast, episodes) = try await ABSClient[itemID.connectionID].podcast(with: itemID)
+                        
+                        cache[podcast.id] = podcast
+                        episodeCache[podcast.id] = episodes
+                        
+                        guard let episode = episodes.first(where: { $0.id == itemID }) else {
+                            throw ResolveError.notFound
+                        }
+                        
+                        item = episode
                 }
             }
         } catch {
@@ -65,13 +79,39 @@ public actor ResolveCache: Sendable {
         }
         
         cache[itemID] = item
-        episodeCache[itemID] = episodes
         
         for episode in episodes {
             cache[episode.id] = episode
         }
         
         return (item, episodes)
+    }
+    public func resolve(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws -> PlayableItem {
+        if let cached = cache.first(where: { $0.key.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }), let item = cached.value as? PlayableItem {
+            return item
+        }
+        
+        if let groupingID {
+            let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: .init(primaryID: groupingID, groupingID: nil, libraryID: "_", connectionID: connectionID, type: .podcast))
+            
+            cache[podcast.id] = podcast
+            episodeCache[podcast.id] = episodes
+            
+            for episode in episodes {
+                cache[episode.id] = episode
+            }
+            
+            guard let episode = episodes.first(where: { $0.id.primaryID == primaryID }) else {
+                throw ResolveError.notFound
+            }
+            
+            return episode
+        } else {
+            let audiobook = try await ABSClient[connectionID].audiobook(primaryID: primaryID)
+            
+            cache[audiobook.id] = audiobook
+            return audiobook
+        }
     }
     
     public func invalidate() {
