@@ -74,12 +74,13 @@ struct ShelfPlayer {
                 
                 $0.addTask { await SpotlightIndexer.shared.scheduleBackgroundTask() }
                 $0.addTask { await PersistenceManager.shared.convenienceDownload.scheduleBackgroundTask(shouldWait: false) }
+                
+                $0.addTask { await PersistenceManager.shared.download.scheduleUpdateTask() }
             }
         }
     }
     
     static func updateUIHook() {
-        PersistenceManager.shared.download.scheduleUpdateTask()
         RFNotification[.invalidateProgressEntities].dispatch(payload: nil)
     }
     

@@ -57,7 +57,7 @@ struct AudiobookBookmarksPanel: View {
             let possiblePrimaryIDs = try await PersistenceManager.shared.bookmark[library].sorted(by: <)
             
             for (primaryID, amount) in possiblePrimaryIDs {
-                let item = try? await ABSClient[library.connectionID].playableItem(primaryID: primaryID, groupingID: nil).0 as? Audiobook
+                let item = try? await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: nil, connectionID: library.connectionID) as? Audiobook
                 
                 guard let item, item.id.libraryID == library.id else {
                     continue

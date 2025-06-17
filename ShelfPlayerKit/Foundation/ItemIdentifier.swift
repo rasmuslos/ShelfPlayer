@@ -124,8 +124,8 @@ extension ItemIdentifier: NSSecureCoding {
     }
 }
 
-extension ItemIdentifier {
-    public override var hash: Int {
+public extension ItemIdentifier {
+    override var hash: Int {
         var hasher = Hasher()
         
         hasher.combine(primaryID)
@@ -135,12 +135,16 @@ extension ItemIdentifier {
         
         return hasher.finalize()
     }
-    public override func isEqual(_ object: Any?) -> Bool {
+    override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? ItemIdentifier else {
             return false
         }
         
         return primaryID == rhs.primaryID && groupingID == rhs.groupingID && libraryID == rhs.libraryID && connectionID == rhs.connectionID
+    }
+    
+    func isEqual(primaryID: PrimaryID, groupingID: GroupingID?, connectionID: ConnectionID) -> Bool {
+        self.primaryID == primaryID && self.groupingID == groupingID && self.connectionID == connectionID
     }
 }
 
