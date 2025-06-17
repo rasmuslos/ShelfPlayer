@@ -264,6 +264,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Allow cellular downloads</string>
+			<key>Key</key>
+			<string>allowCellularDownloads</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Start in offline mode</string>
 			<key>Key</key>
 			<string>startInOfflineMode</string>

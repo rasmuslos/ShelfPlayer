@@ -226,6 +226,8 @@ public extension PersistenceManager.ProgressSubsystem {
         } catch {
             logger.info("Caching progress update because of: \(error.localizedDescription).")
         }
+        
+        await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(itemID)
     }
     func markAsListening(_ itemID: ItemIdentifier) async throws {
         logger.info("Marking progress as listening for item \(itemID).")

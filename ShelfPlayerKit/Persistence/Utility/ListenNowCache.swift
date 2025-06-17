@@ -60,7 +60,7 @@ public actor ListenNowCache: Sendable {
             let items = await withTaskGroup {
                 for entity in available {
                     $0.addTask {
-                        try? await ABSClient[entity.connectionID].playableItem(primaryID: entity.primaryID, groupingID: entity.groupingID).0
+                        try? await ResolveCache.shared.resolve(primaryID: entity.primaryID, groupingID: entity.groupingID, connectionID: entity.connectionID)
                     }
                 }
                 

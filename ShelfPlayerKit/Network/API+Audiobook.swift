@@ -31,6 +31,16 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         return (audiobooks, authors)
     }
     
+    func audiobook(primaryID: ItemIdentifier.PrimaryID) async throws -> Audiobook {
+        let payload = try await item(primaryID: primaryID, groupingID: nil)
+        
+        guard let audiobook = Audiobook(payload: payload, libraryID: payload.libraryId, connectionID: connectionID) else {
+            throw APIClientError.invalidResponse
+        }
+        
+        return audiobook
+    }
+    
     func audiobooks(from libraryID: String, filter: ItemFilter, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
         var query: [URLQueryItem] = [
             .init(name: "sort", value: sortOrder.queryValue),

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 import OSLog
+import Network
 import RFNetwork
 import RFNotifications
 
@@ -22,6 +23,9 @@ typealias PersistedPodcast = SchemaV2.PersistedPodcast
 typealias PersistedAsset = SchemaV2.PersistedAsset
 typealias PersistedChapter = SchemaV2.PersistedChapter
 
+private let ASSET_ATTEMPT_LIMIT = 3
+private let ACTIVE_TASK_LIMIT = 4
+
 extension PersistenceManager {
     @ModelActor
     public final actor DownloadSubsystem {
@@ -30,13 +34,14 @@ extension PersistenceManager {
         var blocked = [ItemIdentifier: Int]()
         var busy = Set<ItemIdentifier>()
        
-        @MainActor
         var updateTask: Task<Void, Never>?
         
         private lazy var urlSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: "io.rfk.shelfPlayerKit.download")
+            
             config.sessionSendsLaunchEvents = true
             config.waitsForConnectivity = true
+            // config.isDiscretionary = !Defaults[.allowCellularDownloads]
             
             if ShelfPlayerKit.enableCentralized {
                 config.sharedContainerIdentifier = "group.io.rfk.shelfplayer"
@@ -114,16 +119,6 @@ private extension PersistenceManager.DownloadSubsystem {
         }
         
         return (asset.id, asset.itemID, asset.fileType)
-    }
-    var active: [PersistedAsset] {
-        get throws {
-            try modelContext.fetch(FetchDescriptor<PersistedAsset>(predicate: #Predicate { $0.downloadTaskID != nil }))
-        }
-    }
-    var activeTaskCount: Int {
-        get throws {
-            try modelContext.fetchCount(FetchDescriptor<PersistedAsset>(predicate: #Predicate { $0.downloadTaskID != nil }))
-        }
     }
     
     func downloadTask(for identifier: Int) async -> URLSessionDownloadTask? {
@@ -228,7 +223,11 @@ private extension PersistenceManager.DownloadSubsystem {
         
         guard let asset = asset(taskIdentifier: taskIdentifier) else {
             logger.fault("Task failed and corresponding asset not found: \(taskIdentifier)")
-            PersistenceManager.shared.download.scheduleUpdateTask()
+            
+            Task {
+                await PersistenceManager.shared.download.scheduleUpdateTask()
+                
+            }
             return
         }
         
@@ -249,7 +248,7 @@ private extension PersistenceManager.DownloadSubsystem {
                 if let failedAttempts = await PersistenceManager.shared.keyValue[.assetFailedAttempts(assetID: assetID, itemID: asset.itemID)] {
                     logger.info("Asset \(assetID, privacy: .public) failed to download \(failedAttempts + 1) times")
                     
-                    if failedAttempts > 3 {
+                    if failedAttempts > ASSET_ATTEMPT_LIMIT {
                         logger.warning("Asset \(assetID, privacy: .public) failed to download more than 3 times. Removing download \(asset.itemID)")
                         try await remove(asset.itemID)
                     } else {
@@ -261,9 +260,9 @@ private extension PersistenceManager.DownloadSubsystem {
             } catch {
                 logger.error("Failed to update failed download attempts for asset \(assetID, privacy: .public): \(error)")
             }
+            
+            await PersistenceManager.shared.download.scheduleUpdateTask()
         }
-        
-        PersistenceManager.shared.download.scheduleUpdateTask()
     }
     func finishedDownloading(assetID: UUID) throws {
         guard let asset = asset(for: assetID) else {
@@ -310,16 +309,16 @@ private extension PersistenceManager.DownloadSubsystem {
     }
     
     nonisolated func scheduleUnfinishedForCompletion() async throws {
-        var activeTaskCount = try await activeTaskCount
-        let downloadTasks = await urlSession.tasks.2
+        let path = NWPathMonitor().currentPath
         
-        if activeTaskCount > 0 && downloadTasks.isEmpty {
-            await invalidateActiveDownloads()
-            activeTaskCount = 0
+        if (path.isExpensive || path.isConstrained) && !Defaults[.allowCellularDownloads] {
+            return
         }
         
-        guard activeTaskCount < 5 else {
-            logger.info("There are \(activeTaskCount) active downloads. Skipping.")
+        let tasks = await urlSession.tasks.2
+        
+        guard tasks.count < ACTIVE_TASK_LIMIT else {
+            logger.info("There are \(tasks.count) active downloads. Skipping.")
             return
         }
         
@@ -337,7 +336,7 @@ private extension PersistenceManager.DownloadSubsystem {
         case .image(let size):
             guard let coverRequest = try? await ABSClient[itemID.connectionID].coverRequest(from: itemID, width: size.width) else {
                 try await finishedDownloading(assetID: id)
-                scheduleUpdateTask()
+                await scheduleUpdateTask()
                 
                 return
             }
@@ -354,9 +353,7 @@ private extension PersistenceManager.DownloadSubsystem {
         
         logger.info("Began downloading asset \(id) from item \(itemID)")
         
-        Task {
-            scheduleUpdateTask()
-        }
+        await scheduleUpdateTask()
     }
     
     func removeEmptyPodcasts() async {
@@ -417,15 +414,13 @@ public extension PersistenceManager.DownloadSubsystem {
         return nil
     }
     
-    nonisolated func scheduleUpdateTask() {
-        Task { @MainActor in
-            updateTask?.cancel()
-            updateTask = .detached {
-                do {
-                    try await self.scheduleUnfinishedForCompletion()
-                } catch {
-                    self.logger.error("Failed to schedule unfinished for completion: \(error)")
-                }
+    func scheduleUpdateTask() {
+        updateTask?.cancel()
+        updateTask = .detached {
+            do {
+                try await self.scheduleUnfinishedForCompletion()
+            } catch {
+                self.logger.error("Failed to schedule unfinished for completion: \(error)")
             }
         }
     }
@@ -809,18 +804,26 @@ public extension PersistenceManager.DownloadSubsystem {
     func invalidateActiveDownloads() {
         logger.info("Invalidating active downloads...")
         
-        guard let active = try? active else {
-            return
-        }
-        
-        for asset in active {
-            asset.downloadTaskID = nil
+        do {
+            let assets = try modelContext.fetch(FetchDescriptor<PersistedAsset>(predicate: #Predicate { $0.downloadTaskID != nil }))
+            
+            for asset in assets {
+                asset.downloadTaskID = nil
+            }
+        } catch {
+            logger.error("Failed to fetch assets while invalidating active downloads: \(error)")
         }
         
         do {
             try modelContext.save()
         } catch {
             logger.error("Failed to save context: \(error)")
+        }
+        
+        Task {
+            for task in await urlSession.tasks.2 {
+                task.cancel()
+            }
         }
         
         RFNotification[.downloadStatusChanged].dispatch(payload: nil)
