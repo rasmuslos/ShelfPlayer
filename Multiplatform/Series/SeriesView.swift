@@ -119,6 +119,7 @@ struct SeriesView: View {
         .userActivity("io.rfk.shelfplayer.item") { activity in
             activity.title = viewModel.series.name
             activity.isEligibleForHandoff = true
+            activity.isEligibleForPrediction = true
             activity.persistentIdentifier = viewModel.series.id.description
             
             Task {

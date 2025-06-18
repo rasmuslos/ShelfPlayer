@@ -268,7 +268,11 @@ private extension SpotlightIndexer {
             let previouslyIndexed = await PersistenceManager.shared.item.libraryIndexedIDs(for: library, subset: "previous")
             
             let orphaned = previouslyIndexed.filter { !currentlyIndexed.contains($0) }
-            try await index.deleteSearchableItems(withIdentifiers: orphaned.map(\.id))
+            try await index.deleteSearchableItems(withIdentifiers: orphaned.map(\.description))
+            
+            for orphan in orphaned {
+                await PersistenceManager.shared.remove(itemID: orphan)
+            }
             
             try await PersistenceManager.shared.item.setLibraryIndexedIDs(currentlyIndexed, for: library, subset: "previous")
             

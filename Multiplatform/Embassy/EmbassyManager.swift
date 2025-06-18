@@ -51,7 +51,7 @@ final class EmbassyManager: Sendable {
         // MARK: General
         
         Task {
-            for await _ in Defaults.updates(.tintColor) {
+            for await _ in Defaults.updates(.tintColor, initial: false) {
                 WidgetCenter.shared.reloadAllTimelines()
             }
         }
@@ -81,8 +81,25 @@ final class EmbassyManager: Sendable {
                 // SiriKit Intent
                 
                 if let item = try? await itemID.resolved as? PlayableItem, let intent = try? await PlayMediaIntentHandler.buildPlayMediaIntent(item) {
-                    try? await INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: nil)).donate()
+                    let interaction = INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: nil))
+                    
+                    interaction.groupIdentifier = item.id.description
+                    
+                    try? await interaction.donate()
                 }
+            }
+        }
+          
+        RFNotification[.progressEntityUpdated].subscribe { connectionID, primaryID, groupingID, entity in
+            Task {
+                guard entity?.isFinished == true, let item = try? await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) else {
+                    return
+                }
+                
+                try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: item.id)))
+                try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: item.id)))
+                
+                try? await INInteraction.delete(with: item.id.description)
             }
         }
         
@@ -121,7 +138,7 @@ final class EmbassyManager: Sendable {
         }
         
         Task {
-            for await _ in Defaults.updates(.listenTimeTarget) {
+            for await _ in Defaults.updates(.listenTimeTarget, initial: false) {
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenedToday")
             }
         }

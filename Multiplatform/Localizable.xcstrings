@@ -830,7 +830,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erzähler:in nicht verfügbar"
+            "value" : "Leser:in nicht verfügbar"
           }
         },
         "en" : {
@@ -1674,7 +1674,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erzähler:in"
+            "value" : "Leser:in"
           }
         },
         "en" : {
@@ -2435,7 +2435,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zum:r Erzähler:in"
+            "value" : "Zum:r Leser:in"
           }
         },
         "en" : {
@@ -2767,7 +2767,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erzähler:innen"
+            "value" : "Leser:innen"
           }
         },
         "en" : {

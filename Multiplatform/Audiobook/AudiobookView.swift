@@ -119,6 +119,7 @@ struct AudiobookView: View {
         .userActivity("io.rfk.shelfPlayer.item") { activity in
             activity.title = viewModel.audiobook.name
             activity.isEligibleForHandoff = true
+            activity.isEligibleForPrediction = true
             activity.persistentIdentifier = viewModel.audiobook.id.description
             
             Task {

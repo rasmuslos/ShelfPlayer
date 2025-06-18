@@ -7,8 +7,9 @@
 
 import Foundation
 import SwiftData
+import Intents
+import AppIntents
 import RFNotifications
-
 
 public final class PersistenceManager: Sendable {
     public let modelContainer: ModelContainer
@@ -66,6 +67,13 @@ public final class PersistenceManager: Sendable {
         await convenienceDownload.remove(itemID: itemID, configurationID: nil)
         
         await bookmark.remove(itemID: itemID)
+        
+        let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: itemID)))
+        let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: itemID)))
+        
+        try? await INInteraction.delete(with: itemID.description)
+        
+        NSUserActivity.deleteSavedUserActivities(withPersistentIdentifiers: [itemID.description]) {}
     }
     public func remove(connectionID: ItemIdentifier.ConnectionID) async {
         await keyValue.remove(connectionID: connectionID)

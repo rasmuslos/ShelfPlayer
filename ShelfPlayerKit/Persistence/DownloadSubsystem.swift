@@ -272,17 +272,6 @@ private extension PersistenceManager.DownloadSubsystem {
         try finishedDownloading(asset: asset)
     }
     func finishedDownloading(asset: PersistedAsset) throws {
-        if let downloadTaskID = asset.downloadTaskID {
-            Task {
-                if let downloadTask = await downloadTask(for: downloadTaskID) {
-                    downloadTask.cancel()
-                    logger.error("Marking asset as downloaded, but corresponding download task still active... Cancelling!")
-                }
-            }
-        } else {
-            logger.error("Marking asset as downloaded, but no download task ID found!")
-        }
-        
         asset.isDownloaded = true
         asset.downloadTaskID = nil
         

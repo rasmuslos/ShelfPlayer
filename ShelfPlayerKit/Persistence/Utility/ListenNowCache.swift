@@ -45,49 +45,57 @@ public actor ListenNowCache: Sendable {
     
     private func update() async {
         do {
-            let entities = try await PersistenceManager.shared.progress.activeProgressEntities.sorted { $0.lastUpdate > $1.lastUpdate }
+            let items = try await listenNowItems()
             
-            guard entities.map(\.id) != currentProgressIDs else {
+            guard self.items != items else {
                 return
             }
             
-            let available = entities.filter { !unavailableProgressIDs.contains($0.id) }
-            
-            if available.isEmpty {
-                isEmpty = true
-            }
-            
-            let items = await withTaskGroup {
-                for entity in available {
-                    $0.addTask {
-                        try? await ResolveCache.shared.resolve(primaryID: entity.primaryID, groupingID: entity.groupingID, connectionID: entity.connectionID)
-                    }
-                }
-                
-                return await $0.reduce(into: [PlayableItem]()) {
-                    if let item = $1 {
-                        $0.append(item)
-                    }
-                }
-            }
-            
-            let mapped = entities.map { entity in
-                (items.first {
-                    $0.id.primaryID == entity.primaryID
-                    && $0.id.groupingID == entity.groupingID
-                    && $0.id.connectionID == entity.connectionID
-                }, entity)
-            }
-            
-            currentProgressIDs = mapped.filter { $0.0 != nil }.map(\.1.id)
-            unavailableProgressIDs = mapped.filter { $0.0 == nil }.map(\.1.id)
-            
-            self.items = mapped.compactMap(\.0)
-            
+            self.items = items
             await RFNotification[.listenNowItemsChanged].send()
         } catch {
             logger.error("Failed to update cache: \(error)")
         }
+    }
+    public func listenNowItems() async throws -> [PlayableItem] {
+        let entities = try await PersistenceManager.shared.progress.activeProgressEntities.sorted { $0.lastUpdate > $1.lastUpdate }
+        
+        guard entities.map(\.id) != currentProgressIDs else {
+            return items
+        }
+        
+        let available = entities.filter { !unavailableProgressIDs.contains($0.id) }
+        
+        if available.isEmpty {
+            isEmpty = true
+        }
+        
+        let items = await withTaskGroup {
+            for entity in available {
+                $0.addTask {
+                    try? await ResolveCache.shared.resolve(primaryID: entity.primaryID, groupingID: entity.groupingID, connectionID: entity.connectionID)
+                }
+            }
+            
+            return await $0.reduce(into: [PlayableItem]()) {
+                if let item = $1 {
+                    $0.append(item)
+                }
+            }
+        }
+        
+        let mapped = entities.map { entity in
+            (items.first {
+                $0.id.primaryID == entity.primaryID
+                && $0.id.groupingID == entity.groupingID
+                && $0.id.connectionID == entity.connectionID
+            }, entity)
+        }
+        
+        currentProgressIDs = mapped.filter { $0.0 != nil }.map(\.1.id)
+        unavailableProgressIDs = mapped.filter { $0.0 == nil }.map(\.1.id)
+        
+        return mapped.compactMap(\.0)
     }
     
     public func preload() {
