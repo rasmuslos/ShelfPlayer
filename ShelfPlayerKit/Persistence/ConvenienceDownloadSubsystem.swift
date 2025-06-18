@@ -40,17 +40,31 @@ extension PersistenceManager {
             }
             
             Task {
-                for await enabled in Defaults.updates(.enableListenNowDownloads) {
+                for await enabled in Defaults.updates(.enableListenNowDownloads, initial: false) {
                     if enabled {
-                        await download(configurationID: LISTEN_NOW_CONFIGURATION_ID)
+                        await scheduleDownload(configurationID: LISTEN_NOW_CONFIGURATION_ID)
                     } else {
                         await removeOrphans(configurationID: LISTEN_NOW_CONFIGURATION_ID)
                     }
                 }
             }
             Task {
-                for await _ in Defaults.updates([.enableConvenienceDownloads, .enableListenNowDownloads]) {
+                for await _ in Defaults.updates([.enableConvenienceDownloads, .enableListenNowDownloads], initial: false) {
                     await RFNotification[.convenienceDownloadConfigurationsChanged].send()
+                }
+            }
+            
+            RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, entity in
+                Task {
+                    guard entity?.isFinished == true,
+                          let item = try? await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID),
+                          let configurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: item.id)] else {
+                        return
+                    }
+                                        
+                    for configurationID in configurationIDs {
+                        await self?.scheduleDownload(configurationID: configurationID)
+                    }
                 }
             }
         }
@@ -304,12 +318,15 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
             return
         }
         
+        shouldComeToEnd = false
         scheduleDownload(configurationID: buildGroupingConfigurationID(itemID))
     }
     func scheduleAll() async {
         if await PersistenceManager.shared.authorization.connections.isEmpty {
             try? await PersistenceManager.shared.authorization.fetchConnections()
         }
+        
+        shouldComeToEnd = false
         
         let configurations = await activeConfigurations
         
@@ -468,7 +485,7 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                         
                         return result
                     case .listenNow:
-                        return await ShelfPlayerKit.listenNowItems
+                        return try await ListenNowCache.shared.listenNowItems()
                 }
             }
         }

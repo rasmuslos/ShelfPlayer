@@ -186,6 +186,7 @@ struct PersonView: View {
         .userActivity("io.rfk.shelfplayer.item") { activity in
             activity.title = viewModel.person.name
             activity.isEligibleForHandoff = true
+            activity.isEligibleForPrediction = true
             activity.persistentIdentifier = viewModel.person.description
             
             Task {

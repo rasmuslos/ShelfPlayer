@@ -101,6 +101,7 @@ struct PodcastView: View {
         .userActivity("io.rfk.shelfPlayer.item") { activity in
             activity.title = viewModel.podcast.name
             activity.isEligibleForHandoff = true
+            activity.isEligibleForPrediction = true
             activity.persistentIdentifier = viewModel.podcast.id.description
             
             Task {
