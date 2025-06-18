@@ -90,6 +90,12 @@ final class Satellite {
         
         setupObservers()
         checkForResumablePlayback()
+        
+        // What's New
+        
+        if WhatsNewSheet.shouldDisplay {
+            present(.whatsNew)
+        }
     }
     
     // MARK: General Purpose
@@ -145,18 +151,22 @@ extension Satellite {
         case description(Item)
         case configureGrouping(ItemIdentifier)
         
+        case whatsNew
+        
         var id: String {
             switch self {
-            case .listenNow:
-                "listenNow"
-            case .globalSearch:
-                "globalSearch"
-            case .preferences:
-                "preferences"
-            case .description(let item):
-                "description-\(item.id)"
-            case .configureGrouping(let itemID):
-                "configureGrouping-\(itemID)"
+                case .listenNow:
+                    "listenNow"
+                case .globalSearch:
+                    "globalSearch"
+                case .preferences:
+                    "preferences"
+                case .description(let item):
+                    "description-\(item.id)"
+                case .configureGrouping(let itemID):
+                    "configureGrouping-\(itemID)"
+                case .whatsNew:
+                    "whatsNew"
             }
         }
     }
@@ -710,9 +720,14 @@ extension Satellite {
             
             do {
                 try await PersistenceManager.shared.download.remove(itemID)
-                await endWorking(on: itemID, successfully: true)
+                
+                await MainActor.run {
+                    notifySuccess.toggle()
+                }
             } catch {
-                await endWorking(on: itemID, successfully: false)
+                await MainActor.run {
+                    notifyError.toggle()
+                }
             }
         }
     }

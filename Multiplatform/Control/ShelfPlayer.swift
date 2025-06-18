@@ -129,12 +129,12 @@ struct ShelfPlayer {
     nonisolated static func invalidateShortTermCache() async {
         logger.info("Invalidating short term cache...")
         
-        await ResolveCache.shared.invalidate()
+        // await ResolveCache.shared.invalidate()
         
         await ProgressTrackerCache.shared.invalidate()
         await DownloadTrackerCache.shared.invalidate()
         
-        await ListenNowCache.shared.invalidate()
+        // await ListenNowCache.shared.invalidate()
         
         await RFNotification[.downloadStatusChanged].send(payload: nil)
         await RFNotification[.invalidateProgressEntities].send(payload: nil)

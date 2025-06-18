@@ -41,6 +41,8 @@ struct ContentView: View {
                 DescriptionSheet(item: item)
             case .configureGrouping(let itemID):
                 GroupingConfigurationSheet(itemID: itemID)
+            case .whatsNew:
+                WhatsNewSheet()
         }
     }
     @ViewBuilder
