@@ -52,7 +52,7 @@ public extension ShelfPlayerKit {
     
     static var downloadDirectoryURL: URL {
         if ShelfPlayerKit.enableCentralized {
-            FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.io.rfk.shelfplayer")!.appending(path: "DownloadV2")
+            FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "DownloadV2")
         } else {
             URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
         }

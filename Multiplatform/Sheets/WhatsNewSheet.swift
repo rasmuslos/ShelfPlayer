@@ -24,8 +24,8 @@ struct WhatsNewSheet: View {
     private func row(systemImage: String, headline: String, text: String) -> some View {
         HStack(spacing: 0) {
             Image(systemName: systemImage)
-                .font(.system(size: 28))
-                .frame(width: 36)
+                .font(.system(size: 44))
+                .frame(width: 60)
                 .symbolRenderingMode(.monochrome)
                 .foregroundStyle(Color.accentColor)
             
@@ -35,14 +35,14 @@ struct WhatsNewSheet: View {
                 
                 Text(text)
                     .foregroundStyle(.secondary)
-                    .font(.footnote)
+                    .font(.subheadline)
             }
             .padding(.leading, 20)
             
             Spacer(minLength: 0)
         }
         .padding(.vertical, 8)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 32)
     }
     
     var body: some View {
@@ -54,7 +54,7 @@ struct WhatsNewSheet: View {
                     .foregroundStyle(Color.accentColor)
             }
             .bold()
-            .font(.title)
+            .font(.largeTitle)
             .padding(.vertical, 40)
             
             row(systemImage: "gauge.with.dots.needle.67percent", headline: "Listened Today", text: "Track your daily listening progress at a glance. See how much you’ve listened today, right from the home screen.")

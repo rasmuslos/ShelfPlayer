@@ -11,7 +11,7 @@ import RFNotifications
 public extension UserDefaults {
     nonisolated(unsafe) static let shared = {
         if ShelfPlayerKit.enableCentralized {
-            UserDefaults(suiteName: "group.io.rfk.shelfplayer")!
+            UserDefaults(suiteName: ShelfPlayerKit.groupContainer)!
         } else {
             UserDefaults.standard
         }
