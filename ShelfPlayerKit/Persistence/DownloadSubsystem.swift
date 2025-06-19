@@ -44,7 +44,7 @@ extension PersistenceManager {
             // config.isDiscretionary = !Defaults[.allowCellularDownloads]
             
             if ShelfPlayerKit.enableCentralized {
-                config.sharedContainerIdentifier = "group.io.rfk.shelfplayer"
+                config.sharedContainerIdentifier = ShelfPlayerKit.groupContainer
             }
             
             return URLSession(configuration: config, delegate: URLSessionDelegate(), delegateQueue: nil)
