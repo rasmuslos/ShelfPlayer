@@ -17,7 +17,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     
     private nonisolated static var PAGE_SIZE: Int {
         #if DEBUG
-        30
+        4
         #else
         100
         #endif
@@ -320,41 +320,6 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         }
                         
                         received = filtered as! [T]
-                    } else if let series = received as? [Series] {
-                        var filtered = [Series]()
-                        
-                        for series in series {
-                            var passed = [Audiobook]()
-                            
-                            for audiobook in series.audiobooks {
-                                let progress = await PersistenceManager.shared.progress[audiobook.id].progress
-                                
-                                switch filter {
-                                    case .all:
-                                        passed.append(audiobook)
-                                    case .active:
-                                        if progress > 0 && progress < 1 {
-                                            passed.append(audiobook)
-                                        }
-                                    case .finished:
-                                        if progress >= 1 {
-                                            passed.append(audiobook)
-                                        }
-                                    case .notFinished:
-                                        if progress < 1 {
-                                            passed.append(audiobook)
-                                        }
-                                }
-                            }
-                            
-                            guard !passed.isEmpty else {
-                                continue
-                            }
-                            
-                            filtered.append(.init(id: series.id, name: series.name, authors: series.authors, description: series.description, addedAt: series.addedAt, audiobooks: passed))
-                        }
-                        
-                        received = filtered as! [T]
                     } else if let sections = received as? [AudiobookSection] {
                         var filtered = [AudiobookSection]()
                         
@@ -400,6 +365,43 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     } else {
                         throw LazyLoadError.unsupportedItemType
                     }
+                }
+                
+                if let series = received as? [Series] {
+                    var filtered = [Series]()
+                    
+                    for series in series {
+                        var passed = [Audiobook]()
+                        
+                        for audiobook in series.audiobooks {
+                            let progress = await PersistenceManager.shared.progress[audiobook.id].progress
+                            
+                            switch filter {
+                                case .all:
+                                    passed.append(audiobook)
+                                case .active:
+                                    if progress > 0 && progress < 1 {
+                                        passed.append(audiobook)
+                                    }
+                                case .finished:
+                                    if progress >= 1 {
+                                        passed.append(audiobook)
+                                    }
+                                case .notFinished:
+                                    if progress < 1 {
+                                        passed.append(audiobook)
+                                    }
+                            }
+                        }
+                        
+                        guard !passed.isEmpty else {
+                            continue
+                        }
+                        
+                        filtered.append(.init(id: series.id, name: series.name, authors: series.authors, description: series.description, addedAt: series.addedAt, audiobooks: passed))
+                    }
+                    
+                    received = filtered as! [T]
                 }
                 
                 let search = await search.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -507,7 +509,7 @@ extension LazyLoadHelper {
     }
     
     static var series: LazyLoadHelper<Series, SeriesSortOrder> {
-        .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: { page, _, sortOrder, ascending, _, library in
+        .init(filterLocally: false, filter: Defaults[.audiobooksFilter], restrictToPersisted: false, sortOrder: Defaults[.seriesSortOrder], ascending: Defaults[.seriesAscending], loadMore: { page, _, sortOrder, ascending, _, library in
             try await ABSClient[library.connectionID].series(in: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
