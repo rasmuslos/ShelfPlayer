@@ -29,10 +29,6 @@ public struct StartIntent: AudioPlaybackIntent {
         self.item = item
     }
     
-    public static var parameterSummary: some ParameterSummary {
-        Summary("intent.start \(\.$item)")
-    }
-    
     public func perform() async throws -> some ReturnsValue<ItemEntity> {
         let itemID: ItemIdentifier
         

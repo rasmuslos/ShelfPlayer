@@ -8,7 +8,7 @@
 import Foundation
 import AppIntents
 
-public struct ShortcutProvider: AppShortcutsProvider {
+public struct AppShortcutProvider: AppShortcutsProvider {
     public static var shortcutTileColor: ShortcutTileColor {
         .yellow
     }
@@ -18,11 +18,9 @@ public struct ShortcutProvider: AppShortcutsProvider {
         AppShortcut(intent: StartIntent(), phrases: [
             "Play \(\.$item) using \(.applicationName)",
         ], shortTitle: "intent.start", systemImageName: "play.square")
-        
         AppShortcut(intent: StartAudiobookIntent(), phrases: [
             "Play \(\.$target) using \(.applicationName)",
         ], shortTitle: "intent.start.audiobook", systemImageName: "bookmark.square")
-        
         AppShortcut(intent: StartPodcastIntent(), phrases: [
             "Play \(\.$podcast) using \(.applicationName)",
             "Play \(\.$podcast) episodes using \(.applicationName)",

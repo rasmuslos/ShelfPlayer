@@ -35,8 +35,6 @@ struct GlobalSearchSheet: View {
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("panel.search")
-            .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $query, placement: .navigationBarDrawer)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -52,8 +50,6 @@ struct GlobalSearchSheet: View {
                 query = $0
             }
         }
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
     }
     
     private func loadItems() {
