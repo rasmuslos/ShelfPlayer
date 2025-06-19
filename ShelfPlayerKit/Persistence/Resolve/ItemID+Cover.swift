@@ -8,6 +8,10 @@
 import Foundation
 import Nuke
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 public extension ItemIdentifier {
     func coverRequest(size: CoverSize) async -> ImageRequest? {
         if let downloaded = await PersistenceManager.shared.download.cover(for: self, size: size) {
@@ -37,7 +41,6 @@ public extension ItemIdentifier {
         return try? await ImagePipeline.shared.image(for: coverRequest)
     }
     
-    
     enum CoverSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIterable {
         case tiny
         case small
@@ -49,21 +52,27 @@ public extension ItemIdentifier {
         }
         
         var width: Int {
-            #if os(iOS)
-            base
-            #endif
+            get async {
+                #if os(iOS)
+                if await UIDevice.current.userInterfaceIdiom == .pad {
+                    base * 2
+                } else {
+                    base
+                }
+                #endif
+            }
         }
         
         public var base: Int {
             switch self {
             case .tiny:
-                200
+                160
             case .small:
-                600
+                220
             case .regular:
-                1000
+                400
             case .large:
-                1400
+                720
             }
         }
     }

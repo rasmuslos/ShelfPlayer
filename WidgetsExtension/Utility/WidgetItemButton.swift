@@ -15,17 +15,19 @@ struct WidgetItemButton: View {
     let entity: ItemEntity?
     
     var body: some View {
-        if let isPlaying {
-            if isPlaying {
-                Button("pause", systemImage: "pause.fill", intent: PauseIntent())
+        Group {
+            if let isPlaying {
+                if isPlaying {
+                    Button("pause", systemImage: "pause.fill", intent: PauseIntent())
+                } else {
+                    Button("play", systemImage: "play.fill", intent: PlayIntent())
+                }
+            } else if let entity {
+                Button("start", systemImage: "play.fill", intent: StartIntent(item: entity))
             } else {
-                Button("play", systemImage: "play.fill", intent: PlayIntent())
+                Button("play", systemImage: "play.fill") {}
+                    .disabled(true)
             }
-        } else if let entity {
-            Button("start", systemImage: "play.fill", intent: StartIntent(item: entity))
-        } else {
-            Button("play", systemImage: "play.fill") {}
-                .disabled(true)
         }
     }
 }

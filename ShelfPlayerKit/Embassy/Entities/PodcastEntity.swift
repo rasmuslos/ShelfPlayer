@@ -34,7 +34,7 @@ public struct PodcastEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable 
     
     public init(podcast: Podcast) async {
         self.podcast = podcast
-        imageData = await podcast.id.data(size: .regular)
+        imageData = await podcast.id.data(size: .small)
         
         explicit = podcast.explicit
         episodeCount = podcast.episodeCount

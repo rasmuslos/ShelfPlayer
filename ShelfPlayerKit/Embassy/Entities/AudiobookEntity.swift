@@ -44,7 +44,7 @@ public struct AudiobookEntity: AppEntity, IndexedEntity, PersistentlyIdentifiabl
     
     public init(audiobook: Audiobook) async {
         self.audiobook = audiobook
-        imageData = await audiobook.id.data(size: .regular)
+        imageData = await audiobook.id.data(size: .small)
         
         title = audiobook.name
         author = audiobook.authors.formatted(.list(type: .and))
