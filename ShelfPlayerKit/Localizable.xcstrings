@@ -41,7 +41,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lesezeichen erstellen."
+            "value" : "Lesezeichen erstellen"
           }
         },
         "en" : {
@@ -876,22 +876,6 @@
         }
       }
     },
-    "intent.start ${item}" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siele ${item} ab"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Play ${item}"
-          }
-        }
-      }
-    },
     "intent.start.audiobook" : {
       "localizations" : {
         "de" : {
@@ -929,13 +913,29 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podcast wiedergeben."
+            "value" : "Podcast wiedergeben"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Play podcast"
+          }
+        }
+      }
+    },
+    "intent.start.podcast ${podcast}" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spiele ${podcast} Episoden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play ${podcast} episodes"
           }
         }
       }

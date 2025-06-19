@@ -9,7 +9,7 @@ import Foundation
 import AppIntents
 
 public struct SkipForwardsIntent: AudioPlaybackIntent {
-    public static let title: LocalizedStringResource = "intent.skip.backwards"
+    public static let title: LocalizedStringResource = "intent.skip.forwards"
     public static let description = IntentDescription("intent.skip.description")
     
     @AppDependency private var audioPlayer: IntentAudioPlayer

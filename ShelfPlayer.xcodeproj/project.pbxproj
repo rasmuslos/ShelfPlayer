@@ -563,7 +563,6 @@
 				3AA1642B2D6DBA4B00343214 /* Playback */,
 				3A262E962DA1558B002F927A /* Offline */,
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
-				3AAE5A6F2D33DCA10097DB77 /* DONE */,
 				3A0D2D0E2BE6C3860001EC15 /* ButtonHoverEffectModifier.swift */,
 				3A27A66D2AB7631900F80C92 /* Info.plist */,
 				3A792B962B6F9F53002A48E6 /* InfoPlist.xcstrings */,
@@ -914,13 +913,6 @@
 				3A0AE6A52AB623F400ACCD68 /* ContentView.swift */,
 			);
 			path = Navigation;
-			sourceTree = "<group>";
-		};
-		3AAE5A6F2D33DCA10097DB77 /* DONE */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = DONE;
 			sourceTree = "<group>";
 		};
 		3ABC462F2D5A2F7F00E21956 /* Panels */ = {

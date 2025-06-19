@@ -22,6 +22,10 @@ public struct StartPodcastIntent: AudioPlaybackIntent {
     @Parameter(title: "intent.entity.item.podcast", description: "intent.entity.item.description", optionsProvider: PodcastEntityOptionsProvider())
     public var podcast: PodcastEntity
     
+    public static var parameterSummary: some ParameterSummary {
+        Summary("intent.start.podcast \(\.$podcast)")
+    }
+    
     public func perform() async throws -> some IntentResult {
         try await audioPlayer.start(podcast.id, false)
         return .result()
