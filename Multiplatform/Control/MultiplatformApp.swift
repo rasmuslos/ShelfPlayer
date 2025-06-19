@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppIntents
 import ShelfPlayback
 
 @main
@@ -31,4 +32,10 @@ struct MultiplatformApp: App {
             ContentView()
         }
     }
+}
+
+struct ShelfPlayerPackage: AppIntentsPackage {
+    static let includedPackages: [any AppIntentsPackage.Type] = [
+        ShelfPlayerKitPackage.self,
+    ]
 }

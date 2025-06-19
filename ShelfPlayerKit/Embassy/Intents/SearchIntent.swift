@@ -12,7 +12,7 @@ public struct SearchIntent: AppIntent {
     public static let title: LocalizedStringResource = "intent.search"
     public static let description = IntentDescription("intent.search.description")
     
-    @Parameter(title: "intent.search.query", description: "intent.search.query.description")
+    @Parameter(title: "intent.search.query")
     public var search: String
     
     @Parameter(title: "intent.search.includeOnlineSearchResults", description: "intent.search.includeOnlineSearchResults.description", default: true)

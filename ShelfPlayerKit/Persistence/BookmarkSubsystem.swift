@@ -85,6 +85,10 @@ public extension PersistenceManager.BookmarkSubsystem {
     }
     
     func create(at time: UInt64, note: String, for itemID: ItemIdentifier) async throws {
+        guard itemID.type == .audiobook else {
+            throw PersistenceError.unsupportedItemType
+        }
+        
         guard try bookmark(connectionID: itemID.connectionID, primaryID: itemID.primaryID, time: time) == nil else {
             throw PersistenceError.existing
         }

@@ -31,6 +31,17 @@ public struct AudiobookEntity: AppEntity, IndexedEntity, PersistentlyIdentifiabl
     public var seriesTitle: String?
     public var url: URL?
     
+    @Property(title: "intent.entity.item.property.subtitle")
+    public var subtitle: String?
+    
+    @Property(title: "intent.entity.item.property.narrators")
+    public var narrators: [String]?
+    
+    @Property(title: "intent.entity.item.property.explicit")
+    public var explicit: Bool?
+    @Property(title: "intent.entity.item.property.abridged")
+    public var abridged: Bool?
+    
     public init(audiobook: Audiobook) async {
         self.audiobook = audiobook
         imageData = await audiobook.id.data(size: .regular)
@@ -43,6 +54,11 @@ public struct AudiobookEntity: AppEntity, IndexedEntity, PersistentlyIdentifiabl
         seriesTitle = audiobook.series.map(\.formattedName).formatted(.list(type: .and))
         
         url = try? await audiobook.id.url
+        
+        subtitle = audiobook.subtitle
+        narrators = audiobook.narrators
+        explicit = audiobook.explicit
+        abridged = audiobook.abridged
     }
     
     public var displayRepresentation: DisplayRepresentation {
@@ -88,10 +104,10 @@ public struct AudiobookEntityQuery: EntityQuery, EntityStringQuery {
     }
     
     public func entities(matching string: String) async throws -> [AudiobookEntity] {
-        try await Self.entities(matching: string, includeSuggestedEntities: true)
+        try await Self.entities(matching: string, includeOnlineSearchResults: true)
     }
-    public static func entities(matching string: String, includeSuggestedEntities: Bool) async throws -> [AudiobookEntity] {
-        guard let audiobooks = try await ShelfPlayerKit.globalSearch(query: string, includeOnlineSearchResults: includeSuggestedEntities, allowedItemTypes: [.audiobook]) as? [Audiobook] else {
+    public static func entities(matching string: String, includeOnlineSearchResults: Bool) async throws -> [AudiobookEntity] {
+        guard let audiobooks = try await ShelfPlayerKit.globalSearch(query: string, includeOnlineSearchResults: includeOnlineSearchResults, allowedItemTypes: [.audiobook]) as? [Audiobook] else {
             throw IntentError.invalidItemType
         }
         
@@ -113,7 +129,7 @@ struct AudiobookEntityOptionsProvider: DynamicOptionsProvider {
 }
 
 private func listenNowAudiobookEntities() async -> [AudiobookEntity] {
-    var result: [AudiobookEntity] = []
+    var result = [AudiobookEntity]()
     
     for item in await ShelfPlayerKit.listenNowItems {
         guard let audiobook = item as? Audiobook else {

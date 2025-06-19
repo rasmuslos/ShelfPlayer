@@ -83,7 +83,7 @@ struct GroupingConfigurationSheet: View {
         @Binding var retrieval: ConvenienceDownloadRetrievalOption
         
         var body: some View {
-            Picker("item.convenienceDownload.configure", selection: $retrieval) {
+            Picker("item.convenienceDownload.retrieval", selection: $retrieval) {
                 ForEach(ConvenienceDownloadRetrievalOption.allCases) { strategy in
                     Text(strategy.label)
                         .tag(strategy)

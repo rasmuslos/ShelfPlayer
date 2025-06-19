@@ -5,6 +5,8 @@
 //  Created by Rasmus Krämer on 01.06.25.
 //
 
+import Foundation
+
 public final class IntentAudioPlayer: Sendable {
     let resolveIsPlaying: @Sendable () async -> Bool?
     let resolveCurrentItemID: @Sendable () async -> ItemIdentifier?
@@ -13,12 +15,25 @@ public final class IntentAudioPlayer: Sendable {
     let _start: @Sendable (ItemIdentifier, Bool) async throws -> Void
     let _startGrouping: @Sendable (ItemIdentifier, Bool) async throws -> ItemIdentifier
     
-    public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?, resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?, setPlaying: @Sendable @escaping (Bool) async -> Void, start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void, startGrouping: @Sendable @escaping (ItemIdentifier, Bool) async throws -> ItemIdentifier) {
+    let _createBookmark: @Sendable (String?) async throws -> Void
+    let _skip: @Sendable (TimeInterval?, Bool) async throws -> Void
+    
+    public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?,
+                resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?,
+                setPlaying: @Sendable @escaping (Bool) async -> Void,
+                start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void,
+                startGrouping: @Sendable @escaping (ItemIdentifier, Bool) async throws -> ItemIdentifier,
+                createBookmark: @Sendable @escaping (String?) async throws -> Void,
+                skip: @Sendable @escaping (TimeInterval?, Bool) async throws -> Void
+    ) {
         self.resolveIsPlaying = resolveIsPlaying
         self.resolveCurrentItemID = resolveCurrentItemID
-        self._setPlaying = setPlaying
-        self._start = start
-        self._startGrouping = startGrouping
+        
+        _setPlaying = setPlaying
+        _start = start
+        _startGrouping = startGrouping
+        _createBookmark = createBookmark
+        _skip = skip
     }
     
     var isPlaying: Bool? {
@@ -40,5 +55,13 @@ public final class IntentAudioPlayer: Sendable {
     }
     func startGrouping(_ item: ItemIdentifier, _ withoutPlaybackSession: Bool) async throws -> ItemIdentifier {
         try await _startGrouping(item, withoutPlaybackSession)
+    }
+    
+    func createBookmark(_ note: String?) async throws {
+        try await _createBookmark(note)
+    }
+    
+    func skip(_ interval: TimeInterval?, forwards: Bool) async throws {
+        try await _skip(interval, forwards)
     }
 }
