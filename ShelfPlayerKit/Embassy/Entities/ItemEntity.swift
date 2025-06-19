@@ -50,7 +50,7 @@ public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
     
     public init(item: Item) async {
         self.item = item
-        imageData = await item.id.data(size: .regular)
+        imageData = await item.id.data(size: .small)
         
         identifier = item.id.description
         title = item.name

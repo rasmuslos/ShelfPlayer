@@ -99,6 +99,7 @@ struct LastListenedWidgetTimelineEntry: TimelineEntry {
 
 private struct LastListenedWidgetContent: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.widgetFamily) var widgetFamily
     
     let entry: LastListenedWidgetTimelineEntry
     
@@ -143,16 +144,27 @@ private struct LastListenedWidgetContent: View {
                 .foregroundStyle(.ultraThickMaterial)
                 .colorScheme(colorScheme == .light ? .dark : .light)
                 .lineLimit(3)
+                .transition(.move(edge: .leading))
             
             Spacer(minLength: 0)
             
             if entry.item != nil {
                 HStack(spacing: 0) {
-                    WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
-                        .font(.footnote)
-                        .controlSize(.small)
-                        .tint(colorScheme == .light ? .black : .white)
-                        .foregroundStyle(colorScheme == .light ? .black : .white)
+                    Group {
+                        if widgetFamily == .systemMedium && entry.isPlaying == true {
+                            Button(intent: SkipBackwardsIntent()) {
+                                Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
+                            }
+                            .buttonBorderShape(.roundedRectangle(radius: .infinity))
+                            .padding(.trailing, 8)
+                        }
+                        
+                        WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
+                    }
+                    .font(.footnote)
+                    .controlSize(.small)
+                    .tint(colorScheme == .light ? .black : .white)
+                    .foregroundStyle(colorScheme == .light ? .black : .white)
                     
                     Spacer(minLength: 12)
                     
@@ -178,6 +190,7 @@ private struct LastListenedWidgetContent: View {
                 label
             }
         }
+        .animation(.smooth, value: entry.date)
         .containerBackground(for: .widget) {
             WidgetBackground()
         }
@@ -189,7 +202,9 @@ private struct LastListenedWidgetContent: View {
     LastListenedWidget()
 } timeline: {
     LastListenedWidgetTimelineEntry(item: nil, isDownloaded: true, isPlaying: nil)
+    LastListenedWidgetTimelineEntry(date: .distantPast, item: Audiobook.fixture, isDownloaded: false, isPlaying: false)
     LastListenedWidgetTimelineEntry(item: Audiobook.fixture, isDownloaded: false, isPlaying: true)
+    LastListenedWidgetTimelineEntry(date: .distantFuture, item: Audiobook.fixture, isDownloaded: false, isPlaying: false)
     LastListenedWidgetTimelineEntry(item: Audiobook.fixture, isDownloaded: true, isPlaying: false)
     LastListenedWidgetTimelineEntry(item: Episode.fixture, isDownloaded: true, isPlaying: true)
     LastListenedWidgetTimelineEntry(item: Episode.fixture, isDownloaded: false, isPlaying: false)
