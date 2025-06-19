@@ -110,6 +110,7 @@ struct EpisodePlayButton: View {
                 .animation(.smooth, value: progressVisible)
             
             Text(label)
+                .fixedSize(horizontal: true, vertical: false)
                 .lineLimit(1)
                 .contentTransition(.numericText(countsDown: true))
         }

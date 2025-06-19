@@ -10,12 +10,13 @@
 
 #include "Base.xcconfig"
 
-// REMOVE "ENABLE_ALL_FEATURES" IF YOU DON'T HAVE A PAID DEVELOPER ACCOUNT
-SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG ENABLE_ALL_FEATURES
-
 DEVELOPMENT_TEAM = ABC123456
 BUNDLE_ID_PREFIX = change.me
 
-// ShelfPlayer uses two entitlements only available to paid or even authorized developers.
+// The "ENABLE_CENTRALIZED" flag is used to enabled  features that require a shared app group "group.io.rfk.shelfplayer", or a paid developer account. Change ShelfPlayerKit+Utility#15 if you enabled this flag.
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
+// SWIFT_ACTIVE_COMPILATION_CONDITIONS = ENABLE_CENTRALIZED DEBUG
+
+// ShelfPlayer uses entitlements only available to paid or even authorized developers.
 // This line uses an alternate set of entitlements, which should be available to everyone.
-CODE_SIGN_ENTITLEMENTS = Configuration/Alternative.entitlements
+ENTITLEMENT_BASE = FREE_DEVELOPER_ACCOUNT

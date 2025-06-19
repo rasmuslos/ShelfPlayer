@@ -28,10 +28,14 @@ public actor ResolveCache: Sendable {
                 item = downloaded
                 
                 if itemID.type == .podcast {
-                    do {
-                        episodes = try await ABSClient[itemID.connectionID].episodes(from: itemID)
-                    } catch {
-                        episodes = try await PersistenceManager.shared.download.episodes(from: itemID)
+                    if let cached = episodeCache[itemID] {
+                        episodes = cached
+                    } else {
+                        do {
+                            episodes = try await ABSClient[itemID.connectionID].episodes(from: itemID)
+                        } catch {
+                            episodes = try await PersistenceManager.shared.download.episodes(from: itemID)
+                        }
                     }
                 } else {
                     episodes = []
@@ -62,7 +66,7 @@ public actor ResolveCache: Sendable {
                     case .episode:
                         let podcast: Podcast
                         
-                        (podcast, episodes) = try await ABSClient[itemID.connectionID].podcast(with: itemID)
+                        (podcast, episodes) = try await ABSClient[itemID.connectionID].podcast(with: ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID))
                         
                         cache[podcast.id] = podcast
                         episodeCache[podcast.id] = episodes
@@ -78,7 +82,7 @@ public actor ResolveCache: Sendable {
             throw ResolveError.notFound
         }
         
-        cache[itemID] = item
+        cache[item.id] = item
         
         for episode in episodes {
             cache[episode.id] = episode
