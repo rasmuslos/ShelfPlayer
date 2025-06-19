@@ -62,7 +62,7 @@ final class EmbassyManager: Sendable {
     
     func setupObservers() async {
         Embassy.unsetWidgetIsPlaying()
-        ShortcutProvider.updateAppShortcutParameters()
+        AppShortcutProvider.updateAppShortcutParameters()
         
         // MARK: General
         
@@ -221,7 +221,7 @@ final class EmbassyManager: Sendable {
         // MARK: Listen now
         
         RFNotification[.listenNowItemsChanged].subscribe {
-            ShortcutProvider.updateAppShortcutParameters()
+            AppShortcutProvider.updateAppShortcutParameters()
             
             Task {
                 let current = Defaults[.playbackInfoWidgetValue]
