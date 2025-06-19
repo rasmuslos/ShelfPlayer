@@ -41,6 +41,22 @@ final class EmbassyManager: Sendable {
             try await AudioPlayer.shared.start(.init(itemID: $0, origin: .unknown, startWithoutListeningSession: $1))
         } startGrouping: {
             try await AudioPlayer.shared.startGrouping($0, startWithoutListeningSession: $1)
+        } createBookmark: {
+            if let note = $0, let itemID = await AudioPlayer.shared.currentItemID, let currentTime = await AudioPlayer.shared.currentTime {
+                try await PersistenceManager.shared.bookmark.create(at: UInt64(currentTime), note: note, for: itemID)
+            } else {
+                try await AudioPlayer.shared.createQuickBookmark()
+            }
+        } skip: {
+            if var interval = $0, let currentTime = await AudioPlayer.shared.currentTime {
+                if !$1 {
+                    interval *= -1
+                }
+                
+                try await AudioPlayer.shared.seek(to: currentTime + interval, insideChapter: false)
+            } else {
+                try await AudioPlayer.shared.skip(forwards: $1)
+            }
         }
     }()
     
@@ -66,23 +82,29 @@ final class EmbassyManager: Sendable {
                 
                 switch itemID.type {
                     case .episode:
-                        let podcastID = convertEpisodeIdentifierToPodcastIdentifier(itemID)
-                        try await IntentDonationManager.shared.donate(intent: StartIntent(item: podcastID.resolved))
+                        // Episode:
+                        try await StartIntent(item: itemID.resolved).donate()
+                        
+                        // Podcast:
+                        guard let podcast = try? await ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID).resolved as? Podcast else {
+                            break
+                        }
+                        
+                        try await StartPodcastIntent(podcast: podcast).donate()
                     case .audiobook:
                         guard let audiobook = try? await itemID.resolved as? Audiobook else {
                             break
                         }
                         
-                        try await IntentDonationManager.shared.donate(intent: PlayAudiobookIntent(audiobook: audiobook))
+                        try await StartAudiobookIntent(audiobook: audiobook).donate()
                     default:
-                        return
+                        break
                 }
                 
                 // SiriKit Intent
                 
                 if let item = try? await itemID.resolved as? PlayableItem, let intent = try? await PlayMediaIntentHandler.buildPlayMediaIntent(item) {
                     let interaction = INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: nil))
-                    
                     interaction.groupIdentifier = item.id.description
                     
                     try? await interaction.donate()
@@ -96,8 +118,8 @@ final class EmbassyManager: Sendable {
                     return
                 }
                 
-                try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: item.id)))
-                try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: item.id)))
+                let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: item.id)))
+                let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: item.id)))
                 
                 try? await INInteraction.delete(with: item.id.description)
             }

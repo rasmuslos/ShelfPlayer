@@ -182,13 +182,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Konfigurieren"
+            "value" : "Bibliotheken"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configure"
+            "value" : "Other libraries"
           }
         }
       }
@@ -211,6 +211,12 @@
     },
     "carPlay.tabBar.preferencesTip" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfiguriere die Tabs in den App-Einstellungen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -349,6 +355,12 @@
     },
     "connection.add.strategy.openID.hint" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stelle sicher, dass „shelfPlayer://callback“ als oAuth-Callback in Audiobookshelf konfiguriert ist."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -941,60 +953,6 @@
         }
       }
     },
-    "intent.checkForDownloads" : {
-
-    },
-    "intent.pause" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausieren"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pause"
-          }
-        }
-      }
-    },
-    "intent.play" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsetzten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Play"
-          }
-        }
-      }
-    },
-    "intent.start" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wiedergeben"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Play"
-          }
-        }
-      }
-    },
-    "intent.start.audiobook" : {
-
-    },
     "item.abridged" : {
       "localizations" : {
         "de" : {
@@ -1078,15 +1036,39 @@
     "item.bookmarks %lld" : {
       "localizations" : {
         "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Lesezeichen"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Lesezeichen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Lesezeichen"
+                }
+              }
+            }
           }
         },
         "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Bookmarks"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Bookmark"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Bookmarks"
+                }
+              }
+            }
           }
         }
       }
@@ -1148,52 +1130,260 @@
       }
     },
     "item.configure" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfigurieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure"
+          }
+        }
+      }
     },
     "item.convenienceDownload" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisches Herunterladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic downloads"
+          }
+        }
+      }
     },
     "item.convenienceDownload.all" : {
-
-    },
-    "item.convenienceDownload.configure" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
     },
     "item.convenienceDownload.description" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer lädt basierend auf deinen Filter- & Sortierungseinstellungen und den konfigurierten Wert herunter. "
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer will download items based on the filter & sort preferences you configured, as well as the amount you specify."
+          }
+        }
+      }
     },
     "item.convenienceDownload.disabled" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deaktiviert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabled"
+          }
+        }
+      }
     },
     "item.convenienceDownload.five" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fünf Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Five items"
+          }
+        }
+      }
     },
     "item.convenienceDownload.four" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vier Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Four items"
+          }
+        }
+      }
     },
     "item.convenienceDownload.one" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eines Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One item"
+          }
+        }
+      }
     },
     "item.convenienceDownload.oneDay" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte 24 Stunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last 24 hours"
+          }
+        }
+      }
     },
     "item.convenienceDownload.oneMonth" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzter Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last month"
+          }
+        }
+      }
     },
     "item.convenienceDownload.oneWeek" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte Woche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last week"
+          }
+        }
+      }
+    },
+    "item.convenienceDownload.retrieval" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzahl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amount"
+          }
+        }
+      }
     },
     "item.convenienceDownload.ten" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zehn Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten items"
+          }
+        }
+      }
     },
     "item.convenienceDownload.three" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Three items"
+          }
+        }
+      }
     },
     "item.convenienceDownload.two" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zwei Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Two items"
+          }
+        }
+      }
     },
     "item.convenienceDownload.twoWeeks" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzten zwei Wochen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last two weeks"
+          }
+        }
+      }
     },
     "item.count.audiobooks %lld" : {
       "localizations" : {
@@ -1476,10 +1666,36 @@
       }
     },
     "item.downloaded" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heruntergeladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloaded"
+          }
+        }
+      }
     },
     "item.downloading" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloaded"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading"
+          }
+        }
+      }
     },
     "item.empty" : {
       "localizations" : {
@@ -1642,16 +1858,68 @@
       }
     },
     "item.grouping.configure" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfigurieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure"
+          }
+        }
+      }
     },
     "item.grouping.configure.playback" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playback"
+          }
+        }
+      }
     },
     "item.grouping.configure.playbackRate" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschwindigkeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playback speed"
+          }
+        }
+      }
     },
     "item.grouping.configure.upNextStrategy" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Nächstes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up next"
+          }
+        }
+      }
     },
     "item.lastPlayed" : {
       "localizations" : {
@@ -3248,6 +3516,12 @@
     },
     "preferences.carPlay.tabBar.footer" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle welche Bibliotheken in der Tableiste erscheinen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3257,22 +3531,124 @@
       }
     },
     "preferences.carPlay.tabBar.warning" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anzahl an Tabs übersteigt das CarPlay limit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The amount tabs you configured exceeds the CarPlay limit."
+          }
+        }
+      }
     },
     "preferences.convenienceDownload" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisches Herunterladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic downloads"
+          }
+        }
+      }
     },
     "preferences.convenienceDownload.configurations" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfiguriert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurations"
+          }
+        }
+      }
     },
-    "preferences.convenienceDownload.downloadedTotal %@" : {
-
+    "preferences.convenienceDownload.downloadedTotal %lld" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ein Objekt heruntergeladen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Objekte heruntergeladen: %lld"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "One item downloaded"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Items downloaded: %lld"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "preferences.convenienceDownload.enable" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisches herunterladen aktivieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable automatic downloads"
+          }
+        }
+      }
     },
     "preferences.convenienceDownload.enableListenNowDownloads" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt hören herunterladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download listen now items"
+          }
+        }
+      }
     },
     "preferences.generateLogFile" : {
       "localizations" : {
@@ -3397,7 +3773,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Purge Spotlight Index"
+            "value" : "Purge Spotlight index"
           }
         }
       }
@@ -3423,7 +3799,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sleep-Timer"
+            "value" : "Schlaf-Timer"
           }
         },
         "en" : {
@@ -3482,29 +3858,18 @@
         }
       }
     },
-    "preferences.spotlightIndex %@" : {
-      "extractionState" : "stale",
+    "preferences.spotlightIndex %@ %@" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight-Index: %@"
+            "value" : "Spotlight-Index %1$@ (%2$@)"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight index: %@"
-          }
-        }
-      }
-    },
-    "preferences.spotlightIndex %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "preferences.spotlightIndex %1$@ %2$@"
+            "value" : "Spotlight index: %1$@  (%2$@)"
           }
         }
       }
@@ -3520,7 +3885,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pending Spotlight index"
+            "value" : "Pending Spotlight indexing"
           }
         }
       }
@@ -4095,6 +4460,12 @@
     },
     "setup.welcome.description" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke, dass due ShelfPlayer gewählt hast. Füge eine Verbindung hinzu um loszulegen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4121,6 +4492,12 @@
     },
     "sleepTimer.chapter.set" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlaf-Timer setzten"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4247,6 +4624,12 @@
     },
     "upNextStrategy.default" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4275,7 +4658,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Jetzt hören"
           }
         },
@@ -4289,6 +4672,12 @@
     },
     "warning.playbackDownload.activeDownload" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Objekt, das Sie abspielen wollten, wird gerade heruntergeladen. Download abbrechen und mit der Wiedergabe beginnen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4299,6 +4688,12 @@
     },
     "warning.playbackDownload.activePlayback" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Objekt, das Sie herunterladen wollten, wird gerade heruntergeladen. Wiedergabe beenden und Download starten?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4309,6 +4704,12 @@
     },
     "warning.playbackDownload.removeDownload" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Element, das Sie entfernen wollten, wird derzeit abgespielt. Wiedergabe beenden und Download entfernen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",

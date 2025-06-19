@@ -5,38 +5,63 @@
       "comment" : "Bundle display name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "ShelfPlayer"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "CFBundleName" : {
       "comment" : "Bundle name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "ShelfPlayer"
           }
         }
-      },
-      "shouldTranslate" : false
-    },
-    "Item" : {
-
+      }
     },
     "NSHumanReadableCopyright" : {
       "comment" : "Copyright (human-readable)",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         }
@@ -90,17 +115,59 @@
         }
       }
     },
-    "Search" : {
-
+    "quickAction.search" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
     },
-    "Search all libraries" : {
-
+    "quickAction.search.subtitle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche in alle Bibliotheken"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search all libraries"
+          }
+        }
+      }
     },
     "Shelf Player" : {
       "shouldTranslate" : false
     },
     "shelfplayer" : {
       "shouldTranslate" : false
+    },
+    "uti.item" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objekt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

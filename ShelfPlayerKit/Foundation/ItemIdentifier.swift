@@ -61,6 +61,10 @@ public final class ItemIdentifier: NSObject {
             fatalError("Unknown identifier format: \(identifier)")
         }
     }
+    public static func convertEpisodeIdentifierToPodcastIdentifier(_ episodeID: ItemIdentifier) -> ItemIdentifier {
+        ItemIdentifier(primaryID: episodeID.groupingID!, groupingID: nil, libraryID: episodeID.libraryID, connectionID: episodeID.connectionID, type: .podcast)
+    }
+    
     public static func isValid(_ identifier: String) -> Bool {
         guard identifier.starts(with: "1::") else {
             return false
@@ -177,8 +181,4 @@ public extension ItemIdentifier {
             rawValue
         }
     }
-}
-
-public func convertEpisodeIdentifierToPodcastIdentifier(_ episodeID: ItemIdentifier) -> ItemIdentifier {
-    ItemIdentifier(primaryID: episodeID.groupingID!, groupingID: nil, libraryID: episodeID.libraryID, connectionID: episodeID.connectionID, type: .podcast)
 }
