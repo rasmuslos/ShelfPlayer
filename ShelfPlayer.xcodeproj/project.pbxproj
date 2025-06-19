@@ -131,6 +131,7 @@
 		3AB163E92E04C1F000D33868 /* ShelfPlayback.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3AB1640E2E04C29E00D33868 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
 		3AB1640F2E04C2B700D33868 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
+		3AB164102E04C53D00D33868 /* ShelfPlayerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */; };
 		3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4D6682CA19DE600876C8E /* TabValue.swift */; };
 		3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */; };
@@ -233,6 +234,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3AB164102E04C53D00D33868 /* ShelfPlayerKit.framework in Embed Frameworks */,
 				3AB163E92E04C1F000D33868 /* ShelfPlayback.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
