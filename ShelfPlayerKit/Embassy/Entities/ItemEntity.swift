@@ -30,28 +30,35 @@ public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
         item.id
     }
     
-    // TODO: Properties
-    public var title: String?
-    public var author: String?
-    public var genre: String?
-    public var purchaseDate: Date?
-    public var seriesTitle: String?
+    @Property(title: "intent.entity.item.property.identifier")
+    public var identifier: String
+    @Property(title: "intent.entity.item.property.title")
+    public var title: String
+    @Property(title: "intent.entity.item.property.authors")
+    public var authors: [String]
+    @Property(title: "intent.entity.item.property.description")
+    public var description: String?
+    @Property(title: "intent.entity.item.property.genres")
+    public var genres: [String]
+    @Property(title: "intent.entity.item.property.addedAt")
+    public var addedAt: Date
+    @Property(title: "intent.entity.item.property.released")
+    public var released: String?
+    
+    @Property(title: "intent.entity.item.property.url")
     public var url: URL?
     
     public init(item: Item) async {
         self.item = item
         imageData = await item.id.data(size: .regular)
         
+        identifier = item.id.description
         title = item.name
-        author = item.authors.formatted(.list(type: .and))
-        genre = item.genres.formatted(.list(type: .and))
-        purchaseDate = item.addedAt
-        
-        if let audiobook = item as? Audiobook, !audiobook.series.isEmpty {
-            seriesTitle = audiobook.series.map(\.formattedName).formatted(.list(type: .and))
-        } else {
-            seriesTitle = nil
-        }
+        authors = item.authors
+        description = item.description
+        genres = item.genres
+        addedAt = item.addedAt
+        released = item.released
         
         url = try? await item.id.url
     }

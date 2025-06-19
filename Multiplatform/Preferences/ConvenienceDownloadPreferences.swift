@@ -56,7 +56,8 @@ struct ConvenienceDownloadPreferences: View {
             }
             
             if totalDownloaded > 0 {
-                Text("preferences.convenienceDownload.downloadedTotal \(totalDownloaded, format: .number)")
+                Text("preferences.convenienceDownload.downloadedTotal \(totalDownloaded)")
+                    .foregroundStyle(.secondary)
             }
         }
         .navigationTitle("preferences.convenienceDownload")

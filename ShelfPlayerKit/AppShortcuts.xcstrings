@@ -1,6 +1,73 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Backwards using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Springe zurück mit ${applicationName}",
+              "Zurück mit ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Backwards using ${applicationName}",
+              "Skip backwards using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Create a bookmark using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Erstelle ein Lesezeichen mit ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Create a bookmark using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Forwards using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Springe vorwärts mit ${applicationName}",
+              "Vorwärts mit ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Forwards using ${applicationName}",
+              "Skip forwards using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
     "Pause ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -42,6 +109,29 @@
             "state" : "new",
             "values" : [
               "Play ${item} using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Play ${podcast} using ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Spiele ${podcast} mit ${applicationName}",
+              "Spiele ${podcast} Episodes mit ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Play ${podcast} using ${applicationName}",
+              "Play ${podcast} episodes using ${applicationName}"
             ]
           }
         }
@@ -96,6 +186,14 @@
     "Search for new downloads using ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Suche nach neuen Downloads mit ${applicationName}"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
