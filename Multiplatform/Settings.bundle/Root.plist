@@ -10,6 +10,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Allow cellular downloads</string>
+			<key>Key</key>
+			<string>allowCellularDownloads</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Remove finished downloads</string>
 			<key>Key</key>
 			<string>removeFinishedDownloads</string>
@@ -257,16 +267,6 @@
 			<string>Replace volume with total progress</string>
 			<key>Key</key>
 			<string>replaceVolumeWithTotalProgress</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Allow cellular downloads</string>
-			<key>Key</key>
-			<string>allowCellularDownloads</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>

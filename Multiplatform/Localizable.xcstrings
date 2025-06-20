@@ -129,6 +129,9 @@
         }
       }
     },
+    "action.select" : {
+
+    },
     "airPlay" : {
       "localizations" : {
         "de" : {
@@ -1729,6 +1732,9 @@
         }
       }
     },
+    "item.end" : {
+
+    },
     "item.explicit" : {
       "localizations" : {
         "de" : {
@@ -2393,6 +2399,9 @@
           }
         }
       }
+    },
+    "item.select" : {
+
     },
     "item.series" : {
       "localizations" : {
