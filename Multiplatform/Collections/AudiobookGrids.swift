@@ -29,7 +29,6 @@ struct AudiobookVGrid: View {
                         } label: {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                                 .modifier(PlayableItemContextMenuModifier(item: audiobook))
-                                .hoverEffect(.highlight)
                         }
                         .buttonStyle(.plain)
                         .accessibilityAddTraits(.isLink)
@@ -100,7 +99,6 @@ struct AudiobookHGrid: View {
                                 .frame(width: size)
                                 .padding(.leading, gap)
                                 .modifier(PlayableItemContextMenuModifier(item: audiobook))
-                                .hoverEffect(.highlight)
                         }
                         .buttonStyle(.plain)
                         .accessibilityAddTraits(.isLink)

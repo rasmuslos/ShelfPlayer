@@ -35,6 +35,8 @@ struct GlobalSearchSheet: View {
                     .listStyle(.plain)
                 }
             }
+            .navigationTitle("panel.search")
+            .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $query, placement: .navigationBarDrawer)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

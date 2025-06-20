@@ -203,7 +203,6 @@ private struct RegularPresentation: View {
         HStack(spacing: 40) {
             ItemImage(item: viewModel.podcast, size: .large, contrastConfiguration: nil)
                 .frame(height: 300)
-                .hoverEffect(.highlight)
             
             Color.clear
                 .frame(minWidth: 250)
