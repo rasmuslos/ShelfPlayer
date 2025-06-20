@@ -96,7 +96,6 @@ private struct PodcastGridItem: View {
         NavigationLink(destination: ItemLoadView(podcast.id, zoom: true)) {
             VStack(alignment: .leading, spacing: 4) {
                 ItemImage(item: podcast, size: .small)
-                    .hoverEffect(.highlight)
                 
                 if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
                     Text("item.count.episodes.unplayed \(incompleteEpisodeCount)")

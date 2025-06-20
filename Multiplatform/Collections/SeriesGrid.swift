@@ -94,7 +94,6 @@ extension SeriesGrid {
                         }
                     }
                 }
-                .hoverEffect(.highlight)
                 
                 if let name {
                     Text(name)
