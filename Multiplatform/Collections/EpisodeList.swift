@@ -9,12 +9,43 @@ import SwiftUI
 import ShelfPlayback
 
 struct EpisodeList: View {
+    @Namespace private var namespace
+    
     let episodes: [Episode]
     let context: PresentationContext
     
+    @Binding var selected: [ItemIdentifier]?
+    
     var body: some View {
-        ForEach(episodes) {
-            Row(episode: $0, context: context)
+        ForEach(episodes) { episode in
+            HStack(spacing: 12) {
+                if selected != nil {
+                    Group {
+                        Label("action.select", systemImage: "circle")
+                            .foregroundStyle(Color.accentColor)
+                            .labelStyle(.iconOnly)
+                            .symbolVariant(selected?.contains(episode.id) == true ? .fill : .none)
+                            .transition(.opacity)
+                        
+                        RowLabel(episode: episode, context: context, zoomID: nil)
+                            .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
+                    }
+                    .onTapGesture {
+                        if selected?.contains(episode.id) == true {
+                            selected?.removeAll {
+                                $0 == episode.id
+                            }
+                        } else {
+                            selected?.append(episode.id)
+                        }
+                    }
+                } else {
+                    Row(episode: episode, context: context)
+                        .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
+                }
+            }
+            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+            .animation(.snappy, value: selected)
         }
     }
     
@@ -27,7 +58,6 @@ struct EpisodeList: View {
 }
 
 private struct Row: View {
-    @Environment(Satellite.self) private var satellite
     @Environment(\.namespace) private var namespace
     
     let episode: Episode
@@ -37,59 +67,70 @@ private struct Row: View {
     
     var body: some View {
         NavigationLink(destination: EpisodeView(episode, zoomID: context == .grid ? zoomID : nil)) {
-            HStack(spacing: 0) {
-                if context.isImageVisible {
-                    Button {
-                        satellite.start(episode.id)
-                    } label: {
-                        ItemImage(item: episode, size: .small)
-                            .frame(width: 104)
-                            .overlay {
-                                if satellite.isLoading(observing: episode.id) {
-                                    ZStack {
-                                        Color.black
-                                            .opacity(0.2)
-                                            .clipShape(.rect(cornerRadius: 8))
-                                        
-                                        ProgressView()
-                                            .tint(.white)
-                                    }
-                                }
-                            }
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(satellite.isLoading(observing: episode.id))
-                    .matchedTransitionSource(id: zoomID, in: namespace!)
-                    .padding(.trailing, 12)
-                }
-                
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(episode.name)
-                        .lineLimit(1)
-                        .bold()
-                        .font(.callout)
-                    
-                    if let description = episode.descriptionText {
-                        Text(description)
-                            .lineLimit(context.lineLimit)
-                            .multilineTextAlignment(.leading)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .padding(.top, 4)
-                    }
-                    
-                    EpisodeItemActions(episode: episode, context: context)
-                        .padding(.top, 8)
-                }
-                
-                Spacer()
-            }
-            .contentShape(.hoverMenuInteraction, .rect())
+            RowLabel(episode: episode, context: context, zoomID: zoomID)
         }
         .buttonStyle(.plain)
         .modifier(PlayableItemSwipeActionsModifier(itemID: episode.id))
         .modifier(PlayableItemContextMenuModifier(item: episode))
-        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+    }
+}
+private struct RowLabel: View {
+    @Environment(Satellite.self) private var satellite
+    @Environment(\.namespace) private var namespace
+    
+    let episode: Episode
+    let context: EpisodeList.PresentationContext
+    let zoomID: UUID?
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            if context.isImageVisible {
+                Button {
+                    satellite.start(episode.id)
+                } label: {
+                    ItemImage(item: episode, size: .small)
+                        .frame(width: 104)
+                        .overlay {
+                            if satellite.isLoading(observing: episode.id) {
+                                ZStack {
+                                    Color.black
+                                        .opacity(0.2)
+                                        .clipShape(.rect(cornerRadius: 8))
+                                    
+                                    ProgressView()
+                                        .tint(.white)
+                                }
+                            }
+                        }
+                }
+                .buttonStyle(.plain)
+                .disabled(satellite.isLoading(observing: episode.id))
+                .matchedTransitionSource(id: zoomID, in: namespace!)
+                .padding(.trailing, 12)
+            }
+            
+            VStack(alignment: .leading, spacing: 0) {
+                Text(episode.name)
+                    .lineLimit(1)
+                    .bold()
+                    .font(.callout)
+                
+                if let description = episode.descriptionText {
+                    Text(description)
+                        .lineLimit(context.lineLimit)
+                        .multilineTextAlignment(.leading)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 4)
+                }
+                
+                EpisodeItemActions(episode: episode, context: context)
+                    .padding(.top, 8)
+            }
+            
+            Spacer()
+        }
+        .contentShape(.hoverMenuInteraction, .rect())
     }
 }
 
@@ -199,7 +240,7 @@ private extension EpisodeList.PresentationContext {
 #Preview {
     NavigationStack {
         List {
-            EpisodeList(episodes: .init(repeating: .fixture, count: 7), context: .latest)
+            EpisodeList(episodes: .init(repeating: .fixture, count: 7), context: .latest, selected: .constant(nil))
         }
         .listStyle(.plain)
     }
@@ -207,9 +248,11 @@ private extension EpisodeList.PresentationContext {
 }
 
 #Preview {
+    @Previewable @State var selected: [ItemIdentifier]? = []
+    
     NavigationStack {
         List {
-            EpisodeList(episodes: .init(repeating: .fixture, count: 7), context: .podcast)
+            EpisodeList(episodes: .init(repeating: .fixture, count: 7), context: .podcast, selected: $selected)
         }
         .listStyle(.plain)
     }

@@ -636,7 +636,7 @@ extension Satellite {
                 if await nowPlayingItemID == itemID {
                     try await AudioPlayer.shared.seek(to: duration, insideChapter: false)
                 } else {
-                    try await PersistenceManager.shared.progress.markAsCompleted(itemID)
+                    try await PersistenceManager.shared.progress.markAsCompleted([itemID])
                 }
                 
                 while let index = await queue.firstIndex(of: itemID) {
@@ -657,7 +657,7 @@ extension Satellite {
             await startWorking(on: itemID)
             
             do {
-                try await PersistenceManager.shared.progress.markAsListening(itemID)
+                try await PersistenceManager.shared.progress.markAsListening([itemID])
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 await endWorking(on: itemID, successfully: false)
