@@ -86,7 +86,6 @@ private struct EpisodeGridItem: View {
             .background(Background(episode: episode))
             .clipShape(.rect(cornerRadius: 16))
             .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16))
-            .hoverEffect(.highlight)
             .modifier(PlayableItemContextMenuModifier(item: episode))
             .frame(width: size)
             .padding(.leading, gap)

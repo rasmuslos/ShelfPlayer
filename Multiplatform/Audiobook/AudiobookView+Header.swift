@@ -204,7 +204,6 @@ private struct RegularPresentation: View {
             HStack(spacing: 40) {
                 ItemImage(item: viewModel.audiobook, size: .large, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 40, shadowOpacity: 0.6))
                     .frame(width: max(0, min(400, (availableWidth - 40) / 2)))
-                    .hoverEffect(.highlight)
                 
                 Color.clear
                     .frame(minWidth: 280)

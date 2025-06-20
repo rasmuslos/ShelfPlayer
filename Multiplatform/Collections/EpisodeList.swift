@@ -44,7 +44,6 @@ private struct Row: View {
                     } label: {
                         ItemImage(item: episode, size: .small)
                             .frame(width: 104)
-                            .hoverEffect(.highlight)
                             .overlay {
                                 if satellite.isLoading(observing: episode.id) {
                                     ZStack {

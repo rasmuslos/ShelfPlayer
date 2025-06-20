@@ -47,7 +47,6 @@ struct PersonGrid: View {
                             VStack(spacing: 0) {
                                 ItemImage(item: person, size: .small, cornerRadius: .infinity)
                                     .padding(.bottom, 4)
-                                    .hoverEffect(.highlight)
                                 
                                 Text(person.name)
                                     .font(.caption)
