@@ -17,6 +17,9 @@ final class PodcastViewModel {
     private(set) var episodes: [Episode]
     private(set) var visible: [Episode]
     
+    var bulkSelected: [ItemIdentifier]? = nil
+    private(set) var performingBulkAction = false
+    
     var ascending: Bool {
         didSet {
             Defaults[.episodesAscending(podcast.id)] = ascending
@@ -134,6 +137,42 @@ extension PodcastViewModel {
         }
         
         return season
+    }
+    
+    nonisolated func performBulkAction(isFinished: Bool) {
+        Task {
+            let canRun = await MainActor.run {
+                guard !performingBulkAction else {
+                    return false
+                }
+                
+                performingBulkAction = true
+                return true
+            }
+            
+            guard canRun else {
+                return
+            }
+            
+            if let bulkSelected = await bulkSelected {
+                do {
+                    if isFinished {
+                        try await PersistenceManager.shared.progress.markAsCompleted(bulkSelected)
+                    } else {
+                        try await PersistenceManager.shared.progress.markAsListening(bulkSelected)
+                    }
+                } catch {
+                    await MainActor.run {
+                        notifyError.toggle()
+                    }
+                }
+            }
+            
+            await MainActor.withAnimation {
+                performingBulkAction = false
+                bulkSelected = nil
+            }
+        }
     }
     
     nonisolated func load(refresh: Bool) {

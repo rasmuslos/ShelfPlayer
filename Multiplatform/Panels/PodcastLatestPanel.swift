@@ -32,7 +32,7 @@ struct PodcastLatestPanel: View {
                 }
             } else {
                 List {
-                    EpisodeList(episodes: episodes, context: .latest)
+                    EpisodeList(episodes: episodes, context: .latest, selected: .constant(nil))
                 }
                 .listStyle(.plain)
                 .refreshable {

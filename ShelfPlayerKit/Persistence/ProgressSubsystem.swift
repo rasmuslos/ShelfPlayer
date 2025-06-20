@@ -186,79 +186,108 @@ public extension PersistenceManager.ProgressSubsystem {
         }
     }
     
-    func markAsCompleted(_ itemID: ItemIdentifier) async throws {
-        logger.info("Marking progress as completed for item \(itemID).")
+    func markAsCompleted(_ itemIDs: [ItemIdentifier]) async throws {
+        logger.info("Marking progress as completed for items \(itemIDs).")
         
-        let pendingUpdate: PersistedProgress
+        var persisted = [PersistedProgress]()
+        var entities = [ProgressEntity]()
         
-        if let entity = entity(itemID) {
-            entity.progress = 1
+        for itemID in itemIDs {
+            let pendingUpdate: PersistedProgress
             
-            if let duration = entity.duration {
-                entity.currentTime = duration
+            if let entity = entity(itemID) {
+                entity.progress = 1
+                
+                if let duration = entity.duration {
+                    entity.currentTime = duration
+                }
+                
+                if entity.startedAt == nil {
+                    entity.startedAt = .now
+                }
+                
+                entity.finishedAt = .now
+                entity.lastUpdate = .now
+                
+                entity.status = .desynchronized
+                
+                pendingUpdate = entity
+            } else {
+                pendingUpdate = createEntity(id: UUID().uuidString, itemID: itemID, progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now, status: .desynchronized)
             }
             
-            if entity.startedAt == nil {
-                entity.startedAt = .now
-            }
-            
-            entity.finishedAt = .now
-            entity.lastUpdate = .now
-            
-            entity.status = .desynchronized
-            
-            try modelContext.save()
-            
-            pendingUpdate = entity
-        } else {
-            pendingUpdate = createEntity(id: UUID().uuidString, itemID: itemID, progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now, status: .desynchronized)
+            persisted.append(pendingUpdate)
+            entities.append(ProgressEntity(persistedEntity: pendingUpdate))
         }
-        
-        let entity = ProgressEntity(persistedEntity: pendingUpdate)
-        
-        progressEntityDidUpdate(entity)
-        
-        do {
-            try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
-            
-            pendingUpdate.status = .synchronized
-            try modelContext.save()
-        } catch {
-            logger.info("Caching progress update because of: \(error.localizedDescription).")
-        }
-        
-        await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(itemID)
-    }
-    func markAsListening(_ itemID: ItemIdentifier) async throws {
-        logger.info("Marking progress as listening for item \(itemID).")
-        
-        guard let persistedEntity = entity(itemID) else {
-            logger.warning("Could not mark progress as listening for item \(itemID) because it does not exist.")
-            return
-        }
-        
-        persistedEntity.progress = 0
-        persistedEntity.currentTime = 0
-        
-        persistedEntity.startedAt = nil
-        persistedEntity.finishedAt = nil
-        persistedEntity.lastUpdate = .now
-        
-        persistedEntity.status = .desynchronized
         
         try modelContext.save()
         
-        let entity = ProgressEntity(persistedEntity: persistedEntity)
-        await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        for entity in entities {
+            progressEntityDidUpdate(entity)
+        }
         
         do {
-            try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
+            guard let connectionID = itemIDs.first?.connectionID else {
+                return
+            }
             
-            persistedEntity.status = .synchronized
-            try modelContext.save()
+            try await ABSClient[connectionID].batchUpdate(progress: entities)
         } catch {
             logger.info("Caching progress update because of: \(error.localizedDescription).")
         }
+        
+        for entity in persisted {
+            entity.status = .synchronized
+        }
+        
+        try modelContext.save()
+    }
+    func markAsListening(_ itemIDs: [ItemIdentifier]) async throws {
+        logger.info("Marking progress as listening for items \(itemIDs).")
+        
+        var persisted = [PersistedProgress]()
+        var entities = [ProgressEntity]()
+        
+        for itemID in itemIDs {
+            guard let persistedEntity = entity(itemID) else {
+                logger.warning("Could not mark progress as listening for item \(itemID) because it does not exist.")
+                return
+            }
+            
+            persistedEntity.progress = 0
+            persistedEntity.currentTime = 0
+            
+            persistedEntity.startedAt = nil
+            persistedEntity.finishedAt = nil
+            persistedEntity.lastUpdate = .now
+            
+            persistedEntity.status = .desynchronized
+            
+            persisted.append(persistedEntity)
+            entities.append(ProgressEntity(persistedEntity: persistedEntity))
+        }
+        
+        try modelContext.save()
+        
+        for entity in entities {
+            progressEntityDidUpdate(entity)
+        }
+        
+        do {
+            guard let connectionID = itemIDs.first?.connectionID else {
+                return
+            }
+            
+            try await ABSClient[connectionID].batchUpdate(progress: entities)
+        } catch {
+            logger.info("Caching progress update because of: \(error.localizedDescription).")
+        }
+        
+        for entity in persisted {
+            entity.status = .synchronized
+        }
+        
+        try modelContext.save()
     }
     
     func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double, notifyServer: Bool) async throws {

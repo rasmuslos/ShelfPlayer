@@ -30,7 +30,7 @@ struct PodcastEpisodesView: View {
         @Bindable var viewModel = viewModel
         
         List {
-            EpisodeList(episodes: viewModel.visible, context: .podcast)
+            EpisodeList(episodes: viewModel.visible, context: .podcast, selected: $viewModel.bulkSelected)
         }
         .listStyle(.plain)
         .navigationTitle("item.related.podcast.episodes")
@@ -52,7 +52,30 @@ struct PodcastEpisodesView: View {
         }
         .searchable(text: $viewModel.search, placement: .toolbar)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if viewModel.performingBulkAction {
+                    ProgressView()
+                } else if viewModel.bulkSelected == nil {
+                    Button("item.select", systemImage: "circle.dashed") {
+                        viewModel.bulkSelected = []
+                    }
+                } else {
+                    Menu("item.select", systemImage: "circle.circle") {
+                        Button("item.progress.markAsUnfinished", systemImage: "minus.square") {
+                            viewModel.performBulkAction(isFinished: false)
+                        }
+                        Button("item.progress.markAsFinished", systemImage: "checkmark.square") {
+                            viewModel.performBulkAction(isFinished: true)
+                        }
+                        
+                        Divider()
+                        
+                        Button("item.end", systemImage: "circle.badge.checkmark") {
+                            viewModel.bulkSelected = nil
+                        }
+                    }
+                }
+                
                 PodcastView.ToolbarModifier.OptionsMenu()
             }
         }
