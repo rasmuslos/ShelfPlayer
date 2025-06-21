@@ -96,6 +96,22 @@ struct TabRouter: View {
             }
         }
         .tabViewStyle(.sidebarAdaptable)
+        .tabViewSidebarFooter {
+            VStack(alignment: .leading, spacing: 12) {
+                Divider()
+                
+                Button("panel.search", systemImage: "magnifyingglass") {
+                    satellite.present(.globalSearch)
+                }
+                Button("preferences", systemImage: "gearshape.circle") {
+                    satellite.present(.preferences)
+                }
+                Button("navigation.offline.enable", systemImage: "network.slash") {
+                    RFNotification[.changeOfflineMode].send(payload: true)
+                }
+            }
+            .buttonStyle(.plain)
+        }
         .id(current)
         .modifier(CompactPlaybackModifier(ready: isReady))
         .environment(\.playbackBottomOffset, 52)

@@ -165,6 +165,7 @@
 		3ACD19B72ACB5A49007D01FE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD19B62ACB5A49007D01FE /* ErrorView.swift */; };
 		3ACD596C2BE2926F0060A841 /* SerifModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD596B2BE2926F0060A841 /* SerifModifier.swift */; };
 		3AD6EA742CABEE1300B412DB /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD6EA732CABEE0F00B412DB /* PlayMediaIntentHandler.swift */; };
+		3ADC52C02E06D8D000175677 /* RegularPlaybackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADC52BF2E06D8CB00175677 /* RegularPlaybackModifier.swift */; };
 		3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD29612B6D88EF0060248E /* DownloadButton.swift */; };
 		3ADD43482CC30E7A0060E043 /* CarPlayTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43472CC30E730060E043 /* CarPlayTabBar.swift */; };
 		3ADD434A2CC311630060E043 /* CarPlayListenNowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43492CC3115D0060E043 /* CarPlayListenNowController.swift */; };
@@ -434,6 +435,7 @@
 		3ACD596B2BE2926F0060A841 /* SerifModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerifModifier.swift; sourceTree = "<group>"; };
 		3ACD59722BE29B8E0060A841 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		3AD6EA732CABEE0F00B412DB /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
+		3ADC52BF2E06D8CB00175677 /* RegularPlaybackModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularPlaybackModifier.swift; sourceTree = "<group>"; };
 		3ADD29612B6D88EF0060248E /* DownloadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadButton.swift; sourceTree = "<group>"; };
 		3ADD43472CC30E730060E043 /* CarPlayTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTabBar.swift; sourceTree = "<group>"; };
 		3ADD43492CC3115D0060E043 /* CarPlayListenNowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListenNowController.swift; sourceTree = "<group>"; };
@@ -877,9 +879,10 @@
 				3AC3FD622D79E8B800FA10DF /* PlaybackQueue.swift */,
 				3AA1642E2D6DBB0E00343214 /* PlaybackViewModel.swift */,
 				3A1B802C2D6F18CC00D69B13 /* PlaybackComponents.swift */,
-				3AA1642C2D6DBA9F00343214 /* CompactPlaybackModifier.swift */,
 				3AA164422D6DCF0000343214 /* PlaybackContentModifier.swift */,
 				3AA164402D6DC2D100343214 /* PlaybackDragGestureCatcher.swift */,
+				3AA1642C2D6DBA9F00343214 /* CompactPlaybackModifier.swift */,
+				3ADC52BF2E06D8CB00175677 /* RegularPlaybackModifier.swift */,
 			);
 			path = Playback;
 			sourceTree = "<group>";
@@ -1334,6 +1337,7 @@
 				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
 				3A90A6412D9AE268009BDA84 /* CreateLogArchiveButton.swift in Sources */,
 				3A5891152CD3F1EF005C3289 /* ItemMenu.swift in Sources */,
+				3ADC52C02E06D8D000175677 /* RegularPlaybackModifier.swift in Sources */,
 				3A0E42EC2C8195840034873F /* Alignment+Text.swift in Sources */,
 				3AA1642F2D6DBB1200343214 /* PlaybackViewModel.swift in Sources */,
 				3A853FAF2AD03FA600FACAF6 /* PersonView+Header.swift in Sources */,

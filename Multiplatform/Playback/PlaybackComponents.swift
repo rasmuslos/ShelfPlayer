@@ -71,7 +71,7 @@ struct PlaybackTitle: View {
     }
 }
 
-struct PlaybackControls: View {
+struct PlaybackBackwardButton: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
@@ -82,6 +82,91 @@ struct PlaybackControls: View {
             true
         }
     }
+    
+    var body: some View {
+        Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
+            .labelStyle(.iconOnly)
+            .foregroundStyle(isLoading ? .secondary : .primary)
+            .padding(12)
+            .contentShape(.rect)
+            .onTapGesture {
+                satellite.skipPressed(forwards: false)
+            }
+            .onLongPressGesture {
+                satellite.seek(to: 0, insideChapter: true) {}
+            }
+            .padding(-12)
+            .disabled(isLoading)
+            .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
+            .animation(.smooth, value: isLoading)
+    }
+}
+struct PlaybackForwardButton: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+    
+    private var isLoading: Bool {
+        if let currentItemID = satellite.nowPlayingItemID {
+            satellite.isBuffering || satellite.isLoading(observing: currentItemID)
+        } else {
+            true
+        }
+    }
+    
+    var body: some View {
+        Label("playback.skip.forward", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
+            .labelStyle(.iconOnly)
+            .foregroundStyle(isLoading ? .secondary : .primary)
+            .padding(12)
+            .contentShape(.rect)
+            .onTapGesture {
+                satellite.skipPressed(forwards: true)
+            }
+            .onLongPressGesture {
+                satellite.seek(to: satellite.chapterDuration + 0.1, insideChapter: true) {}
+            }
+            .padding(-12)
+            .disabled(isLoading)
+            .symbolEffect(.rotate.clockwise.byLayer, options: .speed(2), value: viewModel.notifySkipForwards)
+            .animation(.smooth, value: isLoading)
+    }
+}
+
+struct PlaybackTogglePlayButton: View {
+    @Environment(Satellite.self) private var satellite
+    
+    private var isLoading: Bool {
+        if let currentItemID = satellite.nowPlayingItemID {
+            satellite.isBuffering || satellite.isLoading(observing: currentItemID)
+        } else {
+            true
+        }
+    }
+    
+    var body: some View {
+        Button(satellite.isPlaying ? "playback.pause" : "playback.play", systemImage: satellite.isPlaying ? "pause" : "play") {
+            satellite.togglePlaying()
+        }
+        .contentShape(.rect)
+        .buttonStyle(.plain)
+        .labelStyle(.iconOnly)
+        .imageScale(.large)
+        .symbolVariant(.fill)
+        .contentTransition(.symbolEffect(.replace.byLayer.downUp))
+        .opacity(isLoading ? 0 : 1)
+        .overlay {
+            if isLoading {
+                Image(systemName: "dot.radiowaves.left.and.right")
+                    .font(.title3)
+                    .symbolRenderingMode(.multicolor)
+                    .symbolEffect(.variableColor.iterative.dimInactiveLayers.nonReversing, isActive: isLoading)
+            }
+        }
+    }
+}
+struct PlaybackControls: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
     
     @ViewBuilder
     private func skipText(forwards: Bool) -> some View {
@@ -104,65 +189,13 @@ struct PlaybackControls: View {
             
             Spacer(minLength: 12)
             
-            Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
-                .labelStyle(.iconOnly)
-                .font(.title)
-                .foregroundStyle(isLoading ? .secondary : .primary)
-                .padding(12)
-                .contentShape(.rect)
-                .onTapGesture {
-                    satellite.skipPressed(forwards: false)
-                }
-                .onLongPressGesture {
-                    satellite.seek(to: 0, insideChapter: true) {}
-                }
-                .padding(-12)
-                .disabled(isLoading)
-                .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
-                .animation(.smooth, value: isLoading)
-        }
-    }
-    @ViewBuilder
-    private var togglePlayButton: some View {
-        Button(satellite.isPlaying ? "playback.pause" : "playback.play", systemImage: satellite.isPlaying ? "pause" : "play") {
-            satellite.togglePlaying()
-        }
-        .contentShape(.rect)
-        .buttonStyle(.plain)
-        .labelStyle(.iconOnly)
-        .font(.largeTitle)
-        .imageScale(.large)
-        .symbolVariant(.fill)
-        .contentTransition(.symbolEffect(.replace.byLayer.downUp))
-        .opacity(isLoading ? 0 : 1)
-        .overlay {
-            if isLoading {
-                Image(systemName: "dot.radiowaves.left.and.right")
-                    .font(.title3)
-                    .symbolRenderingMode(.multicolor)
-                    .symbolEffect(.variableColor.iterative.dimInactiveLayers.nonReversing, isActive: isLoading)
-            }
+            PlaybackBackwardButton()
         }
     }
     @ViewBuilder
     private var forwardButton: some View {
         HStack(spacing: 0) {
-            Label("playback.skip.forward", systemImage: "goforward.\(viewModel.skipForwardsInterval)")
-                .labelStyle(.iconOnly)
-                .font(.title)
-                .foregroundStyle(isLoading ? .secondary : .primary)
-                .padding(12)
-                .contentShape(.rect)
-                .onTapGesture {
-                    satellite.skipPressed(forwards: true)
-                }
-                .onLongPressGesture {
-                    satellite.seek(to: satellite.chapterDuration + 0.1, insideChapter: true) {}
-                }
-                .padding(-12)
-                .disabled(isLoading)
-                .symbolEffect(.rotate.clockwise.byLayer, options: .speed(2), value: viewModel.notifySkipForwards)
-                .animation(.smooth, value: isLoading)
+            PlaybackForwardButton()
             
             Spacer(minLength: 12)
             
@@ -219,8 +252,13 @@ struct PlaybackControls: View {
             
             LazyVGrid(columns: [.init(alignment: .trailing), .init(alignment: .center), .init(alignment: .leading)]) {
                 backwardButton
-                togglePlayButton
+                    .font(.title)
+                
+                PlaybackTogglePlayButton()
+                    .font(.largeTitle)
+                
                 forwardButton
+                    .font(.title)
             }
             Spacer(minLength: 8)
             
@@ -259,19 +297,14 @@ struct PlaybackMenuActions: View {
         }
     }
 }
-struct PlaybackActions: View {
+
+struct PlaybackRateButton: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
-    @Default(.sleepTimerIntervals) private var sleepTimerIntervals
-    @Default(.sleepTimerExtendInterval) private var sleepTimerExtendInterval
-    
     @Default(.playbackRates) private var playbackRates
     
-    private let routePickerView = AVRoutePickerView()
-    
-    @ViewBuilder
-    private var playbackSpeedButton: some View {
+    var body: some View {
         Menu {
             ForEach(playbackRates, id: \.hashValue) { value in
                 Toggle(isOn: .init { satellite.playbackRate == value } set: {
@@ -294,44 +327,50 @@ struct PlaybackActions: View {
         }
         .padding(-12)
     }
+}
+struct PlaybackSleepTimerButton: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
     
-    @ViewBuilder
-    private var sleepTimerButton: some View {
+    @Default(.sleepTimerIntervals) private var sleepTimerIntervals
+    @Default(.sleepTimerExtendInterval) private var sleepTimerExtendInterval
+    
+    var body: some View {
         Menu {
             if let sleepTimer = satellite.sleepTimer {
                 switch sleepTimer {
-                case .chapters(let amount):
-                    ControlGroup {
-                        Button("action.decrease", systemImage: "minus") {
-                            if amount > 1 {
-                                satellite.setSleepTimer(.chapters(amount - 1))
-                            } else {
-                                satellite.setSleepTimer(nil)
-                            }
-                        }
-                        
-                        Text(amount, format: .number)
-                        
-                        Button("action.increase", systemImage: "plus") {
-                            satellite.setSleepTimer(.chapters(amount + 1))
-                        }
-                    }
-                case .interval(let expiresAt):
-                    if let remainingSleepTime = satellite.remainingSleepTime {
+                    case .chapters(let amount):
                         ControlGroup {
                             Button("action.decrease", systemImage: "minus") {
-                                if remainingSleepTime > 60 {
-                                    satellite.setSleepTimer(.interval(expiresAt.advanced(by: -60)))
+                                if amount > 1 {
+                                    satellite.setSleepTimer(.chapters(amount - 1))
                                 } else {
                                     satellite.setSleepTimer(nil)
                                 }
                             }
                             
+                            Text(amount, format: .number)
+                            
                             Button("action.increase", systemImage: "plus") {
-                                satellite.setSleepTimer(.interval(expiresAt.advanced(by: 60)))
+                                satellite.setSleepTimer(.chapters(amount + 1))
                             }
                         }
-                    }
+                    case .interval(let expiresAt):
+                        if let remainingSleepTime = satellite.remainingSleepTime {
+                            ControlGroup {
+                                Button("action.decrease", systemImage: "minus") {
+                                    if remainingSleepTime > 60 {
+                                        satellite.setSleepTimer(.interval(expiresAt.advanced(by: -60)))
+                                    } else {
+                                        satellite.setSleepTimer(nil)
+                                    }
+                                }
+                                
+                                Button("action.increase", systemImage: "plus") {
+                                    satellite.setSleepTimer(.interval(expiresAt.advanced(by: 60)))
+                                }
+                            }
+                        }
                 }
                 
                 Divider()
@@ -370,17 +409,17 @@ struct PlaybackActions: View {
                 
                 if let sleepTimer = satellite.sleepTimer {
                     switch sleepTimer {
-                    case .chapters(_):
-                        Label("sleepTimer.chapter", systemImage: "append.page")
-                    case .interval(_):
-                        if let remainingSleepTime = satellite.remainingSleepTime {
-                            Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
-                                .contentTransition(.numericText())
-                                .animation(.smooth, value: remainingSleepTime)
-                        } else {
-                            ProgressView()
-                                .scaleEffect(0.5)
-                        }
+                        case .chapters(_):
+                            Label("sleepTimer.chapter", systemImage: "append.page")
+                        case .interval(_):
+                            if let remainingSleepTime = satellite.remainingSleepTime {
+                                Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                                    .contentTransition(.numericText())
+                                    .animation(.smooth, value: remainingSleepTime)
+                            } else {
+                                ProgressView()
+                                    .scaleEffect(0.5)
+                            }
                     }
                 } else {
                     Label("playback.sleepTimer", systemImage: "moon.zzz.fill")
@@ -392,6 +431,13 @@ struct PlaybackActions: View {
         .menuActionDismissBehavior(.disabled)
         .padding(-12)
     }
+}
+
+struct PlaybackActions: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+    
+    private let routePickerView = AVRoutePickerView()
     
     @ViewBuilder
     private var airPlayButton: some View {
@@ -433,8 +479,8 @@ struct PlaybackActions: View {
     
     var body: some View {
         LazyVGrid(columns: .init(repeating: .init(alignment: .centerFirstTextBaseline), count: 4)) {
-            playbackSpeedButton
-            sleepTimerButton
+            PlaybackRateButton()
+            PlaybackSleepTimerButton()
             airPlayButton
             queueButton
         }

@@ -67,9 +67,12 @@ struct OfflineView: View {
                     }
                     
                     goOnlineButton
+                    
+                    Button("preferences", systemImage: "gearshape.circle") {
+                        satellite.present(.preferences)
+                    }
                 }
                 .navigationTitle("panel.offline")
-                .modifier(CompactPreferencesToolbarModifier())
                 .modifier(PlaybackSafeAreaPaddingModifier())
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
