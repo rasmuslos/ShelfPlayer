@@ -36,6 +36,7 @@ struct PlaybackTabContentModifier: ViewModifier {
             }
             .toolbarBackgroundVisibility(satellite.isNowPlayingVisible ? .hidden : .automatic, for: .tabBar)
             .ignoresSafeArea(edges: satellite.isNowPlayingVisible ? .bottom : [])
+            .modifier(RegularPlaybackModifier())
         }
     }
 }

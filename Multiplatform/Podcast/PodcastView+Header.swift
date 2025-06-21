@@ -159,6 +159,23 @@ private struct Additional: View {
     }
 }
 
+private struct PlayFirstEpisodeButton: View {
+    @Environment(PodcastViewModel.self) private var viewModel
+    
+    var body: some View {
+        Group {
+            if let first = viewModel.visible.first {
+                PlayButton(item: first)
+                    .playButtonSize(.medium)
+            } else if viewModel.episodes.isEmpty {
+                PlayButton(item: Episode.placeholder)
+                    .playButtonSize(.medium)
+                    .disabled(true)
+            }
+        }
+    }
+}
+
 private struct CompactPresentation: View {
     @Environment(PodcastViewModel.self) private var viewModel
     
@@ -173,17 +190,8 @@ private struct CompactPresentation: View {
             .padding(.top, 16)
             .padding(.bottom, 16)
             
-            Group {
-                if let first = viewModel.visible.first {
-                    PlayButton(item: first)
-                        .playButtonSize(.medium)
-                } else if viewModel.episodes.isEmpty {
-                    PlayButton(item: Episode.placeholder)
-                        .playButtonSize(.medium)
-                        .disabled(true)
-                }
-            }
-            .padding(.bottom, 16)
+            PlayFirstEpisodeButton()
+                .padding(.bottom, 16)
             
             PodcastDescription()
             
@@ -212,6 +220,7 @@ private struct RegularPresentation: View {
                             .foregroundStyle(.secondary)
                         Title(largeFont: true, alignment: .leading)
                         PodcastDescription()
+                        PlayFirstEpisodeButton()
                     }
                 }
         }
