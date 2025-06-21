@@ -9,7 +9,6 @@ import Foundation
 import SwiftData
 import OSLog
 
-
 typealias KeyValueEntity = SchemaV2.PersistedKeyValueEntity
 
 extension PersistenceManager {

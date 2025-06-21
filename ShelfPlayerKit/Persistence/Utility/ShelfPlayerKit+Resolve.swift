@@ -12,7 +12,7 @@ import Defaults
 public extension ShelfPlayerKit {
     static var listenNowItems: [PlayableItem] {
         get async {
-            await ListenNowCache.shared.current
+            await PersistenceManager.shared.listenNow.current
         }
     }
     static var libraries: [Library] {

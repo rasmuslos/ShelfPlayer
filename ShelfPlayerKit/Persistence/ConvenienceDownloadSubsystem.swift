@@ -485,7 +485,7 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                         
                         return result
                     case .listenNow:
-                        return try await ListenNowCache.shared.listenNowItems()
+                        return try await PersistenceManager.shared.listenNow.listenNowItems()
                 }
             }
         }
