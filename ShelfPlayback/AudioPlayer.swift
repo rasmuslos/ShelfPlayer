@@ -132,7 +132,7 @@ public extension AudioPlayer {
     }
     @discardableResult
     func startGrouping(_ itemID: ItemIdentifier, startWithoutListeningSession: Bool) async throws -> ItemIdentifier {
-        let targetID = try await nextGroupingItem(itemID)
+        let targetID = try await ResolvedUpNextStrategy.nextGroupingItem(itemID)
         try await start(.init(itemID: targetID, origin: .series(itemID), startWithoutListeningSession: startWithoutListeningSession))
         
         return targetID
@@ -156,7 +156,7 @@ public extension AudioPlayer {
     }
     @discardableResult
     func queueGrouping(_ itemID: ItemIdentifier, startWithoutListeningSession: Bool) async throws -> ItemIdentifier {
-        let targetID = try await nextGroupingItem(itemID)
+        let targetID = try await ResolvedUpNextStrategy.nextGroupingItem(itemID)
         try await queue([.init(itemID: targetID, origin: .series(itemID), startWithoutListeningSession: startWithoutListeningSession)])
         
         return targetID
@@ -335,25 +335,6 @@ public extension AudioPlayer {
 private extension AudioPlayer {
     func sleepTimerDidExpire(configuration: SleepTimerConfiguration) {
         sleepTimerDidExpireAt = (configuration, .now)
-    }
-    
-    func nextGroupingItem(_ itemID: ItemIdentifier) async throws -> ItemIdentifier {
-        switch itemID.type {
-            case .series:
-                guard let audiobook = try await ResolvedUpNextStrategy.series(itemID).resolve(cutoff: nil).first else {
-                    throw AudioPlayerError.itemMissing
-                }
-                
-                return audiobook.id
-            case .podcast:
-                guard let episode = try await ResolvedUpNextStrategy.podcast(itemID).resolve(cutoff: nil).first else {
-                    throw AudioPlayerError.itemMissing
-                }
-                
-                return episode.id
-            default:
-                throw IntentError.invalidItemType
-        }
     }
     
     nonisolated func setupObservers() {

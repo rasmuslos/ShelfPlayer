@@ -22,12 +22,12 @@ enum SchemaV2: VersionedSchema {
         PersistedChapter.self,
         
         PersistedProgress.self,
-        
         PersistedPlaybackSession.self,
         
         PersistedKeyValueEntity.self,
         PersistedSearchIndexEntry.self,
         
         PersistedDiscoveredConnection.self,
+        PersistedListenNowSuggestion.self,
     ]}
 }
