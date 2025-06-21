@@ -41,7 +41,7 @@ struct ListenNowSheet: View {
                 
                 if enableConvenienceDownloads {
                     Section {
-                        Toggle("preferences.convenienceDownload.enableListenNowDownloads", isOn: $enableListenNowDownloads)
+                        Toggle("preferences.convenienceDownload.enableListenNowDownloads", systemImage: "arrow.down.square", isOn: $enableListenNowDownloads)
                     }
                 }
             }
@@ -66,7 +66,7 @@ struct ListenNowSheet: View {
             }
             
             if refresh {
-                await ListenNowCache.shared.invalidate()
+                await PersistenceManager.shared.listenNow.invalidate()
             }
             
             let listenNowItems = await ShelfPlayerKit.listenNowItems

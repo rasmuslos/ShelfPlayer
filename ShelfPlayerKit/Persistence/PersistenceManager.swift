@@ -17,7 +17,6 @@ public final class PersistenceManager: Sendable {
     public let keyValue: KeyValueSubsystem
     public let authorization: AuthorizationSubsystem
     
-    
     public let progress: ProgressSubsystem
     public let session: SessionSubsystem
     
@@ -26,6 +25,8 @@ public final class PersistenceManager: Sendable {
     
     public let item: ItemSubsystem
     public let bookmark: BookmarkSubsystem
+    
+    public let listenNow: ListenNowSubsystem
     
     private init() {
         let schema = Schema(versionedSchema: SchemaV2.self)
@@ -56,6 +57,8 @@ public final class PersistenceManager: Sendable {
         
         item = .init()
         bookmark = .init(modelContainer: modelContainer)
+        
+        listenNow = .init(modelContainer: modelContainer)
     }
     
     public func remove(itemID: ItemIdentifier) async {

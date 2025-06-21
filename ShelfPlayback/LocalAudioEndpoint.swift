@@ -163,7 +163,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
                 return nil
             }
             
-            return ItemIdentifier(primaryID: currentItemID.groupingID!, groupingID: nil, libraryID: currentItemID.libraryID, connectionID: currentItemID.connectionID, type: .podcast)
+            return ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(currentItemID)
         }
     }
     
@@ -707,6 +707,22 @@ private extension LocalAudioEndpoint {
     func didPlayToEnd(finishedCurrentItem: Bool) async {
         await playbackReporter.finalize(currentTime: finishedCurrentItem ? duration : currentTime)
         
+        if finishedCurrentItem {
+            let groupingID: ItemIdentifier
+            
+            if let seriesID = await self.seriesID {
+                groupingID = seriesID
+            } else if let podcastID = await self.podcastID {
+                groupingID = podcastID
+            } else {
+                return
+            }
+            
+            Task.detached {
+                await PersistenceManager.shared.listenNow.groupingDidFinishPlaying(groupingID)
+            }
+        }
+        
         let nextItem: AudioPlayerItem
         
         if !queue.isEmpty {
@@ -721,7 +737,6 @@ private extension LocalAudioEndpoint {
         }
         
         audioPlayer.removeAllItems()
-        
         currentItem = nextItem
         
         do {

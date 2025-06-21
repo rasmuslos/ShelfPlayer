@@ -18,7 +18,9 @@ struct EpisodeList: View {
     
     var body: some View {
         ForEach(episodes) { episode in
-            HStack(spacing: 12) {
+            let isSelected = selected?.contains(episode.id) == true
+            
+            HStack(spacing: 16) {
                 if selected != nil {
                     Group {
                         Label("action.select", systemImage: "circle")
@@ -31,7 +33,7 @@ struct EpisodeList: View {
                             .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
                     }
                     .onTapGesture {
-                        if selected?.contains(episode.id) == true {
+                        if isSelected {
                             selected?.removeAll {
                                 $0 == episode.id
                             }
@@ -45,6 +47,7 @@ struct EpisodeList: View {
                 }
             }
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+            .listRowBackground(isSelected ? Color.gray.opacity(0.12) : .clear)
             .animation(.snappy, value: selected)
         }
     }

@@ -14,8 +14,8 @@ typealias PersistedProgress = SchemaV2.PersistedProgress
 
 extension PersistenceManager {
     public final actor ProgressSubsystem: ModelActor {
-        public nonisolated let modelExecutor: any SwiftData.ModelExecutor
-        public nonisolated let modelContainer: SwiftData.ModelContainer
+        public let modelExecutor: any SwiftData.ModelExecutor
+        public let modelContainer: SwiftData.ModelContainer
         
         let logger: Logger
         let signposter: OSSignposter
@@ -434,54 +434,56 @@ public extension PersistenceManager.ProgressSubsystem {
                     }
                     
                     switch entity.status {
-                    case .synchronized, .desynchronized:
-                        guard let lastUpdate = payload.lastUpdate else {
-                            pendingUpdate.append(.init(persistedEntity: entity))
-                            return
-                        }
-                        
-                        let delta = Int(lastUpdate / 1000).distance(to: Int(entity.lastUpdate.timeIntervalSince1970))
-                        
-                        if delta == 0 && entity.status == .synchronized {
-                            return
-                        }
-                        
-                        guard delta > 0 else {
-                            pendingUpdate.append(.init(persistedEntity: entity))
-                            return
-                        }
-                        
-                        if let duration = payload.duration, duration > 0 {
-                            entity.duration = duration
-                        } else {
-                            entity.duration = nil
-                        }
-                        
-                        entity.currentTime = payload.currentTime ?? 0
-                        
-                        entity.progress = payload.progress ?? 0
-                        
-                        if let startedAt = payload.startedAt {
-                            entity.startedAt = Date(timeIntervalSince1970: Double(startedAt) / 1000)
-                        } else {
-                            entity.startedAt = nil
-                        }
-                        
-                        if let lastUpdate = payload.lastUpdate {
-                            entity.lastUpdate = Date(timeIntervalSince1970: Double(lastUpdate) / 1000)
-                        } else {
-                            entity.lastUpdate = .now
-                        }
-                        
-                        if let finishedAt = payload.finishedAt {
-                            entity.finishedAt = Date(timeIntervalSince1970: Double(finishedAt) / 1000)
-                        } else {
-                            entity.finishedAt = nil
-                        }
-                        
-                        entity.status = .synchronized
-                    case .tombstone:
-                        pendingDeletion.append((id, entity.connectionID))
+                        case .synchronized, .desynchronized:
+                            guard let lastUpdate = payload.lastUpdate else {
+                                pendingCreation.append(.init(persistedEntity: entity))
+                                return
+                            }
+                            
+                            let delta = Double(lastUpdate / 1000).distance(to: entity.lastUpdate.timeIntervalSince1970)
+                            
+                            // about equal
+                            if abs(delta) < 1 {
+                                return
+                            }
+                            
+                            // Local is newer
+                            if delta > 0 {
+                                pendingUpdate.append(.init(persistedEntity: entity))
+                                return
+                            }
+                            
+                            if let duration = payload.duration, duration > 0 {
+                                entity.duration = duration
+                            } else {
+                                entity.duration = nil
+                            }
+                            
+                            entity.currentTime = payload.currentTime ?? 0
+                            
+                            entity.progress = payload.progress ?? 0
+                            
+                            if let startedAt = payload.startedAt {
+                                entity.startedAt = Date(timeIntervalSince1970: Double(startedAt / 1000))
+                            } else {
+                                entity.startedAt = nil
+                            }
+                            
+                            if let lastUpdate = payload.lastUpdate {
+                                entity.lastUpdate = Date(timeIntervalSince1970: Double(lastUpdate / 1000))
+                            } else {
+                                entity.lastUpdate = .now
+                            }
+                            
+                            if let finishedAt = payload.finishedAt {
+                                entity.finishedAt = Date(timeIntervalSince1970: Double(finishedAt / 1000))
+                            } else {
+                                entity.finishedAt = nil
+                            }
+                            
+                            entity.status = .synchronized
+                        case .tombstone:
+                            pendingDeletion.append((id, entity.connectionID))
                     }
                 }
             }
@@ -524,7 +526,7 @@ public extension PersistenceManager.ProgressSubsystem {
             let batch = pendingCreation + pendingUpdate
             let grouped = Dictionary(batch.map { ($0.connectionID, [$0]) }, uniquingKeysWith: +)
             
-            logger.info("Batch updating \(batch.count) progress entities from \(grouped.count) servers")
+            logger.info("Batch updating \(batch.count) (U: \(pendingUpdate.count), C: \(pendingCreation.count)) progress entities from \(grouped.count) servers")
             
             for (connectionID, entities) in grouped {
                 try await ABSClient[connectionID].batchUpdate(progress: entities)
