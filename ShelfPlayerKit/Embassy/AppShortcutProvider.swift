@@ -50,6 +50,11 @@ public struct AppShortcutProvider: AppShortcutsProvider {
             "Skip forwards using \(.applicationName)",
         ], shortTitle: "intent.skip.forwards", systemImageName: "arrow.trianglehead.clockwise.rotate.90")
         
+        AppShortcut(intent: SetSleepTimerIntent(), phrases: [
+            "Set \(.applicationName) sleep timer",
+            "Set a sleep timer using \(.applicationName)",
+        ], shortTitle: "intent.setSleepTimer", systemImageName: "moon.zzz.fill")
+        
         AppShortcut(intent: CheckForDownloadsIntent(), phrases: [
             "Search for new downloads using \(.applicationName)",
             "Check for new downloads using \(.applicationName)",

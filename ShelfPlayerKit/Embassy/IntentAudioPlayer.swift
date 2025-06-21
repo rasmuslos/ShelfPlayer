@@ -18,13 +18,16 @@ public final class IntentAudioPlayer: Sendable {
     let _createBookmark: @Sendable (String?) async throws -> Void
     let _skip: @Sendable (TimeInterval?, Bool) async throws -> Void
     
+    let _setSleepTimer: @Sendable (SleepTimerConfiguration) async throws -> Void
+    
     public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?,
                 resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?,
                 setPlaying: @Sendable @escaping (Bool) async -> Void,
                 start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void,
                 startGrouping: @Sendable @escaping (ItemIdentifier, Bool) async throws -> ItemIdentifier,
                 createBookmark: @Sendable @escaping (String?) async throws -> Void,
-                skip: @Sendable @escaping (TimeInterval?, Bool) async throws -> Void
+                skip: @Sendable @escaping (TimeInterval?, Bool) async throws -> Void,
+                setSleepTimer: @Sendable @escaping (SleepTimerConfiguration) async throws -> Void
     ) {
         self.resolveIsPlaying = resolveIsPlaying
         self.resolveCurrentItemID = resolveCurrentItemID
@@ -34,6 +37,7 @@ public final class IntentAudioPlayer: Sendable {
         _startGrouping = startGrouping
         _createBookmark = createBookmark
         _skip = skip
+        _setSleepTimer = setSleepTimer
     }
     
     var isPlaying: Bool? {
@@ -63,5 +67,9 @@ public final class IntentAudioPlayer: Sendable {
     
     func skip(_ interval: TimeInterval?, forwards: Bool) async throws {
         try await _skip(interval, forwards)
+    }
+    
+    func setSleepTimer(_ configuration: SleepTimerConfiguration) async throws {
+        try await _setSleepTimer(configuration)
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Defaults
 import ShelfPlayerKit
 
 struct WidgetBackground: View {

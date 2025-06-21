@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import DefaultsMacros
 import ShelfPlayback
 
 @Observable @MainActor

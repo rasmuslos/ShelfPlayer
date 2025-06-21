@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import DefaultsMacros
 import ShelfPlayback
 
 struct AudiobookLibraryPanel: View {

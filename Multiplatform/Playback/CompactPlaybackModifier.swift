@@ -114,6 +114,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                             }
                                         }
                                     )
+                                    .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16, style: .continuous))
                                     .contextMenu {
                                         PlaybackMenuActions()
                                     } preview: {
@@ -343,8 +344,6 @@ private struct CollapsedForeground: View {
         .foregroundStyle(.primary)
         .frame(height: 56)
         .clipShape(.rect(cornerRadius: 12, style: .continuous))
-        .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16, style: .continuous))
-        // .modifier(NowPlaying.ContextMenuModifier())
         .padding(.horizontal, 8)
     }
 }
