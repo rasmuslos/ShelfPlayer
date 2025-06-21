@@ -177,19 +177,27 @@ final class EmbassyManager: Sendable {
             Embassy.unsetWidgetIsPlaying()
         }
         
-        RFNotification[.progressEntityUpdated].subscribe {
-            guard let current = Defaults[.playbackInfoWidgetValue], let itemID = current.currentItemID, itemID.primaryID == $0.primaryID && itemID.groupingID == $0.groupingID && itemID.connectionID == $0.connectionID else {
-                return
+        RFNotification[.progressEntityUpdated].subscribe { connectionID, primaryID, groupingID, entity in
+            Task {
+                guard let current = Defaults[.playbackInfoWidgetValue], let itemID = current.currentItemID, itemID.primaryID == primaryID && itemID.groupingID == groupingID && itemID.connectionID == connectionID else {
+                    return
+                }
+                
+                guard entity?.isFinished == true else {
+                    return
+                }
+                
+                let isDownloaded: Bool
+                let nextUp = await ShelfPlayerKit.listenNowItems.first?.id
+                
+                if let nextUp, await PersistenceManager.shared.download.status(of: nextUp) == .completed {
+                    isDownloaded = true
+                } else {
+                    isDownloaded = false
+                }
+                
+                await self.updatePlaybackInfo(itemID: nil, isDownloaded: isDownloaded, isPlaying: nil)
             }
-            
-            guard $0.3?.isFinished == true else {
-                return
-            }
-            
-            Defaults[.playbackInfoWidgetValue] = .init(currentItemID: nil, isDownloaded: false, isPlaying: nil, listenNowItems: current.listenNowItems)
-            
-            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
-            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
         }
         RFNotification[.downloadStatusChanged].subscribe { payload in
             Task {
@@ -211,10 +219,7 @@ final class EmbassyManager: Sendable {
                     isDownloaded = false
                 }
                 
-                Defaults[.playbackInfoWidgetValue] = .init(currentItemID: current.currentItemID, isDownloaded: isDownloaded, isPlaying: current.isPlaying, listenNowItems: current.listenNowItems)
-                
-                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
-                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
+                await self.updatePlaybackInfo(itemID: current.currentItemID, isDownloaded: isDownloaded, isPlaying: current.isPlaying)
             }
         }
         
@@ -270,10 +275,13 @@ private extension EmbassyManager {
                 isPlaying = true
             }
             
-            Defaults[.playbackInfoWidgetValue] = await .init(currentItemID: itemID, isDownloaded: isDownloaded, isPlaying: isPlaying, listenNowItems: ShelfPlayerKit.listenNowItems)
-            
-            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
-            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
+            await updatePlaybackInfo(itemID: itemID, isDownloaded: isDownloaded, isPlaying: isPlaying)
         }
+    }
+    func updatePlaybackInfo(itemID: ItemIdentifier?, isDownloaded: Bool, isPlaying: Bool?) async {
+        await Defaults[.playbackInfoWidgetValue] = .init(currentItemID: itemID, isDownloaded: isDownloaded, isPlaying: isPlaying, listenNowItems: ShelfPlayerKit.listenNowItems)
+        
+        WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
+        WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
     }
 }
