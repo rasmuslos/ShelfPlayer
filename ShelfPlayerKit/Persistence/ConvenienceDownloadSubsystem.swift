@@ -8,7 +8,6 @@
 import Foundation
 import OSLog
 @preconcurrency import BackgroundTasks
-import Defaults
 import RFNotifications
 
 private let LISTEN_NOW_CONFIGURATION_ID = "listen-now"

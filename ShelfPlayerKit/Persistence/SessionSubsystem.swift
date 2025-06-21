@@ -8,7 +8,6 @@
 import Foundation
 import SwiftData
 import OSLog
-import Defaults
 import RFNotifications
 
 typealias PersistedPlaybackSession = SchemaV2.PersistedPlaybackSession

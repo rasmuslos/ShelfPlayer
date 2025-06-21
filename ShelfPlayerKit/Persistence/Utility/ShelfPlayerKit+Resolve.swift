@@ -7,7 +7,6 @@
 
 import Foundation
 import CoreSpotlight
-import Defaults
 
 public extension ShelfPlayerKit {
     static var listenNowItems: [PlayableItem] {

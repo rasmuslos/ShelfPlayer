@@ -49,6 +49,22 @@
         }
       }
     },
+    "action.end" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End"
+          }
+        }
+      }
+    },
     "action.increase" : {
       "localizations" : {
         "de" : {
@@ -130,7 +146,20 @@
       }
     },
     "action.select" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswählen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select"
+          }
+        }
+      }
     },
     "airPlay" : {
       "localizations" : {
@@ -1732,9 +1761,6 @@
         }
       }
     },
-    "item.end" : {
-
-    },
     "item.explicit" : {
       "localizations" : {
         "de" : {
@@ -2399,9 +2425,6 @@
           }
         }
       }
-    },
-    "item.select" : {
-
     },
     "item.series" : {
       "localizations" : {

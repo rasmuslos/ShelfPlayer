@@ -7,7 +7,6 @@
 
 import Foundation
 import WidgetKit
-import Defaults
 
 public struct Embassy {
     public static func unsetWidgetIsPlaying() {
