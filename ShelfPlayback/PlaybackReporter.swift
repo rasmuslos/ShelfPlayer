@@ -126,7 +126,7 @@ final actor PlaybackReporter {
 private extension PlaybackReporter {
     func updateIfNeeded() {
         // Update once every minute
-        if let lastUpdate, lastUpdate.distance(to: .now) > 60 {
+        if let lastUpdate, lastUpdate.distance(to: .now) > 30 {
             update()
         } else if lastUpdate == nil {
             update()
@@ -163,12 +163,6 @@ private extension PlaybackReporter {
         
         // Async operations (suspension) begins here
         
-        do {
-            try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration, notifyServer: false)
-        } catch {
-            logger.warning("Cannot update progress: \(error).")
-        }
-        
         var updateLocalSession = true
         
         do {
@@ -193,6 +187,12 @@ private extension PlaybackReporter {
             } catch {
                 logger.warning("Failed to update local session: \(error).")
             }
+        }
+        
+        do {
+            try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration, notifyServer: false)
+        } catch {
+            logger.warning("Cannot update progress: \(error).")
         }
     }
 }
