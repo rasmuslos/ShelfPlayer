@@ -135,7 +135,7 @@ extension Item: Transferable {
             return data
         }
         
-        // CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
+        CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
     }
 }
 

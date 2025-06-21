@@ -56,11 +56,11 @@ struct PodcastEpisodesView: View {
                 if viewModel.performingBulkAction {
                     ProgressView()
                 } else if viewModel.bulkSelected == nil {
-                    Button("item.select", systemImage: "circle.dashed") {
+                    Button("action.select", systemImage: "circle.dashed") {
                         viewModel.bulkSelected = []
                     }
                 } else {
-                    Menu("item.select", systemImage: "circle.circle") {
+                    Menu("action.select", systemImage: "circle.circle") {
                         Button("item.progress.markAsUnfinished", systemImage: "minus.square") {
                             viewModel.performBulkAction(isFinished: false)
                         }
@@ -70,7 +70,7 @@ struct PodcastEpisodesView: View {
                         
                         Divider()
                         
-                        Button("item.end", systemImage: "circle.badge.checkmark") {
+                        Button("action.end", systemImage: "circle.badge.checkmark") {
                             viewModel.bulkSelected = nil
                         }
                     }

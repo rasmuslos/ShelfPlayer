@@ -1,8 +1,8 @@
 //
 //  SleepTimerConfiguration.swift
-//  ShelfPlayerKit
+//  ShelfPlayer
 //
-//  Created by Rasmus Krämer on 04.03.25.
+//  Created by Rasmus Krämer on 21.06.25.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ public enum SleepTimerConfiguration: Sendable, Hashable {
     case interval(Date)
     case chapters(Int)
     
-    var extended: Self {
+    public var extended: Self {
         switch self {
         case .interval(let remaining):
                 .interval(remaining + Defaults[.sleepTimerExtendInterval])

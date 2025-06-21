@@ -95,6 +95,14 @@ struct RegularPlaybackModifier: ViewModifier {
                                 }
                                 .buttonStyle(.plain)
                             }
+                            .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16, style: .continuous))
+                            .contextMenu {
+                                PlaybackMenuActions()
+                            } preview: {
+                                if let currentItem = satellite.nowPlayingItem {
+                                    PlayableItemContextMenuPreview(item: currentItem)
+                                }
+                            }
                             .padding(.horizontal, 20)
                             .animation(.smooth, value: geometryProxy.size.width)
                         }

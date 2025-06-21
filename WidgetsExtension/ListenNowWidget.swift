@@ -7,7 +7,6 @@
 
 import WidgetKit
 import SwiftUI
-import Defaults
 import ShelfPlayerKit
 
 struct ListenNowWidget: Widget {

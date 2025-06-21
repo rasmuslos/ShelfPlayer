@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import DefaultsMacros
 import RFNotifications
 import ShelfPlayerKit
 

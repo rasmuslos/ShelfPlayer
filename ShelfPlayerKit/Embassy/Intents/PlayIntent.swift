@@ -8,7 +8,6 @@
 import Foundation
 import AppIntents
 import WidgetKit
-import Defaults
 
 public struct PlayIntent: AudioPlaybackIntent {
     public static let title: LocalizedStringResource = "intent.play"

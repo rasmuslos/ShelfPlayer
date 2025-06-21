@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import OSLog
-import DefaultsMacros
 import ShelfPlayback
 
 @Observable @MainActor

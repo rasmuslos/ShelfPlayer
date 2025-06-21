@@ -204,6 +204,31 @@
           }
         }
       }
+    },
+    "Set ${applicationName} sleep timer" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Setzte einen ${applicationName} Schlaf-Timer",
+              "Setzte einen ${applicationName} Sleep-Timer",
+              "Starte Schlaf-Timer ${applicationName}",
+              "Starte Sleep-Timer ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Set ${applicationName} sleep timer",
+              "Set a sleep timer using ${applicationName}"
+            ]
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
