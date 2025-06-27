@@ -27,9 +27,13 @@ struct GlobalSearchSheet: View {
                 } else {
                     List {
                         ForEach(items) { item in
-                            ItemCompactRow(item: item) {
+                            Button {
                                 item.id.navigate()
+                            } label: {
+                                ItemCompactRow(item: item)
                             }
+                            .buttonStyle(.plain)
+                            .modifier(ItemStatusModifier(item: item))
                         }
                     }
                     .listStyle(.plain)

@@ -82,7 +82,7 @@ final actor PlaybackReporter {
         update()
     }
     
-    func finalize(currentTime: TimeInterval?) {
+    func finalize(currentTime: TimeInterval?) async {
         guard !isFinished else {
             logger.warning("Attempt to finalize playback reporter after being already finalized")
             return
@@ -94,32 +94,29 @@ final actor PlaybackReporter {
             self.currentTime = currentTime
         }
         
-        Task {
-            await update(force: true)
-            
-            let task = await UIApplication.shared.beginBackgroundTask(withName: "PlaybackReporter::finalize")
-            
-            if let localSessionID {
-                do {
-                    try await PersistenceManager.shared.session.closeLocalPlaybackSession(sessionID: localSessionID)
-                } catch {
-                    logger.error("Failed to close local playback session: \(error)")
-                }
+        await update(force: true)
+        
+        let task = await UIApplication.shared.beginBackgroundTask(withName: "PlaybackReporter::finalize")
+        
+        if let localSessionID {
+            do {
+                try await PersistenceManager.shared.session.closeLocalPlaybackSession(sessionID: localSessionID)
+            } catch {
+                logger.error("Failed to close local playback session: \(error)")
             }
-            
-            if let sessionID, let duration, let currentTime {
-                do {
-                    try await ABSClient[itemID.connectionID].closeSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: 0)
-                    Defaults[.openPlaybackSessions].removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
-                } catch {
-                    logger.error("Failed to close session: \(error)")
-                }
-            }
-            
-            await UIApplication.shared.endBackgroundTask(task)
-            
-            await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(itemID)
         }
+        
+        if let sessionID, let duration, let currentTime {
+            do {
+                try await ABSClient[itemID.connectionID].closeSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: 0)
+                Defaults[.openPlaybackSessions].removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
+            } catch {
+                logger.error("Failed to close session: \(error)")
+            }
+        }
+        
+        await UIApplication.shared.endBackgroundTask(task)
+        await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(itemID)
     }
 }
 
