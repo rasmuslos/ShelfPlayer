@@ -60,7 +60,6 @@ struct StatusOverlay: View {
                                                         .font(.system(size: fontSize - 3))
                                                         .fontWeight(.heavy)
                                                 }
-                                                .accessibilityValue(Text("item.downloading"))
                                         } else if progress < 1 {
                                             Group {
                                                 if itemImageStatusPercentageText {
@@ -71,13 +70,11 @@ struct StatusOverlay: View {
                                                     CircularProgressIndicator(completed: min(0.92, progress), background: .white.opacity(0.3), tint: .white)
                                                 }
                                             }
-                                            .accessibilityValue(Text(progress, format: .percent.notation(.compactName)))
                                         } else {
                                             Image(systemName: "checkmark")
                                                 .labelStyle(.iconOnly)
                                                 .font(.system(size: fontSize))
                                                 .fontWeight(.heavy)
-                                                .accessibilityValue(Text("item.progress.finished"))
                                         }
                                     }
                                     .frame(width: size / 3, height: size / 3)
@@ -92,7 +89,6 @@ struct StatusOverlay: View {
                             .font(.system(size: fontSize))
                             .foregroundStyle(.ultraThickMaterial)
                             .padding(size / 7)
-                            .accessibilityValue(Text("item.downloaded"))
                     }
                 }
             }

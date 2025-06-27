@@ -8,29 +8,20 @@
 import SwiftUI
 import ShelfPlayback
 
-struct ItemCompactRow<TrailingContent: View>: View {
+struct ItemCompactRow: View {
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
-    
-    let hideImage: Bool
-    
-    let trailingContent: TrailingContent?
-    
-    let callback: (() -> Void)?
+    let context: Context
     
     @State private var item: Item?
     
     @State private var progress: ProgressTracker?
     @State private var download: DownloadStatusTracker?
     
-    init(itemID: ItemIdentifier, hideImage: Bool = false, @ViewBuilder trailingContent: () -> TrailingContent, callback: (() -> Void)? = nil) {
+    init(itemID: ItemIdentifier, context: Context = .unknown) {
         self.itemID = itemID
-        
-        self.hideImage = hideImage
-        self.trailingContent = trailingContent()
-        
-        self.callback = callback
+        self.context = context
         
         _item = .init(initialValue: nil)
         
@@ -39,13 +30,9 @@ struct ItemCompactRow<TrailingContent: View>: View {
             _download = .init(initialValue: .init(itemID: itemID))
         }
     }
-    init(item: Item, hideImage: Bool = false, @ViewBuilder trailingContent: () -> TrailingContent, callback: (() -> Void)? = nil) {
+    init(item: Item, context: Context = .unknown) {
         self.itemID = item.id
-        
-        self.hideImage = hideImage
-        self.trailingContent = trailingContent()
-        
-        self.callback = callback
+        self.context = context
         
         _item = .init(initialValue: item)
         
@@ -70,48 +57,33 @@ struct ItemCompactRow<TrailingContent: View>: View {
     }
     
     var body: some View {
-        HStack(spacing: 0) {
-            Button {
-                if let callback {
-                    callback()
-                } else {
-                    satellite.start(itemID)
-                }
-            } label: {
-                HStack(spacing: 8) {
-                    if !hideImage {
-                        ItemImage(itemID: itemID, size: .small)
-                            .frame(width: 44)
-                    }
-                    
-                    if let item {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(item.name)
-                                .lineLimit(1)
-                                .font(.headline)
-                            
-                            Text(subtitle)
-                            .lineLimit(1)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        }
-                    } else {
-                        ProgressView()
-                            .task {
-                                load()
-                            }
-                    }
-                    
-                    Spacer(minLength: 12)
-                }
-                .contentShape(.rect)
+        HStack(spacing: 8) {
+            if !context.isImageHidden {
+                ItemImage(itemID: itemID, size: .small)
+                    .frame(width: 44)
             }
-            .buttonStyle(.plain)
-            .disabled(satellite.isLoading(observing: itemID))
             
-            if let trailingContent {
-                trailingContent
-            } else if download?.status == .downloading {
+            if let item {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.name)
+                        .lineLimit(1)
+                        .font(.headline)
+                    
+                    Text(subtitle)
+                        .lineLimit(1)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                ProgressView()
+                    .task {
+                        load()
+                    }
+            }
+            
+            Spacer(minLength: 0)
+            
+            if download?.status == .downloading {
                 DownloadButton(itemID: itemID, progressVisibility: .row)
                     .labelStyle(.iconOnly)
             } else if let progress = progress?.progress {
@@ -127,25 +99,8 @@ struct ItemCompactRow<TrailingContent: View>: View {
                     .scaleEffect(0.75)
             }
         }
-        .modify {
-            if itemID.isPlayable {
-                $0
-                    .modifier(PlayableItemSwipeActionsModifier(itemID: itemID))
-            } else {
-                $0
-            }
-        }
-        .modify {
-            if let playableItem = item as? PlayableItem {
-                $0
-                    .modifier(PlayableItemContextMenuModifier(item: playableItem))
-            } else {
-                $0
-            }
-        }
+        .contentShape(.rect)
         .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
-        .accessibilityAddTraits(.isButton)
-        .accessibilityLabel(Text(item?.name ?? "loading"))
     }
     
     private nonisolated func load() {
@@ -157,37 +112,23 @@ struct ItemCompactRow<TrailingContent: View>: View {
             }
         }
     }
-}
-
-extension ItemCompactRow where TrailingContent == EmptyView {
-    init(itemID: ItemIdentifier, hideImage: Bool = false, callback: (() -> Void)? = nil) {
-        self.itemID = itemID
+    
+    enum Context {
+        case unknown
+        case bookmark
+        case offlineEpisode
         
-        self.hideImage = hideImage
-        self.trailingContent = nil
-        
-        self.callback = callback
-        
-        _item = .init(initialValue: nil)
-        
-        if itemID.isPlayable {
-            _progress = .init(initialValue: .init(itemID: itemID))
-            _download = .init(initialValue: .init(itemID: itemID))
+        var isImageHidden: Bool {
+            switch self {
+                case .offlineEpisode: true
+                default: false
+            }
         }
-    }
-    init(item: Item, hideImage: Bool = false, callback: (() -> Void)? = nil) {
-        self.itemID = item.id
-        
-        self.hideImage = hideImage
-        self.trailingContent = nil
-        
-        self.callback = callback
-        
-        _item = .init(initialValue: item)
-        
-        if itemID.isPlayable {
-            _progress = .init(initialValue: .init(itemID: itemID))
-            _download = .init(initialValue: .init(itemID: itemID))
+        var isTrailingContentHidden: Bool {
+            switch self {
+                case .bookmark: true
+                default: false
+            }
         }
     }
 }
@@ -203,7 +144,7 @@ extension ItemCompactRow where TrailingContent == EmptyView {
         .previewEnvironment()
 }
 #Preview {
-    ItemCompactRow(item: Episode.fixture, hideImage: true)
+    ItemCompactRow(item: Episode.fixture, context: .offlineEpisode)
         .previewEnvironment()
 }
 #endif

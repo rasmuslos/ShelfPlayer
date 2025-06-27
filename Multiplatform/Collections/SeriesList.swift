@@ -75,6 +75,7 @@ extension SeriesList {
                 }
                 .padding(.leading, 12)
             }
+            .contentShape(.rect)
         }
     }
 }
