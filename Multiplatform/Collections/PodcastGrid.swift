@@ -107,6 +107,7 @@ private struct PodcastGridItem: View {
             .matchedTransitionSource(id: "item_\(podcast.id)", in: namespace!)
         }
         .buttonStyle(.plain)
+        .modifier(ItemStatusModifier(item: podcast))
     }
 }
 

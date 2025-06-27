@@ -15,6 +15,7 @@ struct PodcastList: View {
     var body: some View {
         ForEach(podcasts) { podcast in
             PodcastRow(podcast: podcast)
+                .modifier(ItemStatusModifier(item: podcast))
                 .onAppear {
                     onAppear(podcast)
                 }
@@ -64,6 +65,7 @@ private struct PodcastRow: View {
             }
             .contentShape(.hoverMenuInteraction, .rect)
         }
+        .buttonStyle(.plain)
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }

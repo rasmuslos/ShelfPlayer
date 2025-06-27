@@ -21,33 +21,37 @@ struct EpisodeList: View {
             let isSelected = selected?.contains(episode.id) == true
             
             HStack(spacing: 16) {
-                if selected != nil {
-                    Group {
-                        Label("action.select", systemImage: "circle")
-                            .foregroundStyle(Color.accentColor)
-                            .labelStyle(.iconOnly)
-                            .symbolVariant(selected?.contains(episode.id) == true ? .fill : .none)
-                            .transition(.opacity)
-                        
-                        RowLabel(episode: episode, context: context, zoomID: nil)
+                Group {
+                    if selected != nil {
+                        Group {
+                            Label("action.select", systemImage: "circle")
+                                .foregroundStyle(Color.accentColor)
+                                .labelStyle(.iconOnly)
+                                .symbolVariant(selected?.contains(episode.id) == true ? .fill : .none)
+                                .transition(.opacity)
+                            
+                            RowLabel(episode: episode, context: context, zoomID: nil)
+                                .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
+                        }
+                        .onTapGesture {
+                            if isSelected {
+                                selected?.removeAll {
+                                    $0 == episode.id
+                                }
+                            } else {
+                                selected?.append(episode.id)
+                            }
+                        }
+                    } else {
+                        Row(episode: episode, context: context)
                             .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
                     }
-                    .onTapGesture {
-                        if isSelected {
-                            selected?.removeAll {
-                                $0 == episode.id
-                            }
-                        } else {
-                            selected?.append(episode.id)
-                        }
-                    }
-                } else {
-                    Row(episode: episode, context: context)
-                        .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
                 }
+                .contentShape(.rect)
             }
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .listRowBackground(isSelected ? Color.gray.opacity(0.12) : .clear)
+            .modifier(ItemStatusModifier(item: episode))
             .animation(.snappy, value: selected)
         }
     }
@@ -73,8 +77,6 @@ private struct Row: View {
             RowLabel(episode: episode, context: context, zoomID: zoomID)
         }
         .buttonStyle(.plain)
-        .modifier(PlayableItemSwipeActionsModifier(itemID: episode.id))
-        .modifier(PlayableItemContextMenuModifier(item: episode))
     }
 }
 private struct RowLabel: View {
@@ -133,7 +135,6 @@ private struct RowLabel: View {
             
             Spacer()
         }
-        .contentShape(.hoverMenuInteraction, .rect())
     }
 }
 
