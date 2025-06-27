@@ -32,8 +32,10 @@ struct OfflineView: View {
                     if !audiobooks.isEmpty {
                         Section("row.downloaded.audiobooks") {
                             ForEach(audiobooks) { audiobook in
-                                ItemCompactRow(item: audiobook) {
+                                Button {
                                     satellite.start(audiobook.id)
+                                } label: {
+                                    ItemCompactRow(item: audiobook)
                                 }
                             }
                         }
@@ -42,8 +44,10 @@ struct OfflineView: View {
                     ForEach(podcastsFlat) { podcast in
                         Section {
                             ForEach(podcasts[podcast] ?? []) { episode in
-                                ItemCompactRow(item: episode, hideImage: true) {
+                                Button {
                                     satellite.start(episode.id)
+                                } label: {
+                                    ItemCompactRow(item: episode, context: .offlineEpisode)
                                 }
                             }
                         } header: {

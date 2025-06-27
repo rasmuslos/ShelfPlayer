@@ -36,7 +36,9 @@ struct GroupingConfigurationSheet: View {
                     }
                     
                     Section {
-                        ConvenienceDownloadRetrievalPicker(retrieval: $viewModel.retrieval)
+                        ConvenienceDownloadRetrievalPicker(retrieval: $viewModel.retrieval) {
+                            Text("item.convenienceDownload.retrieval")
+                        }
                     } header: {
                         Text("item.convenienceDownload")
                     } footer: {
@@ -78,15 +80,18 @@ struct GroupingConfigurationSheet: View {
         .interactiveDismissDisabled()
     }
     
-    struct ConvenienceDownloadRetrievalPicker: View {
+    struct ConvenienceDownloadRetrievalPicker<Content: View>: View {
         @Binding var retrieval: ConvenienceDownloadRetrievalOption
+        let content: () -> Content
         
         var body: some View {
-            Picker("item.convenienceDownload.retrieval", selection: $retrieval) {
+            Picker(selection: $retrieval) {
                 ForEach(ConvenienceDownloadRetrievalOption.allCases) { strategy in
                     Text(strategy.label)
                         .tag(strategy)
                 }
+            } label: {
+                content()
             }
             .bold(retrieval != .disabled)
         }

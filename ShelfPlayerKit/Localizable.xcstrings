@@ -865,13 +865,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Art"
+            "value" : "Einheit"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Type"
+            "value" : "Unit"
           }
         }
       }

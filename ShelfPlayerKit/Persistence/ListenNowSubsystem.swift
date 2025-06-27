@@ -104,14 +104,26 @@ extension PersistenceManager.ListenNowSubsystem {
             }
         }
         
-        var items = await withTaskGroup(of: (Date, String?, PlayableItem?).self) {
+        var items = await withTaskGroup(of: (Date, String?, PlayableItem?, [ItemIdentifier]).self) {
             for (date, progressID, primaryID, groupingID, connectionID) in identifiers {
                 $0.addTask {
                     do {
                         let item = try await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
-                        return (date, progressID, item)
+                        
+                        let relatedItemIDs: [ItemIdentifier]
+                        
+                        switch item {
+                            case let audiobook as Audiobook:
+                                relatedItemIDs = [audiobook.id] + audiobook.series.compactMap(\.id)
+                            case let episode as Episode:
+                                relatedItemIDs = [episode.id, episode.podcastID]
+                            default:
+                                relatedItemIDs = [item.id]
+                        }
+                        
+                        return (date, progressID, item, relatedItemIDs)
                     } catch {
-                        return (date, progressID, nil)
+                        return (date, progressID, nil, [])
                     }
                 }
             }
@@ -122,17 +134,46 @@ extension PersistenceManager.ListenNowSubsystem {
         currentProgressIDs = items.compactMap { $0.2 != nil ? $0.1 : nil }
         unavailableProgressIDs = items.compactMap { $0.2 == nil ? $0.1 : nil }
         
-        let duplicates = Dictionary(grouping: items, by: \.2).filter { $1.count > 1 }.keys
+        let progressRelatedItemIDs: Set<ItemIdentifier> = items.reduce(into: []) {
+            guard $1.1 != nil else {
+                return
+            }
+            
+            for itemID in $1.3 {
+                $0.insert(itemID)
+            }
+        }
+        let suggestionRelatedItemIDs: Set<ItemIdentifier> = items.reduce(into: []) {
+            guard $1.1 == nil else {
+                return
+            }
+            
+            for itemID in $1.3 {
+                $0.insert(itemID)
+            }
+        }
+        
+        let duplicates = progressRelatedItemIDs.intersection(suggestionRelatedItemIDs)
         
         if !duplicates.isEmpty {
-            let duplicateDescriptions = Dictionary(grouping: items, by: \.2).filter { $1.count > 1 }.keys.compactMap(\.?.id.description)
+            let connectionGrouped = Dictionary(grouping: duplicates, by: \.connectionID)
             
-            try modelContext.delete(model: PersistedListenNowSuggestion.self, where: #Predicate {
-                duplicateDescriptions.contains($0._itemID)
-            })
+            for (connectionID, itemIDs) in connectionGrouped {
+                let primaryIDs = itemIDs.map(\.primaryID)
+                let groupingIDs = itemIDs.map(\.primaryID)
+                
+                let combined = primaryIDs + groupingIDs
+                
+                for itemID in combined {
+                    try modelContext.delete(model: PersistedListenNowSuggestion.self, where: #Predicate {
+                        $0._itemID.contains(connectionID)
+                        && $0._itemID.contains(itemID)
+                    })
+                }
+            }
             
-            items.removeAll {
-                duplicates.contains($0.2) && $0.1 == nil
+            items.removeAll { (_, progressID, item, related) in
+                progressID == nil && related.contains { duplicates.contains($0) }
             }
         }
         
@@ -148,7 +189,7 @@ extension PersistenceManager.ListenNowSubsystem {
             }
             
             return true
-        }.map { ($0.created, nil, $0.itemID.primaryID, $0.itemID.groupingID, $0.itemID.connectionID) }
+        }.map { ($0.created.advanced(by: -60 * 60 * 24 * 2), nil, $0.itemID.primaryID, $0.itemID.groupingID, $0.itemID.connectionID) }
     }
     
     public func preload() {

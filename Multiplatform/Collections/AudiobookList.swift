@@ -16,16 +16,16 @@ struct AudiobookList: View {
         ForEach(sections) { section in
             Group {
                 switch section {
-                case .audiobook(let audiobook):
-                    Row(audiobook: audiobook)
-                case .series(let seriesID, let seriesName, let audiobookIDs):
-                    NavigationLink(destination: ItemLoadView(seriesID)) {
-                        SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
-                    }
-                    .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(.isLink)
-                    .accessibilityLabel(Text(seriesName))
+                    case .audiobook(let audiobook):
+                        Row(audiobook: audiobook)
+                            .modifier(ItemStatusModifier(item: audiobook))
+                    case .series(let seriesID, let seriesName, let audiobookIDs):
+                        NavigationLink(destination: ItemLoadView(seriesID)) {
+                            SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
+                        }
+                        .buttonStyle(.plain)
+                        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+                        .modifier(ItemStatusModifier(itemID: seriesID))
                 }
             }
             .onAppear {
@@ -140,12 +140,8 @@ private struct Row: View {
                 }
             }
         }
-        .modifier(PlayableItemContextMenuModifier(item: audiobook))
-        .modifier(PlayableItemSwipeActionsModifier(itemID: audiobook.id))
-        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         .buttonStyle(.plain)
-        .accessibilityAddTraits(.isLink)
-        .accessibilityLabel(audiobook.name)
+        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }
 

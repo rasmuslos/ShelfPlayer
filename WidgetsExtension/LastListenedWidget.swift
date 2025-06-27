@@ -151,7 +151,7 @@ private struct LastListenedWidgetContent: View {
             if entry.item != nil {
                 HStack(spacing: 0) {
                     Group {
-                        if widgetFamily == .systemMedium && entry.isPlaying == true {
+                        if entry.isPlaying == true {
                             Button(intent: SkipBackwardsIntent()) {
                                 Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
                             }
@@ -168,7 +168,7 @@ private struct LastListenedWidgetContent: View {
                     
                     Spacer(minLength: 12)
                     
-                    if entry.isDownloaded {
+                    if entry.isDownloaded && (widgetFamily == .systemMedium || entry.isPlaying != true) {
                         Image(systemName: "arrow.down.circle.fill")
                             .font(.caption2)
                             .foregroundStyle(.secondary)

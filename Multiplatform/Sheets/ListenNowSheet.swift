@@ -32,10 +32,14 @@ struct ListenNowSheet: View {
                     }
                 } else {
                     ForEach(listenNowItems) { item in
-                        ItemCompactRow(item: item) {
+                        Button {
                             satellite.start(item.id)
                             satellite.dismissSheet()
+                        } label: {
+                            ItemCompactRow(item: item)
                         }
+                        .buttonStyle(.plain)
+                        .modifier(ItemStatusModifier(item: item))
                     }
                 }
                 

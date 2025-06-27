@@ -30,18 +30,13 @@ struct ConvenienceDownloadPreferences: View {
                         case .listenNow:
                             EmptyView()
                         case .grouping(let itemID, let retrieval):
-                            ItemCompactRow(itemID: itemID) {
-                                if loading[itemID] == true {
-                                    ProgressView()
-                                } else if let parsed = ConvenienceDownloadRetrievalOption.parse(retrieval) {
-                                    GroupingConfigurationSheet.ConvenienceDownloadRetrievalPicker(retrieval: .init() {
-                                        parsed
-                                    } set: {
-                                        updateConfiguration(itemID: itemID, retrieval: $0.resolved)
-                                    })
-                                    .labelsHidden()
+                            if loading[itemID] == true {
+                                ProgressView()
+                            } else if let parsed = ConvenienceDownloadRetrievalOption.parse(retrieval) {
+                                GroupingConfigurationSheet.ConvenienceDownloadRetrievalPicker(retrieval: .init() { parsed } set: { updateConfiguration(itemID: itemID, retrieval: $0.resolved) }) {
+                                    ItemCompactRow(itemID: itemID)
                                 }
-                            } callback: {}
+                            }
                     }
                 }
                 .onDelete {
