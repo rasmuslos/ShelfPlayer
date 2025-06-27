@@ -17,6 +17,8 @@ struct SeriesList: View {
             NavigationLink(destination: SeriesView(item)) {
                 ListItem(series: item)
             }
+            .buttonStyle(.plain)
+            .modifier(ItemStatusModifier(item: item))
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .onAppear {
                 onAppear(item)

@@ -85,7 +85,7 @@ private struct EpisodeGridItem: View {
             .colorScheme(.light)
             .background(Background(episode: episode))
             .clipShape(.rect(cornerRadius: 16))
-            .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16))
+            .contentShape(.rect(cornerRadius: 16))
             .modifier(PlayableItemContextMenuModifier(item: episode))
             .frame(width: size)
             .padding(.leading, gap)
@@ -93,6 +93,7 @@ private struct EpisodeGridItem: View {
             .secondaryShadow(radius: 8, opacity: 0.4)
         }
         .buttonStyle(.plain)
+        .modifier(ItemStatusModifier(item: episode))
     }
 }
 

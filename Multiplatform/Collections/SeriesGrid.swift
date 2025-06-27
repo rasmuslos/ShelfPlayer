@@ -24,8 +24,10 @@ struct SeriesGrid: View {
             ForEach(series) { item in
                 NavigationLink(destination: SeriesView(item)) {
                     SeriesGridItem(series: item, showName: showName)
+                        .contentShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .buttonStyle(.plain)
+                .modifier(ItemStatusModifier(item: item))
                 .onAppear {
                     onAppear(item)
                 }
