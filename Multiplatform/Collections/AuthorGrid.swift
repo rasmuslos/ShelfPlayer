@@ -54,8 +54,10 @@ struct PersonGrid: View {
                             }
                             .frame(width: size)
                             .padding(.leading, gap)
+                            .contentShape(RoundedRectangle(cornerRadius: 4))
                         }
                         .buttonStyle(.plain)
+                        .modifier(ItemStatusModifier(item: person))
                     }
                 }
                 .scrollTargetLayout()

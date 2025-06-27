@@ -41,6 +41,14 @@ struct ItemStatusModifier: ViewModifier {
     }
     
     private var value: String {
+        if let series = item as? Series {
+            return String(localized: "item.count.audiobooks \(series.audiobooks.count)")
+        } else if let person = item as? Person {
+            return String(localized: "item.count.audiobooks \(person.bookCount)")
+        } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
+            return String(localized: "item.count.episodes.unplayed \(incompleteEpisodeCount)")
+        }
+        
         guard let progress = progress?.progress, let status = download?.status else {
             return String(localized: "loading")
         }
@@ -62,13 +70,21 @@ struct ItemStatusModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .hoverEffect(.highlight)
-            .accessibilityAction {
-                satellite.start(itemID)
-            }
             .accessibilityLabel(item?.name ?? String(localized: "loading"))
             .accessibilityValue(value)
             .accessibilityIdentifier(itemID.description)
-            .accessibilityAddTraits([.allowsDirectInteraction, .isButton, .isLink, .startsMediaSession])
+            .modify {
+                if itemID.isPlayable {
+                    $0
+                        .accessibilityAction {
+                            satellite.start(itemID)
+                        }
+                        .accessibilityAddTraits([.allowsDirectInteraction, .isButton, .isLink, .startsMediaSession])
+                } else {
+                    $0
+                        .accessibilityAddTraits([.isButton, .isLink])
+                }
+            }
             .modify {
                 if let playableItem = item as? PlayableItem {
                     $0
