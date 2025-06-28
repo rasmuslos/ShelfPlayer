@@ -132,7 +132,7 @@ struct PersonView: View {
                 UnavailableWrapper {
                     VStack(spacing: 0) {
                         Header()
-                        EmptyCollectionView()
+                        EmptyCollectionView.Inner()
                     }
                 }
             } else {

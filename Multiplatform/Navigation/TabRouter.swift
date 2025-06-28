@@ -96,6 +96,14 @@ struct TabRouter: View {
             }
         }
         .tabViewStyle(.sidebarAdaptable)
+        .tabViewSidebarHeader {
+            Button {
+                satellite.present(.listenNow)
+            } label: {
+                ListenedTodayListRow()
+            }
+            .buttonStyle(.plain)
+        }
         .tabViewSidebarFooter {
             VStack(alignment: .leading, spacing: 12) {
                 Divider()

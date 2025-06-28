@@ -33,7 +33,7 @@ struct GlobalSearchSheet: View {
                                 ItemCompactRow(item: item)
                             }
                             .buttonStyle(.plain)
-                            .modifier(ItemStatusModifier(item: item))
+                            .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
                         }
                     }
                     .listStyle(.plain)
