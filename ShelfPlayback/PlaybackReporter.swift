@@ -116,7 +116,6 @@ final actor PlaybackReporter {
         }
         
         await UIApplication.shared.endBackgroundTask(task)
-        await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(itemID)
     }
 }
 

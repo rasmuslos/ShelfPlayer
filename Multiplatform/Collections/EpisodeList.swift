@@ -112,6 +112,7 @@ private struct RowLabel: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(satellite.isLoading(observing: episode.id))
+                .hoverEffect(.highlight)
                 .padding(.trailing, 12)
             }
             
