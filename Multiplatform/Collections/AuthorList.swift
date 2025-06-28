@@ -16,10 +16,12 @@ struct PersonList: View {
     var body: some View {
         ForEach(people) { person in
             NavigationLink(destination: PersonView(person)) {
-                HStack(spacing: 8) {
+                HStack(spacing: 0) {
                     if showImage {
                         ItemImage(item: person, size: .tiny, cornerRadius: .infinity)
                             .frame(width: 52)
+                            .hoverEffect(.highlight)
+                            .padding(.trailing, 8)
                     }
                     
                     VStack(alignment: .leading, spacing: 2) {
@@ -29,10 +31,13 @@ struct PersonList: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
+                    
+                    Spacer(minLength: 0)
                 }
+                .contentShape(.rect)
             }
             .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
-            .modifier(ItemStatusModifier(item: person))
+            .modifier(ItemStatusModifier(item: person, hoverEffect: nil))
             .onAppear {
                 onAppear(person)
             }

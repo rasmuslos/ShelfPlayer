@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import ShelfPlayback
 
 struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
     var horizontalLabelPadding: CGFloat = 20

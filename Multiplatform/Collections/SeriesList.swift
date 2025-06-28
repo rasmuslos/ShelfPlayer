@@ -18,8 +18,7 @@ struct SeriesList: View {
                 ListItem(series: item)
             }
             .buttonStyle(.plain)
-            .modifier(ItemStatusModifier(item: item))
-            .hoverEffect(.lift)
+            .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .onAppear {
                 onAppear(item)
@@ -63,6 +62,7 @@ extension SeriesList {
                     }
                 }
                 .frame(width: 94, height: 60, alignment: .leading)
+                .hoverEffect(.highlight)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     if let name {
@@ -78,6 +78,7 @@ extension SeriesList {
                 }
                 .padding(.leading, 12)
             }
+            .contentShape(.rect)
         }
     }
 }

@@ -103,11 +103,13 @@ private struct PodcastGridItem: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .contentShape(.hoverMenuInteraction, .rect)
+            .padding(8)
+            .universalContentShape(.rect(cornerRadius: 12))
             .matchedTransitionSource(id: "item_\(podcast.id)", in: namespace!)
         }
         .buttonStyle(.plain)
         .modifier(ItemStatusModifier(item: podcast))
+        .padding(-8)
     }
 }
 

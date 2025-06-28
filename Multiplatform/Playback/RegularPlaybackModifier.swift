@@ -81,7 +81,7 @@ struct RegularPlaybackModifier: ViewModifier {
     @ViewBuilder
     private func leftHandContent() -> some View {
         VStack(spacing: 0) {
-            Spacer(minLength: 12)
+            Spacer(minLength: 20)
             
             ItemImage(itemID: satellite.nowPlayingItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
                 .id(satellite.nowPlayingItemID)
@@ -90,16 +90,15 @@ struct RegularPlaybackModifier: ViewModifier {
                 .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
                 .modifier(PlaybackDragGestureCatcher(active: true))
             
-            Spacer(minLength: 12)
+            Spacer(minLength: 20)
             
             PlaybackTitle()
             
-            Spacer(minLength: 12)
+            Spacer(minLength: 20)
             
             PlaybackControls()
-                .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
             
-            Spacer(minLength: 12)
+            Spacer(minLength: 20)
         }
     }
     
@@ -110,6 +109,7 @@ struct RegularPlaybackModifier: ViewModifier {
                     ZStack {
                         Rectangle()
                             .fill(.background)
+                            .contentShape(.rect)
                             .modifier(PlaybackDragGestureCatcher(active: true))
                         
                         HStack(spacing: 40) {
@@ -135,7 +135,7 @@ struct RegularPlaybackModifier: ViewModifier {
                                 }
                                 .buttonStyle(.plain)
                             }
-                            .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16, style: .continuous))
+                            .universalContentShape(.rect(cornerRadius: 16, style: .continuous))
                             .contextMenu {
                                 PlaybackMenuActions()
                             } preview: {

@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "abc" : {
+
+    },
+    "Leading" : {
+
+    },
     "pause" : {
       "localizations" : {
         "de" : {
@@ -33,6 +39,12 @@
         }
       }
     },
+    "sleepTimer.cancel" : {
+
+    },
+    "sleepTimer.extend" : {
+
+    },
     "start" : {
       "localizations" : {
         "de" : {
@@ -48,6 +60,9 @@
           }
         }
       }
+    },
+    "Trailing" : {
+
     },
     "widget.lastListened" : {
       "localizations" : {

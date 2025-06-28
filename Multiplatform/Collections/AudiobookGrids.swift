@@ -32,7 +32,7 @@ struct AudiobookVGrid: View {
                         }
                         .buttonStyle(.plain)
                         .modifier(ItemStatusModifier(item: audiobook))
-                    case .series(let seriesID, let _, let audiobookIDs):
+                    case .series(let seriesID, _, let audiobookIDs):
                         NavigationLink(destination: ItemLoadView(seriesID)) {
                             SeriesGrid.SeriesGridItem(name: nil, audiobookIDs: audiobookIDs)
                         }
@@ -96,7 +96,6 @@ struct AudiobookHGrid: View {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                                 .frame(width: size)
                                 .padding(.leading, gap)
-                                .modifier(PlayableItemContextMenuModifier(item: audiobook))
                         }
                         .buttonStyle(.plain)
                         .modifier(ItemStatusModifier(item: audiobook))

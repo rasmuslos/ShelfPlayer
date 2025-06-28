@@ -41,7 +41,7 @@ struct TimeRow: View {
                 Spacer(minLength: 0)
             }
             .lineLimit(1)
-            .contentShape(.hoverMenuInteraction, .rect)
+            .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .listRowBackground(Color.clear)
