@@ -212,8 +212,6 @@ extension LocalAudioEndpoint {
     }
     
     func stop() async {
-        await PersistenceManager.shared.download.removeBlock(from: currentItemID)
-        
         await playbackReporter.finalize(currentTime: currentTime)
         
         audioPlayer.removeAllItems()
@@ -706,6 +704,7 @@ private extension LocalAudioEndpoint {
     }
     func didPlayToEnd(finishedCurrentItem: Bool) async {
         await playbackReporter.finalize(currentTime: finishedCurrentItem ? duration : currentTime)
+        await PersistenceManager.shared.download.removeBlock(from: currentItemID)
         
         if finishedCurrentItem {
             let groupingID: ItemIdentifier
@@ -718,8 +717,13 @@ private extension LocalAudioEndpoint {
                 return
             }
             
+            let currentItemID = currentItemID
+            
             Task.detached {
-                await PersistenceManager.shared.listenNow.groupingDidFinishPlaying(groupingID)
+                await withTaskGroup {
+                    $0.addTask { await PersistenceManager.shared.listenNow.groupingDidFinishPlaying(groupingID) }
+                    $0.addTask { await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(currentItemID) }
+                }
             }
         }
         

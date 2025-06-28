@@ -36,6 +36,7 @@ struct ConvenienceDownloadPreferences: View {
                                 GroupingConfigurationSheet.ConvenienceDownloadRetrievalPicker(retrieval: .init() { parsed } set: { updateConfiguration(itemID: itemID, retrieval: $0.resolved) }) {
                                     ItemCompactRow(itemID: itemID)
                                 }
+                                .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
                             }
                     }
                 }

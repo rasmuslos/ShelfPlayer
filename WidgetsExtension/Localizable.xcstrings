@@ -39,6 +39,9 @@
         }
       }
     },
+    "skipBackwards" : {
+
+    },
     "sleepTimer.cancel" : {
 
     },

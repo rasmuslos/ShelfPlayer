@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppIntents
 import ShelfPlayerKit
 
 struct WidgetItemButton: View {
@@ -14,20 +15,52 @@ struct WidgetItemButton: View {
     
     let entity: ItemEntity?
     
-    var body: some View {
-        Group {
-            if let isPlaying {
-                if isPlaying {
-                    Button("pause", systemImage: "pause.fill", intent: PauseIntent())
-                } else {
-                    Button("play", systemImage: "play.fill", intent: PlayIntent())
-                }
-            } else if let entity {
-                Button("start", systemImage: "play.fill", intent: StartIntent(item: entity))
+    private var intent: (any AppIntent)? {
+        if let isPlaying {
+            if isPlaying {
+                PauseIntent()
             } else {
-                Button("play", systemImage: "play.fill") {}
-                    .disabled(true)
+                PlayIntent()
             }
+        } else if let entity {
+            StartIntent(item: entity)
+        } else {
+            nil
+        }
+    }
+    private var label: LocalizedStringKey? {
+        if let isPlaying {
+            if isPlaying {
+                "pause"
+            } else {
+                "play"
+            }
+        } else if entity != nil {
+            "start"
+        } else {
+            "play"
+        }
+    }
+    private var systemImage: String? {
+        if isPlaying == true {
+            "pause.fill"
+        } else {
+            "play.fill"
+        }
+    }
+    
+    var body: some View {
+        if let intent, let label, let systemImage {
+            Button(intent: intent) {
+                ZStack {
+                    Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
+                        .hidden()
+                    
+                    Label(label, systemImage: systemImage)
+                }
+            }
+        } else {
+            Label("play", systemImage: "play.fill")
         }
     }
 }
