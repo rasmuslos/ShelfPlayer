@@ -796,6 +796,70 @@
         }
       }
     },
+    "intent.setPlaybackRate" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschwindigkeit einstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set playback speed"
+          }
+        }
+      }
+    },
+    "intent.setPlaybackRate ${rate}" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setzte die Wiedergabegeschwindigkeit auf ${rate}%"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set playback speed to ${rate}%"
+          }
+        }
+      }
+    },
+    "intent.setPlaybackRate.description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändert die aktuelle Wiedergabegeschwindigkeit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates the current playback speed."
+          }
+        }
+      }
+    },
+    "intent.setPlaybackRate.rate" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Geschwindigkeit als absolute Prozentangabe."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absolute playback speed percentage."
+          }
+        }
+      }
+    },
     "intent.setSleepTimer" : {
       "localizations" : {
         "de" : {

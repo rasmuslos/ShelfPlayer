@@ -78,9 +78,49 @@ struct RegularPlaybackModifier: ViewModifier {
         .contentShape(.rect)
     }
     
+    @ViewBuilder
+    private func leftHandContent() -> some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 12)
+            
+            ItemImage(itemID: satellite.nowPlayingItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
+                .id(satellite.nowPlayingItemID)
+                .shadow(color: .black.opacity(0.4), radius: 20)
+                .scaleEffect(satellite.isPlaying ? 1 : 0.8)
+                .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
+                .modifier(PlaybackDragGestureCatcher(active: true))
+            
+            Spacer(minLength: 12)
+            
+            PlaybackTitle()
+            
+            Spacer(minLength: 12)
+            
+            PlaybackControls()
+                .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+            
+            Spacer(minLength: 12)
+        }
+    }
+    
     func body(content: Content) -> some View {
         if horizontalSizeClass == .regular {
             content
+                .fullScreenCover(isPresented: .init { viewModel.isExpanded } set: { viewModel.isExpanded = $0 }) {
+                    ZStack {
+                        Rectangle()
+                            .fill(.background)
+                            .modifier(PlaybackDragGestureCatcher(active: true))
+                        
+                        HStack(spacing: 40) {
+                            leftHandContent()
+                                .frame(maxWidth: 400)
+                            
+                            PlaybackQueue()
+                        }
+                        .padding(.horizontal, 40)
+                    }
+                }
                 .safeAreaInset(edge: .bottom) {
                     if let currentItemID = satellite.nowPlayingItemID {
                         GeometryReader { geometryProxy in
@@ -89,7 +129,7 @@ struct RegularPlaybackModifier: ViewModifier {
                                     .fill(.bar)
                                 
                                 Button {
-                                    
+                                    viewModel.isExpanded = true
                                 } label: {
                                     label(currentItemID)
                                 }

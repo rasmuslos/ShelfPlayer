@@ -93,27 +93,6 @@
         }
       }
     },
-    "Play ${item} using ${applicationName}" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "de" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Spiele ${item} mit ${applicationName}"
-            ]
-          }
-        },
-        "en" : {
-          "stringSet" : {
-            "state" : "new",
-            "values" : [
-              "Play ${item} using ${applicationName}"
-            ]
-          }
-        }
-      }
-    },
     "Play ${podcast} using ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -200,6 +179,28 @@
             "values" : [
               "Search for new downloads using ${applicationName}",
               "Check for new downloads using ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Set ${applicationName} playback speed" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Setzte die ${applicationName} Wiedergabegeschwindigkeit"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Set ${applicationName} playback speed",
+              "Set ${applicationName} playback rate"
             ]
           }
         }

@@ -40,6 +40,8 @@ struct DownloadButton: View {
     @State private var progress = [UUID: Int64]()
     @State private var metadata = [UUID: (Percentage, Int64)]()
     
+    @State private var stash = RFNotification.MarkerStash()
+    
     private var current: Percentage? {
         guard let baseProgress else {
             return nil
@@ -217,7 +219,22 @@ struct DownloadButton: View {
                 loadProgress()
             }
         }
-        .onReceive(RFNotification[.downloadProgressChanged(itemID)].publisher()) { (assetID, weight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
+        .onReceive(RFNotification[.scenePhaseDidChange].publisher()) {
+            if $0 {
+                setupObservers()
+            } else {
+                stash.clear()
+            }
+        }
+        .onAppear {
+            setupObservers()
+        }
+    }
+    
+    private func setupObservers() {
+        stash.clear()
+        
+        RFNotification[.downloadProgressChanged(itemID)].subscribe { (assetID, weight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
             guard progressVisibility != .never else {
                 return
             }
@@ -229,8 +246,9 @@ struct DownloadButton: View {
             } else {
                 progress[assetID]! += bytesWritten
             }
-        }
-        .onReceive(RFNotification[.downloadStatusChanged].publisher()) {
+        }.store(in: &stash)
+        
+        RFNotification[.downloadStatusChanged].subscribe {
             guard let (itemID, status) = $0, self.itemID == itemID else {
                 self.status = nil
                 loadCurrent()
@@ -239,7 +257,7 @@ struct DownloadButton: View {
             }
             
             self.status = status
-        }
+        }.store(in: &stash)
     }
     
     enum ProgressVisibility {

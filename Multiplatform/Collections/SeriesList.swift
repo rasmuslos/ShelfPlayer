@@ -19,6 +19,7 @@ struct SeriesList: View {
             }
             .buttonStyle(.plain)
             .modifier(ItemStatusModifier(item: item))
+            .hoverEffect(.lift)
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .onAppear {
                 onAppear(item)
@@ -77,7 +78,6 @@ extension SeriesList {
                 }
                 .padding(.leading, 12)
             }
-            .contentShape(.rect)
         }
     }
 }
