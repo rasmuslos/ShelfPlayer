@@ -52,6 +52,7 @@ struct ListenNowSheet: View {
                             ItemCompactRow(item: item)
                         }
                         .buttonStyle(.plain)
+                        .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
                         .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
                     }
                 }

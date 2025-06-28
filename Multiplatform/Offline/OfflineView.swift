@@ -38,6 +38,7 @@ struct OfflineView: View {
                                     ItemCompactRow(item: audiobook)
                                 }
                                 .buttonStyle(.plain)
+                                .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
                                 .modifier(ItemStatusModifier(item: audiobook, hoverEffect: nil))
                             }
                         }
@@ -52,6 +53,7 @@ struct OfflineView: View {
                                     ItemCompactRow(item: episode, context: .offlineEpisode)
                                 }
                                 .buttonStyle(.plain)
+                                .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
                                 .modifier(ItemStatusModifier(item: episode, hoverEffect: nil))
                             }
                         } header: {

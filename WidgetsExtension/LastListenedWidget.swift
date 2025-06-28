@@ -153,9 +153,9 @@ private struct LastListenedWidgetContent: View {
                     Group {
                         if entry.isPlaying == true {
                             Button(intent: SkipBackwardsIntent()) {
-                                Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
+                                Label("skipBackwards", systemImage: "arrow.trianglehead.counterclockwise.rotate.90")
+                                    .labelStyle(.iconOnly)
                             }
-                            .buttonBorderShape(.roundedRectangle(radius: .infinity))
                             .padding(.trailing, 8)
                         }
                         
