@@ -106,7 +106,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             ZStack(alignment: .top) {
                                 CollapsedForeground()
                                     .opacity(viewModel.isExpanded ? 0 : 1)
-                                    .contentShape(.rect)
+                                    .universalContentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                                     .highPriorityGesture(DragGesture()
                                         .onChanged {
                                             if $0.translation.height < -100 || $0.velocity.height < -2000 {
@@ -114,7 +114,6 @@ struct CompactPlaybackModifier: ViewModifier {
                                             }
                                         }
                                     )
-                                    .contentShape(.hoverMenuInteraction, .rect(cornerRadius: 16, style: .continuous))
                                     .contextMenu {
                                         PlaybackMenuActions()
                                     } preview: {

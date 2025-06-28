@@ -159,7 +159,13 @@ private struct LastListenedWidgetContent: View {
                             .padding(.trailing, 8)
                         }
                         
-                        WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
+                        if widgetFamily == .systemSmall && entry.isPlaying == true {
+                            WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
+                                .labelStyle(.iconOnly)
+                        } else {
+                            WidgetItemButton(item: entry.item, isPlaying: entry.isPlaying, entity: entry.entity)
+                                .labelStyle(.titleAndIcon)
+                        }
                     }
                     .font(.footnote)
                     .controlSize(.small)

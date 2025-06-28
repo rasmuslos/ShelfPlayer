@@ -14,5 +14,7 @@ struct WidgetsBundle: WidgetBundle {
         LastListenedWidget()
         ListenedTodayWidget()
         ListenNowWidget()
+        
+        SleepTimerLiveActivity()
     }
 }

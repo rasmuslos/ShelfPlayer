@@ -31,7 +31,7 @@ struct ItemStatusModifier: ViewModifier {
             _download = .init(initialValue: .init(itemID: itemID))
         }
     }
-    init(item: Item, cornerRadius: Int = 8, hoverEffect: HoverEffect? = nil) {
+    init(item: Item, cornerRadius: Int = 8, hoverEffect: HoverEffect? = .highlight) {
         self.itemID = item.id
         self.cornerRadius = cornerRadius
         self.hoverEffect = hoverEffect

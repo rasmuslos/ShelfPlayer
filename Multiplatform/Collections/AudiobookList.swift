@@ -18,14 +18,13 @@ struct AudiobookList: View {
                 switch section {
                     case .audiobook(let audiobook):
                         Row(audiobook: audiobook)
-                            .modifier(ItemStatusModifier(item: audiobook))
                     case .series(let seriesID, let seriesName, let audiobookIDs):
                         NavigationLink(destination: ItemLoadView(seriesID)) {
                             SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
                         }
                         .buttonStyle(.plain)
                         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
-                        .modifier(ItemStatusModifier(itemID: seriesID))
+                        .modifier(ItemStatusModifier(itemID: seriesID, hoverEffect: nil))
                 }
             }
             .onAppear {
@@ -90,7 +89,7 @@ private struct Row: View {
     
     var body: some View {
         NavigationLink(destination: AudiobookView(audiobook)) {
-            HStack(spacing: 12) {
+            HStack(spacing: 0) {
                 Button {
                     satellite.start(audiobook.id)
                 } label: {
@@ -111,6 +110,8 @@ private struct Row: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(satellite.isLoading(observing: audiobook.id))
+                .hoverEffect(.highlight)
+                .padding(.trailing, 12)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(audiobook.name)
@@ -138,10 +139,16 @@ private struct Row: View {
                             .contentTransition(.numericText(countsDown: true))
                     }
                 }
+                
+                Spacer(minLength: 0)
             }
+            .padding(8)
+            .universalContentShape(.rect(cornerRadius: 8))
         }
         .buttonStyle(.plain)
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .modifier(ItemStatusModifier(item: audiobook, hoverEffect: nil))
+        .padding(-8)
     }
 }
 

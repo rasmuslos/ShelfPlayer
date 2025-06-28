@@ -18,7 +18,9 @@ public final class IntentAudioPlayer: Sendable {
     let _createBookmark: @Sendable (String?) async throws -> Void
     let _skip: @Sendable (TimeInterval?, Bool) async throws -> Void
     
-    let _setSleepTimer: @Sendable (SleepTimerConfiguration) async -> Void
+    let _setSleepTimer: @Sendable (SleepTimerConfiguration?) async -> Void
+    let _extendSleepTimer: @Sendable () async -> Void
+    
     let _setPlaybackRate: @Sendable (Percentage) async -> Void
     
     public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?,
@@ -28,7 +30,8 @@ public final class IntentAudioPlayer: Sendable {
                 startGrouping: @Sendable @escaping (ItemIdentifier, Bool) async throws -> ItemIdentifier,
                 createBookmark: @Sendable @escaping (String?) async throws -> Void,
                 skip: @Sendable @escaping (TimeInterval?, Bool) async throws -> Void,
-                setSleepTimer: @Sendable @escaping (SleepTimerConfiguration) async -> Void,
+                setSleepTimer: @Sendable @escaping (SleepTimerConfiguration?) async -> Void,
+                extendSleepTimer: @Sendable @escaping () async -> Void,
                 setPlaybackRate: @Sendable @escaping (Percentage) async -> Void
     ) {
         self.resolveIsPlaying = resolveIsPlaying
@@ -40,6 +43,7 @@ public final class IntentAudioPlayer: Sendable {
         _createBookmark = createBookmark
         _skip = skip
         _setSleepTimer = setSleepTimer
+        _extendSleepTimer = extendSleepTimer
         _setPlaybackRate = setPlaybackRate
     }
     
@@ -72,9 +76,13 @@ public final class IntentAudioPlayer: Sendable {
         try await _skip(interval, forwards)
     }
     
-    func setSleepTimer(_ configuration: SleepTimerConfiguration) async {
+    func setSleepTimer(_ configuration: SleepTimerConfiguration?) async {
         await _setSleepTimer(configuration)
     }
+    func extendSleepTimer() async {
+        await _extendSleepTimer()
+    }
+    
     func setPlaybackRate(_ rate: Percentage) async {
         await _setPlaybackRate(rate)
     }
