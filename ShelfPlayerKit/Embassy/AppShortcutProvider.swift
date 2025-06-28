@@ -15,9 +15,11 @@ public struct AppShortcutProvider: AppShortcutsProvider {
     
     @AppShortcutsBuilder
     public static var appShortcuts: [AppShortcut] {
+        /*
         AppShortcut(intent: StartIntent(), phrases: [
             "Play \(\.$item) using \(.applicationName)",
         ], shortTitle: "intent.start", systemImageName: "play.square")
+         */
         AppShortcut(intent: StartAudiobookIntent(), phrases: [
             "Play \(\.$target) using \(.applicationName)",
         ], shortTitle: "intent.start.audiobook", systemImageName: "bookmark.square")
@@ -54,6 +56,10 @@ public struct AppShortcutProvider: AppShortcutsProvider {
             "Set \(.applicationName) sleep timer",
             "Set a sleep timer using \(.applicationName)",
         ], shortTitle: "intent.setSleepTimer", systemImageName: "moon.zzz.fill")
+        AppShortcut(intent: SetPlaybackRateIntent(), phrases: [
+            "Set \(.applicationName) playback speed",
+            "Set \(.applicationName) playback rate",
+        ], shortTitle: "intent.setPlaybackRate", systemImageName: "percent")
         
         AppShortcut(intent: CheckForDownloadsIntent(), phrases: [
             "Search for new downloads using \(.applicationName)",

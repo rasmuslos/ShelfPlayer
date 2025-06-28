@@ -63,7 +63,6 @@ private struct PodcastRow: View {
                 }
                 .padding(.leading, 12)
             }
-            .contentShape(.hoverMenuInteraction, .rect)
         }
         .buttonStyle(.plain)
         .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))

@@ -160,6 +160,7 @@ struct PlayButton: View {
     var body: some View {
         playButtonStyle.makeMenu(configuration: .init(progress: progress, background: background, content: .init(content: menuContent)))
             .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
+            .hoverEffect(.highlight)
             .onReceive(RFNotification[.reloadImages].publisher()) {
                 if let itemID = $0, itemID == item.id {
                     loadColor()

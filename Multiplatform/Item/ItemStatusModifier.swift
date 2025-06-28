@@ -76,7 +76,7 @@ struct ItemStatusModifier: ViewModifier {
             .modify {
                 if itemID.isPlayable {
                     $0
-                        .accessibilityAction {
+                        .accessibilityAction(.magicTap) {
                             satellite.start(itemID)
                         }
                         .accessibilityAddTraits([.allowsDirectInteraction, .isButton, .isLink, .startsMediaSession])

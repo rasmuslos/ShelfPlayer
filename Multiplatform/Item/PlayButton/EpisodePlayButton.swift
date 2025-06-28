@@ -143,6 +143,7 @@ struct EpisodePlayButton: View {
         .buttonStyle(.plain)
         .disabled(isLoading)
         .clipShape(.rect(cornerRadius: .infinity))
+        .hoverEffect(.highlight)
     }
 }
 
