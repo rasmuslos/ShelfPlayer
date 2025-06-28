@@ -22,7 +22,7 @@ public struct SetSleepTimerIntent: AudioPlaybackIntent {
     
     public init() {}
     
-    public static var parameterSummary: Summary {
+    public static var parameterSummary: some ParameterSummary {
         Summary("intent.setSleepTimer \(\.$amount) \(\.$type)")
     }
     
@@ -44,7 +44,7 @@ public struct SetSleepTimerIntent: AudioPlaybackIntent {
                 configuration = .chapters(amount)
         }
         
-        try await audioPlayer.setSleepTimer(configuration)
+        await audioPlayer.setSleepTimer(configuration)
         
         return .result()
     }

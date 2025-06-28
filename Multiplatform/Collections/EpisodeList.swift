@@ -47,11 +47,13 @@ struct EpisodeList: View {
                             .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
                     }
                 }
+                .padding(8)
                 .contentShape(.rect)
             }
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .listRowBackground(isSelected ? Color.gray.opacity(0.12) : .clear)
             .modifier(ItemStatusModifier(item: episode))
+            .padding(-8)
             .animation(.snappy, value: selected)
         }
     }

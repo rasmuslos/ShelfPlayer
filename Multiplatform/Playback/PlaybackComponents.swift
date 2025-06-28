@@ -168,6 +168,37 @@ struct PlaybackControls: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
+    private var currentTime: TimeInterval {
+        if let seeking = viewModel.seeking {
+            satellite.chapterDuration * seeking
+        } else {
+            satellite.currentChapterTime
+        }
+    }
+    private var duration: TimeInterval {
+        if viewModel.seeking != nil {
+            satellite.chapterDuration - currentTime
+        } else {
+            satellite.chapterDuration
+        }
+    }
+    
+    private var remaining: TimeInterval {
+        if viewModel.seeking != nil {
+            duration * (1 / satellite.playbackRate)
+        } else {
+            (satellite.chapterDuration - satellite.currentChapterTime) * (1 / satellite.playbackRate)
+        }
+    }
+    
+    private var aspectRatio: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            2.8
+        } else {
+            2
+        }
+    }
+    
     @ViewBuilder
     private func skipText(forwards: Bool) -> some View {
         if let skipCache = satellite.skipCache {
@@ -200,29 +231,6 @@ struct PlaybackControls: View {
             Spacer(minLength: 12)
             
             skipText(forwards: true)
-        }
-    }
-    
-    private var currentTime: TimeInterval {
-        if let seeking = viewModel.seeking {
-            satellite.chapterDuration * seeking
-        } else {
-            satellite.currentChapterTime
-        }
-    }
-    private var duration: TimeInterval {
-        if viewModel.seeking != nil {
-            satellite.chapterDuration - currentTime
-        } else {
-            satellite.chapterDuration
-        }
-    }
-    
-    private var remaining: TimeInterval {
-        if viewModel.seeking != nil {
-            duration * (1 / satellite.playbackRate)
-        } else {
-            (satellite.chapterDuration - satellite.currentChapterTime) * (1 / satellite.playbackRate)
         }
     }
     
@@ -264,7 +272,7 @@ struct PlaybackControls: View {
             
             BottomSlider()
         }
-        .aspectRatio(2, contentMode: .fit)
+        .aspectRatio(aspectRatio, contentMode: .fit)
         .compositingGroup()
         .drawingGroup()
     }

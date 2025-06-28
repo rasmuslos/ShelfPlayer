@@ -142,7 +142,11 @@ final class PlaybackViewModel {
     
     var backgroundCornerRadius: CGFloat {
         if isExpanded {
-            UIScreen.main.displayCornerRadius
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                0
+            } else {
+                UIScreen.main.displayCornerRadius
+            }
         } else {
             16
         }

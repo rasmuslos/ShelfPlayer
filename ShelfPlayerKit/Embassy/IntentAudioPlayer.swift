@@ -18,7 +18,8 @@ public final class IntentAudioPlayer: Sendable {
     let _createBookmark: @Sendable (String?) async throws -> Void
     let _skip: @Sendable (TimeInterval?, Bool) async throws -> Void
     
-    let _setSleepTimer: @Sendable (SleepTimerConfiguration) async throws -> Void
+    let _setSleepTimer: @Sendable (SleepTimerConfiguration) async -> Void
+    let _setPlaybackRate: @Sendable (Percentage) async -> Void
     
     public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?,
                 resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?,
@@ -27,7 +28,8 @@ public final class IntentAudioPlayer: Sendable {
                 startGrouping: @Sendable @escaping (ItemIdentifier, Bool) async throws -> ItemIdentifier,
                 createBookmark: @Sendable @escaping (String?) async throws -> Void,
                 skip: @Sendable @escaping (TimeInterval?, Bool) async throws -> Void,
-                setSleepTimer: @Sendable @escaping (SleepTimerConfiguration) async throws -> Void
+                setSleepTimer: @Sendable @escaping (SleepTimerConfiguration) async -> Void,
+                setPlaybackRate: @Sendable @escaping (Percentage) async -> Void
     ) {
         self.resolveIsPlaying = resolveIsPlaying
         self.resolveCurrentItemID = resolveCurrentItemID
@@ -38,6 +40,7 @@ public final class IntentAudioPlayer: Sendable {
         _createBookmark = createBookmark
         _skip = skip
         _setSleepTimer = setSleepTimer
+        _setPlaybackRate = setPlaybackRate
     }
     
     var isPlaying: Bool? {
@@ -69,7 +72,10 @@ public final class IntentAudioPlayer: Sendable {
         try await _skip(interval, forwards)
     }
     
-    func setSleepTimer(_ configuration: SleepTimerConfiguration) async throws {
-        try await _setSleepTimer(configuration)
+    func setSleepTimer(_ configuration: SleepTimerConfiguration) async {
+        await _setSleepTimer(configuration)
+    }
+    func setPlaybackRate(_ rate: Percentage) async {
+        await _setPlaybackRate(rate)
     }
 }
