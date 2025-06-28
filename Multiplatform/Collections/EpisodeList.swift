@@ -47,13 +47,9 @@ struct EpisodeList: View {
                             .matchedGeometryEffect(id: "label-\(episode.id)", in: namespace)
                     }
                 }
-                .padding(8)
-                .contentShape(.rect)
             }
             .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .listRowBackground(isSelected ? Color.gray.opacity(0.12) : .clear)
-            .modifier(ItemStatusModifier(item: episode))
-            .padding(-8)
             .animation(.snappy, value: selected)
         }
     }
@@ -77,13 +73,17 @@ private struct Row: View {
     var body: some View {
         NavigationLink(destination: EpisodeView(episode, zoomID: context == .grid ? zoomID : nil)) {
             RowLabel(episode: episode, context: context, zoomID: zoomID)
+                .matchedTransitionSource(id: zoomID, in: namespace!)
+                .padding(8)
+                .universalContentShape(.rect(cornerRadius: 8))
         }
         .buttonStyle(.plain)
+        .modifier(ItemStatusModifier(item: episode, hoverEffect: context.hoverEffect))
+        .padding(-8)
     }
 }
 private struct RowLabel: View {
     @Environment(Satellite.self) private var satellite
-    @Environment(\.namespace) private var namespace
     
     let episode: Episode
     let context: EpisodeList.PresentationContext
@@ -112,7 +112,6 @@ private struct RowLabel: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(satellite.isLoading(observing: episode.id))
-                .matchedTransitionSource(id: zoomID, in: namespace!)
                 .padding(.trailing, 12)
             }
             
@@ -238,6 +237,13 @@ private extension EpisodeList.PresentationContext {
             2
         case .podcast:
             3
+        }
+    }
+    
+    var hoverEffect: HoverEffect? {
+        switch self {
+            case .podcast: nil
+            default: .highlight
         }
     }
 }

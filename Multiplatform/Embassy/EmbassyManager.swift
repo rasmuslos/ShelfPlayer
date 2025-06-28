@@ -59,6 +59,8 @@ final class EmbassyManager: Sendable {
             }
         } setSleepTimer: {
             await AudioPlayer.shared.setSleepTimer($0)
+        } extendSleepTimer: {
+            await AudioPlayer.shared.extendSleepTimer()
         } setPlaybackRate: {
             await AudioPlayer.shared.setPlaybackRate($0)
         }

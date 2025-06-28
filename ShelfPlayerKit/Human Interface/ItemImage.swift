@@ -88,7 +88,7 @@ public struct RequestImage: View {
             }
         }
         .id(id)
-        .contentShape(.hoverMenuInteraction, .rect(cornerRadius: cornerRadius))
+        .universalContentShape(.rect(cornerRadius: cornerRadius))
         .onReceive(RFNotification[.reloadImages].publisher()) { itemID in
             if let itemID, self.associatedItemID != itemID {
                 return
@@ -225,7 +225,7 @@ private struct Placeholder: View {
         .background(.gray.opacity(0.1))
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        .contentShape(.hoverMenuInteraction, RoundedRectangle(cornerRadius: cornerRadius))
+        .universalContentShape(.rect(cornerRadius: cornerRadius))
     }
 }
 

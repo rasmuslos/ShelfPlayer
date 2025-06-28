@@ -222,6 +222,7 @@ struct DownloadButton: View {
         .onReceive(RFNotification[.scenePhaseDidChange].publisher()) {
             if $0 {
                 setupObservers()
+                loadCurrent()
             } else {
                 stash.clear()
             }

@@ -4,6 +4,12 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "intent.cancelSleepTimer" : {
+
+    },
+    "intent.cancelSleepTimer.description" : {
+
+    },
     "intent.checkForDownloads" : {
       "localizations" : {
         "de" : {
@@ -523,6 +529,12 @@
           }
         }
       }
+    },
+    "intent.extendSleepTimer" : {
+
+    },
+    "intent.extendSleepTimer.description" : {
+
     },
     "intent.listenNow" : {
       "localizations" : {

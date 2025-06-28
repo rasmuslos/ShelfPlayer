@@ -20,7 +20,7 @@ struct EpisodeGrid: View {
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimumSize = horizontalSizeClass == .compact ? 300 : 450.0
+        let minimumSize: CGFloat = 300
         
         let usable = width - padding * 2
         let paddedSize = minimumSize + gap
@@ -55,6 +55,7 @@ struct EpisodeGrid: View {
                 .padding(.trailing, padding)
             }
             .scrollTargetBehavior(.viewAligned)
+            .scrollClipDisabled()
         }
     }
 }
