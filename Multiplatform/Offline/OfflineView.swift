@@ -37,6 +37,8 @@ struct OfflineView: View {
                                 } label: {
                                     ItemCompactRow(item: audiobook)
                                 }
+                                .buttonStyle(.plain)
+                                .modifier(ItemStatusModifier(item: audiobook, hoverEffect: nil))
                             }
                         }
                     }
@@ -49,6 +51,8 @@ struct OfflineView: View {
                                 } label: {
                                     ItemCompactRow(item: episode, context: .offlineEpisode)
                                 }
+                                .buttonStyle(.plain)
+                                .modifier(ItemStatusModifier(item: episode, hoverEffect: nil))
                             }
                         } header: {
                             HStack(spacing: 0) {

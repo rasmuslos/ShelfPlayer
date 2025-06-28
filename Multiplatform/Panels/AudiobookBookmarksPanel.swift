@@ -28,6 +28,7 @@ struct AudiobookBookmarksPanel: View {
                             }
                             .contentShape(.rect)
                         }
+                        .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
                     }
                     
                 }

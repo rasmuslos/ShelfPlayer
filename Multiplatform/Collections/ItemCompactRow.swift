@@ -83,20 +83,22 @@ struct ItemCompactRow: View {
             
             Spacer(minLength: 0)
             
-            if download?.status == .downloading {
-                DownloadButton(itemID: itemID, progressVisibility: .row)
-                    .labelStyle(.iconOnly)
-            } else if let progress = progress?.progress {
-                CircleProgressIndicator(progress: progress, invertColors: download?.status == .completed)
-                    .frame(width: 16)
-            } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
-                Text(incompleteEpisodeCount, format: .number)
-                    .font(.caption)
-                    .fontDesign(.rounded)
-                    .foregroundStyle(.secondary)
-            } else if itemID.isPlayable {
-                ProgressView()
-                    .scaleEffect(0.75)
+            if !context.isTrailingContentHidden {
+                if download?.status == .downloading {
+                    DownloadButton(itemID: itemID, progressVisibility: .row)
+                        .labelStyle(.iconOnly)
+                } else if let progress = progress?.progress {
+                    CircleProgressIndicator(progress: progress, invertColors: download?.status == .completed)
+                        .frame(width: 16)
+                } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
+                    Text(incompleteEpisodeCount, format: .number)
+                        .font(.caption)
+                        .fontDesign(.rounded)
+                        .foregroundStyle(.secondary)
+                } else if itemID.isPlayable {
+                    ProgressView()
+                        .scaleEffect(0.75)
+                }
             }
         }
         .contentShape(.rect)
