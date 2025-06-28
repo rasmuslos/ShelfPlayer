@@ -21,7 +21,20 @@ struct ListenNowSheet: View {
         NavigationStack {
             List {
                 Section {
-                    ListenedTodayListRow()
+                    Menu {
+                        ListenedTodayLabel.AdjustMenuInner()
+                    } label: {
+                        HStack(spacing: 12) {
+                            ListenedTodayListRow()
+                            
+                            Image(systemName: "pencil")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .menuActionDismissBehavior(.disabled)
+                    .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
                 }
                 
                 if listenNowItems.isEmpty {
@@ -39,7 +52,7 @@ struct ListenNowSheet: View {
                             ItemCompactRow(item: item)
                         }
                         .buttonStyle(.plain)
-                        .modifier(ItemStatusModifier(item: item))
+                        .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
                     }
                 }
                 

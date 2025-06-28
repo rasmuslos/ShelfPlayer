@@ -97,31 +97,21 @@ struct ListenedTodayListRow: View {
     @Environment(ListenedTodayTracker.self) private var listenedTodayTracker
     
     var body: some View {
-        Menu {
-            ListenedTodayLabel.AdjustMenuInner()
-        } label: {
-            HStack(spacing: 12) {
-                ListenedTodayLabel()
-                    .frame(width: 40)
-                    .accessibilityHidden(true)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(TimeInterval(listenedTodayTracker.totalMinutesListenedToday) * 60, format: .duration(unitsStyle: .spellOut, allowedUnits: [.second, .minute, .hour], maximumUnitCount: 1, formattingContext: .standalone))
-                        .font(.headline)
-                    Text("statistics.listenedToday")
-                        .font(.subheadline)
-                }
-                
-                Spacer(minLength: 0)
-                
-                Image(systemName: "pencil")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        HStack(spacing: 12) {
+            ListenedTodayLabel()
+                .frame(width: 40)
+                .accessibilityHidden(true)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(TimeInterval(listenedTodayTracker.totalMinutesListenedToday) * 60, format: .duration(unitsStyle: .spellOut, allowedUnits: [.second, .minute, .hour], maximumUnitCount: 1, formattingContext: .beginningOfSentence))
+                    .font(.headline)
+                Text("statistics.listenedToday")
+                    .font(.subheadline)
             }
+            
+            Spacer(minLength: 0)
         }
-        .buttonStyle(.plain)
-        .menuActionDismissBehavior(.disabled)
-        .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
+        .contentShape(.rect)
     }
 }
 

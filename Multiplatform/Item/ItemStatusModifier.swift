@@ -12,25 +12,29 @@ struct ItemStatusModifier: ViewModifier {
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
+    
     var cornerRadius = 8
+    var hoverEffect: HoverEffect?
     
     @State private var item: Item?
     
     @State private var progress: ProgressTracker?
     @State private var download: DownloadStatusTracker?
     
-    init(itemID: ItemIdentifier, cornerRadius: Int = 8) {
+    init(itemID: ItemIdentifier, cornerRadius: Int = 8, hoverEffect: HoverEffect? = .highlight) {
         self.itemID = itemID
         self.cornerRadius = cornerRadius
+        self.hoverEffect = hoverEffect
         
         if itemID.isPlayable {
             _progress = .init(initialValue: .init(itemID: itemID))
             _download = .init(initialValue: .init(itemID: itemID))
         }
     }
-    init(item: Item, cornerRadius: Int = 8) {
+    init(item: Item, cornerRadius: Int = 8, hoverEffect: HoverEffect? = nil) {
         self.itemID = item.id
         self.cornerRadius = cornerRadius
+        self.hoverEffect = hoverEffect
         
         _item = .init(initialValue: item)
         
@@ -59,7 +63,9 @@ struct ItemStatusModifier: ViewModifier {
             case .downloading:
                 result += " " + String(localized: "item.downloading")
             case .completed:
-                result += " " + String(localized: "item.downloaded")
+                if !satellite.isOffline {
+                    result += " " + String(localized: "item.downloaded")
+                }
             default:
                 break
         }
@@ -69,7 +75,14 @@ struct ItemStatusModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .hoverEffect(.highlight)
+            .modify {
+                if let hoverEffect {
+                    $0
+                        .hoverEffect(hoverEffect)
+                } else {
+                    $0
+                }
+            }
             .accessibilityLabel(item?.name ?? String(localized: "loading"))
             .accessibilityValue(value)
             .accessibilityIdentifier(itemID.description)
