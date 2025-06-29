@@ -50,7 +50,7 @@ extension SeriesList {
             HStack(spacing: 0) {
                 ZStack {
                     ForEach(0..<coverCount, id: \.hashValue) {
-                        let index = (coverCount - 1) - $0
+                        let index = $0
                         let factor: CGFloat = index == 0 ? 1 : index == 1 ? 0.9 : index == 2 ? 0.8 : index == 3 ? 0.7 : 0
                         let offset: CGFloat = index == 0 ? 0 : index == 1 ? 16  : index == 2 ? 30  : index == 3 ? 42  : 0
                         let radius: CGFloat = index == 0 ? 8 : index == 1 ? 7   : index == 2 ? 6   : index == 3 ? 5   : 0
@@ -59,6 +59,7 @@ extension SeriesList {
                             .frame(height: 60)
                             .scaleEffect(factor)
                             .offset(x: offset)
+                            .zIndex(1 / Double(index))
                     }
                 }
                 .frame(width: 94, height: 60, alignment: .leading)
@@ -91,5 +92,6 @@ extension SeriesList {
         }
         .listStyle(.plain)
     }
+    .previewEnvironment()
 }
 #endif

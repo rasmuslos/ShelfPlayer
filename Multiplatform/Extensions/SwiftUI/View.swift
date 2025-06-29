@@ -21,7 +21,7 @@ extension View {
         @Namespace var namespace
         
         self
-            .environment(Satellite().debugPlayback())
+            .environment(Satellite.shared.debugPlayback())
             .environment(PlaybackViewModel())
             .environment(ConnectionStore())
             .environment(ProgressViewModel())
