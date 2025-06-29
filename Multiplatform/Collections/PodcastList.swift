@@ -50,6 +50,7 @@ private struct PodcastRow: View {
                 ItemImage(item: podcast, size: .small)
                     .frame(width: 60)
                     .hoverEffect(.highlight)
+                    .padding(.trailing, 8)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(podcast.name)
@@ -62,11 +63,10 @@ private struct PodcastRow: View {
                             .lineLimit(1)
                     }
                 }
-                .padding(.leading, 12)
             }
         }
         .buttonStyle(.plain)
-        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
         .modifier(ItemStatusModifier(item: podcast, hoverEffect: nil))
     }
 }

@@ -80,7 +80,7 @@ struct RegularPlaybackModifier: ViewModifier {
     
     @ViewBuilder
     private func leftHandContent() -> some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 40) {
             Spacer(minLength: 20)
             
             ItemImage(itemID: satellite.nowPlayingItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
@@ -90,15 +90,9 @@ struct RegularPlaybackModifier: ViewModifier {
                 .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
                 .modifier(PlaybackDragGestureCatcher(active: true))
             
-            Spacer(minLength: 20)
-            
             PlaybackTitle()
             
-            Spacer(minLength: 20)
-            
             PlaybackControls()
-            
-            Spacer(minLength: 20)
         }
     }
     
@@ -112,13 +106,33 @@ struct RegularPlaybackModifier: ViewModifier {
                             .contentShape(.rect)
                             .modifier(PlaybackDragGestureCatcher(active: true))
                         
-                        HStack(spacing: 40) {
-                            leftHandContent()
-                                .frame(maxWidth: 400)
-                            
-                            PlaybackQueue()
+                        if UIDevice.current.orientation.isLandscape {
+                            VStack(spacing: 20) {
+                                HStack(spacing: 40) {
+                                    leftHandContent()
+                                        .frame(maxWidth: 400)
+                                    
+                                    PlaybackQueue()
+                                }
+                                
+                                HStack(spacing: 20) {
+                                    PlaybackAirPlayButton()
+                                    Spacer(minLength: 0)
+                                    PlaybackRateButton()
+                                    PlaybackSleepTimerButton()
+                                }
+                                .labelStyle(.iconOnly)
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.horizontal, 40)
+                        } else {
+                            VStack(spacing: 0) {
+                                GeometryReader { geometryProxy in
+                                    CompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: 0, safeAreBottomInset: 0)
+                                }
+                                .frame(maxWidth: 600)
+                            }
                         }
-                        .padding(.horizontal, 40)
                     }
                 }
                 .safeAreaInset(edge: .bottom) {

@@ -123,7 +123,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                     }
                                     .allowsHitTesting(!viewModel.isExpanded)
                                 
-                                ExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: geometryProxy.safeAreaInsets.top)
+                                CompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: geometryProxy.safeAreaInsets.top, safeAreBottomInset: geometryProxy.safeAreaInsets.bottom)
                                     .allowsHitTesting(viewModel.isExpanded)
                             }
                         }
@@ -159,11 +159,6 @@ struct CompactPlaybackModifier: ViewModifier {
                 .frame(width: geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing,
                        height: geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom)
                 .ignoresSafeArea()
-                /*
-                 .modifier(Navigation.NotificationModifier() { _, _, _, _, _, _, _, _ in
-                 viewModel.expanded = false
-                 })
-                 */
             }
         } else {
             content
@@ -171,13 +166,14 @@ struct CompactPlaybackModifier: ViewModifier {
     }
 }
 
-private struct ExpandedForeground: View {
+struct CompactExpandedForeground: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     @Environment(\.namespace) private var namespace
     
     let height: CGFloat
     let safeAreTopInset: CGFloat
+    let safeAreBottomInset: CGFloat
     
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -239,8 +235,7 @@ private struct ExpandedForeground: View {
                 
                 PlaybackActions()
                     .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
-                
-                Spacer(minLength: 12)
+                    .padding(.bottom, max(safeAreBottomInset, 12))
             }
         }
         .overlay(alignment: .top) {
