@@ -61,17 +61,34 @@ struct PodcastEpisodesView: View {
                     }
                 } else {
                     Menu("action.select", systemImage: "circle.circle") {
-                        Button("item.progress.markAsUnfinished", systemImage: "minus.square") {
-                            viewModel.performBulkAction(isFinished: false)
-                        }
-                        Button("item.progress.markAsFinished", systemImage: "checkmark.square") {
-                            viewModel.performBulkAction(isFinished: true)
-                        }
-                        
-                        Divider()
-                        
-                        Button("action.end", systemImage: "circle.badge.checkmark") {
-                            viewModel.bulkSelected = nil
+                        Section("selected \(viewModel.bulkSelected?.count ?? 0)") {
+                            Button("playback.queue.add", systemImage: QueueButton.systemImage) {
+                                viewModel.performBulkQueue()
+                            }
+                            
+                            Divider()
+                            
+                            Button("item.download", systemImage: "arrow.down.circle") {
+                                viewModel.performBulkAction(download: true)
+                            }
+                            Button("item.download.remove", systemImage: "trash.circle") {
+                                viewModel.performBulkAction(download: false)
+                            }
+                            
+                            Divider()
+                            
+                            Button("item.progress.markAsFinished", systemImage: "checkmark.square") {
+                                viewModel.performBulkAction(isFinished: true)
+                            }
+                            Button("item.progress.markAsUnfinished", systemImage: "minus.square") {
+                                viewModel.performBulkAction(isFinished: false)
+                            }
+                            
+                            Divider()
+                            
+                            Button("action.end", systemImage: "circle.badge.checkmark") {
+                                viewModel.bulkSelected = nil
+                            }
                         }
                     }
                 }

@@ -353,7 +353,7 @@ private extension EmbassyManager {
                 if sleepTimer != nil {
                     await activity.update(content)
                 } else {
-                    await activity.end(content)
+                    await activity.end(content, dismissalPolicy: .immediate)
                     
                     await MainActor.run {
                         self.activity = nil

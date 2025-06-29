@@ -80,10 +80,6 @@ struct ShelfPlayer {
         }
     }
     
-    static func updateUIHook() {
-        RFNotification[.invalidateProgressEntities].dispatch(payload: nil)
-    }
-    
     // MARK: Actions
     
     static func generateLogArchive() throws -> URL {
@@ -129,13 +125,6 @@ struct ShelfPlayer {
     nonisolated static func invalidateShortTermCache() async {
         logger.info("Invalidating short term cache...")
         
-        // await ResolveCache.shared.invalidate()
-        
-        await ProgressTrackerCache.shared.invalidate()
-        await DownloadTrackerCache.shared.invalidate()
-        
-        // await ListenNowCache.shared.invalidate()
-        
         await RFNotification[.downloadStatusChanged].send(payload: nil)
         await RFNotification[.invalidateProgressEntities].send(payload: nil)
     }
@@ -162,6 +151,11 @@ struct ShelfPlayer {
         await RFNotification[.reloadImages].send(payload: nil)
         
         try await PersistenceManager.shared.invalidateCache()
+        
+        // In memory & transient
+        
+        await ResolveCache.shared.invalidate()
+        await PersistenceManager.shared.listenNow.invalidate()
     }
 }
 

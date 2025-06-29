@@ -92,6 +92,7 @@ struct StatusOverlay: View {
                     }
                 }
             }
+            .environment(Satellite.shared)
         } else {
             Color.clear
                 .frame(width: 0, height: 0)
