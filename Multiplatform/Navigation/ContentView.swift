@@ -19,7 +19,7 @@ struct ContentView: View {
     
     @Default(.tintColor) private var tintColor
     
-    @State private var satellite = Satellite()
+    @State private var satellite = Satellite.shared
     @State private var playbackViewModel = PlaybackViewModel()
     
     @State private var connectionStore = ConnectionStore()

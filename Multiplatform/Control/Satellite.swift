@@ -74,7 +74,7 @@ final class Satellite {
     
     // MARK: Init
     
-    init() {
+    private init() {
         RFNotification[.scenePhaseDidChange].subscribe { [weak self] in
             if $0 {
                 self?.setupObservers()
@@ -90,7 +90,7 @@ final class Satellite {
         setupObservers()
         checkForResumablePlayback()
         
-        // What's New
+        // MARK: What's New
         
         if WhatsNewSheet.shouldDisplay {
             present(.whatsNew)
@@ -249,10 +249,6 @@ extension Satellite {
         }
         
         sheetStack.removeFirst()
-        
-        Task.detached {
-            await ShelfPlayer.invalidateShortTermCache()
-        }
     }
 
     func cancelWarningAlert() {
@@ -978,6 +974,10 @@ private extension Satellite {
             loadBookmarks(itemID: nowPlayingItemID)
         }
     }
+}
+
+extension Satellite {
+    static let shared = Satellite()
 }
 
 // MARK: Debug fixture

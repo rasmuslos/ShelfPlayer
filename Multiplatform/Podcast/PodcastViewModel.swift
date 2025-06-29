@@ -138,7 +138,7 @@ extension PodcastViewModel {
         return season
     }
     
-    nonisolated func performBulkAction(isFinished: Bool) {
+    private nonisolated func performBulk(_ next: @Sendable @escaping ([ItemIdentifier]) async throws -> Void) {
         Task {
             let canRun = await MainActor.run {
                 guard !performingBulkAction else {
@@ -155,12 +155,9 @@ extension PodcastViewModel {
             
             if let bulkSelected = await bulkSelected {
                 do {
-                    if isFinished {
-                        try await PersistenceManager.shared.progress.markAsCompleted(bulkSelected)
-                    } else {
-                        try await PersistenceManager.shared.progress.markAsListening(bulkSelected)
-                    }
+                    try await next(bulkSelected)
                 } catch {
+                    print(error)
                     await MainActor.run {
                         notifyError.toggle()
                     }
@@ -170,6 +167,31 @@ extension PodcastViewModel {
             await MainActor.withAnimation {
                 performingBulkAction = false
                 bulkSelected = nil
+            }
+        }
+    }
+    nonisolated func performBulkQueue() {
+        performBulk {
+            try await AudioPlayer.shared.queue($0.map { .init(itemID: $0, origin: .podcast(self.podcast.id), startWithoutListeningSession: false) })
+        }
+    }
+    nonisolated func performBulkAction(isFinished: Bool) {
+        performBulk {
+            if isFinished {
+                try await PersistenceManager.shared.progress.markAsCompleted($0)
+            } else {
+                try await PersistenceManager.shared.progress.markAsListening($0)
+            }
+        }
+    }
+    nonisolated func performBulkAction(download: Bool) {
+        performBulk {
+            for itemID in $0 {
+                if download {
+                    try await PersistenceManager.shared.download.download(itemID)
+                } else {
+                    try await PersistenceManager.shared.download.remove(itemID)
+                }
             }
         }
     }

@@ -30,12 +30,6 @@ struct TabRouter: View {
             }
             
             satellite.tabValue = $0
-            
-            // Update all download & progress trackers
-            
-            Task.detached {
-                await ShelfPlayer.invalidateShortTermCache()
-            }
         }
     }
     var isReady: Bool {
@@ -64,9 +58,6 @@ struct TabRouter: View {
                 tab.content
             }
             .modifier(PlaybackTabContentModifier())
-            .task {
-                ShelfPlayer.updateUIHook()
-            }
         }
     }
     

@@ -117,5 +117,6 @@ extension SeriesGrid {
                 .padding(20)
         }
     }
+    .previewEnvironment()
 }
 #endif

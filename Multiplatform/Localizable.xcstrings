@@ -4458,6 +4458,9 @@
         }
       }
     },
+    "selected %lld" : {
+
+    },
     "setup.welcome" : {
       "localizations" : {
         "de" : {
