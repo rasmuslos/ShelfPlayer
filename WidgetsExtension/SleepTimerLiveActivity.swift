@@ -17,10 +17,10 @@ private struct Actions: View {
                 Button("sleepTimer.extend", systemImage: "plus", intent: ExtendSleepTimerIntent())
                     .tint(Defaults[.tintColor].color)
                 Button("sleepTimer.cancel", systemImage: "xmark", intent: CancelSleepTimerIntent())
-                    .tint(.gray.opacity(0.8))
+                    .tint(.white)
             }
             .labelStyle(.iconOnly)
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.bordered)
             .buttonBorderShape(.circle)
         }
     }
@@ -36,18 +36,23 @@ struct SleepTimerLiveActivity: Widget {
     }
     
     @ViewBuilder
-    private func time(state: SleepTimerLiveActivityAttributes.ContentState, isStale: Bool) -> some View {
+    private func time(state: SleepTimerLiveActivityAttributes.ContentState, isStale: Bool, fixedWidth: Bool) -> some View {
         Group {
             if !state.isPlaying {
                 Label("paused", systemImage: "pause.fill")
                     .labelStyle(.iconOnly)
             } else if let deadline = state.deadline {
-                Text(verbatim: "00:00:00")
-                    .hidden()
-                    .overlay(alignment: .trailing) {
-                        Text(deadline, style: .timer)
-                            .multilineTextAlignment(.trailing)
-                    }
+                if fixedWidth {
+                    Text(verbatim: "00:00:00")
+                        .hidden()
+                        .overlay(alignment: .trailing) {
+                            Text(deadline, style: .timer)
+                                .multilineTextAlignment(.trailing)
+                        }
+                } else {
+                    Text(deadline, style: .timer)
+                        .multilineTextAlignment(.trailing)
+                }
             } else if let chapters = state.chapters {
                 Text("chapters")
                     .font(.body)
@@ -88,34 +93,40 @@ struct SleepTimerLiveActivity: Widget {
         }
     }
     
-    @ViewBuilder
-    private func expanded(state: SleepTimerLiveActivityAttributes.ContentState, isStale: Bool) -> some View {
-        HStack(spacing: 0) {
-            Actions()
-            
-            Spacer(minLength: 12)
-            
-            time(state: state, isStale: isStale)
-                .font(.largeTitle)
-        }
-    }
-    
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: SleepTimerLiveActivityAttributes.self) { context in
-            expanded(state: context.state, isStale: context.isStale)
-                .frame(maxHeight: .infinity)
-                .padding(.horizontal, 12)
-                .background()
-                .colorScheme(.dark)
+            HStack(alignment: .bottom, spacing: 0) {
+                Actions()
+                    .font(.largeTitle)
+                
+                Spacer(minLength: 12)
+                
+                time(state: context.state, isStale: context.isStale, fixedWidth: false)
+                    .font(.largeTitle)
+            }
+            .padding(12)
+            .background()
+            .colorScheme(.dark)
+            .activityBackgroundTint(.black)
+            .activitySystemActionForegroundColor(.white)
         } dynamicIsland: { context in
             DynamicIsland {
-                DynamicIslandExpandedRegion(.bottom) {
-                    expanded(state: context.state, isStale: context.isStale)
+                DynamicIslandExpandedRegion(.leading) {
+                    Actions()
+                        .font(.title)
+                        .frame(maxHeight: .infinity)
+                }
+                DynamicIslandExpandedRegion(.trailing) {
+                    VStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        time(state: context.state, isStale: context.isStale, fixedWidth: true)
+                            .font(.largeTitle)
+                    }
                 }
             } compactLeading: {
                 progressView(attributes: context.attributes, state: context.state, isStale: context.isStale)
             } compactTrailing: {
-                time(state: context.state, isStale: context.isStale)
+                time(state: context.state, isStale: context.isStale, fixedWidth: true)
             } minimal: {
                 progressView(attributes: context.attributes, state: context.state, isStale: context.isStale)
             }
@@ -129,8 +140,12 @@ struct SleepTimerLiveActivity: Widget {
     SleepTimerLiveActivity()
 } contentStates: {
     SleepTimerLiveActivityAttributes.ContentState(deadline: .now.advanced(by: 60), chapters: nil, isPlaying: true)
+    SleepTimerLiveActivityAttributes.ContentState(deadline: .now.advanced(by: 60 * 5), chapters: nil, isPlaying: false)
+}
+#Preview(as: .content, using: SleepTimerLiveActivityAttributes(started: .now)) {
+    SleepTimerLiveActivity()
+} contentStates: {
     SleepTimerLiveActivityAttributes.ContentState(deadline: nil, chapters: 4, isPlaying: true)
     SleepTimerLiveActivityAttributes.ContentState(deadline: .now.advanced(by: 60 * 5), chapters: nil, isPlaying: false)
-    SleepTimerLiveActivityAttributes.ContentState(deadline: nil, chapters: 3, isPlaying: false)
 }
 #endif
