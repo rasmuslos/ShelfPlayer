@@ -422,6 +422,7 @@ struct PlaybackSleepTimerButton: View {
                         case .interval(_):
                             if let remainingSleepTime = satellite.remainingSleepTime {
                                 Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                                    .fontDesign(.rounded)
                                     .contentTransition(.numericText())
                                     .animation(.smooth, value: remainingSleepTime)
                             } else {
