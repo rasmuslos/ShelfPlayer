@@ -375,8 +375,6 @@ private extension EmbassyManager {
                 do {
                     let activity = try Activity.request(attributes: attributes, content: content)
                     
-                    print(activity.id)
-                    
                     await MainActor.run {
                         self.activity = activity
                     }
