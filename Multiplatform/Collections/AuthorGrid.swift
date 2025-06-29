@@ -15,7 +15,7 @@ struct PersonGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 12
+    private let gap: CGFloat = 8
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -77,5 +77,6 @@ struct PersonGrid: View {
     NavigationStack {
         PersonGrid(people: .init(repeating: .authorFixture, count: 7))
     }
+    .previewEnvironment()
 }
 #endif

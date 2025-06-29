@@ -15,7 +15,7 @@ struct EpisodeFeaturedGrid: View {
     
     @State private var width: CGFloat? = nil
     
-    private let gap: CGFloat = 12
+    private let gap: CGFloat = 8
     private let padding: CGFloat = 20
     
     private var size: CGFloat {

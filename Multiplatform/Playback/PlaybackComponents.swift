@@ -327,12 +327,13 @@ struct PlaybackRateButton: View {
         } label: {
             Text(satellite.playbackRate, format: .percent.notation(.compactName))
                 .padding(12)
-                .contentShape(.rect)
                 .contentTransition(.numericText())
+                .contentShape(.rect(cornerRadius: 4))
                 .animation(.smooth, value: satellite.playbackRate)
         } primaryAction: {
             viewModel.cyclePlaybackSpeed()
         }
+        .hoverEffect(.highlight)
         .padding(-12)
     }
 }
@@ -435,21 +436,19 @@ struct PlaybackSleepTimerButton: View {
                 }
             }
             .padding(12)
-            .contentShape(.rect)
+            .contentShape(.rect(cornerRadius: 4))
         }
         .menuActionDismissBehavior(.disabled)
+        .hoverEffect(.highlight)
         .padding(-12)
     }
 }
-
-struct PlaybackActions: View {
-    @Environment(PlaybackViewModel.self) private var viewModel
+struct PlaybackAirPlayButton: View {
     @Environment(Satellite.self) private var satellite
     
     private let routePickerView = AVRoutePickerView()
     
-    @ViewBuilder
-    private var airPlayButton: some View {
+    var body: some View {
         Button {
             for view in routePickerView.subviews {
                 guard let button = view as? UIButton else {
@@ -462,13 +461,18 @@ struct PlaybackActions: View {
         } label: {
             Label("airPlay", systemImage: satellite.route?.icon ?? "airplay.audio")
                 .padding(12)
-                .contentShape(.rect)
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(satellite.route?.isHighlighted == true ? Color.accentColor : Color.primary)
                 .contentTransition(.symbolEffect(.replace))
+                .contentShape(.rect(cornerRadius: 4))
         }
+        .hoverEffect(.highlight)
         .padding(-12)
     }
+}
+
+struct PlaybackActions: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
     
     @ViewBuilder
     private var queueButton: some View {
@@ -490,7 +494,7 @@ struct PlaybackActions: View {
         LazyVGrid(columns: .init(repeating: .init(alignment: .centerFirstTextBaseline), count: 4)) {
             PlaybackRateButton()
             PlaybackSleepTimerButton()
-            airPlayButton
+            PlaybackAirPlayButton()
             queueButton
         }
         .buttonStyle(.plain)

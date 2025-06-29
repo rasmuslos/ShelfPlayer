@@ -19,7 +19,7 @@ struct AudiobookVGrid: View {
     }
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 16)], spacing: 16) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 12)], spacing: 12) {
             ForEach(sections) { section in
                 VStack(spacing: 0) {
                     switch section {
@@ -119,6 +119,7 @@ struct AudiobookHGrid: View {
         }
         .padding(.horizontal, 20)
     }
+    .previewEnvironment()
 }
 
 #Preview {
@@ -127,5 +128,6 @@ struct AudiobookHGrid: View {
             AudiobookHGrid(audiobooks: .init(repeating: .fixture, count: 77), small: true)
         }
     }
+    .previewEnvironment()
 }
 #endif

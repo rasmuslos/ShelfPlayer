@@ -57,10 +57,11 @@ struct ItemCompactRow: View {
     }
     
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 0) {
             if !context.isImageHidden {
                 ItemImage(itemID: itemID, size: .small)
                     .frame(width: 44)
+                    .padding(.trailing, 8)
             }
             
             if let item {

@@ -48,7 +48,7 @@ struct EpisodeList: View {
                     }
                 }
             }
-            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+            .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
             .listRowBackground(isSelected ? Color.gray.opacity(0.12) : .clear)
             .animation(.snappy, value: selected)
         }
@@ -96,7 +96,7 @@ private struct RowLabel: View {
                     satellite.start(episode.id)
                 } label: {
                     ItemImage(item: episode, size: .small)
-                        .frame(width: 104)
+                        .frame(width: 100)
                         .overlay {
                             if satellite.isLoading(observing: episode.id) {
                                 ZStack {
@@ -113,7 +113,7 @@ private struct RowLabel: View {
                 .buttonStyle(.plain)
                 .disabled(satellite.isLoading(observing: episode.id))
                 .hoverEffect(.highlight)
-                .padding(.trailing, 12)
+                .padding(.trailing, 8)
             }
             
             VStack(alignment: .leading, spacing: 0) {

@@ -19,7 +19,7 @@ struct SeriesList: View {
             }
             .buttonStyle(.plain)
             .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
-            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+            .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
             .onAppear {
                 onAppear(item)
             }
@@ -62,10 +62,11 @@ extension SeriesList {
                             .zIndex(1 / Double(index))
                     }
                 }
-                .frame(width: 94, height: 60, alignment: .leading)
+                .frame(width: 100, height: 60, alignment: .leading)
                 .hoverEffect(.highlight)
+                .padding(.trailing, 8)
                 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading) {
                     if let name {
                         Text(name)
                             .lineLimit(2)
@@ -77,7 +78,6 @@ extension SeriesList {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                .padding(.leading, 12)
             }
             .contentShape(.rect)
         }
