@@ -6,9 +6,11 @@
 //
 
 import Foundation
+@preconcurrency import ActivityKit
 import WidgetKit
 import AppIntents
 import Intents
+import OSLog
 import ShelfPlayback
 
 #if canImport(UIKit)
@@ -16,6 +18,12 @@ import UIKit
 #endif
 
 final class EmbassyManager: Sendable {
+    let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "EmbassyManager")
+    
+    // Mutex and async do not like each other, which is bad if you need to call `await activity.update()`
+    @MainActor private var isUpdatingActivity = false
+    @MainActor private var activity: Activity<SleepTimerLiveActivityAttributes>?
+    
     private init() {
         Task {
             await setupObservers()
@@ -241,6 +249,15 @@ final class EmbassyManager: Sendable {
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
             }
         }
+        
+        // MARK: Live activity (Sleep Timer)
+        
+        RFNotification[.sleepTimerChanged].subscribe {
+            self.updateSleepTimerLiveActivity($0)
+        }
+        RFNotification[.playStateChanged].subscribe { _ in
+            self.updateSleepTimerLiveActivity(nil)
+        }
     }
     
     static let shared = EmbassyManager()
@@ -289,5 +306,90 @@ private extension EmbassyManager {
         
         WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
         WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
+    }
+    
+    func updateSleepTimerLiveActivity(_ sleepTimer: SleepTimerConfiguration?) {
+        Task {
+            let shouldContinue = await MainActor.run {
+                if isUpdatingActivity {
+                    return false
+                }
+                
+                isUpdatingActivity = true
+                return true
+            }
+            
+            guard shouldContinue else {
+                return
+            }
+            
+            var sleepTimer = sleepTimer
+            
+            if sleepTimer == nil {
+                sleepTimer = await AudioPlayer.shared.sleepTimer
+            }
+            
+            let deadline: Date?
+            let chapters: Int?
+            
+            switch sleepTimer {
+                case .interval(let date):
+                    deadline = date
+                    chapters = nil
+                case .chapters(let int):
+                    deadline = nil
+                    chapters = int
+                default:
+                    deadline = nil
+                    chapters = nil
+            }
+            
+            let isPlaying = await AudioPlayer.shared.isPlaying
+            
+            let state = SleepTimerLiveActivityAttributes.ContentState(deadline: deadline, chapters: chapters, isPlaying: isPlaying)
+            let content = ActivityContent(state: state, staleDate: deadline)
+            
+            if let activity = await activity {
+                if sleepTimer != nil {
+                    await activity.update(content)
+                } else {
+                    await activity.end(content)
+                    
+                    await MainActor.run {
+                        self.activity = nil
+                    }
+                }
+            } else if sleepTimer != nil {
+                let isAuthorized = await withCheckedContinuation { continuation in
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { authorized, _ in
+                        continuation.resume(returning: authorized)
+                    }
+                }
+                
+                guard isAuthorized else {
+                    return
+                }
+                
+                let attributes = SleepTimerLiveActivityAttributes(started: .now)
+                
+                do {
+                    let activity = try Activity.request(attributes: attributes, content: content)
+                    
+                    print(activity.id)
+                    
+                    await MainActor.run {
+                        self.activity = activity
+                    }
+                    
+                    logger.info("Started live activity for sleep timer")
+                } catch {
+                    logger.error("Failed to request live activity: \(error)")
+                }
+            }
+            
+            await MainActor.run {
+                self.isUpdatingActivity = false
+            }
+        }
     }
 }

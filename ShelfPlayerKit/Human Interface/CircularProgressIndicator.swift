@@ -6,15 +6,20 @@
 //
 
 import SwiftUI
-import ShelfPlayback
 
-struct CircularProgressIndicator: View {
+public struct CircularProgressIndicator: View {
     let completed: Percentage
     
     let background: Color
     let tint: Color
     
-    var body: some View {
+    public init(completed: Percentage, background: Color, tint: Color) {
+        self.completed = completed
+        self.background = background
+        self.tint = tint
+    }
+    
+    public var body: some View {
         ZStack {
             Circle()
                 .trim(from: CGFloat(completed), to: 360 - CGFloat(completed))

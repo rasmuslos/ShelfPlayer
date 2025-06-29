@@ -1,10 +1,7 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "abc" : {
-
-    },
-    "Leading" : {
+    "chapters" : {
 
     },
     "pause" : {
@@ -23,6 +20,9 @@
         }
       }
     },
+    "paused" : {
+
+    },
     "play" : {
       "localizations" : {
         "de" : {
@@ -40,6 +40,9 @@
       }
     },
     "skipBackwards" : {
+
+    },
+    "sleepTimer" : {
 
     },
     "sleepTimer.cancel" : {
@@ -63,9 +66,6 @@
           }
         }
       }
-    },
-    "Trailing" : {
-
     },
     "widget.lastListened" : {
       "localizations" : {

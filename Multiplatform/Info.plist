@@ -111,5 +111,7 @@
 			<string>quickAction.search.subtitle</string>
 		</dict>
 	</array>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>

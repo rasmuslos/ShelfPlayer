@@ -7,13 +7,7 @@
 
 import Foundation
 
-extension Double {
-    func formatted<Style: FormatStyle>(_ style: Style) -> Style.FormatOutput where Style.FormatInput == Duration {
-        Duration.seconds(self).formatted(style)
-    }
-}
-
-struct DurationComponentsFormatter: FormatStyle {
+public struct DurationComponentsFormatter: FormatStyle {
     var unitsStyle: DateComponentsFormatter.UnitsStyle
     var allowedUnits: NSCalendar.Unit
     var maximumUnitCount: Int
@@ -41,7 +35,7 @@ struct DurationComponentsFormatter: FormatStyle {
         return self
     }
     
-    func format(_ value: TimeInterval) -> String {
+    public func format(_ value: TimeInterval) -> String {
         guard value.isFinite && !value.isNaN else {
             return "?"
         }
@@ -64,7 +58,12 @@ struct DurationComponentsFormatter: FormatStyle {
     }
 }
 
-extension FormatStyle where Self == DurationComponentsFormatter {
+public extension Double {
+    func formatted<Style: FormatStyle>(_ style: Style) -> Style.FormatOutput where Style.FormatInput == Duration {
+        Duration.seconds(self).formatted(style)
+    }
+}
+public extension FormatStyle where Self == DurationComponentsFormatter {
     static var duration: DurationComponentsFormatter {
         .init()
     }

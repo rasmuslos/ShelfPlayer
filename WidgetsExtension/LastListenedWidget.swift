@@ -174,7 +174,7 @@ private struct LastListenedWidgetContent: View {
                     
                     Spacer(minLength: 12)
                     
-                    if entry.isDownloaded && (widgetFamily == .systemMedium || entry.isPlaying != true) {
+                    if entry.isDownloaded {
                         Image(systemName: "arrow.down.circle.fill")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
