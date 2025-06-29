@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3A012E272C806B680073A619 /* Double+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A012E262C806B5D0073A619 /* Double+Format.swift */; };
 		3A012E292C806D9A0073A619 /* View+ReverseMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A012E282C806D970073A619 /* View+ReverseMask.swift */; };
 		3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */; };
 		3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A52AB623F400ACCD68 /* ContentView.swift */; };
@@ -99,7 +98,6 @@
 		3A9825E32D4A2C2300A65826 /* ProgressResetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9825E22D4A2C1E00A65826 /* ProgressResetButton.swift */; };
 		3A9825E62D4A3C2200A65826 /* ItemLoadLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9825E52D4A3C1900A65826 /* ItemLoadLink.swift */; };
 		3A9AB5382AD941DC0089231A /* PlayableItemSwipeActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9AB5372AD941DC0089231A /* PlayableItemSwipeActionsModifier.swift */; };
-		3A9B56522D61F0AD0033702D /* CircularProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9B56512D61F0A80033702D /* CircularProgressIndicator.swift */; };
 		3A9BF3382D42597C00573161 /* ItemLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9BF3372D42597800573161 /* ItemLoadView.swift */; };
 		3A9E98792DC0D0680089B3C9 /* Chapter+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9E98782DC0D0580089B3C9 /* Chapter+Format.swift */; };
 		3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */; };
@@ -276,7 +274,6 @@
 
 /* Begin PBXFileReference section */
 		3A00397E2BEF55E600849F70 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
-		3A012E262C806B5D0073A619 /* Double+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Format.swift"; sourceTree = "<group>"; };
 		3A012E282C806D970073A619 /* View+ReverseMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ReverseMask.swift"; sourceTree = "<group>"; };
 		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -373,7 +370,6 @@
 		3A9825E22D4A2C1E00A65826 /* ProgressResetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressResetButton.swift; sourceTree = "<group>"; };
 		3A9825E52D4A3C1900A65826 /* ItemLoadLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemLoadLink.swift; sourceTree = "<group>"; };
 		3A9AB5372AD941DC0089231A /* PlayableItemSwipeActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableItemSwipeActionsModifier.swift; sourceTree = "<group>"; };
-		3A9B56512D61F0A80033702D /* CircularProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressIndicator.swift; sourceTree = "<group>"; };
 		3A9BF3372D42597800573161 /* ItemLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemLoadView.swift; sourceTree = "<group>"; };
 		3A9E98782DC0D0580089B3C9 /* Chapter+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chapter+Format.swift"; sourceTree = "<group>"; };
 		3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -625,7 +621,6 @@
 				3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */,
 				3A6B93142C26BB2F00400802 /* UnavailableWrapper.swift */,
 				3A98246D2B6EAC7F0098C06A /* CircleProgressIndicator.swift */,
-				3A9B56512D61F0A80033702D /* CircularProgressIndicator.swift */,
 				3A9730A52D66630E00CF72E6 /* SlidingSeasonPicker.swift */,
 				3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */,
 				3AA9541E2AD2925C0031C20D /* RowTitle.swift */,
@@ -657,7 +652,6 @@
 				3AA089362B6E43FA00773414 /* Keys+Entries.swift */,
 				3AB695332ACF39F000823049 /* Array+Repeat.swift */,
 				3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */,
-				3A012E262C806B5D0073A619 /* Double+Format.swift */,
 				3A9E98782DC0D0580089B3C9 /* Chapter+Format.swift */,
 				3AC41F922CC52F84009ABBFA /* HomeRow+Helper.swift */,
 				3A8410522CDF92A400FC3FCB /* URL+AllocatedSize.swift */,
@@ -1326,7 +1320,6 @@
 				3A81D1E72DBA53F800ACED78 /* ListenNowSheet.swift in Sources */,
 				3A6AAF5E2DE8CEF60090C886 /* EmbassyManager.swift in Sources */,
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
-				3A012E272C806B680073A619 /* Double+Format.swift in Sources */,
 				3AA089332B6E315900773414 /* AuthorList.swift in Sources */,
 				3AA954252AD29A0A0031C20D /* EpisodeGrid.swift in Sources */,
 				3AE24D7D2D8D968500680B28 /* PlayableItemContextMenuModifier.swift in Sources */,
@@ -1373,7 +1366,6 @@
 				3ADD43502CC3B6C50060E043 /* CarPlayNowPlayingController.swift in Sources */,
 				3AFEEA632CC14F530040336D /* Intents.intentdefinition in Sources */,
 				3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */,
-				3A9B56522D61F0AD0033702D /* CircularProgressIndicator.swift in Sources */,
 				3A4AD9552DBB85C60057349C /* CarPlayItemController.swift in Sources */,
 				3A4DD5B22D2FE45500EBE3EE /* LibraryPicker.swift in Sources */,
 				3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */,
