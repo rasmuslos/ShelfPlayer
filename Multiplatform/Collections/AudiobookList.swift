@@ -23,7 +23,7 @@ struct AudiobookList: View {
                             SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
                         }
                         .buttonStyle(.plain)
-                        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+                        .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
                         .modifier(ItemStatusModifier(itemID: seriesID, hoverEffect: nil))
                 }
             }
@@ -94,7 +94,7 @@ private struct Row: View {
                     satellite.start(audiobook.id)
                 } label: {
                     ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
-                        .frame(width: 94)
+                        .frame(width: 100)
                         .overlay {
                             if satellite.isLoading(observing: audiobook.id) {
                                 ZStack {
@@ -111,7 +111,7 @@ private struct Row: View {
                 .buttonStyle(.plain)
                 .disabled(satellite.isLoading(observing: audiobook.id))
                 .hoverEffect(.highlight)
-                .padding(.trailing, 12)
+                .padding(.trailing, 8)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(audiobook.name)
@@ -146,7 +146,7 @@ private struct Row: View {
             .universalContentShape(.rect(cornerRadius: 8))
         }
         .buttonStyle(.plain)
-        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
         .modifier(ItemStatusModifier(item: audiobook, hoverEffect: nil))
         .padding(-8)
     }
