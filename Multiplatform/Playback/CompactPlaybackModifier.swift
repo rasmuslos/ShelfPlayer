@@ -49,6 +49,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                        height: (geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom) * viewModel.pushAmount)
                         }
                         .animation(.smooth, value: viewModel.pushAmount)
+                        .accessibilityHidden(viewModel.isExpanded)
                             
                     if satellite.isNowPlayingVisible {
                         ZStack {
@@ -122,9 +123,11 @@ struct CompactPlaybackModifier: ViewModifier {
                                         }
                                     }
                                     .allowsHitTesting(!viewModel.isExpanded)
+                                    .accessibilityHidden(viewModel.isExpanded)
                                 
                                 CompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: geometryProxy.safeAreaInsets.top, safeAreBottomInset: geometryProxy.safeAreaInsets.bottom)
                                     .allowsHitTesting(viewModel.isExpanded)
+                                    .accessibilityHidden(!viewModel.isExpanded)
                             }
                         }
                         .frame(height: viewModel.isExpanded ? nil : Self.height)
@@ -255,6 +258,7 @@ struct CompactExpandedForeground: View {
                 .padding(-40)
                 .offset(y: safeAreTopInset)
                 .transition(.asymmetric(insertion: .opacity.animation(.smooth.delay(0.3)), removal: .identity))
+                .accessibilityLabel("action.dismiss")
             }
         }
         .padding(.horizontal, 28)

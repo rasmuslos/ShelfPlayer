@@ -73,6 +73,7 @@ struct OfflineView: View {
                                 ItemImage(item: podcast, size: .small)
                                     .frame(width: 44)
                             }
+                            .accessibilityElement(children: .combine)
                         }
                     }
                     

@@ -12,6 +12,7 @@ struct PlayableItemContextMenuModifier: ViewModifier {
     @Environment(\.library) private var library
     
     let item: PlayableItem
+    let currentDownloadStatus: DownloadStatus?
     
     func body(content: Content) -> some View {
         content
@@ -25,7 +26,7 @@ struct PlayableItemContextMenuModifier: ViewModifier {
                 
                 Divider()
                 
-                DownloadButton(itemID: item.id)
+                DownloadButton(itemID: item.id, initialStatus: currentDownloadStatus)
                 
                 Divider()
                 

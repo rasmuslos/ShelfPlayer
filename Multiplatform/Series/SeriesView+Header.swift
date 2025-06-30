@@ -29,6 +29,8 @@ extension SeriesView {
                                 .offset(x: index == 0 ? 0 : index == 1 ? -40 : index == 2 ? 40 : index == 3 ? -75 : 75)
                         }
                     }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityAddTraits(.isImage)
                     
                     Text(viewModel.series.name)
                         .font(.title)

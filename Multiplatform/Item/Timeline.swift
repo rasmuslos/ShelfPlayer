@@ -44,6 +44,7 @@ struct Timeline: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(.background.secondary)
         }
+        .accessibilityElement(children: .combine)
     }
     
     @ViewBuilder

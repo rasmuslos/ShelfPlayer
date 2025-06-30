@@ -92,16 +92,17 @@ struct ItemStatusModifier: ViewModifier {
                         .accessibilityAction(.magicTap) {
                             satellite.start(itemID)
                         }
-                        .accessibilityAddTraits([.allowsDirectInteraction, .isButton, .isLink, .startsMediaSession])
+                        .accessibilityAddTraits([.allowsDirectInteraction, .isLink, .startsMediaSession])
                 } else {
                     $0
-                        .accessibilityAddTraits([.isButton, .isLink])
+                        .accessibilityAddTraits([.isLink])
                 }
             }
+            .accessibilityRemoveTraits(.isButton)
             .modify {
                 if let playableItem = item as? PlayableItem {
                     $0
-                        .modifier(PlayableItemContextMenuModifier(item: playableItem))
+                        .modifier(PlayableItemContextMenuModifier(item: playableItem, currentDownloadStatus: download?.status))
                 } else {
                     $0
                 }
@@ -109,7 +110,7 @@ struct ItemStatusModifier: ViewModifier {
             .modify {
                 if itemID.isPlayable {
                     $0
-                        .modifier(PlayableItemSwipeActionsModifier(itemID: itemID))
+                        .modifier(PlayableItemSwipeActionsModifier(itemID: itemID, currentDownloadStatus: download?.status))
                 } else {
                     $0
                 }

@@ -39,7 +39,6 @@ private struct Title: View {
     private var authorLabel: some View {
         if !viewModel.audiobook.authors.isEmpty {
             Text(viewModel.audiobook.authors, format: .list(type: .and, width: .short))
-                .accessibilityLabel(Text(verbatim: "\(ItemIdentifier.ItemType.author.label): \(viewModel.audiobook.authors.formatted(.list(type: .and)))"))
                 .font(largeFont ? .title2 : .subheadline)
                 .lineLimit(1)
                 .overlay(alignment: .trailingLastTextBaseline) {
@@ -65,7 +64,6 @@ private struct Title: View {
                 .modifier(SerifModifier())
                 .lineLimit(4)
                 .multilineTextAlignment(alignment.textAlignment)
-                .accessibilityLabel(Text(verbatim: "\(ItemIdentifier.ItemType.audiobook.label): \(viewModel.audiobook.name)"))
             
             if let subtitle = viewModel.audiobook.subtitle {
                 Text(subtitle)
@@ -89,6 +87,7 @@ private struct Title: View {
                 }
             }
             .accessibilityAddTraits(.isButton)
+            .hoverEffect()
             
             HStack(spacing: 2) {
                 Group {
@@ -103,20 +102,23 @@ private struct Title: View {
                 }
                 .accessibilityRemoveTraits(.isImage)
                 
-                if viewModel.audiobook.narrators.count > 1 {
-                    Menu {
-                        ItemMenu.MenuInner(narrators: viewModel.audiobook.narrators)
-                    } label: {
-                        narratorLabel
+                Group {
+                    if viewModel.audiobook.narrators.count > 1 {
+                        Menu {
+                            ItemMenu.MenuInner(narrators: viewModel.audiobook.narrators)
+                        } label: {
+                            narratorLabel
+                        }
+                        .menuStyle(.button)
+                        .buttonStyle(.plain)
+                    } else if let first = viewModel.audiobook.narrators.first {
+                        NavigationLink(destination: ItemIDLoadView(name: first, type: .narrator)) {
+                            narratorLabel
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .menuStyle(.button)
-                    .buttonStyle(.plain)
-                } else if let first = viewModel.audiobook.narrators.first {
-                    NavigationLink(destination: ItemIDLoadView(name: first, type: .narrator)) {
-                        narratorLabel
-                    }
-                    .buttonStyle(.plain)
                 }
+                .hoverEffect()
                 
                 Group {
                     if !viewModel.audiobook.narrators.isEmpty || viewModel.audiobook.explicit || viewModel.audiobook.abridged {
@@ -160,8 +162,8 @@ private struct SeriesName: View {
                 }
             }
             .padding(.top, 8)
+            .hoverEffect()
             .accessibilityAddTraits(.isButton)
-            .accessibilityLabel(Text(verbatim: "\(ItemIdentifier.ItemType.series.label): \(seriesName)"))
         }
     }
 }

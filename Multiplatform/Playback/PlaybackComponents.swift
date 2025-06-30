@@ -53,7 +53,7 @@ struct PlaybackTitle: View {
                 if viewModel.isCreatingBookmark {
                     ProgressView()
                 } else {
-                    Label("item.bookmarks", systemImage: "bookmark")
+                    Label("playback.alert.createBookmark", systemImage: "bookmark")
                         .labelStyle(.iconOnly)
                         .padding(4)
                         .contentShape(.rect)
@@ -335,6 +335,8 @@ struct PlaybackRateButton: View {
         }
         .hoverEffect(.highlight)
         .padding(-12)
+        .accessibilityLabel("playback.sleepTimer")
+        .accessibilityValue(Text(satellite.playbackRate.formatted(.percent.notation(.compactName))))
     }
 }
 struct PlaybackSleepTimerButton: View {
@@ -343,6 +345,23 @@ struct PlaybackSleepTimerButton: View {
     
     @Default(.sleepTimerIntervals) private var sleepTimerIntervals
     @Default(.sleepTimerExtendInterval) private var sleepTimerExtendInterval
+    
+    private var accessibilityValue: String {
+        if let remainingSleepTime = satellite.remainingSleepTime {
+            return remainingSleepTime.formatted(.duration)
+        }
+        
+        if let sleepTimer = satellite.sleepTimer {
+            switch sleepTimer {
+                case .chapters(let amount):
+                    return String(localized: "sleepTimer.chapter") + " \(amount)"
+                default:
+                    break
+            }
+        }
+        
+        return 0.formatted(.duration)
+    }
     
     var body: some View {
         Menu {
@@ -441,6 +460,8 @@ struct PlaybackSleepTimerButton: View {
         .menuActionDismissBehavior(.disabled)
         .hoverEffect(.highlight)
         .padding(-12)
+        .accessibilityLabel("playback.sleepTimer")
+        .accessibilityValue(Text(accessibilityValue))
     }
 }
 struct PlaybackAirPlayButton: View {
@@ -637,6 +658,25 @@ private struct PlaybackSlider<MiddleContent: View>: View {
         .frame(height: height * 2 + activeHeight + 6)
         .compositingGroup()
         .animation(.smooth, value: seeking)
+        .accessibilityRepresentation {
+            if let currentTime, let duration {
+                Slider(value: .init() {
+                    duration * percentage
+                } set: {
+                    seeking = min(1, max(0, $0 / duration))
+                }, in: 0...duration) {
+                    Text(verbatim: "\(currentTime.formatted(.duration(unitsStyle: .spellOut, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))) / \(duration.formatted(.duration(unitsStyle: .spellOut, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))))")
+                }
+            } else {
+                Slider(value: .init() {
+                    percentage
+                } set: {
+                    seeking = $0
+                }, in: 0...1) {
+                    Text("volume")
+                }
+            }
+        }
     }
 }
 private struct BottomSlider: View {
