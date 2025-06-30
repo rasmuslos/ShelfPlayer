@@ -238,7 +238,7 @@ struct CompactExpandedForeground: View {
                 
                 PlaybackActions()
                     .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
-                    .padding(.bottom, max(safeAreBottomInset, 12))
+                    .padding(.bottom, safeAreBottomInset + 12)
             }
         }
         .overlay(alignment: .top) {

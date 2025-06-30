@@ -125,6 +125,7 @@ private struct Additional: View {
                 Image(systemName: "number")
                 Text(viewModel.episodeCount, format: .number)
             }
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel("item.count.episodes \(viewModel.episodeCount)")
             
             if viewModel.podcast.explicit {
