@@ -28,7 +28,6 @@ struct AudiobookVGrid: View {
                             AudiobookView(audiobook)
                         } label: {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
-                                .modifier(PlayableItemContextMenuModifier(item: audiobook))
                         }
                         .buttonStyle(.plain)
                         .modifier(ItemStatusModifier(item: audiobook))

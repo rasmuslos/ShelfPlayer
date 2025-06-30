@@ -105,6 +105,10 @@ struct PersonView: View {
         }
         .padding(.top, 16)
         .padding(.horizontal, 20)
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isHeader)
+        .accessibilityLabel(title)
+        .accessibilityValue(Text(verbatim: "\(count)"))
     }
     @ViewBuilder
     private func listTitle(_ title: String, count: Int) -> some View {
@@ -122,6 +126,10 @@ struct PersonView: View {
         }
         .listRowSeparator(.hidden, edges: .top)
         .listRowInsets(.init(top: 16, leading: 20, bottom: 0, trailing: 20))
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isHeader)
+        .accessibilityLabel(title)
+        .accessibilityValue(Text(verbatim: "\(count)"))
     }
     
     var body: some View {

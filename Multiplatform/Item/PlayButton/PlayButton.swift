@@ -161,6 +161,9 @@ struct PlayButton: View {
         playButtonStyle.makeMenu(configuration: .init(progress: progress, background: background, content: .init(content: menuContent)))
             .clipShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
             .universalContentShape(.rect(cornerRadius: playButtonStyle.cornerRadius))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(label))
+            .accessibilityValue(Text(verbatim: "\(tracker.progress?.formatted(.percent.notation(.compactName)) ?? "?")"))
             .hoverEffect(.highlight)
             .onReceive(RFNotification[.reloadImages].publisher()) {
                 if let itemID = $0, itemID == item.id {

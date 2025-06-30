@@ -13,13 +13,7 @@ struct PlayableItemSwipeActionsModifier: ViewModifier {
     @Default(.tintColor) private var tintColor
     
     let itemID: ItemIdentifier
-    
-    @State private var download: DownloadStatusTracker
-    
-    init(itemID: ItemIdentifier) {
-        self.itemID = itemID
-        _download = .init(initialValue: .init(itemID: itemID))
-    }
+    let currentDownloadStatus: DownloadStatus?
     
     func body(content: Content) -> some View {
         content
@@ -37,7 +31,7 @@ struct PlayableItemSwipeActionsModifier: ViewModifier {
                 .tint(tintColor.color)
             }
             .swipeActions(edge: .trailing) {
-                DownloadButton(itemID: itemID, tint: true, initialStatus: download.status)
+                DownloadButton(itemID: itemID, tint: true, initialStatus: currentDownloadStatus)
                     .labelStyle(.iconOnly)
             }
             .swipeActions(edge: .trailing) {

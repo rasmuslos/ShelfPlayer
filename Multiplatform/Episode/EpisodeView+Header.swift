@@ -48,6 +48,7 @@ private struct Eyebrow: View {
             if let releaseDate = viewModel.episode.releaseDate {
                 Text(releaseDate, style: .date)
                 Text(verbatim: " • ")
+                    .accessibilityHidden(true)
             }
             
             Text(viewModel.episode.duration, format: .duration)
@@ -87,12 +88,12 @@ private struct Title: View {
                             .font(.caption2)
                     }
                 }
-                // .disabled(library!.type == .offline)
                 .lineLimit(1)
                 .font(.footnote)
                 .foregroundStyle(.ultraThinMaterial)
                 .colorScheme(isLight ? .dark : .light)
                 .buttonStyle(.plain)
+                .hoverEffect()
                 
                 if alignment == .leading {
                     Spacer()

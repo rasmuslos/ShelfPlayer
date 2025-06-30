@@ -32,6 +32,10 @@ struct SeriesView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isHeader)
+        .accessibilityLabel(Text("item.related.series.audiobooks"))
+        .accessibilityValue(Text(verbatim: "\(viewModel.lazyLoader.totalCount)"))
     }
     
     var body: some View {
