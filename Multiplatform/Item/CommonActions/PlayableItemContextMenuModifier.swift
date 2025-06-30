@@ -67,7 +67,7 @@ struct PlayableItemContextMenuPreview: View {
     var body: some View {
         if let audiobook = item as? Audiobook {
             VStack(alignment: .leading, spacing: 2) {
-                ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
+                ItemProgressIndicatorImage(itemID: audiobook.id, size: .regular, aspectRatio: .none)
                     .padding(.bottom, 12)
                 
                 Text(audiobook.name)
@@ -96,7 +96,7 @@ struct PlayableItemContextMenuPreview: View {
         } else if let episode = item as? Episode {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 4) {
-                    ItemImage(item: episode, size: .small)
+                    ItemImage(item: episode, size: .regular)
                         .frame(width: 50, height: 50)
                     
                     Group {
@@ -113,6 +113,7 @@ struct PlayableItemContextMenuPreview: View {
                     .font(.caption.smallCaps())
                     .foregroundStyle(.secondary)
                     .padding(.top, 8)
+                    
                     Text(episode.name)
                         .font(.headline)
                     

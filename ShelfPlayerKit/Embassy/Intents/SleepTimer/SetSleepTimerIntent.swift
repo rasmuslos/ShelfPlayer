@@ -21,6 +21,10 @@ public struct SetSleepTimerIntent: AudioPlaybackIntent {
     public var type: IntentSleepTimerType
     
     public init() {}
+    public init(amount: Int, type: IntentSleepTimerType) {
+        self.amount = amount
+        self.type = type
+    }
     
     public static var parameterSummary: some ParameterSummary {
         Summary("intent.setSleepTimer \(\.$amount) \(\.$type)")

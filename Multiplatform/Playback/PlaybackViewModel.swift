@@ -163,6 +163,7 @@ final class PlaybackViewModel {
             
             do {
                 try await AudioPlayer.shared.createQuickBookmark()
+                let _ = try? await CreateBookmarkIntent().donate()
                 
                 await MainActor.withAnimation {
                     notifySuccess.toggle()
