@@ -122,11 +122,10 @@ private struct Additional: View {
     var body: some View {
         HStack {
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Label("item.count.episodes \(viewModel.episodeCount)", systemImage: "number")
-                    .labelStyle(.iconOnly)
-                
+                Image(systemName: "number")
                 Text(viewModel.episodeCount, format: .number)
             }
+            .accessibilityLabel("item.count.episodes \(viewModel.episodeCount)")
             
             if viewModel.podcast.explicit {
                 Label("item.explicit", systemImage: "e.square.fill")
@@ -135,6 +134,7 @@ private struct Additional: View {
             
             if let publishingType = viewModel.podcast.publishingType {
                 Text(verbatim: "•")
+                    .accessibilityHidden(true)
                 
                 switch publishingType {
                     case .episodic:
@@ -146,6 +146,7 @@ private struct Additional: View {
             
             if viewModel.podcast.genres.count > 0 {
                 Text(verbatim: "•")
+                    .accessibilityHidden(true)
                 
                 Text(viewModel.podcast.genres, format: .list(type: .and, width: .narrow))
                     .lineLimit(1)

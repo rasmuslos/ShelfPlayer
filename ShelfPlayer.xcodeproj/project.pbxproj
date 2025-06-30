@@ -555,7 +555,6 @@
 				3ABC462F2D5A2F7F00E21956 /* Panels */,
 				3A6924A92D6B9670004E291E /* Collections */,
 				3AA1642B2D6DBA4B00343214 /* Playback */,
-				3A262E962DA1558B002F927A /* Offline */,
 				3A2BC1942AD8121400054727 /* Settings.bundle */,
 				3A27A66D2AB7631900F80C92 /* Info.plist */,
 				3A792B962B6F9F53002A48E6 /* InfoPlist.xcstrings */,
@@ -642,6 +641,7 @@
 				3A65DAFE2D770AB900332BF3 /* ShelfPlayer.swift */,
 				3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */,
 				3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */,
+				3A262E982DA155A1002F927A /* OfflineView.swift */,
 			);
 			path = Control;
 			sourceTree = "<group>";
@@ -659,14 +659,6 @@
 				3A47D1842CB991720045C2BB /* SwiftUI */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		3A262E962DA1558B002F927A /* Offline */ = {
-			isa = PBXGroup;
-			children = (
-				3A262E982DA155A1002F927A /* OfflineView.swift */,
-			);
-			path = Offline;
 			sourceTree = "<group>";
 		};
 		3A31299F2D2413F000D143B4 /* Connection */ = {

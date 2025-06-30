@@ -4459,7 +4459,20 @@
       }
     },
     "selected %lld" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgewählt: %lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected: %lld"
+          }
+        }
+      }
     },
     "setup.welcome" : {
       "localizations" : {

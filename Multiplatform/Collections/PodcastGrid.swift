@@ -44,7 +44,7 @@ struct PodcastHGrid: View {
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimumSize = horizontalSizeClass == .compact ? 160 : 200.0
+        let minimumSize = horizontalSizeClass == .compact ? 120 : 200.0
         
         let usable = width - padding * 2
         let paddedSize = minimumSize + gap

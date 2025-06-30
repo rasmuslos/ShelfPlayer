@@ -21,6 +21,7 @@ struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
                     configuration.label
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
+                        .hoverEffect(.lift)
                     
                     Spacer(minLength: 8)
                     
@@ -28,6 +29,7 @@ struct BetterDisclosureGroupStyle: DisclosureGroupStyle {
                         .font(.subheadline)
                         .rotationEffect(.degrees(configuration.isExpanded ? 0 : -90))
                         .animation(.linear(duration: 0.05), value: configuration.isExpanded)
+                        .hoverEffect(.lift)
                 }
                 .contentShape(.rect)
             }
