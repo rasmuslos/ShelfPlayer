@@ -19,6 +19,9 @@ public struct SetPlaybackRateIntent: AudioPlaybackIntent {
     public var rate: Percentage
     
     public init() {}
+    public init(rate: Percentage) {
+        self.rate = rate
+    }
     
     public static var parameterSummary: some ParameterSummary {
         Summary("intent.setPlaybackRate \(\.$rate)")

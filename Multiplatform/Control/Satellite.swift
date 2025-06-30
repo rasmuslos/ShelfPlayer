@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppIntents
 import OSLog
 import ShelfPlayback
 
@@ -354,7 +355,15 @@ extension Satellite {
             }
 
             await startWorking(on: currentItemID)
+            
             await AudioPlayer.shared.play()
+            
+            do {
+                try await PlayIntent().donate()
+            } catch {
+                logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
+            }
+            
             await endWorking(on: currentItemID, successfully: nil)
         }
     }
@@ -365,7 +374,15 @@ extension Satellite {
             }
 
             await startWorking(on: currentItemID)
+            
             await AudioPlayer.shared.pause()
+            
+            do {
+                try await PauseIntent().donate()
+            } catch {
+                logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
+            }
+            
             await endWorking(on: currentItemID, successfully: nil)
         }
     }
@@ -387,6 +404,21 @@ extension Satellite {
 
             do {
                 try await AudioPlayer.shared.skip(forwards: forwards)
+                
+                let intent: any AppIntent
+                
+                if forwards {
+                    intent = SkipForwardsIntent()
+                } else {
+                    intent = SkipBackwardsIntent()
+                }
+                
+                do {
+                    try await intent.donate()
+                } catch {
+                    logger.error("Failed to donate skip intent: \(error)")
+                }
+                
                 await endWorking(on: currentItemID, successfully: nil)
             } catch {
                 await endWorking(on: currentItemID, successfully: false)
@@ -500,7 +532,15 @@ extension Satellite {
             }
 
             await startWorking(on: currentItemID)
+            
             await AudioPlayer.shared.setPlaybackRate(rate)
+            
+            do {
+                try await SetPlaybackRateIntent(rate: rate).donate()
+            } catch {
+                logger.error("Failed to donate SetPlaybackRateIntent: \(error)")
+            }
+            
             await endWorking(on: currentItemID, successfully: true)
         }
     }
@@ -512,7 +552,23 @@ extension Satellite {
             }
 
             await startWorking(on: currentItemID)
+            
             await AudioPlayer.shared.setSleepTimer(configuration)
+            
+            do {
+                switch configuration {
+                    case .interval(let deadline):
+                        let distance = Date.now.distance(to: deadline) / 60
+                        try await SetSleepTimerIntent(amount: Int(distance), type: .minutes).donate()
+                    case .chapters(let amount):
+                        try await SetSleepTimerIntent(amount: amount, type: .chapters).donate()
+                    default:
+                        break
+                }
+            } catch {
+                logger.error("Failed to donate SetSleepTimerIntent: \(error)")
+            }
+            
             await endWorking(on: currentItemID, successfully: true)
         }
     }
@@ -523,7 +579,15 @@ extension Satellite {
             }
 
             await startWorking(on: currentItemID)
+            
             await AudioPlayer.shared.extendSleepTimer()
+            
+            do {
+                try await ExtendSleepTimerIntent().donate()
+            } catch {
+                logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
+            }
+            
             await endWorking(on: currentItemID, successfully: true)
         }
     }
@@ -546,6 +610,13 @@ extension Satellite {
             let amount = index - currentChapterIndex + 1
 
             await AudioPlayer.shared.setSleepTimer(.chapters(amount))
+            
+            do {
+                try await SetSleepTimerIntent(amount: amount, type: .chapters).donate()
+            } catch {
+                logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
+            }
+            
             await endWorking(on: currentItemID, successfully: true)
         }
     }
