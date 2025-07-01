@@ -258,6 +258,23 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         let itemIDDescription = configurationID[configurationID.index(after: configurationID.firstIndex(of: "-")!)..<configurationID.endIndex]
         return ItemIdentifier(String(itemIDDescription))
     }
+    nonisolated func isManaged(itemID: ItemIdentifier) async -> Bool {
+        await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)]?.isEmpty == false
+    }
+    
+    nonisolated func removeConfigurations(associatedWith itemID: ItemIdentifier) async {
+        guard let configurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)] else {
+            return
+        }
+        
+        for configurationID in configurationIDs {
+            do {
+                try await resolveConfiguration(id: configurationID).disable()
+            } catch {
+                logger.error("Failed to disable configuration \(configurationID): \(error)")
+            }
+        }
+    }
     
     // MARK: Retrieval
     
@@ -447,6 +464,15 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                     LISTEN_NOW_CONFIGURATION_ID
                 case .grouping(let itemID, _):
                     buildGroupingConfigurationID(itemID)
+            }
+        }
+        
+        func disable() async throws {
+            switch self {
+                case .listenNow:
+                    Defaults[.enableListenNowDownloads] = false
+                case .grouping(let itemID, _):
+                    try await PersistenceManager.shared.convenienceDownload.setRetrieval(for: itemID, retrieval: nil)
             }
         }
         
