@@ -36,4 +36,3 @@ public struct OpenIntent: AppIntent {
         return .result(value: item)
     }
 }
-
