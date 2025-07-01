@@ -179,6 +179,8 @@ extension Satellite {
         case downloadStartWhilePlaying
         case downloadRemoveWhilePlaying
         
+        case convenienceDownloadManaged(ItemIdentifier)
+        
         var message: String {
             switch self {
                 case .message(let message):
@@ -193,6 +195,9 @@ extension Satellite {
                     String(localized: "warning.playbackDownload.activePlayback")
                 case .downloadRemoveWhilePlaying:
                     String(localized: "warning.playbackDownload.removeDownload")
+                    
+                case .convenienceDownloadManaged:
+                    String(localized: "warning.convenienceDownloadManaged")
             }
         }
         
@@ -203,16 +208,32 @@ extension Satellite {
                     
                 case .resumePlayback, .playbackStartWhileDownloading, .downloadStartWhilePlaying, .downloadRemoveWhilePlaying:
                     [.cancel, .proceed]
+                    
+                case .convenienceDownloadManaged(let itemID):
+                    [.cancel, .removeConvenienceDownloadConfigurations(itemID), .proceed]
             }
         }
         
-        enum WarningAction: Int, Identifiable, Hashable, Equatable, Codable {
+        enum WarningAction: Identifiable, Hashable, Equatable, Codable {
             case cancel
             case proceed
             case dismiss
             
-            var id: Int {
-                rawValue
+            // Special
+            
+            case removeConvenienceDownloadConfigurations(ItemIdentifier)
+            
+            var id: String {
+                switch self {
+                    case .cancel:
+                        "Z_cancel"
+                    case .proceed:
+                        "G_proceed"
+                    case .dismiss:
+                        "Q_dissmiss"
+                    case .removeConvenienceDownloadConfigurations:
+                        "H_removeConvenienceDownloadConfigurations"
+                }
             }
         }
     }
@@ -297,7 +318,10 @@ extension Satellite {
                     }
                     
                     await AudioPlayer.shared.stop()
-                    removeDownload(itemID: nowPlayingItemID)
+                    removeDownload(itemID: nowPlayingItemID, force: false)
+                    
+                case .convenienceDownloadManaged(let itemID):
+                    removeDownload(itemID: itemID, force: true)
             }
             
             self.warningAlertStack.removeFirst()
@@ -771,17 +795,18 @@ extension Satellite {
         }
     }
     
-    nonisolated func removeDownload(itemID: ItemIdentifier) {
+    nonisolated func removeDownload(itemID: ItemIdentifier, force: Bool) {
         Task {
-            let status = await PersistenceManager.shared.download.status(of: itemID)
-            
-            guard status != .none else {
-                return
-            }
-            
-            guard await nowPlayingItemID != itemID else {
-                await warn(.downloadRemoveWhilePlaying)
-                return
+            if !force {
+                guard await nowPlayingItemID != itemID else {
+                    await warn(.downloadRemoveWhilePlaying)
+                    return
+                }
+                
+                guard await !PersistenceManager.shared.convenienceDownload.isManaged(itemID: itemID) else {
+                    await warn(.convenienceDownloadManaged(itemID))
+                    return
+                }
             }
             
             do {
@@ -795,6 +820,16 @@ extension Satellite {
                     notifyError.toggle()
                 }
             }
+        }
+    }
+    nonisolated func removeConvenienceDownloadConfigurations(from itemID: ItemIdentifier) {
+        Task {
+            await startWorking(on: itemID)
+            
+            await PersistenceManager.shared.convenienceDownload.removeConfigurations(associatedWith: itemID)
+            removeDownload(itemID: itemID, force: true)
+            
+            await endWorking(on: itemID, successfully: true)
         }
     }
 }

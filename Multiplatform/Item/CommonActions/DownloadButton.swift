@@ -153,7 +153,7 @@ struct DownloadButton: View {
                     if status == DownloadStatus.none {
                         satellite.download(itemID: itemID)
                     } else {
-                        satellite.removeDownload(itemID: itemID)
+                        satellite.removeDownload(itemID: itemID, force: false)
                     }
                 } label: {
                     if let current {

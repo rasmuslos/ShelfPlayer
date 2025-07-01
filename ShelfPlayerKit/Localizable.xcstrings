@@ -90,6 +90,12 @@
         }
       }
     },
+    "intent.download" : {
+
+    },
+    "intent.download.description" : {
+
+    },
     "intent.entity.item" : {
       "localizations" : {
         "de" : {
@@ -712,6 +718,12 @@
         }
       }
     },
+    "intent.removeDownload" : {
+
+    },
+    "intent.removeDownload.description" : {
+
+    },
     "intent.search" : {
       "localizations" : {
         "de" : {
@@ -807,6 +819,15 @@
           }
         }
       }
+    },
+    "intent.setFinished" : {
+
+    },
+    "intent.setFinished.description" : {
+
+    },
+    "intent.setFinished.finished" : {
+
     },
     "intent.setPlaybackRate" : {
       "localizations" : {
