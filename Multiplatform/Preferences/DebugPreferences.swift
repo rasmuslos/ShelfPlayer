@@ -11,14 +11,6 @@ import ShelfPlayback
 struct DebugPreferences: View {
     @Default(.spotlightIndexCompletionDate) private var spotlightIndexCompletionDate
     
-    #if DEBUG
-    @State private var _itemID: String = "1::audiobook::Mn5Uwo+RZPPRUFZcewyMSWva5dUcftExIlOdw1ULo5o=::44e2d00a-402a-42ae-9bd3-3f339df44aef::75a7eaa0-0aed-46aa-8cb1-b5f43dbae985"
-    
-    private var itemID: ItemIdentifier {
-        ItemIdentifier(_itemID)
-    }
-    #endif
-    
     @State private var downloadRunsInExtendedBackgroundTask: Bool? = nil
     
     var body: some View {
@@ -39,21 +31,6 @@ struct DebugPreferences: View {
                 }
                 .listRowBackground(Color.clear)
             }
-            
-            #if DEBUG
-            Section(String("Item")) {
-                TextField(String("ItemID"), text: $_itemID)
-                
-                Button(String("Navigate")) {
-                    itemID.navigate()
-                }
-                Button(String("Create playback sessions")) {
-                    Task {
-                        await createDebugListeningSession(for: itemID)
-                    }
-                }
-            }
-            #endif
             
             Section {
                 Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer")!) {
@@ -182,7 +159,7 @@ private struct FlushButtons: View {
                 success = false
             }
             
-            try? await Task.sleep(for: .seconds(1))
+            try? await Task.sleep(for: .seconds(4))
             
             load()
             
@@ -257,13 +234,6 @@ private struct FlushButtons: View {
 
 
 #if DEBUG
-private func createDebugListeningSession(for itemID: ItemIdentifier) async {
-    for i in 1..<50 {
-        let i = Double(i)
-        try! await ABSClient[itemID.connectionID].createListeningSession(itemID: itemID, timeListened: 400 + i, startTime: i * 4, currentTime: i * 5, started: .now, updated: .now)
-    }
-}
-
 #Preview {
     NavigationStack {
         DebugPreferences()

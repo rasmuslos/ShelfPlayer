@@ -96,7 +96,7 @@ public actor ResolveCache: Sendable {
         }
         
         if let groupingID {
-            let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: .init(primaryID: groupingID, groupingID: nil, libraryID: "_", connectionID: connectionID, type: .podcast))
+            let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: groupingID)
             
             cache[podcast.id] = podcast
             episodeCache[podcast.id] = episodes
@@ -116,6 +116,22 @@ public actor ResolveCache: Sendable {
             cache[audiobook.id] = audiobook
             return audiobook
         }
+    }
+    public func resolve(primaryID: ItemIdentifier.PrimaryID, connectionID: ItemIdentifier.ConnectionID) async throws -> Podcast {
+        if let cached = cache.first(where: { $0.key.isEqual(primaryID: primaryID, groupingID: nil, connectionID: connectionID) }), let podcast = cached.value as? Podcast {
+            return podcast
+        }
+        
+        let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: primaryID)
+        
+        cache[podcast.id] = podcast
+        episodeCache[podcast.id] = episodes
+        
+        for episode in episodes {
+            cache[episode.id] = episode
+        }
+        
+        return podcast
     }
     
     public func invalidate() {
