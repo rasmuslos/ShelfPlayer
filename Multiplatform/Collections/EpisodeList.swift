@@ -48,7 +48,7 @@ struct EpisodeList: View {
                     }
                 }
             }
-            .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
+            .listRowInsets(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
             .listRowBackground(isSelected ? Color.gray.opacity(0.12) : .clear)
             .animation(.snappy, value: selected)
         }
