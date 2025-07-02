@@ -185,6 +185,19 @@ public extension PersistenceManager.ProgressSubsystem {
             })).map(ProgressEntity.init)
         }
     }
+    var recentlyFinishedEntities: [ProgressEntity] {
+        get throws {
+            let cutoff = Date.now.advanced(by: -60 * 60 * 24 * 7)
+            
+            return try modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+                if let finishedAt = $0.finishedAt {
+                    return finishedAt > cutoff
+                } else {
+                    return false
+                }
+            })).map(ProgressEntity.init)
+        }
+    }
     
     func markAsCompleted(_ itemIDs: [ItemIdentifier]) async throws {
         logger.info("Marking progress as completed for items \(itemIDs).")

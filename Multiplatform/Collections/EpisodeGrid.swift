@@ -20,7 +20,7 @@ struct EpisodeGrid: View {
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
-        let minimumSize: CGFloat = 400
+        let minimumSize: CGFloat = horizontalSizeClass == .compact ? 220 : 400
         
         let usable = width - padding * 2
         let paddedSize = minimumSize + gap

@@ -32,7 +32,11 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
     }
     
     func podcast(with identifier: ItemIdentifier) async throws -> (Podcast, [Episode]) {
-        let item = try await response(for: ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: .get))
+        try await podcast(with: identifier.primaryID)
+        
+    }
+    func podcast(with identifier: ItemIdentifier.PrimaryID) async throws -> (Podcast, [Episode]) {
+        let item = try await response(for: ClientRequest<ItemPayload>(path: "api/items/\(identifier)", method: .get))
         let podcast = Podcast(payload: item, connectionID: connectionID)
         
         guard let episodes = item.media?.episodes else {

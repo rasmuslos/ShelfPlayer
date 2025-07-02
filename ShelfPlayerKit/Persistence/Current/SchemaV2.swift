@@ -28,6 +28,5 @@ enum SchemaV2: VersionedSchema {
         PersistedSearchIndexEntry.self,
         
         PersistedDiscoveredConnection.self,
-        PersistedListenNowSuggestion.self,
     ]}
 }

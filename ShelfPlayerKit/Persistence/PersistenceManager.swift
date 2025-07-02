@@ -58,7 +58,7 @@ public final class PersistenceManager: Sendable {
         item = .init()
         bookmark = .init(modelContainer: modelContainer)
         
-        listenNow = .init(modelContainer: modelContainer)
+        listenNow = .init()
     }
     
     public func remove(itemID: ItemIdentifier) async {
