@@ -54,6 +54,8 @@ protocol AudioEndpoint: Identifiable, Sendable {
     func skip(queueIndex index: Int) async
     func skip(upNextQueueIndex index: Int) async
     
+    func move(queueIndex: IndexSet, to: Int) async
+    
     func remove(queueIndex index: Int) async
     func remove(upNextQueueIndex index: Int) async
     
