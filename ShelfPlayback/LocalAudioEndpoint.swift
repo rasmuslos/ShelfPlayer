@@ -707,16 +707,6 @@ private extension LocalAudioEndpoint {
         await PersistenceManager.shared.download.removeBlock(from: currentItemID)
         
         if finishedCurrentItem {
-            let groupingID: ItemIdentifier
-            
-            if let seriesID = await self.seriesID {
-                groupingID = seriesID
-            } else if let podcastID = await self.podcastID {
-                groupingID = podcastID
-            } else {
-                return
-            }
-            
             let currentItemID = currentItemID
             
             Task.detached {

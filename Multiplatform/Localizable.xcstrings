@@ -2183,7 +2183,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als „ncht abgeschlossen“ markieren"
+            "value" : "Als „nicht abgeschlossen“ markieren"
           }
         },
         "en" : {
@@ -3719,7 +3719,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Standart Episode Reihenfolge"
+            "value" : "Standard Episode Reihenfolge"
           }
         },
         "en" : {
