@@ -18,6 +18,8 @@ final class CarPlayTabBar {
     
     let template: CPTabBarTemplate
     
+    private var didSelectLastActiveLibrary: Bool
+    
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
@@ -144,7 +146,7 @@ private extension CarPlayTabBar {
             return item
         }
         
-         let template = CPListTemplate(title: "carPlay.otherLibraries", sections: [CPListSection(items: items)], assistantCellConfiguration: nil)
+        let template = CPListTemplate(title: "carPlay.otherLibraries", sections: [CPListSection(items: items)], assistantCellConfiguration: nil)
         
         template.tabTitle = String(localized: "carPlay.otherLibraries")
         template.tabImage = UIImage(systemName: "ellipsis")
