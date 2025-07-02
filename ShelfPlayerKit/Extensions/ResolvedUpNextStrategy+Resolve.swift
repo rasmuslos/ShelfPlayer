@@ -7,12 +7,20 @@
 
 import Foundation
 
-
 public extension ResolvedUpNextStrategy {
     func resolve(cutoff itemID: ItemIdentifier?) async throws -> [PlayableItem] {
         switch self {
             case .series(let seriesID):
-                let audiobooks = try await ABSClient[seriesID.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: nil, page: nil).0
+                let unfiltered = try await ABSClient[seriesID.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: nil, page: nil).0
+                var audiobooks = [Audiobook]()
+                
+                for audiobook in unfiltered {
+                    guard await audiobook.isIncluded(in: Defaults[.audiobooksFilter]) else {
+                        continue
+                    }
+                    
+                    audiobooks.append(audiobook)
+                }
                 
                 guard let itemID else {
                     return audiobooks

@@ -31,6 +31,12 @@ public extension PersistenceManager.ItemSubsystem {
     func setUpNextStrategy(_ strategy: ConfigureableUpNextStrategy?, for itemID: ItemIdentifier) async throws {
         try await PersistenceManager.shared.keyValue.set(.upNextStrategy(for: itemID), strategy)
     }
+    func allowSuggestions(for itemID: ItemIdentifier) async -> Bool? {
+        await PersistenceManager.shared.keyValue[.allowSuggestions(for: itemID)]
+    }
+    func setAllowSuggestions(_ allowed: Bool?, for itemID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.allowSuggestions(for: itemID), allowed)
+    }
     
     func dominantColor(of itemID: ItemIdentifier) async -> Color? {
         if let stored = await PersistenceManager.shared.keyValue[.dominantColor(of: itemID)] {
@@ -129,6 +135,9 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
     
     static func upNextStrategy(for itemID: ItemIdentifier) -> Key<ConfigureableUpNextStrategy> {
         Key(identifier: "upNextStrategy-\(itemID)", cluster: "upNextStrategy", isCachePurgeable: false)
+    }
+    static func allowSuggestions(for itemID: ItemIdentifier) -> Key<Bool> {
+        Key(identifier: "allowSuggestions-\(itemID)", cluster: "allowSuggestions", isCachePurgeable: false)
     }
     
     static func dominantColor(of itemID: ItemIdentifier) -> Key<String> {

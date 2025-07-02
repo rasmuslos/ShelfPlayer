@@ -33,6 +33,9 @@ struct GroupingConfigurationSheet: View {
                             }
                         }
                         .bold(viewModel.isUpNextStrategyCustomized)
+                        
+                        Toggle("item.grouping.configure.allowSuggestions", isOn: $viewModel.allowSuggestions)
+                            .bold(viewModel.isAllowSuggestionsCustomized)
                     }
                     
                     Section {
@@ -110,6 +113,7 @@ private final class ViewModel {
     
     var playbackRate: Percentage
     var upNextStrategy: ConfigureableUpNextStrategy
+    var allowSuggestions: Bool
     
     var retrieval: ConvenienceDownloadRetrievalOption
     
@@ -120,6 +124,7 @@ private final class ViewModel {
         
         playbackRate = await PersistenceManager.shared.item.playbackRate(for: itemID) ?? Defaults[.defaultPlaybackRate]
         upNextStrategy = await PersistenceManager.shared.item.upNextStrategy(for: itemID) ?? Defaults[.upNextStrategy]
+        allowSuggestions = await PersistenceManager.shared.item.allowSuggestions(for: itemID) ?? true
         
         if let retrieval = await PersistenceManager.shared.convenienceDownload.retrieval(for: itemID), let parsed = ConvenienceDownloadRetrievalOption.parse(retrieval) {
             self.retrieval = parsed
@@ -133,6 +138,9 @@ private final class ViewModel {
     }
     var isUpNextStrategyCustomized: Bool {
         upNextStrategy != globalUpNextStrategy
+    }
+    var isAllowSuggestionsCustomized: Bool {
+        allowSuggestions != true
     }
     
     nonisolated func save(callback: @MainActor @escaping () -> Void) {
@@ -160,6 +168,16 @@ private final class ViewModel {
             }
             
             do {
+                if await isAllowSuggestionsCustomized {
+                    try await PersistenceManager.shared.item.setAllowSuggestions(allowSuggestions, for: itemID)
+                } else {
+                    try await PersistenceManager.shared.item.setAllowSuggestions(nil, for: itemID)
+                }
+            } catch {
+                failedCount += 1
+            }
+            
+            do {
                 try await PersistenceManager.shared.convenienceDownload.setRetrieval(for: itemID, retrieval: retrieval.resolved)
             } catch {
                 failedCount += 1
@@ -171,6 +189,7 @@ private final class ViewModel {
                 }
             }
             
+            await RFNotification[.invalidateProgressEntities].send(payload: nil)
             await callback()
         }
     }

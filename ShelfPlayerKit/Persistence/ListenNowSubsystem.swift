@@ -9,10 +9,8 @@ import Foundation
 import SwiftData
 import OSLog
 
-typealias PersistedListenNowSuggestion = SchemaV2.PersistedListenNowSuggestion
-
 extension PersistenceManager {
-    public final actor ListenNowSubsystem: ModelActor, Sendable {
+    public final actor ListenNowSubsystem: Sendable {
         let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ListenNowSubsystem")
         
         private var items = [PlayableItem]()
@@ -22,15 +20,7 @@ extension PersistenceManager {
         
         private var isEmpty = false
         
-        public let modelExecutor: any SwiftData.ModelExecutor
-        public let modelContainer: SwiftData.ModelContainer
-        
-        init(modelContainer: SwiftData.ModelContainer) {
-            let modelContext = ModelContext(modelContainer)
-            
-            self.modelExecutor = DefaultSerialModelExecutor(modelContext: modelContext)
-            self.modelContainer = modelContainer
-            
+        init() {
             RFNotification[.progressEntityUpdated].subscribe { [weak self] _ in
                 Task {
                     await self?.update()
@@ -51,29 +41,6 @@ extension PersistenceManager {
                 Task {
                     await self?.update()
                 }
-            }
-        }
-        
-        public func groupingDidFinishPlaying(_ itemID: ItemIdentifier) async {
-            guard let suggested = try? await ResolvedUpNextStrategy.nextGroupingItem(itemID) else {
-                logger.warning("No suggestion for item \(itemID)")
-                return
-            }
-            
-            // 4 Days
-            let suggestion = PersistedListenNowSuggestion(itemID: suggested, type: .groupingFinishedPlaying, validUntil: .now.addingTimeInterval(60 * 60 * 24 * 4))
-            modelContext.insert(suggestion)
-            
-            do {
-                try modelContext.save()
-            } catch {
-                logger.error("Failed to save suggestion: \(error)")
-            }
-            
-            logger.info("Stored suggestion for item \(itemID): \(suggested)")
-            
-            if let item = try? await itemID.resolved as? PlayableItem {
-                items.insert(item, at: 0)
             }
         }
     }
@@ -156,40 +123,85 @@ extension PersistenceManager.ListenNowSubsystem {
         let duplicates = progressRelatedItemIDs.intersection(suggestionRelatedItemIDs)
         
         if !duplicates.isEmpty {
-            let connectionGrouped = Dictionary(grouping: duplicates, by: \.connectionID)
-            
-            for (connectionID, itemIDs) in connectionGrouped {
-                let primaryIDs = itemIDs.map(\.primaryID)
-                let groupingIDs = itemIDs.map(\.primaryID)
-                
-                let combined = primaryIDs + groupingIDs
-                
-                for itemID in combined {
-                    try modelContext.delete(model: PersistedListenNowSuggestion.self, where: #Predicate {
-                        $0._itemID.contains(connectionID)
-                        && $0._itemID.contains(itemID)
-                    })
-                }
-            }
-            
             items.removeAll { (_, progressID, item, related) in
                 progressID == nil && related.contains { duplicates.contains($0) }
             }
         }
         
-        try modelContext.save()
-        
         return items.compactMap(\.2)
     }
     private func listenNowSuggestions() async throws -> [(Date, String?, ItemIdentifier.PrimaryID, ItemIdentifier.GroupingID?, ItemIdentifier.ConnectionID)] {
-        try modelContext.fetch(FetchDescriptor<PersistedListenNowSuggestion>()).filter {
-            guard $0.validUntil > .now else {
-                modelContext.delete($0)
-                return false
+        let recentlyFinished = try await PersistenceManager.shared.progress.recentlyFinishedEntities
+        
+        let groupingIDs: [(ItemIdentifier, Date)] = await withTaskGroup {
+            for entity in recentlyFinished {
+                $0.addTask { () -> (ItemIdentifier, Date)? in
+                    let id: ItemIdentifier
+                    
+                    if let groupingID = entity.groupingID {
+                        guard let podcast = try? await ResolveCache.shared.resolve(primaryID: groupingID, connectionID: entity.connectionID), await PersistenceManager.shared.item.allowSuggestions(for: podcast.id) != false else {
+                            return nil
+                        }
+                        
+                        id = podcast.id
+                    } else {
+                        guard let audiobook = try? await ResolveCache.shared.resolve(primaryID: entity.primaryID, groupingID: nil, connectionID: entity.connectionID) as? Audiobook else {
+                            return nil
+                        }
+                        
+                        var resultID: ItemIdentifier? = nil
+                        
+                        for series in audiobook.series {
+                            guard let seriesID = series.id, await PersistenceManager.shared.item.allowSuggestions(for: seriesID) != false, (try? await ResolvedUpNextStrategy.nextGroupingItem(seriesID)) != nil else {
+                                continue
+                            }
+                            
+                            resultID = seriesID
+                        }
+                        
+                        guard let resultID else {
+                            return nil
+                        }
+                        
+                        id = resultID
+                    }
+                    
+                    return (id, entity.finishedAt!)
+                }
             }
             
-            return true
-        }.map { ($0.created.advanced(by: -60 * 60 * 24 * 2), nil, $0.itemID.primaryID, $0.itemID.groupingID, $0.itemID.connectionID) }
+            return await $0.reduce(into: []) {
+                guard let element = $1 else {
+                    return
+                }
+                 
+                $0.append(element)
+            }
+        }
+        
+        let grouped = Dictionary(groupingIDs) {
+            max($0, $1)
+        }
+        
+        return await withTaskGroup {
+            for (itemID, date) in grouped {
+                $0.addTask { () -> (ItemIdentifier, Date)? in
+                    guard let nextID = try? await ResolvedUpNextStrategy.nextGroupingItem(itemID) else {
+                        return nil
+                    }
+                    
+                    return (nextID, date.advanced(by: -60 * 60 * 24 * 4))
+                }
+            }
+            
+            return await $0.reduce(into: []) {
+                guard let (itemID, date) = $1 else {
+                    return
+                }
+                
+                $0.append((date, nil as String?, itemID.primaryID, itemID.groupingID, itemID.connectionID))
+            }
+        }
     }
     
     public func preload() {
