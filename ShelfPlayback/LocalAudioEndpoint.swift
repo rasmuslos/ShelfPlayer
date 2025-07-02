@@ -335,6 +335,10 @@ extension LocalAudioEndpoint {
         await didPlayToEnd(finishedCurrentItem: false)
     }
     
+    func move(queueIndex: IndexSet, to: Int) async {
+        queue.move(fromOffsets: queueIndex, toOffset: to)
+    }
+    
     func remove(queueIndex index: Int) async {
         queue.remove(at: index)
         await queueDidChange()

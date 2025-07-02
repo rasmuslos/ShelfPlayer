@@ -225,6 +225,10 @@ public extension AudioPlayer {
         await RFNotification[.skipped].send(payload: forwards)
     }
     
+    func move(queueIndex: IndexSet, to: Int) async {
+        await current?.move(queueIndex: queueIndex, to: to)
+    }
+    
     func setVolume(_ volume: Percentage) async {
         await current?.setVolume(volume)
     }

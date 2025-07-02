@@ -76,6 +76,9 @@ struct PlaybackQueue: View {
                             ForEach(Array(satellite.queue.enumerated()), id: \.element) { (index, itemID) in
                                 QueueItemRow(itemID: itemID, queueIndex: index, isUpNextQueue: false)
                             }
+                            .onMove {
+                                satellite.move(queueIndex: $0, to: $1)
+                            }
                             .onDelete {
                                 for index in $0 {
                                     satellite.remove(queueIndex: index)
