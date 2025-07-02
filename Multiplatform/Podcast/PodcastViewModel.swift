@@ -23,7 +23,13 @@ final class PodcastViewModel {
     var sortOrder: EpisodeSortOrder?
     
     var filter: ItemFilter?
-    var seasonFilter: String?
+    var seasonFilter: String? {
+        didSet {
+            self.updateVisible()
+            self.requestConvenienceDownload()
+            self.storeFilterSort()
+        }
+    }
     var restrictToPersisted: Bool?
     
     var search: String
