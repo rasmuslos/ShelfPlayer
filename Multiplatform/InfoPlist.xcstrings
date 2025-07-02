@@ -74,7 +74,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erlaube den Zugriff um dich mit einer in deinem lokalen Netzwerk befindlichen Instanz zu verbinden."
+            "value" : "Erlaube den Zugriff, um eine Verbindung mit einer in dem lokalen Netzwerk sich befindlichen Instanz aufzubauen."
           }
         },
         "en" : {
