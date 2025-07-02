@@ -61,19 +61,17 @@ extension PodcastView.ToolbarModifier {
         @Environment(Satellite.self) private var satellite
         
         var body: some View {
-            @Bindable var viewModel = viewModel
-            
             Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
                 ItemShareButton(item: viewModel.podcast)
                 
                 Divider()
                 
                 Section("item.filter") {
-                    ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
+                    ItemFilterPicker(filter: viewModel.filterBinding, restrictToPersisted: viewModel.restrictToPersistedBinding)
                 }
                 
                 Section("item.sort") {
-                    ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
+                    ItemSortOrderPicker(sortOrder: viewModel.sortOrderBinding, ascending: viewModel.ascendingBinding)
                 }
                 
                 Button("item.configure", systemImage: "gearshape") {

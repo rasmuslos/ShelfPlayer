@@ -9,6 +9,10 @@ import Foundation
 
 
 public extension Podcast {
+    static func filterSort(_ episodes: [Episode], podcastID: ItemIdentifier) async -> [Episode] {
+        let configuration = await PersistenceManager.shared.item.podcastFilterSortConfiguration(for: podcastID)
+        return await filterSort(episodes, filter: configuration.filter, seasonFilter: configuration.seasonFilter, restrictToPersisted: configuration.restrictToPersisted, search: nil, sortOrder: configuration.sortOrder, ascending: configuration.ascending)
+    }
     static func filterSort(_ episodes: [Episode], filter: ItemFilter, seasonFilter: String?, restrictToPersisted: Bool, search: String?, sortOrder: EpisodeSortOrder, ascending: Bool) async -> [Episode] {
         var episodes = episodes
         

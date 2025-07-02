@@ -50,12 +50,7 @@ class CarPlayPodcastController {
         Task {
             let (_, episodes) = try await podcast.id.resolvedComplex
             
-            let filter = Defaults[.episodesFilter(podcast.id)]
-            let seasonFilter = Defaults[.episodesSeasonFilter(podcast.id)]
-            let sortOrder = Defaults[.episodesSortOrder(podcast.id)]
-            let ascending = Defaults[.episodesAscending(podcast.id)]
-            
-            let sorted = await Podcast.filterSort(episodes, filter: filter, seasonFilter: seasonFilter, restrictToPersisted: false, search: nil, sortOrder: sortOrder, ascending: ascending)
+            let sorted = await Podcast.filterSort(episodes, podcastID: podcast.id)
             
             await MainActor.run {
                 itemControllers = sorted.map { CarPlayPlayableItemController(item: $0, displayCover: false) }
