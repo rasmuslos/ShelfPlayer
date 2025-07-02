@@ -31,7 +31,7 @@ extension PlayButtonStyle where Self == MediumPlayButtonStyle {
     static var medium: MediumPlayButtonStyle { .init() }
 }
 
-struct AnyLargePlayButtonStyle: PlayButtonStyle {
+struct AnyPlayButtonStyle: PlayButtonStyle {
     private var _makeMenu: @Sendable (Configuration) -> AnyView
     private var _makeLabel: @Sendable (Configuration) -> AnyView
     
@@ -73,7 +73,7 @@ struct AnyLargePlayButtonStyle: PlayButtonStyle {
 }
 
 extension EnvironmentValues {
-    @Entry var playButtonStyle: AnyLargePlayButtonStyle = .init(style: LargePlayButtonStyle())
+    @Entry var playButtonStyle: AnyPlayButtonStyle = .init(style: LargePlayButtonStyle())
 }
 
 struct PlayButtonConfiguration {
