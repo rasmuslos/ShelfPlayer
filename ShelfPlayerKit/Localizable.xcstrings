@@ -5,10 +5,36 @@
       "shouldTranslate" : false
     },
     "intent.cancelSleepTimer" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlaf-Timer beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel sleep timer"
+          }
+        }
+      }
     },
     "intent.cancelSleepTimer.description" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beendet den laufenden Schlaf-Timer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ends the current sleep timer"
+          }
+        }
+      }
     },
     "intent.checkForDownloads" : {
       "localizations" : {
@@ -31,7 +57,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suche nach und starte automatische Downloads."
+            "value" : "Suche nach und Start von automatischen Downloads"
           }
         },
         "en" : {
@@ -63,13 +89,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erstelle ein Lesezeichen für das gerade gespielte Hörbuch."
+            "value" : "Erstellen eines Lesezeichens für das gerade gespielte Hörbuch"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creates a bookmark for the playing audiobook."
+            "value" : "Creates a bookmark for the playing audiobook"
           }
         }
       }
@@ -79,22 +105,48 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notiz des Lesezeichens. Ein leerer Wert führt zu der Erstellung eines einfaches Lesezeichens."
+            "value" : "Notiz des Lesezeichens. Ein leerer Wert führt zu der Erstellung eines Lesezeichens mit dem aktuellen Datum"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Note of the bookmark. Creates a quick bookmark if left blank."
+            "value" : "Note of the bookmark. Creates a quick bookmark if left blank"
           }
         }
       }
     },
     "intent.download" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herunterladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download"
+          }
+        }
+      }
     },
     "intent.download.description" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start den Download des übergebenden Objektes im Hintergrund"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloads the item in the background"
+          }
+        }
+      }
     },
     "intent.entity.item" : {
       "localizations" : {
@@ -189,13 +241,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein Audiobookshelf-Objekt. Kann ein Hörbuch, Autor, Leser, Serie, Podcast und Episode sein."
+            "value" : "Ein Audiobookshelf-Objekt. Kann ein Hörbuch, Autor, Leser, eine Serie, ein Podcast und eine Episode sein"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An Audiobookshelf item. Can be an audiobook, author, narrator, series, podcast and episode."
+            "value" : "An Audiobookshelf item. Can be an audiobook, author, narrator, series, podcast and episode"
           }
         }
       }
@@ -537,10 +589,36 @@
       }
     },
     "intent.extendSleepTimer" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep-Timer verlängern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extend sleep timer"
+          }
+        }
+      }
     },
     "intent.extendSleepTimer.description" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlängert den Sleep-Timer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extends the sleep timer"
+          }
+        }
+      }
     },
     "intent.listenNow" : {
       "localizations" : {
@@ -563,13 +641,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gibt kürzlich gespielte, nicht abgeschlossene Objekte zurück."
+            "value" : "Gibt kürzlich gespielte, nicht abgeschlossene Objekte zurück"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Returns recently played, unfinished items from all libraries."
+            "value" : "Returns recently played, unfinished items from all libraries"
           }
         }
       }
@@ -595,13 +673,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gibt das aktuelle wiedergegebene Objekt zurück."
+            "value" : "Gibt das aktuelle wiedergegebene Objekt zurück"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Returns the currently playing item."
+            "value" : "Returns the currently playing item"
           }
         }
       }
@@ -643,13 +721,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet das Objekt in ShelfPlayer."
+            "value" : "Öffnet das Objekt in ShelfPlayer"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opens the item in ShelfPlayer."
+            "value" : "Opens the item in ShelfPlayer"
           }
         }
       }
@@ -675,13 +753,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pausiere die aktive Wiedergabe."
+            "value" : "Pausiere die aktive Wiedergabe"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pauses the active playback."
+            "value" : "Pauses the active playback"
           }
         }
       }
@@ -707,22 +785,48 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setzte die aktive Wiedergabe fort."
+            "value" : "Setzte die aktive Wiedergabe fort"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Resumes the active playback."
+            "value" : "Resumes the active playback"
           }
         }
       }
     },
     "intent.removeDownload" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove download"
+          }
+        }
+      }
     },
     "intent.removeDownload.description" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernt den Download für das übergebene Objekt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Removes the download of the provided item"
+          }
+        }
+      }
     },
     "intent.search" : {
       "localizations" : {
@@ -761,13 +865,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suche in allen Bibliotheken nach dem Objekt."
+            "value" : "Suche in allen Bibliotheken nach dem Objekt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Searches all libraries for the given search."
+            "value" : "Searches all libraries for the given search"
           }
         }
       }
@@ -793,13 +897,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suche auch auf dem Audiobookshelf-Server. Die Suche wird ansonsten auf dem Gerät durchgeführt."
+            "value" : "Suche auch auf dem Audiobookshelf-Server. Die Suche wird ansonsten auf dem Gerät durchgeführt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Create server search request. The search will be performed on-device otherwise."
+            "value" : "Create server search request. The search will be performed on-device otherwise"
           }
         }
       }
@@ -821,13 +925,52 @@
       }
     },
     "intent.setFinished" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossen setzten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set completed"
+          }
+        }
+      }
     },
     "intent.setFinished.description" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändert den „Abgeschlossen“-Status des übergeben Objektes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates the completion of the provided item"
+          }
+        }
+      }
     },
     "intent.setFinished.finished" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finished"
+          }
+        }
+      }
     },
     "intent.setPlaybackRate" : {
       "localizations" : {
@@ -866,13 +1009,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ändert die aktuelle Wiedergabegeschwindigkeit."
+            "value" : "Ändert die aktuelle Wiedergabegeschwindigkeit"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updates the current playback speed."
+            "value" : "Updates the current playback speed"
           }
         }
       }
@@ -882,13 +1025,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Geschwindigkeit als absolute Prozentangabe."
+            "value" : "Die Geschwindigkeit als absolute Prozentangabe"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Absolute playback speed percentage."
+            "value" : "Absolute playback speed percentage"
           }
         }
       }
@@ -946,13 +1089,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setzte den Schlaf-Timer auf die angegebene Länge."
+            "value" : "Setzte den Schlaf-Timer auf die übergebene Länge"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Set the sleep timer to the desired length."
+            "value" : "Set the sleep timer to the desired length"
           }
         }
       }
@@ -1058,13 +1201,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Springe um die übergebene oder konfigurierte Distanz."
+            "value" : "Springe um die übergebene oder konfigurierte Distanz"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skips the active playback by the specified or configured interval."
+            "value" : "Skips the active playback by the specified or configured interval"
           }
         }
       }
@@ -1202,13 +1345,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wiedergabe starten, ohne eine Audiobookshelf-Hörsitzung zu erstellen. ShelfPlayer erstellt eine Offline-Sitzung und synchronisiert sie, sobald eine Verbindung besteht. Nützlich für Offline-Szenarien."
+            "value" : "Wiedergabe starten, ohne eine Audiobookshelf-Hörsitzung zu erstellen. ShelfPlayer erstellt eine Offline-Sitzung und synchronisiert sie, sobald eine Verbindung besteht. Nützlich für Offline-Szenarien"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start playback without creating a Audiobookshelf listening session. ShelfPlayer will create an offline one and sync it once connected. Useful for offline scenarios."
+            "value" : "Start playback without creating a Audiobookshelf listening session. ShelfPlayer will create an offline one and sync it once connected. Useful for offline scenarios"
           }
         }
       }

@@ -166,7 +166,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das zuletzt gespielte Objekte und Element zur Steuerung der aktuellen Wiedergabe."
+            "value" : "Das zuletzt gespielte Objekt und Element zur Steuerung der aktuellen Wiedergabe"
           }
         },
         "en" : {
@@ -198,7 +198,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeigt dein Lesezeitziel und deinen Fortschritt."
+            "value" : "Zeigt das Lesezeitziel und den Fortschritt"
           }
         },
         "en" : {
@@ -230,7 +230,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeigt die zuletzt gespielten, nicht abgeschlossen, Objekte aus allen Bibliotheken."
+            "value" : "Zeigt die zuletzt gespielten, nicht abgeschlossenen Objekte aus allen Bibliotheken"
           }
         },
         "en" : {
