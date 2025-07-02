@@ -667,6 +667,18 @@ extension Satellite {
             await endWorking(on: currentItemID, successfully: true)
         }
     }
+    
+    nonisolated func move(queueIndex: IndexSet, to: Int) {
+        Task {
+            guard let currentItemID = await nowPlayingItemID else {
+                return
+            }
+
+            await startWorking(on: currentItemID)
+            await AudioPlayer.shared.move(queueIndex: queueIndex, to: to)
+            await endWorking(on: currentItemID, successfully: true)
+        }
+    }
 
     nonisolated func remove(queueIndex index: Int) {
         Task {
