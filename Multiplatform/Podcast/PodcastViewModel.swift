@@ -19,49 +19,17 @@ final class PodcastViewModel {
     var bulkSelected: [ItemIdentifier]? = nil
     private(set) var performingBulkAction = false
     
-    var ascending: Bool {
-        didSet {
-            Defaults[.episodesAscending(podcast.id)] = ascending
-            updateVisible()
-            requestConvenienceDownload()
-        }
-    }
-    var sortOrder: EpisodeSortOrder {
-        didSet {
-            Defaults[.episodesSortOrder(podcast.id)] = sortOrder
-            updateVisible()
-            requestConvenienceDownload()
-        }
-    }
+    var ascending: Bool?
+    var sortOrder: EpisodeSortOrder?
     
-    var filter: ItemFilter {
-        didSet {
-            Defaults[.episodesFilter(podcast.id)] = filter
-            updateVisible()
-            requestConvenienceDownload()
-        }
-    }
-    var seasonFilter: String? {
-        didSet {
-            Defaults[.episodesSeasonFilter(podcast.id)] = seasonFilter
-            updateVisible()
-            requestConvenienceDownload()
-        }
-    }
-    var restrictToPersisted: Bool {
-        didSet {
-            Defaults[.episodesFilter(podcast.id)] = filter
-            updateVisible()
-            requestConvenienceDownload()
-        }
-    }
+    var filter: ItemFilter?
+    var seasonFilter: String?
+    var restrictToPersisted: Bool?
     
+    var search: String
     var isToolbarVisible: Bool
     
     private(set) var dominantColor: Color?
-    
-    var search: String
-    
     private(set) var notifyError: Bool
     
     init(podcast: Podcast, episodes: [Episode]) {
@@ -70,22 +38,64 @@ final class PodcastViewModel {
         self.episodes = episodes
         visible = []
         
-        ascending = Defaults[.episodesAscending(podcast.id)]
-        sortOrder = Defaults[.episodesSortOrder(podcast.id)]
-        
-        filter = Defaults[.episodesFilter(podcast.id)]
-        seasonFilter = Defaults[.episodesSeasonFilter(podcast.id)]
-        restrictToPersisted = Defaults[.episodesRestrictToPersisted(podcast.id)]
-        
+        search = ""
         isToolbarVisible = false
         
         dominantColor = nil
-        
-        search = ""
-        
         notifyError = false
         
         updateVisible()
+    }
+}
+
+extension PodcastViewModel {
+    var ascendingBinding: Binding<Bool> {
+        .init() {
+            self.ascending ?? false
+        } set: {
+            self.updateVisible()
+            self.requestConvenienceDownload()
+            
+            self.ascending = $0
+            
+            self.storeFilterSort()
+        }
+    }
+    var sortOrderBinding: Binding<EpisodeSortOrder> {
+        .init() {
+            self.sortOrder ?? .index
+        } set: {
+            self.updateVisible()
+            self.requestConvenienceDownload()
+            
+            self.sortOrder = $0
+            
+            self.storeFilterSort()
+        }
+    }
+    var filterBinding: Binding<ItemFilter> {
+        .init() {
+            self.filter ?? .notFinished
+        } set: {
+            self.updateVisible()
+            self.requestConvenienceDownload()
+            
+            self.filter = $0
+            
+            self.storeFilterSort()
+        }
+    }
+    var restrictToPersistedBinding: Binding<Bool> {
+        .init() {
+            self.restrictToPersisted ?? false
+        } set: {
+            self.updateVisible()
+            self.requestConvenienceDownload()
+            
+            self.restrictToPersisted = $0
+            
+            self.storeFilterSort()
+        }
     }
 }
 
@@ -213,22 +223,43 @@ extension PodcastViewModel {
     }
     nonisolated func updateVisible() {
         Task {
-            let episodes = await Podcast.filterSort(episodes, filter: filter, seasonFilter: seasonFilter, restrictToPersisted: restrictToPersisted, search: search, sortOrder: sortOrder, ascending: ascending)
+            if await ascending == nil {
+                let configuration = await PersistenceManager.shared.item.podcastFilterSortConfiguration(for: podcast.id)
+                
+                await MainActor.run {
+                    ascending = configuration.ascending
+                    sortOrder = configuration.sortOrder
+                    filter = configuration.filter
+                    seasonFilter = configuration.seasonFilter
+                    restrictToPersisted = configuration.restrictToPersisted
+                }
+            }
+            
+            let episodes = await Podcast.filterSort(episodes, filter: filter!, seasonFilter: seasonFilter, restrictToPersisted: restrictToPersisted!, search: search, sortOrder: sortOrder!, ascending: ascending!)
             
             await MainActor.withAnimation {
                 self.visible = episodes
             }
         }
     }
-    
+}
+
+private extension PodcastViewModel {
     nonisolated func requestConvenienceDownload() {
         Task {
             await PersistenceManager.shared.convenienceDownload.scheduleUpdate(itemID: podcast.id)
         }
     }
-}
-
-private extension PodcastViewModel {
+    func storeFilterSort() {
+        guard let sortOrder, let ascending, let filter, let restrictToPersisted else {
+            return
+        }
+        
+        Task.detached {
+            try await PersistenceManager.shared.item.setPodcastFilterSortConfiguration(.init(sortOrder: sortOrder, ascending: ascending, filter: filter, restrictToPersisted: restrictToPersisted, seasonFilter: self.seasonFilter), for: self.podcast.id)
+        }
+    }
+    
     nonisolated func extractColor() async {
         let color = await PersistenceManager.shared.item.dominantColor(of: podcast.id)
         

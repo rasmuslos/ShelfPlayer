@@ -76,6 +76,9 @@ public extension Defaults.Keys {
     
     static let listenTimeTarget = Key<Int>("listenTimeTarget", default: 30, suite: .shared)
     
+    static let defaultEpisodeSortOrder = Key("defaultEpisodeSortOrder", default: EpisodeSortOrder.index, suite: .shared)
+    static let defaultEpisodeAscending = Key("defaultEpisodeAscending", default: true, suite: .shared)
+    
     // MARK: Filtering & Sorting
     
     static let audiobooksAscending = Key<Bool>("audiobooksAscending", default: false, iCloud: true)
@@ -93,22 +96,6 @@ public extension Defaults.Keys {
     static let seriesSortOrder = Key<SeriesSortOrder>("seriesSortOrder", default: .sortName, iCloud: true)
     static let seriesAscending = Key<Bool>("seriesAscending", default: true, iCloud: true)
     static let seriesDisplayType = Key<ItemDisplayType>("seriesDisplayType", default: .grid, iCloud: true)
-    
-    static func episodesAscending(_ itemID: ItemIdentifier) -> Defaults.Key<Bool> {
-        .init("episodes-ascending-\(itemID.groupingID ?? itemID.primaryID)", default: false)
-    }
-    static func episodesSortOrder(_ itemID: ItemIdentifier) -> Defaults.Key<EpisodeSortOrder> {
-        .init("episodes-sort-\(itemID.groupingID ?? itemID.primaryID)", default: .released)
-    }
-    static func episodesFilter(_ itemID: ItemIdentifier) -> Defaults.Key<ItemFilter> {
-        .init("episodes-filter-\(itemID.groupingID ?? itemID.primaryID)", default: .notFinished)
-    }
-    static func episodesSeasonFilter(_ itemID: ItemIdentifier) -> Defaults.Key<String?> {
-        .init("episodes-season-filter-\(itemID.groupingID ?? itemID.primaryID)", default: nil)
-    }
-    static func episodesRestrictToPersisted(_ itemID: ItemIdentifier) -> Defaults.Key<Bool> {
-        .init("episodes-restrict-to-persisted-\(itemID.groupingID ?? itemID.primaryID)", default: false)
-    }
     
     static let podcastsAscending = Key("podcastsAscending", default: true, iCloud: true)
     static let podcastsSortOrder = Key<PodcastSortOrder>("podcastsSortOrder", default: .name, iCloud: true)

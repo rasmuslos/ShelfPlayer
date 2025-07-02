@@ -101,6 +101,17 @@ public extension PersistenceManager.ItemSubsystem {
         try await PersistenceManager.shared.keyValue.set(.libraryIndexedIDs(of: library.id, connectionID: library.connectionID, subset: subset), IDs)
     }
     
+    func podcastFilterSortConfiguration(for podcastID: ItemIdentifier) async -> PodcastFilterSortConfiguration {
+        await PersistenceManager.shared.keyValue[.podcastFilterSortConfiguration(for: podcastID)] ?? .init(sortOrder: Defaults[.defaultEpisodeSortOrder],
+                                                                                                           ascending: Defaults[.defaultEpisodeAscending],
+                                                                                                           filter: .notFinished,
+                                                                                                           restrictToPersisted: false,
+                                                                                                           seasonFilter: nil)
+    }
+    func setPodcastFilterSortConfiguration(_ configuration: PodcastFilterSortConfiguration, for podcastID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.podcastFilterSortConfiguration(for: podcastID), configuration)
+    }
+    
     struct LibraryIndexMetadata: Codable, Sendable {
         public var page = 0
         public var totalItemCount: Int!
@@ -114,6 +125,23 @@ public extension PersistenceManager.ItemSubsystem {
         
         public var isFinished: Bool {
             endDate != nil
+        }
+    }
+    struct PodcastFilterSortConfiguration: Codable, Sendable {
+        public let sortOrder: EpisodeSortOrder
+        public let ascending: Bool
+        
+        public let filter: ItemFilter
+        public let restrictToPersisted: Bool
+        
+        public let seasonFilter: String?
+        
+        public init(sortOrder: EpisodeSortOrder, ascending: Bool, filter: ItemFilter, restrictToPersisted: Bool, seasonFilter: String?) {
+            self.sortOrder = sortOrder
+            self.ascending = ascending
+            self.filter = filter
+            self.restrictToPersisted = restrictToPersisted
+            self.seasonFilter = seasonFilter
         }
     }
 }
@@ -149,5 +177,9 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
     }
     static func libraryIndexedIDs(of libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID, subset: String) -> Key<[ItemIdentifier]> {
         Key(identifier: "libraryIndexMetadata-\(libraryID)-\(connectionID)-\(subset)", cluster: "libraryIndexedIDs", isCachePurgeable: false)
+    }
+    
+    static func podcastFilterSortConfiguration(for podcastID: ItemIdentifier) -> Key<PersistenceManager.ItemSubsystem.PodcastFilterSortConfiguration> {
+        Key(identifier: "podcastFilterSortConfigurations-\(podcastID)", cluster: "podcastFilterSortConfigurations", isCachePurgeable: false)
     }
 }

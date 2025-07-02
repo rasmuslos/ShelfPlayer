@@ -34,13 +34,7 @@ public extension ResolvedUpNextStrategy {
             case .podcast(let podcastID):
                 let (_, episodes) = try await podcastID.resolvedComplex
                 
-                return await Podcast.filterSort(episodes,
-                                                filter: Defaults[.episodesFilter(podcastID)],
-                                                seasonFilter: Defaults[.episodesSeasonFilter(podcastID)],
-                                                restrictToPersisted: Defaults[.episodesRestrictToPersisted(podcastID)],
-                                                search: nil,
-                                                sortOrder: Defaults[.episodesSortOrder(podcastID)],
-                                                ascending: Defaults[.episodesAscending(podcastID)]).filter { $0.id != itemID }
+                return await Podcast.filterSort(episodes, podcastID: podcastID).filter { $0.id != itemID }
             case .listenNow:
                 return await ShelfPlayerKit.listenNowItems.filter { $0.id != itemID }
             default:

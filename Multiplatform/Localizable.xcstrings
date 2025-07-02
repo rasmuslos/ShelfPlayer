@@ -3688,6 +3688,9 @@
         }
       }
     },
+    "preferences.defaultEpisodeSortOrder" : {
+
+    },
     "preferences.generateLogFile" : {
       "localizations" : {
         "de" : {

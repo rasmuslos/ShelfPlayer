@@ -46,6 +46,8 @@ struct PreferencesView: View {
                     }
                 }
                 
+                PodcastSortOrderPreferences()
+                
                 Section {
                     Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
                         Label("preferences.settings", systemImage: "gear")
