@@ -498,7 +498,7 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                             case .all:
                                 result = items
                             case .amount(let count):
-                                result = Array(items[0..<count])
+                                result = Array(items[0..<min(count, items.count)])
                             case .cutoff(let hours):
                                 result = items.filter {
                                     if let episode = $0 as? Episode, let releaseDate = episode.releaseDate {
