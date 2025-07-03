@@ -16,7 +16,7 @@ struct PodcastSortOrderPreferences: View {
         Menu {
             ItemSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
         } label: {
-            Label("preferences.defaultEpisodeSortOrder", systemImage: "arrow.up.arrow.down.square.fill")
+            Label("preferences.defaultEpisodeSortOrder", systemImage: "arrow.up.arrow.down.square")
         }
         .menuActionDismissBehavior(.disabled)
     }
