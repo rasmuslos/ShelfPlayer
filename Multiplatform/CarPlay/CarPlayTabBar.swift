@@ -18,8 +18,6 @@ final class CarPlayTabBar {
     
     let template: CPTabBarTemplate
     
-    private var didSelectLastActiveLibrary: Bool
-    
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
@@ -28,7 +26,6 @@ final class CarPlayTabBar {
         
         template = .init(templates: [])
         
-        updateTemplate()
         updateLibraries()
         
         Task { [weak self] in
