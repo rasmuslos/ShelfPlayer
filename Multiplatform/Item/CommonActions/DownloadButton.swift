@@ -14,128 +14,23 @@ struct DownloadButton: View {
     
     @Environment(Satellite.self) private var satellite
     
-    let itemID: ItemIdentifier
+    @State private var viewModel: DownloadButtonViewModel
     
-    let tint: Bool
-    let progressVisibility: ProgressVisibility
-    let isPercentageTextVisible: Bool
-    
-    init(itemID: ItemIdentifier, tint: Bool = false, progressVisibility: ProgressVisibility = ProgressVisibility.never, isPercentageTextVisible: Bool = false, initialStatus: DownloadStatus? = nil) {
-        self.itemID = itemID
-        
-        self.tint = tint
-        self.progressVisibility = progressVisibility
-        self.isPercentageTextVisible = isPercentageTextVisible
-        
-        if let initialStatus {
-            _status = .init(initialValue: initialStatus)
-        } else {
-            _status = .init(initialValue: nil)
-        }
-    }
-    
-    @State private var baseProgress: Percentage? = nil
-    @State private var status: DownloadStatus?
-    
-    @State private var progress = [UUID: Int64]()
-    @State private var metadata = [UUID: (Percentage, Int64)]()
-    
-    @State private var stash = RFNotification.MarkerStash()
-    
-    private var current: Percentage? {
-        guard let baseProgress else {
-            return nil
-        }
-        
-        let assetIDs = metadata.keys
-        var result = baseProgress
-        
-        for assetID in assetIDs {
-            guard let (weight, total) = metadata[assetID], let current = progress[assetID] else {
-                continue
-            }
-            
-            guard total > 0 else {
-                result += weight
-                continue
-            }
-            
-            let partialProgress: Percentage = Percentage(current) / Percentage(total)
-            result += partialProgress * weight
-        }
-        
-        return result
-    }
-    private var text: Percentage? {
-        guard isPercentageTextVisible else {
-            return nil
-        }
-        
-        if let current {
-            return current
-        }
-        if status == .completed {
-            return 1
-        }
-        
-        return 0
-    }
-    
-    private var label: LocalizedStringKey {
-        guard let status else {
-            return "item.download.resolving"
-        }
-        
-        switch status {
-            case .none:
-                return "item.download"
-            case .downloading:
-                return "item.download.abort"
-            case .completed:
-                return "item.download.remove"
-        }
-    }
-    private var icon: String {
-        guard let status else {
-            return "questionmark.circle.dashed"
-        }
-        
-        switch status {
-            case .none:
-                return "arrow.down.circle"
-            case .downloading:
-                return "slash.circle"
-            case .completed:
-                return "trash.circle"
-        }
-    }
-    
-    private var progressBackgroundColor: Color {
-        if progressVisibility == .triangle {
-            .white.opacity(0.3)
-        } else {
-            .gray.opacity(0.5)
-        }
-    }
-    private var progressTintColor: Color {
-        if progressVisibility == .triangle {
-            .white
-        } else {
-            .accentColor
-        }
+    init(itemID: ItemIdentifier, tint: Bool = false, progressVisibility: ProgressVisibility = .never, isPercentageTextVisible: Bool = false, initialStatus: DownloadStatus? = nil) {
+        _viewModel = .init(initialValue: .init(itemID: itemID, tint: tint, progressVisibility: progressVisibility, isPercentageTextVisible: isPercentageTextVisible, initialStatus: initialStatus))
     }
     
     private var isLoading: Bool {
-        if satellite.isLoading(observing: itemID) {
+        if satellite.isLoading(observing: viewModel.itemID) {
             return true
         }
         
-        guard let status else {
+        guard let status = viewModel.status else {
             return true
         }
         
         if status == .downloading {
-            return baseProgress == nil
+            return viewModel.baseProgress == nil
         }
         
         return false
@@ -143,23 +38,23 @@ struct DownloadButton: View {
     
     var body: some View {
         Group {
-            if isLoading && progressVisibility != .never {
+            if isLoading && viewModel.progressVisibility != .never {
                 ProgressView()
-            } else if let text {
+            } else if let text = viewModel.text {
                 Text(text, format: .percent.notation(.compactName))
                     .contentTransition(.numericText())
             } else {
                 Button {
-                    if status == DownloadStatus.none {
-                        satellite.download(itemID: itemID)
+                    if viewModel.status == DownloadStatus.none {
+                        satellite.download(itemID: viewModel.itemID)
                     } else {
-                        satellite.removeDownload(itemID: itemID, force: false)
+                        satellite.removeDownload(itemID: viewModel.itemID, force: false)
                     }
                 } label: {
-                    if let current {
-                        CircularProgressIndicator(completed: current, background: progressBackgroundColor, tint: progressTintColor)
+                    if let current = viewModel.current {
+                        CircularProgressIndicator(completed: current, background: viewModel.progressBackgroundColor, tint: viewModel.progressTintColor)
                             .modify {
-                                switch progressVisibility {
+                                switch viewModel.progressVisibility {
                                     case .never:
                                         EmptyView()
                                     case .toolbar:
@@ -187,11 +82,11 @@ struct DownloadButton: View {
                                 }
                             }
                     } else {
-                        Label(label, systemImage: icon)
+                        Label(viewModel.label, systemImage: viewModel.icon)
                             .modify {
-                                if tint {
+                                if viewModel.tint {
                                     $0
-                                        .tint(status == .completed ? .red : .blue)
+                                        .tint(viewModel.status == .completed ? .red : .blue)
                                 } else {
                                     $0
                                 }
@@ -200,12 +95,25 @@ struct DownloadButton: View {
                 }
             }
         }
-        .disabled(status == nil || satellite.isLoading(observing: itemID))
-        .animation(.smooth, value: current)
+        .disabled(viewModel.status == nil || satellite.isLoading(observing: viewModel.itemID))
+        .animation(.smooth, value: viewModel.current)
         .task {
-            loadCurrent()
+            viewModel.loadCurrent()
         }
-        .onChange(of: status) {
+    }
+}
+
+@MainActor @Observable
+private final class DownloadButtonViewModel {
+    let itemID: ItemIdentifier
+    
+    let tint: Bool
+    let progressVisibility: ProgressVisibility
+    let isPercentageTextVisible: Bool
+    
+    var baseProgress: Percentage? = nil
+    var status: DownloadStatus? {
+        didSet {
             guard status == .downloading else {
                 baseProgress = nil
                 
@@ -219,58 +127,117 @@ struct DownloadButton: View {
                 loadProgress()
             }
         }
-        .onReceive(RFNotification[.scenePhaseDidChange].publisher()) {
+    }
+    
+    var progress = [UUID: Int64]()
+    var metadata = [UUID: (Percentage, Int64)]()
+    
+    var stash = RFNotification.MarkerStash()
+    
+    init(itemID: ItemIdentifier, tint: Bool, progressVisibility: ProgressVisibility, isPercentageTextVisible: Bool, initialStatus: DownloadStatus?) {
+        self.itemID = itemID
+        
+        self.tint = tint
+        self.progressVisibility = progressVisibility
+        self.isPercentageTextVisible = isPercentageTextVisible
+        
+        status = initialStatus
+        
+        setupObservers()
+        
+        RFNotification[.scenePhaseDidChange].subscribe { [weak self] in
             if $0 {
-                setupObservers()
-                loadCurrent()
+                self?.setupObservers()
+                self?.loadCurrent()
             } else {
-                stash.clear()
+                self?.stash.clear()
             }
-        }
-        .onAppear {
-            setupObservers()
         }
     }
     
-    private func setupObservers() {
-        stash.clear()
-        
-        RFNotification[.downloadProgressChanged(itemID)].subscribe { (assetID, weight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
-            guard progressVisibility != .never else {
-                return
-            }
-            
-            metadata[assetID] = (weight, totalBytesExpectedToWrite)
-            
-            if progress[assetID] == nil {
-                progress[assetID] = totalBytesWritten
-            } else {
-                progress[assetID]! += bytesWritten
-            }
-        }.store(in: &stash)
-        
-        RFNotification[.downloadStatusChanged].subscribe {
-            guard let (itemID, status) = $0, self.itemID == itemID else {
-                self.status = nil
-                loadCurrent()
-                
-                return
-            }
-            
-            self.status = status
-        }.store(in: &stash)
+    var progressBackgroundColor: Color {
+        if progressVisibility == .triangle {
+            .white.opacity(0.3)
+        } else {
+            .gray.opacity(0.5)
+        }
+    }
+    var progressTintColor: Color {
+        if progressVisibility == .triangle {
+            .white
+        } else {
+            .accentColor
+        }
     }
     
-    enum ProgressVisibility {
-        case never
-        case toolbar
-        case triangle
-        case episode
-        case row
+    var current: Percentage? {
+        guard let baseProgress else {
+            return nil
+        }
+        
+        let assetIDs = metadata.keys
+        var result = baseProgress
+        
+        for assetID in assetIDs {
+            guard let (weight, total) = metadata[assetID], let current = progress[assetID] else {
+                continue
+            }
+            
+            guard total > 0 else {
+                result += weight
+                continue
+            }
+            
+            let partialProgress: Percentage = Percentage(current) / Percentage(total)
+            result += partialProgress * weight
+        }
+        
+        return result
     }
-}
-
-private extension DownloadButton {
+    var text: Percentage? {
+        guard isPercentageTextVisible else {
+            return nil
+        }
+        
+        if let current {
+            return current
+        }
+        if status == .completed {
+            return 1
+        }
+        
+        return 0
+    }
+    
+    var label: LocalizedStringKey {
+        guard let status else {
+            return "item.download.resolving"
+        }
+        
+        switch status {
+            case .none:
+                return "item.download"
+            case .downloading:
+                return "item.download.abort"
+            case .completed:
+                return "item.download.remove"
+        }
+    }
+    var icon: String {
+        guard let status else {
+            return "questionmark.circle.dashed"
+        }
+        
+        switch status {
+            case .none:
+                return "arrow.down.circle"
+            case .downloading:
+                return "slash.circle"
+            case .completed:
+                return "trash.circle"
+        }
+    }
+    
     nonisolated func loadCurrent() {
         Task {
             let status = await PersistenceManager.shared.download.status(of: itemID)
@@ -289,6 +256,47 @@ private extension DownloadButton {
             }
         }
     }
+    
+    private func setupObservers() {
+        stash.clear()
+        
+        RFNotification[.downloadProgressChanged(itemID)].subscribe { [weak self] (assetID, weight, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
+            guard let self, progressVisibility != .never else {
+                return
+            }
+            
+            metadata[assetID] = (weight, totalBytesExpectedToWrite)
+            
+            if progress[assetID] == nil {
+                progress[assetID] = totalBytesWritten
+            } else {
+                progress[assetID]! += bytesWritten
+            }
+        }.store(in: &stash)
+        
+        RFNotification[.downloadStatusChanged].subscribe { [weak self] in
+            guard let self else {
+                return
+            }
+            
+            guard let (itemID, status) = $0, self.itemID == itemID else {
+                self.status = nil
+                loadCurrent()
+                
+                return
+            }
+            
+            self.status = status
+        }.store(in: &stash)
+    }
+}
+
+enum ProgressVisibility {
+    case never
+    case toolbar
+    case triangle
+    case episode
+    case row
 }
 
 #if DEBUG
