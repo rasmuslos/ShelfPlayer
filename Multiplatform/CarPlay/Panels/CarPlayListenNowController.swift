@@ -73,7 +73,7 @@ private extension CarPlayListenNowController {
         
         return await MainActor.run {
             let controllers = listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-            return ([CPListSection(items: controllers.map(\.row), header: "panel.listenNow", sectionIndexTitle: nil)], controllers)
+            return ([CPListSection(items: controllers.map(\.row), header: String(localized: "panel.listenNow"), sectionIndexTitle: nil)], controllers)
         }
     }
     nonisolated func buildPersistedAudiobooksSection() async -> ([CPListSection], [CarPlayItemController]) {

@@ -333,10 +333,10 @@ private extension EmbassyManager {
             let chapters: Int?
             
             switch sleepTimer {
-                case .interval(let date):
+                case .interval(let date, _):
                     deadline = date
                     chapters = nil
-                case .chapters(let int):
+                case .chapters(let int, _):
                     deadline = nil
                     chapters = int
                 default:

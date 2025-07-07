@@ -1905,6 +1905,9 @@
         }
       }
     },
+    "item.groupAudiobooksBySeries" : {
+
+    },
     "item.grouping.configure" : {
       "localizations" : {
         "de" : {
@@ -2913,7 +2916,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Syncronizing..."
+            "value" : "Synchronizing..."
           }
         }
       }
@@ -2929,7 +2932,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Syncronize failed "
+            "value" : "Synchronize failed "
           }
         }
       }
@@ -3719,7 +3722,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Standard Episode Reihenfolge"
+            "value" : "Standard Episoden Reihenfolge"
           }
         },
         "en" : {
@@ -4673,6 +4676,9 @@
           }
         }
       }
+    },
+    "sleepTimer.extend.usingPreviousSetting" : {
+
     },
     "statistics.listenedToday" : {
       "localizations" : {

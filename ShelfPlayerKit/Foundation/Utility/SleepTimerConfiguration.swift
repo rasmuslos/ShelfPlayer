@@ -8,15 +8,31 @@
 import Foundation
 
 public enum SleepTimerConfiguration: Sendable, Hashable {
-    case interval(Date)
-    case chapters(Int)
+    case interval(Date, TimeInterval)
+    case chapters(Int, Int)
+    
+    public static func interval(_ timeout: TimeInterval) -> Self {
+        .interval(.now.advanced(by: timeout), timeout)
+    }
+    public static func chapters(_ amount: Int) -> Self {
+        .chapters(amount, amount)
+    }
     
     public var extended: Self {
-        switch self {
-        case .interval(let remaining):
-                .interval(remaining + Defaults[.sleepTimerExtendInterval])
-        case .chapters(let amount):
-                .chapters(amount + Defaults[.sleepTimerExtendChapterAmount])
+        if Defaults[.extendSleepTimerByPreviousSetting] {
+            switch self {
+                case .interval(let current, let extend):
+                        .interval(current.advanced(by: extend), extend)
+                case .chapters(let current, let extend):
+                        .chapters(current + extend, extend)
+            }
+        } else {
+            switch self {
+                case .interval(let remaining, let extend):
+                        .interval(remaining + Defaults[.sleepTimerExtendInterval], extend)
+                case .chapters(let amount, let extend):
+                        .chapters(amount + Defaults[.sleepTimerExtendChapterAmount], extend)
+            }
         }
     }
 }

@@ -13,6 +13,8 @@ struct AudiobookLibraryPanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.defaultMinListRowHeight) private var defaultMinListRowHeight
     
+    @Default(.groupAudiobooksInSeries) private var groupAudiobooksInSeries
+    
     @FocusState private var focused: Bool
     
     @State private var viewModel = LibraryViewModel()
@@ -169,6 +171,10 @@ struct AudiobookLibraryPanel: View {
                         Section("item.sort") {
                             ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                         }
+                        
+                        Divider()
+                        
+                        Toggle("item.groupAudiobooksBySeries", systemImage: "square.3.layers.3d.down.forward", isOn: $groupAudiobooksInSeries)
                     }
                     .menuActionDismissBehavior(.disabled)
                 }

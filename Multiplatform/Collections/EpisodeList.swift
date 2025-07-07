@@ -135,7 +135,7 @@ private struct RowLabel: View {
                     .padding(.top, 8)
             }
             
-            Spacer()
+            Spacer(minLength: 0)
         }
     }
 }

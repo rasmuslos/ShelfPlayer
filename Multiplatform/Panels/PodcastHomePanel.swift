@@ -83,8 +83,11 @@ struct PodcastHomePanel: View {
             fetchItems()
             ListenedTodayTracker.shared.refresh()
         }
-        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, _) in
-            guard relevantItemIDs.contains(where: { $0.connectionID == connectionID && $0.primaryID == primaryID && $0.groupingID == groupingID }) else {
+        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, entity) in
+            guard relevantItemIDs.contains(where: {
+                $0.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+                || (entity?.progress ?? 0) > 0
+            }) else {
                 return
             }
             

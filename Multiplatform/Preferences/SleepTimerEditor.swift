@@ -12,6 +12,7 @@ struct SleepTimerEditor: View {
     @Default(.sleepTimerIntervals) private var sleepTimerIntervals
     @Default(.sleepTimerExtendInterval) private var sleepTimerExtendInterval
     @Default(.sleepTimerExtendChapterAmount) private var sleepTimerExtendChapterAmount
+    @Default(.extendSleepTimerByPreviousSetting) private var extendSleepTimerByPreviousSetting
     
     @State private var hourOne: Int = 0
     @State private var minuteOne: Int = 0
@@ -78,14 +79,19 @@ struct SleepTimerEditor: View {
             }
             
             Section("sleepTimer.extend") {
-                Picker("sleepTimer.extend.interval", selection: $sleepTimerExtendInterval) {
-                    ForEach(Array(sleepTimerIntervals.enumerated()), id: \.element.hashValue) {
-                        Text(sleepTimerIntervals[$0.offset], format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
-                            .tag($0.element)
-                    }
-                }
+                Toggle("sleepTimer.extend.usingPreviousSetting", isOn: $extendSleepTimerByPreviousSetting)
                 
-                Stepper("sleepTimer.extend.chapters \(sleepTimerExtendChapterAmount)", value: $sleepTimerExtendChapterAmount, in: ClosedRange(uncheckedBounds: (1, 42)))
+                Group {
+                    Picker("sleepTimer.extend.interval", selection: $sleepTimerExtendInterval) {
+                        ForEach(Array(sleepTimerIntervals.enumerated()), id: \.element.hashValue) {
+                            Text(sleepTimerIntervals[$0.offset], format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
+                                .tag($0.element)
+                        }
+                    }
+                    
+                    Stepper("sleepTimer.extend.chapters \(sleepTimerExtendChapterAmount)", value: $sleepTimerExtendChapterAmount, in: ClosedRange(uncheckedBounds: (1, 42)))
+                }
+                .disabled(extendSleepTimerByPreviousSetting)
             }
             
             Section {

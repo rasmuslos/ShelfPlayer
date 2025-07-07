@@ -82,7 +82,7 @@ struct ItemCompactRow: View {
                     }
             }
             
-            Spacer(minLength: 0)
+            Spacer(minLength: context.isTrailingContentHidden ? 0 : 8)
             
             if !context.isTrailingContentHidden {
                 if download?.status == .downloading {
@@ -120,6 +120,7 @@ struct ItemCompactRow: View {
         case unknown
         case bookmark
         case offlineEpisode
+        case convenienceDownloadPreferences
         
         var isImageHidden: Bool {
             switch self {
@@ -129,7 +130,7 @@ struct ItemCompactRow: View {
         }
         var isTrailingContentHidden: Bool {
             switch self {
-                case .bookmark: true
+                case .bookmark, .convenienceDownloadPreferences: true
                 default: false
             }
         }
