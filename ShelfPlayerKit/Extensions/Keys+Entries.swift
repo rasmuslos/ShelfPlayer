@@ -69,6 +69,8 @@ public extension Defaults.Keys {
     static let sleepTimerExtendInterval = Key("sleepTimerExtendInterval", default: Double(1200))
     static let sleepTimerExtendChapterAmount = Key("sleepTimerExtendChapterAmount", default: 1)
     
+    static let extendSleepTimerByPreviousSetting = Key("extendSleepTimerByPreviousSetting", default: true)
+    
     static let tintColor = Key("tintColor", default: TintColor.shelfPlayer, suite: .shared)
     
     static let enableConvenienceDownloads = Key("enableConvenienceDownloads", default: true)
@@ -83,7 +85,7 @@ public extension Defaults.Keys {
     
     static let audiobooksAscending = Key<Bool>("audiobooksAscending", default: false, iCloud: true)
     static let audiobooksSortOrder = Key<AudiobookSortOrder>("audiobookSortOrder", default: .added, iCloud: true)
-    static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .notFinished, iCloud: true)
+    static let audiobooksFilter = Key<ItemFilter>("audiobooksFilter", default: .all, iCloud: true)
     static let audiobooksRestrictToPersisted = Key("audiobooksRestrictToPersisted", default: false, iCloud: true)
     static let audiobooksDisplayType = Key<ItemDisplayType>("audiobooksDisplayType", default: .list, iCloud: true)
     

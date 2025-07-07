@@ -41,7 +41,7 @@ struct PersonGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
+                LazyHStack(spacing: 8) {
                     ForEach(people) { person in
                         NavigationLink(destination: PersonView(person)) {
                             VStack(spacing: 0) {
@@ -53,7 +53,6 @@ struct PersonGrid: View {
                                     .lineLimit(1)
                             }
                             .frame(width: size)
-                            .padding(.leading, gap)
                             .padding(8)
                             .universalContentShape(.rect(cornerRadius: 8))
                         }
@@ -63,8 +62,7 @@ struct PersonGrid: View {
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, 20 - gap)
-                .padding(.trailing, padding)
+                .padding(.horizontal, 20)
             }
             .scrollTargetBehavior(.viewAligned)
             .scrollClipDisabled()

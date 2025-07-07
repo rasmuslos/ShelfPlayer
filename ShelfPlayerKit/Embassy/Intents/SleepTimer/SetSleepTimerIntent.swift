@@ -39,11 +39,11 @@ public struct SetSleepTimerIntent: AudioPlaybackIntent {
         
         switch type {
             case .seconds:
-                configuration = .interval(.now.addingTimeInterval(Double(amount)))
+                configuration = .interval(Double(amount))
             case .minutes:
-                configuration = .interval(.now.addingTimeInterval(Double(amount) * 60))
+                configuration = .interval(Double(amount) * 60)
             case .hours:
-                configuration = .interval(.now.addingTimeInterval(Double(amount) * 60 * 60))
+                configuration = .interval(Double(amount) * 60 * 60)
             case .chapters:
                 configuration = .chapters(amount)
         }

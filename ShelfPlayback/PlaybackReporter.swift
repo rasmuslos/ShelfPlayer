@@ -30,7 +30,7 @@ final actor PlaybackReporter {
     private var lastTimeSpendListeningCalculation: Date?
     private var accumulatedTimeSpendListening: TimeInterval = 0
     
-    private var lastUpdate: Date?
+    private var lastUpdate: Date
     private var isFinished: Bool
     
     private(set) var accumulatedServerReportedTimeListening: TimeInterval = 0
@@ -40,6 +40,8 @@ final actor PlaybackReporter {
         self.itemID = itemID
         
         self.startTime = startTime
+        
+        lastUpdate = .now.advanced(by: -27)
         
         isFinished = false
         
@@ -121,12 +123,11 @@ final actor PlaybackReporter {
 
 private extension PlaybackReporter {
     func updateIfNeeded() {
-        // Update once every minute
-        if let lastUpdate, lastUpdate.distance(to: .now) > 30 {
-            update()
-        } else if lastUpdate == nil {
-            update()
+        guard lastUpdate.distance(to: .now) > 30  else {
+            return
         }
+        
+        update()
     }
     func update() {
         Task {
