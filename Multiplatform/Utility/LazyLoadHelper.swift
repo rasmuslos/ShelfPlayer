@@ -290,14 +290,19 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                                     if status != .none {
                                         filtered.append(section)
                                     }
-                                case .series(_, _, let audiobookIDs):
+                                case .series(let seriesID, let name, let audiobookIDs):
+                                    var included = [ItemIdentifier]()
+                                    
                                     for audiobookID in audiobookIDs {
                                         let status = await PersistenceManager.shared.download.status(of: audiobookID)
                                         
                                         if status != .none {
-                                            filtered.append(section)
-                                            break
+                                            included.append(audiobookID)
                                         }
+                                    }
+                                    
+                                    if !included.isEmpty {
+                                        filtered.append(.series(seriesID: seriesID, seriesName: name, audiobookIDs: included))
                                     }
                             }
                         }
@@ -358,6 +363,41 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                                     
                                     filtered.append(.series(seriesID: seriesID, seriesName: seriesName, audiobookIDs: passed))
                             }
+                        }
+                        
+                        received = filtered as! [T]
+                    } else if let series = received as? [Series] {
+                        var filtered = [Series]()
+                        
+                        for series in series {
+                            var passed = [Audiobook]()
+                            
+                            for audiobook in series.audiobooks {
+                                let progress = await PersistenceManager.shared.progress[audiobook.id].progress
+                                
+                                switch filter {
+                                    case .all:
+                                        passed.append(audiobook)
+                                    case .active:
+                                        if progress > 0 && progress < 1 {
+                                            passed.append(audiobook)
+                                        }
+                                    case .finished:
+                                        if progress >= 1 {
+                                            passed.append(audiobook)
+                                        }
+                                    case .notFinished:
+                                        if progress < 1 {
+                                            passed.append(audiobook)
+                                        }
+                                }
+                            }
+                            
+                            guard !passed.isEmpty else {
+                                continue
+                            }
+                            
+                            filtered.append(Series(id: series.id, name: series.name, authors: series.authors, description: series.description, addedAt: series.addedAt, audiobooks: passed))
                         }
                         
                         received = filtered as! [T]
