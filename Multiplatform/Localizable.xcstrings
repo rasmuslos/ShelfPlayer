@@ -1906,7 +1906,20 @@
       }
     },
     "item.groupAudiobooksBySeries" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppiere Hörbücher nach Serien"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group audiobooks in series"
+          }
+        }
+      }
     },
     "item.grouping.configure" : {
       "localizations" : {
@@ -4678,7 +4691,20 @@
       }
     },
     "sleepTimer.extend.usingPreviousSetting" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um Ursprünglichen Wert verlängern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extend by initial value"
+          }
+        }
+      }
     },
     "statistics.listenedToday" : {
       "localizations" : {

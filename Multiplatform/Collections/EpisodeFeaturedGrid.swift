@@ -46,15 +46,14 @@ struct EpisodeFeaturedGrid: View {
             }
             .frame(height: 0)
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
+            ScrollView(.horizontal, showsIndicators: true) {
+                HStack(spacing: 8) {
                     ForEach(episodes) {
                         EpisodeGridItem(episode: $0, gap: gap, size: size)
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, 20 - gap)
-                .padding(.trailing, padding)
+                .padding(.horizontal, 20)
             }
             .scrollTargetBehavior(.viewAligned)
             .scrollClipDisabled()
@@ -86,12 +85,11 @@ private struct EpisodeGridItem: View {
             .background(Background(episode: episode))
             .clipShape(.rect(cornerRadius: 16))
             .universalContentShape(.rect(cornerRadius: 16))
-            .frame(width: size)
-            .padding(.leading, gap)
             .matchedTransitionSource(id: zoomID, in: namespace!)
         }
         .buttonStyle(.plain)
         .modifier(ItemStatusModifier(item: episode))
+        .frame(width: size)
         .secondaryShadow(radius: 8, opacity: 0.4)
     }
 }
