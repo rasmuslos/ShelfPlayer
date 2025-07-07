@@ -10,6 +10,8 @@ import ShelfPlayback
 
 struct GroupingConfigurationSheet: View {
     @Environment(Satellite.self) private var satellite
+    
+    @Default(.generateUpNextQueue) private var generateUpNextQueue
     @Default(.enableConvenienceDownloads) private var enableConvenienceDownloads
     
     let itemID: ItemIdentifier
@@ -22,7 +24,7 @@ struct GroupingConfigurationSheet: View {
                 if let viewModel {
                     @Bindable var viewModel = viewModel
                     
-                    Section("item.grouping.configure.playback") {
+                    Section {
                         PlaybackRatePicker(label: "item.grouping.configure.playbackRate", selection: $viewModel.playbackRate)
                             .bold(viewModel.isPlaybackRateCustomized)
                         
@@ -33,9 +35,14 @@ struct GroupingConfigurationSheet: View {
                             }
                         }
                         .bold(viewModel.isUpNextStrategyCustomized)
+                        .disabled(!generateUpNextQueue)
                         
                         Toggle("item.grouping.configure.allowSuggestions", isOn: $viewModel.allowSuggestions)
                             .bold(viewModel.isAllowSuggestionsCustomized)
+                    } header: {
+                        Text("item.grouping.configure.playback")
+                    } footer: {
+                        Text("item.grouping.configure.playback.description")
                     }
                     
                     Section {
@@ -106,9 +113,6 @@ private final class ViewModel {
     @ObservableDefault(.defaultPlaybackRate) @ObservationIgnored
     var defaultPlaybackRate: Percentage
     
-    @ObservableDefault(.upNextStrategy) @ObservationIgnored
-    var globalUpNextStrategy: ConfigureableUpNextStrategy
-    
     let itemID: ItemIdentifier
     
     var playbackRate: Percentage
@@ -123,7 +127,7 @@ private final class ViewModel {
         self.itemID = itemID
         
         playbackRate = await PersistenceManager.shared.item.playbackRate(for: itemID) ?? Defaults[.defaultPlaybackRate]
-        upNextStrategy = await PersistenceManager.shared.item.upNextStrategy(for: itemID) ?? Defaults[.upNextStrategy]
+        upNextStrategy = await PersistenceManager.shared.item.upNextStrategy(for: itemID) ?? .default
         allowSuggestions = await PersistenceManager.shared.item.allowSuggestions(for: itemID) ?? true
         
         if let retrieval = await PersistenceManager.shared.convenienceDownload.retrieval(for: itemID), let parsed = ConvenienceDownloadRetrievalOption.parse(retrieval) {
@@ -137,7 +141,7 @@ private final class ViewModel {
         playbackRate != defaultPlaybackRate
     }
     var isUpNextStrategyCustomized: Bool {
-        upNextStrategy != globalUpNextStrategy
+        upNextStrategy != .default
     }
     var isAllowSuggestionsCustomized: Bool {
         allowSuggestions != true
