@@ -36,7 +36,7 @@ public extension Defaults.Keys {
     
     static let enableChapterTrack = Key("enableChapterTrack", default: true)
     static let enableSmartRewind = Key("enableSmartRewind", default: true)
-    static let upNextStrategy = Key("upNextStrategy", default: ConfigureableUpNextStrategy.default)
+    static let generateUpNextQueue = Key("generateUpNextQueue", default: true)
     
     // Sleep timer
     

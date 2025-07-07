@@ -1969,6 +1969,9 @@
         }
       }
     },
+    "item.grouping.configure.playback.description" : {
+
+    },
     "item.grouping.configure.playbackRate" : {
       "localizations" : {
         "de" : {

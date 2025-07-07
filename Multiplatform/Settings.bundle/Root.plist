@@ -102,25 +102,13 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
+			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Up Next Queue</string>
+			<string>Generate up next queue</string>
 			<key>Key</key>
-			<string>upNextStrategy</string>
+			<string>generateUpNextQueue</string>
 			<key>DefaultValue</key>
-			<string>default</string>
-			<key>Titles</key>
-			<array>
-				<string>Default</string>
-				<string>Listen Now</string>
-				<string>Disabled</string>
-			</array>
-			<key>Values</key>
-			<array>
-				<string>default</string>
-				<string>listenNow</string>
-				<string>disabled</string>
-			</array>
+			<true/>
 		</dict>
 		<dict>
 			<key>Type</key>
