@@ -89,20 +89,18 @@ struct AudiobookHGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(alignment: .bottom, spacing: 0) {
+                LazyHStack(alignment: .bottom, spacing: 8) {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook)) {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                                 .frame(width: size)
-                                .padding(.leading, gap)
                         }
                         .buttonStyle(.plain)
                         .modifier(ItemStatusModifier(item: audiobook))
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, 20 - gap)
-                .padding(.trailing, padding)
+                .padding(.horizontal, 20)
             }
             .scrollTargetBehavior(.viewAligned)
             .scrollClipDisabled()

@@ -338,8 +338,6 @@ public extension PersistenceManager.ProgressSubsystem {
         
         let entity = ProgressEntity(persistedEntity: targetEntity)
         
-        await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
-        
         if notifyServer {
             do {
                 try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
@@ -350,6 +348,8 @@ public extension PersistenceManager.ProgressSubsystem {
                 logger.info("Caching progress update because of: \(error.localizedDescription).")
             }
         }
+        
+        await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
     }
     
     /// Insert changes into the database and notify the connection of pending updates

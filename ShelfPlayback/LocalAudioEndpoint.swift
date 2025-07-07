@@ -228,8 +228,8 @@ extension LocalAudioEndpoint {
         audioPlayer.play()
         isPlaying = true
         
-        if let sleepLastPause, let sleepTimer, case .interval(let until) = sleepTimer {
-            self.sleepTimer = .interval(until.advanced(by: sleepLastPause.distance(to: .now)))
+        if let sleepLastPause, let sleepTimer, case .interval(let until, let extend) = sleepTimer {
+            self.sleepTimer = .interval(until.advanced(by: sleepLastPause.distance(to: .now)), extend)
             self.sleepLastPause = nil
         }
         
@@ -599,21 +599,23 @@ private extension LocalAudioEndpoint {
     }
     
     func sleepChapterDidEnd() async {
-        guard let sleepTimer, case .chapters(let amount) = sleepTimer else {
+        guard let sleepTimer, case .chapters(let amount, let extend) = sleepTimer else {
             return
         }
         
-        guard amount > 1 else {
+        if amount <= 1 {
             await pause()
             
             self.sleepTimer = nil
             await AudioPlayer.shared.sleepTimerDidExpire(endpointID: id, configuration: sleepTimer)
             
             return
+        } else {
+            await AudioPlayer.shared.setSleepTimer(.chapters(amount - 1, extend))
         }
     }
     func updateSleepTimerSchedule() {
-        guard let sleepTimer, case .interval(let date) = sleepTimer else {
+        guard let sleepTimer, case .interval(let date, _) = sleepTimer else {
             sleepTimeoutTimer?.invalidate()
             return
         }

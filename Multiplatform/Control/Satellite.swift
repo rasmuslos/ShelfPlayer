@@ -581,10 +581,10 @@ extension Satellite {
             
             do {
                 switch configuration {
-                    case .interval(let deadline):
+                    case .interval(let deadline, _):
                         let distance = Date.now.distance(to: deadline) / 60
                         try await SetSleepTimerIntent(amount: Int(distance), type: .minutes).donate()
-                    case .chapters(let amount):
+                    case .chapters(let amount, _):
                         try await SetSleepTimerIntent(amount: amount, type: .chapters).donate()
                     default:
                         break
@@ -633,7 +633,7 @@ extension Satellite {
 
             let amount = index - currentChapterIndex + 1
 
-            await AudioPlayer.shared.setSleepTimer(.chapters(amount))
+            await AudioPlayer.shared.setSleepTimer(.chapters(amount, 1))
             
             do {
                 try await SetSleepTimerIntent(amount: amount, type: .chapters).donate()
@@ -992,7 +992,7 @@ private extension Satellite {
             self?.currentTime = currentTimes.0 ?? 0
             self?.currentChapterTime = currentTimes.1 ?? self?.currentTime ?? 0
             
-            if let sleepTimer = self?.sleepTimer, case .interval(let date) = sleepTimer {
+            if let sleepTimer = self?.sleepTimer, case .interval(let date, _) = sleepTimer {
                 self?.remainingSleepTime = Date.now.distance(to: date)
             }
         }.store(in: &stash)

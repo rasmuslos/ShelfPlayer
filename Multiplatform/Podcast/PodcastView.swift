@@ -62,6 +62,7 @@ struct PodcastView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
+                        .contentShape(.rect)
                     }
                     .buttonStyle(.plain)
                     

@@ -20,9 +20,9 @@ public struct ContextProvider {
                 $0.addTask {
                     switch library.type {
                     case .audiobooks:
-                        try? await ABSClient[library.connectionID].audiobooks(from: library.id, filter: .all, sortOrder: .added, ascending: false, limit: 0, page: 0).1
+                        try? await ABSClient[library.connectionID].audiobooks(from: library.id, filter: .all, sortOrder: .added, ascending: false, limit: 1, page: 0).1
                     case .podcasts:
-                        try? await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: .addedAt, ascending: false, limit: 0, page: 0).1
+                        try? await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: .addedAt, ascending: false, limit: 1, page: 0).1
                     }
                 }
             }

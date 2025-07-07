@@ -99,6 +99,9 @@ struct PlaybackBackwardButton: View {
             .disabled(isLoading)
             .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
             .animation(.smooth, value: isLoading)
+            .accessibilityRemoveTraits(.isImage)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityValue(Text(verbatim: "\(viewModel.skipBackwardsInterval)"))
     }
 }
 struct PlaybackForwardButton: View {
@@ -129,6 +132,9 @@ struct PlaybackForwardButton: View {
             .disabled(isLoading)
             .symbolEffect(.rotate.clockwise.byLayer, options: .speed(2), value: viewModel.notifySkipForwards)
             .animation(.smooth, value: isLoading)
+            .accessibilityRemoveTraits(.isImage)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityValue(Text(verbatim: "\(viewModel.skipForwardsInterval)"))
     }
 }
 
@@ -162,6 +168,7 @@ struct PlaybackTogglePlayButton: View {
                     .symbolEffect(.variableColor.iterative.dimInactiveLayers.nonReversing, isActive: isLoading)
             }
         }
+        .accessibilityRemoveTraits(.isImage)
     }
 }
 struct PlaybackControls: View {
@@ -353,7 +360,7 @@ struct PlaybackSleepTimerButton: View {
         
         if let sleepTimer = satellite.sleepTimer {
             switch sleepTimer {
-                case .chapters(let amount):
+                case .chapters(let amount, _):
                     return String(localized: "sleepTimer.chapter") + " \(amount)"
                 default:
                     break
@@ -367,7 +374,7 @@ struct PlaybackSleepTimerButton: View {
         Menu {
             if let sleepTimer = satellite.sleepTimer {
                 switch sleepTimer {
-                    case .chapters(let amount):
+                    case .chapters(let amount, _):
                         ControlGroup {
                             Button("action.decrease", systemImage: "minus") {
                                 if amount > 1 {
@@ -383,19 +390,19 @@ struct PlaybackSleepTimerButton: View {
                                 satellite.setSleepTimer(.chapters(amount + 1))
                             }
                         }
-                    case .interval(let expiresAt):
+                    case .interval(let expiresAt, let extend):
                         if let remainingSleepTime = satellite.remainingSleepTime {
                             ControlGroup {
                                 Button("action.decrease", systemImage: "minus") {
                                     if remainingSleepTime > 60 {
-                                        satellite.setSleepTimer(.interval(expiresAt.advanced(by: -60)))
+                                        satellite.setSleepTimer(.interval(expiresAt.advanced(by: -60), extend))
                                     } else {
                                         satellite.setSleepTimer(nil)
                                     }
                                 }
                                 
                                 Button("action.increase", systemImage: "plus") {
-                                    satellite.setSleepTimer(.interval(expiresAt.advanced(by: 60)))
+                                    satellite.setSleepTimer(.interval(expiresAt.advanced(by: 60), extend))
                                 }
                             }
                         }
@@ -421,7 +428,7 @@ struct PlaybackSleepTimerButton: View {
                 
                 ForEach(sleepTimerIntervals, id: \.hashValue) { interval in
                     Button {
-                        satellite.setSleepTimer(.interval(.now.advanced(by: interval)))
+                        satellite.setSleepTimer(.interval(interval))
                     } label: {
                         Text(interval, format: .duration(unitsStyle: .full, allowedUnits: [.minute, .hour]))
                     }
@@ -437,9 +444,9 @@ struct PlaybackSleepTimerButton: View {
                 
                 if let sleepTimer = satellite.sleepTimer {
                     switch sleepTimer {
-                        case .chapters(_):
+                        case .chapters(_, _):
                             Label("sleepTimer.chapter", systemImage: "append.page")
-                        case .interval(_):
+                        case .interval(_, _):
                             if let remainingSleepTime = satellite.remainingSleepTime {
                                 Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
                                     .fontDesign(.rounded)
