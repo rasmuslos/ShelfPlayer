@@ -672,24 +672,24 @@ private extension LocalAudioEndpoint {
                 return
             }
             
+            guard Defaults[.generateUpNextQueue] else {
+                return
+            }
+            
             let currentItem = await currentItem
             let currentItemID = await currentItemID
             
-            let globalStrategy = Defaults[.upNextStrategy]
             let strategy: ResolvedUpNextStrategy?
             
             do {
                 if let resolved = currentItem.origin.resolvedUpNextStrategy {
                     strategy = resolved
                 } else if let podcastID = await podcastID {
-                    let configured = await PersistenceManager.shared.item.upNextStrategy(for: podcastID) ?? globalStrategy
-                    
-                    strategy = configured.resolved(podcastID)
+                    strategy = (await PersistenceManager.shared.item.upNextStrategy(for: podcastID) ?? .default).resolved(podcastID)
                 } else if let seriesID = await seriesID {
-                    let configured = await PersistenceManager.shared.item.upNextStrategy(for: seriesID) ?? globalStrategy
-                    strategy = configured.resolved(seriesID)
+                    strategy = (await PersistenceManager.shared.item.upNextStrategy(for: seriesID) ?? .default).resolved(seriesID)
                 } else {
-                    throw AudioPlayerError.invalidItemType
+                    strategy = nil
                 }
                 
                 guard let strategy else {
