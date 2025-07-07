@@ -92,7 +92,7 @@ struct ItemStatusModifier: ViewModifier {
                         .accessibilityAction(.magicTap) {
                             satellite.start(itemID)
                         }
-                        .accessibilityAddTraits([.allowsDirectInteraction, .isLink, .startsMediaSession])
+                        .accessibilityAddTraits([.isLink, .startsMediaSession])
                 } else {
                     $0
                         .accessibilityAddTraits([.isLink])
