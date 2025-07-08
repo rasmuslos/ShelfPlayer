@@ -53,7 +53,7 @@ struct AudiobookVGrid: View {
 struct AudiobookHGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    private let gap: CGFloat = 8
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     let audiobooks: [Audiobook]
@@ -89,7 +89,7 @@ struct AudiobookHGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(alignment: .bottom, spacing: 8) {
+                LazyHStack(alignment: .bottom, spacing: gap) {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(destination: AudiobookView(audiobook)) {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)

@@ -165,6 +165,17 @@ struct EpisodeItemActions: View {
                     }
                 }
             
+            Group {
+                if episode.type == .trailer {
+                    Label("item.trailer", systemImage: "movieclapper.fill")
+                } else if episode.type == .bonus {
+                    Label("item.bonus", systemImage: "fireworks")
+                }
+            }
+            .imageScale(.small)
+            .font(.caption2)
+            .labelStyle(.iconOnly)
+            
             if let releaseDate = episode.releaseDate {
                 Group {
                     if context.usesShortDateStyle {
@@ -179,17 +190,6 @@ struct EpisodeItemActions: View {
             
             Spacer(minLength: 4)
             
-            Group {
-                if episode.type == .trailer {
-                    Label("item.trailer", systemImage: "movieclapper.fill")
-                } else if episode.type == .bonus {
-                    Label("item.bonus", systemImage: "fireworks")
-                }
-            }
-            .imageScale(.small)
-            .font(.caption2)
-            .labelStyle(.iconOnly)
-            
             if let status = download.status {
                 switch status {
                 case .downloading:
@@ -202,6 +202,18 @@ struct EpisodeItemActions: View {
                     EmptyView()
                 }
             }
+            
+            Menu {
+                PlayableItemContextMenuInner(item: episode, currentDownloadStatus: download.status)
+            } label: {
+                Label("options", systemImage: "ellipsis")
+                    .labelStyle(.iconOnly)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .padding(8)
+            }
+            .buttonStyle(.plain)
+            .padding(-8)
         }
     }
 }
@@ -253,7 +265,7 @@ private extension EpisodeList.PresentationContext {
 #Preview {
     NavigationStack {
         List {
-            EpisodeList(episodes: .init(repeating: .fixture, count: 7), context: .latest, selected: .constant(nil))
+            EpisodeList(episodes: .init(repeating: .fixture, count: 1), context: .latest, selected: .constant(nil))
         }
         .listStyle(.plain)
     }
@@ -265,7 +277,7 @@ private extension EpisodeList.PresentationContext {
     
     NavigationStack {
         List {
-            EpisodeList(episodes: .init(repeating: .fixture, count: 7), context: .podcast, selected: $selected)
+            EpisodeList(episodes: .init(repeating: .fixture, count: 1), context: .podcast, selected: $selected)
         }
         .listStyle(.plain)
     }

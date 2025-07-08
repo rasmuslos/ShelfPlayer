@@ -34,7 +34,7 @@ struct AudiobookRow: View {
                     RowTitle(title: title, fontDesign: .serif)
                 }
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 12)
             .padding(.horizontal, 20)
             
             AudiobookHGrid(audiobooks: audiobooks, small: small)
@@ -66,5 +66,6 @@ private struct RowGridView: View {
     ScrollView {
         AudiobookRow(title: "Title", small: true, audiobooks: .init(repeating: .fixture, count: 7))
     }
+    .previewEnvironment()
 }
 #endif

@@ -34,11 +34,11 @@ struct PodcastHomePanel: View {
                 }
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 12) {
+                    LazyVStack(spacing: 16) {
                         ForEach(episodes) { row in
                             VStack(alignment: .leading, spacing: 0) {
                                 RowTitle(title: row.localizedLabel)
-                                    .padding(.bottom, 8)
+                                    .padding(.bottom, 12)
                                     .padding(.horizontal, 20)
                                 
                                 if row.id == "continue-listening" {
@@ -52,7 +52,7 @@ struct PodcastHomePanel: View {
                         ForEach(podcasts) { row in
                             VStack(alignment: .leading, spacing: 0) {
                                 RowTitle(title: row.localizedLabel)
-                                    .padding(.bottom, 8)
+                                    .padding(.bottom, 12)
                                     .padding(.horizontal, 20)
                                 
                                 PodcastHGrid(podcasts: row.entities)

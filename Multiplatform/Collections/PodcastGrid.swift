@@ -66,16 +66,14 @@ struct PodcastHGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
+                HStack(spacing: gap) {
                     ForEach(podcasts) {
                         PodcastGridItem(podcast: $0)
                             .frame(width: size)
-                            .padding(.leading, gap)
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.leading, 20 - gap)
-                .padding(.trailing, padding)
+                .padding(.horizontal, padding)
             }
             .scrollTargetBehavior(.viewAligned)
             .scrollClipDisabled()
