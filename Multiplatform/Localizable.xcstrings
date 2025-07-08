@@ -2966,9 +2966,6 @@
         }
       }
     },
-    "options" : {
-
-    },
     "panel.authors" : {
       "localizations" : {
         "de" : {
@@ -3650,7 +3647,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als nächstes kann in den Einstellungen für Podcasts und Serien konfiguriert werden. Sie kann auch in der Einstellungs-App deaktiviert werden."
+            "value" : "Als nächstes kann in den Einstellungen für Podcasts und Serien konfiguriert werden. Es kann auch in der Einstellungs-App deaktiviert werden."
           }
         },
         "en" : {
@@ -4794,7 +4791,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um Ursprünglichen Wert verlängern"
+            "value" : "Um ursprünglichen Wert verlängern"
           }
         },
         "en" : {

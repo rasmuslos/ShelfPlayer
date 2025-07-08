@@ -23,8 +23,6 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
     public let addedAt: Date
     public let released: String?
     
-    private var url: URL?
-    
     init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
         
@@ -37,10 +35,6 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
         
         self.addedAt = addedAt
         self.released = released
-        
-        Task.detached {
-            self.url = try? await id.url
-        }
     }
     
     enum CodingKeys: CodingKey {
@@ -111,14 +105,13 @@ extension Item: Transferable {
     }
     
     public static var transferRepresentation: some TransferRepresentation {
-        ProxyRepresentation(exporting: \.transferableDescription)
-        ProxyRepresentation(exporting: {
-            guard let url = $0.url else {
+        DataRepresentation(exportedContentType: .url) {
+            guard let url = try? await $0.id.url else {
                 throw TransferableError.missingURL
             }
             
-            return url
-        })
+            return url.dataRepresentation
+        }
         DataRepresentation(exportedContentType: .png) {
             guard let data = await $0.id.data(size: .small) else {
                 throw TransferableError.missingImageData
@@ -126,6 +119,9 @@ extension Item: Transferable {
             
             return data
         }
+        
+        ProxyRepresentation(exporting: \.transferableDescription)
+        CodableRepresentation(contentType: .init(exportedAs: "io.rfk.shelfPlayer.item"))
     }
 }
 

@@ -105,7 +105,13 @@ private struct Title: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 2) {
+                if let releaseDate = episode.releaseDate {
+                    Text(releaseDate, style: .date)
+                        .font(.caption)
+                        .foregroundStyle(.regularMaterial)
+                }
+                
                 Text(episode.name)
                     .font(.headline)
                     .lineLimit(2)
@@ -114,15 +120,14 @@ private struct Title: View {
                     Text(descriptionText)
                         .font(.subheadline)
                         .foregroundStyle(.thickMaterial)
-                        .lineLimit(3)
-                        .padding(.top, 4)
+                        .lineLimit(2)
                 }
                 
                 EpisodeItemActions(episode: episode, context: .featured)
-                    .padding(.top, 8)
+                    .padding(.top, 6)
             }
             
-            Spacer()
+            Spacer(minLength: 0)
         }
         .padding(16)
     }
