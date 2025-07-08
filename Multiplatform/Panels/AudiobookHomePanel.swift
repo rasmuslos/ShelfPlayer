@@ -44,7 +44,7 @@ struct AudiobookHomePanel: View {
                 }
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 12) {
+                    LazyVStack(spacing: 16) {
                         ForEach(audiobooks) {
                             AudiobookRow(title: $0.localizedLabel, small: false, audiobooks: $0.entities)
                         }
@@ -52,7 +52,7 @@ struct AudiobookHomePanel: View {
                         ForEach(authors) { row in
                             VStack(alignment: .leading, spacing: 0) {
                                 RowTitle(title: row.localizedLabel)
-                                    .padding(.bottom, 8)
+                                    .padding(.bottom, 12)
                                     .padding(.horizontal, 20)
                                 
                                 PersonGrid(people: row.entities)
@@ -178,7 +178,7 @@ private extension AudiobookHomePanel {
 #Preview {
     NavigationStack {
         AudiobookHomePanel()
-            .previewEnvironment()
     }
+    .previewEnvironment()
 }
 #endif

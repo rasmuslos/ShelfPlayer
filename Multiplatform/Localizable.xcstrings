@@ -2966,6 +2966,9 @@
         }
       }
     },
+    "options" : {
+
+    },
     "panel.authors" : {
       "localizations" : {
         "de" : {
