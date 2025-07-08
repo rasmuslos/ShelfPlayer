@@ -176,7 +176,7 @@ struct EpisodeItemActions: View {
             .font(.caption2)
             .labelStyle(.iconOnly)
             
-            if let releaseDate = episode.releaseDate {
+            if !context.isActionDateHidden, let releaseDate = episode.releaseDate {
                 Group {
                     if context.usesShortDateStyle {
                         Text(releaseDate, format: .dateTime.day(.twoDigits).month(.twoDigits))
@@ -206,7 +206,7 @@ struct EpisodeItemActions: View {
             Menu {
                 PlayableItemContextMenuInner(item: episode, currentDownloadStatus: download.status)
             } label: {
-                Label("options", systemImage: "ellipsis")
+                Label("item.options", systemImage: "ellipsis")
                     .labelStyle(.iconOnly)
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -221,26 +221,26 @@ struct EpisodeItemActions: View {
 private extension EpisodeList.PresentationContext {
     var usesShortDateStyle: Bool {
         switch self {
-        case .latest, .grid, .featured:
-            true
-        case .podcast:
-            false
+        case .latest, .grid, .featured: true
+        case .podcast: false
         }
     }
     var isHighlighted: Bool {
         switch self {
-        case .featured:
-            true
-        case .grid, .latest, .podcast:
-            false
+        case .featured: true
+        case .grid, .latest, .podcast: false
         }
     }
     var isImageVisible: Bool {
         switch self {
-        case .latest, .grid, .featured:
-            true
-        case .podcast:
-            false
+        case .latest, .grid, .featured: true
+        case .podcast: false
+        }
+    }
+    var isActionDateHidden: Bool {
+        switch self {
+            case .featured: true
+            default: false
         }
     }
     

@@ -72,6 +72,7 @@ final class ProgressViewModel {
                 
                 success = true
             } catch {
+                self.logger.error("Failed to synchronize \(connectionID, privacy: .public): \(error, privacy: .public)")
                 success = false
             }
             
