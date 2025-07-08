@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 import ShelfPlayback
 
 struct PlaybackQueue: View {
@@ -15,9 +16,18 @@ struct PlaybackQueue: View {
     @Default(.tintColor) private var tintColor
     
     @ViewBuilder
-    private func header(label: LocalizedStringKey, clear: @escaping () -> Void) -> some View {
+    static func header(label: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, clear: @escaping () -> Void) -> some View {
         HStack(spacing: 0) {
-            Text(label)
+            VStack(alignment: .leading) {
+                Text(label)
+                
+                if let subtitle {
+                    Text(subtitle)
+                        .lineLimit(1)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
             
             Spacer(minLength: 12)
             
@@ -26,6 +36,27 @@ struct PlaybackQueue: View {
             }
         }
         .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+    }
+    
+    private var upNextQueueSubtitle: LocalizedStringKey? {
+        switch satellite.upNextStrategy {
+            case .listenNow:
+                "playback.nextUpQueue.listenNow"
+            case .podcast:
+                if let upNextOrigin = satellite.upNextOrigin {
+                    "playback.nextUpQueue.podcast \(upNextOrigin.name)"
+                } else {
+                    "loading"
+                }
+            case .series:
+                if let upNextOrigin = satellite.upNextOrigin {
+                    "playback.nextUpQueue.series \(upNextOrigin.name)"
+                } else {
+                    "loading"
+                }
+            default:
+                nil
+        }
     }
     
     var body: some View {
@@ -85,7 +116,7 @@ struct PlaybackQueue: View {
                                 }
                             }
                         } header: {
-                            header(label: "playback.queue") {
+                            Self.header(label: "playback.queue") {
                                 satellite.clearQueue()
                             }
                         }
@@ -93,6 +124,9 @@ struct PlaybackQueue: View {
                     
                     if !satellite.upNextQueue.isEmpty {
                         Section {
+                            TipView(NextUpQueueTip())
+                                .listRowSeparator(.hidden)
+                            
                             ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, itemID) in
                                 QueueItemRow(itemID: itemID, queueIndex: index, isUpNextQueue: true)
                             }
@@ -102,7 +136,7 @@ struct PlaybackQueue: View {
                                 }
                             }
                         } header: {
-                            header(label: "playback.nextUpQueue") {
+                            Self.header(label: "playback.nextUpQueue", subtitle: upNextQueueSubtitle) {
                                 satellite.clearUpNextQueue()
                             }
                         }
@@ -329,6 +363,11 @@ private struct QueueItemRow: View {
     }
 }
 
+private struct NextUpQueueTip: Tip {
+    let title = Text("playback.upNextQueue.tip")
+    let message: Text? = Text("playback.upNextQueue.tip.description")
+}
+
 #if DEBUG
 #Preview {
     PlaybackQueue()
@@ -343,5 +382,16 @@ private struct QueueItemRow: View {
     }
     .listStyle(.plain)
     .previewEnvironment()
+}
+
+#Preview {
+    List {
+        Section {
+            TipView(NextUpQueueTip())
+        } header: {
+            PlaybackQueue.header(label: "carPlay.noConnections", subtitle: "carPlay.noConnections.subtitle") {}
+        }
+    }
+    .listStyle(.plain)
 }
 #endif

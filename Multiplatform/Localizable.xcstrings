@@ -3310,6 +3310,54 @@
         }
       }
     },
+    "playback.nextUpQueue.listenNow" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt hören"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen now"
+          }
+        }
+      }
+    },
+    "playback.nextUpQueue.podcast %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podcast: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podcast: %@"
+          }
+        }
+      }
+    },
+    "playback.nextUpQueue.series %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series: %@"
+          }
+        }
+      }
+    },
     "playback.pause" : {
       "localizations" : {
         "de" : {
@@ -3574,6 +3622,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停止播放"
+          }
+        }
+      }
+    },
+    "playback.upNextQueue.tip" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als nächstes konfigurieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure next up"
+          }
+        }
+      }
+    },
+    "playback.upNextQueue.tip.description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als nächstes kann in den Einstellungen für Podcasts und Serien konfiguriert werden. Sie kann auch in der Einstellungs-App deaktiviert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The up next queue can be configured in the podcast & series settings. It can also be disabled in the settings app."
           }
         }
       }
