@@ -15,7 +15,7 @@ import RFNotifications
 
 typealias DiscoveredConnection = SchemaV2.PersistedDiscoveredConnection
 
-public let ABSClient = APIClientStore { connectionID in
+public let ABSClient = APIClientStore(timeout: 90) { connectionID in
     guard let connection = await PersistenceManager.shared.authorization[connectionID] else {
         throw PersistenceError.serverNotFound
     }
