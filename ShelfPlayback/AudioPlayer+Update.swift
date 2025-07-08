@@ -167,6 +167,15 @@ extension AudioPlayer {
             await RFNotification[.upNextQueueChanged].send(payload: upNextQueue)
         }
     }
+    func upNextStrategyDidChange(endpointID: UUID, strategy: ResolvedUpNextStrategy?) {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        Task {
+            await RFNotification[.upNextStrategyChanged].send(payload: strategy)
+        }
+    }
     
     func didStopPlaying(endpointID: UUID, itemID: ItemIdentifier) async {
         guard current?.id == endpointID else {

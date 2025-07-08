@@ -25,7 +25,17 @@ final class LocalAudioEndpoint: AudioEndpoint {
     private(set) var currentItem: AudioPlayerItem
     
     private(set) var queue: [AudioPlayerItem]
-    private(set) var upNextQueue: [AudioPlayerItem]
+    private(set) var upNextQueue: [AudioPlayerItem] {
+        didSet {
+            if upNextQueue.isEmpty {
+                upNextStrategy = nil
+                
+                Task.detached {
+                    await AudioPlayer.shared.upNextStrategyDidChange(endpointID: self.id, strategy: nil)
+                }
+            }
+        }
+    }
     
     private(set) var audioTracks: [PlayableItem.AudioTrack]
     private(set) var activeAudioTrackIndex: Int
@@ -84,6 +94,8 @@ final class LocalAudioEndpoint: AudioEndpoint {
             }
         }
     }
+    
+    private(set) var upNextStrategy: ResolvedUpNextStrategy?
     
     private var chapterValidUntil: TimeInterval?
     
@@ -699,10 +711,12 @@ private extension LocalAudioEndpoint {
                 let items = try await strategy.resolve(cutoff: currentItemID).map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
                 
                 await MainActor.run {
+                    self.upNextStrategy = strategy
                     self.upNextQueue = items
                 }
                 
                 await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
+                await AudioPlayer.shared.upNextStrategyDidChange(endpointID: id, strategy: strategy)
             } catch {
                 logger.error("Failed to update up next queue: \(error)")
             }

@@ -235,6 +235,7 @@ public extension RFNotification.IsolatedNotification {
     
     static var queueChanged: IsolatedNotification<[ItemIdentifier]> { .init("io.rfk.shelfPlayerKit.queueChanged") }
     static var upNextQueueChanged: IsolatedNotification<[ItemIdentifier]> { .init("io.rfk.shelfPlayerKit.upNextQueueChanged") }
+    static var upNextStrategyChanged: IsolatedNotification<ResolvedUpNextStrategy?> { .init("io.rfk.shelfPlayerKit.upNextStrategyChanged") }
     
     static var playbackStopped: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackStopped") }
     
