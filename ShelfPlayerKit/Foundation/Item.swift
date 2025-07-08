@@ -23,6 +23,8 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
     public let addedAt: Date
     public let released: String?
     
+    private var url: URL?
+    
     init(id: ItemIdentifier, name: String, authors: [String], description: String?, genres: [String], addedAt: Date, released: String?) {
         self.id = id
         
@@ -35,6 +37,10 @@ public class Item: Identifiable, @unchecked Sendable, Codable {
         
         self.addedAt = addedAt
         self.released = released
+        
+        Task.detached {
+            self.url = try? await id.url
+        }
     }
     
     enum CodingKeys: CodingKey {
@@ -106,29 +112,15 @@ extension Item: Transferable {
     
     public static var transferRepresentation: some TransferRepresentation {
         ProxyRepresentation(exporting: \.transferableDescription)
-        
-        DataRepresentation(exportedContentType: .utf8PlainText) {
-            Data($0.transferableDescription.utf8)
-        }
-        DataRepresentation(exportedContentType: .plainText) {
-            Data($0.transferableDescription.utf8)
-        }
-        DataRepresentation(exportedContentType: .text) {
-            Data($0.transferableDescription.utf8)
-        }
-        DataRepresentation(exportedContentType: .rtf) {
-            Data($0.transferableDescription.utf8)
-        }
-        
-        DataRepresentation(exportedContentType: .url) {
-            guard let data = try? await $0.id.url.absoluteString.utf8 else {
-                throw TransferableError.missingImageData
+        ProxyRepresentation(exporting: {
+            guard let url = $0.url else {
+                throw TransferableError.missingURL
             }
             
-            return Data(data)
-        }
+            return url
+        })
         DataRepresentation(exportedContentType: .png) {
-            guard let data = await $0.id.data(size: .large) else {
+            guard let data = await $0.id.data(size: .small) else {
                 throw TransferableError.missingImageData
             }
             
@@ -166,5 +158,6 @@ public extension Item {
 }
 
 private enum TransferableError: Error {
+    case missingURL
     case missingImageData
 }

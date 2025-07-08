@@ -1970,7 +1970,20 @@
       }
     },
     "item.grouping.configure.playback.description" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorgeschlagene, nicht begonnene Objekte erscheinen in „Jetzt hören“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested, not started, items will appear in \"Listen now“."
+          }
+        }
+      }
     },
     "item.grouping.configure.playbackRate" : {
       "localizations" : {
