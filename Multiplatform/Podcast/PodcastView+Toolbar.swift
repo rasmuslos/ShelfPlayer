@@ -62,10 +62,6 @@ extension PodcastView.ToolbarModifier {
         
         var body: some View {
             Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
-                ItemShareButton(item: viewModel.podcast)
-                
-                Divider()
-                
                 Section("item.filter") {
                     ItemFilterPicker(filter: viewModel.filterBinding, restrictToPersisted: viewModel.restrictToPersistedBinding)
                 }
