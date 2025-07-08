@@ -52,6 +52,9 @@ final class Satellite {
     private(set) var route: AudioRoute?
     private(set) var sleepTimer: SleepTimerConfiguration?
     
+    private(set) var upNextOrigin: Item?
+    private(set) var upNextStrategy: ResolvedUpNextStrategy?
+    
     private(set) var bookmarks = [Bookmark]()
     
     // MARK: Playback helper
@@ -967,6 +970,9 @@ private extension Satellite {
             self?.route = nil
             self?.sleepTimer = nil
             
+            self?.upNextOrigin = nil
+            self?.upNextStrategy = nil
+            
             self?.resolvePlayingItem()
             self?.loadBookmarks(itemID: $0.0)
         }.store(in: &stash)
@@ -1021,6 +1027,10 @@ private extension Satellite {
         RFNotification[.upNextQueueChanged].subscribe { [weak self] upNextQueue in
             self?.upNextQueue = upNextQueue
         }
+        RFNotification[.upNextStrategyChanged].subscribe { [weak self] strategy in
+            self?.upNextStrategy = strategy
+            self?.resolveUpNextOrigin()
+        }
         
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.nowPlayingItemID = nil
@@ -1045,6 +1055,9 @@ private extension Satellite {
             
             self?.route = nil
             self?.sleepTimer = nil
+            
+            self?.upNextOrigin = nil
+            self?.upNextStrategy = nil
             
             self?.bookmarks = []
         }.store(in: &stash)
@@ -1086,10 +1099,33 @@ private extension Satellite {
         route = await AudioPlayer.shared.route
         sleepTimer = await AudioPlayer.shared.sleepTimer
         
+        upNextStrategy = await AudioPlayer.shared.upNextStrategy
+        
+        resolveUpNextOrigin()
         resolvePlayingItem()
         
         if let nowPlayingItemID {
             loadBookmarks(itemID: nowPlayingItemID)
+        }
+    }
+    
+    private nonisolated func resolveUpNextOrigin() {
+        Task {
+            let upNextStrategy = await upNextStrategy
+            let origin: Item?
+            
+            switch upNextStrategy {
+                case .series(let itemID):
+                    origin = try? await itemID.resolved
+                case .podcast(let itemID):
+                    origin = try? await itemID.resolved
+                default:
+                    origin = nil
+            }
+            
+            await MainActor.withAnimation {
+                self.upNextOrigin = origin
+            }
         }
     }
 }

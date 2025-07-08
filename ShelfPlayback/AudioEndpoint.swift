@@ -36,6 +36,7 @@ protocol AudioEndpoint: Identifiable, Sendable {
     var route: AudioRoute? { get async }
     var sleepTimer: SleepTimerConfiguration? { get async }
     
+    var upNextStrategy: ResolvedUpNextStrategy? { get async }
     var pendingTimeSpendListening: TimeInterval { get async }
     
     func queue(_ items: [AudioPlayerItem]) async throws

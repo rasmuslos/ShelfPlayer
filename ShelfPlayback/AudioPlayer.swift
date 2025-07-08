@@ -114,6 +114,11 @@ public extension AudioPlayer {
         }
     }
     
+    var upNextStrategy: ResolvedUpNextStrategy? {
+        get async {
+            await current?.upNextStrategy
+        }
+    }
     var pendingTimeSpendListening: TimeInterval? {
         get async {
             await current?.pendingTimeSpendListening
