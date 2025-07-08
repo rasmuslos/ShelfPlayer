@@ -4,7 +4,7 @@ To add a new translation for ShelfPlayer, please follow these detailed instructi
 
 ## Step 1: Open an Issue
 
-Before starting any localization work, open an issue on the project's repository detailing which language you are planning to translate into. This ensures that the necessary configuration can be prepared by the maintainers.
+Before starting any localization work, open an issue on the project’s repository detailing which language you are planning to translate into. This ensures that the necessary configuration can be prepared by the maintainers.
 
 ## Step 2: Files to Localize
 
@@ -27,12 +27,16 @@ After localizing the files, submit your work via a pull request. Ensure that you
 
 If you do not respond to future requests for updates or corrections, your localization might be removed or handled using AI-generated translations. This is necessary to ensure that users have accurate and up-to-date translations, rather than seeing placeholder text.
 
-By following these instructions, you can contribute effectively to the ShelfPlayer project and help make it accessible to a wider audience. If you have any questions during the process, feel free to reach out through the repository's communication channels.
+By following these instructions, you can contribute effectively to the ShelfPlayer project and help make it accessible to a wider audience. If you have any questions during the process, feel free to reach out through the repository’s communication channels.
+
+## TestFlight Invitation
+
+If you are interested in testing the translations within the app before they go live, please E-Mail git@rfk.io with your iTunes E-Mail address to receive a TestFlight invitation.
 
 ## Additional Information
 
 - **Required Tools:** Xcode
 - **Project Requirements:** No need to run or build the project to translate.
-- **Support:** Reach out via the repository's issue tracker for any questions or support.
+- **Support:** Reach out via the repository’s issue tracker for any questions or support.
 
 Thank you for your contribution!
