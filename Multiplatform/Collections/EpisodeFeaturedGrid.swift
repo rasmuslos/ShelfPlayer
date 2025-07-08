@@ -15,7 +15,7 @@ struct EpisodeFeaturedGrid: View {
     
     @State private var width: CGFloat? = nil
     
-    private let gap: CGFloat = 8
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -47,13 +47,13 @@ struct EpisodeFeaturedGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: true) {
-                HStack(spacing: 8) {
+                HStack(spacing: gap) {
                     ForEach(episodes) {
                         EpisodeGridItem(episode: $0, gap: gap, size: size)
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.horizontal, 20)
+                .padding(.horizontal, padding)
             }
             .scrollTargetBehavior(.viewAligned)
             .scrollClipDisabled()

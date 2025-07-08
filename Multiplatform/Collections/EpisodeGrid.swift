@@ -16,7 +16,7 @@ struct EpisodeGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 8
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -45,12 +45,12 @@ struct EpisodeGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: .init(repeating: GridItem(.flexible(), spacing: 8), count: amountVisible), spacing: 8) {
+                LazyHGrid(rows: .init(repeating: GridItem(.flexible(), spacing: gap), count: amountVisible), spacing: gap) {
                     EpisodeList(episodes: episodes, context: .grid, selected: .constant(nil))
                         .frame(width: size)
                 }
                 .scrollTargetLayout()
-                .padding(.horizontal, 20)
+                .padding(.horizontal, padding)
             }
             .scrollTargetBehavior(.viewAligned)
             .scrollClipDisabled()

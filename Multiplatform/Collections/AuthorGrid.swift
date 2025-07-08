@@ -15,7 +15,7 @@ struct PersonGrid: View {
     
     @State private var width: CGFloat = .zero
     
-    private let gap: CGFloat = 8
+    private let gap: CGFloat = 12
     private let padding: CGFloat = 20
     
     private var size: CGFloat {
@@ -41,7 +41,7 @@ struct PersonGrid: View {
             .frame(height: 0)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 8) {
+                LazyHStack(spacing: gap) {
                     ForEach(people) { person in
                         NavigationLink(destination: PersonView(person)) {
                             VStack(spacing: 0) {
@@ -62,7 +62,7 @@ struct PersonGrid: View {
                     }
                 }
                 .scrollTargetLayout()
-                .padding(.horizontal, 20)
+                .padding(.horizontal, padding)
             }
             .scrollTargetBehavior(.viewAligned)
             .scrollClipDisabled()
