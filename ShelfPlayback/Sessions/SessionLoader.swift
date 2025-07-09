@@ -27,8 +27,6 @@ public final class SessionLoader {
         self.filter = filter
         self.callback = callback
         
-        beginLoading()
-        
         RFNotification[.synchronizedPlaybackSessions].subscribe { [weak self] in
             self?.refresh()
         }

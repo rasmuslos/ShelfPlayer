@@ -24,6 +24,8 @@ public final class ListenedTodayTracker {
             self.updateCachedTimeSpendListening()
         }
         
+        todaySessionLoader.refresh()
+        
         RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
             self?.updateCachedTimeSpendListening()
         }

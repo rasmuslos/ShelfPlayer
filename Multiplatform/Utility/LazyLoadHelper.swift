@@ -143,6 +143,21 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 return
             }
             
+            let shouldContinue = await MainActor.run {
+                if working && !bypassWorking {
+                    return false
+                }
+                
+                working = true
+                failed = false
+                
+                return !finished
+            }
+            
+            guard shouldContinue else {
+                return
+            }
+            
             guard let library = await library else {
                 #if DEBUG
                 if await self.items.isEmpty {
@@ -164,21 +179,6 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 }
                 #endif
                 
-                return
-            }
-            
-            let shouldContinue = await MainActor.run {
-                if working {
-                    return bypassWorking && !finished
-                }
-                
-                working = true
-                failed = false
-                
-                return !finished
-            }
-            
-            guard shouldContinue else {
                 return
             }
             
