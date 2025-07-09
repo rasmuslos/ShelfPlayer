@@ -173,7 +173,6 @@ extension PodcastViewModel {
                 do {
                     try await next(bulkSelected)
                 } catch {
-                    print(error)
                     await MainActor.run {
                         notifyError.toggle()
                     }
