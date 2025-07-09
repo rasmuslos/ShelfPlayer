@@ -114,6 +114,9 @@ struct Timeline: View {
         .onReceive(RFNotification[.playbackItemChanged].publisher()) { _ in
             sessionLoader.refresh()
         }
+        .onAppear {
+            sessionLoader.refresh()
+        }
     }
 }
 

@@ -8,17 +8,22 @@
 import Foundation
 import OSLog
 
-
 public actor ResolveCache: Sendable {
     private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ResolveCache")
+    
+    private var resolvingItemIDs = [(ItemIdentifier.PrimaryID, ItemIdentifier.GroupingID?, ItemIdentifier.ConnectionID)]()
     
     private var cache = [ItemIdentifier: Item]()
     private var episodeCache = [ItemIdentifier: [Episode]]()
     
     func resolve(_ itemID: ItemIdentifier) async throws -> (Item, [Episode]) {
+        try await waitForResolvingItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
+        
         if let cached = cache[itemID] {
             return (cached, episodeCache[itemID] ?? [])
         }
+        
+        beginResolvingItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
         
         let item: Item
         let episodes: [Episode]
@@ -79,11 +84,13 @@ public actor ResolveCache: Sendable {
                 }
             }
         } catch {
+            resolvedItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
             throw ResolveError.notFound
         }
         
         cache[item.id] = item
-        
+        resolvedItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
+
         for episode in episodes {
             cache[episode.id] = episode
         }
@@ -91,12 +98,56 @@ public actor ResolveCache: Sendable {
         return (item, episodes)
     }
     public func resolve(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws -> PlayableItem {
+        try await waitForResolvingItem(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+        
         if let cached = cache.first(where: { $0.key.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }), let item = cached.value as? PlayableItem {
             return item
         }
         
-        if let groupingID {
-            let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: groupingID)
+        beginResolvingItem(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+        
+        do {
+            if let groupingID {
+                let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: groupingID)
+                
+                cache[podcast.id] = podcast
+                episodeCache[podcast.id] = episodes
+                
+                for episode in episodes {
+                    cache[episode.id] = episode
+                }
+                
+                guard let episode = episodes.first(where: { $0.id.primaryID == primaryID }) else {
+                    throw ResolveError.notFound
+                }
+                
+                resolvedItem(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+                
+                return episode
+            } else {
+                let audiobook = try await ABSClient[connectionID].audiobook(primaryID: primaryID)
+                
+                cache[audiobook.id] = audiobook
+                resolvedItem(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+                
+                return audiobook
+            }
+        } catch {
+            resolvedItem(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+          throw error
+        }
+    }
+    public func resolve(primaryID: ItemIdentifier.PrimaryID, connectionID: ItemIdentifier.ConnectionID) async throws -> Podcast {
+        try await waitForResolvingItem(primaryID: primaryID, groupingID: nil, connectionID: connectionID)
+        
+        if let cached = cache.first(where: { $0.key.isEqual(primaryID: primaryID, groupingID: nil, connectionID: connectionID) }), let podcast = cached.value as? Podcast {
+            return podcast
+        }
+        
+        beginResolvingItem(primaryID: primaryID, groupingID: nil, connectionID: connectionID)
+        
+        do {
+            let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: primaryID)
             
             cache[podcast.id] = podcast
             episodeCache[podcast.id] = episodes
@@ -105,33 +156,13 @@ public actor ResolveCache: Sendable {
                 cache[episode.id] = episode
             }
             
-            guard let episode = episodes.first(where: { $0.id.primaryID == primaryID }) else {
-                throw ResolveError.notFound
-            }
+            resolvedItem(primaryID: primaryID, groupingID: nil, connectionID: connectionID)
             
-            return episode
-        } else {
-            let audiobook = try await ABSClient[connectionID].audiobook(primaryID: primaryID)
-            
-            cache[audiobook.id] = audiobook
-            return audiobook
-        }
-    }
-    public func resolve(primaryID: ItemIdentifier.PrimaryID, connectionID: ItemIdentifier.ConnectionID) async throws -> Podcast {
-        if let cached = cache.first(where: { $0.key.isEqual(primaryID: primaryID, groupingID: nil, connectionID: connectionID) }), let podcast = cached.value as? Podcast {
             return podcast
+        } catch {
+            resolvedItem(primaryID: primaryID, groupingID: nil, connectionID: connectionID)
+            throw error
         }
-        
-        let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: primaryID)
-        
-        cache[podcast.id] = podcast
-        episodeCache[podcast.id] = episodes
-        
-        for episode in episodes {
-            cache[episode.id] = episode
-        }
-        
-        return podcast
     }
     
     public func invalidate() {
@@ -144,4 +175,18 @@ public actor ResolveCache: Sendable {
     }
     
     public nonisolated static let shared = ResolveCache()
+}
+
+private extension ResolveCache {
+    func waitForResolvingItem(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws {
+        while resolvingItemIDs.contains(where: {  $0.0 == primaryID && $0.1 == groupingID && $0.2 == connectionID }) || resolvingItemIDs.contains(where: {$0.0 == groupingID && $0.2 == connectionID }) {
+            try await  Task.sleep(for: .seconds(0.4))
+        }
+    }
+    func beginResolvingItem(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) {
+        resolvingItemIDs.append((primaryID, groupingID, connectionID))
+    }
+    func resolvedItem(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) {
+        resolvingItemIDs.removeAll(where: {  $0.0 == primaryID && $0.1 == groupingID && $0.2 == connectionID })
+    }
 }
