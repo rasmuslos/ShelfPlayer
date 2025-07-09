@@ -44,8 +44,15 @@ struct ItemStatusModifier: ViewModifier {
         }
     }
     
+    private var label: String {
+        guard let item else {
+            return String(localized: "loading")
+        }
+        
+        return "\(item.id.type.label): \(item.name)"
+    }
     private var value: String {
-        if let series = item as? Series {
+        if let series = item as? Series, series.audiobooks.count > 0 {
             return String(localized: "item.count.audiobooks \(series.audiobooks.count)")
         } else if let person = item as? Person {
             return String(localized: "item.count.audiobooks \(person.bookCount)")
@@ -83,7 +90,7 @@ struct ItemStatusModifier: ViewModifier {
                     $0
                 }
             }
-            .accessibilityLabel(item?.name ?? String(localized: "loading"))
+            .accessibilityLabel(label)
             .accessibilityValue(value)
             .accessibilityIdentifier(itemID.description)
             .modify {
