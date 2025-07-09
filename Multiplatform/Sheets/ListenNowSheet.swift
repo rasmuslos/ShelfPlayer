@@ -44,16 +44,18 @@ struct ListenNowSheet: View {
                         EmptyCollectionView.Inner()
                     }
                 } else {
-                    ForEach(listenNowItems) { item in
-                        Button {
-                            satellite.start(item.id)
-                            satellite.dismissSheet()
-                        } label: {
-                            ItemCompactRow(item: item)
+                    Section("panel.listenNow") {
+                        ForEach(listenNowItems) { item in
+                            Button {
+                                satellite.start(item.id)
+                                satellite.dismissSheet()
+                            } label: {
+                                ItemCompactRow(item: item)
+                            }
+                            .buttonStyle(.plain)
+                            .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
+                            .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
                         }
-                        .buttonStyle(.plain)
-                        .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
-                        .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
                     }
                 }
                 
