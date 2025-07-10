@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct DebugPreferences: View {
     @Default(.spotlightIndexCompletionDate) private var spotlightIndexCompletionDate
+    @Default(.lastConvenienceDownloadRun) private var lastConvenienceDownloadRun
     
     @State private var downloadRunsInExtendedBackgroundTask: Bool? = nil
     
@@ -45,9 +46,13 @@ struct DebugPreferences: View {
             
             Section {
                 if let spotlightIndexCompletionDate {
-                    Text("preferences.spotlightIndex \(spotlightIndexCompletionDate.formatted(.relative(presentation: .named))) \(downloadRunsInExtendedBackgroundTask == nil ? "?" : downloadRunsInExtendedBackgroundTask == true ? "E" : "R")")
+                    Text("preferences.spotlightIndex \(spotlightIndexCompletionDate.formatted(.relative(presentation: .named)))")
                 } else {
                     Text("preferences.spotlightIndex.pending")
+                }
+                
+                if let lastConvenienceDownloadRun {
+                    Text("preferences.lastConvenienceDownload \(lastConvenienceDownloadRun.formatted(.relative(presentation: .named))) \(downloadRunsInExtendedBackgroundTask == nil ? "?" : downloadRunsInExtendedBackgroundTask == true ? "E" : "R")")
                 }
                 
                 Text("preferences.version \(ShelfPlayerKit.clientVersion) \(ShelfPlayerKit.clientBuild) \(ShelfPlayerKit.enableCentralized ? "C" : "L")")
@@ -125,12 +130,12 @@ private struct FlushButtons: View {
     nonisolated func load() {
         Task {
             let (cacheSize, downloadsSize) = (
-                (ImagePipeline.shared.configuration.dataCache as? DataCache)?.totalAllocatedSize,
+                await ImageLoader.shared.currentDiskUsage,
                 try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize()
             )
             
             await MainActor.withAnimation {
-                if let cacheSize, cacheSize > 0 {
+                if cacheSize > 0 {
                     cacheDirectorySize = cacheSize
                 } else {
                     cacheDirectorySize = nil

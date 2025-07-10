@@ -70,7 +70,7 @@ extension SchemaV2 {
         enum FileType: Codable {
             case audio(offset: TimeInterval, duration: TimeInterval, ino: String, fileExtension: String)
             case pdf(name: String, ino: String)
-            case image(size: ItemIdentifier.CoverSize)
+            case image(size: ImageSize)
         }
     }
 }

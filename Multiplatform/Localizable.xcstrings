@@ -3874,6 +3874,16 @@
         }
       }
     },
+    "preferences.lastConvenienceDownload %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "preferences.lastConvenienceDownload %1$@ %2$@"
+          }
+        }
+      }
+    },
     "preferences.playbackRate" : {
       "localizations" : {
         "de" : {
@@ -4050,7 +4060,11 @@
         }
       }
     },
+    "preferences.spotlightIndex %@" : {
+
+    },
     "preferences.spotlightIndex %@ %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

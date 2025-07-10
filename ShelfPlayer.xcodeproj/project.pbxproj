@@ -63,8 +63,6 @@
 		3A6EECF92DEC6DAE0000CAF2 /* RFKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EECF82DEC6DAE0000CAF2 /* RFKit */; };
 		3A6EECFB2DEC6DB20000CAF2 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EECFA2DEC6DB20000CAF2 /* Defaults */; };
 		3A6EECFD2DEC6DB20000CAF2 /* DefaultsMacros in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EECFC2DEC6DB20000CAF2 /* DefaultsMacros */; };
-		3A6EED012DEC6DB80000CAF2 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EED002DEC6DB80000CAF2 /* NukeUI */; };
-		3A6EED032DEC6DBF0000CAF2 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EED022DEC6DBF0000CAF2 /* Nuke */; };
 		3A71290E2D32C17B00B70D7F /* NavigationStackWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A71290D2D32C17300B70D7F /* NavigationStackWrapper.swift */; };
 		3A743CFA2D70CC8D0007C6B3 /* PlaybackRateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
@@ -501,11 +499,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3A6EED012DEC6DB80000CAF2 /* NukeUI in Frameworks */,
 				3A6EECFD2DEC6DB20000CAF2 /* DefaultsMacros in Frameworks */,
 				3A6EECFB2DEC6DB20000CAF2 /* Defaults in Frameworks */,
 				3A6EECF92DEC6DAE0000CAF2 /* RFKit in Frameworks */,
-				3A6EED032DEC6DBF0000CAF2 /* Nuke in Frameworks */,
 				3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1051,8 +1047,6 @@
 				3A6EECF82DEC6DAE0000CAF2 /* RFKit */,
 				3A6EECFA2DEC6DB20000CAF2 /* Defaults */,
 				3A6EECFC2DEC6DB20000CAF2 /* DefaultsMacros */,
-				3A6EED002DEC6DB80000CAF2 /* NukeUI */,
-				3A6EED022DEC6DBF0000CAF2 /* Nuke */,
 				3AC9A8D62DEC713A004BC123 /* SwiftSoup */,
 			);
 			productName = ShelfPlayerKit;
@@ -1125,7 +1119,6 @@
 			packageReferences = (
 				3AB266072DEC617400F69B03 /* XCRemoteSwiftPackageReference "RFKit" */,
 				3AB2660A2DEC619800F69B03 /* XCRemoteSwiftPackageReference "Defaults" */,
-				3A6EEB862DEC6B7E0000CAF2 /* XCRemoteSwiftPackageReference "nuke" */,
 				3AC9A8D52DEC713A004BC123 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 			);
 			productRefGroup = 3A0AE6972AB623F400ACCD68;
@@ -1935,14 +1928,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3A6EEB862DEC6B7E0000CAF2 /* XCRemoteSwiftPackageReference "nuke" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kean/nuke";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.8.0;
-			};
-		};
 		3AB266072DEC617400F69B03 /* XCRemoteSwiftPackageReference "RFKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://git.sr.ht/~rasmuslos/RFKit";
@@ -1984,16 +1969,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3AB2660A2DEC619800F69B03 /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = DefaultsMacros;
-		};
-		3A6EED002DEC6DB80000CAF2 /* NukeUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3A6EEB862DEC6B7E0000CAF2 /* XCRemoteSwiftPackageReference "nuke" */;
-			productName = NukeUI;
-		};
-		3A6EED022DEC6DBF0000CAF2 /* Nuke */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3A6EEB862DEC6B7E0000CAF2 /* XCRemoteSwiftPackageReference "nuke" */;
-			productName = Nuke;
 		};
 		3AC9A8D62DEC713A004BC123 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;

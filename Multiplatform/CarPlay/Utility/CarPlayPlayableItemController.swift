@@ -111,7 +111,7 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         }
         
         Task {
-            let cover = await item.id.platformCover(size: .regular)
+            let cover = await item.id.platformImage(size: .regular)
             
             await MainActor.run {
                 row.setImage(cover)

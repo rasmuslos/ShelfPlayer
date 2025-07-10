@@ -102,7 +102,7 @@ private extension CarPlayListenNowController {
         let images = await withTaskGroup {
             for podcast in podcasts {
                 $0.addTask {
-                    (podcast.id, await podcast.id.platformCover(size: .small))
+                    (podcast.id, await podcast.id.platformImage(size: .small))
                 }
             }
             
