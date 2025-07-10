@@ -17,6 +17,7 @@ struct AudiobookLibraryPanel: View {
     
     @FocusState private var focused: Bool
     
+    @State private var id = UUID()
     @State private var viewModel = LibraryViewModel()
     
     private var libraryRowCount: CGFloat {
@@ -59,6 +60,7 @@ struct AudiobookLibraryPanel: View {
                 viewModel.lazyLoader.performLoadIfRequired($0)
             }
         }
+        .id(id)
     }
     @ViewBuilder
     private var gridPresentation: some View {
@@ -68,6 +70,7 @@ struct AudiobookLibraryPanel: View {
             AudiobookVGrid(sections: viewModel.lazyLoader.items) {
                 viewModel.lazyLoader.performLoadIfRequired($0)
             }
+            .id(id)
             .padding(.horizontal, 20)
         }
     }
