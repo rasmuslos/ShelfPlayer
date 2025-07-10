@@ -38,7 +38,7 @@ class CarPlayPodcastController {
     
     private nonisolated func loadImage() {
         Task {
-            let image = await podcast.id.platformCover(size: .regular)
+            let image = await podcast.id.platformImage(size: .regular)
             
             await MainActor.run {
                 self.image = image

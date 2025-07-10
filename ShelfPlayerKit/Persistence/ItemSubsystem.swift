@@ -44,7 +44,20 @@ public extension PersistenceManager.ItemSubsystem {
             return Color(red: components[0], green: components[1], blue: components[2])
         }
         
-        guard let image = await itemID.platformCover(size: .small), let extracted = try? await RFKVisuals.extractDominantColors(5, image: image) else {
+        let size: ImageSize
+        
+        switch itemID.type {
+            case .audiobook:
+                size = .regular
+            case .podcast:
+                size = .large
+            case .episode:
+                size = .tiny
+            default:
+                size = .tiny
+        }
+        
+        guard let image = await ImageLoader.shared.platformImage(for: .init(itemID: itemID, size: size)), let extracted = try? await RFKVisuals.extractDominantColors(5, image: image) else {
             return nil
         }
         

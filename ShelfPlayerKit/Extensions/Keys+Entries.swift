@@ -116,6 +116,8 @@ public extension Defaults.Keys {
     
     static let openPlaybackSessions = Key<[OpenPlaybackSessionPayload]>("openPlaybackSessions", default: [])
     static let spotlightIndexCompletionDate = Key<Date?>("spotlightIndexCompletionDate", default: nil)
+    
+    static let lastConvenienceDownloadRun = Key<Date?>("lastConvenienceDownloadRun", default: nil)
 }
 
 public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
