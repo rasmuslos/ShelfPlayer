@@ -102,9 +102,9 @@ struct StatusOverlay: View {
 
 struct ItemProgressIndicatorImage: View {
     let itemID: ItemIdentifier
-    let size: ItemIdentifier.CoverSize
+    let size: ImageSize
     
-    var aspectRatio = RequestImage.AspectRatioPolicy.square
+    var aspectRatio = ItemImage.AspectRatioPolicy.square
     
     var body: some View {
         ItemImage(itemID: itemID, size: size, aspectRatio: aspectRatio)

@@ -117,7 +117,7 @@ private extension NowPlayingWidgetManager {
                 return
             }
             
-            guard let image = await item.id.platformCover(size: .large) else {
+            guard let image = await item.id.platformImage(size: .large) else {
                 await abortImageLoad()
                 return
             }

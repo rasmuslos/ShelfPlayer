@@ -1,5 +1,5 @@
 {
-  "originHash" : "ae101dc03d58fafe23e312ee23fe35996565ed8c362d364f451eb7f1c82729f6",
+  "originHash" : "d0116bfabcaa2e3883905e08477abf9a07058aae517163d24beb5c5c05111f47",
   "pins" : [
     {
       "identity" : "defaults",
@@ -8,15 +8,6 @@
       "state" : {
         "revision" : "00c82eff4550c87cf9c547d7e5493a6a97837061",
         "version" : "9.0.3"
-      }
-    },
-    {
-      "identity" : "nuke",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kean/nuke",
-      "state" : {
-        "revision" : "0ead44350d2737db384908569c012fe67c421e4d",
-        "version" : "12.8.0"
       }
     },
     {
@@ -42,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup",
       "state" : {
-        "revision" : "aa85ee96017a730031bafe411cde24a08a17a9c9",
-        "version" : "2.8.8"
+        "revision" : "a856c2c280612ea57717993c1a4335a881e6f53d",
+        "version" : "2.9.2"
       }
     }
   ],

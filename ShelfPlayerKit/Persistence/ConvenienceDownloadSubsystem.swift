@@ -130,6 +130,8 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
         
         guard !pendingConfigurationIDs.isEmpty else {
             logger.info("Finished running convenience download task.")
+            Defaults[.lastConvenienceDownloadRun] = .now
+            
             return
         }
         

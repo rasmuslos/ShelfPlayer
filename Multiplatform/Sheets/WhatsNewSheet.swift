@@ -116,6 +116,9 @@ struct WhatsNewSheet: View {
                 try? FileManager.default.removeItem(at: documentsURL.appending(path: path))
             }
             
+            let nukeImageCache = URL.libraryDirectory.appending(path: "Caches").appending(path: "com.github.kean.Nuke.DataCache")
+            try? FileManager.default.removeItem(at: nukeImageCache)
+            
             await MainActor.run {
                 isLoading = false
             }

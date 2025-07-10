@@ -19,8 +19,6 @@ struct ShelfPlayer {
     // MARK: Hooks
     
     static func launchHook() {
-        ImagePipeline.shared = ImagePipeline(configuration: .withDataCache)
-        
         do {
             try Tips.configure()
         } catch {
@@ -132,13 +130,7 @@ struct ShelfPlayer {
     static func refreshItem(itemID: ItemIdentifier) async throws {
         await invalidateShortTermCache()
         
-        for size in ItemIdentifier.CoverSize.allCases {
-            guard let request = await itemID.coverRequest(size: size) else {
-                continue
-            }
-            
-            ImagePipeline.shared.cache.removeCachedImage(for: request)
-        }
+        await ImageLoader.shared.purge(itemID: itemID)
         
         await RFNotification[.reloadImages].send(payload: itemID)
         await RFNotification[.downloadStatusChanged].send(payload: nil)
@@ -147,7 +139,7 @@ struct ShelfPlayer {
     }
     
     static func invalidateCache() async throws {
-        ImagePipeline.shared.cache.removeAll()
+        await ImageLoader.shared.purge()
         await RFNotification[.reloadImages].send(payload: nil)
         
         try await PersistenceManager.shared.invalidateCache()

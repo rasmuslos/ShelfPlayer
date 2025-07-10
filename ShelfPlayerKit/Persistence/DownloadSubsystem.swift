@@ -360,7 +360,7 @@ private extension PersistenceManager.DownloadSubsystem {
                 
                 try await removeAssets(assets)
                 
-                for coverSize in ItemIdentifier.CoverSize.allCases {
+                for coverSize in ImageSize.allCases {
                     try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: podcastID, size: coverSize), nil)
                 }
             } catch {
@@ -443,7 +443,7 @@ public extension PersistenceManager.DownloadSubsystem {
         (try? assets(for: itemID).filter { $0.isDownloaded }.reduce(0) { $0 + $1.progressWeight }) ?? 0
     }
     
-    func cover(for itemID: ItemIdentifier, size: ItemIdentifier.CoverSize) async -> URL? {
+    func cover(for itemID: ItemIdentifier, size: ImageSize) async -> URL? {
         if let cached = await PersistenceManager.shared.keyValue[.coverURLCache(itemID: itemID, size: size)] {
             if FileManager.default.fileExists(atPath: cached.path()) {
                 return cached
@@ -591,7 +591,7 @@ public extension PersistenceManager.DownloadSubsystem {
                                     totalEpisodeCount: podcastItem.episodeCount,
                                     episodes: [])
                     
-                    let podcastAssets = ItemIdentifier.CoverSize.allCases.map { PersistedAsset(itemID: podcastItem.id, fileType: .image(size: $0), progressWeight: 0) }
+                    let podcastAssets = ImageSize.allCases.map { PersistedAsset(itemID: podcastItem.id, fileType: .image(size: $0), progressWeight: 0) }
                     
                     for asset in podcastAssets {
                         modelContext.insert(asset)
@@ -606,11 +606,11 @@ public extension PersistenceManager.DownloadSubsystem {
             
             var assets = [PersistedAsset]()
             
-            let individualCoverWeight = 0.1 * (1 / Double(ItemIdentifier.CoverSize.allCases.count))
+            let individualCoverWeight = 0.1 * (1 / Double(ImageSize.allCases.count))
             let individualPDFWeight = 0.1 * (1 / Double(supplementaryPDFs.count))
             let individualAudioTrackWeight = 0.8 * (1 / Double(audioTracks.count))
             
-            assets += ItemIdentifier.CoverSize.allCases.map { .init(itemID: itemID, fileType: .image(size: $0), progressWeight: individualCoverWeight) }
+            assets += ImageSize.allCases.map { .init(itemID: itemID, fileType: .image(size: $0), progressWeight: individualCoverWeight) }
             assets += supplementaryPDFs.map { .init(itemID: itemID, fileType: .pdf(name: $0.fileName, ino: $0.ino), progressWeight: individualPDFWeight) }
             assets += audioTracks.map { .init(itemID: itemID, fileType: .audio(offset: $0.offset, duration: $0.duration, ino: $0.ino, fileExtension: $0.fileExtension), progressWeight: individualAudioTrackWeight) }
             
@@ -717,7 +717,7 @@ public extension PersistenceManager.DownloadSubsystem {
             try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
             try await PersistenceManager.shared.keyValue.remove(cluster: "assetFailedAttempts_\(itemID.description)")
             
-            for coverSize in ItemIdentifier.CoverSize.allCases {
+            for coverSize in ImageSize.allCases {
                 try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
             }
             
@@ -899,7 +899,7 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "downloadStatus_\(itemID)", cluster: "downloadStatusCache", isCachePurgeable: true)
     }
     
-    static func coverURLCache(itemID: ItemIdentifier, size: ItemIdentifier.CoverSize) -> Key<URL> {
+    static func coverURLCache(itemID: ItemIdentifier, size: ImageSize) -> Key<URL> {
         Key(identifier: "coverURL_\(itemID)_\(size)", cluster: "coverURLCache", isCachePurgeable: true)
     }
 }
