@@ -3876,10 +3876,16 @@
     },
     "preferences.lastConvenienceDownload %@ %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatischer Download: %1$@ (%2$@)"
+          }
+        },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "preferences.lastConvenienceDownload %1$@ %2$@"
+            "state" : "translated",
+            "value" : "Automatic download: %1$@ (%2$@)"
           }
         }
       }
@@ -4061,21 +4067,17 @@
       }
     },
     "preferences.spotlightIndex %@" : {
-
-    },
-    "preferences.spotlightIndex %@ %@" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight-Index %1$@ (%2$@)"
+            "value" : "Spotlight-Index: $1%@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight index: %1$@  (%2$@)"
+            "value" : "Spotlight index: %1$@"
           }
         }
       }
