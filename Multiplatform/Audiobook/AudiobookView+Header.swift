@@ -41,10 +41,10 @@ private struct Title: View {
             Text(viewModel.audiobook.authors, format: .list(type: .and, width: .short))
                 .font(largeFont ? .title2 : .subheadline)
                 .lineLimit(1)
-                .overlay(alignment: .trailingLastTextBaseline) {
+                .overlay(alignment: .trailing) {
                     Label(ItemIdentifier.ItemType.author.viewLabel, systemImage: "chevron.right.circle")
                         .labelStyle(.iconOnly)
-                        .imageScale(.small)
+                        .font(.caption2)
                         .offset(x: 17)
                 }
         }

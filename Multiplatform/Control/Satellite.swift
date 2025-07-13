@@ -596,6 +596,8 @@ extension Satellite {
                 logger.error("Failed to donate SetSleepTimerIntent: \(error)")
             }
             
+            await resolveRemainingSleepTime()
+            
             await endWorking(on: currentItemID, successfully: true)
         }
     }
@@ -998,9 +1000,7 @@ private extension Satellite {
             self?.currentTime = currentTimes.0 ?? 0
             self?.currentChapterTime = currentTimes.1 ?? self?.currentTime ?? 0
             
-            if let sleepTimer = self?.sleepTimer, case .interval(let date, _) = sleepTimer {
-                self?.remainingSleepTime = Date.now.distance(to: date)
-            }
+            self?.resolveRemainingSleepTime()
         }.store(in: &stash)
         
         RFNotification[.chapterChanged].subscribe { [weak self] chapter in
@@ -1103,13 +1103,14 @@ private extension Satellite {
         
         resolveUpNextOrigin()
         resolvePlayingItem()
+        resolveRemainingSleepTime()
         
         if let nowPlayingItemID {
             loadBookmarks(itemID: nowPlayingItemID)
         }
     }
     
-    private nonisolated func resolveUpNextOrigin() {
+    nonisolated func resolveUpNextOrigin() {
         Task {
             let upNextStrategy = await upNextStrategy
             let origin: Item?
@@ -1126,6 +1127,11 @@ private extension Satellite {
             await MainActor.withAnimation {
                 self.upNextOrigin = origin
             }
+        }
+    }
+    func resolveRemainingSleepTime() {
+        if let sleepTimer = sleepTimer, case .interval(let date, _) = sleepTimer {
+            remainingSleepTime = Date.now.distance(to: date)
         }
     }
 }

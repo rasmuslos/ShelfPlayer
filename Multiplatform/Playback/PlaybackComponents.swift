@@ -342,7 +342,7 @@ struct PlaybackRateButton: View {
         }
         .hoverEffect(.highlight)
         .padding(-12)
-        .accessibilityLabel("playback.sleepTimer")
+        .accessibilityLabel("preferences.playbackRate")
         .accessibilityValue(Text(satellite.playbackRate.formatted(.percent.notation(.compactName))))
     }
 }
@@ -489,7 +489,7 @@ struct PlaybackAirPlayButton: View {
         } label: {
             Label("airPlay", systemImage: satellite.route?.icon ?? "airplay.audio")
                 .padding(12)
-                .symbolRenderingMode(.palette)
+                .symbolRenderingMode(.multicolor)
                 .foregroundStyle(satellite.route?.isHighlighted == true ? Color.accentColor : Color.primary)
                 .contentTransition(.symbolEffect(.replace))
                 .contentShape(.rect(cornerRadius: 4))
@@ -786,5 +786,11 @@ private struct StopPlaybackButton: View {
 #Preview {
     PlaybackActions()
         .previewEnvironment()
+}
+
+#Preview {
+    Image(systemName: "hifispeaker.fill")
+        .symbolRenderingMode(.multicolor)
+        .foregroundStyle(Color.accentColor)
 }
 #endif
