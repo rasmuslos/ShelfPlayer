@@ -13,6 +13,7 @@ import ShelfPlayback
 struct PlayButton: View {
     @Environment(\.library) private var library
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.displayContext) private var displayContext
     @Environment(\.playButtonStyle) private var playButtonStyle
     
     @Environment(Satellite.self) private var satellite
@@ -150,7 +151,7 @@ struct PlayButton: View {
         } label: {
             playButtonStyle.makeLabel(configuration: .init(progress: progress, background: background, content: .init(content: labelContent)))
         } primaryAction: {
-            satellite.start(item.id)
+            satellite.start(item.id, origin: displayContext.origin ?? .unknown)
         }
         .disabled(isLoading)
         .foregroundColor((background.isLight ?? false) ? .black : .white)

@@ -564,4 +564,10 @@ extension LazyLoadHelper {
             try await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
+    
+    static func collections(_ type: ItemCollection.CollectionType) -> LazyLoadHelper<ItemCollection, Void?> {
+        .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: nil, ascending: true, loadMore: { page, _, _, _, _, library in
+            try await ABSClient[library.connectionID].collections(in: library.id, type: type, limit: PAGE_SIZE, page: page)
+        })
+    }
 }

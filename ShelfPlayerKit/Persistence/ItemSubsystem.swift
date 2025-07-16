@@ -165,10 +165,10 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         let isPurgeable: Bool
         
         switch itemID.type {
-        case .audiobook, .episode:
-            isPurgeable = true
-        case .author, .narrator, .series, .podcast:
-            isPurgeable = false
+            case .audiobook, .episode:
+                isPurgeable = true
+            case .author, .narrator, .series, .podcast, .collection, .playlist:
+                isPurgeable = false
         }
         
         return Key(identifier: "playbackRate-\(itemID)", cluster: "playbackRates", isCachePurgeable: isPurgeable)

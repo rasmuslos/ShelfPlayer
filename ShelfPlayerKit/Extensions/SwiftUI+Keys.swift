@@ -20,6 +20,7 @@ public extension EnvironmentValues {
 
 public enum DisplayContext {
     case unknown
-    case person(person: Person)
-    case series(series: Series)
+    case person(Person)
+    case series(Series)
+    case collection(ItemCollection)
 }

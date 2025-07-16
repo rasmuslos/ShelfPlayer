@@ -40,9 +40,9 @@ extension Episode {
         self.init(payload: item, connectionID: connectionID)
     }
     
-    convenience init(episode: EpisodePayload, fallbackIndex: Int, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init(episode: EpisodePayload, podcastName: String? = nil, libraryID: ItemIdentifier.LibraryID, fallbackIndex: Int, connectionID: ItemIdentifier.ConnectionID) {
         self.init(
-            id: .init(primaryID: episode.id!, groupingID: episode.libraryItemId, libraryID: episode.libraryId!, connectionID: connectionID, type: .episode),
+            id: .init(primaryID: episode.id!, groupingID: episode.libraryItemId, libraryID: libraryID, connectionID: connectionID, type: .episode),
             name: episode.title!,
             authors: episode.podcast?.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: episode.description,
@@ -50,7 +50,7 @@ extension Episode {
             released: episode.publishedAt == nil ? nil : String(episode.publishedAt!),
             size: episode.size ?? 0,
             duration: episode.audioFile?.duration ?? 0,
-            podcastName: episode.podcast!.metadata.title!,
+            podcastName: podcastName ?? episode.podcast!.metadata.title!,
             type: .parse(string: episode.episodeType),
             index: .init(season: episode.season, episode: String(episode.index ?? fallbackIndex)))
     }

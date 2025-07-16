@@ -13,6 +13,8 @@ public enum ResolvedUpNextStrategy: Sendable {
     case series(ItemIdentifier)
     case podcast(ItemIdentifier)
     
+    case collection(ItemIdentifier)
+    
     case none
     
     public static func nextGroupingItem(_ itemID: ItemIdentifier) async throws -> ItemIdentifier {
@@ -29,6 +31,12 @@ public enum ResolvedUpNextStrategy: Sendable {
                 }
                 
                 return episode.id
+            case .collection, .playlist:
+                guard let item = try await ResolvedUpNextStrategy.collection(itemID).resolve(cutoff: nil).first else {
+                    throw ResolverError.missing
+                }
+                
+                return item.id
             default:
                 throw IntentError.invalidItemType
         }

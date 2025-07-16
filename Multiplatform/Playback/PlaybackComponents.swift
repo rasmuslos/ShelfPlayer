@@ -305,6 +305,10 @@ struct PlaybackMenuActions: View {
                 ItemLoadLink(itemID: episode.podcastID)
             }
             
+            if let collection = satellite.upNextOrigin as? ItemCollection {
+                ItemLoadLink(itemID: collection.id, footer: collection.name)
+            }
+            
             Divider()
             
             ProgressButton(itemID: currentItem.id)

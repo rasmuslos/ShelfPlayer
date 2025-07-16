@@ -1120,6 +1120,8 @@ private extension Satellite {
                     origin = try? await itemID.resolved
                 case .podcast(let itemID):
                     origin = try? await itemID.resolved
+                case .collection(let itemID):
+                    origin = try? await itemID.resolved
                 default:
                     origin = nil
             }
