@@ -296,7 +296,7 @@ extension Satellite {
                     break
                     
                 case .resumePlayback(let itemID):
-                    start(itemID)
+                    try await AudioPlayer.shared.queue(([itemID] + Defaults[.playbackResumeQueue]).map { AudioPlayerItem(itemID: $0, origin: .unknown, startWithoutListeningSession: isOffline) })
                     
                 case .playbackStartWhileDownloading(let itemID):
                     do {
