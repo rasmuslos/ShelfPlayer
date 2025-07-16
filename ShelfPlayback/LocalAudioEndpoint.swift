@@ -24,7 +24,11 @@ final class LocalAudioEndpoint: AudioEndpoint {
     
     private(set) var currentItem: AudioPlayerItem
     
-    private(set) var queue: [AudioPlayerItem]
+    private(set) var queue: [AudioPlayerItem] {
+        didSet {
+            Defaults[.playbackResumeQueue] = queue.map(\.itemID)
+        }
+    }
     private(set) var upNextQueue: [AudioPlayerItem] {
         didSet {
             if upNextQueue.isEmpty {
