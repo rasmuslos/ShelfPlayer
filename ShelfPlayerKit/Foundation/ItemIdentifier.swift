@@ -82,6 +82,9 @@ public final class ItemIdentifier: NSObject {
     public var isPlayable: Bool {
         type == .audiobook || type == .episode
     }
+    public var isCollection: Bool {
+        type == .collection || type == .playlist
+    }
     
     public override var description: String {
         get {
@@ -170,8 +173,12 @@ public extension ItemIdentifier {
         case author = "author"
         case narrator = "narrator"
         case series = "series"
+        
         case podcast = "podcast"
         case episode = "episode"
+        
+        case collection = "collection"
+        case playlist = "playlist"
         
         public init?(_ description: String) {
             self.init(rawValue: description)

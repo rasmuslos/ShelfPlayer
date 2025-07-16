@@ -91,7 +91,7 @@ private struct Row: View {
         NavigationLink(destination: AudiobookView(audiobook)) {
             HStack(spacing: 0) {
                 Button {
-                    satellite.start(audiobook.id)
+                    satellite.start(audiobook.id, origin: displayContext.origin)
                 } label: {
                     ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                         .frame(width: 100)

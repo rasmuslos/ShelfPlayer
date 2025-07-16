@@ -23,6 +23,10 @@ public extension ItemIdentifier.ItemType {
                 String(localized: "item.podcast")
             case .episode:
                 String(localized: "item.episode")
+            case .collection:
+                String(localized: "item.collection")
+            case .playlist:
+                String(localized: "item.playlist")
         }
     }
     var icon: String {
@@ -39,6 +43,10 @@ public extension ItemIdentifier.ItemType {
                 "square.stack"
             case .episode:
                 "play.square"
+            case .collection:
+                "list.triangle"
+            case .playlist:
+                "list.bullet"
         }
     }
 }

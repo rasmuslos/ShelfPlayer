@@ -25,6 +25,8 @@ public struct AudioPlayerItem: Sendable {
         case series(ItemIdentifier)
         case podcast(ItemIdentifier)
         
+        case collection(ItemIdentifier)
+        
         case upNextQueue
         case carPlay
         

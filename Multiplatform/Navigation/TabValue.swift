@@ -11,15 +11,20 @@ import ShelfPlayback
 
 enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     case audiobookHome(Library)
+    
     case audiobookSeries(Library)
     case audiobookAuthors(Library)
     case audiobookNarrators(Library)
     case audiobookBookmarks(Library)
+    case audiobookCollections(Library)
+    
     case audiobookLibrary(Library)
     
     case podcastHome(Library)
     case podcastLatest(Library)
     case podcastLibrary(Library)
+    
+    case playlists(Library)
     
     var id: Self {
         self
@@ -37,6 +42,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 library
             case .audiobookBookmarks(let library):
                 library
+            case .audiobookCollections(let library):
+                library
             case .audiobookLibrary(let library):
                 library
             case .podcastHome(let library):
@@ -44,6 +51,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             case .podcastLatest(let library):
                 library
             case .podcastLibrary(let library):
+                library
+            case .playlists(let library):
                 library
         }
     }
@@ -60,6 +69,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 "panel.narrators"
             case .audiobookBookmarks:
                 "panel.bookmarks"
+            case .audiobookCollections:
+                "panel.collections"
             case .audiobookLibrary:
                 "panel.library"
                 
@@ -69,6 +80,9 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 "panel.latest"
             case .podcastLibrary:
                 "panel.library"
+                
+            case .playlists:
+                "panel.playlists"
         }
     }
     
@@ -77,11 +91,13 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             case .audiobookHome:
                 "house.fill"
             case .audiobookSeries:
-                "rectangle.grid.2x2.fill"
+                ItemIdentifier.ItemType.series.icon
             case .audiobookAuthors:
-                "person.2.fill"
+                ItemIdentifier.ItemType.author.icon
             case .audiobookNarrators:
-                "microphone.fill"
+                ItemIdentifier.ItemType.narrator.icon
+            case .audiobookCollections:
+                ItemIdentifier.ItemType.collection.icon
             case .audiobookBookmarks:
                 "bookmark.fill"
             case .audiobookLibrary:
@@ -93,6 +109,9 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 "calendar.badge.clock"
             case .podcastLibrary:
                 "square.split.2x2.fill"
+                
+            case .playlists:
+                ItemIdentifier.ItemType.playlist.icon
         }
     }
     
@@ -109,6 +128,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 AudiobookNarratorsPanel()
             case .audiobookBookmarks:
                 AudiobookBookmarksPanel()
+            case .audiobookCollections:
+                CollectionsPanel(type: .collection)
             case .podcastLibrary:
                 PodcastLibraryPanel()
                 
@@ -118,6 +139,9 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 PodcastLatestPanel()
             case .audiobookLibrary:
                 AudiobookLibraryPanel()
+                
+            case .playlists:
+                CollectionsPanel(type: .playlist)
         }
     }
 }
@@ -132,10 +156,12 @@ extension TabValue {
                     .audiobookAuthors(library),
                     .audiobookNarrators(library),
                     .audiobookBookmarks(library),
+                    .audiobookCollections(library),
+                    .playlists(library),
                     .audiobookLibrary(library),
                 ]
             case .podcasts:
-                [.podcastHome(library), .podcastLatest(library), .podcastLibrary(library)]
+                [.podcastHome(library), .podcastLatest(library), .playlists(library), .podcastLibrary(library)]
         }
     }
 }

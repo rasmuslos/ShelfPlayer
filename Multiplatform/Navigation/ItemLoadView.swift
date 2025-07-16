@@ -5,10 +5,13 @@
 //  Created by Rasmus Krämer on 23.01.25.
 //
 
+import OSLog
 import SwiftUI
 import ShelfPlayback
 
 struct ItemLoadView: View {
+    let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ItemLoadView")
+    
     @Environment(\.namespace) private var namespace
     
     let id: ItemIdentifier
@@ -37,6 +40,8 @@ struct ItemLoadView: View {
                     PodcastView(podcast, episodes: episodes, zoom: false)
                 } else if let episode = item as? Episode {
                     EpisodeView(episode, zoomID: nil)
+                } else if let collection = item as? ItemCollection {
+                    CollectionView(collection)
                 } else {
                     ErrorView()
                 }
@@ -85,6 +90,8 @@ struct ItemLoadView: View {
                     self.episodes = episodes
                 }
             } catch {
+                logger.info("Failed to load item \(id): \(error)")
+                
                 await MainActor.withAnimation {
                     failed = false
                 }

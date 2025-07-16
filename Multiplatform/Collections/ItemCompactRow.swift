@@ -43,6 +43,16 @@ struct ItemCompactRow: View {
     }
     
     private var subtitle: String {
+        if let series = item as? Series, series.audiobooks.count > 0 {
+            return String(localized: "item.count.audiobooks \(series.audiobooks.count)")
+        } else if let person = item as? Person {
+            return String(localized: "item.count.audiobooks \(person.bookCount)")
+        } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
+            return String(localized: "item.count.episodes.unplayed \(incompleteEpisodeCount)")
+        } else if let collection = item as? ItemCollection {
+            return String(localized: "item.count \(collection.items.count)")
+        }
+        
         guard itemID.isPlayable || itemID.type == .podcast, let item else {
             return itemID.type.label
         }
@@ -58,11 +68,32 @@ struct ItemCompactRow: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            if !context.isImageHidden {
-                ItemImage(itemID: itemID, size: .small)
-                    .frame(width: 44)
-                    .padding(.trailing, 8)
+            Group {
+                if !context.isImageHidden {
+                    if let collection = item as? ItemCollection, !collection.items.isEmpty {
+                        if collection.items.count < 4 {
+                            ItemImage(item: collection.items.first, size: .small, cornerRadius: context.imageCornerRadius)
+                        } else {
+                            VStack(spacing: 0) {
+                                HStack(spacing: 0) {
+                                    ItemImage(item: collection.items[0], size: .tiny, cornerRadius: 0)
+                                    ItemImage(item: collection.items[1], size: .tiny, cornerRadius: 0)
+                                }
+                                HStack(spacing: 0) {
+                                    ItemImage(item: collection.items[collection.items.count - 2], size: .tiny, cornerRadius: 0)
+                                    ItemImage(item: collection.items[collection.items.count - 1], size: .tiny, cornerRadius: 0)
+                                }
+                            }
+                            .clipShape(.rect(cornerRadius: context.imageCornerRadius))
+                            .universalContentShape(.rect(cornerRadius: context.imageCornerRadius))
+                        }
+                    } else {
+                        ItemImage(itemID: itemID, size: .small, cornerRadius: context.imageCornerRadius)
+                    }
+                }
             }
+            .frame(width: context.imageWidth)
+            .padding(.trailing, 8)
             
             if let item {
                 VStack(alignment: .leading, spacing: 2) {
@@ -118,16 +149,36 @@ struct ItemCompactRow: View {
     
     enum Context {
         case unknown
-        case bookmark
+        
         case offlineEpisode
+        
         case convenienceDownloadPreferences
+        
+        case author
+        case narrator
+        
+        case bookmark
+        case collectionLarge
         
         var isImageHidden: Bool {
             switch self {
-                case .offlineEpisode: true
+                case .offlineEpisode, .narrator: true
                 default: false
             }
         }
+        var imageWidth: CGFloat {
+            switch self {
+                case .collectionLarge: 68
+                default: 44
+            }
+        }
+        var imageCornerRadius: CGFloat {
+            switch self {
+                case .narrator, .author: .infinity
+                default: 8
+            }
+        }
+        
         var isTrailingContentHidden: Bool {
             switch self {
                 case .bookmark, .convenienceDownloadPreferences: true
