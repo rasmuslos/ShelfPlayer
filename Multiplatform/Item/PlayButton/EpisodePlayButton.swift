@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct EpisodePlayButton: View {
+    @Environment(\.displayContext) private var displayContext
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Satellite.self) private var satellite
     
@@ -119,7 +120,7 @@ struct EpisodePlayButton: View {
     
     var body: some View {
         Button {
-            satellite.start(episode.id)
+            satellite.start(episode.id, origin: displayContext.origin)
         } label: {
             text()
                 .opacity(highlighted ? 0 : 1)

@@ -1388,6 +1388,9 @@
         }
       }
     },
+    "item.collection" : {
+
+    },
     "item.count.episodes.unplayed %lld" : {
       "localizations" : {
         "de" : {
@@ -1459,6 +1462,9 @@
           }
         }
       }
+    },
+    "item.playlist" : {
+
     },
     "item.podcast" : {
       "localizations" : {

@@ -1,20 +1,24 @@
 //
-//  AuthorsView.swift
-//  iOS
+//  AudiobookNarratorsPanel 2.swift
+//  ShelfPlayer
 //
-//  Created by Rasmus Krämer on 07.01.24.
+//  Created by Rasmus Krämer on 13.07.25.
 //
 
 import SwiftUI
 import ShelfPlayback
 
-struct AudiobookAuthorsPanel: View {
+struct CollectionsPanel: View {
     @Environment(\.library) private var library
     
-    @Default(.authorsAscending) private var authorsAscending
-    @Default(.authorsSortOrder) private var authorsSortOrder
+    let type: ItemCollection.CollectionType
     
-    @State private var lazyLoader = LazyLoadHelper<Person, AuthorSortOrder>.authors
+    @State private var lazyLoader: LazyLoadHelper<ItemCollection, Void?>
+    
+    init(type: ItemCollection.CollectionType) {
+        self.type = type
+        _lazyLoader = .init(initialValue: .collections(type))
+    }
     
     var body: some View {
         Group {
@@ -33,8 +37,10 @@ struct AudiobookAuthorsPanel: View {
                 }
             } else {
                 List {
-                    PersonList(people: lazyLoader.items, showImage: true) {
-                        lazyLoader.performLoadIfRequired($0)
+                    ForEach(lazyLoader.items) { collection in
+                        NavigationLink(destination: CollectionView(collection)) {
+                            ItemCompactRow(item: collection, context: .collectionLarge)
+                        }
                     }
                 }
                 .listStyle(.plain)
@@ -43,22 +49,8 @@ struct AudiobookAuthorsPanel: View {
                 }
             }
         }
-        .navigationTitle("panel.authors")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu("item.options", systemImage: "arrow.up.arrow.down.circle") {
-                    ItemSortOrderPicker(sortOrder: $authorsSortOrder, ascending: $authorsAscending)
-                }
-                .menuActionDismissBehavior(.disabled)
-            }
-        }
+        .navigationTitle(type.label)
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onChange(of: authorsSortOrder) {
-            lazyLoader.sortOrder = authorsSortOrder
-        }
-        .onChange(of: authorsAscending) {
-            lazyLoader.ascending = authorsAscending
-        }
         .onAppear {
             lazyLoader.library = library
             lazyLoader.initialLoad()
@@ -66,10 +58,21 @@ struct AudiobookAuthorsPanel: View {
     }
 }
 
+extension ItemCollection.CollectionType {
+    var label: LocalizedStringKey {
+        switch self {
+            case .collection:
+                "panel.collections"
+            case .playlist:
+                "panel.playlists"
+        }
+    }
+}
+
 #Preview {
     #if DEBUG
     NavigationStack {
-        AudiobookAuthorsPanel()
+        CollectionsPanel(type: .collection)
             .previewEnvironment()
     }
     #endif

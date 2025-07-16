@@ -24,7 +24,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
         try await response(for: ClientRequest<EpisodesResponse>(path: "api/libraries/\(libraryID)/recent-episodes", method: .get, query: [
             URLQueryItem(name: "page", value: "0"),
             URLQueryItem(name: "limit", value: String(describing: limit)),
-        ])).episodes.enumerated().map { Episode(episode: $0.element, fallbackIndex: $0.offset, connectionID: connectionID) }
+        ])).episodes.enumerated().map { Episode(episode: $0.element, libraryID: libraryID, fallbackIndex: $0.offset, connectionID: connectionID) }
     }
 }
 

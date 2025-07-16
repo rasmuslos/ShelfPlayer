@@ -16,7 +16,7 @@ struct PlaybackQueue: View {
     @Default(.tintColor) private var tintColor
     
     @ViewBuilder
-    static func header(label: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, clear: @escaping () -> Void) -> some View {
+    static func header(label: LocalizedStringKey, subtitle: String? = nil, clear: @escaping () -> Void) -> some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading) {
                 Text(label)
@@ -38,21 +38,15 @@ struct PlaybackQueue: View {
         .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
     }
     
-    private var upNextQueueSubtitle: LocalizedStringKey? {
+    private var upNextQueueSubtitle: String? {
         switch satellite.upNextStrategy {
             case .listenNow:
-                "playback.nextUpQueue.listenNow"
-            case .podcast:
+                String(localized: "playback.nextUpQueue.listenNow")
+            case .podcast, .series, .collection:
                 if let upNextOrigin = satellite.upNextOrigin {
-                    "playback.nextUpQueue.podcast \(upNextOrigin.name)"
+                    "\(upNextOrigin.id.type.label): \(upNextOrigin.name)"
                 } else {
-                    "loading"
-                }
-            case .series:
-                if let upNextOrigin = satellite.upNextOrigin {
-                    "playback.nextUpQueue.series \(upNextOrigin.name)"
-                } else {
-                    "loading"
+                    String(localized: "loading")
                 }
             default:
                 nil
@@ -271,29 +265,43 @@ private struct QueueItemRow: View {
     }
     
     var body: some View {
-        HStack(spacing: 8) {
-            ItemImage(itemID: itemID, size: .small, cornerRadius: 8)
-                .frame(width: 48)
-            
-            if let item {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.name)
-                    Text(item.authors, format: .list(type: .and, width: .short))
-                        .foregroundStyle(.secondary)
-                }
-                .font(.subheadline)
-                .lineLimit(1)
+        Button {
+            if isUpNextQueue {
+                satellite.skip(upNextQueueIndex: queueIndex)
             } else {
-                ProgressView()
+                satellite.skip(queueIndex: queueIndex)
             }
-            
-            Spacer(minLength: 4)
-            
-            DownloadButton(itemID: itemID, progressVisibility: .row)
-                .labelStyle(.iconOnly)
+        } label: {
+            HStack(spacing: 8) {
+                ItemImage(itemID: itemID, size: .small, cornerRadius: 8)
+                    .frame(width: 48)
+                
+                if let item {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.name)
+                        Text(item.authors, format: .list(type: .and, width: .short))
+                            .foregroundStyle(.secondary)
+                    }
+                    .font(.subheadline)
+                    .lineLimit(1)
+                } else {
+                    ProgressView()
+                }
+                
+                Spacer(minLength: 4)
+                
+                Rectangle()
+                    .frame(width: 20, height: 20)
+                    .hidden()
+                    .overlay {
+                        DownloadButton(itemID: itemID, progressVisibility: .row)
+                            .labelStyle(.iconOnly)
+                            .buttonStyle(.plain)
+                    }
+            }
+            .contentShape(.rect)
         }
         .id(itemID)
-        .contentShape(.rect)
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             playButton
                 .tint(tintColor.color)

@@ -49,6 +49,9 @@
         }
       }
     },
+    "action.edit" : {
+
+    },
     "action.end" : {
       "localizations" : {
         "de" : {
@@ -841,6 +844,9 @@
         }
       }
     },
+    "error.unavailable.collection" : {
+
+    },
     "error.unavailable.episode" : {
       "localizations" : {
         "de" : {
@@ -884,6 +890,9 @@
           }
         }
       }
+    },
+    "error.unavailable.playlist" : {
+
     },
     "error.unavailable.podcast" : {
       "localizations" : {
@@ -1433,6 +1442,9 @@
         }
       }
     },
+    "item.count %lld" : {
+
+    },
     "item.count.audiobooks %lld" : {
       "localizations" : {
         "de" : {
@@ -1973,14 +1985,14 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Vorgeschlagene, nicht begonnene Objekte erscheinen in „Jetzt hören“."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suggested, not started, items will appear in \"Listen now“."
+            "value" : "Suggested, unfinished, items will appear in \"Listen now“."
           }
         }
       }
@@ -2778,6 +2790,9 @@
         }
       }
     },
+    "item.view.collection" : {
+
+    },
     "item.view.episode" : {
       "localizations" : {
         "de" : {
@@ -2809,6 +2824,9 @@
           }
         }
       }
+    },
+    "item.view.playlist" : {
+
     },
     "item.view.podcast" : {
       "localizations" : {
@@ -3010,6 +3028,9 @@
         }
       }
     },
+    "panel.collections" : {
+
+    },
     "panel.home" : {
       "localizations" : {
         "de" : {
@@ -3157,6 +3178,9 @@
           }
         }
       }
+    },
+    "panel.playlists" : {
+
     },
     "panel.search" : {
       "localizations" : {
@@ -3327,6 +3351,7 @@
       }
     },
     "playback.nextUpQueue.podcast %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3343,6 +3368,7 @@
       }
     },
     "playback.nextUpQueue.series %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

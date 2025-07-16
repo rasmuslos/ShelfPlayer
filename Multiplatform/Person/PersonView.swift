@@ -136,7 +136,7 @@ struct PersonView: View {
         Group {
             if !viewModel.audiobooksLoader.didLoad && viewModel.seriesLoader?.didLoad == false {
                 loadingPresentation
-            } else if viewModel.sections.isEmpty && viewModel.seriesLoader?.items.isEmpty == true {
+            } else if viewModel.sections.isEmpty && viewModel.seriesLoader?.items.isEmpty != false {
                 UnavailableWrapper {
                     VStack(spacing: 0) {
                         Header()
@@ -173,7 +173,7 @@ struct PersonView: View {
         .sensoryFeedback(.error, trigger: viewModel.seriesLoader?.notifyError)
         .sensoryFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)
         .environment(viewModel)
-        .environment(\.displayContext, .person(person: viewModel.person))
+        .environment(\.displayContext, .person(viewModel.person))
         .onAppear {
             viewModel.library = library
         }
