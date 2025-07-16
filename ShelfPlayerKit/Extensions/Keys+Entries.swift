@@ -106,6 +106,7 @@ public extension Defaults.Keys {
     // MARK: Playback
     
     static let playbackResumeInfo = Key<PlaybackResumeInfo?>("playbackResumeInfo", default: nil)
+    static let playbackResumeQueue = Key<[ItemIdentifier]>("playbackResumeQueue", default: [])
     
     // MARK: Widgets
     
