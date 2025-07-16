@@ -16,6 +16,12 @@
             "state" : "new",
             "value" : "ShelfPlayer"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
         }
       }
     },
@@ -32,6 +38,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "ShelfPlayer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "ShelfPlayer"
           }
         }
@@ -82,6 +94,12 @@
             "state" : "new",
             "value" : "Grant access to connect to a Audiobookshelf-Instance inside your local network."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillåt åtkomst för att ansluta till en Audiobookshelf på ditt lokala nätverk."
+          }
         }
       }
     },
@@ -128,6 +146,12 @@
             "state" : "translated",
             "value" : "Search"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök"
+          }
         }
       }
     },
@@ -143,6 +167,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search all libraries"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök alla bibliotek"
           }
         }
       }
@@ -165,6 +195,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Item"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objekt"
           }
         }
       }
