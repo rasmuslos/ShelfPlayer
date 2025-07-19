@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IntentPhrases</key>
+	<array>
+		<dict>
+			<key>IntentName</key>
+			<string>INPlayMediaIntent</string>
+			<key>IntentExamples</key>
+			<array>
+				<string>Відтворити аудіокнигу «1984» за допомогою ShelfPlayer</string>
+				<string>Відтворити епізод подкасту «Indusitral society and it&apos;s future» за допомогою ShelfPlayer</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
