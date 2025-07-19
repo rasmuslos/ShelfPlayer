@@ -465,6 +465,8 @@
 		3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		3AFEEA612CC14F530040336D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		902B9BAB2E2B979B00EADD0C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Intents.strings; sourceTree = "<group>"; };
+		902B9BAC2E2B979B00EADD0C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = uk; path = uk.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		FA6717792CEA272A0037CB85 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = sv; path = sv.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1131,6 +1133,7 @@
 				de,
 				"zh-Hans",
 				sv,
+				uk,
 			);
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
@@ -1486,6 +1489,7 @@
 				3A5A4DB32B5EFB1A00E72E8B /* de */,
 				3A00397E2BEF55E600849F70 /* zh-Hans */,
 				FA6717792CEA272A0037CB85 /* sv */,
+				902B9BAC2E2B979B00EADD0C /* uk */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
@@ -1498,6 +1502,7 @@
 				3AF7DD062DF0A0DC00F1EE88 /* en */,
 				3AF7DD082DF0A0DC00F1EE88 /* zh-Hans */,
 				3AF7DD0A2DF0A0DD00F1EE88 /* sv */,
+				902B9BAB2E2B979B00EADD0C /* uk */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
