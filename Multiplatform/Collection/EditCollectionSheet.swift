@@ -50,8 +50,6 @@ struct EditCollectionSheet: View {
                 }
             }
             .environment(\.editMode, .constant(.active))
-            .navigationTitle("collection.edit.headline")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("action.cancel") {
@@ -110,8 +108,17 @@ struct EditCollectionSheet: View {
                 }
             }
             
-            try? await ShelfPlayer.refreshItem(itemID: collection.id)
+            do {
+                try await ShelfPlayer.refreshItem(itemID: collection.id)
+            } catch {
+                await MainActor.run {
+                    notifyError.toggle()
+                }
+            }
+            
             await RFNotification[.collectionChanged].send(payload: collection.id)
+            
+            await PersistenceManager.shared.convenienceDownload.scheduleUpdate(itemID: collection.id)
             
             await MainActor.withAnimation {
                 isLoading = false
