@@ -254,5 +254,9 @@ public extension RFNotification.IsolatedNotification {
     
     static var timeSpendListeningChanged: IsolatedNotification<Int> { .init("io.rfk.shelfPlayerKit.timeSpendListeningChanged") }
     static var cachedTimeSpendListeningChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.cachedTimeSpendListeningChanged") }
+    
+    // MARK: Collections
+    
+    static var collectionChanged: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayerKit.collectionChanged") }
 }
 

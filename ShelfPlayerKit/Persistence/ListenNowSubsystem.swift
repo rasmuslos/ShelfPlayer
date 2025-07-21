@@ -20,6 +20,8 @@ extension PersistenceManager {
         
         private var isEmpty = false
         
+        private var lastUpdateStarted: Date?
+        
         init() {
             RFNotification[.progressEntityUpdated].subscribe { [weak self] _ in
                 Task {
@@ -48,6 +50,12 @@ extension PersistenceManager {
 
 extension PersistenceManager.ListenNowSubsystem {
     private func update() async {
+        if let lastUpdateStarted, lastUpdateStarted.distance(to: .now) < -7 {
+            
+        }
+        
+        lastUpdateStarted = .now
+        
         do {
             let items = try await listenNowItems()
             
