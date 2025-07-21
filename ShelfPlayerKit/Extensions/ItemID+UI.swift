@@ -8,25 +8,27 @@
 import Foundation
 import SwiftUI
 
+private let bundle = Bundle(for: ItemIdentifier.self)
+
 public extension ItemIdentifier.ItemType {
     var label: String {
         switch self {
             case .audiobook:
-                String(localized: "item.audiobook")
+                String(localized: "item.audiobook", bundle: bundle)
             case .author:
-                String(localized: "item.author")
+                String(localized: "item.author", bundle: bundle)
             case .narrator:
-                String(localized: "item.narrator")
+                String(localized: "item.narrator", bundle: bundle)
             case .series:
-                String(localized: "item.series")
+                String(localized: "item.series", bundle: bundle)
             case .podcast:
-                String(localized: "item.podcast")
+                String(localized: "item.podcast", bundle: bundle)
             case .episode:
-                String(localized: "item.episode")
+                String(localized: "item.episode", bundle: bundle)
             case .collection:
-                String(localized: "item.collection")
+                String(localized: "item.collection", bundle: bundle)
             case .playlist:
-                String(localized: "item.playlist")
+                String(localized: "item.playlist", bundle: bundle)
         }
     }
     var icon: String {

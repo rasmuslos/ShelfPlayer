@@ -44,11 +44,8 @@ extension SeriesView {
                         }
                     
                     Group {
-                        if let first = viewModel.lazyLoader.items.first {
-                            PlayButton(item: first)
-                        } else if viewModel.lazyLoader.working {
-                            PlayButton(item: Episode.placeholder)
-                                .disabled(true)
+                        if let highlighted = viewModel.highlighted {
+                            PlayButton(item: highlighted)
                         }
                     }
                     .padding(.horizontal, 20)

@@ -79,6 +79,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     var library: Library?
     
     private let loadMore: @Sendable (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)?
+    var didLoadMore: ((@Sendable (_ current: [T]) -> Void)?)
     
     @MainActor
     init(filterLocally: Bool, filter: ItemFilter, restrictToPersisted: Bool, sortOrder: O, ascending: Bool, loadMore: @Sendable @escaping (_ page: Int, _ filter: ItemFilter, _ sortOrder: O, _ ascending: Bool, _ groupAudiobooksInSeries: Bool, _ library: Library) async throws -> ([T], Int)?) {
@@ -107,6 +108,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         finished = false
         
         self.loadMore = loadMore
+        
+        didLoadMore = nil
         
         Task { [weak self] in
             for await _ in Defaults.updates([.groupAudiobooksInSeries, .showSingleEntryGroupedSeries], initial: false) {
@@ -467,6 +470,10 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     items += received
                     
                     logger.info("Now at \(self.loadedCount)/\(self.totalCount) items of type \(T.self, privacy: .public) (received \(receivedCount))")
+                }
+                
+                if let didLoadMore = await didLoadMore {
+                    await didLoadMore(items)
                 }
                 
                 // The filter has removed all new items so the method will not be called from the view

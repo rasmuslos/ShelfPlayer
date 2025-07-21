@@ -33,6 +33,9 @@
         }
       }
     },
+    "action.delete" : {
+
+    },
     "action.dismiss" : {
       "localizations" : {
         "de" : {
@@ -291,6 +294,9 @@
           }
         }
       }
+    },
+    "collection.edit.headline" : {
+
     },
     "connection.add" : {
       "localizations" : {
@@ -3346,40 +3352,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listen now"
-          }
-        }
-      }
-    },
-    "playback.nextUpQueue.podcast %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcast: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcast: %@"
-          }
-        }
-      }
-    },
-    "playback.nextUpQueue.series %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serie: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Series: %@"
           }
         }
       }

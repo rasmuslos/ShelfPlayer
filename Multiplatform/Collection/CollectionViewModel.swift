@@ -11,15 +11,39 @@ import ShelfPlayback
 
 @Observable @MainActor
 final class CollectionViewModel {
-    let collection: ItemCollection
+    private(set) var collection: ItemCollection
     
-    private(set) var notifyError: Bool
+    private(set) var highlighted: PlayableItem? = Episode.placeholder
+    private(set) var notifyError = false
     
     @MainActor
     init(collection: ItemCollection) {
         self.collection = collection
         
-        notifyError = false
+        updateHighlighted()
+        
+        RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, _ in
+            guard collection.items.contains(where: { $0.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }) else {
+                return
+            }
+            
+            self?.updateHighlighted()
+        }
+        RFNotification[.collectionChanged].subscribe { [weak self] collectionID in
+            guard let self, collection.id == collectionID else {
+                return
+            }
+            
+            Task.detached {
+                guard let collection = try? await collection.id.resolved as? ItemCollection else {
+                    return
+                }
+                
+                await MainActor.withAnimation {
+                    self.collection = collection
+                }
+            }
+        }
     }
 }
 
@@ -31,7 +55,44 @@ extension CollectionViewModel {
         collection.episodes
     }
     
-    var first: PlayableItem? {
-        audiobooks?.first?.audiobook ?? episodes?.first
+    nonisolated func refresh() {
+        Task {
+            try? await ShelfPlayer.refreshItem(itemID: collection.id)
+            updateHighlighted()
+        }
+    }
+}
+
+private extension CollectionViewModel {
+    nonisolated func updateHighlighted() {
+        Task {
+            if let audiobooks = await collection.audiobooks {
+                for audiobook in audiobooks {
+                    if await audiobook.isIncluded(in: .notFinished) {
+                        await MainActor.withAnimation {
+                            highlighted = audiobook
+                        }
+                        
+                        break
+                    }
+                }
+            } else if let episodes = await episodes {
+                for episode in episodes {
+                    if await episode.isIncluded(in: .notFinished) {
+                        await MainActor.withAnimation {
+                            highlighted = episode
+                        }
+                        
+                        break
+                    }
+                }
+            }
+            
+            if await highlighted == Episode.placeholder {
+                await MainActor.withAnimation {
+                    highlighted = nil
+                }
+            }
+        }
     }
 }

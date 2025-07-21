@@ -60,7 +60,11 @@ struct ItemCompactRow: View {
         let authors = item.authors.formatted(.list(type: .and, width: .short))
         
         if let episode = item as? Episode, episode.podcastName != authors {
-            return "\(episode.podcastName) • \(authors)"
+            if authors.isEmpty {
+                return episode.podcastName
+            } else {
+                return "\(episode.podcastName) • \(authors)"
+            }
         } else {
             return authors
         }
@@ -159,6 +163,7 @@ struct ItemCompactRow: View {
         
         case bookmark
         case collectionLarge
+        case collectionEdit
         
         var isImageHidden: Bool {
             switch self {
@@ -181,7 +186,7 @@ struct ItemCompactRow: View {
         
         var isTrailingContentHidden: Bool {
             switch self {
-                case .bookmark, .convenienceDownloadPreferences: true
+                case .bookmark, .convenienceDownloadPreferences, .collectionEdit: true
                 default: false
             }
         }

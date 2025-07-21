@@ -22,6 +22,8 @@ final class SeriesViewModel {
     @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
     var displayType: ItemDisplayType
     
+    private(set) var highlighted: PlayableItem? = Episode.placeholder
+    
     var library: Library! {
         didSet {
             lazyLoader.library = library
@@ -32,6 +34,17 @@ final class SeriesViewModel {
     init(series: Series) {
         self.series = series
         lazyLoader = .audiobooks(filtered: series.id, sortOrder: nil, ascending: nil)
+        lazyLoader.didLoadMore = { [weak self] audiobooks in
+            self?.updateHighlighted(provided: audiobooks)
+        }
+        
+        RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, _ in
+            guard self?.lazyLoader.items.contains(where: { $0.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }) == true else {
+                return
+            }
+            
+            self?.updateHighlighted()
+        }
     }
     
     var audiobookIDs: [ItemIdentifier] {
@@ -46,6 +59,34 @@ final class SeriesViewModel {
         Task {
             try? await ShelfPlayer.refreshItem(itemID: series.id)
             lazyLoader.refresh()
+            updateHighlighted()
+        }
+    }
+    
+    private nonisolated func updateHighlighted(provided audiobooks: [Audiobook]? = nil) {
+        Task {
+            var audiobooks: [Audiobook]! = audiobooks
+            
+            // stupid; ?? does not work
+            if audiobooks == nil {
+                audiobooks = await lazyLoader.items
+            }
+            
+            for audiobook in audiobooks {
+                if await audiobook.isIncluded(in: .notFinished) {
+                    await MainActor.withAnimation {
+                        highlighted = audiobook
+                    }
+
+                    break
+                }
+            }
+            
+            if await highlighted == Episode.placeholder {
+                await MainActor.withAnimation {
+                    highlighted = nil
+                }
+            }
         }
     }
 }
