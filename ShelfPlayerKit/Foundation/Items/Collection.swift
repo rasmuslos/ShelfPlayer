@@ -8,7 +8,7 @@
 import Foundation
 
 public final class ItemCollection: Item, @unchecked Sendable {
-    public var items: [Item]
+    public let items: [Item]
     
     public init(id: ItemIdentifier, name: String, description: String?, addedAt: Date, items: [Item]) {
         self.items = items

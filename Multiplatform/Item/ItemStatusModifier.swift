@@ -16,25 +16,29 @@ struct ItemStatusModifier: ViewModifier {
     var cornerRadius = 8
     var hoverEffect: HoverEffect?
     
+    var isInteractive: Bool
+    
     @State private var item: Item?
     
     @State private var progress: ProgressTracker?
     @State private var download: DownloadStatusTracker?
     
-    init(itemID: ItemIdentifier, cornerRadius: Int = 8, hoverEffect: HoverEffect? = .highlight) {
+    init(itemID: ItemIdentifier, cornerRadius: Int = 8, hoverEffect: HoverEffect? = .highlight, isInteractive: Bool = true) {
         self.itemID = itemID
         self.cornerRadius = cornerRadius
         self.hoverEffect = hoverEffect
+        self.isInteractive = isInteractive
         
         if itemID.isPlayable {
             _progress = .init(initialValue: .init(itemID: itemID))
             _download = .init(initialValue: .init(itemID: itemID))
         }
     }
-    init(item: Item, cornerRadius: Int = 8, hoverEffect: HoverEffect? = .highlight) {
+    init(item: Item, cornerRadius: Int = 8, hoverEffect: HoverEffect? = .highlight, isInteractive: Bool = true) {
         self.itemID = item.id
         self.cornerRadius = cornerRadius
         self.hoverEffect = hoverEffect
+        self.isInteractive = isInteractive
         
         _item = .init(initialValue: item)
         
@@ -94,20 +98,24 @@ struct ItemStatusModifier: ViewModifier {
             .accessibilityValue(value)
             .accessibilityIdentifier(itemID.description)
             .modify {
-                if itemID.isPlayable {
-                    $0
-                        .accessibilityAction(.magicTap) {
-                            satellite.start(itemID)
-                        }
-                        .accessibilityAddTraits([.isLink, .startsMediaSession])
+                if isInteractive {
+                    if itemID.isPlayable {
+                        $0
+                            .accessibilityAction(.magicTap) {
+                                satellite.start(itemID)
+                            }
+                            .accessibilityAddTraits([.isLink, .startsMediaSession])
+                    } else {
+                        $0
+                            .accessibilityAddTraits([.isLink])
+                    }
                 } else {
                     $0
-                        .accessibilityAddTraits([.isLink])
                 }
             }
             .accessibilityRemoveTraits(.isButton)
             .modify {
-                if let playableItem = item as? PlayableItem {
+                if isInteractive, let playableItem = item as? PlayableItem {
                     $0
                         .modifier(PlayableItemContextMenuModifier(item: playableItem, currentDownloadStatus: download?.status))
                 } else {
@@ -115,7 +123,7 @@ struct ItemStatusModifier: ViewModifier {
                 }
             }
             .modify {
-                if itemID.isPlayable {
+                if isInteractive, itemID.isPlayable {
                     $0
                         .modifier(PlayableItemSwipeActionsModifier(itemID: itemID, currentDownloadStatus: download?.status))
                 } else {

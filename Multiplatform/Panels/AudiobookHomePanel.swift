@@ -88,6 +88,10 @@ struct AudiobookHomePanel: View {
             ListenedTodayTracker.shared.refresh()
         }
         .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, entity) in
+            guard UIApplication.shared.applicationState == .active else {
+                return
+            }
+            
             guard relevantItemIDs.contains(where: {
                 $0.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
                 || (entity?.progress ?? 0) > 0
