@@ -176,6 +176,7 @@ struct PlayButton: View {
             .task {
                 loadColor()
             }
+            .id("playButton_\(item.id)")
     }
     
     public func playButtonSize(_ playButtonStyle: any PlayButtonStyle) -> some View {

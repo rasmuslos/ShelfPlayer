@@ -90,6 +90,7 @@ public final class PersistenceManager: Sendable {
     }
     
     public func refreshItem(itemID: ItemIdentifier) async throws {
+        await ResolveCache.shared.invalidate(itemID: itemID)
         try await keyValue.purgeCached(itemID: itemID)
     }
     public func invalidateCache() async throws {

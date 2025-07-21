@@ -58,6 +58,7 @@ struct CollectionView: View {
                 listPresentation
             }
         }
+        .id(viewModel.id)
         .navigationTitle(viewModel.collection.name)
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .toolbar {

@@ -51,6 +51,9 @@ struct CollectionsPanel: View {
         }
         .navigationTitle(type.label)
         .modifier(PlaybackSafeAreaPaddingModifier())
+        .onReceive(RFNotification[.collectionChanged].publisher()) { _ in
+            lazyLoader.refresh()
+        }
         .onAppear {
             lazyLoader.library = library
             lazyLoader.initialLoad()

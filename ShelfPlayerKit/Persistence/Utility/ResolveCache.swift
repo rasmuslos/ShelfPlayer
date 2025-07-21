@@ -174,6 +174,15 @@ public actor ResolveCache: Sendable {
         cache.removeAll()
         episodeCache.removeAll()
     }
+    public func invalidate(itemID: ItemIdentifier) {
+        cache[itemID] = nil
+        episodeCache[itemID] = nil
+        
+        if itemID.type == .episode {
+            let podcastID = ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID)
+            episodeCache[podcastID] = nil
+        }
+    }
     
     private enum ResolveError: Error {
         case notFound

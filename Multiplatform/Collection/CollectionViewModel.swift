@@ -10,7 +10,9 @@ import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
-final class CollectionViewModel {
+final class CollectionViewModel: Sendable {
+    private(set) var id = UUID()
+    
     private(set) var collection: ItemCollection
     
     private(set) var highlighted: PlayableItem? = Episode.placeholder
@@ -20,30 +22,8 @@ final class CollectionViewModel {
     init(collection: ItemCollection) {
         self.collection = collection
         
+        setupObservation()
         updateHighlighted()
-        
-        RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, _ in
-            guard collection.items.contains(where: { $0.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }) else {
-                return
-            }
-            
-            self?.updateHighlighted()
-        }
-        RFNotification[.collectionChanged].subscribe { [weak self] collectionID in
-            guard let self, collection.id == collectionID else {
-                return
-            }
-            
-            Task.detached {
-                guard let collection = try? await collection.id.resolved as? ItemCollection else {
-                    return
-                }
-                
-                await MainActor.withAnimation {
-                    self.collection = collection
-                }
-            }
-        }
     }
 }
 
@@ -92,6 +72,33 @@ private extension CollectionViewModel {
                 await MainActor.withAnimation {
                     highlighted = nil
                 }
+            }
+        }
+    }
+    func setupObservation() {
+        RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, _ in
+            guard self?.collection.items.contains(where: { $0.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }) == true else {
+                return
+            }
+            
+            self?.updateHighlighted()
+        }
+        RFNotification[.collectionChanged].subscribe { [weak self] collectionID in
+            guard self?.collection.id == collectionID else {
+                return
+            }
+            
+            Task.detached {
+                guard let collection = try? await self?.collection.id.resolved as? ItemCollection else {
+                    return
+                }
+                
+                await MainActor.withAnimation { [weak self] in
+                    self?.id = .init()
+                    self?.collection = collection
+                }
+                
+                self?.updateHighlighted()
             }
         }
     }
