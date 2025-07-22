@@ -125,10 +125,22 @@ struct PlayableItemContextMenuPreview: View {
                 Text(episode.name)
                     .font(.headline)
                 
-                Text(episode.podcastName)
-                    .lineLimit(1)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Group {
+                    let authors = item.authors.formatted(.list(type: .and, width: .short))
+                    
+                    if episode.podcastName != authors {
+                        if authors.isEmpty {
+                            Text(episode.podcastName)
+                        } else {
+                            Text(verbatim: "\(episode.podcastName) • \(authors)")
+                        }
+                    } else {
+                        Text(authors)
+                    }
+                }
+                .lineLimit(2)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
                 
                 if let descriptionText = episode.descriptionText {
                     Text(descriptionText)
