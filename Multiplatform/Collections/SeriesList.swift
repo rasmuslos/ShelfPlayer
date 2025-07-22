@@ -14,7 +14,7 @@ struct SeriesList: View {
     
     var body: some View {
         ForEach(series) { item in
-            NavigationLink(destination: SeriesView(item)) {
+            NavigationLink(value: NavigationDestination.item(item)) {
                 ListItem(series: item)
             }
             .buttonStyle(.plain)

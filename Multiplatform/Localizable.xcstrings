@@ -34,7 +34,20 @@
       }
     },
     "action.delete" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
     },
     "action.dismiss" : {
       "localizations" : {
@@ -53,7 +66,20 @@
       }
     },
     "action.edit" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        }
+      }
     },
     "action.end" : {
       "localizations" : {
@@ -848,7 +874,20 @@
       }
     },
     "error.unavailable.collection" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlung nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collection unavailable"
+          }
+        }
+      }
     },
     "error.unavailable.episode" : {
       "localizations" : {
@@ -895,7 +934,20 @@
       }
     },
     "error.unavailable.playlist" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist unavailable"
+          }
+        }
+      }
     },
     "error.unavailable.podcast" : {
       "localizations" : {
@@ -1173,6 +1225,22 @@
         }
       }
     },
+    "item.collection.createPlaylist" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create playlist"
+          }
+        }
+      }
+    },
     "item.configure" : {
       "localizations" : {
         "de" : {
@@ -1446,7 +1514,36 @@
       }
     },
     "item.count %lld" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld items"
+          }
+        }
+      }
+    },
+    "item.count.audiobook %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Hörbücher"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld audiobooks"
+          }
+        }
+      }
     },
     "item.count.audiobooks %lld" : {
       "localizations" : {
@@ -1988,8 +2085,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vorgeschlagene, nicht begonnene Objekte erscheinen in „Jetzt hören“."
+            "state" : "translated",
+            "value" : "Vorgeschlagene, nicht abgeschlossene Objekte erscheinen in „Jetzt hören“."
           }
         },
         "en" : {
@@ -2794,7 +2891,20 @@
       }
     },
     "item.view.collection" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Sammlung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View collection"
+          }
+        }
+      }
     },
     "item.view.episode" : {
       "localizations" : {
@@ -2829,7 +2939,20 @@
       }
     },
     "item.view.playlist" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Playlist"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View playlist"
+          }
+        }
+      }
     },
     "item.view.podcast" : {
       "localizations" : {
@@ -3032,7 +3155,20 @@
       }
     },
     "panel.collections" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collections"
+          }
+        }
+      }
     },
     "panel.home" : {
       "localizations" : {
@@ -3183,7 +3319,20 @@
       }
     },
     "panel.playlists" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlisten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlists"
+          }
+        }
+      }
     },
     "panel.search" : {
       "localizations" : {
@@ -4066,13 +4215,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight-Index: $1%@"
+            "value" : "Spotlight-Index: %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight index: %1$@"
+            "value" : "Spotlight index: %@"
           }
         }
       }

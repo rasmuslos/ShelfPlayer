@@ -23,20 +23,18 @@ struct AudiobookVGrid: View {
             ForEach(sections) { section in
                 VStack(spacing: 0) {
                     switch section {
-                    case .audiobook(let audiobook):
-                        NavigationLink {
-                            AudiobookView(audiobook)
-                        } label: {
-                            ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
-                        }
-                        .buttonStyle(.plain)
-                        .modifier(ItemStatusModifier(item: audiobook))
-                    case .series(let seriesID, _, let audiobookIDs):
-                        NavigationLink(destination: ItemLoadView(seriesID)) {
-                            SeriesGrid.SeriesGridItem(name: nil, audiobookIDs: audiobookIDs)
-                        }
-                        .buttonStyle(.plain)
-                        .modifier(ItemStatusModifier(itemID: seriesID))
+                        case .audiobook(let audiobook):
+                            NavigationLink(value: NavigationDestination.item(audiobook)) {
+                                ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
+                            }
+                            .buttonStyle(.plain)
+                            .modifier(ItemStatusModifier(item: audiobook))
+                        case .series(let seriesID, _, let audiobookIDs):
+                            NavigationLink(value: NavigationDestination.itemID(seriesID)) {
+                                SeriesGrid.SeriesGridItem(name: nil, audiobookIDs: audiobookIDs)
+                            }
+                            .buttonStyle(.plain)
+                            .modifier(ItemStatusModifier(itemID: seriesID))
                     }
                     
                     Spacer(minLength: 0)
@@ -91,7 +89,7 @@ struct AudiobookHGrid: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(alignment: .bottom, spacing: gap) {
                     ForEach(audiobooks) { audiobook in
-                        NavigationLink(destination: AudiobookView(audiobook)) {
+                        NavigationLink(value: NavigationDestination.item(audiobook)) {
                             ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                                 .frame(width: size)
                         }

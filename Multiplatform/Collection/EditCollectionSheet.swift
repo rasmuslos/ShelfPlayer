@@ -99,6 +99,12 @@ struct EditCollectionSheet: View {
             let items = await items
             
             do {
+                let missing = Set(collection.items).subtracting(Set(items))
+                
+                for item in missing {
+                    try await ABSClient[collection.id.connectionID].removeCollectionItem(collection.id, itemID: item.id)
+                }
+                
                 if collection.items != items {
                     try await ABSClient[collection.id.connectionID].updateCollection(collection.id, itemIDs: items.map(\.id))
                 }

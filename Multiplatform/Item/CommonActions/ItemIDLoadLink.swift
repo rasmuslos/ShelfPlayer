@@ -33,7 +33,7 @@ struct ItemIDLoadLink: View {
             }
             #endif
         } else {
-            NavigationLink(destination: ItemIDLoadView(name: name, type: type)) {
+            NavigationLink(value: NavigationDestination.itemName(name, type)) {
                 labelContent
             }
             .disabled(satellite.isOffline)

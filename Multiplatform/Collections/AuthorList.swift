@@ -15,7 +15,7 @@ struct PersonList: View {
     
     var body: some View {
         ForEach(people) { person in
-            NavigationLink(destination: PersonView(person)) {
+            NavigationLink(value: NavigationDestination.item(person)) {
                 ItemCompactRow(item: person, context: showImage ? .author : .narrator)
             }
             .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))

@@ -50,7 +50,11 @@ struct ItemCompactRow: View {
         } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
             return String(localized: "item.count.episodes.unplayed \(incompleteEpisodeCount)")
         } else if let collection = item as? ItemCollection {
-            return String(localized: "item.count \(collection.items.count)")
+            if collection.id.type == .collection {
+                return String(localized: "item.count.audiobook \(collection.items.count)")
+            } else {
+                return String(localized: "item.count \(collection.items.count)")
+            }
         }
         
         guard itemID.isPlayable || itemID.type == .podcast, let item else {

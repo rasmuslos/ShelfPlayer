@@ -91,7 +91,7 @@ private struct PodcastGridItem: View {
     }
     
     var body: some View {
-        NavigationLink(destination: ItemLoadView(podcast.id, zoom: true)) {
+        NavigationLink(value: NavigationDestination.item(podcast, .init())) {
             VStack(alignment: .leading, spacing: 4) {
                 ItemImage(item: podcast, size: .small)
                 

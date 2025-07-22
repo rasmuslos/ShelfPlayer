@@ -22,7 +22,7 @@ struct SeriesGrid: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400), spacing: 12)], spacing: 12) {
             ForEach(series) { item in
-                NavigationLink(destination: SeriesView(item)) {
+                NavigationLink(value: NavigationDestination.item(item)) {
                     SeriesGridItem(series: item, showName: showName)
                         .padding(8)
                         .universalContentShape(.rect(cornerRadius: 8))

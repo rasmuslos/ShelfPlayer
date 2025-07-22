@@ -68,6 +68,7 @@
 		3A6EECFB2DEC6DB20000CAF2 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EECFA2DEC6DB20000CAF2 /* Defaults */; };
 		3A6EECFD2DEC6DB20000CAF2 /* DefaultsMacros in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EECFC2DEC6DB20000CAF2 /* DefaultsMacros */; };
 		3A71290E2D32C17B00B70D7F /* NavigationStackWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A71290D2D32C17300B70D7F /* NavigationStackWrapper.swift */; };
+		3A72644E2E2F5C8E00F3BCE1 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72644D2E2F5C8B00F3BCE1 /* ItemView.swift */; };
 		3A743CFA2D70CC8D0007C6B3 /* PlaybackRateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
 		3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B7032ACDF76E00F22C7F /* AudiobookView+Toolbar.swift */; };
@@ -344,6 +345,7 @@
 		3A6DC0852DE4981700FB7D21 /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
 		3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A71290D2D32C17300B70D7F /* NavigationStackWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStackWrapper.swift; sourceTree = "<group>"; };
+		3A72644D2E2F5C8B00F3BCE1 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRateEditor.swift; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B7032ACDF76E00F22C7F /* AudiobookView+Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Toolbar.swift"; sourceTree = "<group>"; };
@@ -898,6 +900,7 @@
 			children = (
 				3AB4D6682CA19DE600876C8E /* TabValue.swift */,
 				3A27F0F02CA15E08005DE87D /* TabRouter.swift */,
+				3A72644D2E2F5C8B00F3BCE1 /* ItemView.swift */,
 				3A9BF3372D42597800573161 /* ItemLoadView.swift */,
 				3AB695352ACF3BAF00823049 /* ItemIDLoadView.swift */,
 				3A71290D2D32C17300B70D7F /* NavigationStackWrapper.swift */,
@@ -1433,6 +1436,7 @@
 				3A45C8BA2DCE3050004B48A1 /* GroupingConfigurationSheet.swift in Sources */,
 				3ABD77C22AD1459100636513 /* SeriesView+Header.swift in Sources */,
 				3A828E062D27459A00267961 /* ConnectionManageView.swift in Sources */,
+				3A72644E2E2F5C8E00F3BCE1 /* ItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

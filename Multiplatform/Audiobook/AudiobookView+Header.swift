@@ -80,7 +80,7 @@ private struct Title: View {
                     .menuStyle(.button)
                     .buttonStyle(.plain)
                 } else if let authorName = viewModel.audiobook.authors.first {
-                    NavigationLink(destination: ItemIDLoadView(name: authorName, type: .author)) {
+                    NavigationLink(value: NavigationDestination.itemName(authorName, .author)) {
                         authorLabel
                     }
                     .buttonStyle(.plain)
@@ -112,7 +112,7 @@ private struct Title: View {
                         .menuStyle(.button)
                         .buttonStyle(.plain)
                     } else if let first = viewModel.audiobook.narrators.first {
-                        NavigationLink(destination: ItemIDLoadView(name: first, type: .narrator)) {
+                        NavigationLink(value: NavigationDestination.itemName(first, .narrator)) {
                             narratorLabel
                         }
                         .buttonStyle(.plain)
@@ -144,14 +144,14 @@ private struct SeriesName: View {
         if !viewModel.audiobook.series.isEmpty, let seriesName = viewModel.audiobook.seriesName {
             Group {
                 if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
-                    NavigationLink(destination: ItemIDLoadView(name: series.name, type: .series)) {
+                    NavigationLink(value: NavigationDestination.itemName(series.name, .series)) {
                         seriesNameComponent(series.formattedName)
                     }
                     .buttonStyle(.plain)
                 } else {
                     Menu {
                         ForEach(viewModel.audiobook.series, id: \.name) { series in
-                            NavigationLink(destination: ItemIDLoadView(name: series.name, type: .series)) {
+                            NavigationLink(value: NavigationDestination.itemName(series.name, .series)) {
                                 seriesNameComponent(series.name)
                             }
                         }
