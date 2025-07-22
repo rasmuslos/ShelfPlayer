@@ -39,6 +39,7 @@ struct PlayableItemContextMenuInner: View {
         Divider()
         
         DownloadButton(itemID: item.id, initialStatus: currentDownloadStatus)
+        ItemCollectionMembershipEditButton(itemID: item.id)
         
         Divider()
         
@@ -62,10 +63,6 @@ struct PlayableItemContextMenuInner: View {
             ItemLoadLink(itemID: episode.id)
             ItemLoadLink(itemID: episode.podcastID)
         }
-        
-        Divider()
-        
-        ItemCollectionMembershipEditButton(itemID: item.id)
         
         Divider()
         

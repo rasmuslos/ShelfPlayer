@@ -41,6 +41,9 @@ struct CollectionsPanel: View {
                         NavigationLink(value: NavigationDestination.item(collection)) {
                             ItemCompactRow(item: collection, context: .collectionLarge)
                         }
+                        .onAppear {
+                            lazyLoader.performLoadIfRequired(collection)
+                        }
                     }
                 }
                 .listStyle(.plain)

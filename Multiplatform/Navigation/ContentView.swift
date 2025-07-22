@@ -18,6 +18,7 @@ struct ContentView: View {
     @Namespace private var namespace
     
     @Default(.tintColor) private var tintColor
+    @Default(.colorScheme) private var colorScheme
     
     @State private var satellite = Satellite.shared
     @State private var playbackViewModel = PlaybackViewModel()
@@ -90,6 +91,14 @@ struct ContentView: View {
             } else {
                 $0
                     .tint(tintColor.color)
+            }
+        }
+        .modify {
+            if colorScheme != .system {
+                $0
+                    .preferredColorScheme(colorScheme == .light ? .light : .dark)
+            } else {
+                $0
             }
         }
         .sensoryFeedback(.error, trigger: satellite.notifyError)

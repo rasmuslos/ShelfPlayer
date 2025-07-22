@@ -29,6 +29,25 @@ struct EpisodeView: View {
                 .padding(.vertical, 12)
                 .padding(.horizontal, 20)
             
+            if !viewModel.episode.authors.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 12) {
+                        ForEach(viewModel.episode.authors, id: \.hashValue) { author in
+                            HStack(spacing: 2) {
+                                Image(systemName: "person.fill")
+                                    .imageScale(.small)
+                                
+                                Text(author)
+                            }
+                            .font(.caption)
+                            .padding(4)
+                            .background(.gray.opacity(0.2), in: .rect(cornerRadius: 8))
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                }
+            }
+            
             DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
                 Timeline(sessionLoader: viewModel.sessionLoader, item: viewModel.episode)
                     .padding(.top, 8)

@@ -17,5 +17,6 @@ struct ItemCollectionMembershipEditButton: View {
         Button("item.collection.editMembership.open", systemImage: ItemIdentifier.ItemType.playlist.icon) {
             satellite.present(.editCollectionMembership(itemID))
         }
+        .disabled(satellite.isOffline)
     }
 }

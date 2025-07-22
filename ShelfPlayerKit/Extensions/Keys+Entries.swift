@@ -72,6 +72,7 @@ public extension Defaults.Keys {
     static let extendSleepTimerByPreviousSetting = Key("extendSleepTimerByPreviousSetting", default: true)
     
     static let tintColor = Key("tintColor", default: TintColor.shelfPlayer, suite: .shared)
+    static let colorScheme = Key("colorScheme", default: ConfiguredColorScheme.system, suite: .shared)
     
     static let enableConvenienceDownloads = Key("enableConvenienceDownloads", default: true)
     static let enableListenNowDownloads = Key("enableListenNowDownloads", default: false)
@@ -130,7 +131,6 @@ public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
         self.started = started
     }
 }
-
 public struct ListenedTodayPayload: Codable, Defaults.Serializable {
     public var total: Int
     public var updated: Date
@@ -139,6 +139,12 @@ public struct ListenedTodayPayload: Codable, Defaults.Serializable {
         self.total = total
         self.updated = updated
     }
+}
+
+public enum ConfiguredColorScheme: Int, Defaults.Serializable, CaseIterable, Hashable {
+    case system
+    case light
+    case dark
 }
 
 public struct PlaybackInfoPayload: Codable, Defaults.Serializable {

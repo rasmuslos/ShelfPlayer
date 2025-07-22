@@ -51,14 +51,11 @@ extension EpisodeView {
                             Divider()
                             
                             DownloadButton(itemID: viewModel.episode.id)
+                            ItemCollectionMembershipEditButton(itemID: viewModel.episode.id)
                             
                             Divider()
                             
                             ItemLoadLink(itemID: viewModel.episode.podcastID, footer: viewModel.episode.podcastName)
-                            
-                            Divider()
-                            
-                            ItemCollectionMembershipEditButton(itemID: viewModel.episode.id)
                             
                             Divider()
                             
