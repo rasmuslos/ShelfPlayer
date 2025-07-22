@@ -400,6 +400,8 @@
 		3AA164422D6DCF0000343214 /* PlaybackContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContentModifier.swift; sourceTree = "<group>"; };
 		3AA19BA12AD6C80000C468EA /* EpisodeList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeList.swift; sourceTree = "<group>"; };
 		3AA19BA52AD6E94B00C468EA /* PodcastGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastGrid.swift; sourceTree = "<group>"; };
+		3AA3F6352E30083700D6C1E8 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Intents.strings; sourceTree = "<group>"; };
+		3AA3F6362E30083700D6C1E8 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = uk; path = uk.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3AA444CE2BDFED25000C4C53 /* TintPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintPicker.swift; sourceTree = "<group>"; };
 		3AA9541A2AD290380031C20D /* PodcastList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastList.swift; sourceTree = "<group>"; };
 		3AA9541E2AD2925C0031C20D /* RowTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTitle.swift; sourceTree = "<group>"; };
@@ -1146,6 +1148,7 @@
 				de,
 				"zh-Hans",
 				sv,
+				uk,
 			);
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
@@ -1506,6 +1509,7 @@
 				3A5A4DB32B5EFB1A00E72E8B /* de */,
 				3A00397E2BEF55E600849F70 /* zh-Hans */,
 				FA6717792CEA272A0037CB85 /* sv */,
+				3AA3F6362E30083700D6C1E8 /* uk */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
@@ -1518,6 +1522,7 @@
 				3AF7DD062DF0A0DC00F1EE88 /* en */,
 				3AF7DD082DF0A0DC00F1EE88 /* zh-Hans */,
 				3AF7DD0A2DF0A0DD00F1EE88 /* sv */,
+				3AA3F6352E30083700D6C1E8 /* uk */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
