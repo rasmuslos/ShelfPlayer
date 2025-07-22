@@ -65,6 +65,10 @@ struct PlayableItemContextMenuInner: View {
         
         Divider()
         
+        ItemCollectionMembershipEditButton(itemID: item.id)
+        
+        Divider()
+        
         ProgressButton(itemID: item.id)
         ProgressResetButton(itemID: item.id)
     }

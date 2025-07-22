@@ -155,6 +155,7 @@ extension Satellite {
         case configureGrouping(ItemIdentifier)
         
         case editCollection(ItemCollection)
+        case editCollectionMembership(ItemIdentifier)
         
         case whatsNew
         
@@ -172,6 +173,8 @@ extension Satellite {
                     "configureGrouping-\(itemID)"
                 case .editCollection(let collection):
                     "editCollection-\(collection.id)"
+                case .editCollectionMembership(let itemID):
+                    "editCollectionMembership-\(itemID)"
                 case .whatsNew:
                     "whatsNew"
             }

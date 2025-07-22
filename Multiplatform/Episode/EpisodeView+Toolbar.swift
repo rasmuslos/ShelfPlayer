@@ -58,6 +58,10 @@ extension EpisodeView {
                             
                             Divider()
                             
+                            ItemCollectionMembershipEditButton(itemID: viewModel.episode.id)
+                            
+                            Divider()
+                            
                             ProgressButton(itemID: viewModel.episode.id)
                             ProgressResetButton(itemID: viewModel.episode.id)
                         } label: {

@@ -43,6 +43,8 @@ struct ContentView: View {
                 GroupingConfigurationSheet(itemID: itemID)
             case .editCollection(let collection):
                 EditCollectionSheet(collection: collection)
+            case .editCollectionMembership(let itemID):
+                CollectionMembershipEditorSheet(itemID: itemID)
             case .whatsNew:
                 WhatsNewSheet()
         }
