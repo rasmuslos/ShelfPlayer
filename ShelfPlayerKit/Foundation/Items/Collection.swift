@@ -36,7 +36,7 @@ public final class ItemCollection: Item, @unchecked Sendable {
         case collection
         case playlist
         
-        var itemType: ItemIdentifier.ItemType {
+        public var itemType: ItemIdentifier.ItemType {
             switch self {
                 case .collection:
                         .collection
