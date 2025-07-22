@@ -22,6 +22,12 @@
             "state" : "translated",
             "value" : "ShelfPlayer"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
         }
       }
     },
@@ -42,6 +48,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer"
@@ -69,6 +81,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2025 Расмус Крамер та співавтори ShelfPlayer"
           }
         },
         "zh-Hans" : {
@@ -100,6 +118,12 @@
             "state" : "translated",
             "value" : "Tillåt åtkomst för att ansluta till en Audiobookshelf på ditt lokala nätverk."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Надайте дозвіл на підключення до Audiobookshelf-Instance у вашій локальній мережі."
+          }
         }
       }
     },
@@ -123,6 +147,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spela objekt från ditt bibliotek med hjälp av Siri"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворюйте вміст своєї бібліотеки за допомогою Siri"
           }
         },
         "zh-Hans" : {
@@ -152,6 +182,12 @@
             "state" : "translated",
             "value" : "Sök"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пошук"
+          }
         }
       }
     },
@@ -173,6 +209,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sök alla bibliotek"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пошук у всіх бібліотеках"
           }
         }
       }
@@ -201,6 +243,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Objekt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Елемент"
           }
         }
       }
