@@ -100,10 +100,7 @@ struct EditCollectionSheet: View {
             
             do {
                 let missing = Set(collection.items).subtracting(Set(items))
-                
-                for item in missing {
-                    try await ABSClient[collection.id.connectionID].removeCollectionItem(collection.id, itemID: item.id)
-                }
+                try await ABSClient[collection.id.connectionID].bulkUpdateCollectionItems(collection.id, operation: .remove, itemIDs: missing.map(\.id))
                 
                 if collection.items != items {
                     try await ABSClient[collection.id.connectionID].updateCollection(collection.id, itemIDs: items.map(\.id))
@@ -123,7 +120,6 @@ struct EditCollectionSheet: View {
             }
             
             await RFNotification[.collectionChanged].send(payload: collection.id)
-            
             await PersistenceManager.shared.convenienceDownload.scheduleUpdate(itemID: collection.id)
             
             await MainActor.withAnimation {

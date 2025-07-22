@@ -104,6 +104,10 @@ extension AudiobookView {
                             
                             Divider()
                             
+                            ItemCollectionMembershipEditButton(itemID: viewModel.audiobook.id)
+                            
+                            Divider()
+                            
                             ProgressButton(itemID: viewModel.audiobook.id)
                             ProgressResetButton(itemID: viewModel.audiobook.id)
                         } label: {

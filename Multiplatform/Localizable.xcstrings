@@ -1225,6 +1225,9 @@
         }
       }
     },
+    "item.collection.create" : {
+
+    },
     "item.collection.createPlaylist" : {
       "localizations" : {
         "de" : {
@@ -1240,6 +1243,12 @@
           }
         }
       }
+    },
+    "item.collection.editMembership" : {
+
+    },
+    "item.collection.editMembership.open" : {
+
     },
     "item.configure" : {
       "localizations" : {
@@ -1664,6 +1673,12 @@
           }
         }
       }
+    },
+    "item.create.collection" : {
+
+    },
+    "item.create.playlist" : {
+
     },
     "item.description" : {
       "localizations" : {

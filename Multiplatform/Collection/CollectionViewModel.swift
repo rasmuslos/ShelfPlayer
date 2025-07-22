@@ -58,6 +58,8 @@ extension CollectionViewModel {
             do {
                 try await ABSClient[collection.id.connectionID].deleteCollection(collection.id)
                 
+                await PersistenceManager.shared.remove(itemID: collection.id)
+                
                 await RFNotification[.collectionChanged].send(payload: collection.id)
                 await RFNotification[.collectionDeleted].send(payload: collection.id)
             } catch {

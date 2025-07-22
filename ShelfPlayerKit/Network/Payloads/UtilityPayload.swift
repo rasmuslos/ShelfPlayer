@@ -104,13 +104,24 @@ struct NarratorsResponse: Codable {
     let narrators: [NarratorResponse]
 }
 
+struct CreateCollectionBooksPayload: Codable {
+    let name: String
+    let libraryId: String
+    let books: [String]?
+}
+struct CreateCollectionItemsPayload: Codable {
+    let name: String
+    let libraryId: String
+    let items: [CollectionItemPayload]?
+}
+
 struct UpdateCollectionBooksPayload: Codable {
     let books: [String]?
 }
 struct UpdateCollectionItemsPayload: Codable {
-    let items: [UpdateCollectionItemPayload]?
+    let items: [CollectionItemPayload]?
 }
-struct UpdateCollectionItemPayload: Codable {
+struct CollectionItemPayload: Codable {
     let libraryItemId: String
     let episodeId: String?
 }
