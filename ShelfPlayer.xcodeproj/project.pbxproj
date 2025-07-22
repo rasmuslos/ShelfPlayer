@@ -69,6 +69,8 @@
 		3A6EECFD2DEC6DB20000CAF2 /* DefaultsMacros in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6EECFC2DEC6DB20000CAF2 /* DefaultsMacros */; };
 		3A71290E2D32C17B00B70D7F /* NavigationStackWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A71290D2D32C17300B70D7F /* NavigationStackWrapper.swift */; };
 		3A72644E2E2F5C8E00F3BCE1 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72644D2E2F5C8B00F3BCE1 /* ItemView.swift */; };
+		3A7264502E2F76DF00F3BCE1 /* CollectionMembershipEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72644F2E2F76D200F3BCE1 /* CollectionMembershipEditorSheet.swift */; };
+		3A7264542E2F7AE900F3BCE1 /* ItemCollectionMembershipEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7264532E2F7AD800F3BCE1 /* ItemCollectionMembershipEditButton.swift */; };
 		3A743CFA2D70CC8D0007C6B3 /* PlaybackRateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
 		3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B7032ACDF76E00F22C7F /* AudiobookView+Toolbar.swift */; };
@@ -346,6 +348,8 @@
 		3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A71290D2D32C17300B70D7F /* NavigationStackWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStackWrapper.swift; sourceTree = "<group>"; };
 		3A72644D2E2F5C8B00F3BCE1 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
+		3A72644F2E2F76D200F3BCE1 /* CollectionMembershipEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionMembershipEditorSheet.swift; sourceTree = "<group>"; };
+		3A7264532E2F7AD800F3BCE1 /* ItemCollectionMembershipEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCollectionMembershipEditButton.swift; sourceTree = "<group>"; };
 		3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRateEditor.swift; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B7032ACDF76E00F22C7F /* AudiobookView+Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Toolbar.swift"; sourceTree = "<group>"; };
@@ -658,6 +662,7 @@
 		3A14C1482E2769DF00D7A2D7 /* Collection */ = {
 			isa = PBXGroup;
 			children = (
+				3A72644F2E2F76D200F3BCE1 /* CollectionMembershipEditorSheet.swift */,
 				3A14C1502E2E89BF00D7A2D7 /* EditCollectionSheet.swift */,
 				3A14C14B2E276AE700D7A2D7 /* CollectionViewModel.swift */,
 				3A14C1492E2769ED00D7A2D7 /* CollectionView.swift */,
@@ -856,6 +861,7 @@
 		3A9825DF2D4A2AC900A65826 /* CommonActions */ = {
 			isa = PBXGroup;
 			children = (
+				3A7264532E2F7AD800F3BCE1 /* ItemCollectionMembershipEditButton.swift */,
 				3A5891142CD3F1E9005C3289 /* ItemMenu.swift */,
 				3A9825E52D4A3C1900A65826 /* ItemLoadLink.swift */,
 				3A65DB002D771D3B00332BF3 /* ItemIDLoadLink.swift */,
@@ -1294,6 +1300,7 @@
 				3A8A11982D4638E0000075BE /* ItemFilterPicker.swift in Sources */,
 				3AA954302AD2AE520031C20D /* EpisodePlayButton.swift in Sources */,
 				3A1CCD752DE343A800B2EAA9 /* ListenedTodayLabel.swift in Sources */,
+				3A7264502E2F76DF00F3BCE1 /* CollectionMembershipEditorSheet.swift in Sources */,
 				3A6DC0802DE495A800FB7D21 /* ContextProvider.swift in Sources */,
 				3A6DC0812DE495A800FB7D21 /* SpotlightIndexer.swift in Sources */,
 				3A8410532CDF92A700FC3FCB /* URL+AllocatedSize.swift in Sources */,
@@ -1346,6 +1353,7 @@
 				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
 				3A14C1512E2E89C700D7A2D7 /* EditCollectionSheet.swift in Sources */,
 				3A90A6412D9AE268009BDA84 /* CreateLogArchiveButton.swift in Sources */,
+				3A7264542E2F7AE900F3BCE1 /* ItemCollectionMembershipEditButton.swift in Sources */,
 				3A5891152CD3F1EF005C3289 /* ItemMenu.swift in Sources */,
 				3ADC52C02E06D8D000175677 /* RegularPlaybackModifier.swift in Sources */,
 				3A0E42EC2C8195840034873F /* Alignment+Text.swift in Sources */,

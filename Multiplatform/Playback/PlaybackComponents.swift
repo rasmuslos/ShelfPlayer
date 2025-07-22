@@ -311,6 +311,10 @@ struct PlaybackMenuActions: View {
             
             Divider()
             
+            ItemCollectionMembershipEditButton(itemID: currentItem.id)
+            
+            Divider()
+            
             ProgressButton(itemID: currentItem.id)
             StopPlaybackButton()
         }

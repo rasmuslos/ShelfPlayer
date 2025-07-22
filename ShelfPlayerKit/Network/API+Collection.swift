@@ -8,6 +8,21 @@
 import Foundation
 
 public extension APIClient where I == ItemIdentifier.ConnectionID {
+    func createCollection(name: String, type: ItemCollection.CollectionType, libraryID: ItemIdentifier.LibraryID, itemIDs: [ItemIdentifier]) async throws -> ItemIdentifier {
+        let payload: ItemPayload
+        
+        switch type {
+            case .collection:
+                payload = try await response(for: ClientRequest<ItemPayload>(path: "api/collections", method: .post, body: CreateCollectionBooksPayload(name: name, libraryId: libraryID, books: itemIDs.map(\.primaryID))))
+            case .playlist:
+                payload = try await response(for: ClientRequest<ItemPayload>(path: "api/playlists", method: .post, body: CreateCollectionItemsPayload(name: name, libraryId: libraryID, items: itemIDs.map {
+                    .init(libraryItemId: $0.apiItemID, episodeId: $0.apiEpisodeID)
+                })))
+        }
+        
+        return .init(primaryID: payload.id, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: type.itemType)
+    }
+    
     func updateCollection(_ itemID: ItemIdentifier, name: String, description: String?) async throws {
         let type = itemIdentifierToCollectionType(itemID)
         try await response(for: ClientRequest<Empty>(path: "api/\(type.apiValue)/\(itemID.primaryID)", method: .patch, body: UpdateCollectionPayload(name: name, description: description)))
@@ -20,23 +35,26 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
                 try await response(for: ClientRequest<Empty>(path: "api/collections/\(itemID.primaryID)", method: .patch, body: UpdateCollectionBooksPayload(books: itemIDs.map(\.primaryID))))
             case .playlist:
                 try await response(for: ClientRequest<Empty>(path: "api/playlists/\(itemID.primaryID)", method: .patch, body: UpdateCollectionItemsPayload(items: itemIDs.map {
-                    UpdateCollectionItemPayload(libraryItemId: $0.groupingID ?? $0.primaryID, episodeId: $0.apiEpisodeID)
+                    CollectionItemPayload(libraryItemId: $0.apiItemID, episodeId: $0.apiEpisodeID)
                 })))
         }
     }
-    func removeCollectionItem(_ collectionID: ItemIdentifier, itemID: ItemIdentifier) async throws {
+    
+    func bulkUpdateCollectionItems(_ collectionID: ItemIdentifier, operation: CollectionBulkOperation, itemIDs: [ItemIdentifier]) async throws {
         let type = itemIdentifierToCollectionType(collectionID)
         
         switch type {
             case .collection:
-                try await response(for: ClientRequest<Empty>(path: "api/collections/\(collectionID.primaryID)/book/\(itemID.primaryID)", method: .delete))
+                try await response(for: ClientRequest<Empty>(path: "api/collections/\(collectionID.primaryID)/batch/\(operation.rawValue)", method: .post, body: UpdateCollectionBooksPayload(books: itemIDs.map(\.primaryID))))
             case .playlist:
-                if let groupingID = itemID.groupingID {
-                    try await response(for: ClientRequest<Empty>(path: "api/playlists/\(collectionID.primaryID)/item/\(groupingID)/\(itemID.primaryID)", method: .delete))
-                } else {
-                    try await response(for: ClientRequest<Empty>(path: "api/playlists/\(collectionID.primaryID)/item/\(itemID.primaryID)", method: .delete))
-                }
+                try await response(for: ClientRequest<Empty>(path: "api/playlists/\(collectionID.primaryID)/batch/\(operation.rawValue)", method: .post, body: UpdateCollectionItemsPayload(items: itemIDs.map {
+                    CollectionItemPayload(libraryItemId: $0.apiItemID, episodeId: $0.apiEpisodeID)
+                })))
         }
+    }
+    enum CollectionBulkOperation: String {
+        case add
+        case remove
     }
     
     func deleteCollection(_ collectionID: ItemIdentifier) async throws {
