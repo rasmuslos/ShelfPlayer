@@ -94,8 +94,6 @@ struct CollectionMembershipEditorSheet: View {
                     rows(playlistLoader)
                 }
             }
-            .navigationTitle("item.collection.editMembership")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("action.cancel") {

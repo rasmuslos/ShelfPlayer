@@ -1226,7 +1226,20 @@
       }
     },
     "item.collection.create" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        }
+      }
     },
     "item.collection.createPlaylist" : {
       "localizations" : {
@@ -1244,11 +1257,21 @@
         }
       }
     },
-    "item.collection.editMembership" : {
-
-    },
     "item.collection.editMembership.open" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinzufügen zu ..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to …"
+          }
+        }
+      }
     },
     "item.configure" : {
       "localizations" : {
@@ -1675,10 +1698,36 @@
       }
     },
     "item.create.collection" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlung erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Collection"
+          }
+        }
+      }
     },
     "item.create.playlist" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Playlist"
+          }
+        }
+      }
     },
     "item.description" : {
       "localizations" : {
