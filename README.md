@@ -1,16 +1,21 @@
-#  ShelfPlayer
+# ShelfPlayer
 
-ShelfPlayer is a meticulously crafted iOS and iPadOS app designed to seamlessly integrate with your Audiobookshelf library. Enjoy a captivating listening experience with its sleek interface, lightning-fast performance, and deep system integration.
+**ShelfPlayer** is a powerful iOS application for listening to audiobooks and podcasts, designed for users with self-hosted [Audiobookshelf](https://www.audiobookshelf.org/) libraries. Built in **Swift 6** for **iOS 18+**, ShelfPlayer is fast, privacy-respecting, and deeply integrated with the Apple ecosystem.
 
-## Features:
+> [!WARNING]
+> ShelfPlayer does not include any media content. A running Audiobookshelf instance is required to use the app.
 
-- **Immersive Exploration**: Effortlessly navigate through your audiobooks, podcasts, episodes, authors, and series with our beautifully designed interface.
-- **Synchronized Listening**: Accurately track your listening progress and seamlessly sync your statistics with Audiobookshelf.
-- **Offline Enjoyment**: Download your favorite audiobooks and episodes to indulge in uninterrupted listening, even without an internet connection.
-- **Personalized Sleep**: Wind down with our customizable sleep timer, which automatically pauses playback at your desired time, even at the end of a chapter.
-- **Voice Control**: Enjoy hands-free convenience with Siri integration and create custom shortcuts for effortless playback.
-- **Tailored Listening**: Adjust playback speed to match your preferred listening pace.
-- **Automated Convenience**: Automatically download new episodes and receive notifications to stay up-to-date with your favorite shows.
+## Features
+
+* **Full content browsing**: Explore audiobooks, authors, narrators, series, podcasts, episodes, collections, and playlists.
+* **Multiple users and libraries**: Connect to multiple Audiobookshelf servers or user accounts simultaneously.
+* **System-level integration**: Supports Widgets, Siri, App Intents, and CarPlay.
+* **Global discovery**: "Listen Now" and universal search work across all connected libraries.
+* **Advanced playback tools**: Highly configurable playback speed and sleep timer.
+* **Daily listen tracking**: Accurate tracking of playback time, with optional daily goals.
+* **PDF viewer**: Built-in support for attached PDF documents.
+* **Offline access**: Automatic media downloads for seamless offline playback.
+* **Modern interface**: Clean, native design optimized for both iPhone and iPad.
 
 ## Download
 
@@ -20,48 +25,63 @@ ShelfPlayer is a meticulously crafted iOS and iPadOS app designed to seamlessly 
 
 ## Screenshots
 
-| Home | Audiobook | Player | Podcast |
-| ------------- | ------------- | ------------- | ------------- |
-| <img src="/Screenshots/iOS%20Audiobook%20Home.png?raw=true" alt="Home (iOS)" width="200"/> | <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="audiobook" width="200"/> | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/iOS%20Podcast.png?raw=true" alt="width" width="200"/> 
-| <img src="/Screenshots/iPadOS%20Audiobook%20Home.png?raw=true" alt="Home (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player" width="200"/>  | <img src="/Screenshots/iPadOS%20Podcast.png?raw=true" alt="Podcast" width="200"/> 
+| Home                                                                                           | Audiobook                                                                             | Player                                                                          | Podcast                                                                           |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| <img src="/Screenshots/iOS%20Audiobook%20Home.png?raw=true" alt="Home (iOS)" width="200"/>     | <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="Audiobook" width="200"/>    | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player" width="200"/>    | <img src="/Screenshots/iOS%20Podcast.png?raw=true" alt="Podcast" width="200"/>    |
+| <img src="/Screenshots/iPadOS%20Audiobook%20Home.png?raw=true" alt="Home (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player" width="200"/> | <img src="/Screenshots/iPadOS%20Podcast.png?raw=true" alt="Podcast" width="200"/> |
 
-## Sideload
+## Sideloading
 
-### Pre-built
+### Prebuilt Releases
 
-Grab the [latest Release](https://github.com/rasmuslos/ShelfPlayer/releases/latest) and install it using your favorite tool like SideStore.
+Download the latest release from the [Releases](https://github.com/yourusername/shelfplayer/releases) page and install it using tools such as SideStore.
 
-> [!WARNING]
-> Pre-built versions of ShelfPlayer lack Siri support due to limitations with sideloading tools. These features require a paid developer account or can't be reliably implemented for sideloaded apps. See https://github.com/rasmuslos/ShelfPlayer/issues/20 & https://github.com/rasmuslos/ShelfPlayer/issues/4 for more information.
+**Important limitations when sideloading:**
 
-Stripping app extensions is highly recommended as they won't function correctly when sideloaded. 
+* Siri is not supported without a paid Apple Developer account due to entitlement restrictions.
+* App extensions (e.g., Widgets) may not function correctly; it is recommended to remove them before sideloading.
+* For background and technical details, see [issue #20](https://github.com/yourusername/shelfplayer/issues/20) and [issue #4](https://github.com/yourusername/shelfplayer/issues/4).
 
-### Build ShelfPlayer Yourself
+### Building from Source
 
-If you're comfortable with Xcode, you can build ShelfPlayer yourself:
+To build ShelfPlayer using Xcode:
 
-1. Install Xcode on your Mac.
-2. In the `Configuration` directory, copy the `Debug.xcconfig.template` file and rename it to `Debug.xcconfig`.
-3. Edit `Debug.xcconfig`:
-    * Change `DEVELOPMENT_TEAM` to your Apple developer team ID.
-    * Set a unique `BUNDLE_ID_PREFIX` (e.g., me.yourname).
-    * If you don't have a paid developer account, remove the `ENABLE_ALL_FEATURES` compilation condition to avoid crashes.
-    * You can also remove the `DEBUG` flag if you don't intend on further development.
-    * If you have access to the [CarPlay entitlement](https://developer.apple.com/documentation/carplay/requesting-carplay-entitlements) comment out the last line, otherwise proceed.
-4. Connect your iPhone to your Mac and enable developer mode.
-5. Select your iPhone as the run destination in Xcode.
-6. Run the application.
+1. Install Xcode.
+2. In the `Configuration/` directory, copy `Debug.xcconfig.template` and rename it to `Debug.xcconfig`.
+3. Edit the file with values appropriate for your environment (e.g. development team ID, bundle prefix, feature flags).
+4. Connect your iPhone and enable Developer Mode.
+5. Open the project in Xcode, select your device, then build and run the app.
 
 > [!NOTE]
-> The `DEBUG` configuration is used by default for most builds. To create a release build for distribution (which isn't allowed under the license), you'll need to edit the `Release.xcconfig` file.
+> The `Debug` configuration is used by default.
 
-## Licensing & Contributing
+## Contributing
 
-ShelfPlayer is licensed under the Mozilla Public License Version 2. Additionally the "Common Clause" applies. This means that you can modify ShelfPlayer, as well as contribute to it, but you are not allowed to distribute the application in binary form. Compiling for your own personal use is not covered by the commons clause and therefore fine. Additionally, prebuilt binaries are available on GitHub for side loading using popular tools like SideStore, etc.
+Contributions are welcome. To contribute:
 
-Contributions are welcome, just fork the repository, and open a pull request with your changes. If you want to contribute translations you have to edit `Localizable.xcstrings` in the `iOS` directory, as well as one line in `InfoPlist.xcstrings` located at the same directory using Xcode. If you want to add a new language add it in the project settings (The root of the Xcode project named "ShelfPlayer").
+1. Fork the repository.
+2. Make your changes in a new branch.
+3. Open a pull request.
 
-## Miscellaneous
+If you're interested in helping translate ShelfPlayer, see the [Localization Guide](https://github.com/rasmuslos/ShelfPlayer/blob/main/Localization.md) for instructions on how to contribute a translation.
 
-- ShelfPlayer is not endorsed by nor associated with Audiobookshelf
-- I generated some parts of this readme using Gemini, too
+## License
+
+ShelfPlayer is licensed under the **Mozilla Public License 2.0** with the **Commons Clause**.
+
+You are allowed to:
+
+* View, modify, and build the source code for personal use.
+* Submit changes or improvements via pull requests.
+
+You are **not allowed** to:
+
+* Distribute ShelfPlayer in binary form (including on the App Store or through other app distribution platforms).
+
+Prebuilt sideloadable binaries are made available for convenience, but redistribution is not permitted.
+
+## Notes
+
+* Some text and preview content may have been enhanced using AI tools.
+* Code was written manually with occasional help from Xcode's built-in AI suggestions.
+* ShelfPlayer is not affiliated with Apple, Audiobookshelf, or any third-party platform or service.

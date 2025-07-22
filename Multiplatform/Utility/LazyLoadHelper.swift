@@ -482,7 +482,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     didReachEndOfLoadedContent()
                 }
             } catch {
-                logger.error("Error loading more \(T.self, privacy: .public): \(error)")
+                logger.error("Error loading more \(T.self, privacy: .public): \(error, privacy: .public)")
                 
                 await MainActor.withAnimation { [self] in
                     notifyError.toggle()
