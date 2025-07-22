@@ -20,6 +20,12 @@
             "state" : "translated",
             "value" : "Avbryt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
+          }
         }
       }
     },
@@ -41,6 +47,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minska"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зменшити"
           }
         }
       }
@@ -80,6 +92,12 @@
             "state" : "translated",
             "value" : "Klar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово"
+          }
         }
       }
     },
@@ -118,6 +136,12 @@
             "state" : "translated",
             "value" : "Avsluta"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершити"
+          }
         }
       }
     },
@@ -139,6 +163,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Öka"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збільшити"
           }
         }
       }
@@ -162,6 +192,12 @@
             "state" : "translated",
             "value" : "Fortsätt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити"
+          }
         }
       }
     },
@@ -183,6 +219,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nollställ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити"
           }
         }
       }
@@ -206,6 +248,12 @@
             "state" : "translated",
             "value" : "Försök igen"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторити"
+          }
         }
       }
     },
@@ -227,6 +275,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spara"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зберегти"
           }
         }
       }
@@ -250,6 +304,12 @@
             "state" : "translated",
             "value" : "Välj"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибрати"
+          }
         }
       }
     },
@@ -268,6 +328,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirPlay"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AirPlay"
@@ -294,6 +360,12 @@
             "state" : "translated",
             "value" : "Inga anslutningar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Немає з'єднань"
+          }
         }
       }
     },
@@ -315,6 +387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logga in med din iPhone."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увійдіть за допомогою вашого iPhone."
           }
         }
       }
@@ -338,6 +416,12 @@
             "state" : "translated",
             "value" : "Andra bibliotek"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інші бібліотеки"
+          }
         }
       }
     },
@@ -359,6 +443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inga bibliotek"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Немає бібліотек"
           }
         }
       }
@@ -382,6 +472,12 @@
             "state" : "translated",
             "value" : "Konfigurera flikfältet appens inställningar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштуйте панель вкладок у налаштуваннях програми."
+          }
         }
       }
     },
@@ -403,6 +499,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du kan konfigurera vilka bibliotek som är synliga i flikfältet i inställningsbladet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ви можете налаштувати, які бібліотеки відображаються на панелі вкладок у вікні налаштувань."
           }
         }
       }
@@ -426,6 +528,12 @@
             "state" : "translated",
             "value" : "Slutfördes: %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено на: %@"
+          }
         }
       }
     },
@@ -447,6 +555,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lägg till anslutning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати підключення"
           }
         }
       }
@@ -470,6 +584,12 @@
             "state" : "translated",
             "value" : "Ändpunkt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endpoint"
+          }
         }
       }
     },
@@ -488,6 +608,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "http(s)://host.tld(:port)(/path)"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "http(s)://host.tld(:port)(/path)"
@@ -514,6 +640,12 @@
             "state" : "translated",
             "value" : "Lösenord"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пароль"
+          }
         }
       }
     },
@@ -535,6 +667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fortsätt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Далі"
           }
         }
       }
@@ -558,6 +696,12 @@
             "state" : "translated",
             "value" : "Byt auktoriseringsstrategi"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Змінити тип авторизації"
+          }
         }
       }
     },
@@ -579,6 +723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se till att ”shelfPlayer://callback” är konfigurerad som en tillåten ”callback-URL” i inställningarna för Audiobookshelf."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переконайтеся, що \\\"shelfPlayer://callback\\\" налаштовано як дозволений URL-адресу зворотного виклику в налаштуваннях Audiobookshelf."
           }
         }
       }
@@ -602,6 +752,12 @@
             "state" : "translated",
             "value" : "Välj en annan strategi"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибрати інший тип"
+          }
         }
       }
     },
@@ -623,6 +779,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Användarnamn"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ім'я користувача"
           }
         }
       }
@@ -646,6 +808,12 @@
             "state" : "translated",
             "value" : "Verifiera"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевірити"
+          }
         }
       }
     },
@@ -668,6 +836,12 @@
             "state" : "translated",
             "value" : "Upptäckt serverversion: %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виявлено версію сервера: %@"
+          }
         }
       }
     },
@@ -689,6 +863,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kända anslutningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відомі підключення"
           }
         }
       }
@@ -748,6 +928,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Loading %lld connections"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Loading %lld connections"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Loading %lld connection"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Loading %lld connections"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -769,6 +979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hantera anslutningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Керування підключеннями"
           }
         }
       }
@@ -792,6 +1008,12 @@
             "state" : "translated",
             "value" : "Header"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заголовок"
+          }
         }
       }
     },
@@ -813,6 +1035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lägg till"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати"
           }
         }
       }
@@ -836,6 +1064,12 @@
             "state" : "translated",
             "value" : "Nyckel"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ключ"
+          }
         }
       }
     },
@@ -858,6 +1092,12 @@
             "state" : "translated",
             "value" : "Ta bort"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити"
+          }
         }
       }
     },
@@ -879,6 +1119,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Värde"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значення"
           }
         }
       }
@@ -938,6 +1184,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld offline"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld offline"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld offline"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld offline"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -959,6 +1235,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ta bort anslutning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити підключення"
           }
         }
       }
@@ -982,6 +1264,12 @@
             "state" : "translated",
             "value" : "Ta bort alla anslutningar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити всі підключення"
+          }
         }
       }
     },
@@ -1003,6 +1291,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Använd identitetsleverantör"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використати ідентифікацію провайдера"
           }
         }
       }
@@ -1026,6 +1320,12 @@
             "state" : "translated",
             "value" : "Använd lösenord"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використати пароль"
+          }
         }
       }
     },
@@ -1047,6 +1347,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Test"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевірити"
           }
         }
       }
@@ -1070,6 +1376,12 @@
             "state" : "translated",
             "value" : "Anslutningen lyckades"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Успішно"
+          }
         }
       }
     },
@@ -1091,6 +1403,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serverversion: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія сервера: %@\""
           }
         }
       }
@@ -1114,6 +1432,12 @@
             "state" : "translated",
             "value" : "Innehåll ej tillgängligt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вміст недоступний"
+          }
         }
       }
     },
@@ -1135,6 +1459,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ljudbok ej tillgänglig"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудіокнига недоступна"
           }
         },
         "zh-Hans" : {
@@ -1163,6 +1493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Författare ej tillgänglig"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор недоступний"
           }
         },
         "zh-Hans" : {
@@ -1209,6 +1545,12 @@
             "value" : "Avsnitt ej tillgängligt"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Епізод недоступний"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1235,6 +1577,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berättar ej tillgänglig"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оповідач недоступний"
           }
         }
       }
@@ -1275,6 +1623,12 @@
             "value" : "Podd ej tillgänglig"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подкаст недоступний"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1301,6 +1655,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serie ej tillgänglig"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серія недоступна"
           }
         },
         "zh-Hans" : {
@@ -1331,6 +1691,12 @@
             "value" : "Se till att din enhet är ansluten till internet och att ShelfPlayer kan nå din Audiobookshelf-instans."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переконайтеся, що ваш пристрій підключено до інтернету, і ShelfPlayer може зв’язатися з вашим екземпляром Audiobookshelf."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1358,6 +1724,12 @@
             "state" : "translated",
             "value" : "Alla"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі"
+          }
         }
       }
     },
@@ -1379,6 +1751,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Förkortad"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорочені"
           }
         }
       }
@@ -1402,6 +1780,12 @@
             "state" : "translated",
             "value" : "Ljudbok"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудіокнига"
+          }
         }
       }
     },
@@ -1423,6 +1807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Författare"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор"
           }
         }
       }
@@ -1446,6 +1836,12 @@
             "state" : "translated",
             "value" : "Bonus"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бонус"
+          }
         }
       }
     },
@@ -1467,6 +1863,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bokmärken"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закладки"
           }
         }
       }
@@ -1526,6 +1928,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld Bookmarks"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld Bookmarks"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld Bookmark"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld Bookmarks"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1547,6 +1979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kapitel"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розділи"
           }
         }
       }
@@ -1602,6 +2040,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld kapitel"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld chapters"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld chapters"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld chapter"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld chapters"
                 }
               }
             }
@@ -1676,6 +2144,12 @@
             "state" : "translated",
             "value" : "Konfigurera"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштувати"
+          }
         }
       }
     },
@@ -1697,6 +2171,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatiska nedladdningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматичні завантаження"
           }
         }
       }
@@ -1720,6 +2200,12 @@
             "state" : "translated",
             "value" : "Alla"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі"
+          }
         }
       }
     },
@@ -1741,6 +2227,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer laddar ned objekt baserat på vald filtrering och sortering, samt den valda mängden."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer завантажить елементи відповідно до ваших налаштувань фільтрації та сортування, а також у вказаній кількості."
           }
         }
       }
@@ -1764,6 +2256,12 @@
             "state" : "translated",
             "value" : "Avaktiverat"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вимкнено"
+          }
         }
       }
     },
@@ -1785,6 +2283,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fem objekt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "П’ять елементів"
           }
         }
       }
@@ -1808,6 +2312,12 @@
             "state" : "translated",
             "value" : "Fyra objekt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чотири елементи"
+          }
         }
       }
     },
@@ -1829,6 +2339,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ett objekt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Один елемент"
           }
         }
       }
@@ -1852,6 +2368,12 @@
             "state" : "translated",
             "value" : "Senaste 24 timmarna"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За останні 24 години"
+          }
         }
       }
     },
@@ -1873,6 +2395,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste månaden"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За минулий місяць"
           }
         }
       }
@@ -1896,6 +2424,12 @@
             "state" : "translated",
             "value" : "Senaste veckan"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За минулий тиждень"
+          }
         }
       }
     },
@@ -1917,6 +2451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ta bort konfiguration"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити налаштування"
           }
         }
       }
@@ -1940,6 +2480,12 @@
             "state" : "translated",
             "value" : "Mängd"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кількість"
+          }
         }
       }
     },
@@ -1961,6 +2507,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tio objekt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Десять елементів"
           }
         }
       }
@@ -1984,6 +2536,12 @@
             "state" : "translated",
             "value" : "Tre objekt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Три елементи"
+          }
         }
       }
     },
@@ -2006,6 +2564,12 @@
             "state" : "translated",
             "value" : "Två objekt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Три елементи"
+          }
         }
       }
     },
@@ -2027,6 +2591,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste två veckorna"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За останні два тижні"
           }
         }
       }
@@ -2118,6 +2688,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld audiobooks"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld audiobooks"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld audiobook"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld audiobooks"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -2172,6 +2772,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld episoder"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld episodes"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld episodes"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld episode"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld episodes"
                 }
               }
             }
@@ -2234,6 +2864,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld unplayed"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld unplayed"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld unplayed"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld unplayed"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -2288,6 +2948,12 @@
             "state" : "translated",
             "value" : "Beskrivning"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Опис"
+          }
         }
       }
     },
@@ -2309,6 +2975,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen beskrivning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Немає опису"
           }
         }
       }
@@ -2332,6 +3004,12 @@
             "state" : "translated",
             "value" : "Rutnät"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сітка"
+          }
         }
       }
     },
@@ -2353,6 +3031,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lista"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Список"
           }
         }
       }
@@ -2376,6 +3060,12 @@
             "state" : "translated",
             "value" : "Dokument"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Документи"
+          }
         }
       }
     },
@@ -2397,6 +3087,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Läst"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Читати"
           }
         }
       }
@@ -2420,6 +3116,12 @@
             "state" : "translated",
             "value" : "Ladda ner"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажити"
+          }
         }
       }
     },
@@ -2441,6 +3143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avbryt nedladdning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати завантаження"
           }
         }
       }
@@ -2464,6 +3172,12 @@
             "state" : "translated",
             "value" : "Ta bort nedladdning"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити завантаження"
+          }
         }
       }
     },
@@ -2485,6 +3199,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Löser…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Визначення…"
           }
         }
       }
@@ -2508,6 +3228,12 @@
             "state" : "translated",
             "value" : "Nedladdad"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажено"
+          }
         }
       }
     },
@@ -2529,6 +3255,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laddar ner"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження"
           }
         }
       }
@@ -2552,6 +3284,12 @@
             "state" : "translated",
             "value" : "Inga objekt hittades"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Елементи не знайдено"
+          }
         }
       }
     },
@@ -2573,6 +3311,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inga objekt som matchar ditt filter hittades."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не знайдено елементів відповідно до вашого фільтра."
           }
         }
       }
@@ -2596,6 +3340,12 @@
             "state" : "translated",
             "value" : "Explicit"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подробиці"
+          }
         }
       }
     },
@@ -2617,6 +3367,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filtrera efter"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фільтрувати за"
           }
         }
       }
@@ -2640,6 +3396,12 @@
             "state" : "translated",
             "value" : "Pågående"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В процесі"
+          }
         }
       }
     },
@@ -2661,6 +3423,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі"
           }
         }
       }
@@ -2684,6 +3452,12 @@
             "state" : "translated",
             "value" : "Nedladdad"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажене"
+          }
         }
       }
     },
@@ -2705,6 +3479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avslutad"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено"
           }
         }
       }
@@ -2728,6 +3508,12 @@
             "state" : "translated",
             "value" : "Inte avslutad"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не завершено"
+          }
         }
       }
     },
@@ -2749,6 +3535,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Genrer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жанри"
           }
         }
       }
@@ -2772,6 +3564,12 @@
             "state" : "translated",
             "value" : "Gruppera ljudböcker i serier"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Групувати аудіокниги за серіями"
+          }
         }
       }
     },
@@ -2793,6 +3591,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Konfigurera"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштувати"
           }
         }
       }
@@ -2816,6 +3620,12 @@
             "state" : "translated",
             "value" : "Tillåt förslag"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дозволити пропозиції"
+          }
         }
       }
     },
@@ -2837,6 +3647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uppspelning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворення"
           }
         }
       }
@@ -2860,6 +3676,12 @@
             "state" : "translated",
             "value" : "Föreslagna, ej startade objekt syns i ”Lyssna nu”."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запропоновані незавершені елементи з’являться в «Слухати зараз».\""
+          }
         }
       }
     },
@@ -2881,6 +3703,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uppspelningshastighet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Швидкість відтворення"
           }
         }
       }
@@ -2904,6 +3732,12 @@
             "state" : "translated",
             "value" : "Nästa"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Далі"
+          }
         }
       }
     },
@@ -2925,6 +3759,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senast spelade"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Останнє відтворення"
           }
         }
       }
@@ -2948,6 +3788,12 @@
             "state" : "translated",
             "value" : "Berättare"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оповідач"
+          }
         }
       }
     },
@@ -2969,6 +3815,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alternativ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Параметри"
           }
         }
       }
@@ -2992,6 +3844,12 @@
             "state" : "translated",
             "value" : "Spela"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворити"
+          }
         }
       }
     },
@@ -3013,6 +3871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spela igen"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворити знову"
           }
         }
       }
@@ -3036,6 +3900,12 @@
             "state" : "translated",
             "value" : "Lyssna igen"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Послухати знову"
+          }
         }
       }
     },
@@ -3057,6 +3927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lyssna"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слухати"
           }
         }
       }
@@ -3080,6 +3956,12 @@
             "state" : "translated",
             "value" : "Fortsätt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відновити"
+          }
         }
       }
     },
@@ -3102,6 +3984,12 @@
             "state" : "translated",
             "value" : "Fortsätt lyssna"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити прослуховування"
+          }
         }
       }
     },
@@ -3123,6 +4011,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avslutad"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено"
           }
         }
       }
@@ -3147,6 +4041,12 @@
             "state" : "translated",
             "value" : "Avslutad %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено: %@"
+          }
         }
       }
     },
@@ -3168,6 +4068,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Markera som ”avslutad”"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Позначити як \"завершено\""
           }
         }
       }
@@ -3191,6 +4097,12 @@
             "state" : "translated",
             "value" : "Markera som ”oavslutad”"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Позначити як \"незавершено"
+          }
         }
       }
     },
@@ -3212,6 +4124,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nollställ framsteg"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути прогрес"
           }
         }
       }
@@ -3235,6 +4153,12 @@
             "state" : "translated",
             "value" : "Löser…"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Визначення…"
+          }
         }
       }
     },
@@ -3256,6 +4180,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Episodisk"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Епізодичний"
           }
         }
       }
@@ -3279,6 +4209,12 @@
             "state" : "translated",
             "value" : "Seriell"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серійний"
+          }
         }
       }
     },
@@ -3300,6 +4236,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inläst av: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оповідач: %@"
           }
         }
       }
@@ -3323,6 +4265,12 @@
             "state" : "translated",
             "value" : "Skriven av %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор: %@"
+          }
         }
       }
     },
@@ -3344,6 +4292,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inläst av %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оповідач: %@"
           }
         }
       }
@@ -3367,6 +4321,12 @@
             "state" : "translated",
             "value" : "I serien %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У серії %@"
+          }
         }
       }
     },
@@ -3388,6 +4348,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ljudböcker"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудіокниги"
           }
         }
       }
@@ -3411,6 +4377,12 @@
             "state" : "translated",
             "value" : "Serier"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серії"
+          }
         }
       }
     },
@@ -3432,6 +4404,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avsnitt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Епізоди"
           }
         }
       }
@@ -3455,6 +4433,12 @@
             "state" : "translated",
             "value" : "Alla avsnitt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всі епізоди"
+          }
         }
       }
     },
@@ -3476,6 +4460,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ljudböcker"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудіокниги"
           }
         }
       }
@@ -3535,6 +4525,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Season %lld"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Season %lld"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Season %lld"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Season %lld"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -3556,6 +4576,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(Ingen beskrivning)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без назви сезону"
           }
         }
       }
@@ -3579,6 +4605,12 @@
             "state" : "translated",
             "value" : "Serier"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серії"
+          }
         }
       }
     },
@@ -3600,6 +4632,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sortera efter"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сортувати за"
           }
         }
       }
@@ -3623,6 +4661,12 @@
             "state" : "translated",
             "value" : "Lades till"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додано"
+          }
         }
       }
     },
@@ -3644,6 +4688,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Författare"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор"
           }
         }
       }
@@ -3667,6 +4717,12 @@
             "state" : "translated",
             "value" : "Böcker"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Книги"
+          }
         }
       }
     },
@@ -3688,6 +4744,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Längd"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тривалість"
           }
         }
       }
@@ -3711,6 +4773,12 @@
             "state" : "translated",
             "value" : "Antal avsnitt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кількість епізодів"
+          }
         }
       }
     },
@@ -3732,6 +4800,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Index"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Індекс"
           }
         }
       }
@@ -3755,6 +4829,12 @@
             "state" : "translated",
             "value" : "Namn"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назва"
+          }
         }
       }
     },
@@ -3776,6 +4856,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Förnamn, efternamn"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ім'я, Прізвище"
           }
         }
       }
@@ -3799,6 +4885,12 @@
             "state" : "translated",
             "value" : "Efternamn, förnamn"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прізвище, Ім'я"
+          }
         }
       }
     },
@@ -3820,6 +4912,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utgivningsdatum"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата випуску"
           }
         }
       }
@@ -3843,6 +4941,12 @@
             "state" : "translated",
             "value" : "Spelas nu"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зараз відтворюється"
+          }
         }
       }
     },
@@ -3864,6 +4968,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spelade %2$@ under %1$@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворено %2$@ протягом %1$@"
           }
         }
       }
@@ -3887,6 +4997,12 @@
             "state" : "translated",
             "value" : "Total"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всього"
+          }
         }
       }
     },
@@ -3908,6 +5024,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trailer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Трейлер"
           }
         }
       }
@@ -3931,6 +5053,12 @@
             "state" : "translated",
             "value" : "Visa ljudbok"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути аудіокнигу"
+          }
         }
       }
     },
@@ -3952,6 +5080,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Visa författare"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути автора"
           }
         }
       }
@@ -3991,6 +5125,12 @@
             "state" : "translated",
             "value" : "Visa avsnitt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути епізод"
+          }
         }
       }
     },
@@ -4012,6 +5152,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Visa berättare"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути оповідача"
           }
         }
       }
@@ -4051,6 +5197,12 @@
             "state" : "translated",
             "value" : "Visa podcast"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути подкаст"
+          }
         }
       }
     },
@@ -4073,6 +5225,12 @@
             "state" : "translated",
             "value" : "Visa serie"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути серію"
+          }
         }
       }
     },
@@ -4094,6 +5252,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laddar…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження..."
           }
         },
         "zh-Hans" : {
@@ -4123,6 +5287,12 @@
             "state" : "translated",
             "value" : "Tillbaka"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад"
+          }
         }
       }
     },
@@ -4144,6 +5314,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj bibliotek"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибрати бібліотеку"
           }
         }
       }
@@ -4167,6 +5343,12 @@
             "state" : "translated",
             "value" : "Koppla upp"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти в онлайн"
+          }
         }
       }
     },
@@ -4188,6 +5370,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktivera nedkopplat läge"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнути офлайн-режим"
           }
         }
       }
@@ -4211,6 +5399,12 @@
             "state" : "translated",
             "value" : "Synkroniserar..."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронізація..."
+          }
         }
       }
     },
@@ -4233,6 +5427,12 @@
             "state" : "translated",
             "value" : "Synkroniseringen misslyckades"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося синхронізувати"
+          }
         }
       }
     },
@@ -4254,6 +5454,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Författare"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автори"
           }
         },
         "zh-Hans" : {
@@ -4282,6 +5488,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bokmärken"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закладки"
           }
         }
       }
@@ -4322,6 +5534,12 @@
             "value" : "Hem"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Головна"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4348,6 +5566,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Останні"
           }
         },
         "zh-Hans" : {
@@ -4378,6 +5602,12 @@
             "value" : "Bibliotek"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бібліотека"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4405,6 +5635,12 @@
             "state" : "translated",
             "value" : "Sök efter podcast"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шукати подкасти"
+          }
         }
       }
     },
@@ -4426,6 +5662,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lyssna nu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слухати зараз"
           }
         }
       }
@@ -4449,6 +5691,12 @@
             "state" : "translated",
             "value" : "Berättare"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оповідачі"
+          }
         }
       }
     },
@@ -4470,6 +5718,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Offline"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Офлайн"
           }
         }
       }
@@ -4510,6 +5764,12 @@
             "value" : "Sök"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шукати"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4536,6 +5796,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serier"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серії"
           }
         },
         "zh-Hans" : {
@@ -4565,6 +5831,12 @@
             "state" : "translated",
             "value" : "Insomningstimer"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сну"
+          }
         }
       }
     },
@@ -4586,6 +5858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skapa bokmärke"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Створити закладку"
           }
         }
       }
@@ -4609,6 +5887,12 @@
             "state" : "translated",
             "value" : "Skapa"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Створити"
+          }
         }
       }
     },
@@ -4630,6 +5914,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notera"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Примітка"
           }
         }
       }
@@ -4653,6 +5943,12 @@
             "state" : "translated",
             "value" : "Det verkar som att ShelfPlayer avslutades under uppspelning. Vill du fortsätta?"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схоже, ShelfPlayer завершив роботу під час активної сесії відтворення. Бажаєте відновити її?"
+          }
         }
       }
     },
@@ -4674,6 +5970,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Näst på tur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Далі"
           }
         }
       }
@@ -4697,6 +5999,12 @@
             "state" : "translated",
             "value" : "Lyssna nu"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слухати зараз"
+          }
         }
       }
     },
@@ -4718,6 +6026,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pausa"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пауза"
           }
         }
       }
@@ -4741,6 +6055,12 @@
             "state" : "translated",
             "value" : "Spela"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворити"
+          }
         }
       }
     },
@@ -4762,6 +6082,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Köa"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Черга"
           }
         }
       }
@@ -4785,6 +6111,12 @@
             "state" : "translated",
             "value" : "Lägg till till kön"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати до черги"
+          }
         }
       }
     },
@@ -4806,6 +6138,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Köa"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Черга"
           }
         }
       }
@@ -4829,6 +6167,12 @@
             "state" : "translated",
             "value" : "Rensa"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити"
+          }
         }
       }
     },
@@ -4850,6 +6194,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inget i kön"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нічого в черзі"
           }
         }
       }
@@ -4873,6 +6223,12 @@
             "state" : "translated",
             "value" : "Kön är tom. Lägg till en ljudbok eller ett avsnitt till den."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Черга порожня. Спробуйте додати аудіокнигу або епізод."
+          }
         }
       }
     },
@@ -4894,6 +6250,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ta bort från kön"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вилучити з черги"
           }
         }
       }
@@ -4917,6 +6279,12 @@
             "state" : "translated",
             "value" : "Hoppa bakåt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемотати назад"
+          }
         }
       }
     },
@@ -4938,6 +6306,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoppa framåt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемотати вперед"
           }
         }
       }
@@ -4961,6 +6335,12 @@
             "state" : "translated",
             "value" : "Insomningstimer"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сну"
+          }
         }
       }
     },
@@ -4982,6 +6362,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avbryt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
           }
         }
       }
@@ -5005,6 +6391,12 @@
             "state" : "translated",
             "value" : "Kapitlets slut"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кінець розділу"
+          }
         }
       }
     },
@@ -5027,6 +6419,12 @@
             "state" : "translated",
             "value" : "Utöka"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити"
+          }
         }
       }
     },
@@ -5048,6 +6446,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avsluta uppspelning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зупинити відтворення"
           }
         },
         "zh-Hans" : {
@@ -5077,6 +6481,12 @@
             "state" : "translated",
             "value" : "Konfigurera näst på tur"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштувати 'Далі'"
+          }
         }
       }
     },
@@ -5098,6 +6508,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kön för näst på tur kan konfigureras i inställningarna för podcast och serier. Den kan också avaktiveras i appen för inställninga."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чергу 'Далі' можна налаштувати в параметрах подкастів та серій. Також її можна відключити в додатку «Налаштування»."
           }
         }
       }
@@ -5121,6 +6537,12 @@
             "state" : "translated",
             "value" : "Inställningar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштування"
+          }
         }
       }
     },
@@ -5139,6 +6561,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CarPlay"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "CarPlay"
@@ -5165,6 +6593,12 @@
             "state" : "translated",
             "value" : "Konfigurera vilka bibliotek som visas i CarPlays flikfält."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштуйте, які бібліотеки відображаються на панелі вкладок CarPlay."
+          }
         }
       }
     },
@@ -5186,6 +6620,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Antalet flikar du konfigurerat överstiger CarPlays begränsningar."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кількість вкладок, які ви налаштували, перевищує обмеження CarPlay."
           }
         }
       }
@@ -5273,6 +6713,12 @@
             "state" : "translated",
             "value" : "Automatiska nedladdningar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматичні завантаження"
+          }
         }
       }
     },
@@ -5294,6 +6740,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Konfigurationer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Конфігурації"
           }
         }
       }
@@ -5353,6 +6805,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Items downloaded: %lld"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Items downloaded: %lld"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "One item downloaded"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Items downloaded: %lld"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -5374,6 +6856,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktivera automatiska nedladdningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнути автоматичні завантаження"
           }
         }
       }
@@ -5397,6 +6885,12 @@
             "state" : "translated",
             "value" : "Ladda ned objekt för lyssning nu"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажити елементи «Слухати зараз»"
+          }
         }
       }
     },
@@ -5418,6 +6912,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Standardval för avsnittsordning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Порядок епізодів за замовчуванням"
           }
         }
       }
@@ -5441,6 +6941,12 @@
             "state" : "translated",
             "value" : "Generera loggfil"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Згенерувати файл журналу"
+          }
         }
       }
     },
@@ -5459,6 +6965,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
@@ -5485,6 +6997,12 @@
             "state" : "translated",
             "value" : "Automatisk nedladdning: %1$@ (%2$@)"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автозавантаження: %1$@ (%2$@)"
+          }
         }
       }
     },
@@ -5506,6 +7024,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uppspelningshastighet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Швидкість відтворення"
           }
         }
       }
@@ -5529,6 +7053,12 @@
             "state" : "translated",
             "value" : "Lägg till"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати"
+          }
         }
       }
     },
@@ -5550,6 +7080,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Standardhastighet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Швидкість за замовчуванням"
           }
         }
       }
@@ -5573,6 +7109,12 @@
             "state" : "translated",
             "value" : "Rensa cache"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Швидкість за замовчуванням"
+          }
         }
       }
     },
@@ -5594,6 +7136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rensa nedladdningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити завантаження"
           }
         }
       }
@@ -5617,6 +7165,12 @@
             "state" : "translated",
             "value" : "Rensa Spotlight-index"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити індекс Spotlight"
+          }
         }
       }
     },
@@ -5638,6 +7192,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inställningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштування"
           }
         }
       }
@@ -5661,6 +7221,12 @@
             "state" : "translated",
             "value" : "Insomningstimer"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сну"
+          }
         }
       }
     },
@@ -5682,6 +7248,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lägg till"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати"
           }
         }
       }
@@ -5705,6 +7277,12 @@
             "state" : "translated",
             "value" : "Timmar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Години"
+          }
         }
       }
     },
@@ -5726,6 +7304,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minuter"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хвилини"
           }
         }
       }
@@ -5771,6 +7355,12 @@
             "state" : "translated",
             "value" : "Väntar på Spotlight-indexering"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очікується індексація Spotlight"
+          }
         }
       }
     },
@@ -5792,6 +7382,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Support"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтримка"
           }
         }
       }
@@ -5815,6 +7411,12 @@
             "state" : "translated",
             "value" : "Färgtoning"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колір відтінку"
+          }
         }
       }
     },
@@ -5836,6 +7438,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vatten"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бірюзовий"
           }
         }
       }
@@ -5859,6 +7467,12 @@
             "state" : "translated",
             "value" : "Svart"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чорний"
+          }
         }
       }
     },
@@ -5880,6 +7494,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Blå"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синій"
           }
         }
       }
@@ -5903,6 +7523,12 @@
             "state" : "translated",
             "value" : "Grön"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зелений"
+          }
         }
       }
     },
@@ -5924,6 +7550,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mint"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "М'ятний"
           }
         }
       }
@@ -5947,6 +7579,12 @@
             "state" : "translated",
             "value" : "Lila"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пурпурний"
+          }
         }
       }
     },
@@ -5969,6 +7607,12 @@
             "state" : "translated",
             "value" : "Röd"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Червоний"
+          }
         }
       }
     },
@@ -5987,6 +7631,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer"
@@ -6013,6 +7663,12 @@
             "state" : "translated",
             "value" : "Violett"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фіолетовий"
+          }
         }
       }
     },
@@ -6035,6 +7691,12 @@
             "state" : "translated",
             "value" : "Gul"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жовтий"
+          }
         }
       }
     },
@@ -6053,6 +7715,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer: %1$@ (%2$@) %3$@"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer: %1$@ (%2$@) %3$@"
@@ -6079,6 +7747,12 @@
             "state" : "translated",
             "value" : "Databas: %1$@ %2$@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "База даних: %1$@ %2$@"
+          }
         }
       }
     },
@@ -6100,6 +7774,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fortsätt lyssna"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити прослуховування"
           }
         },
         "zh-Hans" : {
@@ -6130,6 +7810,12 @@
             "value" : "Fortsätt läs"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити читання"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6156,6 +7842,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fortsätt serie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити серію"
           }
         },
         "zh-Hans" : {
@@ -6186,6 +7878,12 @@
             "value" : "Upptäck"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Огляд"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6213,6 +7911,12 @@
             "state" : "translated",
             "value" : "Nedladdade"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажено"
+          }
         }
       }
     },
@@ -6235,6 +7939,12 @@
             "state" : "translated",
             "value" : "Nedladdade ljudböcker"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажені аудіокниги"
+          }
         }
       }
     },
@@ -6256,6 +7966,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste avsnitt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Останні епізоди"
           }
         },
         "zh-Hans" : {
@@ -6286,6 +8002,12 @@
             "value" : "Lyssna igen"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Послухати знову"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6312,6 +8034,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste författare"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найновіші автори"
           }
         },
         "zh-Hans" : {
@@ -6342,6 +8070,12 @@
             "value" : "Läs igen"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочитати знову"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6368,6 +8102,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nyligen tillagda"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нещодавно додані"
           }
         },
         "zh-Hans" : {
@@ -6398,6 +8138,12 @@
             "value" : "Nyliga serier"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нещодавні серії"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6425,6 +8171,12 @@
             "state" : "translated",
             "value" : "Valda: %lld"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибрано: %lld"
+          }
         }
       }
     },
@@ -6446,6 +8198,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välkommen"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ласкаво просимо"
           }
         }
       }
@@ -6469,6 +8227,12 @@
             "state" : "translated",
             "value" : "Lägg till anslutningar"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати підключення"
+          }
         }
       }
     },
@@ -6490,6 +8254,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tack för att du valde ShelfPlayer. Lägg till en anslutning till din Audiobookshelf-instans för att börja."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "якуємо за вибір ShelfPlayer. Додайте підключення до вашого екземпляра Audiobookshelf, щоб почати."
           }
         }
       }
@@ -6513,6 +8283,12 @@
             "state" : "translated",
             "value" : "Avsnitt"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розділи"
+          }
         }
       }
     },
@@ -6535,6 +8311,12 @@
             "state" : "translated",
             "value" : "Sätt insomningstimer"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Встановити таймер сну"
+          }
         }
       }
     },
@@ -6556,6 +8338,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utöka"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити"
           }
         }
       }
@@ -6615,6 +8403,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Extend by %lld chapters"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Extend by %lld chapters"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Extend by %lld chapter"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Extend by %lld chapters"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -6636,6 +8454,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utöka en viss tid"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити на час"
           }
         }
       }
@@ -6659,6 +8483,12 @@
             "state" : "translated",
             "value" : "Utökad med ursprungligt värde"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продовжити, використовуючи попереднє налаштування"
+          }
         }
       }
     },
@@ -6681,6 +8511,12 @@
             "state" : "translated",
             "value" : "Lyssnat idag"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослухано сьогодні"
+          }
         }
       }
     },
@@ -6702,6 +8538,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidslinje"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хронологія"
           }
         },
         "zh-Hans" : {
@@ -6731,6 +8573,12 @@
             "state" : "translated",
             "value" : "Standardval"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За замовчуванням"
+          }
         }
       }
     },
@@ -6752,6 +8600,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avaktiverat"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вимкнено"
           }
         }
       }
@@ -6775,6 +8629,12 @@
             "state" : "translated",
             "value" : "Lyssna nu"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слухати зараз"
+          }
         }
       }
     },
@@ -6796,6 +8656,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Volym"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Гучність"
           }
         }
       }
@@ -6819,6 +8685,12 @@
             "state" : "translated",
             "value" : "Objektet du försökte ta bort är automatiskt nedladdat. Om du inte tar bort konfigurationen kan det laddas ned igen."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Елемент, який ви намагаєтесь видалити, завантажується автоматично. Якщо ви не видалите налаштування, його може бути завантажено знову."
+          }
         }
       }
     },
@@ -6840,6 +8712,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Objektet du försökte spela laddas för närvarande ned. Avbryt nedladdningen och påbörja uppspelning?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Елемент, який ви намагаєтеся відтворити, наразі завантажується. Скасувати завантаження та почати відтворення?"
           }
         }
       }
@@ -6863,6 +8741,12 @@
             "state" : "translated",
             "value" : "Objektet du försökte ladda ned spelas för närvarande. Avbryt uppspelningen och påbörja nedladdningen?"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Елемент, який ви намагаєтеся завантажити, наразі відтворюється. Завершити відтворення та почати завантаження?"
+          }
         }
       }
     },
@@ -6884,6 +8768,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Objektet du försökte ta bort spelas för närvarande. Avbryt uppspelningen och ta bort nedladdningen?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Елемент, який ви намагаєтеся видалити, наразі відтворюється. Завершити відтворення та видалити завантаження?"
           }
         }
       }
