@@ -107,8 +107,8 @@ final class Satellite {
         case missingItem
     }
 
-    public func isLoading(observing: ItemIdentifier) -> Bool {
-        totalLoading > 0 || busy[observing] ?? 0 > 0
+    public func isLoading(observing itemID: ItemIdentifier) -> Bool {
+        totalLoading > 0 || busy[itemID] ?? 0 > 0 || itemID.primaryID == "placeholder"
     }
 
     private func startWorking(on itemID: ItemIdentifier) {
@@ -154,6 +154,9 @@ extension Satellite {
         case description(Item)
         case configureGrouping(ItemIdentifier)
         
+        case editCollection(ItemCollection)
+        case editCollectionMembership(ItemIdentifier)
+        
         case whatsNew
         
         var id: String {
@@ -168,6 +171,10 @@ extension Satellite {
                     "description-\(item.id)"
                 case .configureGrouping(let itemID):
                     "configureGrouping-\(itemID)"
+                case .editCollection(let collection):
+                    "editCollection-\(collection.id)"
+                case .editCollectionMembership(let itemID):
+                    "editCollectionMembership-\(itemID)"
                 case .whatsNew:
                     "whatsNew"
             }
@@ -296,7 +303,7 @@ extension Satellite {
                     break
                     
                 case .resumePlayback(let itemID):
-                    start(itemID)
+                    start(itemID, queue: Defaults[.playbackResumeQueue])
                     
                 case .playbackStartWhileDownloading(let itemID):
                     do {
@@ -500,7 +507,7 @@ extension Satellite {
         }
     }
 
-    nonisolated func start(_ itemID: ItemIdentifier, at: TimeInterval? = nil, origin: AudioPlayerItem.PlaybackOrigin = .unknown) {
+    nonisolated func start(_ itemID: ItemIdentifier, at: TimeInterval? = nil, origin: AudioPlayerItem.PlaybackOrigin = .unknown, queue: [ItemIdentifier] = []) {
         Task {
             guard await self.nowPlayingItemID != itemID else {
                 await togglePlaying()
@@ -520,6 +527,9 @@ extension Satellite {
                 if let at {
                     try await AudioPlayer.shared.seek(to: at, insideChapter: false)
                 }
+                
+                let isOffline = await isOffline
+                try await AudioPlayer.shared.queue(queue.map { .init(itemID: $0, origin: .unknown, startWithoutListeningSession: isOffline) })
                 
                 await endWorking(on: itemID, successfully: true)
             } catch {
@@ -542,12 +552,36 @@ extension Satellite {
     nonisolated func queue(_ itemID: ItemIdentifier) {
         Task {
             await startWorking(on: itemID)
-
+            
             do {
                 try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: isOffline)])
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 await endWorking(on: itemID, successfully: false)
+            }
+        }
+    }
+    nonisolated func queue(_ itemIDs: [ItemIdentifier], origin: AudioPlayerItem.PlaybackOrigin = .unknown) {
+        Task {
+            await MainActor.withAnimation {
+                totalLoading += 1
+            }
+
+            do {
+                let isOffline = await isOffline
+                try await AudioPlayer.shared.queue(itemIDs.map { .init(itemID: $0, origin: origin, startWithoutListeningSession: isOffline) })
+                
+                await MainActor.run {
+                    notifySuccess.toggle()
+                }
+            } catch {
+                await MainActor.run {
+                    notifyError.toggle()
+                }
+            }
+            
+            await MainActor.withAnimation {
+                totalLoading -= 1
             }
         }
     }
@@ -1119,6 +1153,8 @@ private extension Satellite {
                 case .series(let itemID):
                     origin = try? await itemID.resolved
                 case .podcast(let itemID):
+                    origin = try? await itemID.resolved
+                case .collection(let itemID):
                     origin = try? await itemID.resolved
                 default:
                     origin = nil

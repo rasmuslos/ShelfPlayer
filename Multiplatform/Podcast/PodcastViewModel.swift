@@ -10,7 +10,7 @@ import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
-final class PodcastViewModel {
+final class PodcastViewModel: Equatable, Hashable {
     let podcast: Podcast
     
     private(set) var episodes: [Episode]
@@ -51,6 +51,13 @@ final class PodcastViewModel {
         notifyError = false
         
         updateVisible()
+    }
+    
+    nonisolated static func == (lhs: PodcastViewModel, rhs: PodcastViewModel) -> Bool {
+        lhs === rhs
+    }
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(podcast.id)
     }
 }
 

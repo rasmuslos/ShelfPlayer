@@ -15,26 +15,8 @@ struct PersonList: View {
     
     var body: some View {
         ForEach(people) { person in
-            NavigationLink(destination: PersonView(person)) {
-                HStack(spacing: 0) {
-                    if showImage {
-                        ItemImage(item: person, size: .tiny, cornerRadius: .infinity)
-                            .frame(width: 52)
-                            .hoverEffect(.highlight)
-                            .padding(.trailing, 8)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(person.name)
-                        
-                        Text("item.count.audiobooks \(person.bookCount)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Spacer(minLength: 0)
-                }
-                .contentShape(.rect)
+            NavigationLink(value: NavigationDestination.item(person)) {
+                ItemCompactRow(item: person, context: showImage ? .author : .narrator)
             }
             .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
             .modifier(ItemStatusModifier(item: person, hoverEffect: nil))

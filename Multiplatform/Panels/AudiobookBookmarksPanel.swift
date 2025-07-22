@@ -20,7 +20,7 @@ struct AudiobookBookmarksPanel: View {
             } else {
                 List {
                     ForEach(Array(items), id: \.key) { (item, amount) in
-                        NavigationLink(destination: AudiobookView(item)) {
+                        NavigationLink(value: NavigationDestination.item(item)) {
                             HStack(spacing: 8) {
                                 ItemCompactRow(item: item, context: .bookmark)
                                 Text(amount, format: .number)

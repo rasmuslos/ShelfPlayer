@@ -59,6 +59,7 @@ struct EpisodeList: View {
         case podcast
         case grid
         case featured
+        case collection
     }
 }
 
@@ -71,7 +72,7 @@ private struct Row: View {
     @State private var zoomID = UUID()
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode, zoomID: context == .grid ? zoomID : nil)) {
+        NavigationLink(value: NavigationDestination.item(episode, context == .grid ? zoomID : nil)) {
             RowLabel(episode: episode, context: context, zoomID: zoomID)
                 .matchedTransitionSource(id: zoomID, in: namespace!)
                 .padding(8)
@@ -83,6 +84,7 @@ private struct Row: View {
     }
 }
 private struct RowLabel: View {
+    @Environment(\.displayContext) private var displayContext
     @Environment(Satellite.self) private var satellite
     
     let episode: Episode
@@ -93,7 +95,7 @@ private struct RowLabel: View {
         HStack(spacing: 0) {
             if context.isImageVisible {
                 Button {
-                    satellite.start(episode.id)
+                    satellite.start(episode.id, origin: displayContext.origin)
                 } label: {
                     ItemImage(item: episode, size: .small)
                         .frame(width: 100)
@@ -221,20 +223,20 @@ struct EpisodeItemActions: View {
 private extension EpisodeList.PresentationContext {
     var usesShortDateStyle: Bool {
         switch self {
-        case .latest, .grid, .featured: true
-        case .podcast: false
+            case .podcast: false
+            default: true
         }
     }
     var isHighlighted: Bool {
         switch self {
-        case .featured: true
-        case .grid, .latest, .podcast: false
+            case .featured: true
+            default: false
         }
     }
     var isImageVisible: Bool {
         switch self {
-        case .latest, .grid, .featured: true
-        case .podcast: false
+            case .podcast: false
+            default: true
         }
     }
     var isActionDateHidden: Bool {
@@ -246,10 +248,8 @@ private extension EpisodeList.PresentationContext {
     
     var lineLimit: Int {
         switch self {
-        case .latest, .grid, .featured:
-            2
-        case .podcast:
-            3
+            case .podcast: 3
+            default: 2
         }
     }
     

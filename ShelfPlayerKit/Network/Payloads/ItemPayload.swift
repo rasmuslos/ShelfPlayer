@@ -17,12 +17,14 @@ struct ItemPayload: Codable {
     
     let addedAt: Double?
     let updatedAt: Double?
+    let createdAt: Double?
     
     let size: Int64?
     
     // Both are have exactly the same use case, wtf?
     var books: [ItemPayload]?
     let items: [ItemPayload]?
+    let playlistItems: [PlaylistItemPayload]?
     
     let series: [ItemPayload]?
     let libraryItems: [ItemPayload]?
@@ -48,6 +50,46 @@ struct ItemPayload: Codable {
     let collapsedSeries: CollapsedSeriesPayload?
     
     let libraryFiles: [LibraryFile]?
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.libraryId = try container.decodeIfPresent(String.self, forKey: .libraryId)
+        self.path = try container.decodeIfPresent(String.self, forKey: .path)
+        self.mediaType = try container.decodeIfPresent(String.self, forKey: .mediaType)
+        self.type = try container.decodeIfPresent(String.self, forKey: .type)
+        self.addedAt = try container.decodeIfPresent(Double.self, forKey: .addedAt)
+        self.updatedAt = try container.decodeIfPresent(Double.self, forKey: .updatedAt)
+        self.createdAt = try container.decodeIfPresent(Double.self, forKey: .createdAt)
+        self.size = try container.decodeIfPresent(Int64.self, forKey: .size)
+        self.books = try container.decodeIfPresent([ItemPayload].self, forKey: .books)
+        self.series = try container.decodeIfPresent([ItemPayload].self, forKey: .series)
+        self.libraryItems = try container.decodeIfPresent([ItemPayload].self, forKey: .libraryItems)
+        self.numEpisodes = try container.decodeIfPresent(Int.self, forKey: .numEpisodes)
+        self.numEpisodesIncomplete = try container.decodeIfPresent(Int.self, forKey: .numEpisodesIncomplete)
+        self.recentEpisode = try container.decodeIfPresent(EpisodePayload.self, forKey: .recentEpisode)
+        self.isLocal = try container.decodeIfPresent(Bool.self, forKey: .isLocal)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.description = try container.decodeIfPresent(String.self, forKey: .description)
+        self.numBooks = try container.decodeIfPresent(Int.self, forKey: .numBooks)
+        self.imagePath = try container.decodeIfPresent(String.self, forKey: .imagePath)
+        self.media = try container.decodeIfPresent(MediaPayload.self, forKey: .media)
+        self.startTime = try container.decodeIfPresent(Double.self, forKey: .startTime)
+        self.audioTracks = try container.decodeIfPresent([AudiobookshelfAudioTrack].self, forKey: .audioTracks)
+        self.chapters = try container.decodeIfPresent([ChapterPayload].self, forKey: .chapters)
+        self.collapsedSeries = try container.decodeIfPresent(CollapsedSeriesPayload.self, forKey: .collapsedSeries)
+        self.libraryFiles = try container.decodeIfPresent([LibraryFile].self, forKey: .libraryFiles)
+        
+        // This is bullshit:
+        
+        do {
+            self.items = try container.decodeIfPresent([ItemPayload].self, forKey: .items)
+            self.playlistItems = nil
+        } catch {
+            self.items = nil
+            self.playlistItems = try container.decodeIfPresent([PlaylistItemPayload].self, forKey: .items)
+        }
+    }
 }
 
 struct LibraryFile: Codable {
@@ -90,6 +132,8 @@ struct EpisodePayload: Codable {
     let audioTrack: AudiobookshelfAudioTrack?
     
     let podcast: AudiobookshelfItemPodcast?
+    let libraryItem: AudiobookshelfItemPodcast?
+    
     let chapters: [ChapterPayload]?
     
     struct PodcastAudioFile: Codable {
@@ -111,6 +155,11 @@ struct EpisodePayload: Codable {
         
         let numAudioFiles: Int?
     }
+}
+
+struct PlaylistItemPayload: Codable {
+    let episode: EpisodePayload?
+    let libraryItem: ItemPayload?
 }
 
 struct CollapsedSeriesPayload: Codable {

@@ -193,11 +193,11 @@ final class EmbassyManager: Sendable {
         
         RFNotification[.progressEntityUpdated].subscribe { connectionID, primaryID, groupingID, entity in
             Task {
-                guard let current = Defaults[.playbackInfoWidgetValue], let itemID = current.currentItemID, itemID.primaryID == primaryID && itemID.groupingID == groupingID && itemID.connectionID == connectionID else {
+                guard entity?.isFinished == true else {
                     return
                 }
                 
-                guard entity?.isFinished == true else {
+                guard let current = Defaults[.playbackInfoWidgetValue], let itemID = current.currentItemID, itemID.primaryID == primaryID && itemID.groupingID == groupingID && itemID.connectionID == connectionID else {
                     return
                 }
                 

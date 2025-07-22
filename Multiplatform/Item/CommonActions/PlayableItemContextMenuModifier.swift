@@ -39,12 +39,13 @@ struct PlayableItemContextMenuInner: View {
         Divider()
         
         DownloadButton(itemID: item.id, initialStatus: currentDownloadStatus)
+        ItemCollectionMembershipEditButton(itemID: item.id)
         
         Divider()
         
         if let audiobook = item as? Audiobook {
             if library != nil {
-                NavigationLink(destination: AudiobookView(audiobook)) {
+                NavigationLink(value: NavigationDestination.item(audiobook)) {
                     Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book")
                 }
                 
@@ -124,10 +125,22 @@ struct PlayableItemContextMenuPreview: View {
                 Text(episode.name)
                     .font(.headline)
                 
-                Text(episode.podcastName)
-                    .lineLimit(1)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Group {
+                    let authors = item.authors.formatted(.list(type: .and, width: .short))
+                    
+                    if episode.podcastName != authors {
+                        if authors.isEmpty {
+                            Text(episode.podcastName)
+                        } else {
+                            Text(verbatim: "\(episode.podcastName) • \(authors)")
+                        }
+                    } else {
+                        Text(authors)
+                    }
+                }
+                .lineLimit(2)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
                 
                 if let descriptionText = episode.descriptionText {
                     Text(descriptionText)

@@ -14,7 +14,7 @@ struct AudiobookAuthorsPanel: View {
     @Default(.authorsAscending) private var authorsAscending
     @Default(.authorsSortOrder) private var authorsSortOrder
     
-    @State private var lazyLoader = LazyLoadHelper<Person, Void>.authors
+    @State private var lazyLoader = LazyLoadHelper<Person, AuthorSortOrder>.authors
     
     var body: some View {
         Group {

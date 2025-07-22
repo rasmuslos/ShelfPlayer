@@ -19,7 +19,7 @@ struct AudiobookList: View {
                     case .audiobook(let audiobook):
                         Row(audiobook: audiobook)
                     case .series(let seriesID, let seriesName, let audiobookIDs):
-                        NavigationLink(destination: ItemLoadView(seriesID)) {
+                        NavigationLink(value: NavigationDestination.itemID(seriesID)) {
                             SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
                         }
                         .buttonStyle(.plain)
@@ -88,10 +88,10 @@ private struct Row: View {
     }
     
     var body: some View {
-        NavigationLink(destination: AudiobookView(audiobook)) {
+        NavigationLink(value: NavigationDestination.item(audiobook)) {
             HStack(spacing: 0) {
                 Button {
-                    satellite.start(audiobook.id)
+                    satellite.start(audiobook.id, origin: displayContext.origin)
                 } label: {
                     ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
                         .frame(width: 100)

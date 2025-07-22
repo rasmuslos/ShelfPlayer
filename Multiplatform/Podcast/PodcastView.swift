@@ -66,10 +66,7 @@ struct PodcastView: View {
                     }
                     .buttonStyle(.plain)
                     
-                    NavigationLink {
-                        PodcastEpisodesView()
-                            .environment(viewModel)
-                    } label: {
+                    NavigationLink(value: NavigationDestination.podcastEpisodes(viewModel)) {
                         HStack(spacing: 0) {
                             Spacer(minLength: 0)
                             

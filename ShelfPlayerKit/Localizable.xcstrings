@@ -1388,6 +1388,22 @@
         }
       }
     },
+    "item.collection" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collection"
+          }
+        }
+      }
+    },
     "item.count.episodes.unplayed %lld" : {
       "localizations" : {
         "de" : {
@@ -1456,6 +1472,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrator"
+          }
+        }
+      }
+    },
+    "item.playlist" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist"
           }
         }
       }

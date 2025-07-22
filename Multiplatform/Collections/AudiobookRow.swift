@@ -17,7 +17,7 @@ struct AudiobookRow: View {
         VStack(alignment: .leading, spacing: 0) {
             Group {
                 if audiobooks.count > 5 {
-                    NavigationLink(destination: RowGridView(title: title, audiobooks: audiobooks)) {
+                    NavigationLink(value: NavigationDestination.audiobookRow(title, audiobooks)) {
                         HStack(spacing: 8) {
                             RowTitle(title: title, fontDesign: .serif)
                             
@@ -42,7 +42,7 @@ struct AudiobookRow: View {
     }
 }
 
-private struct RowGridView: View {
+struct RowGridView: View {
     let title: String
     let audiobooks: [Audiobook]
     

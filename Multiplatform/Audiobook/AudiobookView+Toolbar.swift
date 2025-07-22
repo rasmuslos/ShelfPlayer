@@ -95,6 +95,7 @@ extension AudiobookView {
                             Divider()
                             
                             DownloadButton(itemID: viewModel.audiobook.id)
+                            ItemCollectionMembershipEditButton(itemID: viewModel.audiobook.id)
                             
                             Divider()
                             

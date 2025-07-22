@@ -78,8 +78,9 @@ extension PersistenceManager.ProgressSubsystem {
         
         return nil
     }
-    func createEntity(id: String, itemID: ItemIdentifier, progress: Double, duration: Double?, currentTime: Double, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: PersistedProgress.SyncStatus) -> PersistedProgress {
-        let entity = PersistedProgress(id: id, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: startedAt, lastUpdate: lastUpdate, finishedAt: finishedAt, status: status)
+    func createEntity(id: String, connectionID: ItemIdentifier.ConnectionID, primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, progress: Double, duration: Double?, currentTime: Double, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: PersistedProgress.SyncStatus) -> PersistedProgress {
+        let entity = PersistedProgress(id: id, connectionID: connectionID, primaryID: primaryID, groupingID: groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: startedAt, lastUpdate: lastUpdate, finishedAt: finishedAt, status: status)
+        
         modelContext.insert(entity)
         
         return entity
@@ -226,7 +227,7 @@ public extension PersistenceManager.ProgressSubsystem {
                 
                 pendingUpdate = entity
             } else {
-                pendingUpdate = createEntity(id: UUID().uuidString, itemID: itemID, progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now, status: .desynchronized)
+                pendingUpdate = createEntity(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now, status: .desynchronized)
             }
             
             persisted.append(pendingUpdate)
@@ -331,7 +332,7 @@ public extension PersistenceManager.ProgressSubsystem {
                 targetEntity.status = .desynchronized
             }
         } else {
-            targetEntity = createEntity(id: UUID().uuidString, itemID: itemID, progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: progress >= 1 ? .now : nil, status: notifyServer ? .desynchronized : .tombstone)
+            targetEntity = createEntity(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: progress >= 1 ? .now : nil, status: notifyServer ? .desynchronized : .tombstone)
         }
         
         try modelContext.save()
@@ -516,11 +517,9 @@ public extension PersistenceManager.ProgressSubsystem {
             // try modelContext.transaction {
             for payload in payload {
                 let _ = createEntity(id: payload.id,
-                                     itemID: .init(primaryID: payload.episodeId ?? payload.libraryItemId,
-                                                   groupingID: payload.episodeId != nil ? payload.libraryItemId : nil,
-                                                   libraryID: "_",
-                                                   connectionID: connectionID,
-                                                   type: payload.episodeId != nil ? .episode : .audiobook),
+                                     connectionID: connectionID,
+                                     primaryID: payload.episodeId ?? payload.libraryItemId,
+                                     groupingID: payload.episodeId == nil ? nil : payload.libraryItemId,
                                      progress: payload.progress ?? 0,
                                      duration: payload.duration ?? 0,
                                      currentTime: payload.currentTime ?? 0,

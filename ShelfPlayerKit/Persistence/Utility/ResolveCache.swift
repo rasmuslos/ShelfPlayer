@@ -65,6 +65,7 @@ public actor ResolveCache: Sendable {
                     case .series:
                         item = try await ABSClient[itemID.connectionID].series(with: itemID)
                         episodes = []
+                        
                     case .podcast:
                         (item, episodes) = try await ABSClient[itemID.connectionID].podcast(with: itemID)
                         episodeCache[item.id] = episodes
@@ -81,6 +82,10 @@ public actor ResolveCache: Sendable {
                         }
                         
                         item = episode
+                        
+                    case .collection, .playlist:
+                        item = try await ABSClient[itemID.connectionID].collection(with: itemID)
+                        episodes = []
                 }
             }
         } catch {
@@ -168,6 +173,15 @@ public actor ResolveCache: Sendable {
     public func invalidate() {
         cache.removeAll()
         episodeCache.removeAll()
+    }
+    public func invalidate(itemID: ItemIdentifier) {
+        cache[itemID] = nil
+        episodeCache[itemID] = nil
+        
+        if itemID.type == .episode {
+            let podcastID = ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID)
+            episodeCache[podcastID] = nil
+        }
     }
     
     private enum ResolveError: Error {

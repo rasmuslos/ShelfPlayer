@@ -105,7 +105,7 @@ struct SeriesView: View {
             }
         }
         .environment(viewModel)
-        .environment(\.displayContext, .series(series: viewModel.series))
+        .environment(\.displayContext, .series(viewModel.series))
         .modifier(PlaybackSafeAreaPaddingModifier())
         .onAppear {
             viewModel.library = library

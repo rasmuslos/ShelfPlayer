@@ -21,7 +21,7 @@ struct AudiobookLibraryPanel: View {
     @State private var viewModel = LibraryViewModel()
     
     private var libraryRowCount: CGFloat {
-        horizontalSizeClass == .compact && library != nil ? 4 :  0
+        horizontalSizeClass == .compact && library != nil ? 6 :  0
     }
     @ViewBuilder
     private var libraryRows: some View {
@@ -31,11 +31,12 @@ struct AudiobookLibraryPanel: View {
                 TabValue.audiobookAuthors(library),
                 TabValue.audiobookNarrators(library),
                 TabValue.audiobookBookmarks(library),
-                // collections
+                TabValue.audiobookCollections(library),
+                TabValue.playlists(library),
             ]
             
             ForEach(Array(rows.enumerated()), id: \.element) { (index, row) in
-                NavigationLink(destination: row.content) {
+                NavigationLink(value: NavigationDestination.tabValue(row)) {
                     Label(row.label, systemImage: row.image)
                         .foregroundStyle(.primary)
                 }

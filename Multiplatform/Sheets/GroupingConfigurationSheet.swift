@@ -28,21 +28,27 @@ struct GroupingConfigurationSheet: View {
                         PlaybackRatePicker(label: "item.grouping.configure.playbackRate", selection: $viewModel.playbackRate)
                             .bold(viewModel.isPlaybackRateCustomized)
                         
-                        Picker("item.grouping.configure.upNextStrategy", selection: $viewModel.upNextStrategy) {
-                            ForEach(ConfigureableUpNextStrategy.allCases) {
-                                Text($0.label)
-                                    .tag($0)
+                        if viewModel.isUpNextCustomizable {
+                            Picker("item.grouping.configure.upNextStrategy", selection: $viewModel.upNextStrategy) {
+                                ForEach(ConfigureableUpNextStrategy.allCases) {
+                                    Text($0.label)
+                                        .tag($0)
+                                }
                             }
+                            .bold(viewModel.isUpNextStrategyCustomized)
+                            .disabled(!generateUpNextQueue)
                         }
-                        .bold(viewModel.isUpNextStrategyCustomized)
-                        .disabled(!generateUpNextQueue)
                         
-                        Toggle("item.grouping.configure.allowSuggestions", isOn: $viewModel.allowSuggestions)
-                            .bold(viewModel.isAllowSuggestionsCustomized)
+                        if viewModel.areSuggestionsAvailable {
+                            Toggle("item.grouping.configure.allowSuggestions", isOn: $viewModel.allowSuggestions)
+                                .bold(viewModel.isAllowSuggestionsCustomized)
+                        }
                     } header: {
                         Text("item.grouping.configure.playback")
                     } footer: {
-                        Text("item.grouping.configure.playback.description")
+                        if viewModel.areSuggestionsAvailable {
+                            Text("item.grouping.configure.playback.description")
+                        }
                     }
                     
                     Section {
@@ -137,6 +143,13 @@ private final class ViewModel {
         }
     }
     
+    var isUpNextCustomizable: Bool {
+        itemID.type == .series || itemID.type == .podcast
+    }
+    var areSuggestionsAvailable: Bool {
+        itemID.type == .series || itemID.type == .podcast
+    }
+    
     var isPlaybackRateCustomized: Bool {
         playbackRate != defaultPlaybackRate
     }
@@ -162,7 +175,7 @@ private final class ViewModel {
             }
             
             do {
-                if await isUpNextStrategyCustomized {
+                if await isUpNextCustomizable, await isUpNextStrategyCustomized {
                     try await PersistenceManager.shared.item.setUpNextStrategy(upNextStrategy, for: itemID)
                 } else {
                     try await PersistenceManager.shared.item.setUpNextStrategy(nil, for: itemID)
@@ -172,7 +185,7 @@ private final class ViewModel {
             }
             
             do {
-                if await isAllowSuggestionsCustomized {
+                if await areSuggestionsAvailable, await isAllowSuggestionsCustomized {
                     try await PersistenceManager.shared.item.setAllowSuggestions(allowSuggestions, for: itemID)
                 } else {
                     try await PersistenceManager.shared.item.setAllowSuggestions(nil, for: itemID)

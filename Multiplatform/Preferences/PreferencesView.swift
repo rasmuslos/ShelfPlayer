@@ -28,8 +28,11 @@ struct PreferencesView: View {
                     NavigationLink(destination: SleepTimerEditor()) {
                         Label("preferences.sleepTimer", systemImage: "clock")
                     }
-                    
+                }
+                
+                Section {
                     TintPicker()
+                    ColorSchemePreference()
                 }
                 
                 Section {
@@ -46,7 +49,7 @@ struct PreferencesView: View {
                     }
                 }
                 
-                PodcastSortOrderPreferences()
+                PodcastSortOrderPreference()
                 
                 Section {
                     Link(destination: URL(string: UIApplication.openSettingsURLString)!) {

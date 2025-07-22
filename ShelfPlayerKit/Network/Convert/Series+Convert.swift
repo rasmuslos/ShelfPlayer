@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-internal extension Series {
+extension Series {
     convenience init(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
         let audiobooks = payload.books?.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) } ?? []
         

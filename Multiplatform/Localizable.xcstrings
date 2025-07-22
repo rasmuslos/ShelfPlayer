@@ -45,6 +45,22 @@
         }
       }
     },
+    "action.delete" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
     "action.dismiss" : {
       "localizations" : {
         "de" : {
@@ -63,6 +79,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klar"
+          }
+        }
+      }
+    },
+    "action.edit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
           }
         }
       }
@@ -1141,6 +1173,22 @@
         }
       }
     },
+    "error.unavailable.collection" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlung nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collection unavailable"
+          }
+        }
+      }
+    },
     "error.unavailable.episode" : {
       "localizations" : {
         "de" : {
@@ -1187,6 +1235,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berättar ej tillgänglig"
+          }
+        }
+      }
+    },
+    "error.unavailable.playlist" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist unavailable"
           }
         }
       }
@@ -1541,6 +1605,54 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "item.collection.create" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        }
+      }
+    },
+    "item.collection.createPlaylist" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create playlist"
+          }
+        }
+      }
+    },
+    "item.collection.editMembership.open" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinzufügen zu ..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to …"
           }
         }
       }
@@ -1919,6 +2031,38 @@
         }
       }
     },
+    "item.count %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Objekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld items"
+          }
+        }
+      }
+    },
+    "item.count.audiobook %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Hörbücher"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld audiobooks"
+          }
+        }
+      }
+    },
     "item.count.audiobooks %lld" : {
       "localizations" : {
         "de" : {
@@ -2089,6 +2233,38 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "item.create.collection" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlung erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Collection"
+          }
+        }
+      }
+    },
+    "item.create.playlist" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Playlist"
           }
         }
       }
@@ -2670,13 +2846,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vorgeschlagene, nicht begonnene Objekte erscheinen in „Jetzt hören“."
+            "value" : "Vorgeschlagene, nicht abgeschlossene Objekte erscheinen in „Jetzt hören“."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suggested, not started, items will appear in \"Listen now“."
+            "value" : "Suggested, unfinished, items will appear in \"Listen now“."
           }
         },
         "sv" : {
@@ -3780,6 +3956,22 @@
         }
       }
     },
+    "item.view.collection" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Sammlung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View collection"
+          }
+        }
+      }
+    },
     "item.view.episode" : {
       "localizations" : {
         "de" : {
@@ -3820,6 +4012,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Visa berättare"
+          }
+        }
+      }
+    },
+    "item.view.playlist" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Playlist"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View playlist"
           }
         }
       }
@@ -4078,6 +4286,22 @@
         }
       }
     },
+    "panel.collections" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collections"
+          }
+        }
+      }
+    },
     "panel.home" : {
       "localizations" : {
         "de" : {
@@ -4246,6 +4470,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Offline"
+          }
+        }
+      }
+    },
+    "panel.playlists" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlisten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlists"
           }
         }
       }
@@ -4456,50 +4696,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lyssna nu"
-          }
-        }
-      }
-    },
-    "playback.nextUpQueue.podcast %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcast: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcast: %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcast: %@"
-          }
-        }
-      }
-    },
-    "playback.nextUpQueue.series %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serie: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Series: %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serier: %@"
           }
         }
       }
@@ -4994,6 +5190,70 @@
         }
       }
     },
+    "preferences.colorScheme" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erscheinungsbild"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color scheme"
+          }
+        }
+      }
+    },
+    "preferences.colorScheme.dark" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dunkel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
+          }
+        }
+      }
+    },
+    "preferences.colorScheme.light" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hell"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
+          }
+        }
+      }
+    },
+    "preferences.colorScheme.system" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        }
+      }
+    },
     "preferences.convenienceDownload" : {
       "localizations" : {
         "de" : {
@@ -5475,13 +5735,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight-Index: $1%@"
+            "value" : "Spotlight-Index: %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotlight index: %1$@"
+            "value" : "Spotlight index: %@"
           }
         },
         "sv" : {

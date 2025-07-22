@@ -24,7 +24,11 @@ final class LocalAudioEndpoint: AudioEndpoint {
     
     private(set) var currentItem: AudioPlayerItem
     
-    private(set) var queue: [AudioPlayerItem]
+    private(set) var queue: [AudioPlayerItem] {
+        didSet {
+            Defaults[.playbackResumeQueue] = queue.map(\.itemID)
+        }
+    }
     private(set) var upNextQueue: [AudioPlayerItem] {
         didSet {
             if upNextQueue.isEmpty {
@@ -154,6 +158,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
     var currentItemID: ItemIdentifier {
         currentItem.itemID
     }
+    
     var seriesID: ItemIdentifier? {
         get async {
             guard currentItemID.type == .audiobook else {
@@ -176,6 +181,15 @@ final class LocalAudioEndpoint: AudioEndpoint {
             }
             
             return ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(currentItemID)
+        }
+    }
+    var collectionID: ItemIdentifier? {
+        get async {
+            guard case .collection(let collectionID) = currentItem.origin else {
+                return nil
+            }
+            
+            return collectionID
         }
     }
     
@@ -491,12 +505,13 @@ private extension LocalAudioEndpoint {
         
         let playbackRate: Percentage
         
+        let collectionID = await collectionID
         let seriesID = await seriesID
         let podcastID = await podcastID
         
         if let itemPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: currentItemID) {
             playbackRate = itemPlaybackRate
-        } else if let groupingID = seriesID ?? podcastID, let groupingPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: groupingID) {
+        } else if let groupingID = collectionID ?? seriesID ?? podcastID, let groupingPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: groupingID) {
             playbackRate = groupingPlaybackRate
         } else {
             playbackRate = Defaults[.defaultPlaybackRate]
@@ -881,7 +896,16 @@ private extension LocalAudioEndpoint {
 
 private extension AudioPlayerItem.PlaybackOrigin {
     var resolvedUpNextStrategy: ResolvedUpNextStrategy? {
-        nil
+        switch self {
+            case .series(let seriesID):
+                    .series(seriesID)
+            case .podcast(let podcastID):
+                    .podcast(podcastID)
+            case .collection(let collectionID):
+                    .collection(collectionID)
+            default:
+                nil
+        }
     }
 }
 private extension ConfigureableUpNextStrategy {

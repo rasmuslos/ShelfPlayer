@@ -18,6 +18,7 @@ struct ContentView: View {
     @Namespace private var namespace
     
     @Default(.tintColor) private var tintColor
+    @Default(.colorScheme) private var colorScheme
     
     @State private var satellite = Satellite.shared
     @State private var playbackViewModel = PlaybackViewModel()
@@ -41,6 +42,10 @@ struct ContentView: View {
                 DescriptionSheet(item: item)
             case .configureGrouping(let itemID):
                 GroupingConfigurationSheet(itemID: itemID)
+            case .editCollection(let collection):
+                EditCollectionSheet(collection: collection)
+            case .editCollectionMembership(let itemID):
+                CollectionMembershipEditorSheet(itemID: itemID)
             case .whatsNew:
                 WhatsNewSheet()
         }
@@ -86,6 +91,14 @@ struct ContentView: View {
             } else {
                 $0
                     .tint(tintColor.color)
+            }
+        }
+        .modify {
+            if colorScheme != .system {
+                $0
+                    .preferredColorScheme(colorScheme == .light ? .light : .dark)
+            } else {
+                $0
             }
         }
         .sensoryFeedback(.error, trigger: satellite.notifyError)

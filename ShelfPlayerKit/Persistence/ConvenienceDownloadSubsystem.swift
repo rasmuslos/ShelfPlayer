@@ -488,6 +488,8 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                                 strategy = .series(itemID)
                             case .podcast:
                                 strategy = .podcast(itemID)
+                            case .collection, .playlist:
+                                strategy = .collection(itemID)
                             default:
                                 throw ConvenienceDownloadError.invalidItemType
                         }

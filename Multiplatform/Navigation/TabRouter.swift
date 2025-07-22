@@ -181,17 +181,17 @@ struct TabRouter: View {
             return
         }
         
-        switch navigateToWhenReady.type {
-        case .audiobook, .author, .narrator, .series:
-            guard case .audiobookLibrary(_) = satellite.tabValue else {
-                satellite.tabValue = .audiobookLibrary(library)
-                return
-            }
-        case .podcast, .episode:
-            guard case .podcastLibrary(_) = satellite.tabValue else {
-                satellite.tabValue = .podcastLibrary(library)
-                return
-            }
+        switch library.type {
+            case .audiobooks:
+                guard case .audiobookLibrary(_) = satellite.tabValue else {
+                    satellite.tabValue = .audiobookLibrary(library)
+                    return
+                }
+            case .podcasts:
+                guard case .podcastLibrary(_) = satellite.tabValue else {
+                    satellite.tabValue = .podcastLibrary(library)
+                    return
+                }
         }
         
         guard progressViewModel.importedConnectionIDs.contains(library.connectionID) else {
