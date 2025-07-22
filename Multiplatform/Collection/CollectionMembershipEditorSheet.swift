@@ -66,6 +66,7 @@ struct CollectionMembershipEditorSheet: View {
                 ItemCompactRow(item: collection, context: .collectionLarge)
             }
             .buttonStyle(.plain)
+            .disabled(collection.items.contains { $0.id == itemID })
             .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
         }
     }
@@ -105,7 +106,7 @@ struct CollectionMembershipEditorSheet: View {
         }
         .alert("item.collection.create", isPresented: alertBinding) {
             if let createCollectionType {
-                TextField(createCollectionType.label, text: $createCollectionName)
+                TextField(createCollectionType.itemType.label, text: $createCollectionName)
                 
                 Button("action.cancel") {
                     self.createCollectionType = nil
