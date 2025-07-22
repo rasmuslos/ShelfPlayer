@@ -33,7 +33,7 @@ struct ItemLoadLink: View {
                     labelContent
                 }
             } else {
-                NavigationLink(destination: ItemLoadView(itemID)) {
+                NavigationLink(value: NavigationDestination.itemID(itemID)) {
                     labelContent
                 }
             }

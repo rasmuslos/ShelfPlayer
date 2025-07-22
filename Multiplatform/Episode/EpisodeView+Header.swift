@@ -79,7 +79,7 @@ private struct Title: View {
                 .multilineTextAlignment(alignment.textAlignment)
             
             HStack {
-                NavigationLink(destination: ItemLoadView(viewModel.episode.podcastID)) {
+                NavigationLink(value: NavigationDestination.itemID(viewModel.episode.podcastID)) {
                     HStack(spacing: 4) {
                         Text(viewModel.episode.podcastName)
                         

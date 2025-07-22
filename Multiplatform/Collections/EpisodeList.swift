@@ -72,7 +72,7 @@ private struct Row: View {
     @State private var zoomID = UUID()
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode, zoomID: context == .grid ? zoomID : nil)) {
+        NavigationLink(value: NavigationDestination.item(episode, context == .grid ? zoomID : nil)) {
             RowLabel(episode: episode, context: context, zoomID: zoomID)
                 .matchedTransitionSource(id: zoomID, in: namespace!)
                 .padding(8)

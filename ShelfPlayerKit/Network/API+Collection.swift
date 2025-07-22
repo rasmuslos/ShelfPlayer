@@ -24,6 +24,25 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
                 })))
         }
     }
+    func removeCollectionItem(_ collectionID: ItemIdentifier, itemID: ItemIdentifier) async throws {
+        let type = itemIdentifierToCollectionType(collectionID)
+        
+        switch type {
+            case .collection:
+                try await response(for: ClientRequest<Empty>(path: "api/collections/\(collectionID.primaryID)/book/\(itemID.primaryID)", method: .delete))
+            case .playlist:
+                if let groupingID = itemID.groupingID {
+                    try await response(for: ClientRequest<Empty>(path: "api/playlists/\(collectionID.primaryID)/item/\(groupingID)/\(itemID.primaryID)", method: .delete))
+                } else {
+                    try await response(for: ClientRequest<Empty>(path: "api/playlists/\(collectionID.primaryID)/item/\(itemID.primaryID)", method: .delete))
+                }
+        }
+    }
+    
+    func deleteCollection(_ collectionID: ItemIdentifier) async throws {
+        let type = itemIdentifierToCollectionType(collectionID)
+        try await response(for: ClientRequest<Empty>(path: "api/\(type.apiValue)/\(collectionID.primaryID)", method: .delete))
+    }
     
     func collection(with identifier: ItemIdentifier) async throws -> ItemCollection {
         let type = itemIdentifierToCollectionType(identifier)
@@ -41,6 +60,11 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         
         let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/\(type.apiValue)", method: .get, query: query))
         return (response.results.map { ItemCollection(payload: $0, type: type, connectionID: connectionID) }, response.total)
+    }
+    
+    func createPlaylistCopy(collectionID: ItemIdentifier) async throws -> ItemIdentifier {
+        let response = try await response(for: ClientRequest<ItemPayload>(path: "api/playlists/collection/\(collectionID.primaryID)", method: .post))
+        return .init(primaryID: response.id, groupingID: nil, libraryID: collectionID.libraryID, connectionID: connectionID, type: .playlist)
     }
     
     private func itemIdentifierToCollectionType(_ identifier: ItemIdentifier) -> ItemCollection.CollectionType {

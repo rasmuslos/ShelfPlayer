@@ -73,7 +73,7 @@ private struct EpisodeGridItem: View {
     @State private var zoomID = UUID()
     
     var body: some View {
-        NavigationLink(destination: EpisodeView(episode, zoomID: zoomID)) {
+        NavigationLink(value: NavigationDestination.item(episode, zoomID)) {
             ZStack(alignment: .bottom) {
                 LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
                     .aspectRatio(0.72, contentMode: .fill)

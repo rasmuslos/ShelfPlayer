@@ -88,8 +88,15 @@ struct CollectionView: View {
                     Button("action.edit", systemImage: "pencil") {
                         satellite.present(.editCollection(viewModel.collection))
                     }
+                    
+                    if viewModel.collection.id.type == .collection {
+                        Button("item.collection.createPlaylist", systemImage: ItemIdentifier.ItemType.playlist.icon) {
+                            viewModel.createPlaylist()
+                        }
+                    }
+                    
                     Button("action.delete", systemImage: "trash", role: .destructive) {
-                        
+                        viewModel.delete()
                     }
                 }
             }
