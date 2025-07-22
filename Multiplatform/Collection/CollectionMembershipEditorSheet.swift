@@ -68,6 +68,9 @@ struct CollectionMembershipEditorSheet: View {
             .buttonStyle(.plain)
             .disabled(collection.items.contains { $0.id == itemID })
             .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
+            .onAppear {
+                lazyLoader.performLoadIfRequired(collection)
+            }
         }
     }
     

@@ -8,7 +8,7 @@
 import SwiftUI
 import ShelfPlayback
 
-struct PodcastSortOrderPreferences: View {
+struct PodcastSortOrderPreference: View {
     @Default(.defaultEpisodeSortOrder) private var sortOrder
     @Default(.defaultEpisodeAscending) private var ascending
     
@@ -16,7 +16,16 @@ struct PodcastSortOrderPreferences: View {
         Menu {
             ItemSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
         } label: {
-            Label("preferences.defaultEpisodeSortOrder", systemImage: "arrow.up.arrow.down.square")
+            HStack(spacing: 0) {
+                Label("preferences.defaultEpisodeSortOrder", systemImage: "arrow.up.arrow.down.square")
+                
+                Spacer(minLength: 8)
+                
+                Image(systemName: "chevron.up.chevron.down")
+                    .imageScale(.small)
+                    .foregroundStyle(.secondary)
+            }
+            .contentShape(.rect)
         }
         .menuActionDismissBehavior(.disabled)
     }
@@ -24,6 +33,6 @@ struct PodcastSortOrderPreferences: View {
 
 #Preview {
     List {
-        PodcastSortOrderPreferences()
+        PodcastSortOrderPreference()
     }
 }
