@@ -44,7 +44,7 @@ struct PlayableItemContextMenuInner: View {
         
         if let audiobook = item as? Audiobook {
             if library != nil {
-                NavigationLink(destination: AudiobookView(audiobook)) {
+                NavigationLink(value: NavigationDestination.item(audiobook)) {
                     Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book")
                 }
                 

@@ -35,6 +35,39 @@ extension CollectionViewModel {
         collection.episodes
     }
     
+    nonisolated func createPlaylist() {
+        Task {
+            guard await collection.id.type == .collection else {
+                return
+            }
+            
+            do {
+                let collectionID = try await ABSClient[collection.id.connectionID].createPlaylistCopy(collectionID: collection.id)
+                    
+                await collectionID.navigateIsolated()
+                await RFNotification[.collectionChanged].send(payload: collectionID)
+            } catch {
+                await MainActor.withAnimation {
+                    notifyError.toggle()
+                }
+            }
+        }
+    }
+    nonisolated func delete() {
+        Task {
+            do {
+                try await ABSClient[collection.id.connectionID].deleteCollection(collection.id)
+                
+                await RFNotification[.collectionChanged].send(payload: collection.id)
+                await RFNotification[.collectionDeleted].send(payload: collection.id)
+            } catch {
+                await MainActor.withAnimation {
+                    notifyError.toggle()
+                }
+            }
+        }
+    }
+    
     nonisolated func refresh() {
         Task {
             try? await ShelfPlayer.refreshItem(itemID: collection.id)

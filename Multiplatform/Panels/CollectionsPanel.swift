@@ -38,7 +38,7 @@ struct CollectionsPanel: View {
             } else {
                 List {
                     ForEach(lazyLoader.items) { collection in
-                        NavigationLink(destination: CollectionView(collection)) {
+                        NavigationLink(value: NavigationDestination.item(collection)) {
                             ItemCompactRow(item: collection, context: .collectionLarge)
                         }
                     }

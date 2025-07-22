@@ -258,5 +258,6 @@ public extension RFNotification.IsolatedNotification {
     // MARK: Collections
     
     static var collectionChanged: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayerKit.collectionChanged") }
+    static var collectionDeleted: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayerKit.collectionDeleted") }
 }
 

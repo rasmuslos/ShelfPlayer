@@ -30,21 +30,7 @@ struct ItemLoadView: View {
     var body: some View {
         Group {
             if let item {
-                if let audiobook = item as? Audiobook {
-                    AudiobookView(audiobook)
-                } else if let series = item as? Series {
-                    SeriesView(series)
-                } else if let person = item as? Person {
-                    PersonView(person)
-                } else if let podcast = item as? Podcast {
-                    PodcastView(podcast, episodes: episodes, zoom: false)
-                } else if let episode = item as? Episode {
-                    EpisodeView(episode, zoomID: nil)
-                } else if let collection = item as? ItemCollection {
-                    CollectionView(collection)
-                } else {
-                    ErrorView()
-                }
+                ItemView(item: item, episodes: episodes)
             } else {
                 if failed {
                     ErrorView(itemID: id)

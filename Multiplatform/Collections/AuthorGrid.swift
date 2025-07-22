@@ -43,7 +43,7 @@ struct PersonGrid: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: gap) {
                     ForEach(people) { person in
-                        NavigationLink(destination: PersonView(person)) {
+                        NavigationLink(value: NavigationDestination.item(person)) {
                             VStack(spacing: 0) {
                                 ItemImage(item: person, size: .small, cornerRadius: .infinity)
                                     .padding(.bottom, 4)

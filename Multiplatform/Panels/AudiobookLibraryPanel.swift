@@ -36,7 +36,7 @@ struct AudiobookLibraryPanel: View {
             ]
             
             ForEach(Array(rows.enumerated()), id: \.element) { (index, row) in
-                NavigationLink(destination: row.content) {
+                NavigationLink(value: NavigationDestination.tabValue(row)) {
                     Label(row.label, systemImage: row.image)
                         .foregroundStyle(.primary)
                 }
