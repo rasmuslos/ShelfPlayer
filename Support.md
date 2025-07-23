@@ -1,9 +1,8 @@
-Support for ShelfPlayer
+# Support for ShelfPlayer
 
 Thank you for using ShelfPlayer! If you encounter any issues or need help, there are two primary ways to get support:
 
-How to Request Support
-
+## How to Request Support
 
 Before reaching out, it's important to include the following details in your request:
 
@@ -21,8 +20,7 @@ Additionally, generating a debug log can significantly aid in diagnosing issues.
 
 This will create a log file that you can include with your support request.
 
-1. GitHub Issues
-
+### 1. GitHub Issues
 
 For bug reports or feature requests, the preferred way to get support is by opening an issue on the GitHub repository. To do so:
 
@@ -33,8 +31,7 @@ For bug reports or feature requests, the preferred way to get support is by open
 
 The issue will be reviewed and responded to as quickly as possible.
 
-2. E-Mail Support
-
+### 2. E-Mail Support
 
 If you prefer to communicate via email, support is available at:
 
