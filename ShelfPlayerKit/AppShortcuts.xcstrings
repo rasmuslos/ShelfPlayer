@@ -21,6 +21,15 @@
               "Skip backwards using ${applicationName}"
             ]
           }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Повернутися назад ${applicationName}",
+              "Скасувати повернення ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -40,6 +49,14 @@
             "state" : "new",
             "values" : [
               "Create a bookmark using ${applicationName}"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Створіть закладку за допомогою ${applicationName}"
             ]
           }
         }
@@ -63,6 +80,15 @@
             "values" : [
               "Forwards using ${applicationName}",
               "Skip forwards using ${applicationName}"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Вперед ${applicationName}",
+              "Скасувати використання ${applicationName}"
             ]
           }
         }
@@ -90,6 +116,16 @@
               "Stop playing ${applicationName}"
             ]
           }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Пауза ${applicationName}",
+              "Призупинити відтворення ${applicationName}",
+              "Зупинити відтворення ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -113,6 +149,15 @@
               "Play ${podcast} episodes using ${applicationName}"
             ]
           }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Відтворити ${podcast} за допомогою ${applicationName}",
+              "Відтворити епізоди ${podcast} за допомогою ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -132,6 +177,14 @@
             "state" : "new",
             "values" : [
               "Play ${target} using ${applicationName}"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Відтворити ${target} за допомогою ${applicationName}"
             ]
           }
         }
@@ -159,6 +212,16 @@
               "Continue playing ${applicationName}"
             ]
           }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Продовжити ${applicationName}",
+              "Відновити відтворення за допомогою ${applicationName}",
+              "Продовжити відтворення ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -181,6 +244,15 @@
               "Check for new downloads using ${applicationName}"
             ]
           }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Пошук нових завантажень за допомогою ${applicationName}",
+              "Перевірте наявність нових завантажень за допомогою ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -201,6 +273,15 @@
             "values" : [
               "Set ${applicationName} playback speed",
               "Set ${applicationName} playback rate"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Встановити швидкість відтворення ${applicationName}",
+              "Встановити швидкість відтворення для ${applicationName}"
             ]
           }
         }
@@ -226,6 +307,15 @@
             "values" : [
               "Set ${applicationName} sleep timer",
               "Set a sleep timer using ${applicationName}"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Встановити ${applicationName} таймер сну",
+              "Встановіть таймер сну ${applicationName}"
             ]
           }
         }
