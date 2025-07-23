@@ -14,6 +14,12 @@
             "state" : "translated",
             "value" : "Chapters"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розділи"
+          }
         }
       }
     },
@@ -29,6 +35,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pause"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пауза"
           }
         }
       }
@@ -46,6 +58,12 @@
             "state" : "translated",
             "value" : "Paused"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Призупинено"
+          }
         }
       }
     },
@@ -61,6 +79,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Play"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Грати"
           }
         }
       }
@@ -78,6 +102,12 @@
             "state" : "translated",
             "value" : "Skip backwards"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти назад"
+          }
         }
       }
     },
@@ -93,6 +123,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sleep timer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сну"
           }
         }
       }
@@ -110,6 +146,12 @@
             "state" : "translated",
             "value" : "Cancel"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
+          }
         }
       }
     },
@@ -125,6 +167,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Extend"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розширити"
           }
         }
       }
@@ -142,6 +190,12 @@
             "state" : "translated",
             "value" : "Start"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Старт"
+          }
         }
       }
     },
@@ -157,6 +211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last played"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Останній відтворений"
           }
         }
       }
@@ -174,6 +234,12 @@
             "state" : "translated",
             "value" : "The last item you played, as well controls for active playback."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Останній відтворений вами елемент, а також елементи керування активним відтворенням."
+          }
         }
       }
     },
@@ -188,7 +254,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heute gehört"
+            "value" : "Listened today"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослухано сьогодні"
           }
         }
       }
@@ -206,6 +278,12 @@
             "state" : "translated",
             "value" : "Shows your listening time goal and your progress towards it."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показує вашу цільову кількість часу прослуховування та ваш прогрес у її досягненні."
+          }
         }
       }
     },
@@ -221,6 +299,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listen now"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слухати зараз"
           }
         }
       }
@@ -238,6 +322,12 @@
             "state" : "translated",
             "value" : "Shows recently played, unfinished items from all libraries."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показує нещодавно відтворені, незавершені елементи з усіх бібліотек."
+          }
         }
       }
     },
@@ -253,6 +343,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No items"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Немає елементів"
           }
         }
       }
