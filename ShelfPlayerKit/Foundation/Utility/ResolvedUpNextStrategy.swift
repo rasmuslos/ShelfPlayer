@@ -17,6 +17,19 @@ public enum ResolvedUpNextStrategy: Sendable {
     
     case none
     
+    public var itemID: ItemIdentifier? {
+        switch self {
+            case .series(let itemID):
+                itemID
+            case .podcast(let itemID):
+                itemID
+            case .collection(let itemID):
+                itemID
+            default:
+                nil
+        }
+    }
+    
     public static func nextGroupingItem(_ itemID: ItemIdentifier) async throws -> ItemIdentifier {
         switch itemID.type {
             case .series:

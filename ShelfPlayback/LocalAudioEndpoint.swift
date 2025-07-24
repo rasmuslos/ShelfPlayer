@@ -693,7 +693,7 @@ private extension LocalAudioEndpoint {
         RunLoop.main.add(sleepTimeoutTimer!, forMode: .common)
     }
     
-    func updateUpNextQueue() {
+    func updateUpNextQueue(using forced: ResolvedUpNextStrategy? = nil) {
         Task.detached { [weak self] in
             guard let self, await upNextQueue.isEmpty else {
                 return
@@ -709,7 +709,9 @@ private extension LocalAudioEndpoint {
             let strategy: ResolvedUpNextStrategy?
             
             do {
-                if let resolved = currentItem.origin.resolvedUpNextStrategy {
+                if let forced {
+                    strategy = forced
+                } else if let resolved = currentItem.origin.resolvedUpNextStrategy {
                     strategy = resolved
                 } else if let podcastID = await podcastID {
                     strategy = (await PersistenceManager.shared.item.upNextStrategy(for: podcastID) ?? .default).resolved(podcastID)
@@ -775,6 +777,32 @@ private extension LocalAudioEndpoint {
     }
     
     func setupObservers() {
+        RFNotification[.collectionChanged].subscribe { [weak self] collectionID in
+            guard self?.upNextStrategy?.itemID == collectionID else {
+                return
+            }
+            
+            self?.upNextQueue.removeAll()
+            self?.updateUpNextQueue(using: .collection(collectionID))
+        }
+        RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, entity in
+            guard entity?.isFinished == true else {
+                return
+            }
+            
+            self?.queue.removeAll { $0.itemID.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }
+            self?.upNextQueue.removeAll { $0.itemID.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }
+            
+            Task {
+                guard let id = self?.id, let queue = self?.queue, let upNextQueue = self?.upNextQueue else {
+                    return
+                }
+                
+                await AudioPlayer.shared.queueDidChange(endpointID: id, queue: queue.map(\.itemID))
+                await AudioPlayer.shared.upNextQueueDidChange(endpointID: id, upNextQueue: upNextQueue.map(\.itemID))
+            }
+        }
+        
         volumeSubscription = AVAudioSession.sharedInstance().publisher(for: \.outputVolume).sink { [weak self] volume in
             self?.systemVolume = .init(volume)
             

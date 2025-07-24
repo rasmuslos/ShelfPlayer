@@ -329,6 +329,7 @@ private struct QueueItemRow: View {
             Divider()
             
             DownloadButton(itemID: itemID, initialStatus: download.status)
+            ItemCollectionMembershipEditButton(itemID: itemID)
             
             Divider()
             

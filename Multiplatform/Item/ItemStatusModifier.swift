@@ -55,7 +55,7 @@ struct ItemStatusModifier: ViewModifier {
         
         return "\(item.id.type.label): \(item.name)"
     }
-    private var value: String {
+    private var value: String? {
         if let series = item as? Series, series.audiobooks.count > 0 {
             return String(localized: "item.count.audiobooks \(series.audiobooks.count)")
         } else if let person = item as? Person {
@@ -64,8 +64,8 @@ struct ItemStatusModifier: ViewModifier {
             return String(localized: "item.count.episodes.unplayed \(incompleteEpisodeCount)")
         }
         
-        guard let progress = progress?.progress, let status = download?.status else {
-            return String(localized: "loading")
+        guard itemID.isPlayable, let progress = progress?.progress, let status = download?.status else {
+            return nil
         }
         
         var result = "\(progress.formatted(.percent.notation(.compactName)))"
@@ -95,7 +95,14 @@ struct ItemStatusModifier: ViewModifier {
                 }
             }
             .accessibilityLabel(label)
-            .accessibilityValue(value)
+            .modify {
+                if let value {
+                    $0
+                        .accessibilityValue(value)
+                } else {
+                    $0
+                }
+            }
             .accessibilityIdentifier(itemID.description)
             .modify {
                 if isInteractive {
