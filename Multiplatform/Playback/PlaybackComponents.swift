@@ -292,11 +292,7 @@ struct PlaybackMenuActions: View {
     var body: some View {
         if let currentItem = satellite.nowPlayingItem {
             if let audiobook = currentItem as? Audiobook {
-                Button(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: "book") {
-                    audiobook.id.navigateIsolated()
-                }
-                .disabled(satellite.isOffline)
-                
+                ItemLoadLink(itemID: audiobook.id)
                 ItemMenu(authors: viewModel.authorIDs)
                 ItemMenu(narrators: viewModel.narratorIDs)
                 ItemMenu(series: viewModel.seriesIDs)
