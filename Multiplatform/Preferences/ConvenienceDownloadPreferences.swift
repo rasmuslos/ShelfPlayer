@@ -33,7 +33,7 @@ struct ConvenienceDownloadPreferences: View {
                             if loading[itemID] == true {
                                 ProgressView()
                             } else if let parsed = ConvenienceDownloadRetrievalOption.parse(retrieval) {
-                                GroupingConfigurationSheet.ConvenienceDownloadRetrievalPicker(retrieval: .init() { parsed } set: { updateConfiguration(itemID: itemID, retrieval: $0.resolved) }) {
+                                GroupingConfigurationSheet.ConvenienceDownloadRetrievalPicker(itemType: itemID.type, retrieval: .init() { parsed } set: { updateConfiguration(itemID: itemID, retrieval: $0.resolved) }) {
                                     ItemCompactRow(itemID: itemID, context: .convenienceDownloadPreferences)
                                 }
                                 .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))

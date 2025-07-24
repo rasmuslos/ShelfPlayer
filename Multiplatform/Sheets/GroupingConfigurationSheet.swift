@@ -52,7 +52,7 @@ struct GroupingConfigurationSheet: View {
                     }
                     
                     Section {
-                        ConvenienceDownloadRetrievalPicker(retrieval: $viewModel.retrieval) {
+                        ConvenienceDownloadRetrievalPicker(itemType: itemID.type, retrieval: $viewModel.retrieval) {
                             Text("item.convenienceDownload.retrieval")
                         }
                     } header: {
@@ -97,12 +97,13 @@ struct GroupingConfigurationSheet: View {
     }
     
     struct ConvenienceDownloadRetrievalPicker<Content: View>: View {
+        let itemType: ItemIdentifier.ItemType
         @Binding var retrieval: ConvenienceDownloadRetrievalOption
         let content: () -> Content
         
         var body: some View {
             Picker(selection: $retrieval) {
-                ForEach(ConvenienceDownloadRetrievalOption.allCases) { strategy in
+                ForEach(ConvenienceDownloadRetrievalOption.options(for: itemType)) { strategy in
                     Text(strategy.label)
                         .tag(strategy)
                 }
@@ -225,7 +226,7 @@ private extension ConfigureableUpNextStrategy {
     }
 }
 
-enum ConvenienceDownloadRetrievalOption: String, CaseIterable, Identifiable {
+enum ConvenienceDownloadRetrievalOption: String, Identifiable {
     case disabled
     
     case one
@@ -303,6 +304,23 @@ enum ConvenienceDownloadRetrievalOption: String, CaseIterable, Identifiable {
         }
     }
     
+    static func options(for itemType: ItemIdentifier.ItemType) -> [Self] {
+        switch itemType {
+            case .podcast:
+                [.disabled,
+                 .one, .two, .three, .four, .five, .ten,
+                 .oneDay, .oneWeek, .twoWeeks, .oneMonth,
+                 .all
+                ]
+            case .series, .collection, .playlist:
+                [.disabled,
+                 .one, .two, .three, .four, .five, .ten,
+                 .all
+                ]
+            default:
+                [.disabled]
+        }
+    }
     static func parse(_ retrieval: PersistenceManager.ConvenienceDownloadSubsystem.GroupingRetrieval) -> Self? {
         switch retrieval {
             case .amount(let amount):

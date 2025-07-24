@@ -780,13 +780,6 @@ extension Satellite {
                     try await PersistenceManager.shared.progress.markAsCompleted([itemID])
                 }
                 
-                while let index = await queue.firstIndex(of: itemID) {
-                    remove(queueIndex: index)
-                }
-                while let index = await upNextQueue.firstIndex(of: itemID) {
-                    remove(upNextQueueIndex: index)
-                }
-                
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 await endWorking(on: itemID, successfully: false)
