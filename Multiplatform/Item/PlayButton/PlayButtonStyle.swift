@@ -14,9 +14,9 @@ protocol PlayButtonStyle: Sendable {
     
     typealias Configuration = PlayButtonConfiguration
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     func makeMenu(configuration: Self.Configuration) -> Self.MenuBody
-    @ViewBuilder
+    @ViewBuilder @MainActor
     func makeLabel(configuration: Self.Configuration) -> Self.LabelBody
     
     var cornerRadius: CGFloat { get }
@@ -32,8 +32,8 @@ extension PlayButtonStyle where Self == MediumPlayButtonStyle {
 }
 
 struct AnyPlayButtonStyle: PlayButtonStyle {
-    private var _makeMenu: @Sendable (Configuration) -> AnyView
-    private var _makeLabel: @Sendable (Configuration) -> AnyView
+    private var _makeMenu: @MainActor (Configuration) -> AnyView
+    private var _makeLabel: @MainActor (Configuration) -> AnyView
     
     private var _cornerRadius: CGFloat
     
@@ -53,9 +53,11 @@ struct AnyPlayButtonStyle: PlayButtonStyle {
         _hideRemainingWhenUnplayed = style.hideRemainingWhenUnplayed
     }
     
+    @MainActor
     func makeMenu(configuration: Configuration) -> some View {
         _makeMenu(configuration)
     }
+    @MainActor
     func makeLabel(configuration: Configuration) -> some View {
         _makeLabel(configuration)
     }

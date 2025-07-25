@@ -38,96 +38,43 @@ final class CarPlayListenNowController {
 }
 
 private extension CarPlayListenNowController {
-    nonisolated func updateTemplate() {
+    func updateTemplate() {
         Task {
-            let (sections, controllers) = await withTaskGroup {
-                $0.addTask { await self.buildListenNowSection() }
+            var controllers = [CarPlayItemController]()
+            var sections = [CPListSection]()
+            
+            let listenNowControllers = await ShelfPlayerKit.listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
+            
+            controllers += listenNowControllers
+            sections.append(CPListSection(items: listenNowControllers.map(\.row), header: String(localized: "panel.listenNow"), sectionIndexTitle: nil))
+            
+            if let audiobooks = try? await PersistenceManager.shared.download.audiobooks() {
+                let audiobookControllers = audiobooks.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
                 
-                $0.addTask { await self.buildPersistedAudiobooksSection() }
-                $0.addTask { await self.buildPersistedEpisodesSection() }
+                controllers += audiobookControllers
+                sections.append(CPListSection(items: audiobookControllers.map(\.row), header: String(localized: "row.downloaded.audiobooks"), headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil))
+            }
+            
+            if let podcasts = try? await PersistenceManager.shared.download.podcasts(), let episodes = try? await PersistenceManager.shared.download.episodes() {
+                let grouped = Dictionary(grouping: episodes, by: \.podcastID).sorted { $0.key.description < $1.key.description }
                 
-                var sections = [CPListSection]()
-                var controllers = [CarPlayItemController]()
-                
-                for await (rows, itemControllers) in $0 {
-                    sections += rows
-                    controllers += itemControllers
+                for (podcastID, contained) in grouped {
+                    guard let podcast = podcasts.first(where: { $0.id == podcastID }) else {
+                        continue
+                    }
+                    
+                    let items = contained.map { CarPlayPlayableItemController(item: $0, displayCover: false) }
+                    let section = CPListSection(items: items.map(\.row), header: podcast.name, headerSubtitle: podcast.authors.formatted(.list(type: .and, width: .short)), headerImage: await podcast.id.platformImage(size: .small), headerButton: nil, sectionIndexTitle: nil)
+                    
+                    sections.append(section)
+                    controllers += items
                 }
-                
-                return (sections, controllers)
             }
             
             await MainActor.run {
                 itemControllers = controllers
                 template.updateSections(sections)
             }
-        }
-    }
-    
-    nonisolated func buildListenNowSection() async -> ([CPListSection], [CarPlayItemController]) {
-        let listenNowItems = await ShelfPlayerKit.listenNowItems
-        
-        guard !listenNowItems.isEmpty else {
-            return ([], [])
-        }
-        
-        return await MainActor.run {
-            let controllers = listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-            return ([CPListSection(items: controllers.map(\.row), header: String(localized: "panel.listenNow"), sectionIndexTitle: nil)], controllers)
-        }
-    }
-    nonisolated func buildPersistedAudiobooksSection() async -> ([CPListSection], [CarPlayItemController]) {
-        let audiobooks = try? await PersistenceManager.shared.download.audiobooks()
-        
-        guard let audiobooks else {
-            return ([], [])
-        }
-        
-        return await MainActor.run {
-            let controllers = audiobooks.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-            let section = CPListSection(items: controllers.map(\.row), header: String(localized: "row.downloaded.audiobooks"), headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil)
-            
-            return ([section], controllers)
-        }
-    }
-    nonisolated func buildPersistedEpisodesSection() async -> ([CPListSection], [CarPlayItemController]) {
-        let (podcasts, episodes) = (try? await PersistenceManager.shared.download.podcasts(), try? await PersistenceManager.shared.download.episodes())
-        
-        guard let podcasts, let episodes else {
-            return ([], [])
-        }
-        
-        let grouped = Dictionary(grouping: episodes, by: \.podcastID).sorted { $0.key.description < $1.key.description }
-        
-        let images = await withTaskGroup {
-            for podcast in podcasts {
-                $0.addTask {
-                    (podcast.id, await podcast.id.platformImage(size: .small))
-                }
-            }
-            
-            return await $0.reduce(into: [:]) {
-                $0[$1.0] = $1.1
-            }
-        }
-        
-        return await MainActor.run {
-            var sections = [CPListSection]()
-            var controllers = [CarPlayItemController]()
-            
-            for (podcastID, contained) in grouped {
-                guard let podcast = podcasts.first(where: { $0.id == podcastID }) else {
-                    continue
-                }
-                
-                let items = contained.map { CarPlayPlayableItemController(item: $0, displayCover: false) }
-                let section = CPListSection(items: items.map(\.row), header: podcast.name, headerSubtitle: podcast.authors.formatted(.list(type: .and, width: .short)), headerImage: images[podcastID], headerButton: nil, sectionIndexTitle: nil)
-                
-                sections.append(section)
-                controllers += items
-            }
-            
-            return (sections, controllers)
         }
     }
 }

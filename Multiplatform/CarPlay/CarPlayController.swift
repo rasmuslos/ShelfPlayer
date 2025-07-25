@@ -24,4 +24,7 @@ class CarPlayController {
         
         try await interfaceController.setRootTemplate(tabBar.template, animated: false)
     }
+    func destroy() {
+        nowPlayingController.remove()
+    }
 }
