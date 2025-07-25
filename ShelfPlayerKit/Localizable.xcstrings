@@ -18,6 +18,12 @@
             "value" : "Cancel sleep timer"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbryt insomningstimer"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38,6 +44,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ends the current sleep timer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbryter den nuvarande insomningstimern"
           }
         },
         "uk" : {
@@ -62,6 +74,12 @@
             "value" : "Search for downloads"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök efter nedladdningar"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -82,6 +100,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Searches for and queues automatic downloads"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Söker efter och köar automatiska nedladdningar"
           }
         },
         "uk" : {
@@ -106,6 +130,12 @@
             "value" : "Create bookmark"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa bokmärke"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -126,6 +156,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Creates a bookmark for the playing audiobook"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapar ett bokmärke för ljudboken som spelas nu"
           }
         },
         "uk" : {
@@ -150,6 +186,12 @@
             "value" : "Note of the bookmark. Creates a quick bookmark if left blank"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notering för bokmärket. Skapar ett snabbt bokmärke om tomt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -170,6 +212,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Download"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda ner"
           }
         },
         "uk" : {
@@ -194,6 +242,12 @@
             "value" : "Downloads the item in the background"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laddar ner objektet i bakgrunden"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -214,6 +268,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Audiobookshelf-Item"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiobookshelf-objekt"
           }
         },
         "uk" : {
@@ -257,6 +317,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld items"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld objekt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld objekt"
                 }
               }
             }
@@ -308,6 +386,12 @@
             "value" : "Audiobook"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljudbok"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -328,6 +412,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Author"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Författare"
           }
         },
         "uk" : {
@@ -352,6 +442,12 @@
             "value" : "An Audiobookshelf item. Can be an audiobook, author, narrator, series, podcast and episode"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett Audiobookshelf-objekt. Kan vara en ljudbok, författare, berättare, serie, podcast eller avsnitt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -374,6 +470,12 @@
             "value" : "Episode"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avsnitt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -391,6 +493,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podcast"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Podcast"
@@ -418,6 +526,12 @@
             "value" : "Abridged"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bryggad"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -438,6 +552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Added"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillagd"
           }
         },
         "uk" : {
@@ -462,6 +582,12 @@
             "value" : "Authors"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Författare"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -482,6 +608,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Description"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beskrivning"
           }
         },
         "uk" : {
@@ -506,6 +638,12 @@
             "value" : "Episode count"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antal avsnitt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -523,6 +661,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicit"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Explicit"
@@ -550,6 +694,12 @@
             "value" : "Genres"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genrer"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -570,6 +720,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Identifier"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifierare"
           }
         },
         "uk" : {
@@ -594,6 +750,12 @@
             "value" : "Unplayed episode count"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antal ospelade avsnitt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -614,6 +776,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrators"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berättare"
           }
         },
         "uk" : {
@@ -638,6 +806,12 @@
             "value" : "Released"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Släppt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -658,6 +832,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Subtitle"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertitel"
           }
         },
         "uk" : {
@@ -682,6 +862,12 @@
             "value" : "Title"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titel"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -699,6 +885,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL"
@@ -726,6 +918,12 @@
             "value" : "Series"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serier"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -746,6 +944,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Generic error"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generiskt fel"
           }
         },
         "uk" : {
@@ -770,6 +974,12 @@
             "value" : "Invalid item type"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogiltig objekt-typ"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -790,6 +1000,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No playback item"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inget spelade objekt"
           }
         },
         "uk" : {
@@ -814,6 +1030,12 @@
             "value" : "Not found"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hittades ej"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -834,6 +1056,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Extend sleep timer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utöka sovtimer"
           }
         },
         "uk" : {
@@ -858,6 +1086,12 @@
             "value" : "Extends the sleep timer"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utökar sovtimern"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -878,6 +1112,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listen now"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyssna nu"
           }
         },
         "uk" : {
@@ -902,6 +1142,12 @@
             "value" : "Returns recently played, unfinished items from all libraries"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Returnerar nyligen spelade, ofärdiga objekt från alla bibliotek"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -922,6 +1168,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Now playing"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spelas nu"
           }
         },
         "uk" : {
@@ -946,6 +1198,12 @@
             "value" : "Returns the currently playing item"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Returnerar det spelande objektet"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -966,6 +1224,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open item"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna objekt"
           }
         },
         "uk" : {
@@ -990,6 +1254,12 @@
             "value" : "Open ${item}"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna ${item}"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1010,6 +1280,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Opens the item in ShelfPlayer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppnar objektet i ShelfPlayer"
           }
         },
         "uk" : {
@@ -1034,6 +1310,12 @@
             "value" : "Pause"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausa"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1054,6 +1336,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pauses the active playback"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar den aktiva spelningen"
           }
         },
         "uk" : {
@@ -1078,6 +1366,12 @@
             "value" : "Resume"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1098,6 +1392,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resumes the active playback"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätter den aktiva spelningen"
           }
         },
         "uk" : {
@@ -1122,6 +1422,12 @@
             "value" : "Remove download"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort nedladdning"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1142,6 +1448,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Removes the download of the provided item"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tar bort nedladdningen av det givna objektet"
           }
         },
         "uk" : {
@@ -1166,6 +1478,12 @@
             "value" : "Search"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1186,6 +1504,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search for ${search}"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Söker efter ${search}"
           }
         },
         "uk" : {
@@ -1210,6 +1534,12 @@
             "value" : "Searches all libraries for the given search"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Söker genom alla bibliotek efter den givna förfrågan"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1230,6 +1560,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search online"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök online"
           }
         },
         "uk" : {
@@ -1254,6 +1590,12 @@
             "value" : "Create server search request. The search will be performed on-device otherwise"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa förfrågan för server-sökning. Sökningen sker annars på enheten"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1274,6 +1616,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök"
           }
         },
         "uk" : {
@@ -1298,6 +1646,12 @@
             "value" : "Set completed"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sätt färdigställande"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1318,6 +1672,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates the completion of the provided item"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdaterar färdigställandet för det givna objektet"
           }
         },
         "uk" : {
@@ -1342,6 +1702,12 @@
             "value" : "Finished"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avklarad"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1362,6 +1728,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Set playback speed"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sätt uppspelningshastighet"
           }
         },
         "uk" : {
@@ -1386,6 +1758,12 @@
             "value" : "Set playback speed to ${rate}%"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sätt uppspelningshastighet till ${rate}%"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1406,6 +1784,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates the current playback speed"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdaterar den nuvarande uppspelningshastigheten"
           }
         },
         "uk" : {
@@ -1430,6 +1814,12 @@
             "value" : "Absolute playback speed percentage"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absolut uppspelningshastighet i procent"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1450,6 +1840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sleep timer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insomningstimer"
           }
         },
         "uk" : {
@@ -1474,6 +1870,12 @@
             "value" : "End playback in ${amount} ${type}"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avsluta uppspelning om ${amount} ${type}"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1494,6 +1896,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Amount"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antal"
           }
         },
         "uk" : {
@@ -1518,6 +1926,12 @@
             "value" : "Set the sleep timer to the desired length"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sätt insomningstimern till den givna längden"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1538,6 +1952,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unit"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enhet"
           }
         },
         "uk" : {
@@ -1562,6 +1982,12 @@
             "value" : "Chapters"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapitel"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1582,6 +2008,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hours"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timmar"
           }
         },
         "uk" : {
@@ -1606,6 +2038,12 @@
             "value" : "Minutes"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuter"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1626,6 +2064,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seconds"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekunder"
           }
         },
         "uk" : {
@@ -1650,6 +2094,12 @@
             "value" : "Skip backwards"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoppa bakåt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1670,6 +2120,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skips the active playback by the specified or configured interval"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoppar bakåt det givna eller konfigurerade intervallet"
           }
         },
         "uk" : {
@@ -1694,6 +2150,12 @@
             "value" : "Skip forwards"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoppa framåt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1714,6 +2176,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Interval"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intervall"
           }
         },
         "uk" : {
@@ -1738,6 +2206,12 @@
             "value" : "Play"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1758,6 +2232,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Play audiobook"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela ljudbok"
           }
         },
         "uk" : {
@@ -1782,6 +2262,12 @@
             "value" : "Starts playing the specified item."
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Börjar spela det givna objektet."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1802,6 +2288,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Play podcast"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela podcast"
           }
         },
         "uk" : {
@@ -1826,6 +2318,12 @@
             "value" : "Play ${podcast} episodes"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela avsnitt från ${podcast}"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1846,6 +2344,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Without playback session"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utan uppspelnings-session"
           }
         },
         "uk" : {
@@ -1870,6 +2374,12 @@
             "value" : "Start playback without creating a Audiobookshelf listening session. ShelfPlayer will create an offline one and sync it once connected. Useful for offline scenarios"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Börja spela utan att skapa en Audiobookshelf-session. ShelfPlayer skapar en offline och synkar den vid anslutning. Användbart för offline-scenarion."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1890,6 +2400,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Audiobook"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljudbok"
           }
         },
         "uk" : {
@@ -1914,6 +2430,12 @@
             "value" : "Author"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Författare"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1934,6 +2456,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Collection"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samling"
           }
         },
         "uk" : {
@@ -1977,6 +2505,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld unplayed episodes"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ospelat avsnitt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ospelade avsnitt"
                 }
               }
             }
@@ -2028,6 +2574,12 @@
             "value" : "Episode"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avsnitt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2048,6 +2600,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrator"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berättare"
           }
         },
         "uk" : {
@@ -2072,6 +2630,12 @@
             "value" : "Playlist"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spellista"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2089,6 +2653,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podcast"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Podcast"
@@ -2114,6 +2684,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Series"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie"
           }
         },
         "uk" : {

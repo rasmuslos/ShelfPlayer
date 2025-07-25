@@ -71,6 +71,12 @@
             "value" : "Delete"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -119,6 +125,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redigera"
           }
         },
         "uk" : {
@@ -1554,6 +1566,12 @@
             "value" : "Collection unavailable"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samling ej tillgänglig"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1636,6 +1654,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Playlist unavailable"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spellista ej tillgänglig"
           }
         },
         "uk" : {
@@ -2134,6 +2158,12 @@
             "value" : "Create"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2156,6 +2186,12 @@
             "value" : "Create playlist"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa spellista"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2176,6 +2212,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add to …"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till …"
           }
         },
         "uk" : {
@@ -2676,6 +2718,12 @@
             "value" : "%lld items"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld objekt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2696,6 +2744,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld audiobooks"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ljudböcker"
           }
         },
         "uk" : {
@@ -2984,6 +3038,12 @@
             "value" : "Create Collection"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa samling"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3004,6 +3064,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create Playlist"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa spellista"
           }
         },
         "uk" : {
@@ -5189,6 +5255,12 @@
             "value" : "View collection"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa samling"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5265,6 +5337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View playlist"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa spellista"
           }
         },
         "uk" : {
@@ -5609,6 +5687,12 @@
             "value" : "Collections"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samlingar"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5843,6 +5927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Playlists"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spellistor"
           }
         },
         "uk" : {
@@ -6753,6 +6843,12 @@
             "value" : "Color scheme"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Färgschema"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6773,6 +6869,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mörkt"
           }
         },
         "uk" : {
@@ -6797,6 +6899,12 @@
             "value" : "Light"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljust"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6814,6 +6922,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "System"
