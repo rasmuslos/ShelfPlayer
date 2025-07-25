@@ -32,8 +32,9 @@ public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDeleg
     }
     
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
-        
         self.interfaceController = nil
+        
+        controller?.destroy()
         controller = nil
     }
 }

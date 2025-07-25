@@ -11,7 +11,7 @@ import OSLog
 import ShelfPlayback
 
 @Observable @MainActor
-final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Identifiable, O: Sendable {
+final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Identifiable, T.ID: Sendable, O: Sendable {
     private let logger: Logger
     
     private nonisolated static var PAGE_SIZE: Int {
@@ -578,3 +578,4 @@ extension LazyLoadHelper {
         })
     }
 }
+

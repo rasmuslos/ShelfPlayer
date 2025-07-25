@@ -35,7 +35,7 @@ struct MultiplatformApp: App {
 }
 
 struct ShelfPlayerPackage: AppIntentsPackage {
-    static let includedPackages: [any AppIntentsPackage.Type] = [
+    nonisolated(unsafe) static let includedPackages: [any AppIntentsPackage.Type] = [
         ShelfPlayerKitPackage.self,
     ]
 }
