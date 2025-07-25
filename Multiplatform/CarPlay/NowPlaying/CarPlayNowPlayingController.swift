@@ -63,7 +63,7 @@ class CarPlayNowPlayingController: NSObject {
         
         update()
     }
-    deinit {
+    func remove() {
         template.remove(self)
     }
     
