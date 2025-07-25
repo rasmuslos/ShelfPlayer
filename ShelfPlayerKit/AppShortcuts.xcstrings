@@ -22,6 +22,14 @@
             ]
           }
         },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Hoppa bakåt med ${applicationName}"
+            ]
+          }
+        },
         "uk" : {
           "stringSet" : {
             "state" : "translated",
@@ -49,6 +57,14 @@
             "state" : "new",
             "values" : [
               "Create a bookmark using ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skapa ett bokmärke med ${applicationName}"
             ]
           }
         },
@@ -80,6 +96,14 @@
             "values" : [
               "Forwards using ${applicationName}",
               "Skip forwards using ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Hoppa framåt med ${applicationName}"
             ]
           }
         },
@@ -117,6 +141,14 @@
             ]
           }
         },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Pausa ${applicationName} uppspelning"
+            ]
+          }
+        },
         "uk" : {
           "stringSet" : {
             "state" : "translated",
@@ -150,6 +182,14 @@
             ]
           }
         },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Spela ${podcast} med ${applicationName}"
+            ]
+          }
+        },
         "uk" : {
           "stringSet" : {
             "state" : "translated",
@@ -177,6 +217,14 @@
             "state" : "new",
             "values" : [
               "Play ${target} using ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Spela ${target} med ${applicationName}"
             ]
           }
         },
@@ -213,6 +261,14 @@
             ]
           }
         },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Återuppta uppspelning med ${applicationName}"
+            ]
+          }
+        },
         "uk" : {
           "stringSet" : {
             "state" : "translated",
@@ -242,6 +298,14 @@
             "values" : [
               "Search for new downloads using ${applicationName}",
               "Check for new downloads using ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Sök efter nya nedladdningar med ${applicationName}"
             ]
           }
         },
@@ -276,6 +340,14 @@
             ]
           }
         },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Sätt uppspelningshastighet med ${applicationName} "
+            ]
+          }
+        },
         "uk" : {
           "stringSet" : {
             "state" : "translated",
@@ -307,6 +379,14 @@
             "values" : [
               "Set ${applicationName} sleep timer",
               "Set a sleep timer using ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Sätt insomningsTimer med ${applicationName}"
             ]
           }
         },
