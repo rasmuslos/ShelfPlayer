@@ -42,7 +42,7 @@ Download the latest release from the [Releases](https://github.com/yourusername/
 
 * Siri is not supported without a paid Apple Developer account due to entitlement restrictions.
 * App extensions (e.g., Widgets) may not function correctly; it is recommended to remove them before sideloading.
-* For background and technical details, see [issue #20](https://github.com/yourusername/shelfplayer/issues/20) and [issue #4](https://github.com/yourusername/shelfplayer/issues/4).
+* For background and technical details, see https://github.com/rasmuslos/ShelfPlayer/issues/20 and https://github.com/rasmuslos/ShelfPlayer/issues/4.
 
 ### Building from Source
 
