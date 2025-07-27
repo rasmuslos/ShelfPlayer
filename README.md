@@ -24,11 +24,10 @@
 </a>
 
 ## Screenshots
-
-| Home                                                                                           | Audiobook                                                                             | Player                                                                          | Podcast                                                                           |
+| Audiobook                                                                                      | Podcast                                                                               | Player                                                                          | Other                                                                                             |
 | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| <img src="/Screenshots/iOS%20Audiobook%20Home.png?raw=true" alt="Home (iOS)" width="200"/>     | <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="Audiobook" width="200"/>    | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player" width="200"/>    | <img src="/Screenshots/iOS%20Podcast.png?raw=true" alt="Podcast" width="200"/>    |
-| <img src="/Screenshots/iPadOS%20Audiobook%20Home.png?raw=true" alt="Home (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player" width="200"/> | <img src="/Screenshots/iPadOS%20Podcast.png?raw=true" alt="Podcast" width="200"/> |
+| <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="Audiobook (iOS)" width="200"/>     | <img src="/Screenshots/iOS%20Podcast.png?raw=true" alt="Podcast" width="200"/>    | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player" width="200"/>    | <img src="/Screenshots/iOS%20Series.png?raw=true" alt="Series" width="200"/>    | <img src="/Screenshots/iOS%20Listen%20Now.png?raw=true" alt="Listen Now" width="200"/>    |
+| <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Podcast.png?raw=true" alt="Podcast" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player" width="200"/> | <img src="/Screenshots/iOS%20Listen%20Now.png?raw=true" alt="Listen Now" width="200"/> |
 
 ## Sideloading
 
