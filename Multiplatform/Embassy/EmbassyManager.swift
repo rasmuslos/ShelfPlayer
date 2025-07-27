@@ -6,12 +6,15 @@
 //
 
 import Foundation
-@preconcurrency import ActivityKit
 import WidgetKit
 import AppIntents
 import Intents
 import OSLog
 import ShelfPlayback
+
+#if canImport(ActivityKit)
+@preconcurrency import ActivityKit
+#endif
 
 #if canImport(UIKit)
 import UIKit

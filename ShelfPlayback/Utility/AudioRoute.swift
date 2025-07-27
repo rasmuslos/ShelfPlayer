@@ -8,7 +8,13 @@
 import Foundation
 import AVKit
 
-public struct AudioRoute: Sendable {
+private protocol PlatformAudioRoute: Sendable {
+    var icon: String { get }
+    var isHighlighted: Bool { get }
+}
+
+#if !os(macOS)
+public struct AudioRoute: PlatformAudioRoute {
     let name: String
     let port: AVAudioSession.Port
     
@@ -57,3 +63,13 @@ public struct AudioRoute: Sendable {
         }
     }
 }
+#else
+public struct AudioRoute: PlatformAudioRoute {
+    public var icon: String {
+        "airplay.audio"
+    }
+    var isHighlighted: Bool {
+        false
+    }
+}
+#endif

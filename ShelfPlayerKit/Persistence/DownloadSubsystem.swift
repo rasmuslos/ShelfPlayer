@@ -557,7 +557,9 @@ public extension PersistenceManager.DownloadSubsystem {
         
         busy.insert(itemID)
         
+        #if canImport(UIKit)
         let task = await UIApplication.shared.beginBackgroundTask(withName: "download::\(itemID)")
+        #endif
         
         do {
             try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
@@ -674,12 +676,16 @@ public extension PersistenceManager.DownloadSubsystem {
             
             scheduleUpdateTask()
             
+            #if canImport(UIKit)
             await UIApplication.shared.endBackgroundTask(task)
+            #endif
         } catch {
             logger.error("Error creating download: \(error)")
             busy.remove(itemID)
             
+            #if canImport(UIKit)
             await UIApplication.shared.endBackgroundTask(task)
+            #endif
             
             throw error
         }

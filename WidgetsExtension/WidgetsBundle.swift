@@ -12,9 +12,12 @@ import SwiftUI
 struct WidgetsBundle: WidgetBundle {
     var body: some Widget {
         LastListenedWidget()
-        ListenedTodayWidget()
         ListenNowWidget()
         
+        #if os(iOS)
+        ListenedTodayWidget()
+        
         SleepTimerLiveActivity()
+        #endif
     }
 }

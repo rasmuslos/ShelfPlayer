@@ -81,7 +81,7 @@ public extension APIClient {
                               browserName: "ShelfPlayer",
                               browserVersion: ShelfPlayerKit.clientVersion,
                               osName: "iOS",
-                              osVersion: await ShelfPlayerKit.osVersion,
+                              osVersion: ShelfPlayerKit.osVersion,
                               deviceType: "iPhone",
                               manufacturer: "Apple",
                               model: ShelfPlayerKit.model,

@@ -113,9 +113,16 @@ private struct LastListenedWidgetContent: View {
     @ViewBuilder
     private var image: some View {
         Group {
-            if let imageData = entry.imageData, let image = UIImage(data: imageData) {
-                Image(uiImage: image)
-                    .resizable()
+            if let imageData = entry.imageData, let image = PlatformImage(data: imageData) {
+                Group {
+                    #if canImport(UIKit)
+                    Image(uiImage: image)
+                        .resizable()
+                    #elseif canImport(AppKit)
+                    Image(nsImage: image)
+                        .resizable()
+                    #endif
+                }
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             } else {

@@ -86,11 +86,18 @@ private struct ListenNowWidgetContent: View {
     
     @ViewBuilder
     private func label(item: PlayableItem) -> some View {
-        if let imageData = entry.covers[item.id], let image = UIImage(data: imageData) {
-            Image(uiImage: image)
-                .resizable()
-                .aspectRatio(1, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+        if let imageData = entry.covers[item.id], let image = PlatformImage(data: imageData) {
+            Group {
+                #if canImport(UIKit)
+                Image(uiImage: image)
+                    .resizable()
+                #elseif canImport(AppKit)
+                Image(nsImage: image)
+                    .resizable()
+                #endif
+            }
+            .aspectRatio(1, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         } else {
             ItemImage(item: nil, size: .regular, cornerRadius: 8)
         }

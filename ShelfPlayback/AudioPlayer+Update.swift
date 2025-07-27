@@ -16,12 +16,14 @@ extension AudioPlayer {
             return
         }
         
+        #if !os(macOS)
         do {
             try audioSession.setCategory(.playback, mode: .spokenAudio, policy: .longFormAudio)
             try audioSession.setActive(true)
         } catch {
             logger.error("Failed to set audio session category: \(error)")
         }
+        #endif
         
         RFNotification[.playbackItemChanged].dispatch(payload: (itemID, chapters, time))
         
@@ -33,11 +35,13 @@ extension AudioPlayer {
         }
         
         if updateSessionActivation {
+            #if !os(macOS)
             do {
                 try audioSession.setActive(isPlaying)
             } catch {
                 logger.error("Failed to set audio session category: \(error)")
             }
+            #endif
         }
         
         RFNotification[.playStateChanged].dispatch(payload: isPlaying)
@@ -182,11 +186,13 @@ extension AudioPlayer {
             return
         }
         
+        #if !os(macOS)
         do {
             try audioSession.setActive(false)
         } catch {
             logger.error("Failed to deactivate audio session: \(error)")
         }
+        #endif
         
         await widgetManager.invalidate()
         

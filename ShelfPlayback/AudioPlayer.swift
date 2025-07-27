@@ -17,7 +17,9 @@ public final actor AudioPlayer: Sendable {
     
     var current: (any AudioEndpoint)?
     
+    #if !os(macOS)
     let audioSession = AVAudioSession.sharedInstance()
+    #endif
     let widgetManager = NowPlayingWidgetManager()
     
     var didPauseAt: Date?

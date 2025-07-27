@@ -388,6 +388,7 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         try await PersistenceManager.shared.keyValue.set(.runExtendedBackgroundTask, nil)
     }
     
+    @available(macOS, unavailable)
     nonisolated func scheduleBackgroundTask(shouldWait: Bool) async {
         guard await BGTaskScheduler.shared.pendingTaskRequests().first(where: {$0.identifier == Self.BACKGROUND_TASK_IDENTIFIER }) == nil else {
             logger.warning("Requested background task even though it is already scheduled")
@@ -423,6 +424,7 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         }
     }
     
+    @available(macOS, unavailable)
     nonisolated func handleBackgroundTask(_ task: BGTask) {
         task.expirationHandler = {
             self.logger.info("Expiration handler called on background task for identifier: \(task.identifier)")

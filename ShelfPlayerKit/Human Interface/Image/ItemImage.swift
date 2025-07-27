@@ -98,11 +98,17 @@ public struct ItemImage: View {
     
     private nonisolated func reload() {
         Task {
-            guard let data = await itemID?.data(size: size), let uiImage = UIImage(data: data) else {
+            guard let platformImage = await itemID?.platformImage(size: size) else {
                 return
             }
             
-            let image = Image(uiImage: uiImage)
+            #if canImport(UIKit)
+            let image = Image(uiImage: platformImage)
+            #elseif canImport(AppKit)
+            let image = Image(nsImage: platformImage)
+            #else
+            fatalError("Unsupported platform")
+            #endif
             
             await MainActor.run {
                 withAnimation {

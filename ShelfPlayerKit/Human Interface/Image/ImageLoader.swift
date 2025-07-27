@@ -9,8 +9,10 @@ import Foundation
 
 #if canImport(UIKit)
 import UIKit
-
 public typealias PlatformImage = UIImage
+#elseif canImport(AppKit)
+import AppKit
+public typealias PlatformImage = NSImage
 #endif
 
 public final actor ImageLoader {
@@ -91,7 +93,13 @@ public final actor ImageLoader {
             return nil
         }
         
+        #if canImport(UIKit)
         return UIImage(data: data)
+        #elseif canImport(AppKit)
+        return NSImage(data: data)
+        #else
+        fatalError("Unsupported platform")
+        #endif
     }
     
     public func purge() {
@@ -149,6 +157,8 @@ public enum ImageSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIter
             } else {
                 base
             }
+            #else
+            base * 2
             #endif
         }
     }

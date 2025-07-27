@@ -7,10 +7,6 @@
 
 import Foundation
 
-#if canImport(UIKit)
-import UIKit
-#endif
-
 public extension ShelfPlayerKit {
     static let groupContainer = "group.io.rfk.shelfplayer"
     
@@ -19,10 +15,10 @@ public extension ShelfPlayerKit {
     static let clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     static let clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
-    #if canImport(UIKit)
-    @MainActor
-    static let osVersion = UIDevice.current.systemVersion
-    #endif
+    static let osVersion: String = {
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        return "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+    }()
     
     static let model: String = {
         var systemInfo = utsname()

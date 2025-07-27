@@ -11,7 +11,9 @@ import ShelfPlayback
 
 @main
 struct MultiplatformApp: App {
+    #if canImport(UIKit)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    #endif
     
     init() {
         #if !ENABLE_CENTRALIZED

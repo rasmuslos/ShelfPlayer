@@ -72,7 +72,9 @@ final class LocalAudioEndpoint: AudioEndpoint {
         }
     }
     
+    #if os(iOS)
     private(set) var systemVolume: Percentage
+    #endif
     
     private(set) var duration: TimeInterval?
     private(set) var currentTime: TimeInterval?
@@ -102,8 +104,10 @@ final class LocalAudioEndpoint: AudioEndpoint {
     private(set) var upNextStrategy: ResolvedUpNextStrategy?
     
     private var chapterValidUntil: TimeInterval?
-    
+
+    #if os(iOS)
     private var volumeSubscription: AnyCancellable?
+    #endif
     private var bufferCheckTimer: Timer?
     
     private var sleepLastPause: Date?
@@ -135,7 +139,9 @@ final class LocalAudioEndpoint: AudioEndpoint {
         isBuffering = true
         activeOperationCount = 0
         
+        #if os(iOS)
         systemVolume = 0
+        #endif
         
         duration = nil
         currentTime = nil
@@ -196,12 +202,21 @@ final class LocalAudioEndpoint: AudioEndpoint {
     var isBusy: Bool {
         isBuffering || activeOperationCount > 0
     }
+    
     var volume: Percentage {
         get {
+            #if !os(iOS)
+            Percentage(audioPlayer.volume)
+            #else
             systemVolume
+            #endif
         }
         set {
+            #if !os(iOS)
+            audioPlayer.volume = Float(newValue)
+            #else
             MPVolumeView.setVolume(Float(newValue))
+            #endif
         }
     }
     var playbackRate: Percentage {
@@ -414,7 +429,9 @@ private extension LocalAudioEndpoint {
         
         await PersistenceManager.shared.download.addBlock(to: currentItemID)
         
+        #if !os(macOS)
         let task = UIApplication.shared.beginBackgroundTask(withName: "LocalAudioEndpoint::start")
+        #endif
         
         audioTracks = []
         activeAudioTrackIndex = -1
@@ -483,7 +500,9 @@ private extension LocalAudioEndpoint {
             activeOperationCount -= 1
             logger.error("Failed to load audio tracks: \(error)")
             
+            #if !os(macOS)
             UIApplication.shared.endBackgroundTask(task)
+            #endif
             
             throw error
         }
@@ -521,16 +540,21 @@ private extension LocalAudioEndpoint {
         
         await play()
         
+        #if !os(macOS)
         if let output = AVAudioSession.sharedInstance().currentRoute.outputs.first {
             route = .init(name: output.portName, port: output.portType)
         }
+        #endif
         
         activeOperationCount -= 1
         
         updateUpNextQueue()
         
         Defaults[.playbackResumeInfo] = PlaybackResumeInfo(itemID: currentItemID, started: .now)
+        
+        #if !os(macOS)
         UIApplication.shared.endBackgroundTask(task)
+        #endif
     }
     
     func updateChapterIndex() async {
@@ -803,6 +827,7 @@ private extension LocalAudioEndpoint {
             }
         }
         
+        #if os(iOS)
         volumeSubscription = AVAudioSession.sharedInstance().publisher(for: \.outputVolume).sink { [weak self] volume in
             self?.systemVolume = .init(volume)
             
@@ -814,7 +839,9 @@ private extension LocalAudioEndpoint {
                 await AudioPlayer.shared.volumeDidChange(endpointID: id, volume: systemVolume)
             }
         }
+        #endif
         
+        #if !os(macOS)
         NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: nil) { [weak self] notification in
             guard let userInfo = notification.userInfo, let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt, let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
                 return
@@ -850,6 +877,17 @@ private extension LocalAudioEndpoint {
             }
         }
         
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
+            Task {
+                guard let self else {
+                    return
+                }
+                
+                await AudioPlayer.shared.stop(endpointID: self.id)
+            }
+        }
+        #endif
+        
         NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: .main) { [weak self] _ in
             guard let self else {
                 return
@@ -863,16 +901,6 @@ private extension LocalAudioEndpoint {
                 } else {
                     activeAudioTrackIndex += 1
                 }
-            }
-        }
-        
-        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
-            Task {
-                guard let self else {
-                    return
-                }
-                
-                await AudioPlayer.shared.stop(endpointID: self.id)
             }
         }
         

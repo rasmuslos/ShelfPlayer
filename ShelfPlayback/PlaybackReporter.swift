@@ -98,7 +98,9 @@ final actor PlaybackReporter {
         
         await update(force: true)
         
+        #if canImport(UIKit)
         let task = await UIApplication.shared.beginBackgroundTask(withName: "PlaybackReporter::finalize")
+        #endif
         
         if let localSessionID {
             do {
@@ -117,7 +119,9 @@ final actor PlaybackReporter {
             }
         }
         
+        #if canImport(UIKit)
         await UIApplication.shared.endBackgroundTask(task)
+        #endif
     }
 }
 

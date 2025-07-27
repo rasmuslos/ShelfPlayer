@@ -11,9 +11,9 @@
 		3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */; };
 		3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A52AB623F400ACCD68 /* ContentView.swift */; };
 		3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */; };
-		3A0C089C2DBBA48400E677D4 /* CarPlayPlayableItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0C089B2DBBA47E00E677D4 /* CarPlayPlayableItemController.swift */; };
-		3A0C089E2DBBA6E800E677D4 /* CarPlayPodcastController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0C089D2DBBA6E800E677D4 /* CarPlayPodcastController.swift */; };
-		3A0D93442DC3582900241DF4 /* CarPlayPodcastItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0D93432DC3581F00241DF4 /* CarPlayPodcastItemController.swift */; };
+		3A0C089C2DBBA48400E677D4 /* CarPlayPlayableItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0C089B2DBBA47E00E677D4 /* CarPlayPlayableItemController.swift */; platformFilter = ios; };
+		3A0C089E2DBBA6E800E677D4 /* CarPlayPodcastController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0C089D2DBBA6E800E677D4 /* CarPlayPodcastController.swift */; platformFilter = ios; };
+		3A0D93442DC3582900241DF4 /* CarPlayPodcastItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0D93432DC3581F00241DF4 /* CarPlayPodcastItemController.swift */; platformFilter = ios; };
 		3A0E0ABC2ACD6E2F009F8EF1 /* AudiobookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E0ABB2ACD6E2F009F8EF1 /* AudiobookView.swift */; };
 		3A0E42E52C80CFD60034873F /* SeriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E42E42C80CFD30034873F /* SeriesViewModel.swift */; };
 		3A0E42E82C811AAB0034873F /* PersonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E42E72C811AA60034873F /* PersonViewModel.swift */; };
@@ -21,15 +21,15 @@
 		3A0E42EC2C8195840034873F /* Alignment+Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E42EB2C8195810034873F /* Alignment+Text.swift */; };
 		3A0E42EE2C819FEA0034873F /* QueueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E42ED2C819FE80034873F /* QueueButton.swift */; };
 		3A0E42F02C81A1B10034873F /* PodcastViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E42EF2C81A1AB0034873F /* PodcastViewModel.swift */; };
-		3A0F99F22BE8C08700F6B7B4 /* UIScreen+Radius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */; };
-		3A102EAA2D4511340075FA0B /* PDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A102EA92D45112F0075FA0B /* PDFViewer.swift */; };
+		3A0F99F22BE8C08700F6B7B4 /* UIScreen+Radius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */; platformFilter = ios; };
+		3A102EAA2D4511340075FA0B /* PDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A102EA92D45112F0075FA0B /* PDFViewer.swift */; platformFilter = ios; };
 		3A102EAD2D4511B20075FA0B /* Satellite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A102EAC2D4511A90075FA0B /* Satellite.swift */; };
 		3A14C1472E23BFD500D7A2D7 /* CollectionsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A14C1462E23BFD500D7A2D7 /* CollectionsPanel.swift */; };
 		3A14C14A2E2769F200D7A2D7 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A14C1492E2769ED00D7A2D7 /* CollectionView.swift */; };
 		3A14C14C2E276AE700D7A2D7 /* CollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A14C14B2E276AE700D7A2D7 /* CollectionViewModel.swift */; };
 		3A14C1512E2E89C700D7A2D7 /* EditCollectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A14C1502E2E89BF00D7A2D7 /* EditCollectionSheet.swift */; };
 		3A1507952AD348E700D7D6CF /* PodcastView+EpisodeList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1507942AD348E700D7D6CF /* PodcastView+EpisodeList.swift */; };
-		3A1507992AD4494300D7D6CF /* UINavigationController+Gesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */; };
+		3A1507992AD4494300D7D6CF /* UINavigationController+Gesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */; platformFilter = ios; };
 		3A1B802D2D6F18D600D69B13 /* PlaybackComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1B802C2D6F18CC00D69B13 /* PlaybackComponents.swift */; };
 		3A1CCD752DE343A800B2EAA9 /* ListenedTodayLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1CCD742DE343A800B2EAA9 /* ListenedTodayLabel.swift */; };
 		3A262E992DA155A1002F927A /* OfflineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A262E982DA155A1002F927A /* OfflineView.swift */; };
@@ -45,7 +45,7 @@
 		3A45C8B82DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */; };
 		3A45C8BA2DCE3050004B48A1 /* GroupingConfigurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B92DCE3050004B48A1 /* GroupingConfigurationSheet.swift */; };
 		3A49848A2D610DF10086A2B5 /* AudiobookRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4984892D610DF00086A2B5 /* AudiobookRow.swift */; };
-		3A4AD9552DBB85C60057349C /* CarPlayItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4AD9542DBB85C20057349C /* CarPlayItemController.swift */; };
+		3A4AD9552DBB85C60057349C /* CarPlayItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4AD9542DBB85C20057349C /* CarPlayItemController.swift */; platformFilter = ios; };
 		3A4DD5B22D2FE45500EBE3EE /* LibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4DD5B12D2FE45100EBE3EE /* LibraryPicker.swift */; };
 		3A4F6E012C8240D7004BADBD /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4F6E002C8240D7004BADBD /* Timeline.swift */; };
 		3A520BE52D2DC5650045CA04 /* ConnectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A520BE42D2DC55E0045CA04 /* ConnectionStore.swift */; };
@@ -81,7 +81,7 @@
 		3A81D1E72DBA53F800ACED78 /* ListenNowSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A81D1E62DBA53F800ACED78 /* ListenNowSheet.swift */; };
 		3A81D1EA2DBA5F6100ACED78 /* ItemCompactRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A81D1E92DBA5F6100ACED78 /* ItemCompactRow.swift */; };
 		3A828E062D27459A00267961 /* ConnectionManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A828E052D27459300267961 /* ConnectionManageView.swift */; };
-		3A83B8732B8893E000A05957 /* CarPlayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */; };
+		3A83B8732B8893E000A05957 /* CarPlayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A83B8722B8893E000A05957 /* CarPlayDelegate.swift */; platformFilter = ios; };
 		3A8410532CDF92A700FC3FCB /* URL+AllocatedSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8410522CDF92A400FC3FCB /* URL+AllocatedSize.swift */; };
 		3A853FAF2AD03FA600FACAF6 /* PersonView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A853FAE2AD03FA600FACAF6 /* PersonView+Header.swift */; };
 		3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8810F12AD2C2C3009696D1 /* PodcastView.swift */; };
@@ -106,7 +106,7 @@
 		3A9AB5382AD941DC0089231A /* PlayableItemSwipeActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9AB5372AD941DC0089231A /* PlayableItemSwipeActionsModifier.swift */; };
 		3A9BF3382D42597C00573161 /* ItemLoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9BF3372D42597800573161 /* ItemLoadView.swift */; };
 		3A9E98792DC0D0680089B3C9 /* Chapter+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9E98782DC0D0580089B3C9 /* Chapter+Format.swift */; };
-		3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */; };
+		3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0187B2B4B4D120023DA7B /* AppDelegate.swift */; platformFilter = ios; };
 		3AA089312B6E306F00773414 /* SeriesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA089302B6E306F00773414 /* SeriesList.swift */; };
 		3AA089332B6E315900773414 /* AuthorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA089322B6E315900773414 /* AuthorList.swift */; };
 		3AA089352B6E413800773414 /* AudiobookList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA089342B6E413800773414 /* AudiobookList.swift */; };
@@ -130,7 +130,7 @@
 		3AAEDD942DC66E660053A7AE /* AudiobookNarratorsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAEDD932DC66E5B0053A7AE /* AudiobookNarratorsPanel.swift */; };
 		3AAFA5AA2D6CFEB7002457C3 /* DownloadStatusTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAFA5A92D6CFEB0002457C3 /* DownloadStatusTracker.swift */; };
 		3AAFA5AC2D6D00B2002457C3 /* ProgressTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAFA5AB2D6D00A9002457C3 /* ProgressTracker.swift */; };
-		3AB0E7252CC3FE820024DD08 /* CarPlayLibraryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB0E7242CC3FE7A0024DD08 /* CarPlayLibraryController.swift */; };
+		3AB0E7252CC3FE820024DD08 /* CarPlayLibraryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB0E7242CC3FE7A0024DD08 /* CarPlayLibraryController.swift */; platformFilter = ios; };
 		3AB163E72E04C1A700D33868 /* ShelfPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */; };
 		3AB163E92E04C1F000D33868 /* ShelfPlayback.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3AB1640E2E04C29E00D33868 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
@@ -156,8 +156,8 @@
 		3AC3FD632D79E8B800FA10DF /* PlaybackQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3FD622D79E8B800FA10DF /* PlaybackQueue.swift */; };
 		3AC3FD652D79E8C200FA10DF /* SleepTimerEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3FD642D79E8C200FA10DF /* SleepTimerEditor.swift */; };
 		3AC41F932CC52F86009ABBFA /* HomeRow+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F922CC52F84009ABBFA /* HomeRow+Helper.swift */; };
-		3AC41F972CC5372C009ABBFA /* CarPlayPodcastListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */; };
-		3AC41F992CC53E49009ABBFA /* CarPlayChaptersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */; };
+		3AC41F972CC5372C009ABBFA /* CarPlayPodcastListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */; platformFilter = ios; };
+		3AC41F992CC53E49009ABBFA /* CarPlayChaptersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */; platformFilter = ios; };
 		3AC5F63C2DFCD82B0080649A /* ItemShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */; };
 		3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC9A8D62DEC713A004BC123 /* SwiftSoup */; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
@@ -172,10 +172,10 @@
 		3AD6EA742CABEE1300B412DB /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD6EA732CABEE0F00B412DB /* PlayMediaIntentHandler.swift */; };
 		3ADC52C02E06D8D000175677 /* RegularPlaybackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADC52BF2E06D8CB00175677 /* RegularPlaybackModifier.swift */; };
 		3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD29612B6D88EF0060248E /* DownloadButton.swift */; };
-		3ADD43482CC30E7A0060E043 /* CarPlayTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43472CC30E730060E043 /* CarPlayTabBar.swift */; };
-		3ADD434A2CC311630060E043 /* CarPlayListenNowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43492CC3115D0060E043 /* CarPlayListenNowController.swift */; };
-		3ADD434E2CC318BD0060E043 /* CarPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD434D2CC318B90060E043 /* CarPlayController.swift */; };
-		3ADD43502CC3B6C50060E043 /* CarPlayNowPlayingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD434F2CC3B6C00060E043 /* CarPlayNowPlayingController.swift */; };
+		3ADD43482CC30E7A0060E043 /* CarPlayTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43472CC30E730060E043 /* CarPlayTabBar.swift */; platformFilter = ios; };
+		3ADD434A2CC311630060E043 /* CarPlayListenNowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD43492CC3115D0060E043 /* CarPlayListenNowController.swift */; platformFilter = ios; };
+		3ADD434E2CC318BD0060E043 /* CarPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD434D2CC318B90060E043 /* CarPlayController.swift */; platformFilter = ios; };
+		3ADD43502CC3B6C50060E043 /* CarPlayNowPlayingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADD434F2CC3B6C00060E043 /* CarPlayNowPlayingController.swift */; platformFilter = ios; };
 		3AE0575B2E0E95D000E90C14 /* ItemStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0575A2E0E95BA00E90C14 /* ItemStatusModifier.swift */; };
 		3AE24D7D2D8D968500680B28 /* PlayableItemContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE24D7C2D8D967F00680B28 /* PlayableItemContextMenuModifier.swift */; };
 		3AE31DCE2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE31DCD2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift */; };
@@ -183,7 +183,7 @@
 		3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */; };
 		3AF36C2D2E02E4B9000B6CCF /* WhatsNewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36C2C2E02E4B9000B6CCF /* WhatsNewSheet.swift */; };
-		3AF5A6392CC55FA4002F9B50 /* CarPlayQueueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF5A6382CC55F9F002F9B50 /* CarPlayQueueController.swift */; };
+		3AF5A6392CC55FA4002F9B50 /* CarPlayQueueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF5A6382CC55F9F002F9B50 /* CarPlayQueueController.swift */; platformFilter = ios; };
 		3AF7DCFA2DF059F900F1EE88 /* GlobalSearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF7DCF92DF059F400F1EE88 /* GlobalSearchSheet.swift */; };
 		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
@@ -481,18 +481,35 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3A5EA31D2E364A960058CCE8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			platformFiltersByRelativePath = {
+				Embassy/SleepTimerLiveActivityAttributes.swift = (
+					ios,
+				);
+			};
+			target = 3A6EECA42DEC6D630000CAF2 /* ShelfPlayerKit */;
+		};
 		3A6AAF552DE8C7290090C886 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
+			platformFiltersByRelativePath = {
+				ListenedTodayWidget.swift = (
+					ios,
+				);
+				SleepTimerLiveActivity.swift = (
+					ios,
+				);
+			};
 			target = 3A6AAF402DE8C7280090C886 /* WidgetsExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3A6AAF462DE8C7280090C886 /* WidgetsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3A6AAF552DE8C7290090C886 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WidgetsExtension; sourceTree = "<group>"; };
-		3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayerKit; sourceTree = "<group>"; };
+		3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3A5EA31D2E364A960058CCE8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayerKit; sourceTree = "<group>"; };
 		3AC9A8DE2DEC716F004BC123 /* ShelfPlayback */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayback; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -1593,15 +1610,17 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
-				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
-				SUPPORTS_MACCATALYST = NO;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "macosx iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Debug;
@@ -1663,14 +1682,16 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				SDKROOT = macosx;
-				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
-				SUPPORTS_MACCATALYST = NO;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "macosx iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1705,12 +1726,10 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer";
 				PRODUCT_NAME = ShelfPlayer;
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				REGISTER_APP_GROUPS = YES;
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1743,12 +1762,10 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer";
 				PRODUCT_NAME = ShelfPlayer;
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				REGISTER_APP_GROUPS = YES;
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1761,7 +1778,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WidgetsExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1771,9 +1787,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1786,7 +1800,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WidgetsExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1796,9 +1809,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1812,7 +1823,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1823,12 +1833,11 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.ShelfPlayerKit";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1843,7 +1852,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1854,12 +1862,11 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.ShelfPlayerKit";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1884,11 +1891,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.ShelfPlayback";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1913,11 +1918,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.ShelfPlayback";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
