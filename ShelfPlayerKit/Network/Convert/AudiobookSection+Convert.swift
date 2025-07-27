@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 extension AudiobookSection {
     static func parse(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) -> Self? {
         if let collapsedSeries = payload.collapsedSeries {

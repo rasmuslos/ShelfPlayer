@@ -133,6 +133,7 @@ struct PlayButton: View {
         .contentShape(.rect)
         .transition(.opacity)
         .animation(.smooth, value: tracker.progress)
+        .id(tracker.progress)
     }
     
     @ViewBuilder

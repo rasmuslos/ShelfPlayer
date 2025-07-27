@@ -120,6 +120,7 @@ struct PlaybackQueue: View {
                         Section {
                             TipView(NextUpQueueTip())
                                 .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
                             
                             ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, itemID) in
                                 QueueItemRow(itemID: itemID, queueIndex: index, isUpNextQueue: true)
