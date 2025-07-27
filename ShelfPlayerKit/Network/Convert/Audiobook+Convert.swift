@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 extension Audiobook {
     convenience init?(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID?, connectionID: ItemIdentifier.ConnectionID) {
         guard let media = payload.media else {

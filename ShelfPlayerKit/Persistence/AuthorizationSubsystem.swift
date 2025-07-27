@@ -12,7 +12,6 @@ import SwiftData
 import RFNetwork
 import RFNotifications
 
-
 typealias DiscoveredConnection = SchemaV2.PersistedDiscoveredConnection
 
 public let ABSClient = APIClientStore(timeout: 90) { connectionID in

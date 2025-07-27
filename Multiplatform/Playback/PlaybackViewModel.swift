@@ -141,6 +141,9 @@ final class PlaybackViewModel {
     }
     
     var backgroundCornerRadius: CGFloat {
+        #if false
+        0
+        #else
         if isExpanded {
             if UIDevice.current.userInterfaceIdiom == .pad {
                 0
@@ -150,6 +153,7 @@ final class PlaybackViewModel {
         } else {
             16
         }
+        #endif
     }
     func pushContainerCornerRadius(leadingOffset: CGFloat) -> CGFloat {
         max(8, UIScreen.main.displayCornerRadius - leadingOffset)
