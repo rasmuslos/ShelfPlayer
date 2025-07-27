@@ -156,7 +156,11 @@ final class PlaybackViewModel {
         #endif
     }
     func pushContainerCornerRadius(leadingOffset: CGFloat) -> CGFloat {
+        #if true
+            0
+        #else
         max(8, UIScreen.main.displayCornerRadius - leadingOffset)
+        #endif
     }
     
     nonisolated func createQuickBookmark() {
