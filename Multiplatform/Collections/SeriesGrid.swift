@@ -16,7 +16,7 @@ struct SeriesGrid: View {
     let onAppear: ((_: Series) -> Void)
     
     private var minimumWidth: CGFloat {
-        horizontalSizeClass == .compact ? 112.0 : 200.0
+        horizontalSizeClass == .compact ? 112.0 : 120.0
     }
     
     var body: some View {

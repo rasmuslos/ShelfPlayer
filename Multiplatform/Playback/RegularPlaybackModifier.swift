@@ -80,7 +80,7 @@ struct RegularPlaybackModifier: ViewModifier {
     
     @ViewBuilder
     private func leftHandContent() -> some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 0) {
             Spacer(minLength: 20)
             
             ItemImage(itemID: satellite.nowPlayingItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
@@ -90,7 +90,10 @@ struct RegularPlaybackModifier: ViewModifier {
                 .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
                 .modifier(PlaybackDragGestureCatcher(active: true))
             
+            Spacer(minLength: 20)
+            
             PlaybackTitle()
+                .padding(.bottom, 40)
             
             PlaybackControls()
         }
@@ -100,14 +103,14 @@ struct RegularPlaybackModifier: ViewModifier {
         if horizontalSizeClass == .regular {
             content
                 .fullScreenCover(isPresented: .init { viewModel.isExpanded } set: { viewModel.isExpanded = $0 }) {
-                    ZStack {
+                    GeometryReader { geometryProxy in
                         Rectangle()
                             .fill(.background)
                             .contentShape(.rect)
                             .modifier(PlaybackDragGestureCatcher(active: true))
                         
-                        if UIDevice.current.orientation.isLandscape {
-                            VStack(spacing: 20) {
+                        if geometryProxy.size.width > geometryProxy.size.height {
+                            VStack(spacing: 40) {
                                 HStack(spacing: 40) {
                                     leftHandContent()
                                         .frame(maxWidth: 400)
@@ -115,7 +118,7 @@ struct RegularPlaybackModifier: ViewModifier {
                                     PlaybackQueue()
                                 }
                                 
-                                HStack(spacing: 20) {
+                                HStack(alignment: .firstTextBaseline, spacing: 20) {
                                     PlaybackAirPlayButton()
                                     Spacer(minLength: 0)
                                     PlaybackRateButton()
@@ -126,11 +129,15 @@ struct RegularPlaybackModifier: ViewModifier {
                             }
                             .padding(.horizontal, 40)
                         } else {
-                            VStack(spacing: 0) {
-                                GeometryReader { geometryProxy in
+                            HStack(spacing: 0) {
+                                Spacer(minLength: 0)
+                                
+                                VStack(spacing: 0) {
                                     CompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: 0, safeAreBottomInset: 0)
                                 }
                                 .frame(maxWidth: 600)
+                                
+                                Spacer(minLength: 0)
                             }
                         }
                     }
@@ -141,6 +148,7 @@ struct RegularPlaybackModifier: ViewModifier {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                                     .fill(.bar)
+                                    .shadow(color: .black.opacity(0.4), radius: 8)
                                 
                                 Button {
                                     viewModel.isExpanded = true

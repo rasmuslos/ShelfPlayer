@@ -301,12 +301,8 @@ private struct CollapsedForeground: View {
                 
                 Spacer()
                 
-                Button("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)") {
-                    satellite.skip(forwards: false)
-                }
-                .labelStyle(.iconOnly)
-                .imageScale(.large)
-                .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
+                PlaybackBackwardButton()
+                    .imageScale(.large)
                 
                 ZStack {
                     Group {
