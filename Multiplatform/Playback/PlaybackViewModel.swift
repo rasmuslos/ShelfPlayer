@@ -156,7 +156,7 @@ final class PlaybackViewModel {
         #endif
     }
     func pushContainerCornerRadius(leadingOffset: CGFloat) -> CGFloat {
-        #if true
+        #if false
             0
         #else
         max(8, UIScreen.main.displayCornerRadius - leadingOffset)
