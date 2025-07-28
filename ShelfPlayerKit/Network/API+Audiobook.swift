@@ -6,12 +6,10 @@
 //
 
 import Foundation
-import RFNetwork
 
-
-public extension APIClient where I == ItemIdentifier.ConnectionID {
+public extension APIClient {
     func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Person>]) {
-        let response = try await response(for: ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
+        let response: [HomeRowPayload] = try await response(path: "api/libraries/\(libraryID)/personalized", method: .get)
         
         var authors = [HomeRow<Person>]()
         var audiobooks = [HomeRow<Audiobook>]()
@@ -35,7 +33,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         let payload = try await item(primaryID: primaryID, groupingID: nil)
         
         guard let audiobook = Audiobook(payload: payload, libraryID: payload.libraryId, connectionID: connectionID) else {
-            throw APIClientError.invalidResponse
+            throw APIClientError.invalidItemType
         }
         
         return audiobook
@@ -49,14 +47,14 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         ]
         
         switch filter {
-        case .all:
-            let _ = 0
-        case .active:
-            query.append(.init(name: "filter", value: "progress.aW4tcHJvZ3Jlc3M%3D"))
-        case .finished:
-            query.append(.init(name: "filter", value: "progress.ZmluaXNoZWQ%3D"))
-        case .notFinished:
-            query.append(.init(name: "filter", value: "progress.bm90LWZpbmlzaGVk"))
+            case .all:
+                break
+            case .active:
+                query.append(.init(name: "filter", value: "progress.aW4tcHJvZ3Jlc3M%3D"))
+            case .finished:
+                query.append(.init(name: "filter", value: "progress.ZmluaXNoZWQ%3D"))
+            case .notFinished:
+                query.append(.init(name: "filter", value: "progress.bm90LWZpbmlzaGVk"))
         }
         
         if let page {
@@ -66,7 +64,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             query.append(.init(name: "limit", value: String(describing: limit)))
         }
         
-        let result = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
+        let result: ResultResponse = try await response(path: "api/libraries/\(libraryID)/items", method: .get, query: query)
         return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
     func audiobooks(from libraryID: String, filtered genre: String, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
@@ -84,7 +82,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             query.append(.init(name: "limit", value: String(describing: limit)))
         }
         
-        let result = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
+        let result: ResultResponse = try await response(path: "api/libraries/\(libraryID)/items", method: .get, query: query)
         return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
     
@@ -98,7 +96,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         } else if identifier.type == .series {
             query.append(URLQueryItem(name: "filter", value: "series.\(Data(identifier.primaryID.utf8).base64EncodedString())"))
         } else {
-            throw APIClientError.missing
+            throw APIClientError.invalidItemType
         }
         
         if let page {
@@ -115,7 +113,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             query.append(.init(name: "desc", value: ascending ? "0" : "1"))
         }
         
-        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query))
+        let response: ResultResponse = try await response(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query)
         return (response.results.compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }, response.total)
     }
 }

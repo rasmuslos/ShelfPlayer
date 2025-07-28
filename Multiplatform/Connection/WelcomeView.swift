@@ -9,7 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct WelcomeView: View {
-    @State private var isConnectionAddViewPresented = false
+    @Environment(Satellite.self) private var satellite
     
     var body: some View {
         VStack {
@@ -35,21 +35,11 @@ struct WelcomeView: View {
             Spacer()
             
             Button("setup.welcome.action") {
-                isConnectionAddViewPresented.toggle()
+                satellite.present(.addConnection)
             }
             .controlSize(.large)
             .buttonStyle(.borderedProminent)
             .padding(.bottom, 8)
-        }
-        .sheet(isPresented: $isConnectionAddViewPresented) {
-            ConnectionAddView() {
-                isConnectionAddViewPresented = false
-                
-                Task {
-                    try await Task.sleep(for: .seconds(1))
-                    await RFNotification[.changeOfflineMode].send(payload: false)
-                }
-            }
         }
     }
 }

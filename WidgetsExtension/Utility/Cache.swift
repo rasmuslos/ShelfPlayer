@@ -20,9 +20,7 @@ final actor Cache: Sendable {
         }
     }
     func covers(for itemIDs: [ItemIdentifier]) async -> [ItemIdentifier: Data] {
-        if await PersistenceManager.shared.authorization.connections.isEmpty {
-            try? await PersistenceManager.shared.authorization.fetchConnections()
-        }
+        try? await PersistenceManager.shared.authorization.waitForConnections()
         
         var result = [ItemIdentifier: Data]()
         var missingItemIDs: [ItemIdentifier] = []

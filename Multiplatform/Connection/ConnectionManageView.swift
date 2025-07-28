@@ -12,25 +12,18 @@ import ShelfPlayback
 struct ConnectionManageView: View {
     @Environment(\.dismiss) private var dismiss
     
-    let connection: Connection
+    let connection: FriendlyConnection
     
-    init(connection: Connection) {
+    init(connection: FriendlyConnection) {
         self.connection = connection
-        
-        _headers = .init(initialValue: connection.headers.map { .init(key: $0.key, value: $0.value) })
     }
     
-    @State private var loading = false
-    @State private var serverVersion: String? = nil
-    
-    @State private var headers: [HeaderShadow]
-    @State private var notifyError = false
-    
     var hasUnsavedChanges: Bool {
-        connection.headers != headers.compactMap(\.materialized)
+        true
     }
     
     var body: some View {
+        /*
         List {
             Section {
                 Text(connection.user)
@@ -77,8 +70,11 @@ struct ConnectionManageView: View {
             }
         }
         .sensoryFeedback(.error, trigger: notifyError)
+         */
+        Text(verbatim: "ABC")
     }
     
+    /*
     private func test() {
         Task {
             loading = true
@@ -115,4 +111,5 @@ struct ConnectionManageView: View {
             loading = false
         }
     }
+     */
 }
