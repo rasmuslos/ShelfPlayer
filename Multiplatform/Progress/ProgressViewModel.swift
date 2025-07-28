@@ -78,7 +78,7 @@ final class ProgressViewModel {
             
             await UIApplication.shared.endBackgroundTask(task)
             
-            let connectionCount = await PersistenceManager.shared.authorization.connections.count
+            let connectionCount = await PersistenceManager.shared.authorization.connectionIDs.count
             
             await MainActor.run {
                 if success {
@@ -103,7 +103,7 @@ final class ProgressViewModel {
 private extension ProgressViewModel {
     func syncAllConnections() {
         Task {
-            for connectionID in await PersistenceManager.shared.authorization.connections.keys {
+            for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                 attemptSync(for: connectionID)
             }
         }

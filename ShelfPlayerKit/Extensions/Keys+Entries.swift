@@ -187,7 +187,7 @@ public extension RFNotification.NonIsolatedNotification {
 public extension RFNotification.IsolatedNotification {
     // MARK: Authorization
     
-    static var connectionsChanged: IsolatedNotification<[ItemIdentifier.ConnectionID: Connection]> {
+    static var connectionsChanged: IsolatedNotification<RFNotificationEmptyPayload> {
         .init("io.rfk.shelfPlayerKit.connectionsChanged")
     }
     static var removeConnection: IsolatedNotification<ItemIdentifier.ConnectionID> {

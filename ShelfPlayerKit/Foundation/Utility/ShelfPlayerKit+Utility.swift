@@ -57,4 +57,11 @@ public extension ShelfPlayerKit {
             URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
         }
     }
+    static var httpCookieStorage: HTTPCookieStorage {
+        if enableCentralized {
+            .sharedCookieStorage(forGroupContainerIdentifier: groupContainer)
+        } else {
+            .shared
+        }
+    }
 }

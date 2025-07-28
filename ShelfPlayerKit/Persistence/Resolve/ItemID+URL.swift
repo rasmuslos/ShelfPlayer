@@ -11,11 +11,9 @@ import Foundation
 public extension ItemIdentifier {
     var url: URL {
         get async throws {
-            guard let connection = await PersistenceManager.shared.authorization[connectionID] else {
+            guard let base = try? await PersistenceManager.shared.authorization.host(for: connectionID) else {
                 throw PersistenceError.serverNotFound
             }
-            
-            let base = connection.host
             
             switch type {
             case .author:
