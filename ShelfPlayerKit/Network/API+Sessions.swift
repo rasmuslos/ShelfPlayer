@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import RFNetwork
-
 
 public extension APIClient {
     func startPlaybackSession(itemID: ItemIdentifier) async throws -> ([PlayableItem.AudioTrack], [Chapter], TimeInterval, String) {
@@ -22,7 +20,7 @@ public extension APIClient {
             path.append("/\(itemID.primaryID)/play")
         }
         
-        let response = try await response(for: ClientRequest<ItemPayload>(path: path, method: .post, body: [
+        let response: ItemPayload = try await response(path: path, method: .post, body: [
             "deviceInfo": [
                 "deviceId": ShelfPlayerKit.clientID,
                 "clientName": "ShelfPlayer",
@@ -37,10 +35,10 @@ public extension APIClient {
                 "audio/aac",
                 "audio/x-aiff",
             ]
-        ]))
+        ])
         
         guard let tracks = response.audioTracks, let chapters = response.chapters else {
-            throw APIClientError.invalidResponse
+            throw APIClientError.notFound
         }
         
         let startTime = response.startTime ?? 0
@@ -96,24 +94,24 @@ public extension APIClient {
             startedAt: Double(UInt64(started.timeIntervalSince1970 * 1000)),
             updatedAt: Double(UInt64(updated.timeIntervalSince1970 * 1000)))
         
-        try await response(for: ClientRequest<Empty>(path: "api/session/local", method: .post, body: session))
+        try await response(path: "api/session/local", method: .post, body: session)
     }
     
     func syncSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)/sync", method: .post, body: [
+        try await response(path: "api/session/\(sessionID)/sync", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
-        ]))
+        ])
     }
     func closeSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)/close", method: .post, body: [
+        try await response(path: "api/session/\(sessionID)/close", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
-        ]))
+        ])
     }
     func deleteSession(sessionID: String) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/session/\(sessionID)", method: .delete))
+        try await response(path: "api/session/\(sessionID)", method: .delete)
     }
 }

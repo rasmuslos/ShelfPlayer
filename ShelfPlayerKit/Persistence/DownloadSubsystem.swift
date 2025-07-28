@@ -9,7 +9,6 @@ import Foundation
 import SwiftData
 import OSLog
 import Network
-import RFNetwork
 import RFNotifications
 
 #if canImport(UIKit)
@@ -39,9 +38,16 @@ extension PersistenceManager {
         private lazy var urlSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: "io.rfk.shelfPlayerKit.download")
             
+            // config.isDiscretionary = !Defaults[.allowCellularDownloads]
+            
             config.sessionSendsLaunchEvents = true
             config.waitsForConnectivity = true
-            // config.isDiscretionary = !Defaults[.allowCellularDownloads]
+            
+            config.timeoutIntervalForRequest = 120
+            
+            config.httpCookieStorage = ShelfPlayerKit.httpCookieStorage
+            config.httpShouldSetCookies = true
+            config.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
             
             if ShelfPlayerKit.enableCentralized {
                 config.sharedContainerIdentifier = ShelfPlayerKit.groupContainer
@@ -686,7 +692,7 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     func remove(_ itemID: ItemIdentifier) async throws {
         if itemID.type == .podcast {
-            // TODO: idk
+            // TODO: Remove Podcast
         }
         
         guard itemID.isPlayable else {
@@ -861,19 +867,11 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        let protectiveMethod = challenge.protectionSpace.authenticationMethod
-        
-        guard protectiveMethod == NSURLAuthenticationMethodClientCertificate else {
+        guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate else {
             return (.performDefaultHandling, nil)
         }
         
-        /*
-        let crendential = URLCredential(identity: <#T##SecIdentity#>,
-                                        certificates: nil,
-                                        persistence: .forSession)
-        
-        return (.useCredential, crendential)
-         */
+        // TODO: Provide Identity
         
         return (.performDefaultHandling, nil)
     }

@@ -6,21 +6,19 @@
 //
 
 import Foundation
-import RFNetwork
-
 
 extension APIClient {
     func item(itemID: ItemIdentifier) async throws -> ItemPayload {
         try await item(primaryID: itemID.primaryID, groupingID: itemID.groupingID)
     }
     func item(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) async throws -> ItemPayload {
-        try await response(for: ClientRequest(path: "api/items/\(groupingID ?? primaryID)", method: .get, query: [
+        try await response(path: "api/items/\(groupingID ?? primaryID)", method: .get, query: [
             URLQueryItem(name: "expanded", value: "1"),
-        ]))
+        ])
     }
 }
 
-public extension APIClient where I == ItemIdentifier.ConnectionID  {
+public extension APIClient  {
     func playableItem(itemID: ItemIdentifier) async throws -> (PlayableItem, [PlayableItem.AudioFile], [Chapter], [PlayableItem.SupplementaryPDF]) {
         let payload = try await item(primaryID: itemID.primaryID, groupingID: itemID.groupingID)
         var supplementaryPDFs = [PlayableItem.SupplementaryPDF]()
@@ -45,28 +43,24 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
         if itemID.groupingID != nil, let item = payload.media?.episodes?.first(where: { $0.id == itemID.primaryID }) {
             let episode = Episode(episode: item, item: payload, connectionID: connectionID)
             
-            guard let episode,
-                  let audioTrack = item.audioTrack,
-                  let chapters = item.chapters else {
-                throw APIClientError.invalidResponse
+            guard let episode, let audioTrack = item.audioTrack, let chapters = item.chapters else {
+                throw APIClientError.notFound
             }
             
             return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init), supplementaryPDFs)
         }
         
-        guard let audiobook = Audiobook(payload: payload, libraryID: itemID.libraryID, connectionID: connectionID),
-              let tracks = payload.media?.tracks,
-              let chapters = payload.media?.chapters else {
-            throw APIClientError.invalidResponse
+        guard let audiobook = Audiobook(payload: payload, libraryID: itemID.libraryID, connectionID: connectionID), let tracks = payload.media?.tracks, let chapters = payload.media?.chapters else {
+            throw APIClientError.notFound
         }
         
         return (audiobook, tracks.map(PlayableItem.AudioFile.init), chapters.map(Chapter.init), supplementaryPDFs)
     }
     
     func items(in library: Library, search: String) async throws -> ([Audiobook], [Person], [Person], [Series], [Podcast]) {
-        let payload = try await response(for: ClientRequest<SearchResponse>(path: "api/libraries/\(library.id)/search", method: .get, query: [
+        let payload: SearchResponse = try await response(path: "api/libraries/\(library.id)/search", method: .get, query: [
             URLQueryItem(name: "q", value: search),
-        ]))
+        ])
         
         return (
             payload.book?.compactMap { Audiobook(payload: $0.libraryItem, libraryID: library.id, connectionID: connectionID) } ?? [],
@@ -95,19 +89,19 @@ public extension APIClient where I == ItemIdentifier.ConnectionID  {
             path = "api/items/\(itemID.primaryID)/cover"
         }
         
-        return try await request(ClientRequest<Data>(path: path, method: .get, query: [
-            .init(name: "width", value: width.description),
-        ]))
+        return try await request(path: path, method: .get, body: nil, query: [
+            URLQueryItem(name: "width", value: width.description),
+        ])
     }
     
     func pdfRequest(from itemID: ItemIdentifier, ino: String) async throws -> URLRequest {
-        try await request(ClientRequest<Data>(path: "api/items/\(itemID.primaryID)/ebook/\(ino)", method: .get))
+        try await request(path: "api/items/\(itemID.primaryID)/ebook/\(ino)", method: .get, body: nil, query: nil)
     }
     func pdf(from itemID: ItemIdentifier, ino: String) async throws -> Data {
-        try await URLSession.shared.data(for: pdfRequest(from: itemID, ino: ino)).0
+        try await session.data(for: pdfRequest(from: itemID, ino: ino)).0
     }
     
     func audioTrackRequest(from itemID: ItemIdentifier, ino: String) async throws -> URLRequest {
-        try await request(ClientRequest<Data>(path: "api/items/\(itemID.groupingID ?? itemID.primaryID)/file/\(ino)", method: .get))
+        try await request(path: "api/items/\(itemID.apiItemID)/file/\(ino)", method: .get, body: nil, query: nil)
     }
 }

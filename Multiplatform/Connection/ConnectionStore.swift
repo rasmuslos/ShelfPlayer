@@ -11,30 +11,21 @@ import ShelfPlayback
 
 @Observable @MainActor
 final class ConnectionStore {
-    var current: Connection?
-    
     private(set) var didLoad: Bool
     
-    private(set) var connections: [ItemIdentifier.ConnectionID: Connection]
+    private(set) var connections: [FriendlyConnection]
+    private(set) var offlineConnections: [ItemIdentifier.ConnectionID]
     
     private(set) var libraries: [ItemIdentifier.ConnectionID: [Library]]
-    private(set) var offlineConnections: [ItemIdentifier.ConnectionID]
     
     init() {
         didLoad = false
-        connections = [:]
+        connections = []
         
         libraries = [:]
         offlineConnections = []
         
-        Task {
-            try await PersistenceManager.shared.authorization.fetchConnections()
-            connections = await PersistenceManager.shared.authorization.connections
-            
-            update()
-            
-            didLoad = true
-        }
+        update()
         
         RFNotification[.changeOfflineMode].subscribe { [weak self] isEnabled in
             guard !isEnabled else {
@@ -43,35 +34,32 @@ final class ConnectionStore {
             
             self?.update()
         }
-        RFNotification[.connectionsChanged].subscribe { [weak self] connections in
-            withAnimation {
-                self?.connections = connections
-            }
-            
+        RFNotification[.connectionsChanged].subscribe { [weak self] in
             self?.update()
         }
     }
     
     nonisolated func update() {
         Task {
+            try await PersistenceManager.shared.authorization.waitForConnections()
+            
+            let connections = await PersistenceManager.shared.authorization.friendlyConnections.sorted {
+                $0.name < $1.name
+            }
+            
             let libraries = await ShelfPlayerKit.libraries
             let grouped = Dictionary(grouping: libraries, by: { $0.connectionID })
             
-            let offline = await Array(connections.keys).filter { grouped[$0] == nil }
+            let offline = Array(connections).compactMap { grouped[$0.id] == nil ? $0.id : nil }
             
             await MainActor.withAnimation {
+                didLoad = true
+                
+                self.connections = connections
                 self.offlineConnections = offline
+                
                 self.libraries = grouped
             }
-            
-            guard !libraries.isEmpty else {
-                RFNotification[.changeOfflineMode].dispatch(payload: true)
-                return
-            }
         }
-    }
-    
-    var flat: [Connection] {
-        connections.values.sorted { $0.friendlyName < $1.friendlyName }
     }
 }

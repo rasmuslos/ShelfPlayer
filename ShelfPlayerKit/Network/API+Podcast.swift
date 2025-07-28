@@ -6,12 +6,10 @@
 //
 
 import Foundation
-import RFNetwork
 
-
-public extension APIClient where I == ItemIdentifier.ConnectionID {
+public extension APIClient {
     func home(for libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
-        let response = try await response(for: ClientRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get))
+        let response: [HomeRowPayload] = try await response(path: "api/libraries/\(libraryID)/personalized", method: .get)
         
         var episodes = [HomeRow<Episode>]()
         var podcasts = [HomeRow<Podcast>]()
@@ -36,11 +34,11 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         
     }
     func podcast(with identifier: ItemIdentifier.PrimaryID) async throws -> (Podcast, [Episode]) {
-        let item = try await response(for: ClientRequest<ItemPayload>(path: "api/items/\(identifier)", method: .get))
+        let item: ItemPayload = try await response(path: "api/items/\(identifier)", method: .get)
         let podcast = Podcast(payload: item, connectionID: connectionID)
         
         guard let episodes = item.media?.episodes else {
-            throw APIClientError.invalidResponse
+            throw APIClientError.notFound
         }
             
         return (podcast, episodes.compactMap { Episode(episode: $0, item: item, connectionID: connectionID) })
@@ -62,7 +60,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         
         query.append(.init(name: "include", value: "numEpisodesIncomplete"))
         
-        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query))
+        let response: ResultResponse = try await response(path: "api/libraries/\(libraryID)/items", method: .get, query: query)
         return (response.results.map { Podcast(payload: $0, connectionID: connectionID) }, response.total)
     }
 }

@@ -307,7 +307,9 @@ extension LocalAudioEndpoint {
             } else {
                 audioPlayer.removeAllItems()
                 
-                let headers = Dictionary(uniqueKeysWithValues: try await ABSClient[currentItemID.connectionID].headers.map { ($0.key, $0.value) })
+                let headers = Dictionary(uniqueKeysWithValues: try await PersistenceManager.shared.authorization.headers(for: currentItemID.connectionID).map { ($0.key, $0.value) })
+                
+                // TODO: Provide Identity
                 
                 for audioTrack in audioTracks[index..<audioTracks.endIndex] {
                     let asset = AVURLAsset(url: audioTrack.resource, options: [

@@ -17,9 +17,7 @@ public extension ShelfPlayerKit {
     static var libraries: [Library] {
         get async {
             await withTaskGroup {
-                let connectionIDs = await PersistenceManager.shared.authorization.connections.keys
-                
-                for connectionID in connectionIDs {
+                for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                     $0.addTask {
                         try? await ABSClient[connectionID].libraries()
                     }
@@ -140,14 +138,10 @@ private extension ShelfPlayerKit {
     }
     
     static func resolveOnlineItems(query: String) async throws -> [Item] {
-        if await PersistenceManager.shared.authorization.connections.isEmpty {
-            try? await PersistenceManager.shared.authorization.fetchConnections()
-        }
-        
-        let connectionIDs = await PersistenceManager.shared.authorization.connections.keys
+        try await PersistenceManager.shared.authorization.waitForConnections()
         
         return await withTaskGroup(of: [Item].self) {
-            for connectionID in connectionIDs {
+            for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                 $0.addTask {
                     guard let libraries = try? await ABSClient[connectionID].libraries() else {
                         return []

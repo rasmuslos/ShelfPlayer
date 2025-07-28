@@ -7,46 +7,52 @@
 
 import Foundation
 import CryptoKit
-import RFNetwork
 
-public struct Connection: Identifiable, Sendable, Hashable, Codable {
-    public let host: URL
-    public let user: String
-    public let token: String
-    public let headers: [HTTPHeader]
+struct Connection: Identifiable, Sendable, Hashable, Codable {
+    let host: URL
+    let user: String
     
-    private var connectionID: ItemIdentifier.ConnectionID!
+    let refreshToken: String
+    let headers: [HTTPHeader]
     
-    public init(host: URL, user: String, token: String, headers: [HTTPHeader]) {
+    var connectionID: ItemIdentifier.ConnectionID {
+        SHA256.hash(data: "host:\(host).?.?.user:\(user)".data(using: .ascii)!).withUnsafeBytes {
+            Data([UInt8]($0))
+        }.base64EncodedString()
+    }
+    
+    public init(host: URL, user: String, refreshToken: String, headers: [HTTPHeader]) {
         self.host = host
         self.user = user
-        self.token = token
-        self.headers = headers
+        self.refreshToken = refreshToken
         
-        self.createConnectionID()
+        self.headers = headers
     }
     
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        
         self.host = try container.decode(URL.self, forKey: .host)
         self.user = try container.decode(String.self, forKey: .user)
-        self.token = try container.decode(String.self, forKey: .token)
-        self.headers = try container.decode([HTTPHeader].self, forKey: .headers)
+        self.refreshToken = try container.decode(String.self, forKey: .refreshToken)
         
-        self.createConnectionID()
+        self.headers = try container.decode([HTTPHeader].self, forKey: .headers)
     }
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        
         try container.encode(self.host, forKey: .host)
         try container.encode(self.user, forKey: .user)
-        try container.encode(self.token, forKey: .token)
+        try container.encode(self.refreshToken, forKey: .refreshToken)
+        
         try container.encode(self.headers, forKey: .headers)
     }
     
     enum CodingKeys: CodingKey {
         case host
         case user
-        case token
+        
+        case refreshToken
         case headers
     }
     
@@ -56,10 +62,14 @@ public struct Connection: Identifiable, Sendable, Hashable, Codable {
     public var friendlyName: String {
         "\(host.formatted(.url.host())): \(user)"
     }
+}
+
+public struct FriendlyConnection: Codable, Sendable, Identifiable {
+    public let id: ItemIdentifier.ConnectionID
+    public let name: String
     
-    private mutating func createConnectionID() {
-        connectionID = SHA256.hash(data: "host:\(host).?.?.user:\(user)".data(using: .ascii)!).withUnsafeBytes {
-            Data([UInt8]($0))
-        }.base64EncodedString()
+    init(from connection: Connection) {
+        id = connection.id
+        name = connection.friendlyName
     }
 }

@@ -7,12 +7,12 @@
 
 import Foundation
 
-public extension APIClient where I == ItemIdentifier.ConnectionID {
+public extension APIClient {
     func seriesID(from libraryID: String, name: String) async throws -> ItemIdentifier {
-        let response = try await response(for: ClientRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
+        let response: SearchResponse = try await response(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "10"),
-        ]))
+        ])
         
         let series = response.series?.compactMap { $0.series }.sorted {
             guard let lhs = $0.name else { return false }
@@ -22,7 +22,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
         }
         
         guard let series = series?.first else {
-            throw APIClientError.invalidResponse
+            throw APIClientError.notFound
         }
         
         return .init(primaryID: series.id,
@@ -33,7 +33,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
     }
     
     func series(with identifier: ItemIdentifier) async throws -> Series {
-        Series(payload: try await response(for: ClientRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get)), libraryID: identifier.libraryID, connectionID: connectionID)
+        Series(payload: try await response(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get), libraryID: identifier.libraryID, connectionID: connectionID)
     }
     
     func series(in libraryID: String, filtered identifier: ItemIdentifier? = nil, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
@@ -50,7 +50,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             } else if identifier.type == .series {
                 prefix = "series"
             } else {
-                throw APIClientError.missing
+                throw APIClientError.invalidItemType
             }
             
             query.append(.init(name: "filter", value: "\(prefix).\(Data(identifier.primaryID.utf8).base64EncodedString())"))
@@ -65,7 +65,7 @@ public extension APIClient where I == ItemIdentifier.ConnectionID {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
-        let response = try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query))
+        let response: ResultResponse = try await response(path: "api/libraries/\(libraryID)/series", method: .get, query: query)
         return (response.results.map { Series(payload: $0, libraryID: libraryID, connectionID: connectionID) }, response.total)
     }
 }
