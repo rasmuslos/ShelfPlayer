@@ -18,7 +18,7 @@ public extension APIClient {
         
         let response: AuthorizationResponse = try await response(request: request)
         
-        return (response.user.username, response.user.accessToken, response.user.refreshToken)
+        return (response.user.username, response.user.accessToken!, response.user.refreshToken!)
     }
     
     func status() async throws -> StatusResponse {
@@ -44,6 +44,8 @@ public extension APIClient {
     }
     
     func openIDLoginURL(verifier: String) async throws -> URL {
+        clearCookies()
+        
         var challenge = Data(verifier.compactMap { $0.asciiValue }).sha256.base64EncodedString()
         
         // Base64 --> URL-Base64
@@ -51,25 +53,16 @@ public extension APIClient {
         challenge = challenge.replacingOccurrences(of: "/", with: "_")
         challenge = challenge.replacingOccurrences(of: "=", with: "")
         
-        var request = try await request(path: "auth/openid", method: .get, body: nil, query: [
+        let request = try await request(path: "auth/openid", method: .get, body: nil, query: [
             URLQueryItem(name: "client_id", value: "ShelfPlayer"),
             URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "code_challenge", value: "challenge"),
+            URLQueryItem(name: "code_challenge", value: "\(challenge)"),
         ])
         
-        print(challenge, request.url, request)
-        
-        if let cookies = HTTPCookieStorage.shared.cookies(for: host) {
-            for cookie in cookies {
-                HTTPCookieStorage.shared.deleteCookie(cookie)
-            }
-        }
-        
-        let session = URLSession(configuration: .default, delegate: URLSessionDelegate(), delegateQueue: nil)
-        
         let (_, response) = try await session.data(for: request)
+        
         if let location = (response as? HTTPURLResponse)?.allHeaderFields["Location"] as? String, let url = URL(string: location) {
             return url
         }
@@ -84,6 +77,6 @@ public extension APIClient {
             .init(name: "code_verifier", value: verifier),
         ])
         
-        return (response.user.username, response.user.accessToken, response.user.refreshToken)
+        return (response.user.username, response.user.accessToken!, response.user.refreshToken!)
     }
 }

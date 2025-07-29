@@ -273,10 +273,10 @@ extension Satellite {
     }
     
     func present(_ sheet: Sheet) {
-        sheetStack.append(sheet)
+        sheetStack.insert(sheet, at: 0)
     }
     func warn(_ warning: WarningAlert) {
-        warningAlertStack.append(warning)
+        warningAlertStack.insert(warning, at: 0)
     }
     
     func dismissSheet() {

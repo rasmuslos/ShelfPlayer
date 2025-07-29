@@ -20,7 +20,11 @@ final class ProgressViewModel {
     private var tasks = [ItemIdentifier.ConnectionID: Task<Void, Never>]()
     
     init() {
-        RFNotification[.changeOfflineMode].subscribe { [weak self] _ in
+        RFNotification[.changeOfflineMode].subscribe { [weak self] isEnabled in
+            guard !isEnabled else {
+                return
+            }
+            
             self?.importedConnectionIDs.removeAll()
             self?.importFailedConnectionIDs.removeAll()
         }

@@ -319,27 +319,27 @@ extension ViewModel {
             notifyFinished.toggle()
         }
         func authorizeOpenID() async throws {
-            // TODO: a
-            let session = try await ASWebAuthenticationSession(url: .temporaryDirectory, callback: .customScheme("shelfplayer")) {
-                // client.openIDLoginURL(verifier: verifier), callback: .customScheme("shelfplayer")) {
-                guard $1 == nil,
-                      let callback = $0,
-                      let components = URLComponents(url: callback, resolvingAgainstBaseURL: false),
-                      let queryItems = components.queryItems,
-                      let code = queryItems.first(where: { $0.name == "code" })?.value,
-                      let state = queryItems.first(where: { $0.name == "state" })?.value else {
-                    Task { @MainActor in
+            let session = try await ASWebAuthenticationSession(url: client.openIDLoginURL(verifier: verifier), callback: .customScheme("shelfplayer"), completionHandler: callback)
+            
+            session.presentationContextProvider = authenticationSessionPresentationContextProvider
+            session.prefersEphemeralWebBrowserSession = true
+            session.additionalHeaderFields = Dictionary(uniqueKeysWithValues: headers.map { ($0.key, $0.value) })
+            
+            session.start()
+            
+            // hell
+            func callback(_ url: URL?, _ error: (any Error)?) -> Void {
+                Task {
+                    guard error == nil, let url, let components = URLComponents(url: url, resolvingAgainstBaseURL: false), let queryItems = components.queryItems, let code = queryItems.first(where: { $0.name == "code" })?.value, let state = queryItems.first(where: { $0.name == "state" })?.value else {
                         self.isLoading = false
                         self.notifyError.toggle()
+                        
+                        return
                     }
                     
-                    return
-                }
-                
-                Task { @MainActor in
                     do {
-                        let (username, token) = ("", "") // try await client.openIDExchange(code: code, state: state, verifier: self.verifier)
-                                                         // try await PersistenceManager.shared.authorization.addConnection(.init(host: url, user: username, token: token, headers: headers))
+                        let (username, accessToken, refreshToken) = try await client.openIDExchange(code: code, state: state, verifier: verifier)
+                        try await PersistenceManager.shared.authorization.addConnection(host: self.url!, username: username, headers: headers.compactMap(\.materialized), identity: identity, accessToken: accessToken, refreshToken: refreshToken)
                         
                         self.notifyFinished.toggle()
                     } catch {
@@ -348,12 +348,6 @@ extension ViewModel {
                     }
                 }
             }
-            
-            session.presentationContextProvider = authenticationSessionPresentationContextProvider
-            session.prefersEphemeralWebBrowserSession = true
-            session.additionalHeaderFields = Dictionary(uniqueKeysWithValues: headers.map { ($0.key, $0.value) })
-            
-            session.start()
         }
     }
 }
@@ -405,8 +399,8 @@ private final class AuthorizeAPIClientCredentialProvider: APICredentialProvider 
         self.identity = identity
     }
     
-    public var configuration: (URL, [HTTPHeader], SecIdentity?) {
-        (host, headers, identity)
+    public var configuration: (URL, [HTTPHeader]) {
+        (host, headers)
     }
     public func requestSessionToken(refresh: Bool) async throws -> String? {
         nil
