@@ -1230,7 +1230,6 @@
       }
     },
     "connection.remove" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
