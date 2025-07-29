@@ -30,14 +30,16 @@ struct ConnectionManageView: View {
                     .fontDesign(.monospaced)
             }
             
-            if let serverVersion {
-                Text("connection.add.versionHint \(serverVersion)")
-                    .foregroundStyle(.green)
-            } else {
-                ProgressView()
-                    .task {
-                        serverVersion = try? await ABSClient[connection.id].status().serverVersion
-                    }
+            Section {
+                if let serverVersion {
+                    Text("connection.add.versionHint \(serverVersion)")
+                        .foregroundStyle(.green)
+                } else {
+                    ProgressView()
+                        .task {
+                            serverVersion = try? await ABSClient[connection.id].status().serverVersion
+                        }
+                }
             }
             
             #if DEBUG
