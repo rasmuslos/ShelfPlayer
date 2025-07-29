@@ -32,8 +32,8 @@ struct AuthorizationResponse: Codable {
         // let token: String
         let username: String
         
-        let accessToken: String
-        let refreshToken: String
+        let accessToken: String?
+        let refreshToken: String?
         
         let bookmarks: [BookmarkPayload]
         let mediaProgress: [ProgressPayload]

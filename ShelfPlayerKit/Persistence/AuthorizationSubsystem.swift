@@ -23,7 +23,9 @@ extension PersistenceManager {
         
         private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Authorization")
         
-        private var connections = [Connection]()
+        public private(set) var connectionIDs = [ItemIdentifier.ConnectionID]()
+        // Don't store refresh tokens in RAM unless necessary
+        public private(set) var friendlyConnections = [FriendlyConnection]()
         
         public struct KnownConnection: Sendable, Identifiable, Equatable {
             public let id: String
@@ -48,33 +50,27 @@ public extension PersistenceManager.AuthorizationSubsystem {
             }
         }
     }
-    var connectionIDs: [ItemIdentifier.ConnectionID] {
-        connections.map(\.id)
-    }
-    var friendlyConnections: [FriendlyConnection] {
-        connections.map { FriendlyConnection(from: $0) }
-    }
     
-    func host(for connectionID: ItemIdentifier.ConnectionID) async throws -> URL {
-        guard let connection = connections.first(where: { $0.id == connectionID }) else {
+    func host(for connectionID: ItemIdentifier.ConnectionID) throws -> URL {
+        guard let connection = friendlyConnections.first(where: { $0.id == connectionID }) else {
             throw APIClientError.notFound
         }
         
         return connection.host
     }
-    func headers(for connectionID: ItemIdentifier.ConnectionID) async throws -> [HTTPHeader] {
+    func headers(for connectionID: ItemIdentifier.ConnectionID) throws -> [HTTPHeader] {
+        /*
         guard let connection = connections.first(where: { $0.id == connectionID }) else {
             throw APIClientError.notFound
         }
         
         return connection.headers
+         */
+        []
     }
-    func configuration(for connectionID: ItemIdentifier.ConnectionID) async throws -> (URL, String, [HTTPHeader]) {
-        guard let connection = connections.first(where: { $0.id == connectionID }) else {
-            throw APIClientError.notFound
-        }
-        
-        return (connection.host, connection.user, connection.headers)
+    func configuration(for connectionID: ItemIdentifier.ConnectionID) throws -> (URL, [HTTPHeader]) {
+        let connection = try fetchConnection(connectionID)
+        return (connection.host, connection.headers)
     }
     
     // MARK: Modify
@@ -191,7 +187,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
     // MARK: Utility
     
     func waitForConnections() async throws {
-        guard connections.isEmpty else {
+        guard connectionIDs.isEmpty else {
             return
         }
         
@@ -199,8 +195,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
     }
     
     func reset() async {
-        for connection in connections {
-            await PersistenceManager.shared.remove(connectionID: connection.connectionID)
+        for connectionID in connectionIDs {
+            await PersistenceManager.shared.remove(connectionID: connectionID)
         }
         
         SecItemDelete([
@@ -221,6 +217,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
 
 extension PersistenceManager.AuthorizationSubsystem {
     // MARK: Fetch
+    
     func fetchConnection(_ connectionID: ItemIdentifier.ConnectionID) throws -> Connection {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
@@ -259,8 +256,8 @@ extension PersistenceManager.AuthorizationSubsystem {
         guard status != errSecItemNotFound else {
             logger.info("No connections found in keychain")
             
-            if !connections.isEmpty {
-                connections.removeAll()
+            if !connectionIDs.isEmpty {
+                updateConnections([])
                 RFNotification[.connectionsChanged].dispatch()
             }
             
@@ -287,12 +284,39 @@ extension PersistenceManager.AuthorizationSubsystem {
             }
         }
         
-        self.connections = connections
+        updateConnections(connections)
         
         RFNotification[.connectionsChanged].dispatch()
     }
     
     // MARK: Access token
+    
+    func accessToken(for connectionID: String) throws -> String {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+            
+            kSecAttrService: accessTokenService,
+            kSecAttrAccount: connectionID,
+            
+            kSecReturnData: kCFBooleanTrue as Any,
+        ]
+        
+        var data: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &data)
+        
+        guard status == errSecSuccess, let data = data as? Data else {
+            logger.fault("Error retrieving connection data from keychain: \(SecCopyErrorMessageString(status, nil))")
+            throw PersistenceError.keychainRetrieveFailed
+        }
+        
+        guard let string = String(data: data, encoding: .utf8) else {
+            logger.fault("Error decoding connection data from keychain: \(data)")
+            throw PersistenceError.keychainRetrieveFailed
+        }
+        
+        return string
+    }
     func storeAccessToken(_ accessToken: String, forConnectionID connectionID: String) throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
@@ -312,5 +336,12 @@ extension PersistenceManager.AuthorizationSubsystem {
             logger.error("Error adding access token to keychain for \(connectionID): \(SecCopyErrorMessageString(status, nil))")
             throw PersistenceError.keychainInsertFailed
         }
+    }
+    
+    // MARK: Utility
+    
+    func updateConnections(_ connections: [Connection]) {
+        connectionIDs = connections.map(\.id)
+        friendlyConnections = connections.map { FriendlyConnection(from: $0) }
     }
 }

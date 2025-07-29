@@ -9,19 +9,19 @@ import Foundation
 @preconcurrency import Security
 import OSLog
 
-public actor APIClient {
+public final class APIClient: Sendable {
     let logger: Logger
     let verbose = false
     
     let connectionID: ItemIdentifier.ConnectionID
+    let credentialProvider: APICredentialProvider
     
     let session: URLSession
+    
     let host: URL
+    let headers: [HTTPHeader]
     
-    public internal(set) var headers: [HTTPHeader]
-    var identity: SecIdentity?
-    
-    let credentialProvider: APICredentialProvider
+    @MainActor
     var sessionToken: String?
     
     public init(connectionID: ItemIdentifier.ConnectionID, credentialProvider: APICredentialProvider) async throws {
@@ -30,18 +30,25 @@ public actor APIClient {
         self.connectionID = connectionID
         
         let configuration = URLSessionConfiguration.ephemeral
-        
         configuration.httpCookieStorage = ShelfPlayerKit.httpCookieStorage
-        configuration.httpShouldSetCookies = true
-        configuration.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
         
         session = URLSession.init(configuration: configuration, delegate: URLSessionDelegate(), delegateQueue: nil)
         session.sessionDescription = "ShelfPlayer APIClient::\(connectionID)"
         
-        (host, headers, identity) = try await credentialProvider.configuration
+        (host, headers) = try await credentialProvider.configuration
         
         self.credentialProvider = credentialProvider
         sessionToken = try await credentialProvider.requestSessionToken(refresh: false)
+    }
+    
+    func clearCookies() {
+        guard let cookies = ShelfPlayerKit.httpCookieStorage.cookies else {
+            return
+        }
+
+        for cookie in cookies {
+            ShelfPlayerKit.httpCookieStorage.deleteCookie(cookie)
+        }
     }
     
     func request(path: String, method: HTTPMethod, body: Any?, query: [URLQueryItem]?) async throws -> URLRequest {
@@ -53,14 +60,13 @@ public actor APIClient {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.value
-        request.httpShouldHandleCookies = true
         request.timeoutInterval = 120
         
         for pair in headers {
             request.addValue(pair.value, forHTTPHeaderField: pair.key)
         }
         
-        if let sessionToken {
+        if let sessionToken = await sessionToken {
             request.addValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
         }
         
@@ -87,12 +93,13 @@ public actor APIClient {
     }
     
     func response(request: URLRequest) async throws -> Data {
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 401 {
                 fatalError("401")
             } else if !(200..<299).contains(httpResponse.statusCode) {
+                logger.error("Got invalid response code \(httpResponse.statusCode)")
                 throw APIClientError.invalidResponseCode
             }
         }
@@ -135,7 +142,7 @@ private extension APIClient {
             return (.performDefaultHandling, nil)
         }
         public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
-            if let path = task.originalRequest?.url?.pathComponents, path.count >= 2 && path[0] == "auth" && path[1] == "openid" {
+            if let path = task.originalRequest?.url?.pathComponents, path.count == 3 && path[1] == "auth" && path[2] == "openid" {
                 nil
             } else {
                 request

@@ -68,8 +68,11 @@ public struct FriendlyConnection: Codable, Sendable, Identifiable {
     public let id: ItemIdentifier.ConnectionID
     public let name: String
     
+    public let host: URL
+    
     init(from connection: Connection) {
         id = connection.id
         name = connection.friendlyName
+        host = connection.host
     }
 }
