@@ -34,15 +34,17 @@ public extension APIClient {
         let response: AuthorizationResponse = try await response(path: "api/authorize", method: .post)
         return (response.user.mediaProgress, response.user.bookmarks)
     }
+    func refresh(refreshToken: String) async throws -> (String, String) {
+        var request = try await request(path: "auth/refresh", method: .post, body: nil, query: nil)
+        request.setValue(refreshToken, forHTTPHeaderField: "x-refresh-token")
+        
+        let response: AuthorizationResponse = try await response(request: request)
+        
+        return (response.user.accessToken!, response.user.refreshToken!)
+    }
 }
 
 public extension APIClient {
-    private final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
-        public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
-            nil
-        }
-    }
-    
     func openIDLoginURL(verifier: String) async throws -> URL {
         clearCookies()
         

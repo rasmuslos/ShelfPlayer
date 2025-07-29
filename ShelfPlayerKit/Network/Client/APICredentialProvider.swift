@@ -9,5 +9,7 @@ import Foundation
 
 public protocol APICredentialProvider: Sendable {
     var configuration: (URL, [HTTPHeader]) { get async throws }
-    func requestSessionToken(refresh: Bool) async throws -> String?
+    var accessToken: String? { get async throws }
+    
+    func refreshAccessToken(current: String?) async throws -> String?
 }

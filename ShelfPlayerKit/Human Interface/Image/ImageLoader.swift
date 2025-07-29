@@ -43,7 +43,7 @@ public final actor ImageLoader {
         configuration.requestCachePolicy = .returnCacheDataElseLoad
         configuration.urlCache = cache
         
-        session = .init(configuration: configuration)
+        session = URLSession(configuration: configuration, delegate: APIClient.URLSessionDelegate(), delegateQueue: nil)
         session.sessionDescription = "ShelfPlayer ImageLoader"
     }
     

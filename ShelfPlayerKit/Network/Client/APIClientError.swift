@@ -15,4 +15,5 @@ public enum APIClientError: Error {
     case invalidResponseCode
     
     case notFound
+    case unauthorized
 }

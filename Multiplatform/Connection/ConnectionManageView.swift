@@ -14,79 +14,60 @@ struct ConnectionManageView: View {
     
     let connection: FriendlyConnection
     
-    init(connection: FriendlyConnection) {
-        self.connection = connection
-    }
+    @State private var isLoading = false
+    @State private var serverVersion: String?
     
     var hasUnsavedChanges: Bool {
         true
     }
     
     var body: some View {
-        /*
         List {
             Section {
-                Text(connection.user)
-                Text(connection.host.absoluteString)
+                Text(connection.username)
+                Text(connection.host, format: .url)
+                    .font(.caption)
+                    .fontDesign(.monospaced)
             }
             
-            Section("connection.modify.header") {}
+            if let serverVersion {
+                Text("connection.add.versionHint \(serverVersion)")
+                    .foregroundStyle(.green)
+            } else {
+                ProgressView()
+                    .task {
+                        serverVersion = try? await ABSClient[connection.id].status().serverVersion
+                    }
+            }
             
-            HeaderEditor(headers: $headers)
+            #if DEBUG
+            Section {
+                Button {
+                    Task {
+                        try await PersistenceManager.shared.authorization.scrambleAccessToken(connectionID: connection.id)
+                    }
+                } label: {
+                    Text(verbatim: "Scramble access token")
+                }
+            }
+            #endif
             
             Section {
-                Button("connection.test") {
-                    test()
+                Button("action.edit") {
+                    
                 }
-                .disabled(hasUnsavedChanges)
-                
                 Button("connection.remove") {
                     remove()
                 }
                 .foregroundStyle(.red)
             }
-            .disabled(loading)
-        }
-        .alert("connection.test.success", isPresented: .init() { serverVersion != nil } set: {
-            if !$0 {
-                serverVersion = nil
-            }
-        }) {
-            Button("action.dismiss", role: .cancel) {}
-        } message: {
-            Text("connection.test.success.message \(serverVersion ?? "?")")
+            .disabled(isLoading)
         }
         .navigationTitle("connection.manage")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                if loading {
-                    ProgressView()
-                } else if hasUnsavedChanges {
-                    Button("action.save") {
-                        update()
-                    }
-                }
-            }
-        }
-        .sensoryFeedback(.error, trigger: notifyError)
-         */
-        Text(verbatim: "ABC")
     }
     
     /*
-    private func test() {
-        Task {
-            loading = true
-            do {
-                serverVersion = try await ABSClient[connection.id].status().serverVersion
-            } catch {
-                notifyError.toggle()
-            }
-            loading = false
-        }
-    }
-    
     private func update() {
         Task {
             loading = true
@@ -101,15 +82,21 @@ struct ConnectionManageView: View {
             loading = false
         }
     }
+     */
     private func remove() {
         Task {
-            loading = true
+            isLoading = true
             
             await PersistenceManager.shared.remove(connectionID: connection.id)
             dismiss()
             
-            loading = false
+            isLoading = false
         }
     }
-     */
 }
+
+#if DEBUG
+#Preview {
+    ConnectionManageView(connection: .fixture)
+}
+#endif

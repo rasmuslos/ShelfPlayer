@@ -26,7 +26,7 @@ struct HeaderEditor: View {
             }
             
             withAnimation {
-                headers.append(.init(key: "", value: ""))
+                headers.append(.init(key: "X-", value: ""))
             }
         }
     }

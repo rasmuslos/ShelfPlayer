@@ -95,8 +95,6 @@ extension PersistenceManager {
                     try await remove(episode.id)
                 }
                 
-                try modelContext.delete(model: PersistedPodcast.self, where: #Predicate { $0._id.contains(connectionID) })
-                
                 try modelContext.delete(model: PersistedAsset.self, where: #Predicate { $0._itemID.contains(connectionID) })
                 try modelContext.delete(model: PersistedChapter.self, where: #Predicate { $0._itemID.contains(connectionID) })
             } catch {
@@ -867,13 +865,7 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate else {
-            return (.performDefaultHandling, nil)
-        }
-        
-        // TODO: Provide Identity
-        
-        return (.performDefaultHandling, nil)
+        await PersistenceManager.shared.authorization.handleURLSessionChallenge(challenge)
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
