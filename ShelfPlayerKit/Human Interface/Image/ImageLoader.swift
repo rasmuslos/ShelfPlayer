@@ -31,9 +31,15 @@ public final actor ImageLoader {
         // 512 MiB & 6 GiB
         cache = .init(memoryCapacity: 536_870_912, diskCapacity: 6_442_450_944, directory: cachePath)
         
-        let configuration = URLSessionConfiguration.default
+        let configuration = URLSessionConfiguration.ephemeral
+        
+        configuration.httpCookieStorage = ShelfPlayerKit.httpCookieStorage
+        configuration.httpShouldSetCookies = true
+        configuration.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
+        
         configuration.timeoutIntervalForRequest = 120
         configuration.waitsForConnectivity = true
+        
         configuration.requestCachePolicy = .returnCacheDataElseLoad
         configuration.urlCache = cache
         
