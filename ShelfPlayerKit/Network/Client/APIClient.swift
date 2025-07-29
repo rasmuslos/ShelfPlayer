@@ -22,7 +22,10 @@ public final class APIClient: Sendable {
     let headers: [HTTPHeader]
     
     @MainActor
-    var sessionToken: String?
+    var accessToken: String?
+    
+    @MainActor
+    private var isRefreshingAccessToken = false
     
     public init(connectionID: ItemIdentifier.ConnectionID, credentialProvider: APICredentialProvider) async throws {
         logger = .init(subsystem: "io.rfk.shelfPlayerKit", category: "APIClient::\(connectionID)")
@@ -31,14 +34,15 @@ public final class APIClient: Sendable {
         
         let configuration = URLSessionConfiguration.ephemeral
         configuration.httpCookieStorage = ShelfPlayerKit.httpCookieStorage
+        configuration.urlCache = nil
         
-        session = URLSession.init(configuration: configuration, delegate: URLSessionDelegate(), delegateQueue: nil)
+        session = URLSession(configuration: configuration, delegate: URLSessionDelegate(), delegateQueue: nil)
         session.sessionDescription = "ShelfPlayer APIClient::\(connectionID)"
         
         (host, headers) = try await credentialProvider.configuration
         
         self.credentialProvider = credentialProvider
-        sessionToken = try await credentialProvider.requestSessionToken(refresh: false)
+        accessToken = try await credentialProvider.accessToken
     }
     
     func clearCookies() {
@@ -66,8 +70,8 @@ public final class APIClient: Sendable {
             request.addValue(pair.value, forHTTPHeaderField: pair.key)
         }
         
-        if let sessionToken = await sessionToken {
-            request.addValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
+        if let accessToken = await accessToken {
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
         
         if let body {
@@ -92,12 +96,24 @@ public final class APIClient: Sendable {
         return request
     }
     
-    func response(request: URLRequest) async throws -> Data {
+    func response(request: URLRequest, didRefreshAccessToken: Bool = false) async throws -> Data {
         let (data, response) = try await session.data(for: request)
         
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 401 {
-                fatalError("401")
+                guard !didRefreshAccessToken else {
+                    throw APIClientError.unauthorized
+                }
+                
+                try await attemptAccessTokenRefresh(capturedToken: request.value(forHTTPHeaderField: "Authorization")?.replacingOccurrences(of: "Bearer ", with: ""))
+                
+                var request = request
+                
+                if let accessToken = await accessToken {
+                    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+                }
+                
+                return try await self.response(request: request, didRefreshAccessToken: true)
             } else if !(200..<299).contains(httpResponse.statusCode) {
                 logger.error("Got invalid response code \(httpResponse.statusCode)")
                 throw APIClientError.invalidResponseCode
@@ -130,16 +146,10 @@ public final class APIClient: Sendable {
     }
 }
 
-private extension APIClient {
+extension APIClient {
     final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
         func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-            guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate else {
-                return (.performDefaultHandling, nil)
-            }
-            
-            // TODO: Provide Identity
-            
-            return (.performDefaultHandling, nil)
+            await PersistenceManager.shared.authorization.handleURLSessionChallenge(challenge)
         }
         public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
             if let path = task.originalRequest?.url?.pathComponents, path.count == 3 && path[1] == "auth" && path[2] == "openid" {
@@ -150,7 +160,35 @@ private extension APIClient {
         }
     }
     
-    func refreshSessionToken() async {
+    func attemptAccessTokenRefresh(capturedToken: String?) async throws {
+        var isBlocked = false
         
+        repeat {
+            isBlocked = await MainActor.run {
+                guard !isRefreshingAccessToken else {
+                    return true
+                }
+                
+                isRefreshingAccessToken = true
+                return false
+            }
+            
+            if isBlocked {
+                try await Task.sleep(for: .seconds(0.2))
+            }
+        } while isBlocked
+        
+        do {
+            let accessToken = try await credentialProvider.refreshAccessToken(current: capturedToken)
+            
+            await MainActor.run {
+                self.accessToken = accessToken
+                self.isRefreshingAccessToken = false
+            }
+        } catch {
+            await MainActor.run {
+                self.isRefreshingAccessToken = false
+            }
+        }
     }
 }

@@ -43,8 +43,10 @@ struct ConnectionAddSheet: View {
                 }
                 .disabled(hasValidEndpoint)
                 
+                #if DEBUG
                 CertificateEditor(identity: $viewModel.identity)
                     .disabled(hasValidEndpoint)
+                #endif
                 
                 // No section here, would prevent headers from displaying correctly
                 DisclosureGroup("connection.modify.header") {
@@ -402,7 +404,11 @@ private final class AuthorizeAPIClientCredentialProvider: APICredentialProvider 
     public var configuration: (URL, [HTTPHeader]) {
         (host, headers)
     }
-    public func requestSessionToken(refresh: Bool) async throws -> String? {
+    public var accessToken: String? {
+        nil
+    }
+    
+    func refreshAccessToken(current: String?) async throws -> String? {
         nil
     }
 }
