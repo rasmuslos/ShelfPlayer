@@ -18,7 +18,7 @@ public extension APIClient {
         
         let response: AuthorizationResponse = try await response(request: request)
         
-        return (response.user.username, response.user.accessToken!, response.user.refreshToken!)
+        return try (response.user.username, response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
     
     func status() async throws -> StatusResponse {
@@ -40,7 +40,7 @@ public extension APIClient {
         
         let response: AuthorizationResponse = try await response(request: request)
         
-        return (response.user.accessToken!, response.user.refreshToken!)
+        return try (response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
 }
 
@@ -79,6 +79,6 @@ public extension APIClient {
             .init(name: "code_verifier", value: verifier),
         ])
         
-        return (response.user.username, response.user.accessToken!, response.user.refreshToken!)
+        return try (response.user.username, response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
 }
