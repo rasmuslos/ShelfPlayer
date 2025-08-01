@@ -66,13 +66,7 @@ public final class APIClient: Sendable {
         request.httpMethod = method.value
         request.timeoutInterval = 120
         
-        for pair in headers {
-            request.addValue(pair.value, forHTTPHeaderField: pair.key)
-        }
-        
-        if let accessToken = await accessToken {
-            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        }
+        await authorizeRequest(&request)
         
         if let body {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -109,10 +103,7 @@ public final class APIClient: Sendable {
                 
                 var request = request
                 
-                if let accessToken = await accessToken {
-                    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-                }
-                
+                await authorizeRequest(&request)
                 return try await self.response(request: request, didRefreshAccessToken: true)
             } else if !(200..<299).contains(httpResponse.statusCode) {
                 logger.error("Got invalid response code \(httpResponse.statusCode)")
@@ -126,10 +117,36 @@ public final class APIClient: Sendable {
         
         return data
     }
+    
+    public var requestHeaders: [String: String] {
+        get async {
+            var headers: [String: String] = [:]
+            
+            for pair in self.headers.sorted(by: { $0.key < $1.key }) {
+                headers[pair.key] = pair.value
+            }
+            
+            if let accessToken = await accessToken {
+                headers["Authorization"] = "Bearer \(accessToken)"
+            }
+            
+            return headers
+        }
+    }
+    func authorizeRequest(_ request: inout URLRequest) async {
+        request.allHTTPHeaderFields?.removeAll()
+        
+        for (key, value) in await requestHeaders {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+    }
+    
+    func response<R: Decodable>(data: Data) async throws -> R {
+        try JSONDecoder().decode(R.self, from: data)
+    }
     func response<R: Decodable>(request: URLRequest) async throws -> R {
         do {
-            let data = try await response(request: request)
-            return try JSONDecoder().decode(R.self, from: data)
+            return try await response(data: response(request: request))
         } catch {
             logger.error("Failed to request \(request.url?.relativePath ?? "?", privacy: .public): \(error, privacy: .public)")
             throw APIClientError.parseError

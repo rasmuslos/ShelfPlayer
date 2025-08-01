@@ -10,6 +10,7 @@ import OSLog
 import ShelfPlayback
 
 struct ConnectionManageView: View {
+    @Environment(Satellite.self) private var satellite
     @Environment(\.dismiss) private var dismiss
     
     let connection: FriendlyConnection
@@ -56,7 +57,7 @@ struct ConnectionManageView: View {
             
             Section {
                 Button("action.edit") {
-                    
+                    satellite.present(.editConnection(connection.id))
                 }
                 Button("connection.remove") {
                     remove()
@@ -69,22 +70,6 @@ struct ConnectionManageView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
     
-    /*
-    private func update() {
-        Task {
-            loading = true
-            
-            do {
-                try await PersistenceManager.shared.authorization.updateConnection(connection.id, headers: headers.compactMap(\.materialized))
-            } catch {
-                notifyError.toggle()
-                loading = false
-            }
-            
-            loading = false
-        }
-    }
-     */
     private func remove() {
         Task {
             isLoading = true

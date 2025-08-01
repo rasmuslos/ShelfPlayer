@@ -305,20 +305,7 @@ extension LocalAudioEndpoint {
                 
                 audioPlayer.advanceToNextItem()
             } else {
-                audioPlayer.removeAllItems()
-                
-                let headers = Dictionary(uniqueKeysWithValues: try await PersistenceManager.shared.authorization.headers(for: currentItemID.connectionID).map { ($0.key, $0.value) })
-                
-                // TODO: Provide Identity
-                
-                for audioTrack in audioTracks[index..<audioTracks.endIndex] {
-                    let asset = AVURLAsset(url: audioTrack.resource, options: [
-                        "AVURLAssetHTTPHeaderFieldsKey": headers,
-                    ])
-                    let playerItem = AVPlayerItem(asset: asset)
-                    
-                    audioPlayer.insert(playerItem, after: nil)
-                }
+                try await repopulateAudioPlayerQueue(start: index)
             }
             
             activeAudioTrackIndex = index
@@ -695,6 +682,22 @@ private extension LocalAudioEndpoint {
         RunLoop.main.add(sleepTimeoutTimer!, forMode: .common)
     }
     
+    func repopulateAudioPlayerQueue(start index: Int) async throws {
+        audioPlayer.removeAllItems()
+        
+        let headers = try await ABSClient[currentItemID.connectionID].requestHeaders
+        
+        // TODO: Provide Identity
+        
+        for audioTrack in audioTracks[index..<audioTracks.endIndex] {
+            let asset = AVURLAsset(url: audioTrack.resource, options: [
+                "AVURLAssetHTTPHeaderFieldsKey": headers,
+            ])
+            let playerItem = AVPlayerItem(asset: asset)
+            
+            audioPlayer.insert(playerItem, after: nil)
+        }
+    }
     func updateUpNextQueue(using forced: ResolvedUpNextStrategy? = nil) {
         Task.detached { [weak self] in
             guard let self, await upNextQueue.isEmpty else {
@@ -778,7 +781,33 @@ private extension LocalAudioEndpoint {
         }
     }
     
+    private func repopulateQueueTrigger(connectionID: ItemIdentifier.ConnectionID?) {
+        if let connectionID, currentItemID.connectionID != connectionID {
+            return
+        }
+        
+        guard let currentTime else {
+            return
+        }
+        
+        Task {
+            do {
+                try await repopulateAudioPlayerQueue(start: activeAudioTrackIndex)
+                try await seek(to: currentTime, insideChapter: false)
+            } catch {
+                logger.error("Failed to repopulate queue after access token expired. Stopping playback: \(error)")
+                await AudioPlayer.shared.stop(endpointID: id)
+            }
+        }
+    }
     func setupObservers() {
+        RFNotification[.connectionsChanged].subscribe { [weak self] in
+            self?.repopulateQueueTrigger(connectionID: nil)
+        }
+        RFNotification[.accessTokenExpired].subscribe { [weak self] connectionID in
+            self?.repopulateQueueTrigger(connectionID: connectionID)
+        }
+        
         RFNotification[.collectionChanged].subscribe { [weak self] collectionID in
             guard self?.upNextStrategy?.itemID == collectionID else {
                 return

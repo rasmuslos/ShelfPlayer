@@ -187,6 +187,10 @@ public extension RFNotification.NonIsolatedNotification {
 public extension RFNotification.IsolatedNotification {
     // MARK: Authorization
     
+    static var accessTokenExpired: IsolatedNotification<ItemIdentifier.ConnectionID> {
+        .init("io.rfk.shelfPlayerKit.accessTokenExpired")
+    }
+    
     static var connectionsChanged: IsolatedNotification<RFNotificationEmptyPayload> {
         .init("io.rfk.shelfPlayerKit.connectionsChanged")
     }
