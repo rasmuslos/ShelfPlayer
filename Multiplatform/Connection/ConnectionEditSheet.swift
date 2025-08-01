@@ -101,7 +101,9 @@ private final class ViewModel: Sendable {
     }
 }
 
+#if DEBUG
 #Preview {
     ConnectionEditSheet(connectionID: "fixture")
         .previewEnvironment()
 }
+#endif
