@@ -158,6 +158,7 @@ extension Satellite {
         case editCollectionMembership(ItemIdentifier)
         
         case addConnection
+        case editConnection(ItemIdentifier.ConnectionID)
         
         case whatsNew
         
@@ -179,6 +180,8 @@ extension Satellite {
                     "editCollectionMembership-\(itemID)"
                 case .addConnection:
                     "addConnection"
+                case .editConnection(let connectionID):
+                    "editConnection-\(connectionID)"
                 case .whatsNew:
                     "whatsNew"
             }

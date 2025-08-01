@@ -84,12 +84,7 @@ final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider {
             knownExpiredTokens.insert(token)
             
             logger.info("Access token for \(self.connectionID) expired. Refreshing...")
-            
-            do {
-                token = try await PersistenceManager.shared.authorization.refreshAccessToken(for: connectionID)
-            } catch {
-                await PersistenceManager.shared.remove(connectionID: connectionID)
-            }
+            token = try await PersistenceManager.shared.authorization.refreshAccessToken(for: connectionID)
         }
         
         return token

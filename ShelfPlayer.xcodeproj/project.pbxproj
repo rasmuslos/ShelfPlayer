@@ -43,6 +43,7 @@
 		3A3129A52D24190900D143B4 /* HeaderEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A42D24190200D143B4 /* HeaderEditor.swift */; };
 		3A36D78B2ACF2C1D002EEC54 /* AudiobookGrids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
+		3A4523D32E3C915E00FE8053 /* ConnectionEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */; };
 		3A45C8B82DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */; };
 		3A45C8BA2DCE3050004B48A1 /* GroupingConfigurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B92DCE3050004B48A1 /* GroupingConfigurationSheet.swift */; };
 		3A49848A2D610DF10086A2B5 /* AudiobookRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4984892D610DF00086A2B5 /* AudiobookRow.swift */; };
@@ -321,6 +322,7 @@
 		3A3129A42D24190200D143B4 /* HeaderEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEditor.swift; sourceTree = "<group>"; };
 		3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookGrids.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
+		3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionEditSheet.swift; sourceTree = "<group>"; };
 		3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenienceDownloadPreferences.swift; sourceTree = "<group>"; };
 		3A45C8B92DCE3050004B48A1 /* GroupingConfigurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupingConfigurationSheet.swift; sourceTree = "<group>"; };
 		3A4984892D610DF00086A2B5 /* AudiobookRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookRow.swift; sourceTree = "<group>"; };
@@ -701,6 +703,7 @@
 				3A520BE42D2DC55E0045CA04 /* ConnectionStore.swift */,
 				3A520BE62D2DD06F0045CA04 /* ConnectionsView.swift */,
 				3A3129A22D2414E100D143B4 /* ConnectionAddSheet.swift */,
+				3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */,
 				3A828E052D27459300267961 /* ConnectionManageView.swift */,
 			);
 			path = Connection;
@@ -1402,6 +1405,7 @@
 				3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */,
 				3A4AD9552DBB85C60057349C /* CarPlayItemController.swift in Sources */,
 				3A4DD5B22D2FE45500EBE3EE /* LibraryPicker.swift in Sources */,
+				3A4523D32E3C915E00FE8053 /* ConnectionEditSheet.swift in Sources */,
 				3AA0187C2B4B4D120023DA7B /* AppDelegate.swift in Sources */,
 				3A9730A62D66630E00CF72E6 /* SlidingSeasonPicker.swift in Sources */,
 				3A0F99F22BE8C08700F6B7B4 /* UIScreen+Radius.swift in Sources */,

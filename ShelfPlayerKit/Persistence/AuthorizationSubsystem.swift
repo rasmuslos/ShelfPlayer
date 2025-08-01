@@ -61,14 +61,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         return connection.host
     }
     func headers(for connectionID: ItemIdentifier.ConnectionID) throws -> [HTTPHeader] {
-        /*
-        guard let connection = connections.first(where: { $0.id == connectionID }) else {
-            throw APIClientError.notFound
-        }
-        
-        return connection.headers
-         */
-        []
+        try fetchConnection(connectionID).headers
     }
     func configuration(for connectionID: ItemIdentifier.ConnectionID) throws -> (URL, [HTTPHeader]) {
         let connection = try fetchConnection(connectionID)
@@ -77,7 +70,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
     
     // MARK: Modify
     
-    func addConnection(host: URL, username: String, headers: [HTTPHeader], identity: SecIdentity?, accessToken: String, refreshToken: String) throws {
+    func addConnection(host: URL, username: String, headers: [HTTPHeader], identity: SecIdentity?, accessToken: String, refreshToken: String?) throws {
         let connection = Connection(host: host, user: username, headers: headers, added: .now)
         
         do {
@@ -136,7 +129,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
         // Access Token
         
         try storeToken(accessToken, forConnectionID: connection.id, service: accessTokenService)
-        try storeToken(refreshToken, forConnectionID: connection.id, service: refreshTokenService)
+        
+        if let refreshToken {
+            try storeToken(refreshToken, forConnectionID: connection.id, service: refreshTokenService)
+        }
         
         // Update
         
@@ -144,29 +140,23 @@ public extension PersistenceManager.AuthorizationSubsystem {
     }
     
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, headers: [HTTPHeader]) throws {
-        /*
         let connection = try fetchConnection(connectionID)
         
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrSynchronizable: kCFBooleanTrue as Any,
             
-            kSecAttrService: service,
+            kSecAttrService: connectionService,
             kSecAttrAccount: connectionID as CFString,
         ] as! [String: Any] as CFDictionary
         
-        let updated = Connection(host: connection.host, user: connection.user, token: connection.token, headers: headers)
+        let updated = Connection(host: connection.host, user: connection.user, headers: headers, added: connection.added)
         
         SecItemUpdate(query, [
             kSecValueData: try JSONEncoder().encode(updated) as CFData,
         ] as! [String: Any] as CFDictionary)
         
-        Task {
-            await ABSClient.invalidate(connectionID)
-        }
-        
         try fetchConnections()
-         */
     }
     
     func remove(connectionID: ItemIdentifier.ConnectionID) {
@@ -326,7 +316,12 @@ extension PersistenceManager.AuthorizationSubsystem {
         let (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
         
         try updateToken(accessToken, for: connectionID, service: accessTokenService)
-        try updateToken(refreshToken, for: connectionID, service: refreshTokenService)
+        
+        if let refreshToken {
+            try updateToken(refreshToken, for: connectionID, service: refreshTokenService)
+        }
+        
+        await RFNotification[.accessTokenExpired].send(payload: connectionID)
         
         return accessToken
     }

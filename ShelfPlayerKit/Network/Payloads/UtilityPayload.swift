@@ -50,8 +50,8 @@ struct AuthorizationResponse: Codable {
             return token
         }
     }
-    var versionSafeRefreshToken: String {
-        user.refreshToken ?? "legacy"
+    var versionSafeRefreshToken: String? {
+        user.refreshToken
     }
 }
 
