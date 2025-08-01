@@ -48,6 +48,8 @@ struct ContentView: View {
                 CollectionMembershipEditorSheet(itemID: itemID)
             case .addConnection:
                 ConnectionAddSheet()
+            case .editConnection(let connectionID):
+                ConnectionEditSheet(connectionID: connectionID)
             case .whatsNew:
                 WhatsNewSheet()
         }

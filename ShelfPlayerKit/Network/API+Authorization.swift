@@ -8,7 +8,7 @@
 import Foundation
 
 public extension APIClient {
-    func login(username: String, password: String) async throws -> (username: String, accessToken: String, refreshToken: String) {
+    func login(username: String, password: String) async throws -> (username: String, accessToken: String, refreshToken: String?) {
         var request = try await request(path: "login", method: .post, body: [
             "username": username,
             "password": password,
@@ -34,11 +34,12 @@ public extension APIClient {
         let response: AuthorizationResponse = try await response(path: "api/authorize", method: .post)
         return (response.user.mediaProgress, response.user.bookmarks)
     }
-    func refresh(refreshToken: String) async throws -> (String, String) {
+    func refresh(refreshToken: String) async throws -> (String, String?) {
         var request = try await request(path: "auth/refresh", method: .post, body: nil, query: nil)
         request.setValue(refreshToken, forHTTPHeaderField: "x-refresh-token")
         
-        let response: AuthorizationResponse = try await response(request: request)
+        let data = try await response(request: request, didRefreshAccessToken: true)
+        let response: AuthorizationResponse = try await response(data: data)
         
         return try (response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
@@ -72,7 +73,7 @@ public extension APIClient {
         throw APIClientError.notFound
     }
     
-    func openIDExchange(code: String, state: String, verifier: String) async throws -> (username: String, accessToken: String, refreshToken: String) {
+    func openIDExchange(code: String, state: String, verifier: String) async throws -> (username: String, accessToken: String, refreshToken: String?) {
         let response: AuthorizationResponse = try await response(path: "auth/openid/callback", method: .get, query: [
             .init(name: "code", value: code),
             .init(name: "state", value: state),
