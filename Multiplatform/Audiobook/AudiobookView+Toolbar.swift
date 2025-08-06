@@ -86,6 +86,7 @@ extension AudiobookView {
                         
                         Menu {
                             ItemShareButton(item: viewModel.audiobook)
+                            ItemConfigureButton(itemID: viewModel.audiobook.id)
                             
                             Divider()
                             

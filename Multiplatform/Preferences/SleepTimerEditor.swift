@@ -83,9 +83,9 @@ struct SleepTimerEditor: View {
                 
                 Group {
                     Picker("sleepTimer.extend.interval", selection: $sleepTimerExtendInterval) {
-                        ForEach(Array(sleepTimerIntervals.enumerated()), id: \.element.hashValue) {
-                            Text(sleepTimerIntervals[$0.offset], format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
-                                .tag($0.element)
+                        ForEach(sleepTimerIntervals, id: \.hashValue) {
+                            Text($0, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
+                                .tag($0)
                         }
                     }
                     

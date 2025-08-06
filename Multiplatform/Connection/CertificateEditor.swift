@@ -23,12 +23,12 @@ struct CertificateEditor: View {
     var body: some View {
         Section {
             if identity != nil {
-                Button("connection.tlsClientCertificate.remove", systemImage: "xmark.seal", role: .destructive) {
+                Button(String("connection.tlsClientCertificate.remove"), systemImage: "xmark.seal", role: .destructive) {
                     identity = nil
                 }
                 .foregroundStyle(.red)
             } else {
-                Button("connection.tlsClientCertificate.import", systemImage: "checkmark.seal") {
+                Button(String("connection.tlsClientCertificate.import"), systemImage: "checkmark.seal") {
                     isCertificateImporterPresented = true
                 }
                 .foregroundStyle(.primary)
@@ -50,8 +50,8 @@ struct CertificateEditor: View {
                             notifyError.toggle()
                     }
                 }
-                .alert("connection.tlsClientCertificate.passphrase", isPresented: $isPassphraseFieldPresented) {
-                    TextField("connection.tlsClientCertificate.passphrase", text: $passphrase)
+                .alert(String("connection.tlsClientCertificate.passphrase"), isPresented: $isPassphraseFieldPresented) {
+                    TextField(String("connection.tlsClientCertificate.passphrase"), text: $passphrase)
                         .textContentType(.password)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
@@ -66,7 +66,7 @@ struct CertificateEditor: View {
                 .sensoryFeedback(.error, trigger: notifyError)
             }
         } footer: {
-            Text("connection.tlsClientCertificate.footer")
+            Text(String("connection.tlsClientCertificate.footer"))
         }
     }
     

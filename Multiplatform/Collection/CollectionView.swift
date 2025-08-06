@@ -79,9 +79,7 @@ struct CollectionView: View {
                         Divider()
                     }
                     
-                    Button("item.configure", systemImage: "gearshape") {
-                        satellite.present(.configureGrouping(viewModel.collection.id))
-                    }
+                    ItemConfigureButton(itemID: viewModel.collection.id)
                     
                     Divider()
                     
