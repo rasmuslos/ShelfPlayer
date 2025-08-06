@@ -25,6 +25,13 @@ public extension PersistenceManager.ItemSubsystem {
     func setPlaybackRate(_ rate: Percentage?, for itemID: ItemIdentifier) async throws {
         try await PersistenceManager.shared.keyValue.set(.playbackRate(for: itemID), rate)
     }
+    func sleepTimer(for itemID: ItemIdentifier) async -> SleepTimerConfiguration? {
+        await PersistenceManager.shared.keyValue[.sleepTimer(for: itemID)]
+    }
+    func setSleepTimer(_ sleepTimer: SleepTimerConfiguration?, for itemID: ItemIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.sleepTimer(for: itemID), sleepTimer)
+    }
+    
     func upNextStrategy(for itemID: ItemIdentifier) async -> ConfigureableUpNextStrategy? {
         await PersistenceManager.shared.keyValue[.upNextStrategy(for: itemID)]
     }
@@ -172,6 +179,18 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         }
         
         return Key(identifier: "playbackRate-\(itemID)", cluster: "playbackRates", isCachePurgeable: isPurgeable)
+    }
+    static func sleepTimer(for itemID: ItemIdentifier) -> Key<SleepTimerConfiguration> {
+        let isPurgeable: Bool
+        
+        switch itemID.type {
+            case .audiobook, .episode:
+                isPurgeable = true
+            case .author, .narrator, .series, .podcast, .collection, .playlist:
+                isPurgeable = false
+        }
+        
+        return Key(identifier: "sleepTimer-\(itemID)", cluster: "sleepTimers", isCachePurgeable: isPurgeable)
     }
     
     static func upNextStrategy(for itemID: ItemIdentifier) -> Key<ConfigureableUpNextStrategy> {

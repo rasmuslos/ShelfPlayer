@@ -33,7 +33,7 @@ struct ConnectionManageView: View {
             
             Section {
                 if let serverVersion {
-                    Text("connection.add.versionHint \(serverVersion)")
+                    Text("connection.test.success.message \(serverVersion)")
                         .foregroundStyle(.green)
                 } else {
                     ProgressView()

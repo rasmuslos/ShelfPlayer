@@ -95,6 +95,7 @@
 		3A90A6432D9BD01E009BDA84 /* CarPlayPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A90A6422D9BD01E009BDA84 /* CarPlayPreferences.swift */; };
 		3A91B4F42C83003C008D444C /* BetterDisclosureGroupStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */; };
 		3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9207042B6D018100A5CAB0 /* AudiobookViewModel.swift */; };
+		3A921AC32E434FD500555CA3 /* ItemConfigureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A921AC22E434FD500555CA3 /* ItemConfigureButton.swift */; };
 		3A93AE422C7CB19B00D2AE43 /* Color+IsLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */; };
 		3A94A9022E2FF5C2005EC605 /* ColorSchemePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A94A9012E2FF5C2005EC605 /* ColorSchemePreference.swift */; };
 		3A9730A62D66630E00CF72E6 /* SlidingSeasonPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9730A52D66630E00CF72E6 /* SlidingSeasonPicker.swift */; };
@@ -378,6 +379,7 @@
 		3A90A6422D9BD01E009BDA84 /* CarPlayPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPreferences.swift; sourceTree = "<group>"; };
 		3A91B4F32C830037008D444C /* BetterDisclosureGroupStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetterDisclosureGroupStyle.swift; sourceTree = "<group>"; };
 		3A9207042B6D018100A5CAB0 /* AudiobookViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookViewModel.swift; sourceTree = "<group>"; };
+		3A921AC22E434FD500555CA3 /* ItemConfigureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemConfigureButton.swift; sourceTree = "<group>"; };
 		3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+IsLight.swift"; sourceTree = "<group>"; };
 		3A94A9012E2FF5C2005EC605 /* ColorSchemePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemePreference.swift; sourceTree = "<group>"; };
 		3A9730A52D66630E00CF72E6 /* SlidingSeasonPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidingSeasonPicker.swift; sourceTree = "<group>"; };
@@ -884,6 +886,7 @@
 				3A0E42ED2C819FE80034873F /* QueueButton.swift */,
 				3A9AB5372AD941DC0089231A /* PlayableItemSwipeActionsModifier.swift */,
 				3AE24D7C2D8D967F00680B28 /* PlayableItemContextMenuModifier.swift */,
+				3A921AC22E434FD500555CA3 /* ItemConfigureButton.swift */,
 			);
 			path = CommonActions;
 			sourceTree = "<group>";
@@ -1334,6 +1337,7 @@
 				3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */,
 				3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */,
 				3ACB8D082DDCA860005336C0 /* TimeRow.swift in Sources */,
+				3A921AC32E434FD500555CA3 /* ItemConfigureButton.swift in Sources */,
 				3AB0E7252CC3FE820024DD08 /* CarPlayLibraryController.swift in Sources */,
 				3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */,
 				3AB695382ACF3D1200823049 /* PersonView.swift in Sources */,

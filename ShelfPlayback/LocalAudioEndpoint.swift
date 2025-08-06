@@ -193,6 +193,20 @@ final class LocalAudioEndpoint: AudioEndpoint {
         }
     }
     
+    var groupingID: ItemIdentifier? {
+        get async {
+            if let collectionID = await collectionID {
+                collectionID
+            } else if let seriesID = await seriesID {
+                seriesID
+            } else if let podcastID = await podcastID {
+                podcastID
+            } else {
+                nil
+            }
+        }
+    }
+    
     var isBusy: Bool {
         isBuffering || activeOperationCount > 0
     }
@@ -494,13 +508,9 @@ private extension LocalAudioEndpoint {
         
         let playbackRate: Percentage
         
-        let collectionID = await collectionID
-        let seriesID = await seriesID
-        let podcastID = await podcastID
-        
         if let itemPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: currentItemID) {
             playbackRate = itemPlaybackRate
-        } else if let groupingID = collectionID ?? seriesID ?? podcastID, let groupingPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: groupingID) {
+        } else if let groupingID = await groupingID, let groupingPlaybackRate = await PersistenceManager.shared.item.playbackRate(for: groupingID) {
             playbackRate = groupingPlaybackRate
         } else {
             playbackRate = Defaults[.defaultPlaybackRate]
@@ -517,6 +527,7 @@ private extension LocalAudioEndpoint {
         activeOperationCount -= 1
         
         updateUpNextQueue()
+        scheduleConfiguredSleepTimer()
         
         Defaults[.playbackResumeInfo] = PlaybackResumeInfo(itemID: currentItemID, started: .now)
         UIApplication.shared.endBackgroundTask(task)
@@ -744,6 +755,26 @@ private extension LocalAudioEndpoint {
             }
         }
     }
+    func scheduleConfiguredSleepTimer() {
+        Task {
+            guard sleepTimer == nil else {
+                return
+            }
+            
+            let sleepTimer: SleepTimerConfiguration
+            
+            if currentItemID.type == .audiobook, let configured = await PersistenceManager.shared.item.sleepTimer(for: currentItemID) {
+                sleepTimer = configured
+            } else if let groupingID = await groupingID, let configured = await PersistenceManager.shared.item.sleepTimer(for: groupingID) {
+                sleepTimer = configured
+            } else {
+                return
+            }
+            
+            setSleepTimer(sleepTimer)
+        }
+    }
+    
     func didPlayToEnd(finishedCurrentItem: Bool) async {
         await playbackReporter.finalize(currentTime: finishedCurrentItem ? duration : currentTime)
         await PersistenceManager.shared.download.removeBlock(from: currentItemID)
