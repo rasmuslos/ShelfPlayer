@@ -57,32 +57,32 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
         }
     }
     
-    var label: LocalizedStringKey {
+    var label: String {
         switch self {
             case .audiobookHome:
-                "panel.home"
+                String(localized: "panel.home")
             case .audiobookSeries:
-                "panel.series"
+                String(localized: "panel.series")
             case .audiobookAuthors:
-                "panel.authors"
+                String(localized: "panel.authors")
             case .audiobookNarrators:
-                "panel.narrators"
+                String(localized: "panel.narrators")
             case .audiobookBookmarks:
-                "panel.bookmarks"
+                String(localized: "panel.bookmarks")
             case .audiobookCollections:
-                "panel.collections"
+                String(localized: "panel.collections")
             case .audiobookLibrary:
-                "panel.library"
+                String(localized: "panel.library")
                 
             case .podcastHome:
-                "panel.home"
+                String(localized: "panel.home")
             case .podcastLatest:
-                "panel.latest"
+                String(localized: "panel.latest")
             case .podcastLibrary:
-                "panel.library"
+                String(localized: "panel.library")
                 
             case .playlists:
-                "panel.playlists"
+                String(localized: "panel.playlists")
         }
     }
     
