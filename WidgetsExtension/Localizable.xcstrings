@@ -20,6 +20,12 @@
             "state" : "translated",
             "value" : "Розділи"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "章节"
+          }
         }
       }
     },
@@ -41,6 +47,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пауза"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停"
           }
         }
       }
@@ -64,6 +76,12 @@
             "state" : "translated",
             "value" : "Призупинено"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已暂停"
+          }
         }
       }
     },
@@ -85,6 +103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Грати"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放"
           }
         }
       }
@@ -108,6 +132,12 @@
             "state" : "translated",
             "value" : "Перейти назад"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后退"
+          }
         }
       }
     },
@@ -129,6 +159,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Таймер сну"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "睡眠倒计时"
           }
         }
       }
@@ -152,6 +188,12 @@
             "state" : "translated",
             "value" : "Скасувати"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
         }
       }
     },
@@ -173,6 +215,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Розширити"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增加"
           }
         }
       }
@@ -196,6 +244,12 @@
             "state" : "translated",
             "value" : "Старт"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始"
+          }
         }
       }
     },
@@ -217,6 +271,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Останній відтворений"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近播放"
           }
         }
       }
@@ -240,6 +300,12 @@
             "state" : "translated",
             "value" : "Останній відтворений вами елемент, а також елементи керування активним відтворенням."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您播放的最后一个项目，以及播放的控制按钮。"
+          }
         }
       }
     },
@@ -261,6 +327,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Прослухано сьогодні"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天已收听"
           }
         }
       }
@@ -284,6 +356,12 @@
             "state" : "translated",
             "value" : "Показує вашу цільову кількість часу прослуховування та ваш прогрес у її досягненні."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示您的收听时间目标及达成进度。"
+          }
         }
       }
     },
@@ -305,6 +383,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Слухати зараз"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在收听"
           }
         }
       }
@@ -328,6 +412,12 @@
             "state" : "translated",
             "value" : "Показує нещодавно відтворені, незавершені елементи з усіх бібліотек."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示所有媒体库中最近播放的、未完成的项目。"
+          }
         }
       }
     },
@@ -349,6 +439,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Немає елементів"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空"
           }
         }
       }
