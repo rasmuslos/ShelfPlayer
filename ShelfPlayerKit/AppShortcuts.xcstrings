@@ -30,6 +30,14 @@
               "Скасувати повернення ${applicationName}"
             ]
           }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "后退 ${applicationName}中的播放"
+            ]
+          }
         }
       }
     },
@@ -57,6 +65,14 @@
             "state" : "translated",
             "values" : [
               "Створіть закладку за допомогою ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "在  ${applicationName}创建书签"
             ]
           }
         }
@@ -89,6 +105,14 @@
             "values" : [
               "Вперед ${applicationName}",
               "Скасувати використання ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "快进 ${applicationName}的播放"
             ]
           }
         }
@@ -126,6 +150,14 @@
               "Зупинити відтворення ${applicationName}"
             ]
           }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "暂停${applicationName}的播放"
+            ]
+          }
         }
       }
     },
@@ -158,6 +190,14 @@
               "Відтворити епізоди ${podcast} за допомогою ${applicationName}"
             ]
           }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "使用 ${applicationName} 播放 ${podcast}"
+            ]
+          }
         }
       }
     },
@@ -185,6 +225,14 @@
             "state" : "translated",
             "values" : [
               "Відтворити ${target} за допомогою ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "使用 ${applicationName} 播放 ${target}"
             ]
           }
         }
@@ -222,6 +270,14 @@
               "Продовжити відтворення ${applicationName}"
             ]
           }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "使用 ${applicationName} 继续播放"
+            ]
+          }
         }
       }
     },
@@ -253,6 +309,14 @@
               "Перевірте наявність нових завантажень за допомогою ${applicationName}"
             ]
           }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "使用 ${applicationName} 搜索新的下载内容"
+            ]
+          }
         }
       }
     },
@@ -282,6 +346,14 @@
             "values" : [
               "Встановити швидкість відтворення ${applicationName}",
               "Встановити швидкість відтворення для ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "设置${applicationName} 的播放速度"
             ]
           }
         }
@@ -316,6 +388,14 @@
             "values" : [
               "Встановити ${applicationName} таймер сну",
               "Встановіть таймер сну ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "设置一个${applicationName} 的睡眠倒计时"
             ]
           }
         }

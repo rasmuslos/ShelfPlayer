@@ -28,8 +28,15 @@
             "state" : "translated",
             "value" : "ShelfPlayer"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "CFBundleName" : {
       "comment" : "Bundle name",
@@ -58,8 +65,15 @@
             "state" : "translated",
             "value" : "ShelfPlayer"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "NSHumanReadableCopyright" : {
       "comment" : "Copyright (human-readable)",
@@ -123,6 +137,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Надайте дозвіл на підключення до Audiobookshelf-Instance у вашій локальній мережі."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授权本地网络访问权限以让 ShelfPlayer 可连接局域网中的 Audiobookshelf 实例。"
           }
         }
       }
@@ -188,6 +208,12 @@
             "state" : "translated",
             "value" : "Пошук"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索"
+          }
         }
       }
     },
@@ -215,6 +241,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пошук у всіх бібліотеках"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索所有库"
           }
         }
       }
@@ -249,6 +281,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Елемент"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "项目"
           }
         }
       }
