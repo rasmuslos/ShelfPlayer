@@ -280,9 +280,7 @@ private final class DownloadButtonViewModel {
             }
             
             guard let (itemID, status) = $0, self.itemID == itemID else {
-                self.status = nil
                 loadCurrent()
-                
                 return
             }
             

@@ -13,10 +13,17 @@ struct NavigationStackWrapper<Content: View>: View {
     
     @ViewBuilder var content: () -> Content
     
-    @State private var path = [NavigationDestination]()
+    @State private var context: NavigationContext
+    
+    init(tab: TabValue, content: @escaping () -> Content) {
+        self.tab = tab
+        self.content = content
+        
+        context = .init(tab: tab)
+    }
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: $context.path) {
             content()
                 .navigationDestination(for: NavigationDestination.self) { destination in
                     switch destination {
@@ -53,16 +60,31 @@ struct NavigationStackWrapper<Content: View>: View {
                         return
                     }
                     
-                    path.append(.itemID($0))
+                    context.path.append(.itemID($0))
                 }
         }
         .environment(\.library, tab.library)
+        .environment(\.navigationContext, context)
         .onReceive(RFNotification[.collectionDeleted].publisher()) { collectionID in
-            path.removeAll {
+            context.path.removeAll {
                 $0.itemID == collectionID
             }
         }
     }
+}
+
+@MainActor @Observable
+final class NavigationContext {
+    let tab: TabValue
+    
+    init(tab: TabValue) {
+        self.tab = tab
+    }
+    
+    var path = [NavigationDestination]()
+}
+extension EnvironmentValues {
+    @Entry var navigationContext: NavigationContext? = nil
 }
 
 enum NavigationDestination: Hashable {
@@ -90,6 +112,22 @@ enum NavigationDestination: Hashable {
                 viewModel.podcast.id
             default:
                 nil
+        }
+    }
+    var label: String {
+        switch self {
+            case .item(let item, _):
+                item.name
+            case .itemID(let itemID):
+                itemID.type.label
+            case .itemName(let name, _):
+                name
+            case .podcastEpisodes(let viewModel):
+                "\(String(localized: "item.related.podcast.episodes")): \(viewModel.podcast.name)"
+            case .tabValue(let tab):
+                tab.label
+            case .audiobookRow(let title, _):
+                title
         }
     }
 }

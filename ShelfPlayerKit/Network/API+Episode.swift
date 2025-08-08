@@ -6,25 +6,24 @@
 //
 
 import Foundation
-import RFNetwork
 
-
-public extension APIClient where I == ItemIdentifier.ConnectionID  {
+public extension APIClient  {
     func episodes(from identifier: ItemIdentifier) async throws -> [Episode] {
-        let item = try await response(for: ClientRequest<ItemPayload>(path: "api/items/\(identifier.pathComponent)", method: .get))
+        let item: ItemPayload = try await response(path: "api/items/\(identifier.pathComponent)", method: .get)
         
         guard let episodes = item.media?.episodes else {
-            throw APIClientError.invalidResponse
+            throw APIClientError.notFound
         }
         
         return episodes.compactMap { Episode(episode: $0, item: item, connectionID: connectionID) }
     }
     
     func recentEpisodes(from libraryID: String, limit: Int) async throws -> [Episode] {
-        try await response(for: ClientRequest<EpisodesResponse>(path: "api/libraries/\(libraryID)/recent-episodes", method: .get, query: [
+        let response: EpisodesResponse = try await response(path: "api/libraries/\(libraryID)/recent-episodes", method: .get, query: [
             URLQueryItem(name: "page", value: "0"),
             URLQueryItem(name: "limit", value: String(describing: limit)),
-        ])).episodes.enumerated().map { Episode(episode: $0.element, libraryID: libraryID, fallbackIndex: $0.offset, connectionID: connectionID) }
+        ])
+        return response.episodes.enumerated().map { Episode(episode: $0.element, libraryID: libraryID, fallbackIndex: $0.offset, connectionID: connectionID) }
     }
 }
 

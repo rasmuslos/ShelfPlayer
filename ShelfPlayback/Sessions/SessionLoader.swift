@@ -140,7 +140,7 @@ public final class SessionLoader {
             get async {
                 switch self {
                     case .today:
-                        await PersistenceManager.shared.authorization.connections.map(\.key)
+                        await PersistenceManager.shared.authorization.connectionIDs
                     case .itemID(let itemID):
                         [itemID.connectionID]
                     #if DEBUG

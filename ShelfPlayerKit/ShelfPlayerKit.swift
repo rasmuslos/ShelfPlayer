@@ -13,7 +13,6 @@ import AppIntents
 @_exported import DefaultsMacros
 
 @_exported import RFVisuals
-@_exported import RFNetwork
 @_exported import RFNotifications
 
 public struct ShelfPlayerKit {

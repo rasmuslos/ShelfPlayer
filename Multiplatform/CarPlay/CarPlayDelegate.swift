@@ -20,14 +20,14 @@ public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDeleg
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         
-        RFNotification[.connectionsChanged].subscribe { [weak self] _ in
+        RFNotification[.connectionsChanged].subscribe { [weak self] in
             self?.updateController()
         }
         
         updateController()
         
-        Task.detached {
-            try await PersistenceManager.shared.authorization.fetchConnections()
+        Task {
+            try await PersistenceManager.shared.authorization.waitForConnections()
         }
     }
     
@@ -55,9 +55,7 @@ private extension CarPlayDelegate {
                 return
             }
             
-            let connectionCount = await PersistenceManager.shared.authorization.connections.count
-            
-            guard connectionCount > 0 else {
+            guard await !PersistenceManager.shared.authorization.connectionIDs.isEmpty else {
                 do {
                     try await interfaceController.setRootTemplate(noConnectionsTemplate, animated: false)
                 } catch {

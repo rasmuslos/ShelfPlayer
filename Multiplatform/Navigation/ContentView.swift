@@ -46,6 +46,10 @@ struct ContentView: View {
                 EditCollectionSheet(collection: collection)
             case .editCollectionMembership(let itemID):
                 CollectionMembershipEditorSheet(itemID: itemID)
+            case .addConnection:
+                ConnectionAddSheet()
+            case .editConnection(let connectionID):
+                ConnectionEditSheet(connectionID: connectionID)
             case .whatsNew:
                 WhatsNewSheet()
         }
@@ -77,7 +81,7 @@ struct ContentView: View {
         Group {
             if !connectionStore.didLoad {
                 LoadingView()
-            } else if connectionStore.flat.isEmpty {
+            } else if connectionStore.connections.isEmpty {
                 WelcomeView()
             } else if satellite.isOffline {
                 OfflineView()
