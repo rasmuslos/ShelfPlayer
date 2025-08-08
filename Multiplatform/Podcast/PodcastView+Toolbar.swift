@@ -58,7 +58,6 @@ extension PodcastView {
 extension PodcastView.ToolbarModifier {
     struct OptionsMenu: View {
         @Environment(PodcastViewModel.self) private var viewModel
-        @Environment(Satellite.self) private var satellite
         
         var body: some View {
             Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
@@ -70,9 +69,7 @@ extension PodcastView.ToolbarModifier {
                     ItemSortOrderPicker(sortOrder: viewModel.sortOrderBinding, ascending: viewModel.ascendingBinding)
                 }
                 
-                Button("item.configure", systemImage: "gearshape") {
-                    satellite.present(.configureGrouping(viewModel.podcast.id))
-                }
+                ItemConfigureButton(itemID: viewModel.podcast.id)
             }
             .menuActionDismissBehavior(.disabled)
         }

@@ -18,10 +18,18 @@ struct ItemIDLoadLink: View {
     
     @ViewBuilder
     private var labelContent: some View {
-        Label(type.viewLabel, systemImage: type.icon)
-        
-        if let footer {
-            Text(footer)
+        if #available(iOS 26.0, *) {
+            if let footer {
+                Label(footer, systemImage: type.icon)
+            } else {
+                Label(type.viewLabel, systemImage: type.icon)
+            }
+        } else {
+            Label(type.viewLabel, systemImage: type.icon)
+            
+            if let footer {
+                Text(footer)
+            }
         }
     }
     

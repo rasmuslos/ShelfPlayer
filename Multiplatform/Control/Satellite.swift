@@ -157,6 +157,9 @@ extension Satellite {
         case editCollection(ItemCollection)
         case editCollectionMembership(ItemIdentifier)
         
+        case addConnection
+        case editConnection(ItemIdentifier.ConnectionID)
+        
         case whatsNew
         
         var id: String {
@@ -175,6 +178,10 @@ extension Satellite {
                     "editCollection-\(collection.id)"
                 case .editCollectionMembership(let itemID):
                     "editCollectionMembership-\(itemID)"
+                case .addConnection:
+                    "addConnection"
+                case .editConnection(let connectionID):
+                    "editConnection-\(connectionID)"
                 case .whatsNew:
                     "whatsNew"
             }
@@ -269,10 +276,10 @@ extension Satellite {
     }
     
     func present(_ sheet: Sheet) {
-        sheetStack.append(sheet)
+        sheetStack.insert(sheet, at: 0)
     }
     func warn(_ warning: WarningAlert) {
-        warningAlertStack.append(warning)
+        warningAlertStack.insert(warning, at: 0)
     }
     
     func dismissSheet() {

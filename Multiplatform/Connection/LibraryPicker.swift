@@ -15,9 +15,9 @@ struct LibraryPicker: View {
     var callback: (() -> Void)? = nil
     
     var body: some View {
-        ForEach(connectionStore.flat) { connection in
+        ForEach(connectionStore.connections) { connection in
             if let libraries = connectionStore.libraries[connection.id] {
-                Section(connection.friendlyName) {
+                Section(connection.name) {
                     ForEach(libraries) { library in
                         Button(library.name, systemImage: library.icon) {
                             RFNotification[.changeLibrary].send(payload: library)

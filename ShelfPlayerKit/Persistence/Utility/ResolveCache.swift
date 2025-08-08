@@ -194,7 +194,7 @@ public actor ResolveCache: Sendable {
 private extension ResolveCache {
     func waitForResolvingItem(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws {
         while resolvingItemIDs.contains(where: {  $0.0 == primaryID && $0.1 == groupingID && $0.2 == connectionID }) || resolvingItemIDs.contains(where: {$0.0 == groupingID && $0.2 == connectionID }) {
-            try await  Task.sleep(for: .seconds(0.4))
+            try await Task.sleep(for: .seconds(0.4))
         }
     }
     func beginResolvingItem(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) {

@@ -9,7 +9,6 @@ import Foundation
 import SwiftData
 import OSLog
 import Network
-import RFNetwork
 import RFNotifications
 
 #if canImport(UIKit)
@@ -39,9 +38,16 @@ extension PersistenceManager {
         private lazy var urlSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: "io.rfk.shelfPlayerKit.download")
             
+            // config.isDiscretionary = !Defaults[.allowCellularDownloads]
+            
             config.sessionSendsLaunchEvents = true
             config.waitsForConnectivity = true
-            // config.isDiscretionary = !Defaults[.allowCellularDownloads]
+            
+            config.timeoutIntervalForRequest = 120
+            
+            config.httpCookieStorage = ShelfPlayerKit.httpCookieStorage
+            config.httpShouldSetCookies = true
+            config.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
             
             if ShelfPlayerKit.enableCentralized {
                 config.sharedContainerIdentifier = ShelfPlayerKit.groupContainer
@@ -88,8 +94,6 @@ extension PersistenceManager {
                     
                     try await remove(episode.id)
                 }
-                
-                try modelContext.delete(model: PersistedPodcast.self, where: #Predicate { $0._id.contains(connectionID) })
                 
                 try modelContext.delete(model: PersistedAsset.self, where: #Predicate { $0._itemID.contains(connectionID) })
                 try modelContext.delete(model: PersistedChapter.self, where: #Predicate { $0._itemID.contains(connectionID) })
@@ -686,7 +690,7 @@ public extension PersistenceManager.DownloadSubsystem {
     }
     func remove(_ itemID: ItemIdentifier) async throws {
         if itemID.type == .podcast {
-            // TODO: idk
+            // TODO: Remove Podcast
         }
         
         guard itemID.isPlayable else {
@@ -861,21 +865,7 @@ private final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        let protectiveMethod = challenge.protectionSpace.authenticationMethod
-        
-        guard protectiveMethod == NSURLAuthenticationMethodClientCertificate else {
-            return (.performDefaultHandling, nil)
-        }
-        
-        /*
-        let crendential = URLCredential(identity: <#T##SecIdentity#>,
-                                        certificates: nil,
-                                        persistence: .forSession)
-        
-        return (.useCredential, crendential)
-         */
-        
-        return (.performDefaultHandling, nil)
+        await PersistenceManager.shared.authorization.handleURLSessionChallenge(challenge)
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {

@@ -336,7 +336,7 @@ private struct CollapsedForeground: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.primary)
-        .frame(height: 56)
+        .frame(height: CompactPlaybackModifier.height)
         .clipShape(.rect(cornerRadius: 12, style: .continuous))
         .padding(.horizontal, 8)
     }

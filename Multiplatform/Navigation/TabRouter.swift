@@ -71,7 +71,7 @@ struct TabRouter: View {
                 }
             }
             
-            ForEach(connectionStore.flat) { connection in
+            ForEach(connectionStore.connections) { connection in
                 if let libraries = connectionStore.libraries[connection.id] {
                     ForEach(libraries) { library in
                         TabSection(library.name) {
