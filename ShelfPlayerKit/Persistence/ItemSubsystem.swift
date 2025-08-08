@@ -181,16 +181,7 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         return Key(identifier: "playbackRate-\(itemID)", cluster: "playbackRates", isCachePurgeable: isPurgeable)
     }
     static func sleepTimer(for itemID: ItemIdentifier) -> Key<SleepTimerConfiguration> {
-        let isPurgeable: Bool
-        
-        switch itemID.type {
-            case .audiobook, .episode:
-                isPurgeable = true
-            case .author, .narrator, .series, .podcast, .collection, .playlist:
-                isPurgeable = false
-        }
-        
-        return Key(identifier: "sleepTimer-\(itemID)", cluster: "sleepTimers", isCachePurgeable: isPurgeable)
+        Key(identifier: "sleepTimer-\(itemID)", cluster: "sleepTimers", isCachePurgeable: false)
     }
     
     static func upNextStrategy(for itemID: ItemIdentifier) -> Key<ConfigureableUpNextStrategy> {

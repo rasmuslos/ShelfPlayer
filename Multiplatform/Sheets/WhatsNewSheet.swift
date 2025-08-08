@@ -22,12 +22,12 @@ struct WhatsNewSheet: View {
     
     @ViewBuilder
     private func row(systemImage: String, headline: String, text: String) -> some View {
-        HStack(spacing: 0) {
+        HStack(alignment: .top, spacing: 0) {
             Image(systemName: systemImage)
                 .font(.system(size: 44))
-                .frame(width: 60)
                 .symbolRenderingMode(.monochrome)
                 .foregroundStyle(Color.accentColor)
+                .frame(width: 60)
             
             VStack(alignment: .leading) {
                 Text(headline)
@@ -57,11 +57,13 @@ struct WhatsNewSheet: View {
             .font(.largeTitle)
             .padding(.vertical, 40)
             
-            row(systemImage: "gauge.with.dots.needle.67percent", headline: "Listened Today", text: "Track your daily listening progress at a glance. See how much you’ve listened today, right from the home screen.")
-
-            row(systemImage: "person.fill", headline: "Narrators", text: "Explore audiobooks by your favorite narrators. Tap a voice you love to discover more titles they’ve brought to life.")
-
             row(systemImage: "widget.small.badge.plus", headline: "Widgets & App Intents", text: "Add ShelfPlayer widgets to your Lock Screen or Home Screen. Use Shortcuts for instant playback control.")
+            
+            row(systemImage: "folder.fill", headline: "Collections", text: "Support for Collection & Playlist playback, viewing and management.")
+            
+            row(systemImage: "person.fill", headline: "Narrators", text: "Explore audiobooks by your favorite narrators. Tap a voice you love to discover more titles they’ve brought to life.")
+            
+            row(systemImage: "gauge.with.dots.needle.67percent", headline: "Listened Today", text: "Track your daily listening progress at a glance. See how much you’ve listened today, right from the home screen.")
 
             row(systemImage: "ladybug.slash.fill", headline: "Rewritten Internals", text: "Faster, smoother, more reliable. ShelfPlayer’s core has been rebuilt from the ground up for a better experience.")
         }

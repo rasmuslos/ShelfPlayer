@@ -46,9 +46,9 @@ public extension ItemIdentifier.ItemType {
             case .episode:
                 "play.square"
             case .collection:
-                "list.triangle"
+                "books.vertical.fill"
             case .playlist:
-                "list.bullet"
+                "folder.fill"
         }
     }
 }
