@@ -74,8 +74,8 @@ struct CarPlayPreferences: View {
                     .foregroundStyle(.blue)
             }
             
-            ForEach(Array(connectionStore.connections.values), id: \.id) { connection in
-                Section(connection.friendlyName) {
+            ForEach(connectionStore.connections) { connection in
+                Section(connection.name) {
                     if let libraries = connectionStore.libraries[connection.id] {
                         ForEach(libraries) { library in
                             Button {

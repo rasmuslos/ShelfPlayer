@@ -14,6 +14,8 @@ struct GroupingConfigurationSheet: View {
     @Default(.generateUpNextQueue) private var generateUpNextQueue
     @Default(.enableConvenienceDownloads) private var enableConvenienceDownloads
     
+    @Default(.sleepTimerIntervals) private var sleepTimerIntervals
+    
     let itemID: ItemIdentifier
     
     @State private var viewModel: ViewModel?
@@ -28,6 +30,34 @@ struct GroupingConfigurationSheet: View {
                         PlaybackRatePicker(label: "item.grouping.configure.playbackRate", selection: $viewModel.playbackRate)
                             .bold(viewModel.isPlaybackRateCustomized)
                         
+                        Picker(selection: $viewModel.sleepTimer) {
+                            Text("disabled")
+                                .tag(Optional<SleepTimerConfiguration>.none)
+                            
+                            Divider()
+                            
+                            ForEach(sleepTimerIntervals, id: \.hashValue) {
+                                Text($0.formatted(.duration(unitsStyle: .short, allowedUnits: [.hour, .minute])))
+                                    .tag(SleepTimerConfiguration.interval($0))
+                            }
+                            
+                            if viewModel.areSleepChaptersAvailable {
+                                Divider()
+                                
+                                ForEach([1, 2, 3, 5, 7, 10], id: \.hashValue) {
+                                    Text("item.chapters \($0)")
+                                        .tag(SleepTimerConfiguration.chapters($0))
+                                }
+                            }
+                        } label: {
+                            Text("item.grouping.configure.sleepTimer")
+                                .bold(viewModel.isSleepTimerCustomized)
+                        }
+                    } header: {
+                        Text("item.grouping.configure.playback")
+                    }
+                    
+                    Section {
                         if viewModel.isUpNextCustomizable {
                             Picker("item.grouping.configure.upNextStrategy", selection: $viewModel.upNextStrategy) {
                                 ForEach(ConfigureableUpNextStrategy.allCases) {
@@ -43,24 +73,24 @@ struct GroupingConfigurationSheet: View {
                             Toggle("item.grouping.configure.allowSuggestions", isOn: $viewModel.allowSuggestions)
                                 .bold(viewModel.isAllowSuggestionsCustomized)
                         }
-                    } header: {
-                        Text("item.grouping.configure.playback")
                     } footer: {
                         if viewModel.areSuggestionsAvailable {
                             Text("item.grouping.configure.playback.description")
                         }
                     }
                     
-                    Section {
-                        ConvenienceDownloadRetrievalPicker(itemType: itemID.type, retrieval: $viewModel.retrieval) {
-                            Text("item.convenienceDownload.retrieval")
+                    if viewModel.areConvenienceDownloadsAvailable {
+                        Section {
+                            ConvenienceDownloadRetrievalPicker(itemType: itemID.type, retrieval: $viewModel.retrieval) {
+                                Text("item.convenienceDownload.retrieval")
+                            }
+                        } header: {
+                            Text("item.convenienceDownload")
+                        } footer: {
+                            Text("item.convenienceDownload.description")
                         }
-                    } header: {
-                        Text("item.convenienceDownload")
-                    } footer: {
-                        Text("item.convenienceDownload.description")
+                        .disabled(!enableConvenienceDownloads)
                     }
-                    .disabled(!enableConvenienceDownloads)
                     
                     Color.clear
                         .listRowBackground(Color.clear)
@@ -123,6 +153,8 @@ private final class ViewModel {
     let itemID: ItemIdentifier
     
     var playbackRate: Percentage
+    var sleepTimer: SleepTimerConfiguration?
+    
     var upNextStrategy: ConfigureableUpNextStrategy
     var allowSuggestions: Bool
     
@@ -136,6 +168,7 @@ private final class ViewModel {
         playbackRate = await PersistenceManager.shared.item.playbackRate(for: itemID) ?? Defaults[.defaultPlaybackRate]
         upNextStrategy = await PersistenceManager.shared.item.upNextStrategy(for: itemID) ?? .default
         allowSuggestions = await PersistenceManager.shared.item.allowSuggestions(for: itemID) ?? true
+        sleepTimer = await PersistenceManager.shared.item.sleepTimer(for: itemID)
         
         if let retrieval = await PersistenceManager.shared.convenienceDownload.retrieval(for: itemID), let parsed = ConvenienceDownloadRetrievalOption.parse(retrieval) {
             self.retrieval = parsed
@@ -144,21 +177,32 @@ private final class ViewModel {
         }
     }
     
-    var isUpNextCustomizable: Bool {
-        itemID.type == .series || itemID.type == .podcast
-    }
-    var areSuggestionsAvailable: Bool {
-        itemID.type == .series || itemID.type == .podcast
-    }
-    
     var isPlaybackRateCustomized: Bool {
         playbackRate != defaultPlaybackRate
+    }
+    var isSleepTimerCustomized: Bool {
+        sleepTimer != nil
+    }
+    var areSleepChaptersAvailable: Bool {
+        itemID.type == .series || itemID.type == .collection || itemID.type == .audiobook
+    }
+    
+    var isUpNextCustomizable: Bool {
+        itemID.type == .series || itemID.type == .podcast
     }
     var isUpNextStrategyCustomized: Bool {
         upNextStrategy != .default
     }
+    
+    var areSuggestionsAvailable: Bool {
+        itemID.type == .series || itemID.type == .podcast
+    }
     var isAllowSuggestionsCustomized: Bool {
         allowSuggestions != true
+    }
+    
+    var areConvenienceDownloadsAvailable: Bool {
+        itemID.type == .series || itemID.type == .podcast || itemID.type == .collection || itemID.type == .playlist
     }
     
     nonisolated func save(callback: @MainActor @escaping () -> Void) {
@@ -171,6 +215,12 @@ private final class ViewModel {
                 } else {
                     try await PersistenceManager.shared.item.setPlaybackRate(nil, for: itemID)
                 }
+            } catch {
+                failedCount += 1
+            }
+            
+            do {
+                try await PersistenceManager.shared.item.setSleepTimer(sleepTimer, for: itemID)
             } catch {
                 failedCount += 1
             }
@@ -221,7 +271,7 @@ private extension ConfigureableUpNextStrategy {
         case .listenNow:
             "upNextStrategy.listenNow"
         case .disabled:
-            "upNextStrategy.disabled"
+            "disabled"
         }
     }
 }
@@ -249,7 +299,7 @@ enum ConvenienceDownloadRetrievalOption: String, Identifiable {
     var label: LocalizedStringKey {
         switch self {
         case .disabled:
-            "item.convenienceDownload.disabled"
+            "disabled"
         case .one:
             "item.convenienceDownload.one"
         case .two:
@@ -356,6 +406,13 @@ enum ConvenienceDownloadRetrievalOption: String, Identifiable {
     Text(verbatim: ":)")
         .sheet(isPresented: .constant(true)) {
             GroupingConfigurationSheet(itemID: Podcast.fixture.id)
+        }
+        .previewEnvironment()
+}
+#Preview {
+    Text(verbatim: ":)")
+        .sheet(isPresented: .constant(true)) {
+            GroupingConfigurationSheet(itemID: Audiobook.fixture.id)
         }
         .previewEnvironment()
 }

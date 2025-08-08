@@ -340,8 +340,11 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         scheduleDownload(configurationID: buildGroupingConfigurationID(itemID))
     }
     func scheduleAll() async {
-        if await PersistenceManager.shared.authorization.connections.isEmpty {
-            try? await PersistenceManager.shared.authorization.fetchConnections()
+        do {
+            try await PersistenceManager.shared.authorization.waitForConnections()
+        } catch {
+            logger.error("Failed to schedule all for download: \(error)")
+            return
         }
         
         shouldComeToEnd = false

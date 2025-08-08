@@ -8,12 +8,11 @@
 import Foundation
 import SwiftUI
 
-
 public extension EnvironmentValues {
     @Entry var library: Library? = nil
-    @Entry var displayContext: DisplayContext = .unknown
-    
     @Entry var connectionID: ItemIdentifier.ConnectionID? = nil
+    
+    @Entry var displayContext: DisplayContext = .unknown
     
     @Entry var playbackBottomOffset: CGFloat = 0
 }

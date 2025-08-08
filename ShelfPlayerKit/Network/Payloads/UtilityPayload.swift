@@ -29,11 +29,29 @@ struct AuthorizationResponse: Codable {
     
     struct User: Codable {
         let id: String
-        let token: String
         let username: String
+        
+        // 2.26+
+        let accessToken: String?
+        let refreshToken: String?
+        // Legacy
+        let token: String?
         
         let bookmarks: [BookmarkPayload]
         let mediaProgress: [ProgressPayload]
+    }
+    
+    var versionSafeAccessToken: String {
+        get throws {
+            guard let token = user.accessToken ?? user.token else {
+                throw APIClientError.unauthorized
+            }
+            
+            return token
+        }
+    }
+    var versionSafeRefreshToken: String? {
+        user.refreshToken
     }
 }
 

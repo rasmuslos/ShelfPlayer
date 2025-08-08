@@ -6,20 +6,18 @@
 //
 
 import Foundation
-import RFNetwork
-
 
 public extension APIClient {
     func finished(_ finished: Bool, itemID: ItemIdentifier) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
+        try await response(path: "api/me/progress/\(itemID.pathComponent)", method: .patch, body: [
             "isFinished": finished,
-        ]))
+        ])
     }
 }
 
 public extension APIClient {
     func batchUpdate(progress: [ProgressEntity]) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/me/progress/batch/update", method: .patch, body: progress.map {
+        try await response(path: "api/me/progress/batch/update", method: .patch, body: progress.map {
             let itemID: String
             let episodeID: String?
             
@@ -42,26 +40,26 @@ public extension APIClient {
                                    lastUpdate: Int64($0.lastUpdate.timeIntervalSince1970) * 1000,
                                    startedAt: Int64($0.startedAt?.timeIntervalSince1970 ?? 0) * 1000,
                                    finishedAt: Int64($0.finishedAt?.timeIntervalSince1970 ?? 0) * 1000)
-        }))
+        })
     }
     
     func delete(progressID: String) async throws {
-        try await response(for: ClientRequest<Empty>(path: "api/me/progress/\(progressID)", method: .delete))
+        try await response(path: "api/me/progress/\(progressID)", method: .delete)
     }
     
     func listeningSessions(page: Int, pageSize: Int) async throws -> [SessionPayload] {
-        let response = try await response(for: ClientRequest<SessionsResponse>(path: "api/me/listening-sessions", method: .get, query: [
+        let response: SessionsResponse = try await response(path: "api/me/listening-sessions", method: .get, query: [
             URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "itemsPerPage", value: "\(pageSize)"),
-        ]))
+        ])
         
         return response.sessions
     }
     func listeningSessions(from itemID: ItemIdentifier, page: Int, pageSize: Int) async throws -> [SessionPayload] {
-        let response = try await response(for: ClientRequest<SessionsResponse>(path: "api/me/item/listening-sessions/\(itemID.pathComponent)", method: .get, query: [
+        let response: SessionsResponse = try await response(path: "api/me/item/listening-sessions/\(itemID.pathComponent)", method: .get, query: [
             URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "itemsPerPage", value: "\(pageSize)"),
-        ]))
+        ])
         
         return response.sessions
     }

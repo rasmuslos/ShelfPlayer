@@ -11,14 +11,15 @@ import ShelfPlayback
 
 struct ConnectionManager: View {
     @Environment(ConnectionStore.self) private var connectionStore
+    @Environment(Satellite.self) private var satellite
     
     @State private var loading = false
     @State private var notifyError = false
     
     var body: some View {
-        ForEach(connectionStore.flat) { connection in
+        ForEach(connectionStore.connections) { connection in
             NavigationLink(destination: ConnectionManageView(connection: connection)) {
-                Text(String("\(connection.host.absoluteString): \(connection.user)"))
+                Text(connection.name)
             }
             .foregroundStyle(connectionStore.offlineConnections.contains(connection.id) ? .red : .primary)
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -33,7 +34,7 @@ struct ConnectionManager: View {
                 Task {
                     loading = false
                     
-                    await PersistenceManager.shared.remove(connectionID: connectionStore.flat[index].id)
+                    await PersistenceManager.shared.remove(connectionID: connectionStore.connections[index].id)
         
                     loading = true
                 }
@@ -41,7 +42,9 @@ struct ConnectionManager: View {
         }
         
         Section {
-            NavigationLink("connection.add", destination: ConnectionAddView() {})
+            Button("connection.add") {
+                satellite.present(.addConnection)
+            }
             
             Button("connection.removeAll") {
                 Task {

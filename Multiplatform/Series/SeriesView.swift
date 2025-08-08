@@ -97,9 +97,7 @@ struct SeriesView: View {
                     
                     Divider()
                     
-                    Button("item.configure", systemImage: "gearshape") {
-                        satellite.present(.configureGrouping(viewModel.series.id))
-                    }
+                    ItemConfigureButton(itemID: viewModel.series.id)
                 }
                 .menuActionDismissBehavior(.disabled)
             }

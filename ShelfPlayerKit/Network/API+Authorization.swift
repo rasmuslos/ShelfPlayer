@@ -6,42 +6,49 @@
 //
 
 import Foundation
-import RFNetwork
-
 
 public extension APIClient {
-    func login(username: String, password: String) async throws -> String {
-        let response = try await response(for: ClientRequest<AuthorizationResponse>(path: "login", method: .post, body: [
+    func login(username: String, password: String) async throws -> (username: String, accessToken: String, refreshToken: String?) {
+        var request = try await request(path: "login", method: .post, body: [
             "username": username,
             "password": password,
-        ]))
+        ], query: nil)
         
-        return response.user.token
+        request.setValue("true", forHTTPHeaderField: "x-return-tokens")
+        
+        let response: AuthorizationResponse = try await response(request: request)
+        
+        return try (response.user.username, response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
     
     func status() async throws -> StatusResponse {
-        try await response(for: ClientRequest<StatusResponse>(path: "status", method: .get))
+        try await response(path: "status", method: .get)
     }
     
     func me() async throws -> (String, String) {
-        let response = try await response(for: ClientRequest<MeResponse>(path: "api/me", method: .get))
+        let response: MeResponse = try await response(path: "api/me", method: .get)
         return (response.id, response.username)
     }
     
     func authorize() async throws -> ([ProgressPayload], [BookmarkPayload]) {
-        let response = try await response(for: ClientRequest<AuthorizationResponse>(path: "api/authorize", method: .post))
+        let response: AuthorizationResponse = try await response(path: "api/authorize", method: .post)
         return (response.user.mediaProgress, response.user.bookmarks)
+    }
+    func refresh(refreshToken: String) async throws -> (String, String?) {
+        var request = try await request(path: "auth/refresh", method: .post, body: nil, query: nil)
+        request.setValue(refreshToken, forHTTPHeaderField: "x-refresh-token")
+        
+        let data = try await response(request: request, didRefreshAccessToken: true)
+        let response: AuthorizationResponse = try await response(data: data)
+        
+        return try (response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
 }
 
 public extension APIClient {
-    private final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
-        public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
-            nil
-        }
-    }
-    
     func openIDLoginURL(verifier: String) async throws -> URL {
+        clearCookies()
+        
         var challenge = Data(verifier.compactMap { $0.asciiValue }).sha256.base64EncodedString()
         
         // Base64 --> URL-Base64
@@ -49,42 +56,30 @@ public extension APIClient {
         challenge = challenge.replacingOccurrences(of: "/", with: "_")
         challenge = challenge.replacingOccurrences(of: "=", with: "")
         
-        let url = URL(string: host.appending(path: "auth").appending(path: "openid").appending(queryItems: [
+        let request = try await request(path: "auth/openid", method: .get, body: nil, query: [
             URLQueryItem(name: "client_id", value: "ShelfPlayer"),
             URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "response_type", value: "code"),
-        ]).absoluteString.appending("&code_challenge=\(challenge)"))!
-        
-        for cookie in HTTPCookieStorage.shared.cookies(for: url) ?? [] {
-            HTTPCookieStorage.shared.deleteCookie(cookie)
-        }
-        
-        let session = URLSession(configuration: .default, delegate: URLSessionDelegate(), delegateQueue: nil)
-        var request = URLRequest(url: url)
-        
-        request.httpShouldHandleCookies = true
-        request.httpMethod = "GET"
-        
-        for pair in headers {
-            request.addValue(pair.value, forHTTPHeaderField: pair.key)
-        }
+            URLQueryItem(name: "code_challenge", value: "\(challenge)"),
+        ])
         
         let (_, response) = try await session.data(for: request)
+        
         if let location = (response as? HTTPURLResponse)?.allHeaderFields["Location"] as? String, let url = URL(string: location) {
             return url
         }
         
-        throw APIClientError.invalidResponse
+        throw APIClientError.notFound
     }
     
-    func openIDExchange(code: String, state: String, verifier: String) async throws -> (username: String, token: String) {
-        let response = try await response(for: ClientRequest<AuthorizationResponse>(path: "auth/openid/callback", method: .get, query: [
+    func openIDExchange(code: String, state: String, verifier: String) async throws -> (username: String, accessToken: String, refreshToken: String?) {
+        let response: AuthorizationResponse = try await response(path: "auth/openid/callback", method: .get, query: [
             .init(name: "code", value: code),
             .init(name: "state", value: state),
             .init(name: "code_verifier", value: verifier),
-        ]))
+        ])
         
-        return (response.user.username, response.user.token)
+        return try (response.user.username, response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum SleepTimerConfiguration: Sendable, Hashable {
+public enum SleepTimerConfiguration: Sendable, Hashable, Codable {
     case interval(Date, TimeInterval)
     case chapters(Int, Int)
     

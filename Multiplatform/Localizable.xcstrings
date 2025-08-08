@@ -83,6 +83,12 @@
             "value" : "Delete"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -143,6 +149,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redigera"
           }
         },
         "uk" : {
@@ -1619,74 +1631,6 @@
         }
       }
     },
-    "connection.test" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Testen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Test"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Test"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Перевірити"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "测试"
-          }
-        }
-      }
-    },
-    "connection.test.success" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erfolg"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Success"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anslutningen lyckades"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Успішно"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "成功"
-          }
-        }
-      }
-    },
     "connection.test.success.message %@" : {
       "localizations" : {
         "de" : {
@@ -1717,6 +1661,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "服务器版本: %@"
+          }
+        }
+      }
+    },
+    "disabled" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deaktiviert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabled"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaktiverat"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вимкнено"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禁用"
           }
         }
       }
@@ -1837,6 +1815,12 @@
             "value" : "Collection unavailable"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samling ej tillgänglig"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1931,6 +1915,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Playlist unavailable"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spellista ej tillgänglig"
           }
         },
         "uk" : {
@@ -2501,6 +2491,12 @@
             "value" : "Create"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2529,6 +2525,12 @@
             "value" : "Create playlist"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa spellista"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2555,6 +2557,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add to …"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till …"
           }
         },
         "uk" : {
@@ -2703,40 +2711,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer 将根据您配置的过滤和排序偏好以及您指定的数量下载项目。"
-          }
-        }
-      }
-    },
-    "item.convenienceDownload.disabled" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deaktiviert"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disabled"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avaktiverat"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вимкнено"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用"
           }
         }
       }
@@ -3163,6 +3137,12 @@
             "value" : "%lld items"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld objekt"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3189,6 +3169,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld audiobooks"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ljudböcker"
           }
         },
         "uk" : {
@@ -3519,6 +3505,12 @@
             "value" : "Create Collection"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa samling"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3545,6 +3537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create Playlist"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa spellista"
           }
         },
         "uk" : {
@@ -4509,6 +4507,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "播放速度"
+          }
+        }
+      }
+    },
+    "item.grouping.configure.sleepTimer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlaf-Timer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep timer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insomningstimer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сну"
           }
         }
       }
@@ -6192,6 +6218,12 @@
             "value" : "View collection"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa samling"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6286,6 +6318,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View playlist"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa spellista"
           }
         },
         "uk" : {
@@ -6690,6 +6728,12 @@
             "value" : "Collections"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samlingar"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6954,6 +6998,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Playlists"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spellistor"
           }
         },
         "uk" : {
@@ -8039,6 +8089,12 @@
             "value" : "Color scheme"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Färgschema"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8065,6 +8121,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mörkt"
           }
         },
         "uk" : {
@@ -8095,6 +8157,12 @@
             "value" : "Light"
           }
         },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ljust"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8118,6 +8186,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "System"
@@ -10345,40 +10419,6 @@
         }
       }
     },
-    "upNextStrategy.disabled" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deaktiviert"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disabled"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avaktiverat"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вимкнено"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用"
-          }
-        }
-      }
-    },
     "upNextStrategy.listenNow" : {
       "localizations" : {
         "de" : {
@@ -10584,5 +10624,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

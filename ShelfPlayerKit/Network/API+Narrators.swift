@@ -6,19 +6,19 @@
 //
 
 import Foundation
-import RFNetwork
 
-
-public extension APIClient where I == ItemIdentifier.ConnectionID {
+public extension APIClient {
     func narrators(from libraryID: ItemIdentifier.LibraryID) async throws -> [Person] {
-        try await response(for: ClientRequest<NarratorsResponse>(path: "api/libraries/\(libraryID)/narrators", method: .get)).narrators.compactMap { Person(narrator: $0, libraryID: libraryID, connectionID: connectionID) }
+        let response: NarratorsResponse = try await response(path: "api/libraries/\(libraryID)/narrators", method: .get)
+        return response.narrators.compactMap { Person(narrator: $0, libraryID: libraryID, connectionID: connectionID) }
     }
     
     func audiobooks(from libraryID: ItemIdentifier.LibraryID, narratorName: String, page: Int, limit: Int) async throws -> [Audiobook] {
-        try await response(for: ClientRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: [
+        let response: ResultResponse = try await response(path: "api/libraries/\(libraryID)/items", method: .get, query: [
             URLQueryItem(name: "page", value: String(describing: page)),
             URLQueryItem(name: "limit", value: String(describing: limit)),
             URLQueryItem(name: "filter", value: "narrators.\(Data(narratorName.utf8).base64EncodedString())"),
-        ])).results.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }
+        ])
+        return response.results.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }
     }
 }

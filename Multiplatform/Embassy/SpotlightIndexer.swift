@@ -149,7 +149,7 @@ private extension SpotlightIndexer {
     nonisolated func planRun() async throws -> ([Library], [Library: PersistenceManager.ItemSubsystem.LibraryIndexMetadata]) {
         let validForSeconds: Double = 60 * 60 * 24 * 21
         
-        try await PersistenceManager.shared.authorization.fetchConnections()
+        try await PersistenceManager.shared.authorization.waitForConnections()
         let libraries = await ShelfPlayerKit.libraries
         
         return (libraries, await withTaskGroup {

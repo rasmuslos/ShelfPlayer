@@ -26,7 +26,7 @@ struct HeaderEditor: View {
             }
             
             withAnimation {
-                headers.append(.init(key: "", value: ""))
+                headers.append(.init(key: "X-", value: ""))
             }
         }
     }
@@ -59,7 +59,7 @@ final class HeaderShadow {
     }
     
     var isValid: Bool {
-        !key.isEmpty && !value.isEmpty
+        !key.isEmpty && !value.isEmpty && key != "X-"
     }
     var materialized: HTTPHeader? {
         guard isValid else {
