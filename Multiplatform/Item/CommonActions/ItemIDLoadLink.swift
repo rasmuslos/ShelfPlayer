@@ -10,7 +10,7 @@ import ShelfPlayback
 
 struct ItemIDLoadLink: View {
     @Environment(Satellite.self) private var satellite
-    @Environment(\.library) private var library
+    @Environment(\.navigationContext) private var navigationContext
     
     let name: String
     let type: ItemIdentifier.ItemType
@@ -34,17 +34,19 @@ struct ItemIDLoadLink: View {
     }
     
     var body: some View {
-        if library == nil {
+        if let navigationContext {
+            Button {
+                navigationContext.path.append(.itemName(name, type))
+            } label: {
+                labelContent
+            }
+            .disabled(satellite.isOffline)
+        } else {
             #if DEBUG
             if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {
                 let _ = fatalError("Cannot load itemIDs without a library.")
             }
             #endif
-        } else {
-            NavigationLink(value: NavigationDestination.itemName(name, type)) {
-                labelContent
-            }
-            .disabled(satellite.isOffline)
         }
     }
 }

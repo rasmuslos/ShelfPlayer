@@ -9,39 +9,34 @@ import SwiftUI
 import ShelfPlayback
 
 struct ItemLoadLink: View {
-    @Environment(Satellite.self) private var satellite
-    @Environment(\.library) private var library
+    @Environment(Satellite.self) private var satellite    
+    @Environment(\.navigationContext) private var navigationContext
     
     let itemID: ItemIdentifier
     var footer: String? = nil
     
     @ViewBuilder
     private var labelContent: some View {
-        if #available(iOS 26.0, *), false {
-            if let footer {
-                Label(footer, systemImage: itemID.type.icon)
-            } else {
-                Label(itemID.type.viewLabel, systemImage: itemID.type.icon)
-            }
-        } else {
-            Label(itemID.type.viewLabel, systemImage: itemID.type.icon)
-            
-            if let footer {
-                Text(footer)
-            }
+        Label(itemID.type.viewLabel, systemImage: itemID.type.icon)
+        
+        if let footer {
+            Text(footer)
         }
     }
     
     var body: some View {
         Group {
-            if library == nil {
+            if let navigationContext {
+                // Some goofball at Apple decided that `NavigationLink` does not support subtitles anymore. Why? God knows
                 Button {
-                    itemID.navigateIsolated()
+                    navigationContext.path.append(.itemID(itemID))
                 } label: {
                     labelContent
                 }
             } else {
-                NavigationLink(value: NavigationDestination.itemID(itemID)) {
+                Button {
+                    itemID.navigateIsolated()
+                } label: {
                     labelContent
                 }
             }
