@@ -104,43 +104,48 @@ struct RegularPlaybackModifier: ViewModifier {
             content
                 .fullScreenCover(isPresented: .init { viewModel.isExpanded } set: { viewModel.isExpanded = $0 }) {
                     GeometryReader { geometryProxy in
-                        Rectangle()
-                            .fill(.background)
-                            .contentShape(.rect)
-                            .modifier(PlaybackDragGestureCatcher(active: true))
+                            Rectangle()
+                                .fill(.background)
+                                .contentShape(.rect)
+                                .modifier(PlaybackDragGestureCatcher(active: true))
                         
-                        if geometryProxy.size.width > geometryProxy.size.height {
-                            VStack(spacing: 40) {
-                                HStack(spacing: 40) {
-                                    leftHandContent()
-                                        .frame(maxWidth: 400)
+                        Group {
+                            if geometryProxy.size.width > geometryProxy.size.height {
+                                VStack(spacing: 40) {
+                                    HStack(spacing: 40) {
+                                        leftHandContent()
+                                            .frame(maxWidth: 400)
+                                        
+                                        PlaybackQueue()
+                                    }
                                     
-                                    PlaybackQueue()
+                                    HStack(alignment: .firstTextBaseline, spacing: 20) {
+                                        PlaybackAirPlayButton()
+                                        Spacer(minLength: 0)
+                                        PlaybackRateButton()
+                                        PlaybackSleepTimerButton()
+                                    }
+                                    .labelStyle(.iconOnly)
+                                    .buttonStyle(.plain)
                                 }
-                                
-                                HStack(alignment: .firstTextBaseline, spacing: 20) {
-                                    PlaybackAirPlayButton()
+                                .padding(.horizontal, 40)
+                            } else {
+                                HStack(spacing: 0) {
                                     Spacer(minLength: 0)
-                                    PlaybackRateButton()
-                                    PlaybackSleepTimerButton()
+                                    
+                                    VStack(spacing: 0) {
+                                        CompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: 0, safeAreBottomInset: 0)
+                                    }
+                                    .frame(maxWidth: 600)
+                                    
+                                    Spacer(minLength: 0)
                                 }
-                                .labelStyle(.iconOnly)
-                                .buttonStyle(.plain)
-                            }
-                            .padding(.horizontal, 40)
-                        } else {
-                            HStack(spacing: 0) {
-                                Spacer(minLength: 0)
-                                
-                                VStack(spacing: 0) {
-                                    CompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: 0, safeAreBottomInset: 0)
-                                }
-                                .frame(maxWidth: 600)
-                                
-                                Spacer(minLength: 0)
                             }
                         }
+                        .safeAreaPadding(.bottom, geometryProxy.safeAreaInsets.bottom == 0 ? 40 : 0)
                     }
+                    .environment(Satellite.shared)
+                    .environment(PlaybackViewModel.shared)
                 }
                 .safeAreaInset(edge: .bottom) {
                     if let currentItemID = satellite.nowPlayingItemID {
