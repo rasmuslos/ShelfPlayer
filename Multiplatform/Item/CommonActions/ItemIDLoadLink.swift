@@ -18,7 +18,7 @@ struct ItemIDLoadLink: View {
     
     @ViewBuilder
     private var labelContent: some View {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), false {
             if let footer {
                 Label(footer, systemImage: type.icon)
             } else {

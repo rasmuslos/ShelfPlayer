@@ -30,6 +30,17 @@ struct ContentView: View {
     // try? await BackgroundTaskHandler.updateDownloads()
     
     @ViewBuilder
+    private func applyEnvironment<Content: View>(_ content: Content) -> some View {
+        content
+            .environment(satellite)
+            .environment(playbackViewModel)
+            .environment(connectionStore)
+            .environment(progressViewModel)
+            .environment(ListenedTodayTracker.shared)
+            .environment(\.namespace, namespace)
+    }
+    
+    @ViewBuilder
     private func sheetContent(for sheet: Satellite.Sheet) -> some View {
         switch sheet {
             case .listenNow:
@@ -112,6 +123,13 @@ struct ContentView: View {
         .modifier(PlaybackContentModifier())
         .sheet(item: satellite.presentedSheet) {
             sheetContent(for: $0)
+                .modify {
+                    if ProcessInfo.processInfo.isiOSAppOnMac {
+                        applyEnvironment($0)
+                    } else {
+                        $0
+                    }
+                }
         }
         .alert(String(), isPresented: satellite.isWarningAlertPresented) {
             ForEach(satellite.warningAlertStack.first?.actions ?? []) {
@@ -122,12 +140,9 @@ struct ContentView: View {
                 Text(message)
             }
         }
-        .environment(satellite)
-        .environment(playbackViewModel)
-        .environment(connectionStore)
-        .environment(progressViewModel)
-        .environment(ListenedTodayTracker.shared)
-        .environment(\.namespace, namespace)
+        .modify {
+            applyEnvironment($0)
+        }
         .onAppear {
             ShelfPlayer.initializeUIHook()
         }
@@ -163,7 +178,10 @@ struct ContentView: View {
                 return
             }
             
-            ItemIdentifier(identifier).navigate()
+            Task {
+                try await Task.sleep(for: .seconds(0.6))
+                await ItemIdentifier(identifier).navigate()
+            }
         }
     }
 }
