@@ -95,9 +95,6 @@ final class ProgressViewModel {
                 if self.importFailedConnectionIDs.count == connectionCount {
                     RFNotification[.changeOfflineMode].send(payload: true)
                 }
-                
-                RFNotification[.navigateConditionMet].send()
-                
                 self.tasks[connectionID] = nil
             }
         }
