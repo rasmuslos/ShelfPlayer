@@ -21,7 +21,7 @@ struct ContentView: View {
     @Default(.colorScheme) private var colorScheme
     
     @State private var satellite = Satellite.shared
-    @State private var playbackViewModel = PlaybackViewModel()
+    @State private var playbackViewModel = PlaybackViewModel.shared
     
     @State private var connectionStore = ConnectionStore()
     @State private var progressViewModel = ProgressViewModel()
@@ -184,6 +184,10 @@ struct ContentView: View {
             }
         }
     }
+}
+
+extension PlaybackViewModel {
+    static let shared = PlaybackViewModel()
 }
 
 extension EnvironmentValues {
