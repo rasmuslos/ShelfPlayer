@@ -61,7 +61,7 @@ struct PlayableItemContextMenuInner: View {
             ItemMenu(series: audiobook.series)
         } else if let episode = item as? Episode {
             ItemLoadLink(itemID: episode.id)
-            ItemLoadLink(itemID: episode.podcastID)
+            ItemLoadLink(itemID: episode.podcastID, footer: episode.podcastName)
         }
         
         Divider()
