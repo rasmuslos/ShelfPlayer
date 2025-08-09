@@ -60,6 +60,8 @@ final class ConnectionStore {
                 
                 self.libraries = grouped
             }
+            
+            await RFNotification[.navigateConditionMet].send()
         }
     }
 }
