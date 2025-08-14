@@ -36,7 +36,7 @@
 
 ### Prebuilt Releases
 
-Download the latest release from the [Releases](https://github.com/yourusername/shelfplayer/releases) page and install it using tools such as SideStore.
+Download the latest release from the [Releases](https://github.com/rasmuslos/shelfplayer/releases) page and install it using tools such as SideStore.
 
 **Important limitations when sideloading:**
 

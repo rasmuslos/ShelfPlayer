@@ -15,6 +15,12 @@
             "value" : "Chapters"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapitres"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44,6 +50,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pause"
@@ -83,6 +95,12 @@
             "value" : "Paused"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En pause"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -115,6 +133,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Play"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture"
           }
         },
         "sv" : {
@@ -151,6 +175,12 @@
             "value" : "Skip backwards"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reculer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -183,6 +213,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sleep timer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuterie de sommeil"
           }
         },
         "sv" : {
@@ -219,6 +255,12 @@
             "value" : "Cancel"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -251,6 +293,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Extend"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prolonger"
           }
         },
         "sv" : {
@@ -287,6 +335,12 @@
             "value" : "Start"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -319,6 +373,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last played"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernier écouté"
           }
         },
         "sv" : {
@@ -355,6 +415,12 @@
             "value" : "The last item you played, as well controls for active playback."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le dernier élément que vous avez écouté, ainsi que les commandes de lecture active."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -387,6 +453,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listened today"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écouter aujourd'hui"
           }
         },
         "sv" : {
@@ -423,6 +495,12 @@
             "value" : "Shows your listening time goal and your progress towards it."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche votre objectif de temps d'écoute et votre progression vers celui-ci."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -455,6 +533,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listen now"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écouter maintenant"
           }
         },
         "sv" : {
@@ -491,6 +575,12 @@
             "value" : "Shows recently played, unfinished items from all libraries."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épisodes récemment écoutés, éléments inachevées de toutes les bibliothèques."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -523,6 +613,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No items"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun élément"
           }
         },
         "sv" : {
