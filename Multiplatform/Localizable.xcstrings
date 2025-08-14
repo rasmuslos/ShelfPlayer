@@ -5328,6 +5328,12 @@
             "state" : "translated",
             "value" : "Таймер сну"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "睡眠计时"
+          }
         }
       }
     },

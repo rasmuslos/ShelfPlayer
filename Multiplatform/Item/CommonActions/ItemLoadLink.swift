@@ -28,6 +28,10 @@ struct ItemLoadLink: View {
         Group {
             if let navigationContext {
                 // Some goofball at Apple decided that `NavigationLink` does not support subtitles anymore. Why? God knows
+                // Meaning this does not work:
+                // NavigationLink(...) {
+                //  labelContent
+                // }
                 Button {
                     navigationContext.path.append(.itemID(itemID))
                 } label: {

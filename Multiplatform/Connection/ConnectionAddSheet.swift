@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Security
-import AuthenticationServices
 import ShelfPlayback
 
 struct ConnectionAddSheet: View {
@@ -35,13 +34,16 @@ struct ConnectionAddSheet: View {
                         ProgressView()
                     } else {
                         Button("connection.add.verify") {
-                            viewModel.proceed()
+                            viewModel.verify()
                         }
                     }
                 } footer: {
                     Text("connection.add.formattingHint")
                 }
                 .disabled(hasValidEndpoint)
+                .onSubmit {
+                    viewModel.verify()
+                }
                 
                 #if DEBUG
                 CertificateEditor(identity: $viewModel.identity)
@@ -66,56 +68,8 @@ struct ConnectionAddSheet: View {
                     .animation(.smooth, value: viewModel.knownConnections)
                 }
                 
-                if !viewModel.strategies.isEmpty {
-                    if let strategy = viewModel.strategy {
-                        if viewModel.strategies.count > 1 {
-                            Section {
-                                Button("connection.add.strategy.change") {
-                                    viewModel.strategy = nil
-                                }
-                            }
-                        }
-                        
-                        Section {
-                            switch strategy {
-                                case .usernamePassword:
-                                    TextField("connection.add.username", text: $viewModel.username)
-                                        .textContentType(.username)
-                                        .autocorrectionDisabled()
-                                        .textInputAutocapitalization(.never)
-                                    
-                                    SecureField("connection.add.password", text: $viewModel.password)
-                                        .textContentType(.password)
-                                    
-                                    Button("connection.add.proceed") {
-                                        viewModel.proceed()
-                                    }
-                                    .disabled(viewModel.isLoading)
-                                case .openID:
-                                    Button("action.retry") {
-                                        viewModel.proceed()
-                                    }
-                                    .disabled(viewModel.isLoading)
-                                    .onAppear {
-                                        viewModel.proceed()
-                                    }
-                            }
-                        } header: {
-                            Text(strategy.label)
-                        } footer: {
-                            if strategy == .openID {
-                                Text("connection.add.strategy.openID.hint")
-                            }
-                        }
-                    } else {
-                        Picker("connection.add.strategy.select", selection: $viewModel.strategy) {
-                            ForEach(viewModel.strategies) {
-                                Text($0.label)
-                                    .tag($0)
-                            }
-                        }
-                        .pickerStyle(.inline)
-                    }
+                if let strategies = viewModel.strategies, let apiClient = viewModel.apiClient {
+                    ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, apiClient: apiClient, callback: viewModel.storeConnection)
                 }
             }
             .navigationTitle("connection.add")
@@ -130,17 +84,10 @@ struct ConnectionAddSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     if viewModel.isLoading {
                         ProgressView()
-                    } else {
-                        Button("connection.add.proceed") {
-                            viewModel.proceed()
-                        }
                     }
                 }
             }
             .sensoryFeedback(.error, trigger: viewModel.notifyError)
-            .onSubmit {
-                viewModel.proceed()
-            }
             .onChange(of: viewModel.notifyFinished) {
                 satellite.dismissSheet()
             }
@@ -158,16 +105,10 @@ private final class ViewModel: Sendable {
     var url: URL?
     var version: String?
     
-    var username = ""
-    var password = ""
-    
-    var verifier: String!
-    
     var headers = [HeaderShadow]()
     var identity: SecIdentity?
     
-    var strategy: AuthorizationStrategy?
-    var strategies = [AuthorizationStrategy]()
+    var strategies: [AuthorizationStrategy]?
     
     var knownConnections = [PersistenceManager.AuthorizationSubsystem.KnownConnection]()
     
@@ -175,34 +116,15 @@ private final class ViewModel: Sendable {
     var notifyError = false
     var notifyFinished = false
     
-    let authenticationSessionPresentationContextProvider = AuthenticationSessionPresentationContextProvider()
+    var apiClient: APIClient?
     
-    var apiClient: APIClient {
-        get async throws {
-            if let url {
-                return try await APIClient(connectionID: "temporary", credentialProvider: AuthorizeAPIClientCredentialProvider(host: url, headers: headers.compactMap(\.materialized), identity: identity))
-            } else {
-                throw APIClientError.notFound
-            }
-        }
-    }
-}
-
-// MARK: General
-
-extension ViewModel {
-    func proceed() {
+    func verify() {
         guard !isLoading else {
             return
         }
         
-        // These API calls will block the main actor
         Task {
-            if let strategy, let client = try? await apiClient {
-               await authorize(strategy: strategy, client: client)
-            } else {
-                await validateEndpoint()
-            }
+            await validateEndpoint()
         }
     }
     
@@ -213,17 +135,19 @@ extension ViewModel {
         
         url = URL(string: endpoint)
         
-        guard let client = try? await apiClient else {
-            notifyError.toggle()
-            return
-        }
-        
         do {
+            guard let url, let apiClient = try? await APIClient(connectionID: "temporary", credentialProvider: AuthorizeAPIClientCredentialProvider(host: url, headers: headers.compactMap(\.materialized), identity: identity)) else {
+                notifyError.toggle()
+                throw APIClientError.parseError
+            }
+            
+            self.apiClient = apiClient
+            
             withAnimation {
                 isLoading = true
             }
             
-            let status = try await client.status()
+            let status = try await apiClient.status()
             
             guard status.isInit else {
                 throw ConnectionError.serverIsNotInitialized
@@ -243,25 +167,28 @@ extension ViewModel {
                             nil
                     }
                 }
-                
-                if strategies.contains(.openID) {
-                    verifier = String.random(length: 100)
-                }
-                
-                if strategies.count == 1 {
-                    strategy = strategies.first
-                }
             }
         } catch {
             withAnimation {
                 version = nil
                 isLoading = false
                 
-                strategies = []
-                strategy = nil
+                strategies = nil
             }
             
             notifyError.toggle()
+        }
+    }
+    func storeConnection(username: String, accessToken: String, refreshToken: String?) {
+        Task {
+            let identity = identity
+            
+            do {
+                try await PersistenceManager.shared.authorization.addConnection(host: url!, username: username, headers: headers.compactMap(\.materialized), identity: identity, accessToken: accessToken, refreshToken: refreshToken)
+                notifyFinished.toggle()
+            } catch {
+                notifyError.toggle()
+            }
         }
     }
     
@@ -269,92 +196,7 @@ extension ViewModel {
         case serverIsNotInitialized
         case openIDError
     }
-    enum AuthorizationStrategy: Int, Identifiable {
-        case usernamePassword
-        case openID
-        
-        var id: Int {
-            rawValue
-        }
-        
-        var label: LocalizedStringKey {
-            switch self {
-                case .usernamePassword:
-                    "connection.strategy.usernamePassword"
-                case .openID:
-                    "connection.strategy.oAuth"
-            }
-        }
-    }
 }
-
-// MARK: Authorize
-
-extension ViewModel {
-    func authorize(strategy: AuthorizationStrategy, client: APIClient) async {
-        do {
-            isLoading = true
-            
-            switch strategy {
-                case .usernamePassword:
-                    try await authorizeLocal()
-                case .openID:
-                    try await authorizeOpenID()
-            }
-        } catch {
-            notifyError.toggle()
-            isLoading = false
-        }
-        
-        // qq
-        func authorizeLocal() async throws {
-            guard !username.isEmpty else {
-                notifyError.toggle()
-                return
-            }
-            
-            let (username, accessToken, refreshToken) = try await client.login(username: username, password: password)
-            let identity = identity
-            
-            try await PersistenceManager.shared.authorization.addConnection(host: url!, username: username, headers: headers.compactMap(\.materialized), identity: identity, accessToken: accessToken, refreshToken: refreshToken)
-            
-            notifyFinished.toggle()
-        }
-        func authorizeOpenID() async throws {
-            let session = try await ASWebAuthenticationSession(url: client.openIDLoginURL(verifier: verifier), callback: .customScheme("shelfplayer"), completionHandler: callback)
-            
-            session.presentationContextProvider = authenticationSessionPresentationContextProvider
-            session.prefersEphemeralWebBrowserSession = true
-            session.additionalHeaderFields = Dictionary(uniqueKeysWithValues: headers.map { ($0.key, $0.value) })
-            
-            session.start()
-            
-            // hell
-            func callback(_ url: URL?, _ error: (any Error)?) -> Void {
-                Task {
-                    guard error == nil, let url, let components = URLComponents(url: url, resolvingAgainstBaseURL: false), let queryItems = components.queryItems, let code = queryItems.first(where: { $0.name == "code" })?.value, let state = queryItems.first(where: { $0.name == "state" })?.value else {
-                        self.isLoading = false
-                        self.notifyError.toggle()
-                        
-                        return
-                    }
-                    
-                    do {
-                        let (username, accessToken, refreshToken) = try await client.openIDExchange(code: code, state: state, verifier: verifier)
-                        try await PersistenceManager.shared.authorization.addConnection(host: self.url!, username: username, headers: headers.compactMap(\.materialized), identity: identity, accessToken: accessToken, refreshToken: refreshToken)
-                        
-                        self.notifyFinished.toggle()
-                    } catch {
-                        self.isLoading = false
-                        self.notifyError.toggle()
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: Known connections
 
 extension ViewModel {
     nonisolated func fetchKnownConnections() async {
@@ -371,25 +213,14 @@ extension ViewModel {
         url = nil
         version = nil
         
-        self.username = ""
-        password = ""
-        
-        strategy = nil
-        strategies = []
+        strategies = nil
         
         endpoint = host.absoluteString
         
-        proceed()
-        
-        self.username = username
+        verify()
     }
 }
 
-private final class AuthenticationSessionPresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        ASPresentationAnchor()
-    }
-}
 private final class AuthorizeAPIClientCredentialProvider: APICredentialProvider {
     let host: URL
     let headers: [HTTPHeader]
