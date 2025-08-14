@@ -22,6 +22,15 @@
             ]
           }
         },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Reculer en utilisant ${applicationName}",
+              "Retourner en arrière en utilisant ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -65,6 +74,14 @@
             "state" : "new",
             "values" : [
               "Create a bookmark using ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Créer un signet en utilisant ${applicationName}"
             ]
           }
         },
@@ -112,6 +129,15 @@
             "values" : [
               "Forwards using ${applicationName}",
               "Skip forwards using ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Avancer en utilisant ${applicationName}",
+              "Passer en avant en utilisant ${applicationName}"
             ]
           }
         },
@@ -165,6 +191,16 @@
             ]
           }
         },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Pause ${applicationName}",
+              "Arrêter ${applicationName}",
+              "Mettre en pause la lecture de ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -214,6 +250,15 @@
             ]
           }
         },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Écouter ${podcast} en utilisant ${applicationName}",
+              "Écouter les épisodes de ${podcast} en utilisant ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -257,6 +302,14 @@
             "state" : "new",
             "values" : [
               "Play ${target} using ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Écouter ${target} en utilisant ${applicationName}"
             ]
           }
         },
@@ -309,6 +362,16 @@
             ]
           }
         },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Reprendre ${applicationName}",
+              "Reprendre la lecture avec ${applicationName}",
+              "Continuer à écouter ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -354,6 +417,15 @@
             "values" : [
               "Search for new downloads using ${applicationName}",
               "Check for new downloads using ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Rechercher de nouveaux téléchargements à l'aide de ${applicationName}",
+              "Vérifiez les nouveaux téléchargements à l'aide de ${applicationName}"
             ]
           }
         },
@@ -404,6 +476,15 @@
             ]
           }
         },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Définir la vitesse de lecture de ${applicationName}",
+              "Définir la fréquence de lecture de ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -451,6 +532,15 @@
             "values" : [
               "Set ${applicationName} sleep timer",
               "Set a sleep timer using ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Définir la minuterie de sommeil ${applicationName}",
+              "Définir une minuterie de sommeil à l'aide de ${applicationName}"
             ]
           }
         },

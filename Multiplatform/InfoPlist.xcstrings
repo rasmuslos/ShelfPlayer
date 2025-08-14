@@ -91,6 +91,12 @@
             "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2025 Rasmus Krämer et les contributeurs de ShelfPlayer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -125,6 +131,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Grant access to connect to a Audiobookshelf-Instance inside your local network."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accordez l’accès pour se connecter à une instance d’Audiobookshelf dans votre réseau local."
           }
         },
         "sv" : {
@@ -163,6 +175,12 @@
             "value" : "Play items from your library using Siri"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lisez des éléments de votre bibliothèque avec Siri"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -197,6 +215,12 @@
             "value" : "Search"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -229,6 +253,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search all libraries"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher dans toutes les bibliothèques"
           }
         },
         "sv" : {
@@ -269,6 +299,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Item"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Élément"
           }
         },
         "sv" : {
