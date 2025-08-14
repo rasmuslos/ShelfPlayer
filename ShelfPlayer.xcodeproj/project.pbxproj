@@ -139,6 +139,7 @@
 		3AB1640E2E04C29E00D33868 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
 		3AB1640F2E04C2B700D33868 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
 		3AB164102E04C53D00D33868 /* ShelfPlayerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3AB172F82E4E0146005086B1 /* ConnectionAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB172F72E4E0137005086B1 /* ConnectionAuthorizer.swift */; };
 		3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */; };
 		3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4D6682CA19DE600876C8E /* TabValue.swift */; };
 		3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */; };
@@ -420,6 +421,9 @@
 		3AAFA5AB2D6D00A9002457C3 /* ProgressTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressTracker.swift; sourceTree = "<group>"; };
 		3AB0E7242CC3FE7A0024DD08 /* CarPlayLibraryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayLibraryController.swift; sourceTree = "<group>"; };
 		3AB162A42E04C17100D33868 /* ShelfPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShelfPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AB172F72E4E0137005086B1 /* ConnectionAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionAuthorizer.swift; sourceTree = "<group>"; };
+		3AB1746F2E4E0217005086B1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = fr; path = fr.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		3AB174702E4E0217005086B1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Intents.strings; sourceTree = "<group>"; };
 		3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesView.swift; sourceTree = "<group>"; };
 		3AB4D6682CA19DE600876C8E /* TabValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabValue.swift; sourceTree = "<group>"; };
 		3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyLoadHelper.swift; sourceTree = "<group>"; };
@@ -699,6 +703,7 @@
 			isa = PBXGroup;
 			children = (
 				3A17EB552E37580400AD6A18 /* CertificateEditor.swift */,
+				3AB172F72E4E0137005086B1 /* ConnectionAuthorizer.swift */,
 				3A4DD5B12D2FE45100EBE3EE /* LibraryPicker.swift */,
 				3A3129A42D24190200D143B4 /* HeaderEditor.swift */,
 				3A3129A02D24140B00D143B4 /* WelcomeView.swift */,
@@ -1158,6 +1163,7 @@
 				"zh-Hans",
 				sv,
 				uk,
+				fr,
 			);
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
@@ -1359,6 +1365,7 @@
 				3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */,
 				3AA089332B6E315900773414 /* AuthorList.swift in Sources */,
 				3AA954252AD29A0A0031C20D /* EpisodeGrid.swift in Sources */,
+				3AB172F82E4E0146005086B1 /* ConnectionAuthorizer.swift in Sources */,
 				3AE24D7D2D8D968500680B28 /* PlayableItemContextMenuModifier.swift in Sources */,
 				3A0C089C2DBBA48400E677D4 /* CarPlayPlayableItemController.swift in Sources */,
 				3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */,
@@ -1522,6 +1529,7 @@
 				3A00397E2BEF55E600849F70 /* zh-Hans */,
 				FA6717792CEA272A0037CB85 /* sv */,
 				3AA3F6362E30083700D6C1E8 /* uk */,
+				3AB1746F2E4E0217005086B1 /* fr */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
@@ -1535,6 +1543,7 @@
 				3AF7DD082DF0A0DC00F1EE88 /* zh-Hans */,
 				3AF7DD0A2DF0A0DD00F1EE88 /* sv */,
 				3AA3F6352E30083700D6C1E8 /* uk */,
+				3AB174702E4E0217005086B1 /* fr */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
