@@ -27,6 +27,10 @@ struct ConnectionEditSheet: View {
                     @Bindable var viewModel = viewModel
                     
                     List {
+                        Section {
+                            
+                        }
+                        
                         #if DEBUG
                         CertificateEditor(identity: .constant(nil))
                         #endif

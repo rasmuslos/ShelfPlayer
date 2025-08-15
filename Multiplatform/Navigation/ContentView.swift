@@ -61,6 +61,8 @@ struct ContentView: View {
                 ConnectionAddSheet()
             case .editConnection(let connectionID):
                 ConnectionEditSheet(connectionID: connectionID)
+            case .reauthorizeConnection(let connectionID, let username, let strategies):
+                ReauthorizeConnectionSheet(connectionID: connectionID, username: username, strategies: strategies)
             case .whatsNew:
                 WhatsNewSheet()
         }
