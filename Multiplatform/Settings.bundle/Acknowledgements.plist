@@ -14,7 +14,17 @@
 			<key>FooterText</key>
 			<string>lizhimiao (@zhimiaoli GitHub): Simplified Chinese translation
 Alex Gustafsson(@AlexGustafsson GitHub): Swedish translation
-Olga Zinchenko (@olgazinchenko GitHub): Ukrainian translation</string>
+Olga Zinchenko (@olgazinchenko GitHub): Ukrainian translation
+@oturcot (GitHub): French translation</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Special Thanks</string>
+			<key>FooterText</key>
+			<string>@tehguitarist (GitHub)
+@gh0sti (GitHub)</string>
 		</dict>
 		<dict>
 			<key>Type</key>
