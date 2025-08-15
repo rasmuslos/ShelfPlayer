@@ -107,11 +107,28 @@ struct OfflineView: View {
     
     private nonisolated func loadItems() {
         Task {
-            let (audiobooks, episodes, podcasts) = try await (
+            var (audiobooks, episodes, podcasts) = try await (
                 PersistenceManager.shared.download.audiobooks(),
                 PersistenceManager.shared.download.episodes(),
                 PersistenceManager.shared.download.podcasts(),
             )
+            
+            audiobooks = await withTaskGroup {
+                for audiobook in audiobooks {
+                    $0.addTask {
+                        (await PersistenceManager.shared.progress[audiobook.id].progress, audiobook)
+                    }
+                }
+                
+                return await $0.reduce(into: []) {
+                    $0.append($1)
+                }.sorted {
+                    $0.0 > $1.0
+                }.map {
+                    $1
+                }
+            }
+            podcasts.sort { $0.sortName < $1.sortName }
             
             let grouped = Dictionary(grouping: episodes, by: \.podcastID)
             let mapped = Dictionary(uniqueKeysWithValues: podcasts.map {

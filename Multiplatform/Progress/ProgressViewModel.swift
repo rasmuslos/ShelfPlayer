@@ -82,7 +82,7 @@ final class ProgressViewModel {
             
             await UIApplication.shared.endBackgroundTask(task)
             
-            let connectionCount = await PersistenceManager.shared.authorization.connectionIDs.count
+            // let connectionCount = await PersistenceManager.shared.authorization.connectionIDs.count
             
             await MainActor.run {
                 if success {
@@ -92,9 +92,12 @@ final class ProgressViewModel {
                     self.importedConnectionIDs.removeAll(where: { $0 == connectionID })
                 }
                 
+                /*
                 if self.importFailedConnectionIDs.count == connectionCount {
                     RFNotification[.changeOfflineMode].send(payload: true)
                 }
+                 */
+                
                 self.tasks[connectionID] = nil
             }
         }

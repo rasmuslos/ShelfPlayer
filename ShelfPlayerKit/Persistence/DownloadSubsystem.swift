@@ -84,28 +84,30 @@ extension PersistenceManager {
         func remove(connectionID: ItemIdentifier.ConnectionID) async {
             do {
                 try modelContext.delete(model: PersistedAudiobook.self, where: #Predicate { $0._id.contains(connectionID) })
-                try modelContext.delete(model: PersistedEpisode.self, where: #Predicate { $0._id.contains(connectionID) })
                 
-                // try modelContext.delete(model: PersistedEpisode.self)
-                for episode in try episodes() {
-                    guard episode.id.connectionID == connectionID else {
-                        continue
+                for podcast in try podcasts() {
+                    do {
+                        try await remove(podcast.id)
+                    } catch {
+                        logger.error("Failure removing downloads related to connection (4) \(connectionID, privacy: .public): \(error)")
                     }
-                    
-                    try await remove(episode.id)
                 }
-                
+            } catch {
+                logger.error("Failed to remove downloads related to connection (1) \(connectionID, privacy: .public): \(error)")
+            }
+            
+            do {
                 try modelContext.delete(model: PersistedAsset.self, where: #Predicate { $0._itemID.contains(connectionID) })
                 try modelContext.delete(model: PersistedChapter.self, where: #Predicate { $0._itemID.contains(connectionID) })
             } catch {
-                logger.error("Failed to remove downloads related to connection \(connectionID, privacy: .public): \(error)")
+                logger.error("Failed to remove downloads related to connection (2) \(connectionID, privacy: .public): \(error)")
             }
             
             do {
                 let path = ShelfPlayerKit.downloadDirectoryURL.appending(path: connectionID.replacing("/", with: "_"))
                 try FileManager.default.removeItem(at: path)
             } catch {
-                logger.error("Failed to remove download directory for connection \(connectionID, privacy: .public): \(error)")
+                logger.error("Failed to remove download directory for connection (3) \(connectionID, privacy: .public): \(error)")
             }
             
             RFNotification[.downloadStatusChanged].dispatch(payload: nil)
@@ -349,33 +351,13 @@ private extension PersistenceManager.DownloadSubsystem {
         await scheduleUpdateTask()
     }
     
-    func removeEmptyPodcasts() async {
+    func removeEmptyPodcasts() async throws {
         guard let podcasts = try? modelContext.fetch(FetchDescriptor<PersistedPodcast>(predicate: #Predicate { $0.episodes.isEmpty })) else {
             return
         }
         
         for podcast in podcasts {
-            modelContext.delete(podcast)
-            
-            let podcastID = podcast.id
-            
-            do {
-                let assets = try assets(for: podcastID)
-                
-                try await removeAssets(assets)
-                
-                for coverSize in ImageSize.allCases {
-                    try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: podcastID, size: coverSize), nil)
-                }
-            } catch {
-                logger.error("Error removing podcast \(podcastID): \(error)")
-            }
-        }
-        
-        do {
-            try modelContext.save()
-        } catch {
-            logger.error("Failed to save after removing empty podcasts: \(error)")
+            try await remove(podcast.id)
         }
     }
     
@@ -689,8 +671,27 @@ public extension PersistenceManager.DownloadSubsystem {
         }
     }
     func remove(_ itemID: ItemIdentifier) async throws {
-        if itemID.type == .podcast {
-            // TODO: Remove Podcast
+        guard itemID.type != .podcast else {
+            guard let podcast = persistedPodcast(for: itemID) else {
+                throw PersistenceError.missing
+            }
+            
+            let episodes = try episodes(from: itemID)
+            
+            for episode in episodes {
+                try await remove(episode.id)
+            }
+        
+            try await removeAssets(assets(for: itemID))
+            
+            for coverSize in ImageSize.allCases {
+                try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
+            }
+            
+            modelContext.delete(podcast)
+            try modelContext.save()
+            
+            return
         }
         
         guard itemID.isPlayable else {
@@ -735,7 +736,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             busy.remove(itemID)
             
-            await removeEmptyPodcasts()
+            try await removeEmptyPodcasts()
         } catch {
             logger.error("Error removing download: \(error)")
             busy.remove(itemID)
