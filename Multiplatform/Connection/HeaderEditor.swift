@@ -13,7 +13,7 @@ struct HeaderEditor: View {
     
     var body: some View {
         ForEach(Array(headers.enumerated()), id: \.offset) { (index, _) in
-            HeaderEditorColumn(header: $headers[index]) {
+            HeaderEditorColumn(header: $headers[index], showSectionTitle: index == 0) {
                 let _ = withAnimation {
                     headers.remove(at: index)
                 }
@@ -34,6 +34,8 @@ struct HeaderEditor: View {
 
 struct HeaderEditorColumn: View {
     @Binding var header: HeaderShadow
+    let showSectionTitle: Bool
+    
     let remove: () -> Void
     
     var body: some View {
@@ -43,6 +45,10 @@ struct HeaderEditorColumn: View {
             
             Button("connection.modify.header.remove", role: .destructive) {
                 remove()
+            }
+        } header: {
+            if showSectionTitle {
+                Text("connection.modify.header")
             }
         }
     }

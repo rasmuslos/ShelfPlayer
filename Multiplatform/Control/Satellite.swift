@@ -159,6 +159,7 @@ extension Satellite {
         
         case addConnection
         case editConnection(ItemIdentifier.ConnectionID)
+        case reauthorizeConnection(ItemIdentifier.ConnectionID, String, [AuthorizationStrategy])
         
         case whatsNew
         
@@ -182,6 +183,8 @@ extension Satellite {
                     "addConnection"
                 case .editConnection(let connectionID):
                     "editConnection-\(connectionID)"
+                case .reauthorizeConnection(let connectionID, _, _):
+                    "reauthorizeConnection-\(connectionID)"
                 case .whatsNew:
                     "whatsNew"
             }

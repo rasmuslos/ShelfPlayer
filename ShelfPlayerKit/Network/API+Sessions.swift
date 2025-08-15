@@ -87,7 +87,7 @@ public extension APIClient {
                               clientVersion: ShelfPlayerKit.clientVersion),
             date: dateFormatter.string(from: started),
             dayOfWeek: dayOfWeekFormatter.string(from: started),
-            serverVersion: status.serverVersion,
+            serverVersion: status.0,
             timeListening: timeListened,
             startTime: startTime,
             currentTime: currentTime,

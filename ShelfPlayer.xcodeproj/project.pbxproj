@@ -189,6 +189,7 @@
 		3AF36C2D2E02E4B9000B6CCF /* WhatsNewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36C2C2E02E4B9000B6CCF /* WhatsNewSheet.swift */; };
 		3AF5A6392CC55FA4002F9B50 /* CarPlayQueueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF5A6382CC55F9F002F9B50 /* CarPlayQueueController.swift */; };
 		3AF7DCFA2DF059F900F1EE88 /* GlobalSearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF7DCF92DF059F400F1EE88 /* GlobalSearchSheet.swift */; };
+		3AF824D82E4F48BF00803ABA /* ReauthorizeConnectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF824D72E4F48BA00803ABA /* ReauthorizeConnectionSheet.swift */; };
 		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
 		3AFB713D2D72F2F7002C3EF5 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */; };
@@ -482,6 +483,7 @@
 		3AF7DD062DF0A0DC00F1EE88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		3AF7DD082DF0A0DC00F1EE88 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
 		3AF7DD0A2DF0A0DD00F1EE88 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Intents.strings; sourceTree = "<group>"; };
+		3AF824D72E4F48BA00803ABA /* ReauthorizeConnectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReauthorizeConnectionSheet.swift; sourceTree = "<group>"; };
 		3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
@@ -711,6 +713,7 @@
 				3A520BE62D2DD06F0045CA04 /* ConnectionsView.swift */,
 				3A3129A22D2414E100D143B4 /* ConnectionAddSheet.swift */,
 				3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */,
+				3AF824D72E4F48BA00803ABA /* ReauthorizeConnectionSheet.swift */,
 				3A828E052D27459300267961 /* ConnectionManageView.swift */,
 			);
 			path = Connection;
@@ -1332,6 +1335,7 @@
 				3A0E42EE2C819FEA0034873F /* QueueButton.swift in Sources */,
 				3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */,
 				3A49848A2D610DF10086A2B5 /* AudiobookRow.swift in Sources */,
+				3AF824D82E4F48BF00803ABA /* ReauthorizeConnectionSheet.swift in Sources */,
 				3A6B93152C26BB3600400802 /* UnavailableWrapper.swift in Sources */,
 				3ADD434E2CC318BD0060E043 /* CarPlayController.swift in Sources */,
 				3A9825E32D4A2C2300A65826 /* ProgressResetButton.swift in Sources */,

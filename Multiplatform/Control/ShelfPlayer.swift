@@ -99,7 +99,6 @@ struct ShelfPlayer {
         var moveError: Error?
         
         let coordinator = NSFileCoordinator()
-        
         let targetURL = FileManager.default.temporaryDirectory.appending(path: "\(name).log.zip")
         
         coordinator.coordinate(readingItemAt: baseURL, options: .forUploading, error: &error) {
