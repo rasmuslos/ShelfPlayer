@@ -21,8 +21,20 @@ public extension APIClient {
         return try (response.user.username, response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
     
-    func status() async throws -> StatusResponse {
-        try await response(path: "status", method: .get)
+    func status() async throws -> (String, [AuthorizationStrategy], Bool) {
+        let response: StatusResponse = try await response(path: "status", method: .get)
+        let strategies: [AuthorizationStrategy] = response.authMethods.compactMap {
+            switch $0 {
+                case "local":
+                        .usernamePassword
+                case "openid":
+                        .openID
+                default:
+                    nil
+            }
+        }
+        
+        return (response.serverVersion, strategies, response.isInit)
     }
     
     func me() async throws -> (String, String) {

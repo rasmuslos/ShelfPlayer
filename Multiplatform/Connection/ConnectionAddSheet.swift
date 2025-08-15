@@ -69,7 +69,7 @@ struct ConnectionAddSheet: View {
                 }
                 
                 if let strategies = viewModel.strategies, let apiClient = viewModel.apiClient {
-                    ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, apiClient: apiClient, callback: viewModel.storeConnection)
+                    ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, username: $viewModel.username, apiClient: apiClient, callback: viewModel.storeConnection)
                 }
             }
             .navigationTitle("connection.add")
@@ -108,6 +108,7 @@ private final class ViewModel: Sendable {
     var headers = [HeaderShadow]()
     var identity: SecIdentity?
     
+    var username = ""
     var strategies: [AuthorizationStrategy]?
     
     var knownConnections = [PersistenceManager.AuthorizationSubsystem.KnownConnection]()
@@ -149,24 +150,15 @@ private final class ViewModel: Sendable {
             
             let status = try await apiClient.status()
             
-            guard status.isInit else {
+            guard status.2 else {
                 throw ConnectionError.serverIsNotInitialized
             }
             
             withAnimation {
-                version = status.serverVersion
-                isLoading = false
+                version = status.0
+                strategies = status.1
                 
-                strategies = status.authMethods.compactMap {
-                    switch $0 {
-                        case "local":
-                                .usernamePassword
-                        case "openid":
-                                .openID
-                        default:
-                            nil
-                    }
-                }
+                isLoading = false
             }
         } catch {
             withAnimation {
@@ -216,6 +208,7 @@ extension ViewModel {
         strategies = nil
         
         endpoint = host.absoluteString
+        self.username = username
         
         verify()
     }

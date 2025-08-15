@@ -68,6 +68,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
         return (connection.host, connection.headers)
     }
     
+    func isUsingLegacyAuthentication(for connectionID: ItemIdentifier.ConnectionID) -> Bool {
+        (try? token(for: connectionID, service: refreshTokenService)) == nil
+    }
+    
     // MARK: Modify
     
     func addConnection(host: URL, username: String, headers: [HTTPHeader], identity: SecIdentity?, accessToken: String, refreshToken: String?) throws {
@@ -128,10 +132,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         // Access Token
         
-        try storeToken(accessToken, forConnectionID: connection.id, service: accessTokenService)
+        try storeToken(accessToken, for: connection.id, service: accessTokenService)
         
         if let refreshToken {
-            try storeToken(refreshToken, forConnectionID: connection.id, service: refreshTokenService)
+            try storeToken(refreshToken, for: connection.id, service: refreshTokenService)
         }
         
         // Update
@@ -158,19 +162,30 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         try fetchConnections()
     }
+    func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) throws {
+        try? removeToken(for: connectionID, service: accessTokenService)
+        try storeToken(accessToken, for: connectionID, service: accessTokenService)
+        
+        try? removeToken(for: connectionID, service: refreshTokenService)
+        if let refreshToken {
+            try storeToken(refreshToken, for: connectionID, service: refreshTokenService)
+        }
+        
+        try fetchConnections()
+    }
     
     func remove(connectionID: ItemIdentifier.ConnectionID) {
         let identityDeleteQuery = [
             kSecClass: kSecClassIdentity,
             kSecAttrSynchronizable: kSecAttrSynchronizableAny,
             
-            kSecAttrAccount: connectionID,
+            kSecAttrAccount: connectionID as CFString,
         ] as! [String: Any] as CFDictionary
         let genericPasswordDeleteQuery = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrSynchronizable: kSecAttrSynchronizableAny,
             
-            kSecAttrAccount: connectionID,
+            kSecAttrAccount: connectionID as CFString,
         ] as! [String: Any] as CFDictionary
         
         let identityStatus = SecItemDelete(identityDeleteQuery)
@@ -227,6 +242,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
     #if DEBUG
     func scrambleAccessToken(connectionID: ItemIdentifier.ConnectionID) throws {
         try updateToken("bazinga", for: connectionID, service: accessTokenService)
+        try fetchConnections()
+    }
+    func scrambleRefreshToken(connectionID: ItemIdentifier.ConnectionID) throws {
+        try updateToken("bazinga", for: connectionID, service: refreshTokenService)
         try fetchConnections()
     }
     #endif
@@ -372,7 +391,7 @@ private extension PersistenceManager.AuthorizationSubsystem {
             throw PersistenceError.keychainInsertFailed
         }
     }
-    func storeToken(_ token: String, forConnectionID connectionID: String, service: CFString) throws {
+    func storeToken(_ token: String, for connectionID: String, service: CFString) throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrSynchronizable: kCFBooleanTrue as Any,
@@ -386,6 +405,22 @@ private extension PersistenceManager.AuthorizationSubsystem {
         ] as! [String: Any] as CFDictionary
         
         let status = SecItemAdd(query, nil)
+        
+        guard status == errSecSuccess else {
+            logger.error("Error adding access token to keychain for \(connectionID) & \(service): \(SecCopyErrorMessageString(status, nil))")
+            throw PersistenceError.keychainInsertFailed
+        }
+    }
+    func removeToken(for connectionID: String, service: CFString) throws {
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+            
+            kSecAttrService: service,
+            kSecAttrAccount: connectionID as CFString,
+        ] as! [String: Any] as CFDictionary
+        
+        let status = SecItemDelete(query)
         
         guard status == errSecSuccess else {
             logger.error("Error adding access token to keychain for \(connectionID) & \(service): \(SecCopyErrorMessageString(status, nil))")
