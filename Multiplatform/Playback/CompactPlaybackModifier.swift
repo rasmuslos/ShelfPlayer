@@ -278,6 +278,7 @@ private struct CollapsedForeground: View {
                     ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: 8)
                         .frame(width: 40, height: 40)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: .topLeading)
+                        .id(satellite.nowPlayingItemID)
                     
                     Group {
                         if let currentItem = satellite.nowPlayingItem {
