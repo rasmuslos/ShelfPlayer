@@ -69,9 +69,7 @@ struct ConnectionManageView: View {
                     satellite.present(.editConnection(connection.id))
                 }
                 Button("connection.reauthorize") {
-                    if let status {
-                        satellite.present(.reauthorizeConnection(connection.id, connection.username, status.1))
-                    }
+                    satellite.present(.reauthorizeConnection(connection.id))
                 }
                 .disabled(status == nil)
                 

@@ -159,7 +159,7 @@ extension Satellite {
         
         case addConnection
         case editConnection(ItemIdentifier.ConnectionID)
-        case reauthorizeConnection(ItemIdentifier.ConnectionID, String, [AuthorizationStrategy])
+        case reauthorizeConnection(ItemIdentifier.ConnectionID)
         
         case whatsNew
         
@@ -183,7 +183,7 @@ extension Satellite {
                     "addConnection"
                 case .editConnection(let connectionID):
                     "editConnection-\(connectionID)"
-                case .reauthorizeConnection(let connectionID, _, _):
+                case .reauthorizeConnection(let connectionID):
                     "reauthorizeConnection-\(connectionID)"
                 case .whatsNew:
                     "whatsNew"
@@ -291,6 +291,9 @@ extension Satellite {
         }
         
         sheetStack.removeFirst()
+    }
+    func dismissSheet(id: String) {
+        sheetStack.removeAll { $0.id == id }
     }
 
     func cancelWarningAlert() {
@@ -983,8 +986,8 @@ private extension Satellite {
             self?.dismissSheet()
         }.store(in: &stash)
         
-        RFNotification[.presentGlobalSearch].subscribe { [weak self] in
-            self?.present(.globalSearch)
+        RFNotification[.presentSheet].subscribe { [weak self] in
+            self?.present($0)
         }
         
         // MARK: Audio Player state synchronisation

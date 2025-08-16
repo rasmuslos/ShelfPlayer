@@ -53,6 +53,13 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
     }
     
+    func friendlyName(for connectionID: ItemIdentifier.ConnectionID) throws -> String {
+        guard let connection = friendlyConnections.first(where: { $0.id == connectionID }) else {
+            throw APIClientError.notFound
+        }
+        
+        return connection.name
+    }
     func host(for connectionID: ItemIdentifier.ConnectionID) throws -> URL {
         guard let connection = friendlyConnections.first(where: { $0.id == connectionID }) else {
             throw APIClientError.notFound
@@ -74,7 +81,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
     
     // MARK: Modify
     
-    func addConnection(host: URL, username: String, headers: [HTTPHeader], identity: SecIdentity?, accessToken: String, refreshToken: String?) throws {
+    func addConnection(host: URL, username: String, headers: [HTTPHeader], identity: SecIdentity?, accessToken: String, refreshToken: String?) async throws {
         let connection = Connection(host: host, user: username, headers: headers, added: .now)
         
         do {
@@ -140,10 +147,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         // Update
         
-        try fetchConnections()
+        try await fetchConnections()
     }
     
-    func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, headers: [HTTPHeader]) throws {
+    func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, headers: [HTTPHeader]) async throws {
         let connection = try fetchConnection(connectionID)
         
         let query = [
@@ -160,9 +167,9 @@ public extension PersistenceManager.AuthorizationSubsystem {
             kSecValueData: try JSONEncoder().encode(updated) as CFData,
         ] as! [String: Any] as CFDictionary)
         
-        try fetchConnections()
+        try await fetchConnections()
     }
-    func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) throws {
+    func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) async throws {
         try? removeToken(for: connectionID, service: accessTokenService)
         try storeToken(accessToken, for: connectionID, service: accessTokenService)
         
@@ -171,10 +178,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
             try storeToken(refreshToken, for: connectionID, service: refreshTokenService)
         }
         
-        try fetchConnections()
+        try await fetchConnections()
     }
     
-    func remove(connectionID: ItemIdentifier.ConnectionID) {
+    func remove(connectionID: ItemIdentifier.ConnectionID) async {
         let identityDeleteQuery = [
             kSecClass: kSecClassIdentity,
             kSecAttrSynchronizable: kSecAttrSynchronizableAny,
@@ -196,7 +203,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
             logger.error("Error removing connection from keychain: \(SecCopyErrorMessageString(identityStatus, nil)) & \(SecCopyErrorMessageString(passwordStatus, nil))")
         }
         
-        try? fetchConnections()
+        try? await fetchConnections()
     }
     
     // MARK: Utility
@@ -206,7 +213,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
             return
         }
         
-        try fetchConnections()
+        try await fetchConnections()
     }
     
     func handleURLSessionChallenge(_ challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
@@ -233,20 +240,20 @@ public extension PersistenceManager.AuthorizationSubsystem {
             try modelContext.delete(model: DiscoveredConnection.self)
             try modelContext.save()
             
-            try fetchConnections()
+            try await fetchConnections()
         } catch {
             logger.error("Failed to reset authorization subsystem: \(error)")
         }
     }
     
     #if DEBUG
-    func scrambleAccessToken(connectionID: ItemIdentifier.ConnectionID) throws {
+    func scrambleAccessToken(connectionID: ItemIdentifier.ConnectionID) async throws {
         try updateToken("bazinga", for: connectionID, service: accessTokenService)
-        try fetchConnections()
+        try await fetchConnections()
     }
-    func scrambleRefreshToken(connectionID: ItemIdentifier.ConnectionID) throws {
+    func scrambleRefreshToken(connectionID: ItemIdentifier.ConnectionID) async throws {
         try updateToken("bazinga", for: connectionID, service: refreshTokenService)
-        try fetchConnections()
+        try await fetchConnections()
     }
     #endif
 }
@@ -275,7 +282,7 @@ extension PersistenceManager.AuthorizationSubsystem {
         
         return try JSONDecoder().decode(Connection.self, from: data)
     }
-    func fetchConnections() throws {
+    func fetchConnections() async throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrSynchronizable: kSecAttrSynchronizableAny,
@@ -294,7 +301,7 @@ extension PersistenceManager.AuthorizationSubsystem {
             
             if !connectionIDs.isEmpty {
                 updateConnections([])
-                RFNotification[.connectionsChanged].dispatch()
+                await RFNotification[.connectionsChanged].send()
             }
             
             return
@@ -322,7 +329,7 @@ extension PersistenceManager.AuthorizationSubsystem {
         
         updateConnections(connections)
         
-        RFNotification[.connectionsChanged].dispatch()
+        await RFNotification[.connectionsChanged].send()
     }
     
     // MARK: Token
@@ -331,7 +338,11 @@ extension PersistenceManager.AuthorizationSubsystem {
         try token(for: connectionID, service: accessTokenService)
     }
     func refreshAccessToken(for connectionID: String) async throws -> String {
-        let client = try await APIClient(connectionID: connectionID, credentialProvider: AuthorizedAPIClientCredentialProvider(connectionID: connectionID))
+        let host = try host(for: connectionID)
+        let headers = try headers(for: connectionID)
+        
+        let credentialProvider = RefreshAuthorizationAPIClientCredentialProvider(configuration: (host, headers))
+        let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
         let (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
         
         try updateToken(accessToken, for: connectionID, service: accessTokenService)
@@ -343,6 +354,22 @@ extension PersistenceManager.AuthorizationSubsystem {
         await RFNotification[.accessTokenExpired].send(payload: connectionID)
         
         return accessToken
+    }
+}
+
+private final class RefreshAuthorizationAPIClientCredentialProvider: APICredentialProvider {
+    let configuration: (URL, [HTTPHeader])
+    
+    init(configuration: (URL, [HTTPHeader])) {
+        self.configuration = configuration
+    }
+    
+    var accessToken: String? {
+        nil
+    }
+    
+    func refreshAccessToken(current: String?) async throws -> String? {
+        throw APIClientError.unauthorized
     }
 }
 
