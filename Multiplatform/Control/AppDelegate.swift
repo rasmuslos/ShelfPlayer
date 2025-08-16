@@ -72,8 +72,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             Navigation.navigate(episodeID: episodeID, podcastID: podcastID, libraryID: libraryID)
         } else {
             Navigation.navigate(podcastID: podcastID, libraryID: libraryID)
-        }
-    }
+     }
+     }
      */
 }
 
@@ -82,22 +82,22 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 private final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem) async -> Bool {
         switch shortcutItem.type {
-        case "search":
-            await RFNotification[.presentGlobalSearch].send()
-        case "play":
-            guard let itemIDDescription = shortcutItem.userInfo?["itemID"] as? String else {
+            case "search":
+                await RFNotification[.presentSheet].send(payload: .globalSearch)
+            case "play":
+                guard let itemIDDescription = shortcutItem.userInfo?["itemID"] as? String else {
+                    return false
+                }
+                
+                let itemID = ItemIdentifier(itemIDDescription)
+                
+                do {
+                    try await AudioPlayer.shared.start(.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: Defaults[.startInOfflineMode]))
+                } catch {
+                    return false
+                }
+            default:
                 return false
-            }
-            
-            let itemID = ItemIdentifier(itemIDDescription)
-            
-            do {
-                try await AudioPlayer.shared.start(.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: Defaults[.startInOfflineMode]))
-            } catch {
-                return false
-            }
-        default:
-            return false
         }
         
         return true

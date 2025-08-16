@@ -23,8 +23,8 @@ struct ContentView: View {
     @State private var satellite = Satellite.shared
     @State private var playbackViewModel = PlaybackViewModel.shared
     
-    @State private var connectionStore = ConnectionStore()
-    @State private var progressViewModel = ProgressViewModel()
+    @State private var connectionStore = ConnectionStore.shared
+    @State private var progressViewModel = ProgressViewModel.shared
     
     // try? await UserContext.run()
     // try? await BackgroundTaskHandler.updateDownloads()
@@ -61,8 +61,8 @@ struct ContentView: View {
                 ConnectionAddSheet()
             case .editConnection(let connectionID):
                 ConnectionEditSheet(connectionID: connectionID)
-            case .reauthorizeConnection(let connectionID, let username, let strategies):
-                ReauthorizeConnectionSheet(connectionID: connectionID, username: username, strategies: strategies)
+            case .reauthorizeConnection(let connectionID):
+                ReauthorizeConnectionSheet(connectionID: connectionID)
             case .whatsNew:
                 WhatsNewSheet()
         }
@@ -186,10 +186,6 @@ struct ContentView: View {
             }
         }
     }
-}
-
-extension PlaybackViewModel {
-    static let shared = PlaybackViewModel()
 }
 
 extension EnvironmentValues {

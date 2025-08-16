@@ -190,6 +190,9 @@ public extension RFNotification.IsolatedNotification {
     static var accessTokenExpired: IsolatedNotification<ItemIdentifier.ConnectionID> {
         .init("io.rfk.shelfPlayerKit.accessTokenExpired")
     }
+    static var connectionUnauthorized: IsolatedNotification<ItemIdentifier.ConnectionID> {
+        .init("io.rfk.shelfPlayerKit.connectionUnauthorized")
+    }
     
     static var connectionsChanged: IsolatedNotification<RFNotificationEmptyPayload> {
         .init("io.rfk.shelfPlayerKit.connectionsChanged")

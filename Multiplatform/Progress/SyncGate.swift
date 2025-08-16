@@ -15,6 +15,8 @@ struct SyncGate<Content: View>: View {
     let library: Library
     let content: () -> Content
     
+    @State private var offlineTimeout: Task<Void, Never>?
+    
     private var isCompact: Bool {
         horizontalSizeClass == .compact
     }
@@ -28,6 +30,31 @@ struct SyncGate<Content: View>: View {
                     ContentUnavailableView("navigation.sync.failed", systemImage: "circle.badge.xmark", description: Text("navigation.sync.failed"))
                         .symbolRenderingMode(.multicolor)
                         .symbolEffect(.wiggle, options: .nonRepeating)
+                        .safeAreaInset(edge: .bottom) {
+                            Button {
+                                offlineTimeout?.cancel()
+                            } label: {
+                                Text("navigation.sync.failed.offline")
+                                + Text(verbatim: " ")
+                                + Text(.now.advanced(by: 6), style: .relative)
+                            }
+                            .opacity(offlineTimeout == nil ? 0 : 1)
+                        }
+                        .onAppear {
+                            offlineTimeout = .init {
+                                do {
+                                    try await Task.sleep(for: .seconds(5))
+                                    try Task.checkCancellation()
+                                    
+                                    await RFNotification[.changeOfflineMode].send(payload: true)
+                                } catch {
+                                    offlineTimeout = nil
+                                }
+                            }
+                        }
+                        .onDisappear {
+                            offlineTimeout?.cancel()
+                        }
                 } else {
                     ContentUnavailableView("navigation.sync", systemImage: "binoculars")
                         .symbolEffect(.pulse)
@@ -53,7 +80,7 @@ struct SyncGate<Content: View>: View {
 
 #if DEBUG
 #Preview {
-    SyncGate(library: Library(id: "fixture", connectionID: "fixture", name: "Fixture", type: "audiobooks", index: 0)) {
+    SyncGate(library: Library(id: "fixture", connectionID: "fixture", name: "Fixture", type: "book", index: 0)) {
         Text(verbatim: ":)")
     }
     .previewEnvironment()

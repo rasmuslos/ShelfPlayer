@@ -9,7 +9,7 @@ import Foundation
 @preconcurrency import Security
 import OSLog
 
-public let ABSClient = APIClientStore()
+public let ABSClient = APIClientStore.shared
 
 public final actor APIClientStore {
     var storage = [ItemIdentifier.ConnectionID: APIClient]()
@@ -38,6 +38,10 @@ public final actor APIClientStore {
             
             busy.insert(connectionID)
             
+            // I don't know why this fixes anything. This is after the busy check and insert and it shouldn't matter
+            // But the actor does not synchronize the access anyway, so what even is the point anymore?
+            try await Task.sleep(for: .milliseconds(300))
+            
             do {
                 let provider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
                 let client = try await APIClient(connectionID: connectionID, credentialProvider: provider)
@@ -52,9 +56,11 @@ public final actor APIClientStore {
             }
         }
     }
+    
+    public static let shared = APIClientStore()
 }
 
-final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider {
+private final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider {
     let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "AuthorizedAPIClientCredentialProvider")
     
     let connectionID: ItemIdentifier.ConnectionID

@@ -12,20 +12,22 @@ struct ReauthorizeConnectionSheet: View {
     @Environment(Satellite.self) private var satellite
     
     let connectionID: ItemIdentifier.ConnectionID
-    let username: String
-    let strategies: [AuthorizationStrategy]
     
-    @State private var isLoading = false
-    @State private var apiClient: APIClient?
-    
+    @State private var viewModel: ViewModel?
     @State private var notifyError = false
+    
+    var isLoading: Bool {
+        viewModel == nil || viewModel?.isLoading == true
+    }
     
     var body: some View {
         NavigationStack {
             List {
-                if let apiClient {
-                    ConnectionAuthorizer(strategies: strategies, isLoading: $isLoading, username: .constant(username), allowUsernameEdit: false, apiClient: apiClient) {
-                        guard username == $0 else {
+                if let viewModel {
+                    @Bindable var viewModel = viewModel
+                    
+                    ConnectionAuthorizer(strategies: viewModel.strategies, isLoading: $viewModel.isLoading, username: .constant(viewModel.username), allowUsernameEdit: false, apiClient: viewModel.apiClient) {
+                        guard viewModel.username == $0 else {
                             notifyError.toggle()
                             return
                         }
@@ -36,7 +38,7 @@ struct ReauthorizeConnectionSheet: View {
                         Task {
                             do {
                                 try await PersistenceManager.shared.authorization.updateConnection(connectionID, accessToken: accessToken, refreshToken: refreshToken)
-                                satellite.dismissSheet()
+                                dismiss()
                             } catch {
                                 notifyError.toggle()
                             }
@@ -44,15 +46,23 @@ struct ReauthorizeConnectionSheet: View {
                     }
                 } else {
                     ProgressView()
-                        .task {
-                            apiClient = try? await ABSClient[connectionID]
+                        .onAppear {
+                            Task {
+                                do {
+                                    viewModel = try await .init(connectionID: connectionID)
+                                } catch {
+                                    notifyError.toggle()
+                                }
+                            }
                         }
                 }
             }
+            .navigationTitle(viewModel?.name ?? connectionID)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("action.cancel") {
-                        satellite.dismissSheet()
+                        dismiss()
                     }
                     .disabled(isLoading)
                 }
@@ -60,11 +70,36 @@ struct ReauthorizeConnectionSheet: View {
         }
         .sensoryFeedback(.error, trigger: notifyError)
     }
+    
+    private func dismiss() {
+        satellite.dismissSheet(id: "reauthorizeConnection-\(connectionID)")
+    }
+}
+
+@Observable @MainActor
+private final class ViewModel {
+    let connectionID: ItemIdentifier.ConnectionID
+    let apiClient: APIClient
+    
+    let name: String
+    
+    let username: String
+    let strategies: [AuthorizationStrategy]
+    
+    var isLoading = false
+    
+    init(connectionID: ItemIdentifier.ConnectionID) async throws {
+        self.connectionID = connectionID
+        apiClient = try await ABSClient[connectionID]
+        
+        name = try await PersistenceManager.shared.authorization.friendlyName(for: connectionID)
+        (username, strategies, _) = try await apiClient.status()
+    }
 }
 
 #if DEBUG
 #Preview {
-    ReauthorizeConnectionSheet(connectionID: "fixture", username: "Adam Smith", strategies: [.usernamePassword, .openID])
+    ReauthorizeConnectionSheet(connectionID: "fixture")
         .previewEnvironment()
 }
 #endif

@@ -41,7 +41,7 @@ final class PlaybackViewModel {
     private(set) var notifyError = false
     private(set) var notifySuccess = false
     
-    init() {
+    private init() {
         _dragOffset = .zero
         _isExpanded = false
         
@@ -323,4 +323,8 @@ private extension PlaybackViewModel {
             self.seriesIDs = seriesIDs
         }
     }
+}
+
+extension PlaybackViewModel {
+    static let shared = PlaybackViewModel()
 }
