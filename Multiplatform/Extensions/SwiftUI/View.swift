@@ -22,9 +22,9 @@ extension View {
         
         self
             .environment(Satellite.shared.debugPlayback())
-            .environment(PlaybackViewModel())
-            .environment(ConnectionStore())
-            .environment(ProgressViewModel())
+            .environment(PlaybackViewModel.shared)
+            .environment(ConnectionStore.shared)
+            .environment(ProgressViewModel.shared)
             .environment(ListenedTodayTracker.shared)
             .environment(\.namespace, namespace)
     }

@@ -57,11 +57,13 @@ extension Library {
     }
 }
 
+#if DEBUG
 #Preview {
     Menu {
         LibraryPicker()
     } label: {
         Text(verbatim: "LibraryPicker")
     }
-    .environment(ConnectionStore())
+    .previewEnvironment()
 }
+#endif

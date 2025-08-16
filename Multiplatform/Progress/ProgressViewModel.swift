@@ -19,7 +19,7 @@ final class ProgressViewModel {
     private var currentlyPlayingItemID: ItemIdentifier?
     private var tasks = [ItemIdentifier.ConnectionID: Task<Void, Never>]()
     
-    init() {
+    private init() {
         RFNotification[.changeOfflineMode].subscribe { [weak self] isEnabled in
             guard !isEnabled else {
                 return
@@ -112,4 +112,8 @@ private extension ProgressViewModel {
             }
         }
     }
+}
+
+extension ProgressViewModel {
+    static let shared = ProgressViewModel()
 }

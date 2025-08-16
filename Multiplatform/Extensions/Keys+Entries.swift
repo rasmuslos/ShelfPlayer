@@ -18,8 +18,6 @@ extension Defaults.Keys {
 
 extension RFNotification.IsolatedNotification {
     static var setGlobalSearch: IsolatedNotification<String> { .init("io.rfk.shelfPlayer.setGlobalSearch") }
-    static var presentGlobalSearch: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.presentGlobalSearch") }
-    
     static var focusSearchField: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.focusSearchField") }
     
     static var navigateConditionMet: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.navigate.notify") }
@@ -31,4 +29,6 @@ extension RFNotification.IsolatedNotification {
     static var performBackgroundSessionSync: IsolatedNotification<ItemIdentifier.ConnectionID?> { .init("io.rfk.shelfPlayer.performBackgroundSessionSync") }
     
     static var scenePhaseDidChange: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.scenePhaseDidChange") }
+    
+    static var presentSheet: IsolatedNotification<Satellite.Sheet> { .init("io.rfk.shelfPlayer.presentSheet") }
 }
