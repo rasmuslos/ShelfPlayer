@@ -27,7 +27,7 @@ extension AudioPlayer {
         
         widgetManager.update(itemID: itemID)
     }
-    func playStateDidChange(endpointID: UUID, isPlaying: Bool, updateSessionActivation: Bool) {
+    func playStateDidChange(endpointID: UUID, isPlaying: Bool, updateSessionActivation: Bool) async {
         if current != nil && current?.id != endpointID {
             return
         }
@@ -42,139 +42,110 @@ extension AudioPlayer {
         
         RFNotification[.playStateChanged].dispatch(payload: isPlaying)
         
-        Task {
-            await widgetManager.update(isPlaying: isPlaying)
-        }
+        await widgetManager.update(isPlaying: isPlaying)
     }
     
-    func bufferHealthDidChange(endpointID: UUID, isBuffering: Bool) {
+    func bufferHealthDidChange(endpointID: UUID, isBuffering: Bool) async {
         guard current?.id == endpointID else {
             return
         }
         
-        Task {
-            await RFNotification[.bufferHealthChanged].send(payload: isBusy)
-        }
-        
-        Task {
-            await widgetManager.update(isBuffering: isBusy)
-        }
+        await widgetManager.update(isBuffering: isBusy)
+        await RFNotification[.bufferHealthChanged].send(payload: isBusy)
     }
     
-    func durationsDidChange(endpointID: UUID, itemDuration: TimeInterval?, chapterDuration: TimeInterval?) {
+    func durationsDidChange(endpointID: UUID, itemDuration: TimeInterval?, chapterDuration: TimeInterval?) async {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        Task {
-            await RFNotification[.durationsChanged].send(payload: (itemDuration, chapterDuration))
-        }
-        
-        Task {
-            await widgetManager.update(chapterDuration: chapterDuration)
-        }
+        await widgetManager.update(chapterDuration: chapterDuration)
+        await RFNotification[.durationsChanged].send(payload: (itemDuration, chapterDuration))
     }
-    func currentTimesDidChange(endpointID: UUID, itemCurrentTime: TimeInterval?, chapterCurrentTime: TimeInterval?) {
+    func currentTimesDidChange(endpointID: UUID, itemCurrentTime: TimeInterval?, chapterCurrentTime: TimeInterval?) async {
         guard current?.id == endpointID else {
             return
         }
         
-        Task {
-            await RFNotification[.currentTimesChanged].send(payload: (itemCurrentTime, chapterCurrentTime))
-        }
-        
-        Task {
-            await widgetManager.update(chapterCurrentTime: chapterCurrentTime)
-        }
+        await widgetManager.update(chapterCurrentTime: chapterCurrentTime)
+        await RFNotification[.currentTimesChanged].send(payload: (itemCurrentTime, chapterCurrentTime))
     }
     
-    func chapterDidChange(endpointID: UUID, chapter: Chapter?) {
+    func chapterDidChange(endpointID: UUID, chapter: Chapter?) async {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        Task {
-            await RFNotification[.chapterChanged].send(payload: chapter)
+        await RFNotification[.chapterChanged].send(payload: chapter)
+    }
+    func chapterIndexDidChange(endpointID: UUID, chapterIndex: Int?, chapterCount: Int) async {
+        if current != nil && current?.id != endpointID {
+            return
         }
         
-        Task {
-            await widgetManager.update(chapter: chapter)
-        }
+        await widgetManager.update(chapterIndex: chapterIndex, chapterCount: chapterCount)
     }
     
-    func volumeDidChange(endpointID: UUID, volume: Percentage) {
+    func volumeDidChange(endpointID: UUID, volume: Percentage) async {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        Task {
-            await RFNotification[.volumeChanged].send(payload: volume)
-        }
-    }
-    func playbackRateDidChange(endpointID: UUID, playbackRate: Percentage) {
-        if current != nil && current?.id != endpointID {
-            return
-        }
-        
-        Task {
-            await RFNotification[.playbackRateChanged].send(payload: playbackRate)
-        }
+        await RFNotification[.volumeChanged].send(payload: volume)
     }
     
-    func routeDidChange(endpointID: UUID, route: AudioRoute) {
+    func playbackRateDidChange(endpointID: UUID, playbackRate: Percentage) async {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        Task {
-            await RFNotification[.routeChanged].send(payload: route)
-        }
-    }
-    func sleepTimerDidChange(endpointID: UUID, configuration: SleepTimerConfiguration?) {
-        if current != nil && current?.id != endpointID {
-            return
-        }
-        
-        Task {
-            await RFNotification[.sleepTimerChanged].send(payload: configuration)
-        }
-    }
-    func sleepTimerDidExpire(endpointID: UUID, configuration: SleepTimerConfiguration) {
-        if current != nil && current?.id != endpointID {
-            return
-        }
-        
-        Task {
-            await RFNotification[.sleepTimerExpired].send(payload:  configuration)
-        }
+        await widgetManager.update(targetPlaybackRate: playbackRate)
+        await RFNotification[.playbackRateChanged].send(payload: playbackRate)
     }
     
-    func queueDidChange(endpointID: UUID, queue: [ItemIdentifier]) {
+    func routeDidChange(endpointID: UUID, route: AudioRoute) async {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        Task {
-            await RFNotification[.queueChanged].send(payload: queue)
-        }
+        await RFNotification[.routeChanged].send(payload: route)
     }
-    func upNextQueueDidChange(endpointID: UUID, upNextQueue: [ItemIdentifier]) {
+    func sleepTimerDidChange(endpointID: UUID, configuration: SleepTimerConfiguration?) async {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        Task {
-            await RFNotification[.upNextQueueChanged].send(payload: upNextQueue)
-        }
+        await RFNotification[.sleepTimerChanged].send(payload: configuration)
     }
-    func upNextStrategyDidChange(endpointID: UUID, strategy: ResolvedUpNextStrategy?) {
+    func sleepTimerDidExpire(endpointID: UUID, configuration: SleepTimerConfiguration) async {
         if current != nil && current?.id != endpointID {
             return
         }
         
-        Task {
-            await RFNotification[.upNextStrategyChanged].send(payload: strategy)
+        await RFNotification[.sleepTimerExpired].send(payload:  configuration)
+    }
+    
+    func queueDidChange(endpointID: UUID, queue: [ItemIdentifier]) async {
+        if current != nil && current?.id != endpointID {
+            return
         }
+        
+        await widgetManager.update(queueCount: queue.count)
+        await RFNotification[.queueChanged].send(payload: queue)
+    }
+    func upNextQueueDidChange(endpointID: UUID, upNextQueue: [ItemIdentifier]) async {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        await RFNotification[.upNextQueueChanged].send(payload: upNextQueue)
+    }
+    func upNextStrategyDidChange(endpointID: UUID, strategy: ResolvedUpNextStrategy?) async {
+        if current != nil && current?.id != endpointID {
+            return
+        }
+        
+        await RFNotification[.upNextStrategyChanged].send(payload: strategy)
     }
     
     func didStopPlaying(endpointID: UUID, itemID: ItemIdentifier) async {
@@ -189,17 +160,8 @@ extension AudioPlayer {
         }
         
         await widgetManager.invalidate()
-        
         await MainActor.run {
             RFNotification[.playbackStopped].send()
-        }
-        
-        Task {
-            do {
-                try await PersistenceManager.shared.session.attemptSync(early: true)
-            } catch {
-                logger.error("Failed to sync sessions: \(error)")
-            }
         }
     }
     
