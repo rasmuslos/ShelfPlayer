@@ -421,7 +421,7 @@ private extension PersistenceManager.AuthorizationSubsystem {
     func storeToken(_ token: String, for connectionID: String, service: CFString) throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrSynchronizable: kCFBooleanTrue as Any,
+            kSecAttrSynchronizable: kCFBooleanFalse as Any,
             
             kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
             
