@@ -76,7 +76,7 @@ final class ConnectionStore {
                 }
                 
                 $0.append(connectionID)
-                $0 = $0.map { $0 }
+                $0 = Array($0)
                 return true
             }
             
