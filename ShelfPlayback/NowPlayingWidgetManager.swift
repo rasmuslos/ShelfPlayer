@@ -18,9 +18,6 @@ final actor NowPlayingWidgetManager: Sendable {
     
     var isPlaying: Bool?
     var isBuffering: Bool?
-
-    var chapterDuration: TimeInterval?
-    var chapterCurrentTime: TimeInterval?
     
     var metadata = [String: Any]()
     
@@ -40,6 +37,11 @@ final actor NowPlayingWidgetManager: Sendable {
     func update(item: PlayableItem) {
         self.item = item
         
+        metadata[MPNowPlayingInfoPropertyExternalContentIdentifier] = item.id.description
+        metadata[MPNowPlayingInfoPropertyExternalUserProfileIdentifier] = item.id.connectionID
+        
+        metadata[MPNowPlayingInfoPropertyMediaType] = 1
+        
         metadata[MPMediaItemPropertyArtist] = item.authors.formatted(.list(type: .and, width: .narrow))
         metadata[MPMediaItemPropertyReleaseDate] = item.released
         
@@ -48,7 +50,13 @@ final actor NowPlayingWidgetManager: Sendable {
     }
     func update(chapter: Chapter?) {
         self.chapter = chapter
+        
         updateTitle()
+    }
+    func update(chapterIndex: Int?, chapterCount: Int) {
+        metadata[MPNowPlayingInfoPropertyChapterCount] = chapterCount
+        metadata[MPNowPlayingInfoPropertyChapterNumber] = chapterIndex as? NSNumber
+        updateWidget()
     }
     
     func update(isPlaying: Bool) {
@@ -60,16 +68,24 @@ final actor NowPlayingWidgetManager: Sendable {
         updatePlaybackState()
     }
     
+    func update(targetPlaybackRate: Percentage) {
+        metadata[MPNowPlayingInfoPropertyPlaybackRate] = targetPlaybackRate as NSNumber
+        metadata[MPNowPlayingInfoPropertyDefaultPlaybackRate] = targetPlaybackRate as NSNumber
+        updateWidget()
+    }
+    
     func update(chapterDuration: TimeInterval?) {
-        self.chapterDuration = chapterDuration
-        
         metadata[MPMediaItemPropertyPlaybackDuration] = chapterDuration
         updateWidget()
     }
     func update(chapterCurrentTime: TimeInterval?) {
-        self.chapterCurrentTime = chapterCurrentTime
-        
         metadata[MPNowPlayingInfoPropertyElapsedPlaybackTime] = chapterCurrentTime
+        updateWidget()
+    }
+    
+    func update(queueCount: Int) {
+        metadata[MPNowPlayingInfoPropertyPlaybackQueueIndex] = 0
+        metadata[MPNowPlayingInfoPropertyPlaybackQueueCount] = queueCount
         updateWidget()
     }
     
@@ -78,9 +94,6 @@ final actor NowPlayingWidgetManager: Sendable {
         chapter = nil
         
         isPlaying = false
-        
-        chapterDuration = nil
-        chapterCurrentTime = nil
         
         metadata = [:]
         
