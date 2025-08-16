@@ -555,6 +555,8 @@ private extension LocalAudioEndpoint {
             await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: nil)
             await self.updateDuration()
         }
+        
+        await AudioPlayer.shared.chapterIndexDidChange(endpointID: id, chapterIndex: activeChapterIndex, chapterCount: chapters.count)
     }
     
     func audioTrackIndex(at time: TimeInterval) throws -> Int {
