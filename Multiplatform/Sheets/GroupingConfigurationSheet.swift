@@ -91,19 +91,6 @@ struct GroupingConfigurationSheet: View {
                         }
                         .disabled(!enableConvenienceDownloads)
                     }
-                    
-                    Color.clear
-                        .listRowBackground(Color.clear)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button("action.save") {
-                                    viewModel.save() {
-                                        satellite.dismissSheet()
-                                    }
-                                }
-                            }
-                        }
-                        .sensoryFeedback(.error, trigger: viewModel.notifyError)
                 } else {
                     LoadingView.Inner()
                         .task {
@@ -117,6 +104,17 @@ struct GroupingConfigurationSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("action.cancel") {
                         satellite.dismissSheet()
+                    }
+                }
+                
+                if let viewModel {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("action.save") {
+                            viewModel.save() {
+                                satellite.dismissSheet()
+                            }
+                        }
+                        .sensoryFeedback(.error, trigger: viewModel.notifyError)
                     }
                 }
             }
