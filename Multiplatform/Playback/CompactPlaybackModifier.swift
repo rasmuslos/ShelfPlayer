@@ -51,7 +51,7 @@ struct CompactPlaybackModifier: ViewModifier {
                         .animation(.smooth, value: viewModel.pushAmount)
                         .accessibilityHidden(viewModel.isExpanded)
                             
-                    if satellite.isNowPlayingVisible {
+                    if satellite.isNowPlayingVisible && !viewModel.isNowPlayingHidden {
                         ZStack {
                             // Background
                             ZStack {
