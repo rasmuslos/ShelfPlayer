@@ -59,17 +59,16 @@ final class Satellite {
     
     // MARK: Playback helper
     
-    private(set) var remainingSleepTime: Double?
-    
-    private(set) var totalLoading = 0
-    private(set) var busy = [ItemIdentifier: Int]()
-    
     private(set) var skipCache: TimeInterval?
+    private(set) var remainingSleepTime: Double?
+    private(set) var busy = [ItemIdentifier: Int]()
     
     @ObservationIgnored
     private(set) nonisolated(unsafe) var skipTask: Task<Void, Never>?
     
     // MARK: Utility
+    
+    private(set) var totalLoading = 0
     
     var notifyError = false
     var notifySuccess = false
@@ -988,9 +987,9 @@ private extension Satellite {
         
         RFNotification[.presentSheet].subscribe { [weak self] in
             self?.present($0)
-        }
+        }.store(in: &stash)
         
-        // MARK: Audio Player state synchronisation
+        // MARK: Audio Player state synchronization
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.nowPlayingItemID = $0.0

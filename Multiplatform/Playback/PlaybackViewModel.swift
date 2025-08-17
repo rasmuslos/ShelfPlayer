@@ -35,6 +35,8 @@ final class PlaybackViewModel {
     
     private var stoppedPlayingAt: Date?
     
+    private(set) var keyboardsVisible = 0
+    
     private(set) var notifySkipBackwards = false
     private(set) var notifySkipForwards = false
     
@@ -88,6 +90,13 @@ final class PlaybackViewModel {
         RFNotification[.navigate].subscribe { [weak self] _ in
             self?.isExpanded = false
         }
+        
+        RFNotification.NonIsolatedNotification<RFNotificationEmptyPayload>(UIResponder.keyboardWillShowNotification.rawValue).subscribe { [weak self] in
+            self?.keyboardsVisible += 1
+        }
+        RFNotification.NonIsolatedNotification<RFNotificationEmptyPayload>(UIResponder.keyboardWillHideNotification.rawValue).subscribe { [weak self] in
+            self?.keyboardsVisible -= 1
+        }
     }
     
     var isExpanded: Bool {
@@ -112,6 +121,9 @@ final class PlaybackViewModel {
             }
         }
     }
+    var isNowPlayingHidden: Bool {
+        keyboardsVisible > 0
+    }
     
     var dragOffset: CGFloat {
         get {
@@ -126,6 +138,10 @@ final class PlaybackViewModel {
         }
     }
     var pushAmount: Percentage {
+        guard !isNowPlayingHidden else {
+            return 1
+        }
+        
         // technically a CGFloat
         let dragHeight: Percentage = 500
         
