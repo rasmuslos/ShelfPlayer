@@ -168,6 +168,7 @@ struct ContentView: View {
             }
             
             Task {
+                await RFNotification[.presentSheet].send(payload: .globalSearch)
                 try await Task.sleep(for: .seconds(0.4))
                 await RFNotification[.setGlobalSearch].send(payload: query)
             }
