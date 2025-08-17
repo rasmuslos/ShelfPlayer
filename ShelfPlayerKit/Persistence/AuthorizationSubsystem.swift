@@ -29,6 +29,8 @@ extension PersistenceManager {
         // Don't store refresh tokens in RAM unless necessary
         public private(set) var friendlyConnections = [FriendlyConnection]()
         
+        private var refreshingIDs = Set<ItemIdentifier.ConnectionID>()
+        
         public struct KnownConnection: Sendable, Identifiable, Equatable {
             public let id: String
             
@@ -345,39 +347,43 @@ extension PersistenceManager.AuthorizationSubsystem {
     func accessToken(for connectionID: String) throws -> String {
         try token(for: connectionID, service: accessTokenService)
     }
-    func refreshAccessToken(for connectionID: String) async throws -> String {
-        let host = try host(for: connectionID)
-        let headers = try headers(for: connectionID)
-        
-        let credentialProvider = RefreshAuthorizationAPIClientCredentialProvider(configuration: (host, headers))
-        let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
-        let (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
-        
-        try updateToken(accessToken, for: connectionID, service: accessTokenService)
-        
-        if let refreshToken {
-            try updateToken(refreshToken, for: connectionID, service: refreshTokenService)
+    func refreshAccessToken(for connectionID: String, current: String?) async throws -> String {
+        while refreshingIDs.contains(connectionID) {
+            try await Task.sleep(for: .seconds(1))
         }
         
-        await RFNotification[.accessTokenExpired].send(payload: connectionID)
+        refreshingIDs.insert(connectionID)
         
-        return accessToken
-    }
-}
-
-private final class RefreshAuthorizationAPIClientCredentialProvider: APICredentialProvider {
-    let configuration: (URL, [HTTPHeader])
-    
-    init(configuration: (URL, [HTTPHeader])) {
-        self.configuration = configuration
-    }
-    
-    var accessToken: String? {
-        nil
-    }
-    
-    func refreshAccessToken(current: String?) async throws -> String? {
-        throw APIClientError.unauthorized
+        do {
+            let stored = try token(for: connectionID, service: accessTokenService)
+            
+            guard current == stored else {
+                refreshingIDs.remove(connectionID)
+                logger.info("Ignoring request to refresh access token for \(connectionID) as it is already up-to-date")
+                
+                return stored
+            }
+            
+            let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
+            let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
+            let (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
+            
+            try updateToken(accessToken, for: connectionID, service: accessTokenService)
+            
+            if let refreshToken {
+                try updateToken(refreshToken, for: connectionID, service: refreshTokenService)
+            }
+            
+            await RFNotification[.accessTokenExpired].send(payload: connectionID)
+            refreshingIDs.remove(connectionID)
+            
+            logger.info("Refreshed access token for \(connectionID)")
+            
+            return accessToken
+        } catch {
+            refreshingIDs.remove(connectionID)
+            throw error
+        }
     }
 }
 

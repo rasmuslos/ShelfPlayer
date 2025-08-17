@@ -38,10 +38,6 @@ public final actor APIClientStore {
             
             busy.insert(connectionID)
             
-            // I don't know why this fixes anything. This is after the busy check and insert and it shouldn't matter
-            // But the actor does not synchronize the access anyway, so what even is the point anymore?
-            try await Task.sleep(for: .milliseconds(300))
-            
             do {
                 let provider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
                 let client = try await APIClient(connectionID: connectionID, credentialProvider: provider)
@@ -58,45 +54,4 @@ public final actor APIClientStore {
     }
     
     public static let shared = APIClientStore()
-}
-
-private final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider {
-    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "AuthorizedAPIClientCredentialProvider")
-    
-    let connectionID: ItemIdentifier.ConnectionID
-    
-    var token: String?
-    var configuration: (URL, [HTTPHeader])
-    
-    var knownExpiredTokens: Set<String> = []
-    
-    var accessToken: String? {
-        token
-    }
-    
-    init(connectionID: ItemIdentifier.ConnectionID) async throws {
-        self.connectionID = connectionID
-        
-        token = try? await PersistenceManager.shared.authorization.accessToken(for: connectionID)
-        configuration = try await PersistenceManager.shared.authorization.configuration(for: connectionID)
-    }
-    
-    func refreshAccessToken(current: String?) async throws -> String? {
-        guard let token else {
-            throw APIClientError.unauthorized
-        }
-        
-        guard !knownExpiredTokens.contains(token) else {
-            return nil
-        }
-        
-        if token == current {
-            knownExpiredTokens.insert(token)
-            
-            logger.info("Access token for \(self.connectionID) expired. Refreshing...")
-            self.token = try await PersistenceManager.shared.authorization.refreshAccessToken(for: connectionID)
-        }
-        
-        return self.token
-    }
 }
