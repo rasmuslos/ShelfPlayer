@@ -65,7 +65,7 @@ private final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider
     
     let connectionID: ItemIdentifier.ConnectionID
     
-    var token: String
+    var token: String?
     var configuration: (URL, [HTTPHeader])
     
     var knownExpiredTokens: Set<String> = []
@@ -77,11 +77,15 @@ private final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider
     init(connectionID: ItemIdentifier.ConnectionID) async throws {
         self.connectionID = connectionID
         
-        token = try await PersistenceManager.shared.authorization.accessToken(for: connectionID)
+        token = try? await PersistenceManager.shared.authorization.accessToken(for: connectionID)
         configuration = try await PersistenceManager.shared.authorization.configuration(for: connectionID)
     }
     
     func refreshAccessToken(current: String?) async throws -> String? {
+        guard let token else {
+            throw APIClientError.unauthorized
+        }
+        
         guard !knownExpiredTokens.contains(token) else {
             return nil
         }
@@ -90,9 +94,9 @@ private final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider
             knownExpiredTokens.insert(token)
             
             logger.info("Access token for \(self.connectionID) expired. Refreshing...")
-            token = try await PersistenceManager.shared.authorization.refreshAccessToken(for: connectionID)
+            self.token = try await PersistenceManager.shared.authorization.refreshAccessToken(for: connectionID)
         }
         
-        return token
+        return self.token
     }
 }

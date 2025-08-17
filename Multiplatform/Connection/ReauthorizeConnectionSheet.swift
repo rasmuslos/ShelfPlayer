@@ -82,8 +82,8 @@ private final class ViewModel {
     let apiClient: APIClient
     
     let name: String
-    
     let username: String
+    
     let strategies: [AuthorizationStrategy]
     
     var isLoading = false
@@ -93,7 +93,9 @@ private final class ViewModel {
         apiClient = try await ABSClient[connectionID]
         
         name = try await PersistenceManager.shared.authorization.friendlyName(for: connectionID)
-        (username, strategies, _) = try await apiClient.status()
+        username = try await PersistenceManager.shared.authorization.username(for: connectionID)
+        
+        (_, strategies, _) = try await apiClient.status()
     }
 }
 

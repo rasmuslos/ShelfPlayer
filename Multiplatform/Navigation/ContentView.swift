@@ -26,8 +26,7 @@ struct ContentView: View {
     @State private var connectionStore = ConnectionStore.shared
     @State private var progressViewModel = ProgressViewModel.shared
     
-    // try? await UserContext.run()
-    // try? await BackgroundTaskHandler.updateDownloads()
+    @State private var listenedTodayTracker = ListenedTodayTracker.shared
     
     @ViewBuilder
     private func applyEnvironment<Content: View>(_ content: Content) -> some View {
@@ -36,7 +35,7 @@ struct ContentView: View {
             .environment(playbackViewModel)
             .environment(connectionStore)
             .environment(progressViewModel)
-            .environment(ListenedTodayTracker.shared)
+            .environment(listenedTodayTracker)
             .environment(\.namespace, namespace)
     }
     
@@ -92,9 +91,9 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if !connectionStore.didLoad {
+            if !ConnectionStore.shared.didLoad {
                 LoadingView()
-            } else if connectionStore.connections.isEmpty {
+            } else if ConnectionStore.shared.connections.isEmpty {
                 WelcomeView()
             } else if satellite.isOffline {
                 OfflineView()
@@ -120,8 +119,8 @@ struct ContentView: View {
         }
         .sensoryFeedback(.error, trigger: satellite.notifyError)
         .sensoryFeedback(.success, trigger: satellite.notifySuccess)
-        .sensoryFeedback(.error, trigger: playbackViewModel.notifyError)
-        .sensoryFeedback(.success, trigger: playbackViewModel.notifySuccess)
+        .sensoryFeedback(.error, trigger: PlaybackViewModel.shared.notifyError)
+        .sensoryFeedback(.success, trigger: PlaybackViewModel.shared.notifySuccess)
         .modifier(PlaybackContentModifier())
         .sheet(item: satellite.presentedSheet) {
             sheetContent(for: $0)
@@ -167,8 +166,6 @@ struct ContentView: View {
             guard let query = $0.userInfo?[CSSearchQueryString] as? String else {
                 return
             }
-            
-            satellite.present(.globalSearch)
             
             Task {
                 try await Task.sleep(for: .seconds(0.4))

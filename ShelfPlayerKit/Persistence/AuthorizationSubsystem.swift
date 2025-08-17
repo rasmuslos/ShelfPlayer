@@ -18,10 +18,10 @@ extension PersistenceManager {
     @ModelActor
     public final actor AuthorizationSubsystem: Sendable {
         private let connectionService = "io.rfk.shelfPlayer.credentials.v2" as CFString
-        private let tlsCertificateService = "io.rfk.shelfPlayer.credentials.tlsCertificate" as CFString
+        private let tlsCertificateService = "io.rfk.shelfPlayer.credentials.tlsCertificate.v2" as CFString
         
-        private let accessTokenService = "io.rfk.shelfPlayer.credentials.accessToken" as CFString
-        private let refreshTokenService = "io.rfk.shelfPlayer.credentials.refreshToken" as CFString
+        private let accessTokenService = "io.rfk.shelfPlayer.credentials.accessToken.v2" as CFString
+        private let refreshTokenService = "io.rfk.shelfPlayer.credentials.refreshToken.v2" as CFString
         
         private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Authorization")
         
@@ -53,6 +53,13 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
     }
     
+    func username(for connectionID: ItemIdentifier.ConnectionID) throws -> String {
+        guard let connection = friendlyConnections.first(where: { $0.id == connectionID }) else {
+            throw APIClientError.notFound
+        }
+        
+        return connection.username
+    }
     func friendlyName(for connectionID: ItemIdentifier.ConnectionID) throws -> String {
         guard let connection = friendlyConnections.first(where: { $0.id == connectionID }) else {
             throw APIClientError.notFound
@@ -60,6 +67,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         return connection.name
     }
+    
     func host(for connectionID: ItemIdentifier.ConnectionID) throws -> URL {
         guard let connection = friendlyConnections.first(where: { $0.id == connectionID }) else {
             throw APIClientError.notFound

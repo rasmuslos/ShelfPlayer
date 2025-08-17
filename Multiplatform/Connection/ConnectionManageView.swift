@@ -37,6 +37,9 @@ struct ConnectionManageView: View {
                         .foregroundStyle(.green)
                 } else {
                     ProgressView()
+                        .task {
+                            status = try? await ABSClient[connection.id].status()
+                        }
                 }
                 
                 if isUsingLegacyAuthentication {
