@@ -1,8 +1,5 @@
 # ShelfPlayer
 
-> [!WARNING]
-> This is the README for version 3.0.0, which will be released soon!
-
 **ShelfPlayer** is a powerful iOS application for listening to audiobooks and podcasts, designed for users with self-hosted [Audiobookshelf](https://www.audiobookshelf.org/) libraries. Built in **Swift 6** for **iOS 18+**, ShelfPlayer is fast, privacy-respecting, and deeply integrated with the Apple ecosystem.
 
 > [!WARNING]
