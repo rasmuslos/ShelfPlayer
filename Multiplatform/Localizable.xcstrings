@@ -1036,37 +1036,37 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stelle sicher, dass „shelfPlayer://callback“ als oAuth-Callback in Audiobookshelf konfiguriert ist."
+            "value" : "Stelle sicher, dass „shelfplayer://callback“ als oAuth-Callback in Audiobookshelf konfiguriert ist."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Make sure \"shelfPlayer://callback\" is configured as a allowed callback URL in the Audiobookshelf settings."
+            "value" : "Make sure \"shelfplayer://callback\" is configured as a allowed callback URL in the Audiobookshelf settings."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Assurez-vous que « shelfPlayer://callback » est configuré comme URL de rappel autorisée dans les paramètres d'Audiobookshelf."
+            "value" : "Assurez-vous que « shelfplayer://callback » est configuré comme URL de rappel autorisée dans les paramètres d'Audiobookshelf."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se till att ”shelfPlayer://callback” är konfigurerad som en tillåten ”callback-URL” i inställningarna för Audiobookshelf."
+            "value" : "Se till att ”shelfplayer://callback” är konfigurerad som en tillåten ”callback-URL” i inställningarna för Audiobookshelf."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Переконайтеся, що \\\"shelfPlayer://callback\\\" налаштовано як дозволений URL-адресу зворотного виклику в налаштуваннях Audiobookshelf."
+            "value" : "Переконайтеся, що \\\"shelfplayer://callback\\\" налаштовано як дозволений URL-адресу зворотного виклику в налаштуваннях Audiobookshelf."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "确保在 Audiobookshelf 设置中将 \"shelfPlayer://callback\" 配置为允许的回调 URL。"
+            "value" : "确保在 Audiobookshelf 设置中将 \"shelfplayer://callback\" 配置为允许的回调 URL。"
           }
         }
       }
