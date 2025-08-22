@@ -67,7 +67,7 @@ struct SyncGate<Content: View>: View {
             .safeAreaInset(edge: .bottom) {
                 if isCompact {
                     Menu("navigation.library.select") {
-                        LibraryPicker()
+                        LibraryPicker(isSearchVisible: false)
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
