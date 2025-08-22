@@ -76,6 +76,7 @@ extension AudioPlayer {
             return
         }
         
+        await widgetManager.update(chapter: chapter)
         await RFNotification[.chapterChanged].send(payload: chapter)
     }
     func chapterIndexDidChange(endpointID: UUID, chapterIndex: Int?, chapterCount: Int) async {
