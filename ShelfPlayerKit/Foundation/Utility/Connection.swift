@@ -16,7 +16,7 @@ struct Connection: Identifiable, Sendable, Hashable, Codable {
     let added: Date
     
     var connectionID: ItemIdentifier.ConnectionID {
-        SHA256.hash(data: "host:\(host).?.?.user:\(user)".data(using: .ascii)!).withUnsafeBytes {
+        SHA256.hash(data: "host:\(host).?.?.user:\(user)".data(using: .utf8)!).withUnsafeBytes {
             Data([UInt8]($0))
         }.base64EncodedString()
     }
