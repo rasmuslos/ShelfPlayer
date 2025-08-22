@@ -24,8 +24,6 @@ extension RFNotification.IsolatedNotification {
     static var _navigate: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.two") }
     
     static var changeLibrary: IsolatedNotification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
-    static var changeOfflineMode: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
-    
     static var performBackgroundSessionSync: IsolatedNotification<ItemIdentifier.ConnectionID?> { .init("io.rfk.shelfPlayer.performBackgroundSessionSync") }
     
     static var scenePhaseDidChange: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.scenePhaseDidChange") }

@@ -10290,6 +10290,12 @@
         }
       }
     },
+    "preferences.playbackRate.adjust.down %@" : {
+
+    },
+    "preferences.playbackRate.adjust.up %@" : {
+
+    },
     "preferences.playbackRate.default" : {
       "localizations" : {
         "de" : {

@@ -145,7 +145,6 @@ struct ShelfPlayer {
         
         // In memory & transient
         
-        await ResolveCache.shared.invalidate()
         await PersistenceManager.shared.listenNow.invalidate()
     }
 }

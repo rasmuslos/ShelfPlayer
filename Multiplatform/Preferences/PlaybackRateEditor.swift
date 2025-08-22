@@ -12,11 +12,14 @@ struct PlaybackRateEditor: View {
     @Default(.playbackRates) private var playbackRates
     @Default(.defaultPlaybackRate) private var defaultPlaybackRate
     
+    @Default(.playbackRateAdjustmentUp) private var playbackRateAdjustmentUp
+    @Default(.playbackRateAdjustmentDown) private var playbackRateAdjustmentDown
+    
     @State private var newValue: Percentage = 1
     
     @ViewBuilder
     func row(index: Int) -> some View {
-        Text(playbackRates[index], format: .percent.notation(.compactName))
+        Text(playbackRates[index], format: .playbackRate)
     }
     
     var body: some View {
@@ -42,7 +45,7 @@ struct PlaybackRateEditor: View {
             
             Section {
                 Stepper(value: $newValue, in: 0.1...8, step: 0.05) {
-                    Text(newValue, format: .percent.notation(.compactName))
+                    Text(newValue, format: .playbackRate)
                 }
                 
                 Button("preferences.playbackRate.add", systemImage: "plus") {
@@ -54,6 +57,15 @@ struct PlaybackRateEditor: View {
                     playbackRates.sort()
                 }
                 .labelStyle(.titleOnly)
+            }
+            
+            Section {
+                Stepper(value: $playbackRateAdjustmentUp, in: 0.05...0.5, step: 0.05) {
+                    Text("preferences.playbackRate.adjust.up \(playbackRateAdjustmentUp.formatted(.playbackRate))")
+                }
+                Stepper(value: $playbackRateAdjustmentDown, in: 0.05...0.5, step: 0.05) {
+                    Text("preferences.playbackRate.adjust.down \(playbackRateAdjustmentDown.formatted(.playbackRate))")
+                }
             }
             
             Section {
@@ -83,7 +95,7 @@ struct PlaybackRatePicker: View {
                 Button {
                     selection = value
                 } label: {
-                    Text(value, format: .percent.notation(.compactName))
+                    Text(value, format: .playbackRate)
                 }
                 .tag(value)
             }
