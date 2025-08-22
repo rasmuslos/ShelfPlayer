@@ -20,21 +20,6 @@ public struct DurationComponentsFormatter: FormatStyle {
         self.formattingContext = formattingContext
     }
     
-    mutating func unitsStyle(_ unitsStyle: DateComponentsFormatter.UnitsStyle) -> Self {
-        self.unitsStyle = unitsStyle
-        return self
-    }
-    
-    mutating func allowedUnits(_ allowedUnits: NSCalendar.Unit) -> Self {
-        self.allowedUnits = allowedUnits
-        return self
-    }
-    
-    mutating func maximumUnitCount(_ maximumUnitCount: Int) -> Self {
-        self.maximumUnitCount = maximumUnitCount
-        return self
-    }
-    
     public func format(_ value: TimeInterval) -> String {
         guard value.isFinite && !value.isNaN else {
             return "?"

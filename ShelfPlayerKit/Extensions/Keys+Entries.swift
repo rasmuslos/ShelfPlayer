@@ -62,8 +62,11 @@ public extension Defaults.Keys {
     
     // MARK: In-App settings
     
-    static let playbackRates = Key<[Percentage]>("playbackRates", default: [0.5, 0.75, 1, 1.25, 1.5, 2])
+    static let playbackRates = Key<[Percentage]>("playbackRates", default: [0.75, 1, 1.25, 1.5, 2])
     static let defaultPlaybackRate = Key<Percentage>("defaultPlaybackRate", default: 1)
+    
+    static let playbackRateAdjustmentUp = Key<Percentage>("playbackRateAdjustmentUp", default: 0.05)
+    static let playbackRateAdjustmentDown = Key<Percentage>("playbackRateAdjustmentDown", default: 0.05)
     
     static let sleepTimerIntervals = Key("sleepTimerIntervals", default: [10, 20, 30, 45, 60, 90].map { Double($0) * 60 })
     static let sleepTimerExtendInterval = Key("sleepTimerExtendInterval", default: Double(1200))
@@ -267,6 +270,8 @@ public extension RFNotification.IsolatedNotification {
     
     static var timeSpendListeningChanged: IsolatedNotification<Int> { .init("io.rfk.shelfPlayerKit.timeSpendListeningChanged") }
     static var cachedTimeSpendListeningChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.cachedTimeSpendListeningChanged") }
+    
+    static var changeOfflineMode: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
     
     // MARK: Collections
     

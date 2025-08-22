@@ -334,15 +334,32 @@ struct PlaybackRateButton: View {
                     }
                     
                 }) {
-                    Text(value, format: .percent.notation(.compactName))
+                    Text(value, format: .playbackRate)
+                }
+            }
+            
+            Divider()
+        
+            ControlGroup {
+                Button("action.decrease", systemImage: "minus") {
+                    adjust(up: false)
+                }
+                
+                Button("action.increase", systemImage: "plus") {
+                    adjust(up: true)
                 }
             }
         } label: {
-            Text(satellite.playbackRate, format: .percent.notation(.compactName))
-                .padding(12)
-                .contentTransition(.numericText())
-                .contentShape(.rect(cornerRadius: 4))
-                .animation(.smooth, value: satellite.playbackRate)
+            HStack(spacing: 0) {
+                Text(satellite.playbackRate, format: .playbackRate.hideX())
+                Image(decorative: "xsign")
+                    .bold()
+                    .padding(.horizontal, -3)
+            }
+            .padding(12)
+            .contentTransition(.numericText())
+            .contentShape(.rect(cornerRadius: 4))
+            .animation(.smooth, value: satellite.playbackRate)
         } primaryAction: {
             viewModel.cyclePlaybackSpeed()
         }
@@ -350,6 +367,12 @@ struct PlaybackRateButton: View {
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")
         .accessibilityValue(Text(satellite.playbackRate.formatted(.percent.notation(.compactName))))
+        .interactiveDismissDisabled()
+    }
+    
+    private func adjust(up: Bool) {
+        let adjustment = up ? Defaults[.playbackRateAdjustmentUp] : -Defaults[.playbackRateAdjustmentDown]
+        satellite.setPlaybackRate(satellite.playbackRate + adjustment)
     }
 }
 struct PlaybackSleepTimerButton: View {
