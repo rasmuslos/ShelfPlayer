@@ -12,6 +12,7 @@ struct LibraryPicker: View {
     @Environment(ConnectionStore.self) private var connectionStore
     @Environment(Satellite.self) private var satellite
     
+    var isSearchVisible = true
     var callback: (() -> Void)? = nil
     
     var body: some View {
@@ -28,8 +29,10 @@ struct LibraryPicker: View {
             }
         }
         
-        Button("panel.search", systemImage: "magnifyingglass") {
-            satellite.present(.globalSearch)
+        if isSearchVisible {
+            Button("panel.search", systemImage: "magnifyingglass") {
+                satellite.present(.globalSearch)
+            }
         }
         
         Button("navigation.offline.enable", systemImage: "network.slash") {

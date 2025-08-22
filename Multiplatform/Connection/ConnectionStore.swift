@@ -49,17 +49,18 @@ final class ConnectionStore {
                 $0.name < $1.name
             }
             
+            await MainActor.withAnimation {
+                didLoad = true
+                self.connections = connections
+            }
+            
             let libraries = await ShelfPlayerKit.libraries
             let grouped = Dictionary(grouping: libraries, by: { $0.connectionID })
             
             let offline = Array(connections).compactMap { grouped[$0.id] == nil ? $0.id : nil }
             
             await MainActor.withAnimation {
-                didLoad = true
-                
-                self.connections = connections
                 self.offlineConnections = offline
-                
                 self.libraries = grouped
             }
             
