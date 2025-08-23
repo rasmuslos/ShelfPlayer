@@ -130,6 +130,7 @@ struct ShelfPlayer {
         await invalidateShortTermCache()
         
         await ImageLoader.shared.purge(itemID: itemID)
+        await ResolveCache.shared.invalidate(itemID: itemID)
         
         await RFNotification[.reloadImages].send(payload: itemID)
         await RFNotification[.downloadStatusChanged].send(payload: nil)

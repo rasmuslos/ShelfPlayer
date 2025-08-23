@@ -495,6 +495,12 @@
             "value" : "AirPlay"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirPlay"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -513,8 +519,7 @@
             "value" : "AirPlay"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "carPlay.noConnections" : {
       "localizations" : {
@@ -890,6 +895,12 @@
             "value" : "http(s)://host.tld(:port)(/path)"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "http(s)://host.tld(:port)(/path)"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -908,8 +919,7 @@
             "value" : "http(s)://host.tld(:port)(/path)"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "connection.add.password" : {
       "localizations" : {
@@ -9516,6 +9526,12 @@
             "value" : "CarPlay"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CarPlay"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9534,8 +9550,7 @@
             "value" : "CarPlay"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "preferences.carPlay.tabBar.footer" : {
       "localizations" : {
@@ -10149,6 +10164,12 @@
             "value" : "GitHub"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10167,8 +10188,7 @@
             "value" : "Github"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "preferences.lastConvenienceDownload %@ %@" : {
       "localizations" : {
@@ -10291,10 +10311,84 @@
       }
     },
     "preferences.playbackRate.adjust.down %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um %@ verringern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease by %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réduire de %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minska med %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зменшити на %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "减少 %@"
+          }
+        }
+      }
     },
     "preferences.playbackRate.adjust.up %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um %@ erhöhen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase by %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Augmenter de %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öka med %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збільшити на %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增加 %@"
+          }
+        }
+      }
     },
     "preferences.playbackRate.default" : {
       "localizations" : {
@@ -11110,6 +11204,12 @@
             "value" : "ShelfPlayer"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11128,8 +11228,7 @@
             "value" : "ShelfPlayer"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "preferences.tint.violet" : {
       "localizations" : {
