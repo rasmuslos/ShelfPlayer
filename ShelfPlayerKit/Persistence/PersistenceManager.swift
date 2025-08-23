@@ -95,6 +95,7 @@ public final class PersistenceManager: Sendable {
     }
     public func invalidateCache() async throws {
         try await keyValue.purgeCached()
+        await listenNow.invalidate()
     }
 }
 

@@ -129,14 +129,16 @@ private struct FlushButtons: View {
     
     nonisolated func load() {
         Task {
-            let (cacheSize, downloadsSize) = (
+            let (imageSize, cacheSize, downloadsSize) = (
                 await ImageLoader.shared.currentDiskUsage,
+                try? ShelfPlayerKit.cacheDirectoryURL.directoryTotalAllocatedSize(),
                 try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize()
             )
+            let totalCacheSize = imageSize + (cacheSize ?? 0)
             
             await MainActor.withAnimation {
-                if cacheSize > 0 {
-                    cacheDirectorySize = cacheSize
+                if totalCacheSize > 0 {
+                    cacheDirectorySize = totalCacheSize
                 } else {
                     cacheDirectorySize = nil
                 }
