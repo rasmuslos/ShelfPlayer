@@ -147,7 +147,7 @@ extension PersistenceManager.ListenNowSubsystem {
                     let id: ItemIdentifier
                     
                     if let groupingID = entity.groupingID {
-                        guard let podcast = try? await ResolveCache.shared.resolve(primaryID: groupingID, connectionID: entity.connectionID), await PersistenceManager.shared.item.allowSuggestions(for: podcast.id) != false else {
+                        guard let podcast = try? await ResolveCache.shared.resolve(primaryID: groupingID, connectionID: entity.connectionID).0, await PersistenceManager.shared.item.allowSuggestions(for: podcast.id) != false else {
                             return nil
                         }
                         

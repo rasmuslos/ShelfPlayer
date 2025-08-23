@@ -57,6 +57,14 @@ public extension ShelfPlayerKit {
             URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
         }
     }
+    static var cacheDirectoryURL: URL {
+        if ShelfPlayerKit.enableCentralized {
+            FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "Cache")
+        } else {
+            URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "Cache")
+        }
+    }
+    
     static var httpCookieStorage: HTTPCookieStorage {
         if enableCentralized {
             .sharedCookieStorage(forGroupContainerIdentifier: groupContainer)
