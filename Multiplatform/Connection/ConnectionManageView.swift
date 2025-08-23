@@ -42,6 +42,8 @@ struct ConnectionManageView: View {
                         }
                 }
                 
+                OutdatedServerRow(version: status?.0)
+                
                 if isUsingLegacyAuthentication {
                     Text("connection.legacyAuthorization")
                         .foregroundStyle(.orange)
