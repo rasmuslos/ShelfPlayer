@@ -44,6 +44,19 @@ struct ShelfPlayer {
                 $0.connectionID == connectionID
             }
         }
+        
+        let clientBuild = ShelfPlayerKit.clientBuild
+        let lastCacheClear = Defaults[.lastBuild]
+        
+        if let lastCacheClear, clientBuild < lastCacheClear {
+            logger.info("ShelfPlayer has been updated. Invalidating cache...")
+            
+            Task {
+                try await ShelfPlayer.invalidateCache()
+            }
+        }
+        
+        Defaults[.lastBuild] = clientBuild
     }
     
     static func initializeUIHook() {

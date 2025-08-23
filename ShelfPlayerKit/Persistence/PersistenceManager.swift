@@ -77,6 +77,8 @@ public final class PersistenceManager: Sendable {
         try? await INInteraction.delete(with: itemID.description)
         
         NSUserActivity.deleteSavedUserActivities(withPersistentIdentifiers: [itemID.description]) {}
+        
+        await ResolveCache.shared.flush()
     }
     public func remove(connectionID: ItemIdentifier.ConnectionID) async {
         await keyValue.remove(connectionID: connectionID)
@@ -85,6 +87,8 @@ public final class PersistenceManager: Sendable {
         await session.remove(connectionID: connectionID)
         await download.remove(connectionID: connectionID)
         await bookmark.remove(connectionID: connectionID)
+        
+        await ResolveCache.shared.flush()
         
         await RFNotification[.removeConnection].send(payload: connectionID)
     }
