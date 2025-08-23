@@ -47,14 +47,14 @@ public extension APIClient  {
                 throw APIClientError.notFound
             }
             
-            return (episode, [.init(track: audioTrack)], chapters.map(Chapter.init), supplementaryPDFs)
+            return (episode, [audioTrack].compactMap(PlayableItem.AudioFile.init), chapters.map(Chapter.init), supplementaryPDFs)
         }
         
         guard let audiobook = Audiobook(payload: payload, libraryID: itemID.libraryID, connectionID: connectionID), let tracks = payload.media?.tracks, let chapters = payload.media?.chapters else {
             throw APIClientError.notFound
         }
         
-        return (audiobook, tracks.map(PlayableItem.AudioFile.init), chapters.map(Chapter.init), supplementaryPDFs)
+        return (audiobook, tracks.compactMap(PlayableItem.AudioFile.init), chapters.map(Chapter.init), supplementaryPDFs)
     }
     
     func items(in library: Library, search: String) async throws -> ([Audiobook], [Person], [Person], [Series], [Podcast]) {

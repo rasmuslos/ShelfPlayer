@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import OSLog
 
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "PlayableItem+Convert")
 
 extension Chapter {
     init(payload: ChapterPayload) {
@@ -15,14 +17,18 @@ extension Chapter {
 }
 
 extension PlayableItem.AudioFile {
-    init(track: AudiobookshelfAudioTrack) {
+    init?(track: AudiobookshelfAudioTrack) {
+        guard let ino = track.ino else {
+            return nil
+        }
+        
         var ext = track.metadata!.ext
         
         if ext.starts(with: ".") {
             ext.removeFirst()
         }
         
-        self.init(ino: track.ino!,
+        self.init(ino: ino,
                   fileExtension: ext,
                   offset: track.startOffset,
                   duration: track.duration)

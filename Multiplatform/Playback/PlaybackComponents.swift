@@ -366,7 +366,7 @@ struct PlaybackRateButton: View {
         .hoverEffect(.highlight)
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")
-        .accessibilityValue(Text(satellite.playbackRate.formatted(.percent.notation(.compactName))))
+        .accessibilityValue(Text(satellite.playbackRate.formatted(.playbackRate)))
         .interactiveDismissDisabled()
     }
     
