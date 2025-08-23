@@ -37,6 +37,8 @@ struct ConnectionAddSheet: View {
                             viewModel.verify()
                         }
                     }
+                    
+                    OutdatedServerRow(version: viewModel.version)
                 } footer: {
                     Text("connection.add.formattingHint")
                 }
