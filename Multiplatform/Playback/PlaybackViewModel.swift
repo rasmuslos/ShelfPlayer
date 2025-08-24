@@ -122,7 +122,7 @@ final class PlaybackViewModel {
         }
     }
     var isNowPlayingHidden: Bool {
-        keyboardsVisible > 0
+        keyboardsVisible > 0 && !isExpanded
     }
     
     var dragOffset: CGFloat {
