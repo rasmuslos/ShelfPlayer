@@ -162,13 +162,13 @@ public enum ImageSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIter
     public var base: Int {
         switch self {
             case .tiny:
-                160
-            case .small:
                 220
+            case .small:
+                300
             case .regular:
-                400
+                520
             case .large:
-                720
+                1000
         }
     }
 }
