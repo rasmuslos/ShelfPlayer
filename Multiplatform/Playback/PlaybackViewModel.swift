@@ -97,6 +97,10 @@ final class PlaybackViewModel {
         RFNotification.NonIsolatedNotification<RFNotificationEmptyPayload>(UIResponder.keyboardWillHideNotification.rawValue).subscribe { [weak self] in
             self?.keyboardsVisible -= 1
         }
+        
+        RFNotification[.scenePhaseDidChange].subscribe { [weak self] _ in
+            self?.keyboardsVisible = 0
+        }
     }
     
     var isExpanded: Bool {
