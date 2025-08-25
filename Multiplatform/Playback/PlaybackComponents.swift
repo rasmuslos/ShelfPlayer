@@ -367,7 +367,7 @@ struct PlaybackRateButton: View {
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")
         .accessibilityValue(Text(satellite.playbackRate.formatted(.playbackRate)))
-        .interactiveDismissDisabled()
+        .menuActionDismissBehavior(.disabled)
     }
     
     private func adjust(up: Bool) {
