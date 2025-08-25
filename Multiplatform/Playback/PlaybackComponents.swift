@@ -502,6 +502,7 @@ struct PlaybackSleepTimerButton: View {
 }
 struct PlaybackAirPlayButton: View {
     @Environment(Satellite.self) private var satellite
+    @Default(.tintColor) private var tintColor
     
     private let routePickerView = AVRoutePickerView()
     
@@ -519,7 +520,7 @@ struct PlaybackAirPlayButton: View {
             Label("airPlay", systemImage: satellite.route?.icon ?? "airplay.audio")
                 .padding(12)
                 .symbolRenderingMode(.multicolor)
-                .foregroundStyle(satellite.route?.isHighlighted == true ? Color.accentColor : Color.primary)
+                .foregroundStyle(satellite.route?.isHighlighted == true ? tintColor.color : Color.primary)
                 .contentTransition(.symbolEffect(.replace))
                 .contentShape(.rect(cornerRadius: 4))
         }
