@@ -467,7 +467,7 @@ private extension AudioPlayer {
         }
         
         commandCenter.skipBackwardCommand.isEnabled = true
-        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: Defaults[.skipBackwardsInterval])]
+        commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(value: Defaults[.skipBackwardsInterval])]
         commandCenter.skipBackwardCommand.addTarget { _ in
             Task {
                 try await self.skip(forwards: false)
