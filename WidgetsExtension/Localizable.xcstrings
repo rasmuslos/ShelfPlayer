@@ -21,6 +21,12 @@
             "value" : "Chapitres"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главы"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -61,6 +67,12 @@
             "value" : "Pause"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пауза"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -99,6 +111,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "En pause"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Остановлено"
           }
         },
         "sv" : {
@@ -147,6 +165,12 @@
             "value" : "Spela"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизвести"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -179,6 +203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reculer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти назад"
           }
         },
         "sv" : {
@@ -221,6 +251,12 @@
             "value" : "Minuterie de sommeil"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сна"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -259,6 +295,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Annuler"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмена"
           }
         },
         "sv" : {
@@ -301,6 +343,12 @@
             "value" : "Prolonger"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продлить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -339,6 +387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Démarrer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начать"
           }
         },
         "sv" : {
@@ -381,6 +435,12 @@
             "value" : "Dernier écouté"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последнее воспроизведённое"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -419,6 +479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le dernier élément que vous avez écouté, ainsi que les commandes de lecture active."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последний запущенный фрагмент, а также элементы управления воспроизведением."
           }
         },
         "sv" : {
@@ -461,6 +527,12 @@
             "value" : "Écouter aujourd'hui"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушано сегодня"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -499,6 +571,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Affiche votre objectif de temps d'écoute et votre progression vers celui-ci."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть свою цель по времени прослушивания и текущий прогресс."
           }
         },
         "sv" : {
@@ -541,6 +619,12 @@
             "value" : "Écouter maintenant"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать сейчас"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -581,6 +665,12 @@
             "value" : "Épisodes récemment écoutés, éléments inachevées de toutes les bibliothèques."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать недавно воспроизведённые и не завершённые фргаменты из всех библиотек."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -619,6 +709,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucun élément"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет фрагментов"
           }
         },
         "sv" : {
