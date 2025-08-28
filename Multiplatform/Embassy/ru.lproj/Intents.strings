@@ -1,34 +1,34 @@
-"1uT6VF" = "Media Search";
+"1uT6VF" = "Поиск медиа";
 
-"ErAaNp" = "Repeat Mode";
+"ErAaNp" = "Режим повторения";
 
-"G3J6fP" = "Play Media";
+"G3J6fP" = "Воспроизвести медиа";
 
-"KcCcQu" = "Play ${mediaItems}";
+"KcCcQu" = "Воспроизвести ${mediaItems}";
 
-"LdrEPN" = "A request to play media.";
+"LdrEPN" = "Запрос на воспроизведение медиа.";
 
-"No0K9w" = "resume";
+"No0K9w" = "продолжить";
 
-"Pk1Fkx" = "don't resume";
+"Pk1Fkx" = "не продолжать";
 
-"QqdHiR" = "shuffled";
+"QqdHiR" = "перемещено";
 
-"RvX3Zd" = "Playback Speed";
+"RvX3Zd" = "Скорость воспроизведения";
 
-"WktFNa" = "Shuffled";
+"WktFNa" = "Перемешать";
 
-"YYfsKp" = "Play ${mediaContainer}";
+"YYfsKp" = "Воспроизвести ${mediaContainer}";
 
-"cV2HLF" = "Queue Location";
+"cV2HLF" = "Расположение в очереди";
 
-"cfJexL" = "Items";
+"cfJexL" = "Элементы";
 
-"f3d3kn" = "Play media";
+"f3d3kn" = "Воспроизвести медиа";
 
-"mCAocc" = "not shuffled";
+"mCAocc" = "не перемещено";
 
-"rvNMpm" = "Resume";
+"rvNMpm" = "Продолжить";
 
 "xdnqvn" = "Container";
 

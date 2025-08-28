@@ -21,6 +21,12 @@
             "value" : "Annuler"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59,6 +65,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diminuer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уменьшить"
           }
         },
         "sv" : {
@@ -101,6 +113,12 @@
             "value" : "Supprimer"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -139,6 +157,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fait"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово"
           }
         },
         "sv" : {
@@ -181,6 +205,12 @@
             "value" : "Modifier"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редактировать"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -219,6 +249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fin"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершение"
           }
         },
         "sv" : {
@@ -261,6 +297,12 @@
             "value" : "Augmenter"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увеличить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -299,6 +341,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Procéder"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить"
           }
         },
         "sv" : {
@@ -341,6 +389,12 @@
             "value" : "Réinitialiser"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -379,6 +433,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réessayer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторить"
           }
         },
         "sv" : {
@@ -421,6 +481,12 @@
             "value" : "Sauvegarder"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +527,12 @@
             "value" : "Sélectionner"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбрать"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -496,6 +568,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirPlay"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AirPlay"
@@ -541,6 +619,12 @@
             "value" : "Aucune connexion"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет подключений"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -579,6 +663,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connectez-vous en utilisant votre iPhone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход с помощью iPhone."
           }
         },
         "sv" : {
@@ -621,6 +711,12 @@
             "value" : "Autres bibliothèques"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Другие библиотеки"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -659,6 +755,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pas de bibliothèques"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступных библиотек"
           }
         },
         "sv" : {
@@ -701,6 +803,12 @@
             "value" : "Configurez la barre d’onglets dans les préférences de l’application."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В настройках приложения можно настроить панель вкладок."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -739,6 +847,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vous pouvez configurer les bibliothèques visibles dans la barre d’onglets de la page de préférences."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На странице настроек, Вы можете выбрать, какие библиотеки будут отображены на панели вкладок"
           }
         },
         "sv" : {
@@ -781,6 +895,12 @@
             "value" : "Terminé à : %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено на: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -819,6 +939,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouter une connexion"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить подключение"
           }
         },
         "sv" : {
@@ -901,6 +1027,12 @@
             "value" : "http(s)://host.tld(:port)(/path)"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "http(s)://host.tld(:port)(/path)"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -939,6 +1071,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mot de passe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пароль"
           }
         },
         "sv" : {
@@ -981,6 +1119,12 @@
             "value" : "Procéder"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1019,6 +1163,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modifier la stratégie d'autorisation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить тип авторизации"
           }
         },
         "sv" : {
@@ -1061,6 +1211,12 @@
             "value" : "Assurez-vous que « shelfplayer://callback » est configuré comme URL de rappel autorisée dans les paramètres d'Audiobookshelf."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверьте, что \"shelfplayer://callback\" указан как ращрешённый URL-адрес обратного вызова в настройках  Audiobookshelf."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1099,6 +1255,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sélectionnez une stratégie différente"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбрать другой тип"
           }
         },
         "sv" : {
@@ -1141,6 +1303,12 @@
             "value" : "Nom d'utilisateur"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имя пользователя"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1179,6 +1347,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vérifier"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подтвердить"
           }
         },
         "sv" : {
@@ -1221,6 +1395,12 @@
             "value" : "Version du serveur découvert : %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обнаружен сервер с версией: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1259,6 +1439,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connexions connues"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступные подключения"
           }
         },
         "sv" : {
@@ -1301,6 +1487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ancienne autorisation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последняя авторизация"
           }
         },
         "sv" : {
@@ -1374,6 +1566,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Chargement de %lld connexions"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Загрузка %lld подключения"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Загрузка %lld подключений"
                 }
               }
             }
@@ -1461,6 +1671,12 @@
             "value" : "Gérer les connexions"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настоить подключения"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1490,6 +1706,12 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Header"
@@ -1541,6 +1763,12 @@
             "value" : "Ajouter un en-tête"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить header"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1579,6 +1807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clé"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key"
           }
         },
         "sv" : {
@@ -1621,6 +1855,12 @@
             "value" : "Retirer"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1659,6 +1899,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Valeur"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Value"
           }
         },
         "sv" : {
@@ -1732,6 +1978,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld hors ligne"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld не в сети"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld не в сети"
                 }
               }
             }
@@ -1819,6 +2083,12 @@
             "value" : "Vous utilisez une version obsolète du serveur ! ShelfPlayer pourrait ne pas fonctionner correctement et seul un support limité est fourni. Veuillez mettre à jour votre serveur avant d’ouvrir un ticket sur GitHub."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы используете устарешую версию сервера! ShelfPlayer может работать некорректно, и поддержка ограничена. Пожалуйста, обновите сервере перед тем как открыть запрос на GitHub."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1861,6 +2131,12 @@
             "value" : "Réautoriser"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторная авторизация"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1899,6 +2175,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimer la connexion"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить подключение"
           }
         },
         "sv" : {
@@ -1941,6 +2223,12 @@
             "value" : "Supprimer toutes les connexions"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить все подключения"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1979,6 +2267,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utiliser un fournisseur d'identité"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать сторонний сервис для входа"
           }
         },
         "sv" : {
@@ -2021,6 +2315,12 @@
             "value" : "Utiliser un mot de passe"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать пароль"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2059,6 +2359,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version du serveur : %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия сервера: %@"
           }
         },
         "sv" : {
@@ -2101,6 +2407,12 @@
             "value" : "Désactivé"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недоступно"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2139,6 +2451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contenu indisponible"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Материал недоступен"
           }
         },
         "sv" : {
@@ -2181,6 +2499,12 @@
             "value" : "Livre audio indisponible"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудиокнига недоступна"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2219,6 +2543,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auteur indisponible"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор недоступен"
           }
         },
         "sv" : {
@@ -2261,6 +2591,12 @@
             "value" : "Collection indisponible"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коллекция недоступна"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2299,6 +2635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Épisode indisponible"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагмент недоступен"
           }
         },
         "sv" : {
@@ -2341,6 +2683,12 @@
             "value" : "Narrateur indisponible"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диктор недоступен"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2379,6 +2727,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liste de lecture indisponible"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist недоступен"
           }
         },
         "sv" : {
@@ -2421,6 +2775,12 @@
             "value" : "indisponible"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подкаст недоступен"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2459,6 +2819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Série indisponible"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серия недоступна"
           }
         },
         "sv" : {
@@ -2501,6 +2867,12 @@
             "value" : "Assurez-vous que votre appareil est connecté à Internet et que ShelfPlayer est capable d'atteindre votre instance Audiobookshelf."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убедитесь, что устройство подключено к интернету и ShelfPlayer может общаться с Audiobookshelf."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2539,6 +2911,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tout"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все"
           }
         },
         "sv" : {
@@ -2581,6 +2959,12 @@
             "value" : "Abrégé"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сократить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2619,6 +3003,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Livre audio"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудиокнига"
           }
         },
         "sv" : {
@@ -2661,6 +3051,12 @@
             "value" : "Auteur"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2701,6 +3097,12 @@
             "value" : "Prime"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бонус"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2739,6 +3141,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Signets"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закладки"
           }
         },
         "sv" : {
@@ -2812,6 +3220,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld Signets"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Закладок"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Закладок"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Закладка"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Закладки"
                 }
               }
             }
@@ -2899,6 +3337,12 @@
             "value" : "Chapitres"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главы"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2970,6 +3414,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld chapitres"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld глав"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld глав"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld глава"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld главы"
                 }
               }
             }
@@ -3057,6 +3531,12 @@
             "value" : "Créer"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3095,6 +3575,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créer une liste de lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать плейлист"
           }
         },
         "sv" : {
@@ -3137,6 +3623,12 @@
             "value" : "Ajouter à …"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить к …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3175,6 +3667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
           }
         },
         "sv" : {
@@ -3217,6 +3715,12 @@
             "value" : "Téléchargements automatiques"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматическая загрузка"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3255,6 +3759,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tous"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все"
           }
         },
         "sv" : {
@@ -3297,6 +3807,12 @@
             "value" : "ShelfPlayer téléchargera les éléments en fonction des préférences de filtre et de tri que vous avez configurées, ainsi que de la quantité que vous spécifiez."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer произведёт загрузку полагаясь на настройки фильтрации и сортировки, и в том количестве, которое вы указали."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3335,6 +3851,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cinq éléments"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пять фрагментов"
           }
         },
         "sv" : {
@@ -3377,6 +3899,12 @@
             "value" : "Quatre éléments"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Четыре фрагмента"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3415,6 +3943,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Un élément"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Один фрагмент"
           }
         },
         "sv" : {
@@ -3457,6 +3991,12 @@
             "value" : "Dernières 24 heures"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За последние 24 часа"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3495,6 +4035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le dernier mois"
+          }
+        },
+        "risque" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За последний мемяц"
           }
         },
         "sv" : {
@@ -3543,6 +4089,12 @@
             "value" : "Senaste veckan"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За последнюю неделю"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3575,6 +4127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimer la configuration"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить настройки"
           }
         },
         "sv" : {
@@ -3617,6 +4175,12 @@
             "value" : "Montant"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Количество"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3655,6 +4219,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dix éléments"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Десять фрагментов"
           }
         },
         "sv" : {
@@ -3697,6 +4267,12 @@
             "value" : "Trois éléments"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Три фрагмента"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3735,6 +4311,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deux éléments"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Два фрагмента"
           }
         },
         "sv" : {
@@ -3777,6 +4359,12 @@
             "value" : "Les deux dernières semaines"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За последние две недели"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3817,6 +4405,12 @@
             "value" : "%lld éléments"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld фрагментов"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3855,6 +4449,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld livres audio"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld аудиокниги"
           }
         },
         "sv" : {
@@ -3928,6 +4528,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld livres audio"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокниг"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокниг"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокнига"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокниги"
                 }
               }
             }
@@ -4051,6 +4681,36 @@
             }
           }
         },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld эпизодов"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld эпизодов"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld эпизод"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld эпизоды"
+                }
+              }
+            }
+          }
+        },
         "sv" : {
           "variations" : {
             "plural" : {
@@ -4169,6 +4829,36 @@
             }
           }
         },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld невоизпроизведённых"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld невоизпроизведённых"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld невоизпроизведена"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld невоизпроизведённых"
+                }
+              }
+            }
+          }
+        },
         "sv" : {
           "variations" : {
             "plural" : {
@@ -4251,6 +4941,12 @@
             "value" : "Créer une collection"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать коллекцию"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4289,6 +4985,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créer une liste de lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать плейлист"
           }
         },
         "sv" : {
@@ -4331,6 +5033,12 @@
             "value" : "Description"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Описание"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4369,6 +5077,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucune description"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет описания"
           }
         },
         "sv" : {
@@ -4411,6 +5125,12 @@
             "value" : "Grille"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сетка"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4449,6 +5169,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liste"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Список"
           }
         },
         "sv" : {
@@ -4491,6 +5217,12 @@
             "value" : "Documents"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Документы"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4529,6 +5261,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lire"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Читать"
           }
         },
         "sv" : {
@@ -4571,6 +5309,12 @@
             "value" : "Télécharger"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4609,6 +5353,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Annuler le téléchargement"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить загрузку"
           }
         },
         "sv" : {
@@ -4651,6 +5401,12 @@
             "value" : "Supprimer le téléchargement"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить загрузки"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4689,6 +5445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Résolution…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установка соединения…"
           }
         },
         "sv" : {
@@ -4731,6 +5493,12 @@
             "value" : "Téléchargé"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загружено"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4769,6 +5537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Téléchargement"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загружается"
           }
         },
         "sv" : {
@@ -4811,6 +5585,12 @@
             "value" : "Aucun élément trouvé"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагменты не найдены"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4849,6 +5629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucun élément correspondant à votre filtre n'a pu être trouvé."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагменты соответвующие настройкам фильтра не найдены."
           }
         },
         "sv" : {
@@ -4891,6 +5677,12 @@
             "value" : "Explicite"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicit"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4929,6 +5721,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filtrer par"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтровать по"
           }
         },
         "sv" : {
@@ -4971,6 +5769,12 @@
             "value" : "En cours"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В процессе"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5009,6 +5813,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tous"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все"
           }
         },
         "sv" : {
@@ -5051,6 +5861,12 @@
             "value" : "Téléchargé"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загружено"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5089,6 +5905,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terminé"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено"
           }
         },
         "sv" : {
@@ -5131,6 +5953,12 @@
             "value" : "Non terminé"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не завершено"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5169,6 +5997,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Genres"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жанры"
           }
         },
         "sv" : {
@@ -5211,6 +6045,12 @@
             "value" : "Regrouper les livres audio en séries"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сгрупировать аудиокниги по сериям"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5249,6 +6089,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
           }
         },
         "sv" : {
@@ -5291,6 +6137,12 @@
             "value" : "Autoriser les suggestions"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Принять предложение"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5329,6 +6181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизведение"
           }
         },
         "sv" : {
@@ -5371,6 +6229,12 @@
             "value" : "Les éléments suggérés et non terminés apparaîtront dans « Écouter maintenant »."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предложенные, незавершенные фрагменты будут отображаться в разделе «Слушать сейчас»."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5409,6 +6273,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vitesse de lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорость воспроизведения"
           }
         },
         "sv" : {
@@ -5451,6 +6321,12 @@
             "value" : "Minuterie de sommeil"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сна"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5489,6 +6365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prochain"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Далее"
           }
         },
         "sv" : {
@@ -5531,6 +6413,12 @@
             "value" : "Dernier joué"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последнее воспроизведённое"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5569,6 +6457,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrateur"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диктор"
           }
         },
         "sv" : {
@@ -5611,6 +6505,12 @@
             "value" : "Options"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свойства"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5649,6 +6549,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jouer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизвести"
           }
         },
         "sv" : {
@@ -5691,6 +6597,12 @@
             "value" : "Jouer à nouveau"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизвести ещё раз"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5729,6 +6641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Écouter à nouveau"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать ещё раз"
           }
         },
         "sv" : {
@@ -5771,6 +6689,12 @@
             "value" : "Écouter"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5809,6 +6733,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reprendre"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить"
           }
         },
         "sv" : {
@@ -5851,6 +6781,12 @@
             "value" : "Reprendre l’écoute"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить прослушивание"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5889,6 +6825,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terminé"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено"
           }
         },
         "sv" : {
@@ -5932,6 +6874,12 @@
             "value" : "Terminé le %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено на %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5970,6 +6918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Marquer comme « terminé »"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметить как \"завершено\""
           }
         },
         "sv" : {
@@ -6012,6 +6966,12 @@
             "value" : "Marquer comme « inachevé »"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметить как \"незавершено\""
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6050,6 +7010,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réinitialiser la progression"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спросить прогресс"
           }
         },
         "sv" : {
@@ -6092,6 +7058,12 @@
             "value" : "Résolution…"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Восстановление…"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6130,6 +7102,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Épisodique"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизодический"
           }
         },
         "sv" : {
@@ -6172,6 +7150,12 @@
             "value" : "En série"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серия"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6210,6 +7194,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lu par : %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочитано на: %@"
           }
         },
         "sv" : {
@@ -6252,6 +7242,12 @@
             "value" : "Écrit par %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6290,6 +7286,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lu par : %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочитано на %@"
           }
         },
         "sv" : {
@@ -6332,6 +7334,12 @@
             "value" : "Dans la série %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В серии %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6370,6 +7378,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Livres audio"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудиокниги"
           }
         },
         "sv" : {
@@ -6412,6 +7426,12 @@
             "value" : "Séries"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серии"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6450,6 +7470,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Épisodes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизоды"
           }
         },
         "sv" : {
@@ -6492,6 +7518,12 @@
             "value" : "Tous les épisodes"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все эпизоды"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6530,6 +7562,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Livres audio"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудиокниги"
           }
         },
         "sv" : {
@@ -6603,6 +7641,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Saison %lld"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Сезонов %lld"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Сезонов %lld"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Сезон %lld"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Сезоны %lld"
                 }
               }
             }
@@ -6690,6 +7758,12 @@
             "value" : "(Sans étiquette)"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Без метки)"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6728,6 +7802,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Séries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серии"
           }
         },
         "sv" : {
@@ -6770,6 +7850,12 @@
             "value" : "Trier par"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсортировать по"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6808,6 +7894,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouté"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить"
           }
         },
         "sv" : {
@@ -6850,6 +7942,12 @@
             "value" : "Auteur"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6888,6 +7986,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Livres"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Книги"
           }
         },
         "sv" : {
@@ -6930,6 +8034,12 @@
             "value" : "Durée"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжительность"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6968,6 +8078,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nombre d’épisode"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Количество эпизодов"
           }
         },
         "sv" : {
@@ -7010,6 +8126,12 @@
             "value" : "Index"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Индекс"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7048,6 +8170,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nom"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название"
           }
         },
         "sv" : {
@@ -7090,6 +8218,12 @@
             "value" : "Prénom, Nom"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имя, Фамилия"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7128,6 +8262,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nom, Prénom"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фамилия, Имя"
           }
         },
         "sv" : {
@@ -7170,6 +8310,12 @@
             "value" : "Date de sortie"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата выхода"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7208,6 +8354,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "En cours de lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас воспроизводится"
           }
         },
         "sv" : {
@@ -7250,6 +8402,12 @@
             "value" : "Joué %2$@ pour %1$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизведено %2$@ на %1$@ "
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7288,6 +8446,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Total"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всего"
           }
         },
         "sv" : {
@@ -7330,6 +8494,12 @@
             "value" : "Bande-annonce"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Трейлер"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7368,6 +8538,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voir le livre audio"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть аудиокнигу"
           }
         },
         "sv" : {
@@ -7410,6 +8586,12 @@
             "value" : "Voir l’auteur"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть работы автора"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7448,6 +8630,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voir la collection"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть коллекцию"
           }
         },
         "sv" : {
@@ -7490,6 +8678,12 @@
             "value" : "Voir l'épisode"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть эпизод"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7528,6 +8722,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voir le narateur"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Постреть работы диктора"
           }
         },
         "sv" : {
@@ -7570,6 +8770,12 @@
             "value" : "Voir la liste de lecture"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть плейлист"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7608,6 +8814,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voir le balado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть подкаст"
           }
         },
         "sv" : {
@@ -7650,6 +8862,12 @@
             "value" : "Voir la série"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть серии"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7688,6 +8906,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chargement..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка..."
           }
         },
         "sv" : {
@@ -7730,6 +8954,12 @@
             "value" : "Retour"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7768,6 +8998,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sélectionnez la bibliothèque"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбрать библиотеку"
           }
         },
         "sv" : {
@@ -7810,6 +9046,12 @@
             "value" : "Aller en ligne"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти в сетевой режим"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7848,6 +9090,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer le mode hors ligne"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить режим без сети"
           }
         },
         "sv" : {
@@ -7890,6 +9138,12 @@
             "value" : "Synchronisation..."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронизация..."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7928,6 +9182,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La synchronisation a échoué"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось синхранизироваться "
           }
         },
         "sv" : {
@@ -7972,6 +9232,12 @@
             "value" : "Offline dans:"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переход в режим без сети через:"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8010,6 +9276,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auteurs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Авторы"
           }
         },
         "sv" : {
@@ -8052,6 +9324,12 @@
             "value" : "Signets"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закладки"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8090,6 +9368,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Collections"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коллекции"
           }
         },
         "sv" : {
@@ -8132,6 +9416,12 @@
             "value" : "Accueil"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главная"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8170,6 +9460,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Derniers épisodes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последние"
           }
         },
         "sv" : {
@@ -8212,6 +9508,12 @@
             "value" : "Bibliothèque "
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Библиотека"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8250,6 +9552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rechercher des balados"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найти подкасты"
           }
         },
         "sv" : {
@@ -8292,6 +9600,12 @@
             "value" : "Écoutez maintenant"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слушать сейчас"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8330,6 +9644,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrateurs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дикторы"
           }
         },
         "sv" : {
@@ -8372,6 +9692,12 @@
             "value" : "Hors ligne"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вне сети"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8410,6 +9736,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listes de lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плейлисты"
           }
         },
         "sv" : {
@@ -8452,6 +9784,12 @@
             "value" : "Recherche"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8490,6 +9828,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Séries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серии"
           }
         },
         "sv" : {
@@ -8532,6 +9876,12 @@
             "value" : "Minuterie de sommeil"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сна"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8570,6 +9920,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créer un signet"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать закладку"
           }
         },
         "sv" : {
@@ -8612,6 +9968,12 @@
             "value" : "Créer"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8650,6 +10012,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Note"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заметка"
           }
         },
         "sv" : {
@@ -8692,6 +10060,12 @@
             "value" : "Il semble que ShelfPlayer se soit arrêté alors qu'une session de lecture était encore active. Voulez-vous la reprendre?"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Похоже, ShelfPlayer завершил работа во время активной сессии. Хотите продолжить?"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8730,6 +10104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prochain"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Далее"
           }
         },
         "sv" : {
@@ -8772,6 +10152,12 @@
             "value" : "Écouter maintenant"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать сейчас"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8810,6 +10196,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pause"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пауза"
           }
         },
         "sv" : {
@@ -8852,6 +10244,12 @@
             "value" : "Lecture"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизвести"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8890,6 +10288,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "File d'attente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очередь"
           }
         },
         "sv" : {
@@ -8932,6 +10336,12 @@
             "value" : "Ajouter à la file d'attente"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить в очередь"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8970,6 +10380,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "File d'attente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очередь"
           }
         },
         "sv" : {
@@ -9012,6 +10428,12 @@
             "value" : "Vider"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9050,6 +10472,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "File d'attente vide"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очередь пуста"
           }
         },
         "sv" : {
@@ -9092,6 +10520,12 @@
             "value" : "La file d'attente est vide. Essayez d'y ajouter un livre audio ou un épisode."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очередь пуста. Добавьте аудиокнигу или эпизод подкаста."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9130,6 +10564,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimer de la file d'attente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить из очереди"
           }
         },
         "sv" : {
@@ -9172,6 +10612,12 @@
             "value" : "Reculer"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемотать назад"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9210,6 +10656,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avancer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемотать вперёд"
           }
         },
         "sv" : {
@@ -9252,6 +10704,12 @@
             "value" : "Minuterie de sommeil"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сна"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9290,6 +10748,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Annuler"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить"
           }
         },
         "sv" : {
@@ -9332,6 +10796,12 @@
             "value" : "Fin du chapitre"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "До конца главы"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9370,6 +10840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prolonger"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увеличить"
           }
         },
         "sv" : {
@@ -9412,6 +10888,12 @@
             "value" : "Arrêter la lecture"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Остановить воспроизведение"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9450,6 +10932,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurer le suivant"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать следующим"
           }
         },
         "sv" : {
@@ -9492,6 +10980,12 @@
             "value" : "La file d'attente suivante peut être configurée dans les paramètres des podcasts et séries. Elle peut également être désactivée dans l'application Paramètres."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Порядок очереди можно настроить в конфигурации подрастов и серий. Или эта функция может быть отключена в настройках приложения."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9532,6 +11026,12 @@
             "value" : "Préférences"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9567,6 +11067,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CarPlay"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "CarPlay"
@@ -9612,6 +11118,12 @@
             "value" : "Configurez les bibliothèques qui s’affichent dans la barre d’onglets de CarPlay."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите, какая библиотека будет отображена на панели вкладок CarPlay."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9650,6 +11162,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le nombre d'onglets que vous avez configurés dépasse la limite de CarPlay."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ограничено количество вкладок, которые можно добавить в CarPlay."
           }
         },
         "sv" : {
@@ -9692,6 +11210,12 @@
             "value" : "Palette de couleurs"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цветовая схема"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9730,6 +11254,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sombre"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тёмная"
           }
         },
         "sv" : {
@@ -9772,6 +11302,12 @@
             "value" : "Clair"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Светлая"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9810,6 +11346,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Système"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Системная"
           }
         },
         "sv" : {
@@ -9852,6 +11394,12 @@
             "value" : "Téléchargements automatiques"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматическая загрузка"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9890,6 +11438,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurations"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
           }
         },
         "sv" : {
@@ -9963,6 +11517,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Éléments téléchargés : %lld"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Можно скачать %lld фрагментов"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Можно скачать %lld фрагментов"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Можно скачать один фргамет"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Можно скачать фрагменты: %lld"
                 }
               }
             }
@@ -10050,6 +11634,12 @@
             "value" : "Activer les téléchargements automatiques"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить автоматическую загрузку"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10088,6 +11678,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Télécharger les éléments à écouter maintenant"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скачивать то, что сейчас прослущивается"
           }
         },
         "sv" : {
@@ -10130,6 +11726,12 @@
             "value" : "Ordre des épisodes par défaut"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default episode order Сортировка эпизодов по умолчанию"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10170,6 +11772,12 @@
             "value" : "Générer un fichier journal"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать лог файл (информация для разработчиков)"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10205,6 +11813,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
@@ -10250,6 +11864,12 @@
             "value" : "Téléchargement automatique : %1$@ (%2$@)"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматическое скачивание: %1$@ (%2$@)"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10288,6 +11908,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vitesse de lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорость воспроизведения"
           }
         },
         "sv" : {
@@ -10330,6 +11956,12 @@
             "value" : "Ajouter"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10368,6 +12000,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réduire de %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уменьшить на %@"
           }
         },
         "sv" : {
@@ -10410,6 +12048,12 @@
             "value" : "Augmenter de %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увеличить на %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10448,6 +12092,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vitesse par défaut"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорость по умолчанию"
           }
         },
         "sv" : {
@@ -10490,6 +12140,12 @@
             "value" : "Supprimer le cache"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить кэш"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10530,6 +12186,12 @@
             "value" : "Supprimer les téléchargements"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить загрузки"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10568,6 +12230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimer l’index Spotlight"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить индексацию Spotlight"
           }
         },
         "sv" : {
@@ -10616,6 +12284,12 @@
             "value" : "Inställningar"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10648,6 +12322,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minuterie de sommeil"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таймер сна"
           }
         },
         "sv" : {
@@ -10690,6 +12370,12 @@
             "value" : "Ajouter"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10728,6 +12414,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heures"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Часы"
           }
         },
         "sv" : {
@@ -10770,6 +12462,12 @@
             "value" : "Minutes"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минуты"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10808,6 +12506,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Index Spotlight: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight индекс: %@"
           }
         },
         "sv" : {
@@ -10850,6 +12554,12 @@
             "value" : "Indexation Spotlight en attente"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ожидание индексации Spotlight"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10888,6 +12598,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Support"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержка"
           }
         },
         "sv" : {
@@ -10930,6 +12646,12 @@
             "value" : "Couleur de teinte"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оттенок"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10968,6 +12690,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aqua"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Берюзовый"
           }
         },
         "sv" : {
@@ -11010,6 +12738,12 @@
             "value" : "Noir"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чёрный"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11048,6 +12782,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bleu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синий"
           }
         },
         "sv" : {
@@ -11090,6 +12830,12 @@
             "value" : "Vert"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зелёный"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11128,6 +12874,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menthe"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мятный"
           }
         },
         "sv" : {
@@ -11170,6 +12922,12 @@
             "value" : "Mauve"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пурпурный"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11210,6 +12968,12 @@
             "value" : "Rouge"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Красный"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11245,6 +13009,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer"
@@ -11290,6 +13060,12 @@
             "value" : "Violet"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фиолетовый"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11330,6 +13106,12 @@
             "value" : "Jaune"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жёлтый"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11365,6 +13147,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer: %1$@ (%2$@) %3$@"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ShelfPlayer: %1$@ (%2$@) %3$@"
@@ -11410,6 +13198,12 @@
             "value" : "Base de données : %1$@ %2$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "База данных: %1$@ %2$@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11448,6 +13242,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continuer l’écoute"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить прослушивание"
           }
         },
         "sv" : {
@@ -11490,6 +13290,12 @@
             "value" : "Continuer la lecture"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить чтение"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11528,6 +13334,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continuer la série"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить серию"
           }
         },
         "sv" : {
@@ -11570,6 +13382,12 @@
             "value" : "Découvrir"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обзор"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11608,6 +13426,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Téléchargé"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загружено"
           }
         },
         "sv" : {
@@ -11650,6 +13474,12 @@
             "value" : "Livres audio téléchargés"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загруженные аудиокниги"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11688,6 +13518,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Derniers épisodes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последние эпизоды"
           }
         },
         "sv" : {
@@ -11730,6 +13566,12 @@
             "value" : "Écoutez à nouveau"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать ещё раз"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11768,6 +13610,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nouveaux auteurs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новые авторы"
           }
         },
         "sv" : {
@@ -11810,6 +13658,12 @@
             "value" : "Lire à nouveau"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочитать ещё раз"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11848,6 +13702,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouté récemment"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недавно добаленное"
           }
         },
         "sv" : {
@@ -11890,6 +13750,12 @@
             "value" : "Séries récentes"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свежие серии"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11928,6 +13794,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sélectionné : %lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбрано: %lld"
           }
         },
         "sv" : {
@@ -11970,6 +13842,12 @@
             "value" : "Bienvenu"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добро пожаловать"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12008,6 +13886,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouter des connexions"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить подключение"
           }
         },
         "sv" : {
@@ -12050,6 +13934,12 @@
             "value" : "Merci d'avoir choisi ShelfPlayer. Ajoutez une connexion à votre instance Audiobookshelf pour commencer."
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Благодарим за выбор ShelfPlayer. С начала укажите ссылку на подключенение к Audiobookshelf"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12088,6 +13978,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chapitres"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главы"
           }
         },
         "sv" : {
@@ -12130,6 +14026,12 @@
             "value" : "Régler la minuterie de sommeil"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установить таймер сна"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12168,6 +14070,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Étendre"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продлить"
           }
         },
         "sv" : {
@@ -12241,6 +14149,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Prolonger de %lld chapitres"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Продлить %lld глав"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Продлить на %lld глав"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Продлить на %lld главу"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Продлить на %lld главы"
                 }
               }
             }
@@ -12328,6 +14266,12 @@
             "value" : "Prolonger dans le temps"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продлить по времени"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12366,6 +14310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prolonger par valeur initiale"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продлить по исходному значению"
           }
         },
         "sv" : {
@@ -12408,6 +14358,12 @@
             "value" : "Écouter aujourd'hui"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушано сегодня"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12446,6 +14402,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chronologie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хронология"
           }
         },
         "sv" : {
@@ -12488,6 +14450,12 @@
             "value" : "Défaut"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По умолчанию"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12526,6 +14494,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Écoutez maintenant"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать сейчас"
           }
         },
         "sv" : {
@@ -12568,6 +14542,12 @@
             "value" : "Volume"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Громкость"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12606,6 +14586,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "L'élément que vous avez tenté de supprimer a été téléchargé automatiquement. Si vous ne supprimez pas la configuration, il risque d'être téléchargée à nouveau."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагмент, который пытаетесь удалить - скачан автоматически. Если не изменить настройки, то он загрузится заново."
           }
         },
         "sv" : {
@@ -12648,6 +14634,12 @@
             "value" : "L'élément que vous avez essayé de lire est en cours de téléchargement. Voulez-vous interrompre le téléchargement et commencer la lecture?"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагмент, который Вы пытаетесь воспроизвести сейчас загружается. Прервать загрузку или начать воспроизведение?"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12688,6 +14680,13 @@
             "value" : "L'élément que vous essayez de télécharger est en cours de lecture. Voulez-vous arrêter la lecture et commencer le téléchargement?"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагмент, который Вы пытаетесь скачать сейчас воспроизводится. Прервать воспроизведение или начать загрузку?
+            "
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12726,6 +14725,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "L'élément que vous avez essayé de supprimer est en cours de lecture. Arrêter la lecture et supprimer le téléchargement?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагмент, который Вы пытаетесь удалить сейчас воспроизводится. Закончить воспроизведение и удалить фрагмент?"
           }
         },
         "sv" : {

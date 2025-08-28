@@ -17,6 +17,12 @@
             "value" : "ShelfPlayer"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ShelfPlayer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51,6 +57,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "ShelfPlayer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "ShelfPlayer"
           }
         },
@@ -97,6 +109,12 @@
             "value" : "2025 Rasmus Krämer et les contributeurs de ShelfPlayer"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2025 Rasmus Krämer & ShelfPlayer контрибутеры"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -137,6 +155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Accordez l’accès pour se connecter à une instance d’Audiobookshelf dans votre réseau local."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разрешить доступ для подключения к Audiobookshelf в локальной сети."
           }
         },
         "sv" : {
@@ -181,6 +205,12 @@
             "value" : "Lisez des éléments de votre bibliothèque avec Siri"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Воспроизвести фрагменты из библиотеки с помощью Siri"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -219,6 +249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rechercher"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск"
           }
         },
         "sv" : {
@@ -260,6 +296,12 @@
             "state" : "translated",
             "value" : "Rechercher dans toutes les bibliothèques"
           }
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Искать по всем библиотекам"
+          }
+        },
         },
         "sv" : {
           "stringUnit" : {
@@ -305,6 +347,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Élément"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фрагмент"
           }
         },
         "sv" : {
