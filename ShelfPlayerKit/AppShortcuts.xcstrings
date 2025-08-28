@@ -31,6 +31,15 @@
             ]
           }
         },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Вернуться назад ${applicationName}",
+              "Отменить возвращение ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -82,6 +91,14 @@
             "state" : "translated",
             "values" : [
               "Créer un signet en utilisant ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Создать закладку, используя ${applicationName}"
             ]
           }
         },
@@ -138,6 +155,15 @@
             "values" : [
               "Avancer en utilisant ${applicationName}",
               "Passer en avant en utilisant ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Перейти вперёд ${applicationName}",
+              "Отменить переход ${applicationName}"
             ]
           }
         },
@@ -201,6 +227,16 @@
             ]
           }
         },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Пауза ${applicationName}",
+              "Приостановить вопросизведение ${applicationName}",
+              "Закончить воспроизведение ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -259,6 +295,15 @@
             ]
           }
         },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Воспроизвести ${podcast} с помощью ${applicationName}",
+              "Воспроизвести ${podcast} эпизоды с помощью ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -310,6 +355,14 @@
             "state" : "translated",
             "values" : [
               "Écouter ${target} en utilisant ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "netranslatedw",
+            "values" : [
+              "Воспроизвести ${target} с помощью ${applicationName}"
             ]
           }
         },
@@ -372,6 +425,16 @@
             ]
           }
         },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Продолжить ${applicationName}",
+              "Продолжить воспроизведение с помощью ${applicationName}",
+              "Продолжить воспроизведение ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -426,6 +489,15 @@
             "values" : [
               "Rechercher de nouveaux téléchargements à l'aide de ${applicationName}",
               "Vérifiez les nouveaux téléchargements à l'aide de ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Найти новые загрузке через ${applicationName}",
+              "Проверить новые загрузке через ${applicationName}"
             ]
           }
         },
@@ -485,6 +557,15 @@
             ]
           }
         },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Установить скорость воспроизведения для ${applicationName}",
+              "Установить скорость воспроизведения для ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -541,6 +622,15 @@
             "values" : [
               "Définir la minuterie de sommeil ${applicationName}",
               "Définir une minuterie de sommeil à l'aide de ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Установить таймер сна в ${applicationName} ,
+              "Установить таймер сна используя ${applicationName}"
             ]
           }
         },
