@@ -59,6 +59,7 @@ public extension Defaults.Keys {
     static let allowCellularDownloads = Key("allowCellularDownloads", default: false)
     
     static let startInOfflineMode = Key("startInOfflineMode", default: false)
+    static let ultraHighQuality = Key("ultraHighQuality", default: false)
     
     // MARK: In-App settings
     
