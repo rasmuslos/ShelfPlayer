@@ -152,6 +152,8 @@ public enum ImageSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIter
             #if os(iOS)
             if await UIDevice.current.userInterfaceIdiom == .pad {
                 base * 2
+            } else if Defaults[.ultraHighQuality] {
+                base * 2
             } else {
                 base
             }
@@ -164,9 +166,9 @@ public enum ImageSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIter
             case .tiny:
                 220
             case .small:
-                300
+                320
             case .regular:
-                520
+                600
             case .large:
                 1000
         }
