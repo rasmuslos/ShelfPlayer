@@ -73,3 +73,17 @@ public extension ShelfPlayerKit {
         }
     }
 }
+
+public extension ShelfPlayerKit {
+    static let suggestedServerVersion = (2, 26, 0)
+    static func isUsingOutdatedServer(_ version: String?) -> Bool {
+        guard let version = version, let parts = version.split(separator: ".").compactMap({ Int($0) }) as [Int]?, parts.count == 3 else {
+            return false
+        }
+        
+        let currentVersion = (parts[0], parts[1], parts[2])
+        return currentVersion < suggestedServerVersion
+    }
+    
+    static let currentToSVersion = 1
+}

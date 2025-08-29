@@ -200,6 +200,8 @@ extension Satellite {
         
         case convenienceDownloadManaged(ItemIdentifier)
         
+        case termsOfServiceChanged
+        
         var message: String {
             switch self {
                 case .message(let message):
@@ -217,6 +219,9 @@ extension Satellite {
                     
                 case .convenienceDownloadManaged:
                     String(localized: "warning.convenienceDownloadManaged")
+                    
+                case .termsOfServiceChanged:
+                    "ShelfPlayer's Terms of Service and Privacy Policy have been updated in the hopes of better fulfilling legal requirements. Please review them to continue using the app. There are no changes to functionality, and our privacy practices remain the same."
             }
         }
         
@@ -230,6 +235,9 @@ extension Satellite {
                     
                 case .convenienceDownloadManaged(let itemID):
                     [.cancel, .removeConvenienceDownloadConfigurations(itemID), .proceed]
+                    
+                case .termsOfServiceChanged:
+                    [.acknowledge, .learnMore(URL(string: "https://github.com/rasmuslos/ShelfPlayer/issues/320")!)]
             }
         }
         
@@ -237,21 +245,27 @@ extension Satellite {
             case cancel
             case proceed
             case dismiss
+            case acknowledge
             
             // Special
             
+            case learnMore(URL)
             case removeConvenienceDownloadConfigurations(ItemIdentifier)
             
             var id: String {
                 switch self {
-                    case .cancel:
-                        "Z_cancel"
                     case .proceed:
                         "G_proceed"
+                    case .acknowledge:
+                        "H_acknowledge"
+                    case .learnMore(let url):
+                        "I_learnMore_\(url.absoluteString)"
+                    case .removeConvenienceDownloadConfigurations(let itemID):
+                        "J_removeConvenienceDownloadConfigurations_\(itemID)"
                     case .dismiss:
                         "Q_dissmiss"
-                    case .removeConvenienceDownloadConfigurations:
-                        "H_removeConvenienceDownloadConfigurations"
+                    case .cancel:
+                        "Z_cancel"
                 }
             }
         }
@@ -344,6 +358,9 @@ extension Satellite {
                     
                 case .convenienceDownloadManaged(let itemID):
                     removeDownload(itemID: itemID, force: true)
+                    
+                case .termsOfServiceChanged:
+                    Defaults[.lastToSUpdate] = ShelfPlayerKit.currentToSVersion
             }
             
             self.warningAlertStack.removeFirst()
