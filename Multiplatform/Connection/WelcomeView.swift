@@ -34,6 +34,28 @@ struct WelcomeView: View {
             
             Spacer()
             
+            VStack(spacing: 2) {
+                HStack(spacing: 2) {
+                    Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/blob/main/LICENSE")!) {
+                        Text(verbatim: "License")
+                    }
+                    Text(verbatim: " | ")
+                    Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/blob/main/Privacy.md")!) {
+                        Text(verbatim: "Privacy Policy")
+                    }
+                }
+                
+                Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/blob/main/ToS.md")!) {
+                    Text(verbatim: "By using ShelfPlayer you agree to the ")
+                        .foregroundStyle(.primary)
+                    + Text(verbatim: "Terms of Service")
+                        .foregroundStyle(Color.accentColor)
+                }
+                .buttonStyle(.plain)
+            }
+            .font(.caption2)
+            .padding(.bottom, 4)
+            
             Button("setup.welcome.action") {
                 satellite.present(.addConnection)
             }
@@ -44,6 +66,9 @@ struct WelcomeView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     WelcomeView()
+        .previewEnvironment()
 }
+#endif
