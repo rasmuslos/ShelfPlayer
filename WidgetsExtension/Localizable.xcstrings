@@ -47,6 +47,98 @@
         }
       }
     },
+    "decrease" : {
+        "localizations" : {
+            "de" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Verringern"
+                }
+            },
+            "en" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Decrease"
+                }
+            },
+            "fr" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Diminuer"
+                }
+            },
+            "ru" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Уменьшить"
+                }
+            },
+            "sv" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Minska"
+                }
+            },
+            "uk" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Зменшити"
+                }
+            },
+            "zh-Hans" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "减小"
+                }
+            }
+        }
+    },
+    "increase" : {
+        "localizations" : {
+            "de" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Erhöhen"
+                }
+            },
+            "en" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Increase"
+                }
+            },
+            "fr" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Augmenter"
+                }
+            },
+            "ru" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Увеличить"
+                }
+            },
+            "sv" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Öka"
+                }
+            },
+            "uk" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Збільшити"
+                }
+            },
+            "zh-Hans" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "增大"
+                }
+            }
+        }
+    },
     "pause" : {
       "localizations" : {
         "de" : {
