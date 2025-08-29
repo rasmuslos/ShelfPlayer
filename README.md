@@ -87,4 +87,4 @@ Prebuilt sideloadable binaries are made available for convenience, but redistrib
 
 ## Legal
 
-[https://github.com/rasmuslos/ShelfPlayer/blob/main/LICENSE](License) | [https://github.com/rasmuslos/ShelfPlayer/blob/main/Privacy.md](Privacy) | [https://github.com/rasmuslos/ShelfPlayer/blob/main/ToS.md](Terms of Service)
+[Terms of Service](https://github.com/rasmuslos/ShelfPlayer/blob/main/ToS.md) | [Privacy Policy](https://github.com/rasmuslos/ShelfPlayer/blob/main/Privacy.md) | [License](https://github.com/rasmuslos/ShelfPlayer/blob/main/LICENSE)

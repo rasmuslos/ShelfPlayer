@@ -6,8 +6,11 @@ _Last updated: August 28, 2025_
 ### 1.1 Automatically Collected Information  
 The following data may be collected by your operating system (Apple iOS):
 
-- App performance metrics (if developer data sharing is enabled)
-- Crash reports (if crash reporting is enabled)
+- App performance metrics (if developer data sharing is enabled)  
+- Crash reports (if crash reporting is enabled)  
+
+> [!IMPORTANT]  
+> ShelfPlayer does not collect this data directly. These metrics and crash reports are handled by Apple and are subject to [Apple’s Privacy Policy](https://www.apple.com/legal/privacy/).
 
 ### 1.2 Information You Provide  
 The app may store the following information that you provide or generate through usage:
@@ -16,7 +19,7 @@ The app may store the following information that you provide or generate through
 - Downloaded content  
 - Cached content  
 - App preferences and settings  
-- Playback information (progress, bookmarks, ...)
+- Playback information (progress, bookmarks, etc.)
 
 ## 2. How We Use Your Information
 
@@ -42,6 +45,9 @@ ShelfPlayer integrates with the following services:
 - Your personal Audiobookshelf server  
 - Apple services such as App Store Connect (for crash reporting and performance metrics) via the operating system
 - iOS system features including Siri, the Journal app, Shortcuts, and iCloud sync
+
+> [!IMPORTANT]  
+> Data collected by Apple through these services (e.g., crash reports, performance metrics) is governed by [Apple’s Privacy Policy](https://www.apple.com/legal/privacy/), not by ShelfPlayer.
 
 ## 5. Your Rights and Choices  
 You can manage your data and privacy in the following ways:
