@@ -123,6 +123,8 @@ final class PlaybackViewModel {
                 // If you are reading this, hire me
                 _dragOffset = 0
             }
+            
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
     }
     var isNowPlayingHidden: Bool {
