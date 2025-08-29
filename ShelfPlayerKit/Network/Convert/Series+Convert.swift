@@ -31,8 +31,9 @@ extension Series {
 public extension Audiobook.SeriesFragment {
     static func parse(seriesName: String) -> [Self] {
         seriesName.split(separator: ", ").map {
-            if $0.contains(" #") {
-                let parts = $0.split(separator: " #")
+            let parts = $0.split(separator: " #")
+            
+            if parts.count >= 2 {
                 let name = parts[0...parts.count - 2].joined(separator: " #")
                 
                 if let sequence = Float(parts[parts.count - 1]) {
