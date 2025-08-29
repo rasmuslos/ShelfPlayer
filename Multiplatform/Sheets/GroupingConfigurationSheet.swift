@@ -131,9 +131,13 @@ struct GroupingConfigurationSheet: View {
         
         var body: some View {
             Picker(selection: $retrieval) {
-                ForEach(ConvenienceDownloadRetrievalOption.options(for: itemType)) { strategy in
-                    Text(strategy.label)
-                        .tag(strategy)
+                ForEach(ConvenienceDownloadRetrievalOption.options(for: itemType), id: \.hashValue) { group in
+                    ForEach(group) { strategy in
+                        Text(strategy.label)
+                            .tag(strategy)
+                    }
+                    
+                    Divider()
                 }
             } label: {
                 content()
@@ -352,21 +356,23 @@ enum ConvenienceDownloadRetrievalOption: String, Identifiable {
         }
     }
     
-    static func options(for itemType: ItemIdentifier.ItemType) -> [Self] {
+    static func options(for itemType: ItemIdentifier.ItemType) -> [[Self]] {
         switch itemType {
             case .podcast:
-                [.disabled,
-                 .one, .two, .three, .four, .five, .ten,
-                 .oneDay, .oneWeek, .twoWeeks, .oneMonth,
-                 .all
+                [
+                    [.disabled],
+                    [.one, .two, .three, .four, .five, .ten],
+                    [.oneDay, .oneWeek, .twoWeeks, .oneMonth],
+                    [.all],
                 ]
             case .series, .collection, .playlist:
-                [.disabled,
-                 .one, .two, .three, .four, .five, .ten,
-                 .all
+                [
+                    [.disabled],
+                    [.one, .two, .three, .four, .five, .ten],
+                    [.all],
                 ]
             default:
-                [.disabled]
+                [[.disabled]]
         }
     }
     static func parse(_ retrieval: PersistenceManager.ConvenienceDownloadSubsystem.GroupingRetrieval) -> Self? {
