@@ -629,7 +629,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Установить таймер сна в ${applicationName} ,
+              "Установить таймер сна в ${applicationName}",
               "Установить таймер сна используя ${applicationName}"
             ]
           }
