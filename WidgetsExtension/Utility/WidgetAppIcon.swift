@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ShelfPlayback
+import ShelfPlayerKit
 
 struct WidgetAppIcon: View {
     @Environment(\.colorScheme) private var colorScheme
