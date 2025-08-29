@@ -221,7 +221,7 @@ extension Satellite {
                     String(localized: "warning.convenienceDownloadManaged")
                     
                 case .termsOfServiceChanged:
-                    "ShelfPlayer's Terms of Service and Privacy Policy have been updated in the hopes of better fulfilling legal requirements. Please review them to continue using the app. There are no changes to functionality, and our privacy practices remain the same."
+                    "ShelfPlayer's Terms of Service and Privacy Policy have been updated to better align with legal requirements. Please take a moment to review the revised documents to continue using the app. There are no changes to app functionality, and our privacy practices remain unchanged."
             }
         }
         
