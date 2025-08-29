@@ -77,12 +77,13 @@ struct ContentView: View {
                 Button("action.proceed") {
                     satellite.confirmWarningAlert()
                 }
-            case .dismiss:
-                Button("action.dismiss") {
-                    satellite.cancelWarningAlert()
-                }
             case .acknowledge:
                 Button("action.acknowledge") {
+                    satellite.confirmWarningAlert()
+                }
+                
+            case .dismiss:
+                Button("action.dismiss") {
                     satellite.cancelWarningAlert()
                 }
                 
