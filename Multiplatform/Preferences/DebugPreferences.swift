@@ -60,6 +60,19 @@ struct DebugPreferences: View {
             }
             .foregroundStyle(.secondary)
             .font(.caption)
+            
+            Section {
+                Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/blob/main/Privacy.md")!) {
+                    Text(verbatim: "Privacy")
+                }
+                Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/blob/main/LICENSE")!) {
+                    Text(verbatim: "License")
+                }
+                Link(destination: URL(string: "https://github.com/rasmuslos/ShelfPlayer/blob/main/ToS.md")!) {
+                    Text(verbatim: "Terms of Service")
+                }
+            }
+            .font(.caption)
         }
         .task {
             downloadRunsInExtendedBackgroundTask = await PersistenceManager.shared.convenienceDownload.runsInExtendedBackgroundTask
