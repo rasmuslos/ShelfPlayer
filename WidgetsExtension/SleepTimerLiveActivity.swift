@@ -11,13 +11,32 @@ import SwiftUI
 import ShelfPlayerKit
 
 private struct Actions: View {
+    let state: SleepTimerLiveActivityAttributes.ContentState
+    
     var body: some View {
         HStack(spacing: 8) {
             Group {
-                Button("sleepTimer.extend", systemImage: "plus", intent: ExtendSleepTimerIntent())
+                if let chapters = state.chapters {
+                    Group {
+                        if chapters > 1 {
+                            Button(intent: SetSleepTimerIntent(amount: chapters - 1, type: .chapters)) {
+                                ZStack {
+                                    Image(systemName: "plus")
+                                        .hidden()
+                                    Label("decrease", systemImage: "minus")
+                                }
+                            }
+                        }
+                        
+                        Button("increase", systemImage: "plus", intent: SetSleepTimerIntent(amount: chapters + 1, type: .chapters))
+                    }
                     .tint(Defaults[.tintColor].color)
-                Button("sleepTimer.cancel", systemImage: "xmark", intent: CancelSleepTimerIntent())
-                    .tint(.white)
+                } else {
+                    Button("sleepTimer.extend", systemImage: "plus", intent: ExtendSleepTimerIntent())
+                        .tint(Defaults[.tintColor].color)
+                    Button("sleepTimer.cancel", systemImage: "xmark", intent: CancelSleepTimerIntent())
+                        .tint(.white)
+                }
             }
             .labelStyle(.iconOnly)
             .buttonStyle(.bordered)
@@ -38,20 +57,23 @@ struct SleepTimerLiveActivity: Widget {
     @ViewBuilder
     private func time(state: SleepTimerLiveActivityAttributes.ContentState, isStale: Bool, fixedWidth: Bool) -> some View {
         Group {
-            if !state.isPlaying {
-                Label("paused", systemImage: "pause.fill")
-                    .labelStyle(.iconOnly)
-            } else if let deadline = state.deadline {
-                if fixedWidth {
-                    Text(verbatim: "00:00:00")
-                        .hidden()
-                        .overlay(alignment: .trailing) {
-                            Text(deadline, style: .timer)
-                                .multilineTextAlignment(.trailing)
-                        }
+            if let deadline = state.deadline {
+                if !state.isPlaying {
+                    Button("paused", systemImage: "pause.fill", intent: PlayIntent())
+                        .labelStyle(.iconOnly)
+                        .buttonStyle(.plain)
                 } else {
-                    Text(deadline, style: .timer)
-                        .multilineTextAlignment(.trailing)
+                    if fixedWidth {
+                        Text(verbatim: "00:00:00")
+                            .hidden()
+                            .overlay(alignment: .trailing) {
+                                Text(deadline, style: .timer)
+                                    .multilineTextAlignment(.trailing)
+                            }
+                    } else {
+                        Text(deadline, style: .timer)
+                            .multilineTextAlignment(.trailing)
+                    }
                 }
             } else if let chapters = state.chapters {
                 Text("chapters")
@@ -96,7 +118,7 @@ struct SleepTimerLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: SleepTimerLiveActivityAttributes.self) { context in
             HStack(alignment: .bottom, spacing: 0) {
-                Actions()
+                Actions(state: context.state)
                     .font(.largeTitle)
                 
                 Spacer(minLength: 12)
@@ -112,7 +134,7 @@ struct SleepTimerLiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Actions()
+                    Actions(state: context.state)
                         .font(.title)
                         .frame(maxHeight: .infinity)
                 }
@@ -146,6 +168,6 @@ struct SleepTimerLiveActivity: Widget {
     SleepTimerLiveActivity()
 } contentStates: {
     SleepTimerLiveActivityAttributes.ContentState(deadline: nil, chapters: 4, isPlaying: true)
-    SleepTimerLiveActivityAttributes.ContentState(deadline: .now.advanced(by: 60 * 5), chapters: nil, isPlaying: false)
+    SleepTimerLiveActivityAttributes.ContentState(deadline: nil, chapters: 4, isPlaying: false)
 }
 #endif
