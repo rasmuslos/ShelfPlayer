@@ -1,6 +1,52 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "action.acknowledge" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verstanden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acknowledged"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compris"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Понял"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förstått"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зрозуміло"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明白"
+          }
+        }
+      }
+    },
     "action.cancel" : {
       "localizations" : {
         "de" : {
@@ -323,6 +369,52 @@
         }
       }
     },
+    "action.learnMore" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr erfahren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learn more"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En savoir plus"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подробнее"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läs mer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дізнатися більше"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解更多"
+          }
+        }
+      }
+    },
     "action.proceed" : {
       "localizations" : {
         "de" : {
@@ -619,7 +711,7 @@
             "value" : "Aucune connexion"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет подключений"
@@ -757,10 +849,10 @@
             "value" : "Pas de bibliothèques"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет доступных библиотек"
+            "value" : "Нет библиотек"
           }
         },
         "sv" : {
@@ -987,6 +1079,12 @@
             "value" : "Point de terminaison"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адрес сервера"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1073,7 +1171,7 @@
             "value" : "Mot de passe"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пароль"
@@ -1257,10 +1355,10 @@
             "value" : "Sélectionnez une stratégie différente"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выбрать другой тип"
+            "value" : "Выбрать другую стратегию"
           }
         },
         "sv" : {
@@ -1711,16 +1809,16 @@
             "value" : "Header"
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Header"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "En-tête"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header"
           }
         },
         "sv" : {
@@ -2591,7 +2689,7 @@
             "value" : "Collection indisponible"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Коллекция недоступна"
@@ -3853,10 +3951,10 @@
             "value" : "Cinq éléments"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пять фрагментов"
+            "value" : "Пять элементов"
           }
         },
         "sv" : {
@@ -4037,7 +4135,7 @@
             "value" : "Le dernier mois"
           }
         },
-        "risque" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "За последний мемяц"
@@ -4083,16 +4181,16 @@
             "value" : "La dernière semaine"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Senaste veckan"
-          }
-        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "За последнюю неделю"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaste veckan"
           }
         },
         "uk" : {
@@ -4451,10 +4549,34 @@
             "value" : "%lld livres audio"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld аудиокниги"
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокниги"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокниг"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокнига"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld аудиокниг"
+                }
+              }
+            }
           }
         },
         "sv" : {
@@ -12278,16 +12400,16 @@
             "value" : "Réglages"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inställningar"
-          }
-        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Настройки"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inställningar"
           }
         },
         "uk" : {
@@ -12646,10 +12768,10 @@
             "value" : "Couleur de teinte"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оттенок"
+            "value" : "Цвет оттенка"
           }
         },
         "sv" : {
@@ -13934,10 +14056,10 @@
             "value" : "Merci d'avoir choisi ShelfPlayer. Ajoutez une connexion à votre instance Audiobookshelf pour commencer."
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Благодарим за выбор ShelfPlayer. С начала укажите ссылку на подключенение к Audiobookshelf"
+            "value" : "Спасибо, что выбрали ShelfPlayer. Добавьте подключение к вашему экземпляру Audiobookshelf, чтобы начать работу."
           }
         },
         "sv" : {
@@ -14404,10 +14526,10 @@
             "value" : "Chronologie"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Хронология"
+            "value" : "Лента времени"
           }
         },
         "sv" : {
@@ -14588,10 +14710,10 @@
             "value" : "L'élément que vous avez tenté de supprimer a été téléchargé automatiquement. Si vous ne supprimez pas la configuration, il risque d'être téléchargée à nouveau."
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фрагмент, который пытаетесь удалить - скачан автоматически. Если не изменить настройки, то он загрузится заново."
+            "value" : "Элемент, который вы пытаетесь удалить, загружается автоматически. Если не удалить соответствующую настройку, он может быть загружен снова."
           }
         },
         "sv" : {
