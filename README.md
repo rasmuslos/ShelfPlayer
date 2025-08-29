@@ -84,3 +84,7 @@ Prebuilt sideloadable binaries are made available for convenience, but redistrib
 * Some text and preview content may have been enhanced using AI tools.
 * Code was written manually with occasional help from Xcode's built-in AI suggestions.
 * ShelfPlayer is not affiliated with Apple, Audiobookshelf, or any third-party platform or service.
+
+## Legal
+
+[https://github.com/rasmuslos/ShelfPlayer/blob/main/LICENSE](License) | [https://github.com/rasmuslos/ShelfPlayer/blob/main/Privacy.md](Privacy) | [https://github.com/rasmuslos/ShelfPlayer/blob/main/ToS.md](Terms of Service)
