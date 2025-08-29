@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import ShelfPlayback
 
 struct WidgetAppIcon: View {
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
-        Image("shelfPlayer.fill")
-            .foregroundStyle(colorScheme == .light ? .black : .white)
+        Button(intent: CreateBookmarkIntent()) {
+            Label(String("ShelfPlayer"), systemImage: "shelfPlayer.fill")
+                .foregroundStyle(colorScheme == .light ? .black : .white)
+        }
     }
 }
