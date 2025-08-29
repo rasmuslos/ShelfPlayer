@@ -296,12 +296,12 @@
             "state" : "translated",
             "value" : "Rechercher dans toutes les bibliothèques"
           }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Искать по всем библиотекам"
           }
-        },
         },
         "sv" : {
           "stringUnit" : {
