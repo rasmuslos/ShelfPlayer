@@ -113,10 +113,10 @@
             "value" : "En pause"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Остановлено"
+            "value" : "Пауза"
           }
         },
         "sv" : {
@@ -159,16 +159,16 @@
             "value" : "Lecture"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пуск"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spela"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Воспроизвести"
           }
         },
         "uk" : {

@@ -109,10 +109,10 @@
             "value" : "2025 Rasmus Krämer et les contributeurs de ShelfPlayer"
           }
         },
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2025 Rasmus Krämer & ShelfPlayer контрибутеры"
+            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         },
         "sv" : {
@@ -207,7 +207,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Воспроизвести фрагменты из библиотеки с помощью Siri"
           }
         },

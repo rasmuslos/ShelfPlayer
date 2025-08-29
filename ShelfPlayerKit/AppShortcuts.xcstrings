@@ -360,7 +360,7 @@
         },
         "ru" : {
           "stringSet" : {
-            "state" : "netranslatedw",
+            "state" : "translated",
             "values" : [
               "Воспроизвести ${target} с помощью ${applicationName}"
             ]
