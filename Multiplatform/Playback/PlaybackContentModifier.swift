@@ -22,7 +22,7 @@ struct PlaybackTabContentModifier: ViewModifier {
             ZStack(alignment: .bottom) {
                 content
                 
-                if satellite.isNowPlayingVisible {
+                if satellite.isNowPlayingVisible && !viewModel.isNowPlayingHidden {
                     Rectangle()
                         .fill(.bar)
                         .frame(height: height)
