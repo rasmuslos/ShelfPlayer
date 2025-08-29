@@ -51,7 +51,7 @@ struct ItemCompactRow: View {
             return String(localized: "item.count.episodes.unplayed \(incompleteEpisodeCount)")
         } else if let collection = item as? ItemCollection {
             if collection.id.type == .collection {
-                return String(localized: "item.count.audiobook \(collection.items.count)")
+                return String(localized: "item.count.audiobooks \(collection.items.count)")
             } else {
                 return String(localized: "item.count \(collection.items.count)")
             }
