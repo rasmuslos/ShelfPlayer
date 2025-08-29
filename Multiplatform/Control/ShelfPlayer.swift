@@ -45,14 +45,28 @@ struct ShelfPlayer {
             }
         }
         
-        let clientBuild = ShelfPlayerKit.clientBuild
         let lastCacheClear = Defaults[.lastBuild]
         
+        // Fresh install
+        if lastCacheClear == nil {
+            Defaults[.lastToSUpdate] = ShelfPlayerKit.currentToSVersion
+        }
+        
+        // Invalidate cache after an update
+        let clientBuild = ShelfPlayerKit.clientBuild
         if let lastCacheClear, clientBuild < lastCacheClear {
             logger.info("ShelfPlayer has been updated. Invalidating cache...")
             
             Task {
                 try await ShelfPlayer.invalidateCache()
+            }
+        }
+        
+        // ToS
+        let lastToSUpdate = Defaults[.lastToSUpdate] ?? -1
+        if lastToSUpdate < ShelfPlayerKit.currentToSVersion {
+            Task {
+                await Satellite.shared.warn(.termsOfServiceChanged)
             }
         }
         

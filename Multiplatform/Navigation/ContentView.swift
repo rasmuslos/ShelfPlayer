@@ -81,7 +81,15 @@ struct ContentView: View {
                 Button("action.dismiss") {
                     satellite.cancelWarningAlert()
                 }
+            case .acknowledge:
+                Button("action.acknowledge") {
+                    satellite.cancelWarningAlert()
+                }
                 
+            case .learnMore(let url):
+                Link(destination: url) {
+                    Text("action.learnMore")
+                }
             case .removeConvenienceDownloadConfigurations(let itemID):
                 Button("item.convenienceDownload.remove") {
                     satellite.removeConvenienceDownloadConfigurations(from: itemID)

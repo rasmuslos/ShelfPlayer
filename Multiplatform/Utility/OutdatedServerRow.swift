@@ -6,30 +6,13 @@
 //
 
 import SwiftUI
+import ShelfPlayerKit
 
 struct OutdatedServerRow: View {
-    private let suggestedServerVersion = (2, 26, 0)
-    
     let version: String?
     
     var isUsingOutdatedServer: Bool {
-        let parts = version?.split(separator: ".").compactMap { Int($0) }
-        
-        guard let parts, parts.count == 3 else {
-            return false
-        }
-        
-        if parts[0] >= suggestedServerVersion.0 {
-            return false
-        }
-        if parts[1] >= suggestedServerVersion.1 {
-            return false
-        }
-        if parts[2] >= suggestedServerVersion.2 {
-            return false
-        }
-        
-        return true
+        ShelfPlayerKit.isUsingOutdatedServer(version)
     }
     
     var body: some View {
