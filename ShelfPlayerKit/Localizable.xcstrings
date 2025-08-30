@@ -395,7 +395,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Загрузить фрагмент в фоновом режиме"
+            "value" : "Загрузить объект в фоновом режиме"
           }
         },
         "sv" : {
@@ -441,7 +441,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фрагмент-Audiobookshelf"
+            "value" : "Объект-Audiobookshelf"
           }
         },
         "sv" : {
@@ -526,25 +526,25 @@
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld фрагментов"
+                  "value" : "%lld объектов"
                 }
               },
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld фрагментов"
+                  "value" : "%lld объектов"
                 }
               },
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld фрагмент"
+                  "value" : "%lld объект"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld фрагменты"
+                  "value" : "%lld объекты"
                 }
               }
             }
@@ -727,7 +727,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Только аудиокнига, автор, диктор, серии, подкаст или эпизод могут элементами Audiobookshelf"
+            "value" : "Объектом Audiobookshelf может быть только аудиокнига, автор, диктор, серии, подкаст или эпизод."
           }
         },
         "sv" : {
@@ -1590,7 +1590,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Неправильный тип фрагмента"
+            "value" : "Неправильный тип объекта"
           }
         },
         "sv" : {
@@ -1636,7 +1636,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет фрагментов для воспроизведения"
+            "value" : "Нет объектов для воспроизведения"
           }
         },
         "sv" : {
@@ -1866,7 +1866,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Возвращает все поспроизведённые, но не завершённые фрагменты из всех библиотек"
+            "value" : "Возвращает все поспроизведённые, но не завершённые объекты из всех библиотек"
           }
         },
         "sv" : {
@@ -1958,7 +1958,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Возвращает воспроизводимый фрагмент"
+            "value" : "Возвращает воспроизводимый объект"
           }
         },
         "sv" : {
@@ -2004,7 +2004,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Открыть фрагмент"
+            "value" : "Открыть объект"
           }
         },
         "sv" : {
@@ -2096,7 +2096,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Открывает фрагмент в ShelfPlayer"
+            "value" : "Открывает объект в ShelfPlayer"
           }
         },
         "sv" : {
@@ -2367,12 +2367,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprime le téléchargement de l'élément fourni"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Удаляет все выбранные фрагменты"
           }
         },
         "sv" : {
@@ -2694,7 +2688,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Завершено"
+            "value" : "Прослушано"
           }
         },
         "sv" : {
@@ -2740,7 +2734,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Обновляет завершение предоставленного фрагмента"
+            "value" : "Обновляет завершение предоставленного объекта"
           }
         },
         "sv" : {
@@ -3706,7 +3700,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Начитает воспроизведение выбранного фрагмента."
+            "value" : "Начитает воспроизведение выбранного объекта."
           }
         },
         "sv" : {
@@ -3747,6 +3741,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Écouter le balado"
+          }4
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизвести подкаст"
           }
         },
         "ru" : {
