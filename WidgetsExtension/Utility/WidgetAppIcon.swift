@@ -13,8 +13,10 @@ struct WidgetAppIcon: View {
     
     var body: some View {
         Button(intent: CreateBookmarkIntent()) {
-            Label(String("ShelfPlayer"), systemImage: "shelfPlayer.fill")
+            Label(String("ShelfPlayer"), image: "shelfPlayer.fill")
+                .labelStyle(.iconOnly)
                 .foregroundStyle(colorScheme == .light ? .black : .white)
         }
+        .buttonStyle(.plain)
     }
 }
