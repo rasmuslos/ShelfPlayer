@@ -208,7 +208,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Воспроизвести фрагменты из библиотеки с помощью Siri"
+            "value" : "Воспроизвести объекты из библиотеки с помощью Siri"
           }
         },
         "sv" : {
@@ -352,7 +352,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фрагмент"
+            "value" : "Объект"
           }
         },
         "sv" : {
