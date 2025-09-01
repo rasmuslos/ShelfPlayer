@@ -3755,6 +3755,12 @@
             "value" : "Воспроизвести подкаст"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизвести подкаст"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
