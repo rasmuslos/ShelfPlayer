@@ -1772,7 +1772,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Настоить подключения"
+            "value" : "Настроить подключения"
           }
         },
         "sv" : {
@@ -7113,7 +7113,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Восстановление…"
+            "value" : "Восстановить прогресс…"
           }
         },
         "sv" : {
@@ -7343,7 +7343,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Читает на %@"
+            "value" : "Читает %@"
           }
         },
         "sv" : {
@@ -7951,7 +7951,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавить"
+            "value" : "Дате добавления"
           }
         },
         "sv" : {
@@ -7997,7 +7997,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Автор"
+            "value" : "Автору"
           }
         },
         "sv" : {
@@ -8043,7 +8043,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Книги"
+            "value" : "Количеству книг"
           }
         },
         "sv" : {
@@ -8089,7 +8089,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Продолжительность"
+            "value" : "Продолжительности"
           }
         },
         "sv" : {
@@ -8135,7 +8135,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Количество эпизодов"
+            "value" : "Количеству эпизодов"
           }
         },
         "sv" : {
@@ -8181,7 +8181,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Индекс"
+            "value" : "Индексу"
           }
         },
         "sv" : {
@@ -8227,7 +8227,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Название"
+            "value" : "Названию"
           }
         },
         "sv" : {
@@ -8273,7 +8273,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Имя, Фамилия"
+            "value" : "Имени, Фамилии"
           }
         },
         "sv" : {
@@ -8319,7 +8319,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фамилия, Имя"
+            "value" : "Фамилии, Имени"
           }
         },
         "sv" : {
@@ -8365,7 +8365,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дата выхода"
+            "value" : "Дате выхода"
           }
         },
         "sv" : {
@@ -8779,7 +8779,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Постреть работы диктора"
+            "value" : "Посмотреть работы диктора"
           }
         },
         "sv" : {
@@ -8917,7 +8917,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Посмотреть серии"
+            "value" : "Посмотреть серию"
           }
         },
         "sv" : {
