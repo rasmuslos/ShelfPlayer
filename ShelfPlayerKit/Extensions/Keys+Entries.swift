@@ -60,6 +60,7 @@ public extension Defaults.Keys {
     
     static let startInOfflineMode = Key("startInOfflineMode", default: false)
     static let ultraHighQuality = Key("ultraHighQuality", default: false)
+    static let disableResumeListening = Key("disableResumeListening", default: false)
     
     // MARK: In-App settings
     

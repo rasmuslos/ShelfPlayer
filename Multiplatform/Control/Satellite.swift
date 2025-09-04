@@ -963,6 +963,10 @@ private extension Satellite {
         
         Defaults[.playbackResumeInfo] = nil
         
+        guard !Defaults[.disableResumeListening] else {
+            return
+        }
+        
         // 12 Hours
         let timeout: Double = 60 * 60 * 12
         
