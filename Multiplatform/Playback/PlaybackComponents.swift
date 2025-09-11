@@ -565,6 +565,8 @@ struct PlaybackActions: View {
 
 private struct PlaybackSlider<MiddleContent: View>: View {
     @Environment(\.colorScheme) private var colorScheme
+    
+    @Default(.durationToggled) private var durationToggled
     @Default(.lockSeekBar) private var lockSeekBar
     
     let percentage: Percentage
@@ -587,16 +589,35 @@ private struct PlaybackSlider<MiddleContent: View>: View {
     private let height: CGFloat = 6
     private let hitTargetPadding: CGFloat = 12
     
+    private var trailingTime: TimeInterval? {
+        guard let currentTime, let duration else {
+            return nil
+        }
+        
+        if durationToggled {
+            return duration - currentTime
+        } else {
+            return duration
+        }
+    }
+    
     @ViewBuilder
     private var text: some View {
         Group {
-            if let currentTime, let duration {
+            if let currentTime, let trailingTime {
                 LazyVGrid(columns: [.init(alignment: .leading), .init(alignment: .center), .init(alignment: .trailing)]) {
                     Text(currentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
                     
                     middleContent()
                     
-                    Text(duration, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                    Button {
+                        durationToggled.toggle()
+                    } label: {
+                        Text(trailingTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                            .contentTransition(.numericText(value: trailingTime))
+                            .animation(.smooth, value: trailingTime)
+                    }
+                    .buttonStyle(.plain)
                 }
             } else {
                 Text(String("PLACEHOLDER"))
