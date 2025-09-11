@@ -129,6 +129,8 @@ public extension Defaults.Keys {
     static let lastBuild = Key<String?>("lastBuild", default: nil)
     static let lastToSUpdate = Key<Int?>("lastToSUpdate", default: nil)
     static let lastCheckedServerVersion = Key<String?>("lastCheckedServerVersion", default: nil)
+    
+    static let durationToggled = Key<Bool>("durationToggled", default: false)
 }
 
 public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
