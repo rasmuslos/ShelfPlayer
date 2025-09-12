@@ -61,7 +61,9 @@ struct AudiobookSeriesPanel: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "ellipsis.circle") {
                     ItemDisplayTypePicker(displayType: $seriesDisplayType)
-                    ItemSortOrderPicker(sortOrder: $seriesSortOrder, ascending: $seriesAscending)
+                    Section("item.sort") {
+                        ItemSortOrderPicker(sortOrder: $seriesSortOrder, ascending: $seriesAscending)
+                     }
                 }
                 .menuActionDismissBehavior(.disabled)
             }

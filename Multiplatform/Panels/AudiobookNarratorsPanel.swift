@@ -47,7 +47,9 @@ struct AudiobookNarratorsPanel: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "arrow.up.arrow.down.circle") {
-                    ItemSortOrderPicker(sortOrder: $narratorsSortOrder, ascending: $narratorsAscending)
+                    Section("item.sort") {
+                        ItemSortOrderPicker(sortOrder: $narratorsSortOrder, ascending: $narratorsAscending)
+                    }
                 }
                 .menuActionDismissBehavior(.disabled)
             }
