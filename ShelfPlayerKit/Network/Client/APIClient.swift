@@ -96,7 +96,10 @@ public final class APIClient: Sendable {
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 401 {
                 guard !didRefreshAccessToken else {
-                    await RFNotification[.connectionUnauthorized].send(payload: connectionID)
+                    if await credentialProvider.shouldPostAuthorizationFailure {
+                        await RFNotification[.connectionUnauthorized].send(payload: connectionID)
+                    }
+                    
                     throw APIClientError.unauthorized
                 }
                 
