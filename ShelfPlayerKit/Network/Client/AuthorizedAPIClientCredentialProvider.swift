@@ -22,6 +22,10 @@ final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider {
         token
     }
     
+    var shouldPostAuthorizationFailure: Bool {
+        true
+    }
+    
     init(connectionID: ItemIdentifier.ConnectionID) async throws {
         self.connectionID = connectionID
         
