@@ -11,5 +11,7 @@ public protocol APICredentialProvider: Sendable {
     var configuration: (URL, [HTTPHeader]) { get async throws }
     var accessToken: String? { get async throws }
     
+    var shouldPostAuthorizationFailure: Bool { get async }
+    
     func refreshAccessToken(current: String?) async throws -> String?
 }

@@ -234,6 +234,10 @@ private final class AuthorizeAPIClientCredentialProvider: APICredentialProvider 
         nil
     }
     
+    var shouldPostAuthorizationFailure: Bool {
+        false
+    }
+    
     func refreshAccessToken(current: String?) async throws -> String? {
         nil
     }
