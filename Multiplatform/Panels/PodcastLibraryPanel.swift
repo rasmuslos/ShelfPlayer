@@ -65,7 +65,9 @@ struct PodcastLibraryPanel: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "ellipsis.circle") {
                     ItemDisplayTypePicker(displayType: $podcastsDisplayType)
-                    ItemSortOrderPicker(sortOrder: $podcastsSortOrder, ascending: $podcastsAscending)
+                    Section("item.sort") {
+                        ItemSortOrderPicker(sortOrder: $podcastsSortOrder, ascending: $podcastsAscending)
+                    }
                 }
                 .menuActionDismissBehavior(.disabled)
             }
