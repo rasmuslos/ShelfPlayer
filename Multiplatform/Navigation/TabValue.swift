@@ -25,6 +25,7 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
     case podcastLibrary(Library)
     
     case playlists(Library)
+    case search(Library)
     
     var id: Self {
         self
@@ -53,6 +54,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
             case .podcastLibrary(let library):
                 library
             case .playlists(let library):
+                library
+            case .search(let library):
                 library
         }
     }
@@ -83,6 +86,9 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 
             case .playlists:
                 String(localized: "panel.playlists")
+                
+            case .search:
+                String(localized: "panel.search")
         }
     }
     
@@ -112,6 +118,8 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 
             case .playlists:
                 ItemIdentifier.ItemType.playlist.icon
+            case .search:
+                "magnifyingglass"
         }
     }
     
@@ -142,26 +150,35 @@ enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
                 
             case .playlists:
                 CollectionsPanel(type: .playlist)
+            case .search:
+                Text("ToDo")
         }
     }
 }
 
 extension TabValue {
-    static func tabs(for library: Library, isCompact: Bool) -> [TabValue] {
+    static func options(for library: Library) -> [TabValue] {
         switch library.type {
             case .audiobooks:
-                isCompact ? [.audiobookHome(library), .audiobookLibrary(library)] : [
+                [
                     .audiobookHome(library),
                     .audiobookSeries(library),
+                    /*
                     .audiobookAuthors(library),
                     .audiobookNarrators(library),
                     .audiobookBookmarks(library),
                     .audiobookCollections(library),
                     .playlists(library),
+                     */
                     .audiobookLibrary(library),
                 ]
             case .podcasts:
-                [.podcastHome(library), .podcastLatest(library), .playlists(library), .podcastLibrary(library)]
+                [
+                    .podcastHome(library),
+                    .podcastLatest(library),
+                    .playlists(library),
+                    .podcastLibrary(library),
+                ]
         }
     }
 }

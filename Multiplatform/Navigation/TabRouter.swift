@@ -64,10 +64,16 @@ struct TabRouter: View {
     var body: some View {
         TabView(selection: selectionProxy) {
             if let current {
-                ForEach(TabValue.tabs(for: current, isCompact: true)) { tab in
+                ForEach(TabValue.options(for: current)) { tab in
                     Tab(tab.label, systemImage: tab.image, value: tab) {
                         content(for: tab)
                     }
+                }
+                
+                let searchTab = TabValue.search(current)
+                
+                Tab(value: searchTab, role: .search) {
+                    content(for: searchTab)
                 }
             }
             
@@ -75,7 +81,7 @@ struct TabRouter: View {
                 if let libraries = connectionStore.libraries[connection.id] {
                     ForEach(libraries) { library in
                         TabSection(library.name) {
-                            ForEach(TabValue.tabs(for: library, isCompact: false)) { tab in
+                            ForEach(TabValue.options(for: library)) { tab in
                                 Tab(tab.label, systemImage: tab.image, value: tab) {
                                     content(for: tab)
                                 }
@@ -110,6 +116,17 @@ struct TabRouter: View {
                 }
             }
             .buttonStyle(.plain)
+        }
+        .modify {
+            if #available(iOS 26, *), satellite.nowPlayingItemID != nil {
+                $0
+                    .tabBarMinimizeBehavior(.onScrollDown)
+                    .tabViewBottomAccessory {
+                        PlaybackBottomBarPill()
+                    }
+            } else {
+                $0
+            }
         }
         .id(current)
         .modifier(CompactPlaybackModifier(ready: isReady))

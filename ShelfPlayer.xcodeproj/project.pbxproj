@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3A012E292C806D9A0073A619 /* View+ReverseMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A012E282C806D970073A619 /* View+ReverseMask.swift */; };
+		3A05D0802E77314700D5B653 /* PlaybackCompactExpandedForeground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05D07F2E77314700D5B653 /* PlaybackCompactExpandedForeground.swift */; };
 		3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */; };
 		3A0AE6A62AB623F400ACCD68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A52AB623F400ACCD68 /* ContentView.swift */; };
 		3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */; };
@@ -141,6 +142,7 @@
 		3AB1640F2E04C2B700D33868 /* ShelfPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; };
 		3AB164102E04C53D00D33868 /* ShelfPlayerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3AB172F82E4E0146005086B1 /* ConnectionAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB172F72E4E0137005086B1 /* ConnectionAuthorizer.swift */; };
+		3AB1CDFB2E77093700E19962 /* PlaybackBottomBarPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1CDFA2E77092C00E19962 /* PlaybackBottomBarPill.swift */; };
 		3AB4529D2ACF4D0D005D5DBA /* SeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */; };
 		3AB4D6692CA19DE900876C8E /* TabValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB4D6682CA19DE600876C8E /* TabValue.swift */; };
 		3AB5DC592C942763001587D7 /* LazyLoadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */; };
@@ -288,6 +290,7 @@
 /* Begin PBXFileReference section */
 		3A00397E2BEF55E600849F70 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		3A012E282C806D970073A619 /* View+ReverseMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ReverseMask.swift"; sourceTree = "<group>"; };
+		3A05D07F2E77314700D5B653 /* PlaybackCompactExpandedForeground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackCompactExpandedForeground.swift; sourceTree = "<group>"; };
 		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
 		3A0AE6A52AB623F400ACCD68 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -429,6 +432,7 @@
 		3AB172F72E4E0137005086B1 /* ConnectionAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionAuthorizer.swift; sourceTree = "<group>"; };
 		3AB1746F2E4E0217005086B1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = fr; path = fr.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3AB174702E4E0217005086B1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Intents.strings; sourceTree = "<group>"; };
+		3AB1CDFA2E77092C00E19962 /* PlaybackBottomBarPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackBottomBarPill.swift; sourceTree = "<group>"; };
 		3AB4529C2ACF4D0D005D5DBA /* SeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesView.swift; sourceTree = "<group>"; };
 		3AB4D6682CA19DE600876C8E /* TabValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabValue.swift; sourceTree = "<group>"; };
 		3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyLoadHelper.swift; sourceTree = "<group>"; };
@@ -917,12 +921,14 @@
 		3AA1642B2D6DBA4B00343214 /* Playback */ = {
 			isa = PBXGroup;
 			children = (
+				3AB1CDFA2E77092C00E19962 /* PlaybackBottomBarPill.swift */,
 				3AC3FD622D79E8B800FA10DF /* PlaybackQueue.swift */,
 				3AA1642E2D6DBB0E00343214 /* PlaybackViewModel.swift */,
 				3A1B802C2D6F18CC00D69B13 /* PlaybackComponents.swift */,
 				3AA164422D6DCF0000343214 /* PlaybackContentModifier.swift */,
 				3AA164402D6DC2D100343214 /* PlaybackDragGestureCatcher.swift */,
 				3AA1642C2D6DBA9F00343214 /* CompactPlaybackModifier.swift */,
+				3A05D07F2E77314700D5B653 /* PlaybackCompactExpandedForeground.swift */,
 				3ADC52BF2E06D8CB00175677 /* RegularPlaybackModifier.swift */,
 			);
 			path = Playback;
@@ -1433,6 +1439,7 @@
 				3A0F99F22BE8C08700F6B7B4 /* UIScreen+Radius.swift in Sources */,
 				3AA089352B6E413800773414 /* AudiobookList.swift in Sources */,
 				3A1507952AD348E700D7D6CF /* PodcastView+EpisodeList.swift in Sources */,
+				3AB1CDFB2E77093700E19962 /* PlaybackBottomBarPill.swift in Sources */,
 				3ADD434A2CC311630060E043 /* CarPlayListenNowController.swift in Sources */,
 				3AA19BA62AD6E94B00C468EA /* PodcastGrid.swift in Sources */,
 				3A9825E62D4A3C2200A65826 /* ItemLoadLink.swift in Sources */,
@@ -1461,6 +1468,7 @@
 				3AB8BBB72BD7B5EF0012023A /* AudiobookHomePanel.swift in Sources */,
 				3A9825DE2D4A122A00A65826 /* MediumPlayButtonStyle.swift in Sources */,
 				3A6DC0862DE4981B00FB7D21 /* ProgressViewModel.swift in Sources */,
+				3A05D0802E77314700D5B653 /* PlaybackCompactExpandedForeground.swift in Sources */,
 				3A262E992DA155A1002F927A /* OfflineView.swift in Sources */,
 				3A14C14A2E2769F200D7A2D7 /* CollectionView.swift in Sources */,
 				3ABCC7E02AD4647D004AEADF /* EpisodeView+Toolbar.swift in Sources */,
@@ -1605,6 +1613,7 @@
 				CURRENT_PROJECT_VERSION = DEVELOPMENT;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = N8AA4S3S96;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1681,6 +1690,7 @@
 				CURRENT_PROJECT_VERSION = DEVELOPMENT;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = N8AA4S3S96;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_PREVIEWS = YES;
