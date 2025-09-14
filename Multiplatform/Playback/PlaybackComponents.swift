@@ -97,9 +97,8 @@ struct PlaybackBackwardButton: View {
             }
             .padding(-12)
             .disabled(isLoading)
-            .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(2), value: viewModel.notifySkipBackwards)
+            .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(10), value: satellite.notifySkipBackwards)
             .animation(.smooth, value: isLoading)
-            .animation(.smooth, value: viewModel.notifySkipBackwards)
             .accessibilityRemoveTraits(.isImage)
             .accessibilityAddTraits(.isButton)
             .accessibilityValue(Text(verbatim: "\(viewModel.skipBackwardsInterval)"))
@@ -131,9 +130,8 @@ struct PlaybackForwardButton: View {
             }
             .padding(-12)
             .disabled(isLoading)
-            .symbolEffect(.rotate.clockwise.byLayer, options: .speed(2), value: viewModel.notifySkipForwards)
+            .symbolEffect(.rotate.clockwise.byLayer, options: .speed(10), value: satellite.notifySkipForwards)
             .animation(.smooth, value: isLoading)
-            .animation(.smooth, value: viewModel.notifySkipForwards)
             .accessibilityRemoveTraits(.isImage)
             .accessibilityAddTraits(.isButton)
             .accessibilityValue(Text(verbatim: "\(viewModel.skipForwardsInterval)"))
@@ -173,6 +171,48 @@ struct PlaybackTogglePlayButton: View {
         .accessibilityRemoveTraits(.isImage)
     }
 }
+struct PlaybackSmallTogglePlayButton: View {
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+    
+    private var isLoading: Bool {
+        if let currentItemID = satellite.nowPlayingItemID {
+            satellite.isBuffering || satellite.isLoading(observing: currentItemID)
+        } else {
+            true
+        }
+    }
+    
+    var body: some View {
+        ZStack {
+            Group {
+                Image(systemName: "play.fill")
+                Image(systemName: "pause.fill")
+            }
+            .hidden()
+            
+            Group {
+                if let currentItemID = satellite.nowPlayingItemID, satellite.isLoading(observing: currentItemID) {
+                    ProgressView()
+                } else if satellite.isBuffering || satellite.nowPlayingItemID == nil {
+                    ProgressView()
+                } else {
+                    Button {
+                        satellite.togglePlaying()
+                    } label: {
+                        Label(satellite.isPlaying ? "playback.pause" : "playback.play", systemImage: satellite.isPlaying ? "pause.fill" : "play.fill")
+                            .labelStyle(.iconOnly)
+                            .contentTransition(.symbolEffect(.replace.byLayer.downUp))
+                            .animation(.spring(duration: 0.2, bounce: 0.7), value: satellite.isPlaying)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .transition(.blurReplace)
+        }
+    }
+}
+
 struct PlaybackControls: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
@@ -293,6 +333,15 @@ struct PlaybackMenuActions: View {
     
     var body: some View {
         if let currentItem = satellite.nowPlayingItem {
+            ControlGroup {
+                ProgressButton(itemID: currentItem.id)
+                StopPlaybackButton()
+            }
+            
+            ItemCollectionMembershipEditButton(itemID: currentItem.id)
+            
+            Divider()
+            
             if let audiobook = currentItem as? Audiobook {
                 ItemLoadLink(itemID: audiobook.id)
                 ItemMenu(authors: viewModel.authorIDs)
@@ -306,15 +355,6 @@ struct PlaybackMenuActions: View {
             if let collection = satellite.upNextOrigin as? ItemCollection {
                 ItemLoadLink(itemID: collection.id, footer: collection.name)
             }
-            
-            Divider()
-            
-            ItemCollectionMembershipEditButton(itemID: currentItem.id)
-            
-            Divider()
-            
-            ProgressButton(itemID: currentItem.id)
-            StopPlaybackButton()
         }
     }
 }
@@ -662,7 +702,7 @@ private struct PlaybackSlider<MiddleContent: View>: View {
                 .clipShape(.rect(cornerRadius: 8))
                 .padding(.vertical, hitTargetPadding)
                 .contentShape(.rect)
-                .highPriorityGesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
+                .highPriorityGesture(DragGesture(minimumDistance: 10.0)
                     .onChanged {
                         guard !lockSeekBar else {
                             return

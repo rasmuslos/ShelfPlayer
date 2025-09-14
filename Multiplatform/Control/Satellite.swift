@@ -66,6 +66,9 @@ final class Satellite {
     @ObservationIgnored
     private(set) nonisolated(unsafe) var skipTask: Task<Void, Never>?
     
+    private(set) var notifySkipBackwards = false
+    private(set) var notifySkipForwards = false
+    
     // MARK: Utility
     
     private(set) var totalLoading = 0
@@ -88,6 +91,10 @@ final class Satellite {
             } else {
                 self?.stash.clear()
             }
+        }
+        
+        RFNotification[.presentSheet].subscribe { [weak self] in
+            self?.present($0)
         }
         
         setupObservers()
@@ -520,6 +527,12 @@ extension Satellite {
         }
 
         RFNotification[.skipped].send(payload: forwards)
+        
+        if forwards {
+            notifySkipForwards.toggle()
+        } else {
+            notifySkipBackwards.toggle()
+        }
 
         skipTask?.cancel()
         skipTask = Task {
@@ -1004,10 +1017,6 @@ private extension Satellite {
         
         RFNotification[.navigate].subscribe { [weak self] _ in
             self?.dismissSheet()
-        }.store(in: &stash)
-        
-        RFNotification[.presentSheet].subscribe { [weak self] in
-            self?.present($0)
         }.store(in: &stash)
         
         // MARK: Audio Player state synchronization

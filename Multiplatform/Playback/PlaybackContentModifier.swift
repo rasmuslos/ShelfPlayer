@@ -13,30 +13,34 @@ struct PlaybackTabContentModifier: ViewModifier {
     @Environment(Satellite.self) private var satellite
     
     func body(content: Content) -> some View {
-        GeometryReader { geometryProxy in
-            // 32 is at the middle axis of the pill
-            let additionalHeight: CGFloat = 44
-            let height = geometryProxy.safeAreaInsets.bottom + additionalHeight
-            let startPoint = (additionalHeight / height) / 2
-            
-            ZStack(alignment: .bottom) {
-                content
+        if #available(iOS 26, *) {
+            content
+        } else {
+            GeometryReader { geometryProxy in
+                // 32 is at the middle axis of the pill
+                let additionalHeight: CGFloat = 44
+                let height = geometryProxy.safeAreaInsets.bottom + additionalHeight
+                let startPoint = (additionalHeight / height) / 2
                 
-                if satellite.isNowPlayingVisible && !viewModel.isNowPlayingHidden {
-                    Rectangle()
-                        .fill(.bar)
-                        .frame(height: height)
-                        .mask {
-                            LinearGradient(stops: [.init(color: .clear, location: 0),
-                                                   .init(color: .black, location: startPoint),
-                                                   .init(color: .black, location: 1)],
-                                           startPoint: .top, endPoint: .bottom)
-                        }
+                ZStack(alignment: .bottom) {
+                    content
+                    
+                    if satellite.isNowPlayingVisible {
+                        Rectangle()
+                            .fill(.bar)
+                            .frame(height: height)
+                            .mask {
+                                LinearGradient(stops: [.init(color: .clear, location: 0),
+                                                       .init(color: .black, location: startPoint),
+                                                       .init(color: .black, location: 1)],
+                                               startPoint: .top, endPoint: .bottom)
+                            }
+                    }
                 }
+                .toolbarBackgroundVisibility(satellite.isNowPlayingVisible ? .hidden : .automatic, for: .tabBar)
+                .ignoresSafeArea(edges: satellite.isNowPlayingVisible ? .bottom : [])
+                .modifier(RegularPlaybackModifier())
             }
-            .toolbarBackgroundVisibility(satellite.isNowPlayingVisible ? .hidden : .automatic, for: .tabBar)
-            .ignoresSafeArea(edges: satellite.isNowPlayingVisible ? .bottom : [])
-            .modifier(RegularPlaybackModifier())
         }
     }
 }
@@ -47,8 +51,11 @@ struct PlaybackSafeAreaPaddingModifier: ViewModifier {
     @Environment(Satellite.self) private var satellite
     
     private var padding: CGFloat {
-        if satellite.isNowPlayingVisible {
-            CompactPlaybackModifier.height + 4
+        if #available(iOS 26, *) {
+            0
+        } else if satellite.isNowPlayingVisible {
+        // 56 (height) + 4
+            60
         } else {
             0
         }
