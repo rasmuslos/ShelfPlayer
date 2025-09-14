@@ -9,18 +9,19 @@ import SwiftUI
 import ShelfPlayback
 
 struct RegularPlaybackModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+    }
+}
+
+/*
+struct RegularPlaybackModifier: ViewModifier {
     @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
-    
-    static let height: CGFloat = 56
-    
-    private var pushAmount: CGFloat {
-        viewModel.pushAmount
-    }
     
     @ViewBuilder
     private func label(_ itemID: ItemIdentifier) -> some View {
@@ -181,6 +182,7 @@ struct RegularPlaybackModifier: ViewModifier {
         }
     }
 }
+ */
 
 #if DEBUG
 #Preview {

@@ -10,15 +10,50 @@ import ShelfPlayback
 
 @Observable @MainActor
 final class PlaybackViewModel {
-    private var _isExpanded: Bool
-    private var _dragOffset: CGFloat
+    // Pill position
     
-    var isQueueVisible: Bool
-    var isCreateBookmarkAlertVisible: Bool
-    var isCreatingBookmark: Bool
+    var pillX: CGFloat = .zero
+    var pillY: CGFloat = .zero
     
-    var bookmarkNote: String
+    var pillWidth: CGFloat = .zero
+    var pillHeight: CGFloat = .zero
+    
+    // Image position
+    
+    var pillImageX: CGFloat = .zero
+    var pillImageY: CGFloat = .zero
+    var pillImageSize: CGFloat = .zero
+    
+    var expandedImageX: CGFloat = .zero
+    var expandedImageY: CGFloat = .zero
+    var expandedImageSize: CGFloat = .zero
+    
+    let PILL_IMAGE_CORNER_RADIUS: CGFloat = 8
+    let EXPANDED_IMAGE_CORNER_RADIUS: CGFloat = 28
+    
+    // Drag
+    
+    var translationY: CGFloat = .zero
+    
+    // Expansion
+    
+    private(set) var isExpanded = false
+    private(set) var isNowPlayingBackgroundVisible = false
+    
+    private(set) var expansionAnimationCount = 0
+    var translateYAnimationCount = 0
+    
+    var isQueueVisible = false
+    
+    // Bookmark
+    
+    var isCreateBookmarkAlertVisible = false
+    var isCreatingBookmark = false
+    
+    var bookmarkNote = ""
     var bookmarkCapturedTime: UInt64?
+    
+    // Sliders
     
     var seeking: Percentage?
     var seekingTotal: Percentage?
@@ -29,42 +64,18 @@ final class PlaybackViewModel {
     @ObservableDefault(.skipForwardsInterval) @ObservationIgnored
     private(set) var skipForwardsInterval: Int
     
-    private(set) var authorIDs: [(ItemIdentifier, String)]
-    private(set) var narratorIDs: [(ItemIdentifier, String)]
-    private(set) var seriesIDs: [(ItemIdentifier, String)]
+    private(set) var authorIDs = [(ItemIdentifier, String)]()
+    private(set) var narratorIDs = [(ItemIdentifier, String)]()
+    private(set) var seriesIDs = [(ItemIdentifier, String)]()
     
     private var stoppedPlayingAt: Date?
     
     private(set) var keyboardsVisible = 0
     
-    private(set) var notifySkipBackwards = false
-    private(set) var notifySkipForwards = false
-    
     private(set) var notifyError = false
     private(set) var notifySuccess = false
     
     private init() {
-        _dragOffset = .zero
-        _isExpanded = false
-        
-        bookmarkNote = ""
-        
-        isQueueVisible = false
-        isCreateBookmarkAlertVisible = false
-        isCreatingBookmark = false
-        
-        authorIDs = []
-        narratorIDs = []
-        seriesIDs = []
-        
-        RFNotification[.skipped].subscribe { [weak self] forwards in
-            if forwards {
-                self?.notifySkipForwards.toggle()
-            } else {
-                self?.notifySkipBackwards.toggle()
-            }
-        }
-        
         RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _, _) in
             if let stoppedPlayingAt = self?.stoppedPlayingAt {
                 let distance = stoppedPlayingAt.distance(to: .now)
@@ -80,9 +91,17 @@ final class PlaybackViewModel {
         }
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.isExpanded = false
-            self?.dragOffset = 0
+            self?.translationY = 0
+            
+            self?.expansionAnimationCount = 0
+            self?.keyboardsVisible = 0
+            
+            self?.isCreateBookmarkAlertVisible = false
+            self?.isCreatingBookmark = false
             
             self?.authorIDs = []
+            self?.narratorIDs = []
+            self?.seriesIDs = []
             
             self?.stoppedPlayingAt = .now
         }
@@ -103,86 +122,53 @@ final class PlaybackViewModel {
         }
     }
     
-    var isExpanded: Bool {
-        get {
-            _isExpanded
-        }
-        set {
-            _isExpanded = newValue
-            
-            if newValue {
-                _dragOffset = 0
-            } else if _dragOffset == 0 {
-                // this is stupid
-                // this will trigger an view update
-                // because the scaleEffect depends on this variable
-                // and we need the NavigationStack to update
-                // so it will not do so after the animation finishes, causing a ugly mess
-                // if the user is dragging this already happens, so we trigger an update only when
-                // the user isn't dragging (dragOffset == 0) by setting it to the same value (0)
-                // If you are reading this, hire me
-                _dragOffset = 0
-            }
-            
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        }
-    }
-    var isNowPlayingHidden: Bool {
-        keyboardsVisible > 0 && !isExpanded
-    }
-    
-    var dragOffset: CGFloat {
-        get {
-            if isExpanded {
-                return _dragOffset
-            }
-            
-            return 0
-        }
-        set {
-            _dragOffset = max(0, min(newValue, 2000))
-        }
-    }
-    var pushAmount: Percentage {
-        guard !isNowPlayingHidden else {
-            return 1
-        }
-        
-        // technically a CGFloat
-        let dragHeight: Percentage = 500
-        
-        if dragOffset > 0 {
-            return 1 - (1 - min(dragHeight, max(0, dragOffset)) / dragHeight) * 0.1
-        }
-        
-        return isExpanded ? 0.9 : 1
-    }
-    
     var areSlidersInUse: Bool {
         seeking != nil || seekingTotal != nil || volumePreview != nil
     }
     
-    var backgroundCornerRadius: CGFloat {
-        #if false
-        0
-        #else
-        if isExpanded {
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                0
-            } else {
-                UIScreen.main.displayCornerRadius
+    var nowPlayingMirrorCornerRadius: CGFloat {
+        guard isExpanded else {
+            return 100
+        }
+        
+        if expansionAnimationCount > 0 || translationY > 0 || translateYAnimationCount > 0 {
+            return UIScreen.main.displayCornerRadius
+        }
+        
+        return 0
+    }
+    
+    func toggleExpanded() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        
+        // Foreground, background removal
+        // let ANIMATION_TIMING = (5.0, 4.0)
+        let ANIMATION_TIMING = (0.4, 0.32)
+        
+        if isNowPlayingBackgroundVisible {
+            expansionAnimationCount += 1
+            
+            withAnimation(.easeIn(duration: ANIMATION_TIMING.1)) {
+                isNowPlayingBackgroundVisible = false
+            }
+            
+            withAnimation(.spring(duration: ANIMATION_TIMING.0, bounce: 0.12)) {
+                isExpanded = false
+            } completion: {
+                self.translationY = 0
+                self.expansionAnimationCount -= 1
             }
         } else {
-            16
+            translationY = 0
+            expansionAnimationCount += 1
+            isNowPlayingBackgroundVisible = true
+            
+            withAnimation(.spring(duration: ANIMATION_TIMING.0, bounce: 0.36)) {
+                isExpanded = true
+            } completion: {
+                self.expansionAnimationCount -= 1
+            }
         }
-        #endif
-    }
-    func pushContainerCornerRadius(leadingOffset: CGFloat) -> CGFloat {
-        #if false
-            0
-        #else
-        max(8, UIScreen.main.displayCornerRadius - leadingOffset)
-        #endif
     }
     
     nonisolated func createQuickBookmark() {
