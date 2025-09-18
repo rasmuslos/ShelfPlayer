@@ -100,6 +100,14 @@ struct OfflineView: View {
             .onReceive(RFNotification[.downloadStatusChanged].publisher()) { _ in
                 loadItems()
             }
+            .modify {
+                if satellite.nowPlayingItemID != nil {
+                    $0
+                        .modifier(ApplyLegacyCollapsedForeground())
+                } else {
+                    $0
+                }
+            }
             .modifier(CompactPlaybackModifier(ready: true))
             .environment(\.playbackBottomOffset, 16)
         }

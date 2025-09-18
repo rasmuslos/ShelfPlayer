@@ -18,7 +18,6 @@ final class Satellite {
     
     private(set) var isOffline = Defaults[.startInOfflineMode]
     
-    @ObservableDefault(.lastTabValue) @ObservationIgnored
     var tabValue: TabValue?
     
     private(set) var sheetStack = [Sheet]()

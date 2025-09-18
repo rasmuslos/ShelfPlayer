@@ -46,8 +46,6 @@ struct PlaybackTabContentModifier: ViewModifier {
 }
 
 struct PlaybackSafeAreaPaddingModifier: ViewModifier {
-    @Environment(\.playbackBottomOffset) private var playbackBottomOffset
-    
     @Environment(Satellite.self) private var satellite
     
     private var padding: CGFloat {

@@ -18,6 +18,9 @@ final class PlaybackViewModel {
     var pillWidth: CGFloat = .zero
     var pillHeight: CGFloat = .zero
     
+    var isPillBackButtonVisible = true
+    var isUsingLegacyPillDesign = false
+    
     // Image position
     
     var pillImageX: CGFloat = .zero
@@ -31,14 +34,25 @@ final class PlaybackViewModel {
     let PILL_IMAGE_CORNER_RADIUS: CGFloat = 8
     let EXPANDED_IMAGE_CORNER_RADIUS: CGFloat = 28
     
+    var PILL_CORNER_RADIUS: CGFloat {
+        if #available(iOS 26, *) {
+            pillHeight
+        } else {
+            16
+        }
+    }
+    
     // Drag
     
     var translationY: CGFloat = .zero
+    var controlTranslationY: CGFloat = .zero
     
     // Expansion
     
     private(set) var isExpanded = false
     private(set) var isNowPlayingBackgroundVisible = false
+    
+    private(set) var showCompactPlaybackBarOnExpandedViewCount = 0
     
     private(set) var expansionAnimationCount = 0
     var translateYAnimationCount = 0
@@ -77,20 +91,25 @@ final class PlaybackViewModel {
     
     private init() {
         RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _, _) in
+            guard self?.isExpanded == false else {
+                return
+            }
+            
             if let stoppedPlayingAt = self?.stoppedPlayingAt {
                 let distance = stoppedPlayingAt.distance(to: .now)
                 
                 if distance > 3 {
-                    self?.isExpanded = true
+                    self?.toggleExpanded()
                 }
             } else {
-                self?.isExpanded = true
+                self?.toggleExpanded()
             }
             
             self?.loadIDs(itemID: itemID)
         }
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.isExpanded = false
+            self?.isNowPlayingBackgroundVisible = false
             self?.translationY = 0
             
             self?.expansionAnimationCount = 0
@@ -107,7 +126,11 @@ final class PlaybackViewModel {
         }
         
         RFNotification[.navigate].subscribe { [weak self] _ in
-            self?.isExpanded = false
+            guard self?.isExpanded == true else {
+                return
+            }
+            
+            self?.toggleExpanded()
         }
         
         RFNotification.NonIsolatedNotification<RFNotificationEmptyPayload>(UIResponder.keyboardWillShowNotification.rawValue).subscribe { [weak self] in
@@ -143,30 +166,47 @@ final class PlaybackViewModel {
         
         // Foreground, background removal
         // let ANIMATION_TIMING = (5.0, 4.0)
-        let ANIMATION_TIMING = (0.4, 0.32)
+        let ANIMATION_TIMING = (0.36, 0.28)
         
         if isNowPlayingBackgroundVisible {
             expansionAnimationCount += 1
             
-            withAnimation(.easeIn(duration: ANIMATION_TIMING.1)) {
+            withAnimation(.easeInOut(duration: 0.1)) {
+                showCompactPlaybackBarOnExpandedViewCount += 1
+            }
+            
+            withAnimation(.easeIn(duration: ANIMATION_TIMING.1).delay(0.2)) {
                 isNowPlayingBackgroundVisible = false
             }
             
-            withAnimation(.spring(duration: ANIMATION_TIMING.0, bounce: 0.12)) {
+            withAnimation(.easeInOut(duration: ANIMATION_TIMING.0)) {
                 isExpanded = false
+                controlTranslationY = 400
             } completion: {
-                self.translationY = 0
                 self.expansionAnimationCount -= 1
+                self.showCompactPlaybackBarOnExpandedViewCount -= 1
+                self.translationY = 0
+                
+                withAnimation(.smooth.delay(0.2)) {
+                    self.controlTranslationY = 0
+                }
             }
         } else {
             translationY = 0
+            controlTranslationY = 500
             expansionAnimationCount += 1
             isNowPlayingBackgroundVisible = true
+            self.showCompactPlaybackBarOnExpandedViewCount += 1
             
-            withAnimation(.spring(duration: ANIMATION_TIMING.0, bounce: 0.36)) {
+            withAnimation(.easeInOut(duration: ANIMATION_TIMING.0)) {
                 isExpanded = true
+                controlTranslationY = 0
             } completion: {
                 self.expansionAnimationCount -= 1
+            }
+            
+            withAnimation(.easeInOut(duration: 0.3)) {
+                self.showCompactPlaybackBarOnExpandedViewCount -= 1
             }
         }
     }

@@ -15,6 +15,7 @@ public extension EnvironmentValues {
     @Entry var displayContext: DisplayContext = .unknown
     
     @Entry var playbackBottomOffset: CGFloat = 0
+    @Entry var playbackBottomSafeArea: CGFloat = 0
 }
 
 public enum DisplayContext {

@@ -13,8 +13,8 @@ import ShelfPlayback
 final class ProgressViewModel {
     let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ProgressViewModel")
     
-    private(set) var importedConnectionIDs = [String]()
-    private(set) var importFailedConnectionIDs = [String]()
+    private(set) var importedConnectionIDs = Set<String>()
+    private(set) var importFailedConnectionIDs = Set<String>()
     
     private var currentlyPlayingItemID: ItemIdentifier?
     private var tasks = [ItemIdentifier.ConnectionID: Task<Void, Never>]()
@@ -57,7 +57,7 @@ final class ProgressViewModel {
             return
         }
         
-        importFailedConnectionIDs.removeAll { $0 == connectionID }
+        importFailedConnectionIDs.remove(connectionID)
         
         tasks[connectionID] = Task.detached {
             let success: Bool
@@ -86,10 +86,10 @@ final class ProgressViewModel {
             
             await MainActor.run {
                 if success {
-                    self.importedConnectionIDs.append(connectionID)
+                    self.importedConnectionIDs.insert(connectionID)
                 } else {
-                    self.importFailedConnectionIDs.append(connectionID)
-                    self.importedConnectionIDs.removeAll(where: { $0 == connectionID })
+                    self.importFailedConnectionIDs.insert(connectionID)
+                    self.importFailedConnectionIDs.remove(connectionID)
                 }
                 
                 /*
