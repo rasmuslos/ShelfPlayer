@@ -16,78 +16,96 @@ struct PlaybackBottomBarPill: View {
     @Environment(\.namespace) private var namespace
     @Environment(\.tabViewBottomAccessoryPlacement) private var accessoryPlacement
     
-    var body: some View {
-        GeometryReader { geometryProxy in
-            let x = geometryProxy.frame(in: .global).minX
-            let y = geometryProxy.frame(in: .global).minY
-            
-            let width = geometryProxy.frame(in: .global).width
-            let height = geometryProxy.frame(in: .global).height
-            
-            Button {
-                viewModel.toggleExpanded()
-            } label: {
-                HStack(spacing: 8) {
-                    GeometryReader { imageGeometryProxy in
-                        // idk why
-                        let x = imageGeometryProxy.frame(in: .global).minX
-                        let y = imageGeometryProxy.frame(in: .global).minY
-                        
-                        let size = imageGeometryProxy.size.width
-                        
-                        Rectangle()
-                            .fill(.clear)
-                            .onChange(of: x, initial: true) { viewModel.pillImageX = x }
-                            .onChange(of: y, initial: true) { viewModel.pillImageY = y }
-                            .onChange(of: size, initial: true) { viewModel.pillImageSize = size }
-                        
-                            
-                        ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
-                            .opacity(!viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
-                    }
-                    .aspectRatio(1, contentMode: .fit)
-                    .frame(width: height - 16)
-                    
-                    Group {
-                        if let currentItem = satellite.nowPlayingItem {
-                            Text(currentItem.name)
-                                .lineLimit(1)
-                        } else {
-                            Text("loading")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    PlaybackBackwardButton()
-                        .imageScale(.large)
-                    
-                    PlaybackSmallTogglePlayButton()
-                        .imageScale(.large)
-                        .padding(.horizontal, 8)
+    var decorative = false
+    
+    @ViewBuilder
+    private var label: some View {
+        HStack(spacing: 8) {
+            GeometryReader { imageGeometryProxy in
+                let x = imageGeometryProxy.frame(in: .global).minX
+                let y = imageGeometryProxy.frame(in: .global).minY
+                
+                let size = imageGeometryProxy.size.width
+                
+                if !decorative {
+                    Rectangle()
+                        .fill(.clear)
+                        .onChange(of: x, initial: true) { viewModel.pillImageX = x }
+                        .onChange(of: y, initial: true) { viewModel.pillImageY = y }
+                        .onChange(of: size, initial: true) { viewModel.pillImageSize = size }
                 }
-                .contentShape(.rect)
-                .padding(.horizontal, 16)
-                .frame(width: width, height: height)
+                    
+                ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
+                    .opacity(!viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
             }
-            .buttonStyle(.plain)
-            .onChange(of: x, initial: true) { viewModel.pillX = x }
-            .onChange(of: y, initial: true) { viewModel.pillY = y }
-            .onChange(of: width, initial: true) { viewModel.pillWidth = width }
-            .onChange(of: height, initial: true) { viewModel.pillHeight = height }
-            .contextMenu {
-                PlaybackMenuActions()
-            } preview: {
+            .aspectRatio(1, contentMode: .fit)
+            .padding(.vertical, 8)
+            .id((satellite.nowPlayingItemID?.description ?? "qkwndoiqind") + "_nowPlaying_image_collapsed")
+            
+            Group {
                 if let currentItem = satellite.nowPlayingItem {
-                    PlayableItemContextMenuPreview(item: currentItem)
+                    Text(currentItem.name)
+                        .lineLimit(1)
+                } else {
+                    Text("loading")
+                        .foregroundStyle(.secondary)
                 }
             }
-            .id((satellite.nowPlayingItem?.sortName ?? "wsrfgd_") + "_nowPlaying")
+            .id((satellite.nowPlayingItem?.sortName ?? "jiefniuwenfojnwef") + "_nowPlaying_text_collapsed")
+            
+            Spacer()
+            
+            if viewModel.isPillBackButtonVisible {
+                PlaybackBackwardButton()
+                    .imageScale(.large)
+            }
+            
+            PlaybackSmallTogglePlayButton()
+                .imageScale(.large)
+                .padding(.horizontal, 8)
+        }
+        .contentShape(.rect)
+        .padding(.horizontal, 16)
+    }
+    
+    var body: some View {
+        if decorative {
+            label
+        } else {
+            GeometryReader { geometryProxy in
+                let x = geometryProxy.frame(in: .global).minX
+                let y = geometryProxy.frame(in: .global).minY
+                
+                let width = geometryProxy.frame(in: .global).width
+                let height = geometryProxy.frame(in: .global).height
+                
+                Button {
+                    viewModel.toggleExpanded()
+                } label: {
+                    label
+                }
+                .buttonStyle(.plain)
+                .onChange(of: x, initial: true) { viewModel.pillX = x }
+                .onChange(of: y, initial: true) { viewModel.pillY = y }
+                .onChange(of: width, initial: true) { viewModel.pillWidth = width }
+                .onChange(of: height, initial: true) { viewModel.pillHeight = height }
+                .onChange(of: accessoryPlacement, initial: true) { viewModel.isPillBackButtonVisible = accessoryPlacement == .expanded }
+                .task {
+                    viewModel.isUsingLegacyPillDesign = false
+                }
+                .contextMenu {
+                    PlaybackMenuActions()
+                } preview: {
+                    if let currentItem = satellite.nowPlayingItem {
+                        PlayableItemContextMenuPreview(item: currentItem)
+                    }
+                }
+            }
         }
     }
 }
 
+#if DEBUG
 #Preview {
     if #available(iOS 26.0, *) {
         TabView {
@@ -118,3 +136,4 @@ struct PlaybackBottomBarPill: View {
         Text(verbatim: ":(")
     }
 }
+#endif

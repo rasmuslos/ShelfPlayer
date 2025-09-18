@@ -43,9 +43,14 @@ struct PreferencesView: View {
                     NavigationLink(destination: ConvenienceDownloadPreferences()) {
                         Label("preferences.convenienceDownload", systemImage: "arrow.down.circle")
                     }
-                    
+                }
+                
+                Section {
                     NavigationLink(destination: CarPlayPreferences()) {
                         Label("preferences.carPlay", systemImage: "car.badge.gearshape")
+                    }
+                    NavigationLink(destination: TabValuePreferences()) {
+                        Label("preferences.tabs", systemImage: "rectangle.on.rectangle.badge.gearshape")
                     }
                 }
                 

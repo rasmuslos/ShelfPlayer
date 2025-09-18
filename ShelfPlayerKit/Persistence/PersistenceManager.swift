@@ -27,6 +27,7 @@ public final class PersistenceManager: Sendable {
     public let bookmark: BookmarkSubsystem
     
     public let listenNow: ListenNowSubsystem
+    public let customization: CustomizationSubsystem
     
     private init() {
         let schema = Schema(versionedSchema: SchemaV2.self)
@@ -59,6 +60,7 @@ public final class PersistenceManager: Sendable {
         bookmark = .init(modelContainer: modelContainer)
         
         listenNow = .init()
+        customization = .init()
     }
     
     public func remove(itemID: ItemIdentifier) async {
