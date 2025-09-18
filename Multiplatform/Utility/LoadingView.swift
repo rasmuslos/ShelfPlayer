@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoadingView: View {
+    var showOfflineControls = false
+    
     var body: some View {
         UnavailableWrapper {
             Inner()

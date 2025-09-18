@@ -9,7 +9,6 @@ import SwiftUI
 import ShelfPlayback
 
 struct CompactPlaybackModifier: ViewModifier {
-    @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
@@ -20,7 +19,7 @@ struct CompactPlaybackModifier: ViewModifier {
     
     private var nowPlayingCornerRadius: CGFloat {
         guard viewModel.isExpanded else {
-            return viewModel.pillHeight
+            return viewModel.PILL_CORNER_RADIUS
         }
         
         if viewModel.expansionAnimationCount > 0 || viewModel.translationY > 0 || viewModel.translateYAnimationCount > 0 {
@@ -77,98 +76,37 @@ struct CompactPlaybackModifier: ViewModifier {
                         .offset(y: viewModel.translationY)
                     }
                     .overlay(alignment: .topLeading) {
-                            ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: viewModel.isExpanded ? viewModel.EXPANDED_IMAGE_CORNER_RADIUS : viewModel.PILL_IMAGE_CORNER_RADIUS)
-                                .frame(width: viewModel.isExpanded ? viewModel.expandedImageSize : viewModel.pillImageSize)
-                                .offset(x: viewModel.isExpanded ? viewModel.expandedImageX : viewModel.pillImageX,
-                                        y: viewModel.isExpanded ? viewModel.expandedImageY : viewModel.pillImageY)
-                                .opacity(viewModel.expansionAnimationCount > 0 ? 1 : 0)
-                                .allowsHitTesting(false)
-                                .accessibilityHidden(true)
+                        if viewModel.showCompactPlaybackBarOnExpandedViewCount > 0 {
+                            Group {
+                                if #available(iOS 26, *) {
+                                    PlaybackBottomBarPill(decorative: true)
+                                        .frame(width: viewModel.pillWidth, height: viewModel.pillHeight)
+                                } else {
+                                    CompactLegacyCollapsedForeground(decorative: true)
+                                }
+                            }
+                            .transition(.opacity)
+                            .offset(x: viewModel.pillX, y: viewModel.isExpanded ? viewModel.translationY : viewModel.pillY)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: viewModel.isExpanded ? viewModel.EXPANDED_IMAGE_CORNER_RADIUS : viewModel.PILL_IMAGE_CORNER_RADIUS)
+                            .frame(width: viewModel.isExpanded ? viewModel.expandedImageSize : viewModel.pillImageSize)
+                            .offset(x: viewModel.isExpanded ? viewModel.expandedImageX : viewModel.pillImageX,
+                                    y: viewModel.isExpanded ? viewModel.expandedImageY : viewModel.pillImageY)
+                            .opacity(viewModel.expansionAnimationCount > 0 ? 1 : 0)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
                     }
                     .ignoresSafeArea()
+                    .environment(\.playbackBottomSafeArea, geometryProxy.safeAreaInsets.bottom)
+                    .id((satellite.nowPlayingItem?.sortName ?? "wjnfiuweojnf") + "_nowPlaying_compact_content")
             }
         } else {
             content
         }
-    }
-}
-
-struct CompactLegacyCollapsedForeground: View {
-    @Environment(PlaybackViewModel.self) private var viewModel
-    @Environment(Satellite.self) private var satellite
-    
-    var body: some View {
-        GeometryReader { geometryProxy in
-            let x = geometryProxy.frame(in: .global).minX
-            let y = geometryProxy.frame(in: .global).minY
-            
-            let width = geometryProxy.frame(in: .global).width
-            let height = geometryProxy.frame(in: .global).height
-            
-            Button {
-                
-            } label: {
-                HStack(spacing: 8) {
-                    GeometryReader { imageGeometryProxy in
-                        // idk why
-                        let x = imageGeometryProxy.frame(in: .global).minX
-                        let y = imageGeometryProxy.frame(in: .global).minY
-                        
-                        let size = imageGeometryProxy.size.width
-                        
-                        Rectangle()
-                            .fill(.clear)
-                            .onChange(of: x, initial: true) { viewModel.pillImageX = x }
-                            .onChange(of: y, initial: true) { viewModel.pillImageY = y }
-                            .onChange(of: size, initial: true) { viewModel.pillImageSize = size }
-                        
-                        if !viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 {
-                            ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
-                                .id(satellite.nowPlayingItemID)
-                        }
-                    }
-                    .frame(width: 40, height: 40)
-                    
-                    Group {
-                        if let currentItem = satellite.nowPlayingItem {
-                            Text(currentItem.name)
-                                .lineLimit(1)
-                        } else {
-                            Text("loading")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    PlaybackBackwardButton()
-                        .imageScale(.large)
-                    
-                    PlaybackSmallTogglePlayButton()
-                        .imageScale(.large)
-                        .padding(.horizontal, 8)
-                }
-                .contentShape(.rect)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-                .background(.bar, in: .rect(cornerRadius: 16))
-            }
-            .buttonStyle(.plain)
-            .universalContentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .contextMenu {
-                PlaybackMenuActions()
-            } preview: {
-                if let currentItem = satellite.nowPlayingItem {
-                    PlayableItemContextMenuPreview(item: currentItem)
-                }
-            }
-            .onChange(of: x, initial: true) { viewModel.pillX = x }
-            .onChange(of: y, initial: true) { viewModel.pillY = y }
-            .onChange(of: width, initial: true) { viewModel.pillWidth = width }
-            .onChange(of: height, initial: true) { viewModel.pillHeight = height }
-        }
-        .frame(height: 56)
-        .padding(.horizontal, 12)
     }
 }
 
@@ -200,15 +138,17 @@ struct CompactLegacyCollapsedForeground: View {
                 }
         } else {
             $0
+                .modifier(ApplyLegacyCollapsedForeground())
         }
     }
     .modifier(CompactPlaybackModifier(ready: true))
+    .environment(\.playbackBottomOffset, 52)
     .previewEnvironment()
 }
 
 #Preview {
     ScrollView {
-        CompactLegacyCollapsedForeground()
+        CompactLegacyCollapsedForeground(decorative: false)
             .previewEnvironment()
     }
     .background(.blue)

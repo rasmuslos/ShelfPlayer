@@ -11,6 +11,8 @@ import ShelfPlayback
 struct PlaybackCompactExpandedForeground: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
+    
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.namespace) private var namespace
     
     let height: CGFloat
@@ -28,39 +30,46 @@ struct PlaybackCompactExpandedForeground: View {
             Spacer(minLength: 12)
             
             if !viewModel.isQueueVisible {
-                GeometryReader { imageGeometryProxy in
-                    let x = imageGeometryProxy.frame(in: .global).minX
-                    let y = imageGeometryProxy.frame(in: .global).minY
+                Rectangle()
+                    .fill(.clear)
+                    .aspectRatio(1, contentMode: .fit)
+                    .overlay {
+                        GeometryReader { imageGeometryProxy in
+                            let x = imageGeometryProxy.frame(in: .global).minX
+                            let y = imageGeometryProxy.frame(in: .global).minY
+                            
+                            let size = imageGeometryProxy.size.width
+                            
+                            Rectangle()
+                                .fill(.clear)
+                                .onChange(of: x, initial: true) { viewModel.expandedImageX = x }
+                                .onChange(of: y, initial: true) { viewModel.expandedImageY = y }
+                                .onChange(of: size, initial: true) { viewModel.expandedImageSize = size }
+                            
+                            ItemImage(itemID: satellite.nowPlayingItemID, size: .large, cornerRadius: viewModel.EXPANDED_IMAGE_CORNER_RADIUS, aspectRatio: .none, contrastConfiguration: nil)
+                                .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
+                        }
+                        .aspectRatio(1, contentMode: .fit)
+                        .id((satellite.nowPlayingItemID?.description ?? "wwf2foijwvkjw") + "_nowPlaying_image_expanded_large")
+                        .padding(.horizontal, satellite.isPlaying ? -8 : 40)
+                        .shadow(color: .black.opacity(0.4), radius: 20)
+                        .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
+                        .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
+                        .modifier(PlaybackDragGestureCatcher(height: height))
+                    }
+                
+                Spacer(minLength: 12)
+                
+                Group {
+                    PlaybackTitle()
+                        .matchedGeometryEffect(id: "text", in: namespace!, properties: .frame, anchor: .center)
                     
-                    let size = imageGeometryProxy.size.width
+                    Spacer(minLength: 12)
                     
-                    Rectangle()
-                        .fill(.clear)
-                        .onChange(of: x, initial: true) { viewModel.expandedImageX = x }
-                        .onChange(of: y, initial: true) { viewModel.expandedImageY = y }
-                        .onChange(of: size, initial: true) { viewModel.expandedImageSize = size }
-                    
-                    ItemImage(itemID: satellite.nowPlayingItemID, size: .large, cornerRadius: viewModel.EXPANDED_IMAGE_CORNER_RADIUS, aspectRatio: .none, contrastConfiguration: nil)
-                        .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
+                    PlaybackControls()
+                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 }
-                .aspectRatio(1, contentMode: .fit)
-                .id(satellite.nowPlayingItemID)
-                .padding(.horizontal, -8)
-                .shadow(color: .black.opacity(0.4), radius: 20)
-                .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
-                .scaleEffect(satellite.isPlaying ? 1 : 0.8)
-                .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
-                .modifier(PlaybackDragGestureCatcher(height: height))
-                
-                Spacer(minLength: 12)
-                
-                PlaybackTitle()
-                    .matchedGeometryEffect(id: "text", in: namespace!, properties: .frame, anchor: .center)
-                
-                Spacer(minLength: 12)
-                
-                PlaybackControls()
-                    .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                .offset(y: viewModel.controlTranslationY)
                 
                 Spacer(minLength: 12)
             } else {
@@ -70,27 +79,46 @@ struct PlaybackCompactExpandedForeground: View {
                             viewModel.isQueueVisible.toggle()
                         }
                     } label: {
-                        ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: 12, aspectRatio: .none, contrastConfiguration: nil)
+                        GeometryReader { imageGeometryProxy in
+                            let x = imageGeometryProxy.frame(in: .global).minX
+                            let y = imageGeometryProxy.frame(in: .global).minY
+                            
+                            let size = imageGeometryProxy.size.width
+                            
+                            Rectangle()
+                                .fill(.clear)
+                                .onChange(of: x, initial: true) { viewModel.expandedImageX = x }
+                                .onChange(of: y, initial: true) { viewModel.expandedImageY = y }
+                                .onChange(of: size, initial: true) { viewModel.expandedImageSize = size }
+                            
+                            ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: 12, aspectRatio: .none, contrastConfiguration: nil)
+                                .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
+                        }
+                        .aspectRatio(1, contentMode: .fit)
+                        .frame(width: 72)
+                        .shadow(color: .black.opacity(0.32), radius: 12)
+                        .id((satellite.nowPlayingItemID?.description ?? "jhiiuwghdf") + "_nowPlaying_image_expanded_small")
                     }
                     .buttonStyle(.plain)
-                    .frame(height: 72)
-                    .shadow(color: .black.opacity(0.32), radius: 12)
                     .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
-                    .modifier(PlaybackDragGestureCatcher(height: height))
                     
                     PlaybackTitle()
                         .matchedGeometryEffect(id: "text", in: namespace!, properties: .frame, anchor: .center)
                 }
+                .padding(.top, 20)
+                .modifier(PlaybackDragGestureCatcher(height: height))
                 
                 PlaybackQueue()
                     .padding(.vertical, 12)
                     .frame(maxHeight: height - 140)
                     .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                    .offset(y: viewModel.controlTranslationY * 2)
             }
             
             PlaybackActions()
                 .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 .padding(.bottom, safeAreBottomInset + 12)
+                .offset(y: viewModel.controlTranslationY)
         }
         .overlay(alignment: .top) {
             Button {

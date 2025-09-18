@@ -13,6 +13,8 @@ struct PlaybackTitle: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
+    @State private var uuid = UUID()
+    
     var body: some View {
         HStack(spacing: 0) {
             Menu {
@@ -43,7 +45,7 @@ struct PlaybackTitle: View {
                             .font(.headline)
                     }
                 }
-                .id(satellite.nowPlayingItem)
+                .id((satellite.nowPlayingItem?.sortName ?? "ijwefnoijoiujoizg") + "_nowPlaying_text_title_\(uuid)")
             }
             .buttonStyle(.plain)
             
