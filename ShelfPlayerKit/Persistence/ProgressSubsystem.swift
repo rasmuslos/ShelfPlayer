@@ -525,7 +525,7 @@ public extension PersistenceManager.ProgressSubsystem {
                                      currentTime: payload.currentTime ?? 0,
                                      startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
                                      lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
-                                     finishedAt: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : nil,
+                                     finishedAt: payload.finishedAt != nil ? Date(timeIntervalSince1970: Double(payload.finishedAt!) / 1000) : nil,
                                      status: .synchronized)
             }
             // }
