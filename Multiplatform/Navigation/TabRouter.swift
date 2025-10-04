@@ -70,7 +70,7 @@ struct TabRouter: View {
                     LoadingView()
                         .modifier(OfflineControlsModifier(startOfflineTimeout: true))
                         .task {
-                            libraryCompactTabs[tabValue.library] = PersistenceManager.shared.customization.configuredTabs(for: tabValue.library, scope: .tabBar)
+                            libraryCompactTabs[tabValue.library] = await PersistenceManager.shared.customization.configuredTabs(for: tabValue.library, scope: .tabBar)
                         }
                 } else {
                     TabView(selection: selectionProxy) {
@@ -86,7 +86,7 @@ struct TabRouter: View {
                             if let libraries = connectionStore.libraries[connection.id] {
                                 ForEach(libraries) { library in
                                     TabSection(library.name) {
-                                        ForEach(PersistenceManager.shared.customization.availableTabs(for: library)) { tab in
+                                        ForEach(PersistenceManager.shared.customization.availableTabs(for: library, scope: .sidebar)) { tab in
                                             Tab(tab.label, systemImage: tab.image, value: tab) {
                                                 if !isSynchronized && !isCompact {
                                                     SyncGate(library: tabValue.library)
@@ -134,7 +134,9 @@ struct TabRouter: View {
                             $0
                                 .tabBarMinimizeBehavior(.onScrollDown)
                                 .tabViewBottomAccessory {
-                                    PlaybackBottomBarPill()
+                                    if satellite.nowPlayingItemID != nil {
+                                        PlaybackBottomBarPill()
+                                    }
                                 }
                         } else {
                             $0
@@ -207,6 +209,10 @@ struct TabRouter: View {
         .onReceive(RFNotification[.navigateConditionMet].publisher()) {
             navigateIfRequired(withDelay: true)
         }
+        .onReceive(RFNotification[.invalidateTabs].publisher()) {
+            libraryCompactTabs.removeAll()
+            populateCompactLibraryTabs()
+        }
     }
     
     private func select(_ library: Library) {
@@ -268,7 +274,7 @@ struct TabRouter: View {
         Task {
             for library in connectionStore.libraries.values.flatMap({ $0 }) {
                 if libraryCompactTabs[library] == nil {
-                    libraryCompactTabs[library] = PersistenceManager.shared.customization.configuredTabs(for: library, scope: .tabBar)
+                    libraryCompactTabs[library] = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: .tabBar)
                 }
             }
         }

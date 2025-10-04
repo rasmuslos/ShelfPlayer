@@ -57,6 +57,7 @@ struct AudiobookSeriesPanel: View {
             }
         }
         .navigationTitle("panel.series")
+        .largeTitleDisplayMode()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "ellipsis.circle") {

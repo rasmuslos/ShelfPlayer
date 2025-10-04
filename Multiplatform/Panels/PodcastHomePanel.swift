@@ -63,6 +63,7 @@ struct PodcastHomePanel: View {
             }
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
+        .largeTitleDisplayMode()
         .sensoryFeedback(.error, trigger: didFail)
         .toolbar {
             if horizontalSizeClass == .compact {

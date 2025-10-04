@@ -9,7 +9,7 @@ import Foundation
 import AppIntents
 import CoreTransferable
 
-@AssistantEntity(schema: .books.audiobook)
+@AppEntity(schema: .books.audiobook)
 public struct AudiobookEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
     public static let defaultQuery = AudiobookEntityQuery()
     
