@@ -85,8 +85,12 @@ extension AudiobookView {
                             .labelStyle(.iconOnly)
                         
                         Menu {
-                            ItemShareButton(item: viewModel.audiobook)
-                            ItemConfigureButton(itemID: viewModel.audiobook.id)
+                            ControlGroup {
+                                ItemShareButton(item: viewModel.audiobook)
+                                ItemCollectionMembershipEditButton(itemID: viewModel.audiobook.id)
+                                
+                                DownloadButton(itemID: viewModel.audiobook.id)
+                            }
                             
                             Divider()
                             
@@ -95,8 +99,8 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            DownloadButton(itemID: viewModel.audiobook.id)
-                            ItemCollectionMembershipEditButton(itemID: viewModel.audiobook.id)
+                            ProgressButton(itemID: viewModel.audiobook.id)
+                            ProgressResetButton(itemID: viewModel.audiobook.id)
                             
                             Divider()
                             
@@ -106,8 +110,7 @@ extension AudiobookView {
                             
                             Divider()
                             
-                            ProgressButton(itemID: viewModel.audiobook.id)
-                            ProgressResetButton(itemID: viewModel.audiobook.id)
+                            ItemConfigureButton(itemID: viewModel.audiobook.id)
                         } label: {
                             Label("item.options", systemImage: "ellipsis.circle")
                         }

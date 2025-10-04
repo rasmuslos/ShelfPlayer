@@ -56,7 +56,11 @@ private struct TabValueLibraryPreferences: View {
                     .podcastHome(library)
         }
     }
-    func isDisabled(tabValue: TabValue) -> Bool {
+    var containsHomeTab: Bool {
+        viewModel?.tabs.contains { isHomeTab(tabValue: $0) } == true
+    }
+    
+    func isHomeTab(tabValue: TabValue) -> Bool {
         switch tabValue {
             case .audiobookHome, .podcastHome:
                 true
@@ -69,11 +73,13 @@ private struct TabValueLibraryPreferences: View {
         List {
             if let viewModel {
                 Section {
-                    Label(homeTab.label, systemImage: homeTab.image)
-                        .foregroundStyle(.primary)
+                    if containsHomeTab {
+                        Label(homeTab.label, systemImage: homeTab.image)
+                            .foregroundStyle(.primary)
+                    }
                     
                     ForEach(viewModel.tabs) { tab in
-                        if !isDisabled(tabValue: tab) {
+                        if !isHomeTab(tabValue: tab) {
                             Label(tab.label, systemImage: tab.image)
                                 .foregroundStyle(.primary)
                         }
@@ -154,7 +160,11 @@ private final class TabValueShadow {
         available.filter { !tabs.contains($0) }
     }
     var isFull: Bool {
-        tabs.count >= MAXIMUM_TAB_COUNT
+        if scope == .library {
+           false
+        } else {
+            tabs.count >= MAXIMUM_TAB_COUNT
+        }
     }
     
     func add(tab: TabValue) {
