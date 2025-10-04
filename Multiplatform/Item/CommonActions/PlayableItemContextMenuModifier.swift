@@ -29,17 +29,19 @@ struct PlayableItemContextMenuInner: View {
     let currentDownloadStatus: DownloadStatus?
     
     var body: some View {
-        ItemShareButton(item: item)
-        
-        Divider()
+        ControlGroup {
+            ItemShareButton(item: item)
+            ItemCollectionMembershipEditButton(itemID: item.id)
+            DownloadButton(itemID: item.id, initialStatus: currentDownloadStatus)
+        }
         
         QueuePlayButton(itemID: item.id)
         QueueButton(itemID: item.id)
         
         Divider()
         
-        DownloadButton(itemID: item.id, initialStatus: currentDownloadStatus)
-        ItemCollectionMembershipEditButton(itemID: item.id)
+        ProgressButton(itemID: item.id)
+        ProgressResetButton(itemID: item.id)
         
         Divider()
         
@@ -63,11 +65,6 @@ struct PlayableItemContextMenuInner: View {
             ItemLoadLink(itemID: episode.id)
             ItemLoadLink(itemID: episode.podcastID, footer: episode.podcastName)
         }
-        
-        Divider()
-        
-        ProgressButton(itemID: item.id)
-        ProgressResetButton(itemID: item.id)
     }
 }
 struct PlayableItemContextMenuPreview: View {

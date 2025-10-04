@@ -338,11 +338,9 @@ struct PlaybackMenuActions: View {
             ControlGroup {
                 ProgressButton(itemID: currentItem.id)
                 StopPlaybackButton()
+                
+                ItemCollectionMembershipEditButton(itemID: currentItem.id)
             }
-            
-            ItemCollectionMembershipEditButton(itemID: currentItem.id)
-            
-            Divider()
             
             if let audiobook = currentItem as? Audiobook {
                 ItemLoadLink(itemID: audiobook.id)
