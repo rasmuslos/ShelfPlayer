@@ -121,8 +121,8 @@ struct CompactPlaybackModifier: ViewModifier {
                         .frame(height: 10_000)
                 }
                 .ignoresSafeArea()
+                .modifier(PlaybackTabContentModifier())
             }
-            .modifier(PlaybackTabContentModifier())
         }
         
         Tab(role: .search) {
@@ -142,7 +142,7 @@ struct CompactPlaybackModifier: ViewModifier {
         }
     }
     .modifier(CompactPlaybackModifier(ready: true))
-    .environment(\.playbackBottomOffset, 52)
+    .environment(\.playbackBottomOffset, 60)
     .previewEnvironment()
 }
 
