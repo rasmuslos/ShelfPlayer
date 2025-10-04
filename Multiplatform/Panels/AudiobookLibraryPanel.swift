@@ -21,26 +21,23 @@ struct AudiobookLibraryPanel: View {
     @State private var viewModel = LibraryViewModel()
     
     private var libraryRowCount: CGFloat {
-        horizontalSizeClass == .compact && library != nil ? 6 :  0
+        horizontalSizeClass == .compact && library != nil
+        ? viewModel.tabs.isEmpty ? 1 : CGFloat(viewModel.tabs.count)
+        : 0
     }
     @ViewBuilder
     private var libraryRows: some View {
         if horizontalSizeClass == .compact, let library {
-            let rows = [
-                TabValue.audiobookSeries(library),
-                TabValue.audiobookAuthors(library),
-                TabValue.audiobookNarrators(library),
-                TabValue.audiobookBookmarks(library),
-                TabValue.audiobookCollections(library),
-                TabValue.playlists(library),
-            ]
-            
-            ForEach(Array(rows.enumerated()), id: \.element) { (index, row) in
-                NavigationLink(value: NavigationDestination.tabValue(row)) {
-                    Label(row.label, systemImage: row.image)
-                        .foregroundStyle(.primary)
+            if viewModel.tabs.isEmpty {
+                ProgressView()
+            } else {
+                ForEach(Array(viewModel.tabs.enumerated()), id: \.element) { (index, row) in
+                    NavigationLink(value: NavigationDestination.tabValue(row)) {
+                        Label(row.label, systemImage: row.image)
+                            .foregroundStyle(.primary)
+                    }
+                    .listRowSeparator(index == 0 ? .hidden : .automatic, edges: .top)
                 }
-                .listRowSeparator(index == 0 ? .hidden : .automatic, edges: .top)
             }
         }
     }
@@ -213,6 +210,9 @@ struct AudiobookLibraryPanel: View {
             viewModel.clear()
             focused.toggle()
         }
+        .onReceive(RFNotification[.invalidateTabs].publisher()) {
+            viewModel.loadTabs()
+        }
     }
 }
 
@@ -231,6 +231,8 @@ private final class LibraryViewModel {
     var sortOrder: AudiobookSortOrder
     @ObservableDefault(.audiobooksAscending) @ObservationIgnored
     var ascending: Bool
+    
+    var tabs = [TabValue]()
     
     var search = "" {
         didSet {
@@ -285,11 +287,24 @@ private final class LibraryViewModel {
     }
     
     nonisolated func load() {
+        loadTabs()
         loadGenres()
     }
     nonisolated func refresh() {
         lazyLoader.refresh()
+        
+        loadTabs()
         loadGenres()
+    }
+    
+    nonisolated func loadTabs() {
+        Task {
+            let tabs = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: .library)
+            
+            await MainActor.withAnimation {
+                self.tabs = tabs
+            }
+        }
     }
     
     func clear() {
@@ -444,5 +459,6 @@ private enum SearchScope: Int, Hashable, Identifiable, CaseIterable {
         AudiobookLibraryPanel()
     }
     .previewEnvironment()
+    .environment(\.library, .init(id: "fixture", connectionID: "fixture", name: "Fixture", type: "book", index: 0))
 }
 #endif

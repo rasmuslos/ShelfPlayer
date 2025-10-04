@@ -606,6 +606,7 @@ struct PlaybackActions: View {
 }
 
 private struct PlaybackSlider<MiddleContent: View>: View {
+    @Environment(Satellite.self) private var satellite
     @Environment(\.colorScheme) private var colorScheme
     
     @Default(.durationToggled) private var durationToggled
@@ -637,7 +638,7 @@ private struct PlaybackSlider<MiddleContent: View>: View {
         }
         
         if durationToggled {
-            return duration - currentTime
+            return (duration - currentTime) * (1 / satellite.playbackRate)
         } else {
             return duration
         }

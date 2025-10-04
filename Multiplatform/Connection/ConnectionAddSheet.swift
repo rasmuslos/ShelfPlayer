@@ -107,7 +107,13 @@ private final class ViewModel: Sendable {
     var url: URL?
     var version: String?
     
+    #if DEBUG
+    var headers = [HeaderShadow]([
+        
+    ])
+    #else
     var headers = [HeaderShadow]()
+    #endif
     var identity: SecIdentity?
     
     var username = ""

@@ -41,6 +41,7 @@ struct PodcastLatestPanel: View {
             }
         }
         .navigationTitle("panel.latest")
+        .largeTitleDisplayMode()
         .modifier(PlaybackSafeAreaPaddingModifier())
         .task {
             fetchItems()

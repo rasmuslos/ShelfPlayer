@@ -8,7 +8,7 @@
 import Foundation
 import AppIntents
 
-@AssistantIntent(schema: .books.playAudiobook)
+@AppIntent(schema: .books.playAudiobook)
 public struct StartAudiobookIntent: AudioPlaybackIntent {
     @AppDependency private var audioPlayer: IntentAudioPlayer
     

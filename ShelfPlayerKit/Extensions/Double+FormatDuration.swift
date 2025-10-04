@@ -57,6 +57,6 @@ public extension FormatStyle where Self == DurationComponentsFormatter {
     }
 }
 
-extension NSCalendar.Unit: Codable, @retroactive Hashable {}
-extension DateComponentsFormatter.UnitsStyle: Codable, @retroactive Hashable {}
-extension Formatter.Context: Codable {}
+extension NSCalendar.Unit: @retroactive Codable, @retroactive Hashable {}
+extension DateComponentsFormatter.UnitsStyle: @retroactive Codable, @retroactive Hashable {}
+extension Formatter.Context: @retroactive Codable {}

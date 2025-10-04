@@ -1224,6 +1224,9 @@ extension Satellite {
             .init(id: 2, startOffset: 201, endOffset: 300, title: "GHI"),
             .init(id: 3, startOffset: 301, endOffset: 400, title: "JKL"),
         ]
+        chapters = (Int(0)...100).map {
+            .init(id: $0, startOffset: Double($0), endOffset: Double($0) + 0.99, title: "\($0)")
+        }
         
         isPlaying = true
         isBuffering = false

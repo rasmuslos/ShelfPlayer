@@ -36,6 +36,7 @@ struct AudiobookBookmarksPanel: View {
             }
         }
         .navigationTitle("panel.bookmarks")
+        .largeTitleDisplayMode()
         .task {
             load()
         }

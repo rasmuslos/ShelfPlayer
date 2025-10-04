@@ -53,6 +53,7 @@ struct CollectionsPanel: View {
             }
         }
         .navigationTitle(type.label)
+        .largeTitleDisplayMode()
         .modifier(PlaybackSafeAreaPaddingModifier())
         .onReceive(RFNotification[.collectionChanged].publisher()) { _ in
             lazyLoader.refresh()

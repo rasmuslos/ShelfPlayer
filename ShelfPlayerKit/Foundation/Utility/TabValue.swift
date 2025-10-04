@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable {
+public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable, Sendable {
     case audiobookHome(Library)
     
     case audiobookSeries(Library)

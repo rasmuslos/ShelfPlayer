@@ -22,10 +22,13 @@ struct TabValuePreferences: View {
                             if scopes.count == 1, let scope = scopes.first {
                                 NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
                             } else {
-                                Menu(library.name) {
-                                    ForEach(scopes, id: \.rawValue) { scope in
-                                        NavigationLink(String("\(library.name): \(scope.label)"), destination: TabValueLibraryPreferences(library: library, scope: scope))
+                                NavigationLink(library.name) {
+                                    List {
+                                        ForEach(scopes) { scope in
+                                            NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
+                                        }
                                     }
+                                    .navigationTitle(library.name)
                                 }
                             }
                         }
@@ -35,6 +38,7 @@ struct TabValuePreferences: View {
                 }
             }
         }
+        .navigationTitle("preferences.tabs")
     }
 }
 
@@ -44,30 +48,147 @@ private struct TabValueLibraryPreferences: View {
     
     @State private var viewModel: TabValueShadow?
     
+    var homeTab: TabValue {
+        switch library.type {
+            case .audiobooks:
+                    .audiobookHome(library)
+            case .podcasts:
+                    .podcastHome(library)
+        }
+    }
+    func isDisabled(tabValue: TabValue) -> Bool {
+        switch tabValue {
+            case .audiobookHome, .podcastHome:
+                true
+            default:
+                false
+        }
+    }
+    
     var body: some View {
         List {
             if let viewModel {
+                Section {
+                    Label(homeTab.label, systemImage: homeTab.image)
+                        .foregroundStyle(.primary)
+                    
+                    ForEach(viewModel.tabs) { tab in
+                        if !isDisabled(tabValue: tab) {
+                            Label(tab.label, systemImage: tab.image)
+                                .foregroundStyle(.primary)
+                        }
+                    }
+                    .onMove {
+                        viewModel.tabs.move(fromOffsets: $0, toOffset: $1)
+                    }
+                    .onDelete {
+                        for index in $0 {
+                            viewModel.tabs.remove(at: index)
+                        }
+                    }
+                }
+                .id(viewModel.tabs.count)
                 
+                Section {
+                    ForEach(viewModel.filtered) { tab in
+                        Button {
+                            viewModel.add(tab: tab)
+                        } label: {
+                            HStack(spacing: 0) {
+                                Label(tab.label, systemImage: tab.image)
+                                    .foregroundStyle(.primary)
+                                Spacer(minLength: 4)
+                                Image(systemName: "plus.circle")
+                                    .foregroundStyle(Color.accentColor)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .disabled(viewModel.isFull)
+                
+                Button("action.reset", role: .destructive) {
+                    viewModel.reset()
+                }
             } else {
                 ProgressView()
+                    .task {
+                        viewModel = await .init(library: library, scope: scope)
+                    }
             }
         }
-        .navigationTitle(library.name)
+        .navigationTitle(String("\(library.name): \(scope.label)"))
+        .environment(\.editMode, .constant(.active))
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("action.save") {
+                    viewModel?.save()
+                }
+            }
+        }
     }
 }
 
 @Observable @MainActor
 private final class TabValueShadow {
-    var tabs: [TabValue]
+    let MAXIMUM_TAB_COUNT = 5
     
-    init() async {
-        tabs = []
+    let library: Library
+    let scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope
+    
+    var tabs: [TabValue]
+    var available: [TabValue]
+    
+    var isLoading = false
+    var notifyError = false
+    
+    init(library: Library, scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) async {
+        self.library = library
+        self.scope = scope
+        
+        tabs = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: scope)
+        available = PersistenceManager.shared.customization.availableTabs(for: library, scope: scope)
+    }
+    
+    var filtered: [TabValue] {
+        available.filter { !tabs.contains($0) }
+    }
+    var isFull: Bool {
+        tabs.count >= MAXIMUM_TAB_COUNT
+    }
+    
+    func add(tab: TabValue) {
+        guard !isFull else {
+            return
+        }
+        
+        tabs.append(tab)
+    }
+    func reset() {
+        tabs = PersistenceManager.shared.customization.defaultTabs(for: library, scope: scope)
+    }
+    
+    func save() {
+        Task {
+            do {
+                try await PersistenceManager.shared.customization.setConfiguredTabs(tabs, for: library, scope: scope)
+            } catch {
+                notifyError.toggle()
+            }
+        }
     }
 }
 
 extension PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope {
-    var label: String {
-        ""
+    var label: LocalizedStringKey {
+        switch self {
+            case .library:
+                "panel.library"
+            case .tabBar:
+                "preferences.tabs"
+            case .sidebar:
+                fatalError()
+        }
     }
 }
 

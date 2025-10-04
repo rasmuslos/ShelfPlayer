@@ -44,6 +44,7 @@ struct AudiobookNarratorsPanel: View {
             }
         }
         .navigationTitle("panel.narrators")
+        .largeTitleDisplayMode()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "arrow.up.arrow.down.circle") {
