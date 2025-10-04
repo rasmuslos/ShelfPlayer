@@ -34,6 +34,7 @@
 		3A17EB562E37581500AD6A18 /* CertificateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17EB552E37580400AD6A18 /* CertificateEditor.swift */; };
 		3A1B802D2D6F18D600D69B13 /* PlaybackComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1B802C2D6F18CC00D69B13 /* PlaybackComponents.swift */; };
 		3A1CCD752DE343A800B2EAA9 /* ListenedTodayLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1CCD742DE343A800B2EAA9 /* ListenedTodayLabel.swift */; };
+		3A2385C42E91106E00D0ABF9 /* ShelfPlayer.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3A2385C32E91100D00D0ABF9 /* ShelfPlayer.icon */; };
 		3A262E992DA155A1002F927A /* OfflineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A262E982DA155A1002F927A /* OfflineView.swift */; };
 		3A27F0F12CA15E0F005DE87D /* TabRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A27F0F02CA15E08005DE87D /* TabRouter.swift */; };
 		3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B93342B00D71B00638AE9 /* ProgressButton.swift */; };
@@ -1163,7 +1164,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					3A0AE69F2AB623F400ACCD68 = {
 						CreatedOnToolsVersion = 15.0;
@@ -1217,6 +1218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A2385C42E91106E00D0ABF9 /* ShelfPlayer.icon in Resources */,
 				3AA94F8D2BB02DF90012E731 /* PrivacyInfo.xcprivacy in Resources */,
 				3A2BC1952AD8121400054727 /* Settings.bundle in Resources */,
 				3A792B972B6F9F53002A48E6 /* InfoPlist.xcstrings in Resources */,
@@ -1658,6 +1660,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1728,6 +1731,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1744,6 +1748,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = ShelfPlayer;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				DEVELOPMENT_ASSET_PATHS = "\"Multiplatform/Preview Assets.xcassets\"";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
@@ -1782,6 +1789,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ShelfPlayer;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Multiplatform/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
@@ -1868,6 +1878,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1899,6 +1910,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1929,6 +1941,7 @@
 		3AC9A8E62DEC716F004BC123 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1958,6 +1971,7 @@
 		3AC9A8E72DEC716F004BC123 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
