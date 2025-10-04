@@ -32,7 +32,7 @@ final class PlaybackViewModel {
     var expandedImageSize: CGFloat = .zero
     
     let PILL_IMAGE_CORNER_RADIUS: CGFloat = 8
-    let EXPANDED_IMAGE_CORNER_RADIUS: CGFloat = 28
+    let EXPANDED_IMAGE_CORNER_RADIUS: CGFloat = 16
     
     var PILL_CORNER_RADIUS: CGFloat {
         if #available(iOS 26, *) {

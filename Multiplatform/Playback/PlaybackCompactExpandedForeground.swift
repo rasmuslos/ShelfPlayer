@@ -127,7 +127,7 @@ struct PlaybackCompactExpandedForeground: View {
                 Rectangle()
                     .foregroundStyle(.secondary)
                     .opacity(0.62)
-                    .frame(width: 100, height: 4)
+                    .frame(width: 60, height: 4)
                     .clipShape(.rect(cornerRadius: .infinity))
             }
             .buttonStyle(.plain)
@@ -141,3 +141,13 @@ struct PlaybackCompactExpandedForeground: View {
         .padding(.horizontal, 28)
     }
 }
+
+#if DEBUG
+#Preview {
+    GeometryReader { geometryProxy in
+        PlaybackCompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: geometryProxy.safeAreaInsets.top, safeAreBottomInset: geometryProxy.safeAreaInsets.bottom)
+            .ignoresSafeArea()
+    }
+    .previewEnvironment()
+}
+#endif

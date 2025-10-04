@@ -17,14 +17,20 @@ struct OfflineControlsModifier: ViewModifier {
         content
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 12) {
-                    Button {
-                        RFNotification[.changeOfflineMode].send(payload: true)
-                    } label: {
-                        Text("navigation.sync.failed.offline")
-                        + Text(verbatim: " ")
-                        + Text(.now.advanced(by: 6), style: .relative)
+                    if !startOfflineTimeout {    
+                        Button("navigation.offline.enable", systemImage: "network.slash") {
+                            RFNotification[.changeOfflineMode].send(payload: true)
+                        }
+                    } else {
+                        Button {
+                            RFNotification[.changeOfflineMode].send(payload: true)
+                        } label: {
+                            Text("navigation.sync.failed.offline")
+                            + Text(verbatim: " ")
+                            + Text(.now.advanced(by: 6), style: .relative)
+                        }
+                        .opacity(offlineTimeout == nil ? 0 : 1)
                     }
-                    .opacity(offlineTimeout == nil ? 0 : 1)
                     
                     Menu {
                         LibraryPicker()
@@ -62,6 +68,11 @@ struct OfflineControlsModifier: ViewModifier {
 #Preview {
     ContentUnavailableView("navigation.sync.failed", systemImage: "circle.badge.xmark", description: Text("navigation.sync.failed"))
         .modifier(OfflineControlsModifier(startOfflineTimeout: true))
+        .previewEnvironment()
+}
+#Preview {
+    ContentUnavailableView("navigation.sync.failed", systemImage: "circle.badge.xmark", description: Text("navigation.sync.failed"))
+        .modifier(OfflineControlsModifier(startOfflineTimeout: false))
         .previewEnvironment()
 }
 #endif
