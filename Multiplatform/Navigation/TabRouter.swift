@@ -167,7 +167,7 @@ struct TabRouter: View {
             }
         }
         .modifier(CompactPlaybackModifier(ready: isSynchronized))
-        .environment(\.playbackBottomOffset, 52)
+        .environment(\.playbackBottomOffset, 60)
         .sensoryFeedback(.error, trigger: progressViewModel.importFailedConnectionIDs)
         .onChange(of: satellite.tabValue?.library, initial: true) {
             let appearance = UINavigationBarAppearance()

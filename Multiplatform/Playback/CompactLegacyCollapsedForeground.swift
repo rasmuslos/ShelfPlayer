@@ -70,7 +70,6 @@ struct CompactLegacyCollapsedForeground: View {
                     .background(.bar, in: .rect(cornerRadius: viewModel.PILL_CORNER_RADIUS))
             }
         }
-        .frame(height: 56)
         .padding(.horizontal, 12)
     }
     
@@ -108,6 +107,7 @@ struct CompactLegacyCollapsedForeground: View {
                     viewModel.isUsingLegacyPillDesign = true
                 }
             }
+            .frame(height: 56)
         }
     }
 }
@@ -123,6 +123,7 @@ struct ApplyLegacyCollapsedForeground: ViewModifier {
             .safeAreaInset(edge: .bottom) {
                 if satellite.nowPlayingItemID != nil {
                     CompactLegacyCollapsedForeground(decorative: false)
+                        .frame(height: 40)
                         .offset(y: -(playbackBottomOffset + playbackBottomSafeArea))
                 }
             }

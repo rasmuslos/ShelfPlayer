@@ -51,9 +51,9 @@ struct PlaybackCompactExpandedForeground: View {
                         }
                         .aspectRatio(1, contentMode: .fit)
                         .id((satellite.nowPlayingItemID?.description ?? "wwf2foijwvkjw") + "_nowPlaying_image_expanded_large")
-                        .padding(.horizontal, satellite.isPlaying ? -8 : 40)
                         .shadow(color: .black.opacity(0.4), radius: 20)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
+                        .padding(.horizontal, satellite.isPlaying ? 0 : 40)
                         .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
                         .modifier(PlaybackDragGestureCatcher(height: height))
                     }
