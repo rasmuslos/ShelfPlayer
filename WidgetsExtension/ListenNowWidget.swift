@@ -65,6 +65,7 @@ struct ListenNowTimelineEntry: TimelineEntry {
 }
 
 private struct ListenNowWidgetContent: View {
+    @Environment(\.widgetRenderingMode) private var renderingMode
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.widgetFamily) var widgetFamily
     
