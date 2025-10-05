@@ -111,7 +111,7 @@ struct ItemProgressIndicatorImage: View {
         ItemImage(itemID: itemID, size: size, cornerRadius: cornerRadius, aspectRatio: aspectRatio)
             .overlay {
                 StatusOverlay(itemID: itemID)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             }
     }
 }
