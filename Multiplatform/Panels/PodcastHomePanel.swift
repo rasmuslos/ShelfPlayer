@@ -67,9 +67,20 @@ struct PodcastHomePanel: View {
         .sensoryFeedback(.error, trigger: didFail)
         .toolbar {
             if horizontalSizeClass == .compact {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    ListenNowSheetToggle()
+                if #available(iOS 26, *) {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        ListenNowSheetToggle()
+                            .padding(4)
+                    }
                     
+                    ToolbarSpacer(placement: .topBarTrailing)
+                } else {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        ListenNowSheetToggle()
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
                     Menu("navigation.library.select", systemImage: "books.vertical.fill") {
                         LibraryPicker()
                     }
