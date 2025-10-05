@@ -4,16 +4,20 @@
   },
   "groups" : [
     {
+      "blur-material" : 0.5,
+      "hidden" : false,
       "layers" : [
         {
-          "image-name" : "Slice1.png",
-          "name" : "Bookmark"
+          "image-name" : "ShelfPlayer.svg",
+          "name" : "ShelfPlayer"
         }
       ],
+      "lighting" : "individual",
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
       },
+      "specular" : true,
       "translucency" : {
         "enabled" : true,
         "value" : 0.5
