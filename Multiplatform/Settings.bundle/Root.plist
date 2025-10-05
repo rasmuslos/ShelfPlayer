@@ -165,17 +165,25 @@
 			<string>30</string>
 			<key>Titles</key>
 			<array>
+				<string>5 seconds</string>
+				<string>10 seconds</string>
 				<string>15 seconds</string>
 				<string>30 seconds</string>
 				<string>45 seconds</string>
 				<string>60 seconds</string>
+				<string>75 seconds</string>
+				<string>90 seconds</string>
 			</array>
 			<key>Values</key>
 			<array>
+				<string>5</string>
+				<string>10</string>
 				<string>15</string>
 				<string>30</string>
 				<string>45</string>
 				<string>60</string>
+				<string>75</string>
+				<string>90</string>
 			</array>
 		</dict>
 		<dict>
@@ -189,17 +197,25 @@
 			<string>30</string>
 			<key>Titles</key>
 			<array>
+				<string>5 seconds</string>
+				<string>10 seconds</string>
 				<string>15 seconds</string>
 				<string>30 seconds</string>
 				<string>45 seconds</string>
 				<string>60 seconds</string>
+				<string>75 seconds</string>
+				<string>90 seconds</string>
 			</array>
 			<key>Values</key>
 			<array>
+				<string>5</string>
+				<string>10</string>
 				<string>15</string>
 				<string>30</string>
 				<string>45</string>
 				<string>60</string>
+				<string>75</string>
+				<string>90</string>
 			</array>
 		</dict>
 		<dict>
