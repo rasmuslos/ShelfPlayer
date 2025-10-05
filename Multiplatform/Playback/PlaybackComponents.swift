@@ -700,7 +700,7 @@ private struct PlaybackSlider<MiddleContent: View>: View {
                         .animation(.smooth, value: width)
                 }
                 .frame(height: adjustedHeight, alignment: textFirst ? .bottom : .top)
-                .clipShape(.rect(cornerRadius: 8))
+                .clipShape(.rect(cornerRadius: .infinity))
                 .padding(.vertical, hitTargetPadding)
                 .contentShape(.rect)
                 .highPriorityGesture(DragGesture(minimumDistance: 10.0)
@@ -868,6 +868,7 @@ private struct StopPlaybackButton: View {
             seeking = nil
         }
     }
+    .previewEnvironment()
 }
 
 #Preview {
