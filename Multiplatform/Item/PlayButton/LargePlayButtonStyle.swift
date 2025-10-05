@@ -39,7 +39,7 @@ struct LargePlayButtonStyle: PlayButtonStyle {
         true
     }
     var cornerRadius: CGFloat {
-        8
+        .infinity
     }
     var hideRemainingWhenUnplayed: Bool {
         true

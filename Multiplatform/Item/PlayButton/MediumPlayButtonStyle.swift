@@ -27,7 +27,7 @@ struct MediumPlayButtonStyle: PlayButtonStyle {
         false
     }
     var cornerRadius: CGFloat {
-        12
+        .infinity
     }
     var hideRemainingWhenUnplayed: Bool {
         false
