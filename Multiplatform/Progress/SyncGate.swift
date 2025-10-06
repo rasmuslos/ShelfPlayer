@@ -39,7 +39,7 @@ struct SyncGate: View {
 
 #if DEBUG
 #Preview {
-    SyncGate(library: Library(id: "fixture", connectionID: "fixture", name: "Fixture", type: "book", index: 0))
+    SyncGate(library: .fixture)
         .previewEnvironment()
 }
 #endif

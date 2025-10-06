@@ -41,7 +41,11 @@ extension EpisodeView {
                             .labelStyle(.iconOnly)
                         
                         Menu {
-                            ItemShareButton(item: viewModel.episode)
+                            ControlGroup {
+                                ItemShareButton(item: viewModel.episode)
+                                ItemCollectionMembershipEditButton(itemID: viewModel.episode.id)
+                                DownloadButton(itemID: viewModel.episode.id)
+                            }
                             
                             Divider()
                             
@@ -50,17 +54,12 @@ extension EpisodeView {
                             
                             Divider()
                             
-                            DownloadButton(itemID: viewModel.episode.id)
-                            ItemCollectionMembershipEditButton(itemID: viewModel.episode.id)
+                            ProgressButton(itemID: viewModel.episode.id)
+                            ProgressResetButton(itemID: viewModel.episode.id)
                             
                             Divider()
                             
                             ItemLoadLink(itemID: viewModel.episode.podcastID, footer: viewModel.episode.podcastName)
-                            
-                            Divider()
-                            
-                            ProgressButton(itemID: viewModel.episode.id)
-                            ProgressResetButton(itemID: viewModel.episode.id)
                         } label: {
                             Label("item.options", systemImage: "ellipsis.circle")
                         }

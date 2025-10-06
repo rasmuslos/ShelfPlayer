@@ -5,8 +5,6 @@
 //  Created by Rasmus Krämer on 30.12.24.
 //
 
-
-
 import Foundation
 
 #if DEBUG

@@ -27,7 +27,7 @@ struct AudiobookLibraryPanel: View {
     }
     @ViewBuilder
     private var libraryRows: some View {
-        if horizontalSizeClass == .compact, let library {
+        if horizontalSizeClass == .compact {
             if viewModel.tabs.isEmpty {
                 ProgressView()
             } else {
@@ -82,10 +82,8 @@ struct AudiobookLibraryPanel: View {
                             .containerRelativeFrame([.horizontal, .vertical])
                         
                         VStack(spacing: 0) {
-                            if viewModel.search.isEmpty {
-                                libraryRowsList
-                                    .frame(alignment: .top)
-                            }
+                            libraryRowsList
+                                .frame(alignment: .top)
                             
                             Group {
                                 if viewModel.isLoading {
@@ -101,84 +99,48 @@ struct AudiobookLibraryPanel: View {
                     }
                 }
             } else {
-                if let searchResult = viewModel.searchResult {
-                    List {
-                        if viewModel.searchScope.shouldShow(.series) && !searchResult.3.isEmpty {
-                            Section(ItemIdentifier.ItemType.series.label) {
-                                SeriesList(series: searchResult.3) { _ in }
-                            }
-                        }
-                        if viewModel.searchScope.shouldShow(.authors) && !searchResult.1.isEmpty {
-                            Section(ItemIdentifier.ItemType.author.label) {
-                                PersonList(people: searchResult.1, showImage: true) { _ in }
-                            }
-                        }
-                        if viewModel.searchScope.shouldShow(.narrators) && !searchResult.2.isEmpty {
-                            Section(ItemIdentifier.ItemType.narrator.label) {
-                                PersonList(people: searchResult.2, showImage: false) { _ in }
-                            }
-                        }
-                        if viewModel.searchScope.shouldShow(.audiobooks) && !searchResult.0.isEmpty {
-                            Section(ItemIdentifier.ItemType.audiobook.label) {
-                                AudiobookList(sections: searchResult.0.map { .audiobook(audiobook: $0) }) { _ in }
-                            }
-                        }
-                    }
-                } else {
-                    switch viewModel.displayType {
-                        case .grid:
-                            gridPresentation
-                        case .list:
-                            listPresentation
-                    }
+                switch viewModel.displayType {
+                    case .grid:
+                        gridPresentation
+                    case .list:
+                        listPresentation
                 }
             }
         }
         .listStyle(.plain)
         .navigationTitle("panel.library")
-        .searchable(text: $viewModel.search, placement: .toolbar, prompt: "panel.search")
-        .searchDictationBehavior(.inline(activation: .onLook))
-        .searchScopes($viewModel.searchScope, activation: .onTextEntry) {
-            ForEach(SearchScope.allCases) {
-                Text($0.label)
-                    .tag($0)
-            }
-        }
-        .searchFocused($focused, equals: true)
         .toolbar {
-            if viewModel.search.isEmpty {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    if let genres = viewModel.genres, !genres.isEmpty {
-                        Menu("item.genres", systemImage: "tag") {
-                            ForEach(genres.sorted(by: <), id: \.hashValue) {
-                                Toggle($0, isOn: viewModel.binding(for: $0))
-                            }
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if let genres = viewModel.genres, !genres.isEmpty {
+                    Menu("item.genres", systemImage: "tag") {
+                        ForEach(genres.sorted(by: <), id: \.hashValue) {
+                            Toggle($0, isOn: viewModel.binding(for: $0))
                         }
-                        .labelStyle(.iconOnly)
-                        .symbolVariant(viewModel.lazyLoader.filteredGenre != nil ? .fill : .none)
-                    } else if viewModel.genres == nil {
-                        ProgressView()
+                    }
+                    .labelStyle(.iconOnly)
+                    .symbolVariant(viewModel.lazyLoader.filteredGenre != nil ? .fill : .none)
+                } else if viewModel.genres == nil {
+                    ProgressView()
+                }
+                
+                Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                    ItemDisplayTypePicker(displayType: $viewModel.displayType)
+                    
+                    Divider()
+                    
+                    Section("item.filter") {
+                        ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
                     }
                     
-                    Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
-                        ItemDisplayTypePicker(displayType: $viewModel.displayType)
-                        
-                        Divider()
-                        
-                        Section("item.filter") {
-                            ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
-                        }
-                        
-                        Section("item.sort") {
-                            ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
-                        }
-                        
-                        Divider()
-                        
-                        Toggle("item.groupAudiobooksBySeries", systemImage: "square.3.layers.3d.down.forward", isOn: $groupAudiobooksInSeries)
+                    Section("item.sort") {
+                        ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                     }
-                    .menuActionDismissBehavior(.disabled)
+                    
+                    Divider()
+                    
+                    Toggle("item.groupAudiobooksBySeries", systemImage: "square.3.layers.3d.down.forward", isOn: $groupAudiobooksInSeries)
                 }
+                .menuActionDismissBehavior(.disabled)
             }
         }
         .modifier(CompactPreferencesToolbarModifier())
@@ -206,10 +168,6 @@ struct AudiobookLibraryPanel: View {
             viewModel.library = library
             viewModel.lazyLoader.initialLoad()
         }
-        .onReceive(RFNotification[.focusSearchField].publisher()) {
-            viewModel.clear()
-            focused.toggle()
-        }
         .onReceive(RFNotification[.invalidateTabs].publisher()) {
             viewModel.loadTabs()
         }
@@ -234,21 +192,11 @@ private final class LibraryViewModel {
     
     var tabs = [TabValue]()
     
-    var search = "" {
-        didSet {
-            searchDidChange()
-        }
-    }
-    
-    var searchScope = SearchScope.all
-    var searchResult: ([Audiobook], [Person], [Person], [Series])? = nil
-    
     private(set) var genres: [String]? = nil
     var isGenreFilterPresented = false
     
     let lazyLoader = LazyLoadHelper<Audiobook, AudiobookSortOrder>.audiobooks
     
-    private var searchTask: Task<Void, Never>?
     var library: Library! {
         didSet {
             lazyLoader.library = library
@@ -260,30 +208,10 @@ private final class LibraryViewModel {
     // MARK: Helper
     
     var showPlaceholders: Bool {
-        if !search.isEmpty {
-            guard let searchResult else {
-                return true
-            }
-            
-            var hasProblem = true
-            
-            if searchScope.shouldShow(.authors) && !searchResult.1.isEmpty {
-                hasProblem = false
-            } else if searchScope.shouldShow(.narrators) && !searchResult.2.isEmpty {
-                hasProblem = false
-            } else if searchScope.shouldShow(.series) && !searchResult.3.isEmpty {
-                hasProblem = false
-            } else if searchScope.shouldShow(.audiobooks) && !searchResult.0.isEmpty {
-                hasProblem = false
-            }
-            
-            return hasProblem
-        }
-        
-        return !lazyLoader.didLoad
+        !lazyLoader.didLoad
     }
     var isLoading: Bool {
-        (search.isEmpty && lazyLoader.working && !lazyLoader.failed) || (!search.isEmpty && searchResult == nil)
+        lazyLoader.working && !lazyLoader.failed
     }
     
     nonisolated func load() {
@@ -303,80 +231,6 @@ private final class LibraryViewModel {
             
             await MainActor.withAnimation {
                 self.tabs = tabs
-            }
-        }
-    }
-    
-    func clear() {
-        search = ""
-    }
-}
-
-// MARK: Search
-
-private extension LibraryViewModel {
-    func searchDidChange() {
-        guard !search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            if search != "" {
-                search = ""
-            }
-            
-            searchResult = nil
-            searchTask?.cancel()
-            
-            return
-        }
-        
-        searchTask?.cancel()
-        searchTask = Task.detached {
-            guard let library = await self.library else {
-                return
-            }
-            
-            do {
-                try await Task.sleep(for: .seconds(0.5))
-                try Task.checkCancellation()
-            } catch {
-                return
-            }
-            
-            let search = await self.search.trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            guard !search.isEmpty else {
-                if Task.isCancelled {
-                    return
-                }
-                
-                await MainActor.withAnimation {
-                    self.searchResult = nil
-                }
-                
-                return
-            }
-            
-            do {
-                var (audiobooks, authors, narrators, series, _) = try await ABSClient[library.connectionID].items(in: library, search: search)
-                
-                if Task.isCancelled {
-                    return
-                }
-                
-                audiobooks.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
-                authors.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
-                narrators.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
-                series.sort { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
-                
-                if Task.isCancelled {
-                    return
-                }
-                
-                await MainActor.withAnimation {
-                    self.searchResult = (audiobooks, authors, narrators, series)
-                }
-            } catch {
-                await MainActor.withAnimation {
-                    self.notifyError.toggle()
-                }
             }
         }
     }

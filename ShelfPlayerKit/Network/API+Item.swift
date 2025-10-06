@@ -57,7 +57,7 @@ public extension APIClient  {
         return (audiobook, tracks.compactMap(PlayableItem.AudioFile.init), chapters.map(Chapter.init), supplementaryPDFs)
     }
     
-    func items(in library: Library, search: String) async throws -> ([Audiobook], [Person], [Person], [Series], [Podcast]) {
+    func items(in library: Library, search: String) async throws -> ([Audiobook], [Person], [Person], [Series], [Podcast], [Episode]) {
         let payload: SearchResponse = try await response(path: "api/libraries/\(library.id)/search", method: .get, query: [
             URLQueryItem(name: "q", value: search),
         ])
@@ -67,7 +67,14 @@ public extension APIClient  {
             payload.authors?.map { Person(author: $0, connectionID: connectionID) } ?? [],
             payload.narrators?.map { Person(narrator: $0, libraryID: library.id, connectionID: connectionID) } ?? [],
             payload.series?.map { Series(item: $0.series, audiobooks: $0.books, libraryID: library.id, connectionID: connectionID) } ?? [],
-            payload.podcast?.map { Podcast(payload: $0.libraryItem, connectionID: connectionID) } ?? []
+            payload.podcast?.map { Podcast(payload: $0.libraryItem, connectionID: connectionID) } ?? [],
+            payload.episodes?.compactMap {
+                guard let recentEpisode = $0.libraryItem.recentEpisode else {
+                    return nil
+                }
+                
+                return Episode(episode: recentEpisode, item: $0.libraryItem, connectionID: connectionID)
+            } ?? []
         )
     }
     
