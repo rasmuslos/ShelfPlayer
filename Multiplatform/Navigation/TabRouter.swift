@@ -26,14 +26,6 @@ struct TabRouter: View {
     
     var selectionProxy: Binding<TabValue?> {
         .init() { satellite.tabValue } set: {
-            if $0 == satellite.tabValue {
-                if case .audiobookLibrary = $0 {
-                    RFNotification[.focusSearchField].send()
-                } else if case .podcastLibrary = $0 {
-                    RFNotification[.focusSearchField].send()
-                }
-            }
-            
             satellite.tabValue = $0
             
             if $0 != nil {
@@ -74,7 +66,7 @@ struct TabRouter: View {
                         }
                 } else {
                     TabView(selection: selectionProxy) {
-                        if let libraryCompactTabs = libraryCompactTabs[tabValue.library] {
+                        if isCompact, let libraryCompactTabs = libraryCompactTabs[tabValue.library] {
                             ForEach(libraryCompactTabs) { tabValue in
                                 Tab(tabValue.label, systemImage: tabValue.image, value: tabValue) {
                                     content(for: tabValue)
@@ -91,7 +83,7 @@ struct TabRouter: View {
                                                 if !isSynchronized && !isCompact {
                                                     SyncGate(library: tabValue.library)
                                                 } else {
-                                                    content(for: tabValue)
+                                                    content(for: tab)
                                                 }
                                             }
                                             .hidden(isCompact)
@@ -102,30 +94,39 @@ struct TabRouter: View {
                                 }
                             }
                         }
+                        
+                        let searchTab = TabValue.search(tabValue.library)
+                        Tab(value: searchTab, role: .search) {
+                            content(for: searchTab)
+                                .modifier(SearchPanelModifier())
+                        }
                     }
                     .tabViewStyle(.sidebarAdaptable)
+                    .tabViewSidebarFooter {
+                        Divider()
+                            .padding(.bottom, 4)
+                        
+                        HStack(spacing: 12) {
+                            Button("preferences", systemImage: "gearshape") {
+                                satellite.present(.preferences)
+                            }
+                            
+                            Button("navigation.offline.enable", systemImage: "network.slash") {
+                                RFNotification[.changeOfflineMode].send(payload: true)
+                            }
+                            
+                            Spacer()
+                        }
+                        .buttonStyle(.plain)
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.primary)
+                    }
                     .tabViewCustomization($customization)
                     .tabViewSidebarHeader {
                         Button {
                             satellite.present(.listenNow)
                         } label: {
                             ListenedTodayListRow()
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .tabViewSidebarFooter {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Divider()
-                            
-                            Button("panel.search", systemImage: "magnifyingglass") {
-                                satellite.present(.globalSearch)
-                            }
-                            Button("preferences", systemImage: "gearshape.circle") {
-                                satellite.present(.preferences)
-                            }
-                            Button("navigation.offline.enable", systemImage: "network.slash") {
-                                RFNotification[.changeOfflineMode].send(payload: true)
-                            }
                         }
                         .buttonStyle(.plain)
                     }
@@ -193,14 +194,18 @@ struct TabRouter: View {
             
             RFNotification[.performBackgroundSessionSync].send(payload: satellite.tabValue?.library.connectionID)
         }
-        .onChange(of: isCompact) {
-            libraryCompactTabs.removeAll()
-        }
         .onChange(of: connectionStore.libraries, initial: true) {
             populateCompactLibraryTabs()
         }
         .onReceive(RFNotification[.changeLibrary].publisher()) {
             select($0)
+        }
+        .onReceive(RFNotification[.setGlobalSearch].publisher()) { _ in
+            guard let library = satellite.tabValue?.library else {
+                return
+            }
+            
+            satellite.tabValue = .search(library)
         }
         .onReceive(RFNotification[.navigate].publisher()) {
             navigateToWhenReady = $0
@@ -287,3 +292,35 @@ struct TabRouter: View {
         .previewEnvironment()
 }
 #endif
+
+#Preview {
+    TabView {
+        Tab("Home", systemImage: "house") {
+            
+        }
+
+
+        Tab("Alerts", systemImage: "bell") {
+            
+        }
+
+
+        Tab("Browse", systemImage: "list.bullet") {
+            
+        }
+    }
+    .tabViewStyle(.sidebarAdaptable)
+    .modify {
+        if #available(iOS 26, *) {
+            $0
+//                .tabViewBottomAccessory {
+//                    Text("nuwef")
+//                }
+                .tabViewSidebarBottomBar {
+                    Text(verbatim: "GRrRR")
+                }
+        } else {
+            $0
+        }
+    }
+}

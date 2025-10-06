@@ -212,7 +212,7 @@ extension PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope {
 
 #Preview {
     NavigationStack {
-        TabValueLibraryPreferences(library: .init(id: "fixture", connectionID: "fixture", name: "Fixture", type: .podcasts, index: 0), scope: .tabBar)
+        TabValueLibraryPreferences(library: .fixture, scope: .tabBar)
     }
     .previewEnvironment()
 }

@@ -44,8 +44,6 @@ struct ContentView: View {
         switch sheet {
             case .listenNow:
                 ListenNowSheet()
-            case .globalSearch:
-                GlobalSearchSheet()
             case .preferences:
                 PreferencesView()
             case .description(let item):
@@ -177,9 +175,8 @@ struct ContentView: View {
             }
             
             Task {
-                await RFNotification[.presentSheet].send(payload: .globalSearch)
-                try await Task.sleep(for: .seconds(0.4))
-                await RFNotification[.setGlobalSearch].send(payload: query)
+                try await Task.sleep(for: .seconds(0.6))
+                await RFNotification[.setGlobalSearch].send(payload: (query, .global))
             }
         }
         .onContinueUserActivity("io.rfk.shelfPlayer.item") { activity in

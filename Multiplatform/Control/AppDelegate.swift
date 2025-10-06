@@ -83,7 +83,7 @@ private final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem) async -> Bool {
         switch shortcutItem.type {
             case "search":
-                await RFNotification[.presentSheet].send(payload: .globalSearch)
+                await RFNotification[.setGlobalSearch].send(payload: ("", .global))
             case "play":
                 guard let itemIDDescription = shortcutItem.userInfo?["itemID"] as? String else {
                     return false

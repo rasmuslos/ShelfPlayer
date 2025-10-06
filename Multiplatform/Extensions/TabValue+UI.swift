@@ -59,7 +59,7 @@ extension TabValue {
             case .audiobookBookmarks:
                 "bookmark.fill"
             case .audiobookLibrary:
-                "books.vertical.fill"
+                "book.pages.fill"
                 
             case .podcastHome:
                 "house.fill"
@@ -106,7 +106,10 @@ extension TabValue {
             case .playlists:
                 CollectionsPanel(type: .playlist)
                 
-            case .search, .custom:
+            case .search:
+                SearchPanel()
+                
+            case .custom:
                 fatalError("Access to search and custom tabs is not implemented")
         }
     }

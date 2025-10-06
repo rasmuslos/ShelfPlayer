@@ -90,10 +90,12 @@ struct Filterdata: Codable {
 
 struct SearchResponse: Codable {
     let book: [SearchLibraryItem]?
-    let podcast: [SearchLibraryItem]?
     let narrators: [NarratorResponse]?
     let series: [SearchSeries]?
     let authors: [ItemPayload]?
+    
+    let podcast: [SearchLibraryItem]?
+    let episodes: [SearchLibraryItem]?
     
     struct SearchLibraryItem: Codable {
         let libraryItem: ItemPayload

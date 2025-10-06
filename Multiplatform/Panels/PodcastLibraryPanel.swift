@@ -10,7 +10,6 @@ import ShelfPlayback
 
 struct PodcastLibraryPanel: View {
     @Environment(\.library) private var library
-    @FocusState private var focused: Bool
     
     @Default(.podcastsAscending) private var podcastsAscending
     @Default(.podcastsSortOrder) private var podcastsSortOrder
@@ -58,8 +57,6 @@ struct PodcastLibraryPanel: View {
             }
         }
         .navigationTitle("panel.library")
-        .searchable(text: $lazyLoader.search, placement: .navigationBarDrawer(displayMode: .always), prompt: "panel.library.search.podcast")
-        .searchFocused($focused, equals: true)
         .modifier(CompactPreferencesToolbarModifier())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -73,10 +70,6 @@ struct PodcastLibraryPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onReceive(RFNotification[.focusSearchField].publisher()) {
-            lazyLoader.search = ""
-            focused.toggle()
-        }
         .onChange(of: podcastsAscending) {
             lazyLoader.ascending = podcastsAscending
         }
