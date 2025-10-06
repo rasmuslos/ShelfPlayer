@@ -52,7 +52,7 @@ struct CompactPlaybackModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        if ready && horizontalSizeClass == .compact {
+        if ready {
             GeometryReader { geometryProxy in
                 let height = geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom
                 let width = geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing

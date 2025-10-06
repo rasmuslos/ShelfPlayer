@@ -152,7 +152,6 @@ final class Satellite {
 extension Satellite {
     enum Sheet: Identifiable, Equatable {
         case listenNow
-        case globalSearch
         
         case preferences
         
@@ -172,8 +171,6 @@ extension Satellite {
             switch self {
                 case .listenNow:
                     "listenNow"
-                case .globalSearch:
-                    "globalSearch"
                 case .preferences:
                     "preferences"
                 case .description(let item):

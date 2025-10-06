@@ -60,13 +60,13 @@ extension ItemFilter {
     }
 }
 
-
+#if DEBUG
 #Preview {
     @Previewable @State var filter: ItemFilter = .all
     @Previewable @State var restrictToPersisted = false
     
     ItemFilterPicker(filter: $filter, restrictToPersisted: $restrictToPersisted)
-        .environment(\.library, .init(id: "fixture", connectionID: "fixture", name: "Fixture", type: .podcasts, index: -1))
+        .environment(\.library, .fixture)
 }
 
 #Preview {
@@ -86,3 +86,4 @@ extension ItemFilter {
         ItemFilterPicker(filter: $filter, restrictToPersisted: $restrictToPersisted)
     }
 }
+#endif

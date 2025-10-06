@@ -151,8 +151,9 @@ private extension ShelfPlayerKit {
                         for library in libraries {
                             $0.addTask {
                                 do {
-                                    let (audiobooks, authors, narrators, series, podcasts) = try await ABSClient[connectionID].items(in: library, search: query)
-                                    return audiobooks + authors + narrators + series + podcasts
+                                    let (audiobooks, authors, narrators, series, podcasts, episodes) = try await ABSClient[connectionID].items(in: library, search: query)
+                                    let part = audiobooks + authors + narrators + series
+                                    return part + podcasts + episodes
                                 } catch {
                                     return []
                                 }
