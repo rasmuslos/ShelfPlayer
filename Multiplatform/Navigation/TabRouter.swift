@@ -49,8 +49,8 @@ struct TabRouter: View {
     private func content(for tab: TabValue) -> some View {
         NavigationStackWrapper(tab: tab) {
             tab.content
-                .modifier(PlaybackTabContentModifier())
         }
+        .modifier(PlaybackTabContentModifier())
     }
     
     var body: some View {
@@ -104,7 +104,7 @@ struct TabRouter: View {
                     .tabViewStyle(.sidebarAdaptable)
                     .tabViewSidebarFooter {
                         Divider()
-                            .padding(.bottom, 4)
+                            .padding(.bottom, 12)
                         
                         HStack(spacing: 12) {
                             Button("preferences", systemImage: "gearshape") {
@@ -135,7 +135,7 @@ struct TabRouter: View {
                             $0
                                 .tabBarMinimizeBehavior(.onScrollDown)
                                 .tabViewBottomAccessory {
-                                    if satellite.nowPlayingItemID != nil {
+                                    if satellite.nowPlayingItemID != nil && isCompact {
                                         PlaybackBottomBarPill()
                                     }
                                 }
@@ -144,6 +144,7 @@ struct TabRouter: View {
                                 .modifier(ApplyLegacyCollapsedForeground())
                         }
                     }
+                    .modifier(CompactPlaybackModifier())
                 }
             } else {
                 LoadingView()
@@ -167,8 +168,7 @@ struct TabRouter: View {
                     }
             }
         }
-        .modifier(CompactPlaybackModifier(ready: isSynchronized))
-        .environment(\.playbackBottomOffset, 60)
+        .environment(\.playbackBottomOffset, 52)
         .sensoryFeedback(.error, trigger: progressViewModel.importFailedConnectionIDs)
         .onChange(of: satellite.tabValue?.library, initial: true) {
             let appearance = UINavigationBarAppearance()

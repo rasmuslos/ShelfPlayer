@@ -14,6 +14,14 @@ struct CompactLegacyCollapsedForeground: View {
     
     let decorative: Bool
     
+    var horizontalPadding: CGFloat {
+        if #available(iOS 26, *) {
+            8
+        } else {
+            12
+        }
+    }
+    
     @ViewBuilder
     private var label: some View {
         HStack(spacing: 8) {
@@ -32,10 +40,9 @@ struct CompactLegacyCollapsedForeground: View {
                         .onChange(of: size, initial: true) { viewModel.pillImageSize = size }
                 }
                 
-                if !viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 {
-                    ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
-                        .id((satellite.nowPlayingItemID?.description ?? "huzgfuzgw") + "_nowPlaying_image_compact_legacy")
-                }
+                ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
+                    .opacity(!viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
+                    .id((satellite.nowPlayingItemID?.description ?? "huzgfuzgw") + "_nowPlaying_image_compact_legacy")
             }
             .frame(width: 40, height: 40)
             
@@ -60,7 +67,7 @@ struct CompactLegacyCollapsedForeground: View {
                 .padding(.horizontal, 8)
         }
         .contentShape(.rect)
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 20 - horizontalPadding)
         .padding(.vertical, 8)
         .modify {
             if decorative {
@@ -70,7 +77,7 @@ struct CompactLegacyCollapsedForeground: View {
                     .background(.bar, in: .rect(cornerRadius: viewModel.PILL_CORNER_RADIUS))
             }
         }
-        .padding(.horizontal, 12)
+        .padding(.horizontal, horizontalPadding)
     }
     
     var body: some View {
@@ -116,14 +123,16 @@ struct ApplyLegacyCollapsedForeground: ViewModifier {
     @Environment(\.playbackBottomSafeArea) private var playbackBottomSafeArea
     @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
     @Environment(Satellite.self) private var satellite
     
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .bottom) {
-                if satellite.nowPlayingItemID != nil {
+                if satellite.nowPlayingItemID != nil && horizontalSizeClass == .compact {
                     CompactLegacyCollapsedForeground(decorative: false)
-                        .frame(height: 40)
+                        .shadow(color: .black.opacity(0.2), radius: 12)
                         .offset(y: -(playbackBottomOffset + playbackBottomSafeArea))
                 }
             }

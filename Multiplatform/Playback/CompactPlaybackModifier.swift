@@ -15,8 +15,6 @@ struct CompactPlaybackModifier: ViewModifier {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
-    let ready: Bool
-    
     private var nowPlayingCornerRadius: CGFloat {
         guard viewModel.isExpanded else {
             return viewModel.PILL_CORNER_RADIUS
@@ -52,7 +50,9 @@ struct CompactPlaybackModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        if ready {
+        if horizontalSizeClass != .compact {
+            content
+        } else {
             GeometryReader { geometryProxy in
                 let height = geometryProxy.size.height + geometryProxy.safeAreaInsets.top + geometryProxy.safeAreaInsets.bottom
                 let width = geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing
@@ -99,13 +99,12 @@ struct CompactPlaybackModifier: ViewModifier {
                             .opacity(viewModel.expansionAnimationCount > 0 ? 1 : 0)
                             .allowsHitTesting(false)
                             .accessibilityHidden(true)
+                            .id((satellite.nowPlayingItemID?.description ?? "woifoiwefoijwef") + "_nowPlaying_image_animation")
+                        
                     }
                     .ignoresSafeArea()
                     .environment(\.playbackBottomSafeArea, geometryProxy.safeAreaInsets.bottom)
-                    .id((satellite.nowPlayingItem?.sortName ?? "wjnfiuweojnf") + "_nowPlaying_compact_content")
             }
-        } else {
-            content
         }
     }
 }
@@ -121,8 +120,8 @@ struct CompactPlaybackModifier: ViewModifier {
                         .frame(height: 10_000)
                 }
                 .ignoresSafeArea()
-                .modifier(PlaybackTabContentModifier())
             }
+            .modifier(PlaybackTabContentModifier())
         }
         
         Tab(role: .search) {
@@ -141,7 +140,7 @@ struct CompactPlaybackModifier: ViewModifier {
                 .modifier(ApplyLegacyCollapsedForeground())
         }
     }
-    .modifier(CompactPlaybackModifier(ready: true))
+    .modifier(CompactPlaybackModifier())
     .environment(\.playbackBottomOffset, 60)
     .previewEnvironment()
 }

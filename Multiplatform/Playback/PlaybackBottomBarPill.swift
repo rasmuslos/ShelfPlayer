@@ -42,7 +42,7 @@ struct PlaybackBottomBarPill: View {
             .padding(.vertical, 8)
             .id((satellite.nowPlayingItemID?.description ?? "qkwndoiqind") + "_nowPlaying_image_collapsed")
             
-            Group {
+            ZStack {
                 if let currentItem = satellite.nowPlayingItem {
                     Text(currentItem.name)
                         .lineLimit(1)
