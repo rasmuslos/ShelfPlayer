@@ -27,6 +27,8 @@ final class ProgressViewModel {
             
             self?.importedConnectionIDs.removeAll()
             self?.importFailedConnectionIDs.removeAll()
+            
+            self?.syncAllConnections()
         }
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
@@ -90,11 +92,11 @@ final class ProgressViewModel {
                     self.importedConnectionIDs.remove(connectionID)
                 }
                 
+                self.tasks[connectionID] = nil
+                
                 if self.tasks.isEmpty && self.importedConnectionIDs.isEmpty {
                     RFNotification[.changeOfflineMode].send(payload: true)
                 }
-                
-                self.tasks[connectionID] = nil
             }
         }
     }

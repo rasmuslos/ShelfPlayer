@@ -91,7 +91,7 @@ struct PlaybackCompactExpandedForeground: View {
                                 .onChange(of: y, initial: true) { viewModel.expandedImageY = y }
                                 .onChange(of: size, initial: true) { viewModel.expandedImageSize = size }
                             
-                            ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: 12, aspectRatio: .none, contrastConfiguration: nil)
+                            ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: 8, aspectRatio: .none, contrastConfiguration: nil)
                                 .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
                         }
                         .aspectRatio(1, contentMode: .fit)

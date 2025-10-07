@@ -9,19 +9,14 @@ import SwiftUI
 import ShelfPlayback
 
 struct RegularPlaybackModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-    }
-}
-
-/*
-struct RegularPlaybackModifier: ViewModifier {
     @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
+    
+    @State private var didAppear = false
     
     @ViewBuilder
     private func label(_ itemID: ItemIdentifier) -> some View {
@@ -80,7 +75,7 @@ struct RegularPlaybackModifier: ViewModifier {
     }
     
     @ViewBuilder
-    private func leftHandContent() -> some View {
+    private func leftHandContent(height: CGFloat) -> some View {
         VStack(spacing: 0) {
             Spacer(minLength: 20)
             
@@ -89,7 +84,7 @@ struct RegularPlaybackModifier: ViewModifier {
                 .shadow(color: .black.opacity(0.4), radius: 20)
                 .scaleEffect(satellite.isPlaying ? 1 : 0.8)
                 .animation(.spring(duration: 0.3, bounce: 0.6), value: satellite.isPlaying)
-                .modifier(PlaybackDragGestureCatcher(active: true))
+                .modifier(PlaybackDragGestureCatcher(height: height))
             
             Spacer(minLength: 20)
             
@@ -103,18 +98,18 @@ struct RegularPlaybackModifier: ViewModifier {
     func body(content: Content) -> some View {
         if horizontalSizeClass == .regular {
             content
-                .fullScreenCover(isPresented: .init { viewModel.isExpanded } set: { viewModel.isExpanded = $0 }) {
+                .fullScreenCover(isPresented: .init { viewModel.isExpanded } set: { _ in }) {
                     GeometryReader { geometryProxy in
                             Rectangle()
                                 .fill(.background)
                                 .contentShape(.rect)
-                                .modifier(PlaybackDragGestureCatcher(active: true))
+                                .modifier(PlaybackDragGestureCatcher(height: geometryProxy.size.height))
                         
                         Group {
                             if geometryProxy.size.width > geometryProxy.size.height {
                                 VStack(spacing: 40) {
                                     HStack(spacing: 40) {
-                                        leftHandContent()
+                                        leftHandContent(height: geometryProxy.size.height)
                                             .frame(maxWidth: 400)
                                         
                                         PlaybackQueue()
@@ -135,7 +130,7 @@ struct RegularPlaybackModifier: ViewModifier {
                                     Spacer(minLength: 0)
                                     
                                     VStack(spacing: 0) {
-                                        CompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: 0, safeAreBottomInset: 0)
+                                        PlaybackCompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: 0, safeAreBottomInset: 0)
                                     }
                                     .frame(maxWidth: 600)
                                     
@@ -152,18 +147,29 @@ struct RegularPlaybackModifier: ViewModifier {
                     if let currentItemID = satellite.nowPlayingItemID {
                         GeometryReader { geometryProxy in
                             ZStack {
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .fill(.bar)
-                                    .shadow(color: .black.opacity(0.4), radius: 8)
+                                if #unavailable(iOS 26) {
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(.bar)
+                                        .shadow(color: .black.opacity(0.4), radius: 8)
+                                }
                                 
                                 Button {
-                                    viewModel.isExpanded = true
+                                    viewModel.toggleExpanded()
                                 } label: {
                                     label(currentItemID)
                                 }
                                 .buttonStyle(.plain)
                             }
                             .universalContentShape(.rect(cornerRadius: 16, style: .continuous))
+                            .modify {
+                                if #available(iOS 26 , *) {
+                                    $0
+                                        .padding(.horizontal, 4)
+                                        .glassEffect()
+                                } else {
+                                    $0
+                                }
+                            }
                             .contextMenu {
                                 PlaybackMenuActions()
                             } preview: {
@@ -172,9 +178,13 @@ struct RegularPlaybackModifier: ViewModifier {
                                 }
                             }
                             .padding(.horizontal, 20)
-                            .animation(.smooth, value: geometryProxy.size.width)
+                            .animation(didAppear ? .smooth : .none, value: geometryProxy.size.width)
                         }
-                        .frame(height: Self.height)
+                        .frame(height: 56)
+                        .task {
+                            try? await Task.sleep(for: .seconds(0.4))
+                            didAppear = true
+                        }
                     }
                 }
         } else {
@@ -182,7 +192,6 @@ struct RegularPlaybackModifier: ViewModifier {
         }
     }
 }
- */
 
 #if DEBUG
 #Preview {
