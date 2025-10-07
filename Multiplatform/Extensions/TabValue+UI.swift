@@ -59,7 +59,7 @@ extension TabValue {
             case .audiobookBookmarks:
                 "bookmark.fill"
             case .audiobookLibrary:
-                "book.pages.fill"
+                "books.vertical.fill"
                 
             case .podcastHome:
                 "house.fill"

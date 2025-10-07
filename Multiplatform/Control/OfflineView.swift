@@ -108,7 +108,7 @@ struct OfflineView: View {
                     $0
                 }
             }
-            .modifier(CompactPlaybackModifier(ready: true))
+            .modifier(CompactPlaybackModifier())
             .environment(\.playbackBottomOffset, 16)
         }
     }

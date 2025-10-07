@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#warning("!grrr")
+
 struct PlaybackTabContentModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(PlaybackViewModel.self) private var viewModel
@@ -15,6 +17,7 @@ struct PlaybackTabContentModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26, *) {
             content
+                .modifier(RegularPlaybackModifier())
         } else {
             GeometryReader { geometryProxy in
                 // 32 is at the middle axis of the pill
@@ -52,8 +55,7 @@ struct PlaybackSafeAreaPaddingModifier: ViewModifier {
         if #available(iOS 26, *) {
             0
         } else if satellite.isNowPlayingVisible {
-        // 56 (height) + 4
-            60
+            80
         } else {
             0
         }
