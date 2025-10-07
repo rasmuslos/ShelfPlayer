@@ -125,6 +125,23 @@ struct RegularPlaybackModifier: ViewModifier {
                                     .buttonStyle(.plain)
                                 }
                                 .padding(.horizontal, 40)
+                                .overlay(alignment: .top) {
+                                    Button {
+                                        viewModel.toggleExpanded()
+                                    } label: {
+                                        Rectangle()
+                                            .foregroundStyle(.secondary)
+                                            .opacity(0.62)
+                                            .frame(width: 60, height: 4)
+                                            .clipShape(.rect(cornerRadius: .infinity))
+                                    }
+                                    .buttonStyle(.plain)
+                                    .padding(40)
+                                    .contentShape(.rect)
+                                    .modifier(PlaybackDragGestureCatcher(height: geometryProxy.size.height))
+                                    .padding(-40)
+                                    .accessibilityLabel("action.dismiss")
+                                }
                             } else {
                                 HStack(spacing: 0) {
                                     Spacer(minLength: 0)
