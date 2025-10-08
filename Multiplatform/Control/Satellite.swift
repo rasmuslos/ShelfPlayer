@@ -929,19 +929,18 @@ private extension Satellite {
                 return
             }
             
-            await startWorking(on: currentItemID)
-            
             do {
                 guard let item = try await currentItemID.resolved as? PlayableItem else {
                     throw SatelliteError.missingItem
                 }
                 
-                await MainActor.withAnimation {
+                await MainActor.run {
                     self.nowPlayingItem = item
                 }
-                await endWorking(on: currentItemID, successfully: nil)
             } catch {
-                await endWorking(on: currentItemID, successfully: false)
+                await MainActor.run {
+                    self.notifyError.toggle()
+                }
             }
         }
     }

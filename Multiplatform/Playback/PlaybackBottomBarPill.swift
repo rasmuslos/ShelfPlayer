@@ -18,6 +18,10 @@ struct PlaybackBottomBarPill: View {
     
     var decorative = false
     
+    private var nowPlayingItemName: String {
+        satellite.nowPlayingItem?.name ?? "loading"
+    }
+    
     @ViewBuilder
     private var label: some View {
         HStack(spacing: 8) {
@@ -42,16 +46,9 @@ struct PlaybackBottomBarPill: View {
             .padding(.vertical, 8)
             .id((satellite.nowPlayingItemID?.description ?? "qkwndoiqind") + "_nowPlaying_image_collapsed")
             
-            ZStack {
-                if let currentItem = satellite.nowPlayingItem {
-                    Text(currentItem.name)
-                        .lineLimit(1)
-                } else {
-                    Text("loading")
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .id((satellite.nowPlayingItem?.sortName ?? "jiefniuwenfojnwef") + "_nowPlaying_text_collapsed")
+            Text(nowPlayingItemName)
+                .lineLimit(1)
+                .id(nowPlayingItemName + "_nowPlaying_collapsed_name")
             
             Spacer()
             
@@ -66,6 +63,7 @@ struct PlaybackBottomBarPill: View {
         }
         .contentShape(.rect)
         .padding(.horizontal, 16)
+        .id((satellite.nowPlayingItemID?.description ?? "wejjfnwioejf") + "_nowPlaying_bottom_pill")
     }
     
     var body: some View {
@@ -83,6 +81,7 @@ struct PlaybackBottomBarPill: View {
                     viewModel.toggleExpanded()
                 } label: {
                     label
+                        .opacity(viewModel.showCompactPlaybackBarOnExpandedViewCount > 0 ? 0 : 1)
                 }
                 .buttonStyle(.plain)
                 .onChange(of: x, initial: true) { viewModel.pillX = x }
@@ -101,6 +100,7 @@ struct PlaybackBottomBarPill: View {
                     }
                 }
             }
+            .id(nowPlayingItemName + "_nowPlaying_collapsed")
         }
     }
 }

@@ -388,6 +388,54 @@ public extension PersistenceManager.DownloadSubsystem {
         
         return nil
     }
+    func item(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> PlayableItem? {
+        if let groupingID {
+            let episodeType = ItemIdentifier.ItemType.episode.rawValue
+            var episodeDescriptor = FetchDescriptor<PersistedEpisode>(predicate: #Predicate {
+                $0._id.contains(primaryID)
+                && $0._id.contains(groupingID)
+                && $0._id.contains(connectionID)
+                && $0._id.contains(episodeType)
+            })
+            episodeDescriptor.fetchLimit = 1
+            
+            guard let episode = (try? modelContext.fetch(episodeDescriptor))?.first else {
+                return nil
+            }
+            
+            return Episode(downloaded: episode)
+        } else {
+            let audiobookType = ItemIdentifier.ItemType.episode.rawValue
+            var audiobookDescriptor = FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
+                $0._id.contains(primaryID)
+                && $0._id.contains(connectionID)
+                && $0._id.contains(audiobookType)
+            })
+            audiobookDescriptor.fetchLimit = 1
+            
+            guard let audiobook = (try? modelContext.fetch(audiobookDescriptor))?.first else {
+                return nil
+            }
+            
+            return Audiobook(downloaded: audiobook)
+        }
+    }
+    func podcast(primaryID: ItemIdentifier.PrimaryID, connectionID: ItemIdentifier.ConnectionID) -> Podcast? {
+        let podcastType = ItemIdentifier.ItemType.podcast.rawValue
+        
+        var descriptor = FetchDescriptor<PersistedPodcast>(predicate: #Predicate {
+            $0._id.contains(primaryID)
+            && $0._id.contains(connectionID)
+            && $0._id.contains(podcastType)
+        })
+        descriptor.fetchLimit = 1
+        
+        guard let podcast = (try? modelContext.fetch(descriptor))?.first else {
+            return nil
+        }
+        
+        return .init(downloaded: podcast)
+    }
     
     func scheduleUpdateTask() {
         updateTask?.cancel()

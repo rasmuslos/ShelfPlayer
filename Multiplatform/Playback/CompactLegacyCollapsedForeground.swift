@@ -73,11 +73,16 @@ struct CompactLegacyCollapsedForeground: View {
             if decorative {
                 $0
             } else {
-                $0
-                    .background(.bar, in: .rect(cornerRadius: viewModel.PILL_CORNER_RADIUS))
+                if #available(iOS 26 , *) {
+                    $0
+                        .glassEffect()
+                } else {
+                    $0
+                        .background(.bar, in: .rect(cornerRadius: viewModel.PILL_CORNER_RADIUS))
+                        .shadow(color: .black.opacity(0.2), radius: 12)
+                }
             }
         }
-        .padding(.horizontal, horizontalPadding)
     }
     
     var body: some View {
@@ -115,6 +120,7 @@ struct CompactLegacyCollapsedForeground: View {
                 }
             }
             .frame(height: 56)
+            .padding(.horizontal, horizontalPadding)
         }
     }
 }
@@ -132,7 +138,6 @@ struct ApplyLegacyCollapsedForeground: ViewModifier {
             .safeAreaInset(edge: .bottom) {
                 if satellite.nowPlayingItemID != nil && horizontalSizeClass == .compact {
                     CompactLegacyCollapsedForeground(decorative: false)
-                        .shadow(color: .black.opacity(0.2), radius: 12)
                         .offset(y: -(playbackBottomOffset + playbackBottomSafeArea))
                 }
             }

@@ -132,6 +132,11 @@ public actor ResolveCache: Sendable {
         beginResolvingItem(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
         
         do {
+            if let item = await PersistenceManager.shared.download.item(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
+                resolvedItem(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+                return item
+            }
+                
             if let groupingID {
                 let (_, episodes) = try await resolve(primaryID: groupingID, connectionID: connectionID)
                 
@@ -168,6 +173,13 @@ public actor ResolveCache: Sendable {
         beginResolvingItem(primaryID: primaryID, groupingID: nil, connectionID: connectionID)
         
         do {
+            if let podcast = await PersistenceManager.shared.download.podcast(primaryID: primaryID, connectionID: connectionID) {
+                let episodes = try await PersistenceManager.shared.download.episodes(from: podcast.id)
+                resolvedItem(primaryID: primaryID, groupingID: nil, connectionID: connectionID)
+                
+                return (podcast, episodes)
+            }
+            
             let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: primaryID)
             
             cache[podcast.id] = podcast
@@ -241,7 +253,7 @@ private extension ResolveCache {
             throw ResolveError.unavailable
         }
         
-        while resolvingItemIDs.contains(where: {  $0.0 == primaryID && $0.1 == groupingID && $0.2 == connectionID }) || resolvingItemIDs.contains(where: {$0.0 == groupingID && $0.2 == connectionID }) {
+        while resolvingItemIDs.contains(where: { $0.0 == primaryID && $0.1 == groupingID && $0.2 == connectionID }) {
             try await Task.sleep(for: .seconds(0.4))
         }
     }
