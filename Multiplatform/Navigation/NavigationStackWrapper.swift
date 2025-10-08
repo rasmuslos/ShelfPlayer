@@ -48,9 +48,9 @@ struct NavigationStackWrapper<Content: View>: View {
                 .onReceive(RFNotification[._navigate].publisher()) {
                     let libraryID: String?
                     
-                    if case .audiobookLibrary(let library) = tab {
+                    if case .audiobookHome(let library) = tab {
                         libraryID = library.id
-                    } else if case .podcastLibrary(let library) = tab {
+                    } else if case .podcastHome(let library) = tab {
                         libraryID = library.id
                     } else {
                         libraryID = nil

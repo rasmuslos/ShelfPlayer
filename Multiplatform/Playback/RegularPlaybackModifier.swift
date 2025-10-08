@@ -8,7 +8,7 @@
 import SwiftUI
 import ShelfPlayback
 
-struct RegularPlaybackModifier: ViewModifier {
+struct RegularPlaybackBarModifier: ViewModifier {
     @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
@@ -17,6 +17,12 @@ struct RegularPlaybackModifier: ViewModifier {
     @Environment(Satellite.self) private var satellite
     
     @State private var didAppear = false
+    
+    var isPresented: Binding<Bool> {
+        .init {
+            viewModel.isExpanded
+        } set: { _ in }
+    }
     
     @ViewBuilder
     private func label(_ itemID: ItemIdentifier) -> some View {
@@ -74,6 +80,75 @@ struct RegularPlaybackModifier: ViewModifier {
         .contentShape(.rect)
     }
     
+    func body(content: Content) -> some View {
+        if horizontalSizeClass == .regular {
+            content
+                .safeAreaInset(edge: .bottom) {
+                    if let currentItemID = satellite.nowPlayingItemID {
+                        GeometryReader { geometryProxy in
+                            ZStack {
+                                if #unavailable(iOS 26) {
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(.bar)
+                                        .shadow(color: .black.opacity(0.4), radius: 8)
+                                }
+                                
+                                Button {
+                                    viewModel.toggleExpanded()
+                                } label: {
+                                    label(currentItemID)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .universalContentShape(.rect(cornerRadius: 16, style: .continuous))
+                            .modify {
+                                if #available(iOS 26 , *) {
+                                    $0
+                                        .padding(.horizontal, 4)
+                                        .glassEffect()
+                                } else {
+                                    $0
+                                }
+                            }
+                            .contextMenu {
+                                PlaybackMenuActions()
+                            } preview: {
+                                if let currentItem = satellite.nowPlayingItem {
+                                    PlayableItemContextMenuPreview(item: currentItem)
+                                }
+                            }
+                            .padding(.horizontal, 20)
+                            .animation(didAppear ? .smooth : .none, value: geometryProxy.size.width)
+                        }
+                        .frame(height: 56)
+                        .task {
+                            try? await Task.sleep(for: .seconds(0.4))
+                            didAppear = true
+                        }
+                    }
+                }
+        } else {
+            content
+        }
+    }
+}
+
+struct RegularPlaybackModifier: ViewModifier {
+    @Environment(\.playbackBottomOffset) private var playbackBottomOffset
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+    
+    @State private var didAppear = false
+    
+    var isPresented: Binding<Bool> {
+        .init {
+            viewModel.isExpanded
+        } set: { _ in }
+    }
+    
     @ViewBuilder
     private func leftHandContent(height: CGFloat) -> some View {
         VStack(spacing: 0) {
@@ -98,12 +173,12 @@ struct RegularPlaybackModifier: ViewModifier {
     func body(content: Content) -> some View {
         if horizontalSizeClass == .regular {
             content
-                .fullScreenCover(isPresented: .init { viewModel.isExpanded } set: { _ in }) {
+                .fullScreenCover(isPresented: isPresented) {
                     GeometryReader { geometryProxy in
-                            Rectangle()
-                                .fill(.background)
-                                .contentShape(.rect)
-                                .modifier(PlaybackDragGestureCatcher(height: geometryProxy.size.height))
+                        Rectangle()
+                            .fill(.background)
+                            .contentShape(.rect)
+                            .modifier(PlaybackDragGestureCatcher(height: geometryProxy.size.height))
                         
                         Group {
                             if geometryProxy.size.width > geometryProxy.size.height {
@@ -159,50 +234,6 @@ struct RegularPlaybackModifier: ViewModifier {
                     }
                     .environment(Satellite.shared)
                     .environment(PlaybackViewModel.shared)
-                }
-                .safeAreaInset(edge: .bottom) {
-                    if let currentItemID = satellite.nowPlayingItemID {
-                        GeometryReader { geometryProxy in
-                            ZStack {
-                                if #unavailable(iOS 26) {
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                        .fill(.bar)
-                                        .shadow(color: .black.opacity(0.4), radius: 8)
-                                }
-                                
-                                Button {
-                                    viewModel.toggleExpanded()
-                                } label: {
-                                    label(currentItemID)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                            .universalContentShape(.rect(cornerRadius: 16, style: .continuous))
-                            .modify {
-                                if #available(iOS 26 , *) {
-                                    $0
-                                        .padding(.horizontal, 4)
-                                        .glassEffect()
-                                } else {
-                                    $0
-                                }
-                            }
-                            .contextMenu {
-                                PlaybackMenuActions()
-                            } preview: {
-                                if let currentItem = satellite.nowPlayingItem {
-                                    PlayableItemContextMenuPreview(item: currentItem)
-                                }
-                            }
-                            .padding(.horizontal, 20)
-                            .animation(didAppear ? .smooth : .none, value: geometryProxy.size.width)
-                        }
-                        .frame(height: 56)
-                        .task {
-                            try? await Task.sleep(for: .seconds(0.4))
-                            didAppear = true
-                        }
-                    }
                 }
         } else {
             content

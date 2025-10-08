@@ -84,6 +84,7 @@ struct OfflineView: View {
                     }
                 }
                 .navigationTitle("panel.offline")
+                .largeTitleDisplayMode()
                 .modifier(PlaybackSafeAreaPaddingModifier())
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -109,6 +110,8 @@ struct OfflineView: View {
                 }
             }
             .modifier(CompactPlaybackModifier())
+            .modifier(RegularPlaybackModifier())
+            .modifier(RegularPlaybackBarModifier())
             .environment(\.playbackBottomOffset, 16)
         }
     }
