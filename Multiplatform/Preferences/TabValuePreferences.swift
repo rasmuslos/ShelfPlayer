@@ -123,7 +123,7 @@ private struct TabValueLibraryPreferences: View {
                     }
             }
         }
-        .navigationTitle(String("\(library.name): \(scope.label)"))
+        .navigationTitle(library.name)
         .environment(\.editMode, .constant(.active))
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

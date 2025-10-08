@@ -16,7 +16,6 @@ struct TabRouter: View {
     @Environment(ConnectionStore.self) private var connectionStore
     @Environment(ProgressViewModel.self) private var progressViewModel
     
-    @State private var libraryPath = NavigationPath()
     @State private var navigateToWhenReady: ItemIdentifier? = nil
     
     @AppStorage("io.rfk.shelfPlayer.tabCustomization")
@@ -145,6 +144,7 @@ struct TabRouter: View {
                         }
                     }
                     .modifier(CompactPlaybackModifier())
+                    .modifier(RegularPlaybackModifier())
                 }
             } else {
                 LoadingView()
@@ -188,10 +188,6 @@ struct TabRouter: View {
             navigateIfRequired(withDelay: true)
         }
         .onChange(of: satellite.tabValue?.library) {
-            while !libraryPath.isEmpty {
-                libraryPath.removeLast()
-            }
-            
             RFNotification[.performBackgroundSessionSync].send(payload: satellite.tabValue?.library.connectionID)
         }
         .onChange(of: connectionStore.libraries, initial: true) {
@@ -245,13 +241,13 @@ struct TabRouter: View {
         
         switch library.type {
             case .audiobooks:
-                guard case .audiobookLibrary(_) = satellite.tabValue else {
-                    satellite.tabValue = .audiobookLibrary(library)
+                guard case .audiobookHome(_) = satellite.tabValue else {
+                    satellite.tabValue = .audiobookHome(library)
                     return
                 }
             case .podcasts:
-                guard case .podcastLibrary(_) = satellite.tabValue else {
-                    satellite.tabValue = .podcastLibrary(library)
+                guard case .podcastHome(_) = satellite.tabValue else {
+                    satellite.tabValue = .podcastHome(library)
                     return
                 }
         }

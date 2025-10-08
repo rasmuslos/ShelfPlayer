@@ -78,11 +78,12 @@ struct CompactPlaybackModifier: ViewModifier {
                     .overlay(alignment: .topLeading) {
                         if viewModel.showCompactPlaybackBarOnExpandedViewCount > 0 {
                             Group {
-                                if #available(iOS 26, *) {
+                                if #available(iOS 26, *), !satellite.isOffline {
                                     PlaybackBottomBarPill(decorative: true)
                                         .frame(width: viewModel.pillWidth, height: viewModel.pillHeight)
                                 } else {
                                     CompactLegacyCollapsedForeground(decorative: true)
+                                        .frame(width: viewModel.pillWidth)
                                 }
                             }
                             .transition(.opacity)

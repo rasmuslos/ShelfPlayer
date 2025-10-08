@@ -30,6 +30,7 @@ extension AudiobookView {
 }
 
 private struct Title: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(AudiobookViewModel.self) private var viewModel
     
     let largeFont: Bool
@@ -42,10 +43,12 @@ private struct Title: View {
                 .font(largeFont ? .title2 : .subheadline)
                 .lineLimit(1)
                 .overlay(alignment: .trailing) {
-                    Label(ItemIdentifier.ItemType.author.viewLabel, systemImage: "chevron.right.circle")
-                        .labelStyle(.iconOnly)
-                        .font(.caption2)
-                        .offset(x: 17)
+                    if horizontalSizeClass == .compact {
+                        Label(ItemIdentifier.ItemType.author.viewLabel, systemImage: "chevron.right.circle")
+                            .labelStyle(.iconOnly)
+                            .font(.caption2)
+                            .offset(x: 17)
+                    }
                 }
         }
     }

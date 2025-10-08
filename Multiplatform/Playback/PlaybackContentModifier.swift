@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-#warning("!grrr")
-
 struct PlaybackTabContentModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(PlaybackViewModel.self) private var viewModel
@@ -17,7 +15,7 @@ struct PlaybackTabContentModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26, *) {
             content
-                .modifier(RegularPlaybackModifier())
+                .modifier(RegularPlaybackBarModifier())
         } else {
             GeometryReader { geometryProxy in
                 // 32 is at the middle axis of the pill
@@ -28,7 +26,7 @@ struct PlaybackTabContentModifier: ViewModifier {
                 ZStack(alignment: .bottom) {
                     content
                     
-                    if satellite.isNowPlayingVisible {
+                    if satellite.isNowPlayingVisible && horizontalSizeClass == .compact {
                         Rectangle()
                             .fill(.bar)
                             .frame(height: height)
@@ -38,21 +36,22 @@ struct PlaybackTabContentModifier: ViewModifier {
                                                        .init(color: .black, location: 1)],
                                                startPoint: .top, endPoint: .bottom)
                             }
+                            .toolbarBackgroundVisibility(satellite.isNowPlayingVisible ? .hidden : .automatic, for: .tabBar)
                     }
                 }
-                .toolbarBackgroundVisibility(satellite.isNowPlayingVisible ? .hidden : .automatic, for: .tabBar)
                 .ignoresSafeArea(edges: satellite.isNowPlayingVisible ? .bottom : [])
-                .modifier(RegularPlaybackModifier())
             }
+            .modifier(RegularPlaybackBarModifier())
         }
     }
 }
 
 struct PlaybackSafeAreaPaddingModifier: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(Satellite.self) private var satellite
     
     private var padding: CGFloat {
-        if #available(iOS 26, *) {
+        if #available(iOS 26, *), !satellite.isOffline && horizontalSizeClass == .compact {
             0
         } else if satellite.isNowPlayingVisible {
             80

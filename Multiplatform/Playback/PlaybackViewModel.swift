@@ -50,6 +50,7 @@ final class PlaybackViewModel {
     // Expansion
     
     private(set) var isExpanded = false
+    private(set) var isRegularExpanded = false
     private(set) var isNowPlayingBackgroundVisible = false
     
     private(set) var showCompactPlaybackBarOnExpandedViewCount = 0
@@ -95,17 +96,21 @@ final class PlaybackViewModel {
                 return
             }
             
-            if let stoppedPlayingAt = self?.stoppedPlayingAt {
-                let distance = stoppedPlayingAt.distance(to: .now)
+            self?.loadIDs(itemID: itemID)
+            
+            Task {
+                try? await Task.sleep(for: .seconds(0.2))
                 
-                if distance > 3 {
+                if let stoppedPlayingAt = self?.stoppedPlayingAt {
+                    let distance = stoppedPlayingAt.distance(to: .now)
+                    
+                    if distance > 10 {
+                        self?.toggleExpanded()
+                    }
+                } else {
                     self?.toggleExpanded()
                 }
-            } else {
-                self?.toggleExpanded()
             }
-            
-            self?.loadIDs(itemID: itemID)
         }
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.isExpanded = false
