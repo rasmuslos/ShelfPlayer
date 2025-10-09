@@ -230,3 +230,28 @@ private struct RegularPresentation: View {
         .padding(.top, 80)
     }
 }
+
+#if DEBUG
+#Preview {
+    TabView {
+        Tab(String("ABC"), systemImage: "command") {
+            List {
+                Image("Logo")
+                    .resizable()
+                    .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .modify {
+                        if #available(iOS 26, *) {
+                            $0
+                                .backgroundExtensionEffect()
+                        } else {
+                            $0
+                        }
+                    }
+            }
+            .listStyle(.plain)
+        }
+    }
+    .tabViewStyle(.sidebarAdaptable)
+    .previewEnvironment()
+}
+#endif

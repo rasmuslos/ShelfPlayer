@@ -46,6 +46,12 @@ public extension PersistenceManager.ItemSubsystem {
     }
     
     func dominantColor(of itemID: ItemIdentifier) async -> Color? {
+        #if DEBUG
+        if itemID.connectionID == "fixture" {
+            return .orange
+        }
+        #endif
+        
         if let stored = await PersistenceManager.shared.keyValue[.dominantColor(of: itemID)] {
             let components = stored.split(separator: ":").map { Double($0) ?? 0 }
             return Color(red: components[0], green: components[1], blue: components[2])
