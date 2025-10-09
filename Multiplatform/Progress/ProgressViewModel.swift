@@ -100,6 +100,23 @@ final class ProgressViewModel {
             }
         }
     }
+    
+    func flush(isLoading: Binding<Bool>) {
+        Task {
+            isLoading.wrappedValue = true
+            
+            importedConnectionIDs.removeAll()
+            importFailedConnectionIDs.removeAll()
+            
+            try! await PersistenceManager.shared.progress.flush()
+            
+            syncAllConnections()
+            
+            try await Task.sleep(for: .seconds(1))
+            
+            isLoading.wrappedValue = false
+        }
+    }
 }
 
 private extension ProgressViewModel {
