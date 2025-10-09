@@ -83,9 +83,9 @@ private struct EpisodeGridItem: View {
             .foregroundStyle(.white)
             .colorScheme(.light)
             .background(Background(episode: episode))
+            .matchedTransitionSource(id: zoomID, in: namespace!)
             .clipShape(.rect(cornerRadius: 16))
             .universalContentShape(.rect(cornerRadius: 16))
-            .matchedTransitionSource(id: zoomID, in: namespace!)
         }
         .buttonStyle(.plain)
         .modifier(ItemStatusModifier(item: episode))
