@@ -605,6 +605,11 @@ public extension PersistenceManager.ProgressSubsystem {
             .init(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
         }
     }
+    
+    func flush() throws {
+        try modelContext.delete(model: PersistedProgress.self)
+        try modelContext.save()
+    }
 }
 
 private extension PersistenceManager.KeyValueSubsystem.Key {

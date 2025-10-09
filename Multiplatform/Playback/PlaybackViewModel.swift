@@ -167,6 +167,9 @@ final class PlaybackViewModel {
     }
     
     func toggleExpanded() {
+        self.expansionAnimationCount = 0
+        self.showCompactPlaybackBarOnExpandedViewCount = 0
+        
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         
         // Foreground, background removal
