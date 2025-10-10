@@ -80,7 +80,7 @@ public extension APIClient  {
     
     func coverRequest(from itemID: ItemIdentifier, width: Int) async throws -> URLRequest {
         #if DEBUG
-        if itemID.primaryID == "fixture" {
+        if itemID.connectionID == "fixture" {
             return URLRequest(url: URL(string: "https://yt3.ggpht.com/-lwlGXn90heE/AAAAAAAAAAI/AAAAAAAAAAA/FmCv96eMMNE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")!)
         }
         #endif

@@ -116,6 +116,7 @@ private struct LastListenedWidgetContent: View {
             if let imageData = entry.imageData, let image = UIImage(data: imageData) {
                 Image(uiImage: image)
                     .resizable()
+                    .widgetAccentedRenderingMode(.fullColor)
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             } else {
