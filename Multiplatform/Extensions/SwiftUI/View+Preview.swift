@@ -10,11 +10,6 @@ import SwiftUI
 import ShelfPlayback
 
 extension View {
-    @ViewBuilder
-    func modify<T: View>(@ViewBuilder _ modifier: (Self) -> T) -> some View {
-        modifier(self)
-    }
-    
     #if DEBUG
     @ViewBuilder
     func previewEnvironment() -> some View {

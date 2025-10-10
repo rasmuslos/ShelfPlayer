@@ -50,17 +50,19 @@ struct WidgetItemButton: View {
     }
     
     var body: some View {
-        if let intent, let label, let systemImage {
-            Button(intent: intent) {
-                ZStack {
-                    Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
-                        .hidden()
-                    
-                    Label(label, systemImage: systemImage)
+        Group {
+            if let intent, let label, let systemImage {
+                Button(intent: intent) {
+                    ZStack {
+                        Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
+                            .hidden()
+                        
+                        Label(label, systemImage: systemImage)
+                    }
                 }
+            } else {
+                Label("play", systemImage: "play.fill")
             }
-        } else {
-            Label("play", systemImage: "play.fill")
         }
     }
 }
