@@ -48,13 +48,9 @@ struct ItemLoadView: View {
                 }
             }
         }
-        .modify {
-            if zoom {
-                $0
-                    .navigationTransition(.zoom(sourceID: "item_\(id)", in: namespace!))
-            } else {
-                $0
-            }
+        .modify(if: zoom) {
+            $0
+                .navigationTransition(.zoom(sourceID: "item_\(id)", in: namespace!))
         }
     }
     

@@ -158,13 +158,9 @@ struct EpisodeItemActions: View {
     var body: some View {
         HStack(spacing: 8) {
             EpisodePlayButton(episode: episode, highlighted: context.isHighlighted)
-                .modify {
-                    if context.isHighlighted {
-                        $0
-                            .fixedSize()
-                    } else {
-                        $0
-                    }
+                .modify(if: context.isHighlighted) {
+                    $0
+                        .fixedSize()
                 }
             
             Group {

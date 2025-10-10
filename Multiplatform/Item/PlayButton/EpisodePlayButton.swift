@@ -128,17 +128,11 @@ struct EpisodePlayButton: View {
                 .padding(.horizontal, 12)
                 .background(highlighted ? .white : .secondary.opacity(0.25))
                 .foregroundStyle(highlighted ? .black : .primary)
-                .modify {
-                    if highlighted {
-                        $0
-                            .reverseMask {
-                                if highlighted {
-                                    text()
-                                }
-                            }
-                    } else {
-                        $0
-                    }
+                .modify(if: highlighted) {
+                    $0
+                        .reverseMask {
+                            text()
+                        }
                 }
         }
         .buttonStyle(.plain)

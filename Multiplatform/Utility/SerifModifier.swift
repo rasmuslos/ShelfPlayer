@@ -13,13 +13,9 @@ struct SerifModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .modify {
-                if enableSerifFont {
-                    $0
-                        .fontDesign(.serif)
-                } else {
-                    $0
-                }
+            .modify(if: enableSerifFont) {
+                $0
+                    .fontDesign(.serif)
             }
     }
 }
