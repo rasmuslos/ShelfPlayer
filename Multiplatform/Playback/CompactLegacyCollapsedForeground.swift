@@ -69,18 +69,14 @@ struct CompactLegacyCollapsedForeground: View {
         .contentShape(.rect)
         .padding(.horizontal, 20 - horizontalPadding)
         .padding(.vertical, 8)
-        .modify {
-            if decorative {
+        .modify(if: !decorative) {
+            if #available(iOS 26 , *) {
                 $0
+                    .glassEffect()
             } else {
-                if #available(iOS 26 , *) {
-                    $0
-                        .glassEffect()
-                } else {
-                    $0
-                        .background(.bar, in: .rect(cornerRadius: viewModel.PILL_CORNER_RADIUS))
-                        .shadow(color: .black.opacity(0.2), radius: 12)
-                }
+                $0
+                    .background(.bar, in: .rect(cornerRadius: viewModel.PILL_CORNER_RADIUS))
+                    .shadow(color: .black.opacity(0.2), radius: 12)
             }
         }
     }

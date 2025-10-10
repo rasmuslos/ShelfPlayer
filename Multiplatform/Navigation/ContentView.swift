@@ -108,21 +108,13 @@ struct ContentView: View {
                 TabRouter()
             }
         }
-        .modify {
-            if tintColor == .shelfPlayer {
-                $0
-            } else {
-                $0
-                    .tint(tintColor.color)
-            }
+        .modify(if: tintColor != .shelfPlayer) {
+            $0
+                .tint(tintColor.color)
         }
-        .modify {
-            if colorScheme != .system {
-                $0
-                    .preferredColorScheme(colorScheme == .light ? .light : .dark)
-            } else {
-                $0
-            }
+        .modify(if: colorScheme != .system) {
+            $0
+                .preferredColorScheme(colorScheme == .light ? .light : .dark)
         }
         .sensoryFeedback(.error, trigger: satellite.notifyError)
         .sensoryFeedback(.success, trigger: satellite.notifySuccess)
@@ -131,12 +123,8 @@ struct ContentView: View {
         .modifier(PlaybackContentModifier())
         .sheet(item: satellite.presentedSheet) {
             sheetContent(for: $0)
-                .modify {
-                    if ProcessInfo.processInfo.isiOSAppOnMac {
-                        applyEnvironment($0)
-                    } else {
-                        $0
-                    }
+                .modify(if: ProcessInfo.processInfo.isiOSAppOnMac) {
+                    applyEnvironment($0)
                 }
         }
         .alert(String(), isPresented: satellite.isWarningAlertPresented) {

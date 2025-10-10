@@ -83,13 +83,9 @@ struct DownloadButton: View {
                             }
                     } else {
                         Label(viewModel.label, systemImage: viewModel.icon)
-                            .modify {
-                                if viewModel.tint {
-                                    $0
-                                        .tint(viewModel.status == .completed ? .red : .blue)
-                                } else {
-                                    $0
-                                }
+                            .modify(if: viewModel.tint) {
+                                $0
+                                    .tint(viewModel.status == .completed ? .red : .blue)
                             }
                     }
                 }

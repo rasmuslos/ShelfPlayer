@@ -26,13 +26,9 @@ struct PlaybackTitle: View {
                             .id(currentItem.name)
                             .lineLimit(2)
                             .font(.headline)
-                            .modify {
-                                if currentItem.id.type == .audiobook {
-                                    $0
-                                        .modifier(SerifModifier())
-                                } else {
-                                    $0
-                                }
+                            .modify(if: currentItem.id.type == .audiobook ) {
+                                $0
+                                    .modifier(SerifModifier())
                             }
                         
                         Text(currentItem.authors, format: .list(type: .and, width: .short))
