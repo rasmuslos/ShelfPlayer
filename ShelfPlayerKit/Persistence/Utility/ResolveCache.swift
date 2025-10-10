@@ -33,9 +33,31 @@ public actor ResolveCache: Sendable {
         try await waitForResolvingItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
         
         if let cached = cache[itemID] {
+            if itemID.type == .podcast, episodeCache[itemID]?.isEmpty != false {
+                logger.info("Podcast \(cached.name) is cached but has no episodes, attempting to fetch them")
+                
+                beginResolvingItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
+                
+                let episodes: [Episode]
+                
+                do {
+                    episodes = try await ABSClient[itemID.connectionID].episodes(from: itemID)
+                } catch {
+                    episodes = try await PersistenceManager.shared.download.episodes(from: itemID)
+                }
+                
+                episodeCache[itemID] = episodes
+                
+                resolvedItem(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
+            }
+            
             return (cached, episodeCache[itemID] ?? [])
         }
         if let diskCached = try? await checkDiskCached(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID) {
+            if let groupingID = itemID.groupingID, let episodes = try? await diskCachedEpisodes(groupingID: groupingID, connectionID: itemID.connectionID) {
+                return (diskCached, episodes)
+            }
+            
             return (diskCached, [])
         }
         
@@ -267,14 +289,24 @@ private extension ResolveCache {
 }
 
 private extension ResolveCache {
-    private func diskPath(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> URL {
+    func diskPath(connectionID: ItemIdentifier.ConnectionID) -> URL {
         var base = ShelfPlayerKit.cacheDirectoryURL
         
         base.append(path: "Items")
         base.append(path: connectionID.replacing("/", with: "_"))
         
+        return base
+    }
+    func diskPath(groupingID: ItemIdentifier.GroupingID, connectionID: ItemIdentifier.ConnectionID) -> URL {
+        diskPath(connectionID: connectionID).appending(path: groupingID)
+    }
+    func diskPath(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> URL {
+        var base: URL
+        
         if let groupingID {
-            base.append(path: groupingID)
+            base = diskPath(groupingID: groupingID, connectionID: connectionID)
+        } else {
+            base = diskPath(connectionID: connectionID)
         }
         
         try! FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
@@ -282,6 +314,24 @@ private extension ResolveCache {
         base.append(path: "\(primaryID).json")
         
         return base
+    }
+    func diskCachedEpisodes(groupingID: ItemIdentifier.GroupingID, connectionID: ItemIdentifier.ConnectionID) async throws -> [Episode] {
+        let path = diskPath(groupingID: groupingID, connectionID: connectionID)
+        var episodes = [Episode]()
+        
+        for file in try FileManager.default.contentsOfDirectory(atPath: path.relativePath) {
+            guard let primaryID = file.split(separator: ".").first else {
+                continue
+            }
+            
+            guard let episode = try await checkDiskCached(primaryID: String(primaryID), groupingID: groupingID, connectionID: connectionID) as? Episode else {
+                continue
+            }
+            
+            episodes.append(episode)
+        }
+        
+        return episodes
     }
     
     func checkDiskCached(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws -> Item {
