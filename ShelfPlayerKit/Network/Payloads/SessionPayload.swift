@@ -30,9 +30,9 @@ public struct SessionPayload: Sendable, Codable, Identifiable {
     let coverPath: String?
     
     public let duration: Double?
-    public let playMethod: Int
+    public let playMethod: Int?
     
-    public let mediaPlayer: String
+    public let mediaPlayer: String?
     public let deviceInfo: DeviceInfo?
     
     let date: String?
