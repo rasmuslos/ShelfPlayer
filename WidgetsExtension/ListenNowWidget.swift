@@ -90,6 +90,7 @@ private struct ListenNowWidgetContent: View {
         if let imageData = entry.covers[item.id], let image = UIImage(data: imageData) {
             Image(uiImage: image)
                 .resizable()
+                .widgetAccentedRenderingMode(.fullColor)
                 .aspectRatio(1, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         } else {
@@ -126,7 +127,15 @@ private struct ListenNowWidgetContent: View {
                 .labelStyle(.iconOnly)
                 .padding(6)
                 .foregroundStyle(colorScheme == .light ? .black : .white)
-                .background(.ultraThinMaterial, in: .circle)
+                .modify {
+                    if renderingMode == .fullColor {
+                        $0
+                            .background(.ultraThinMaterial, in: .circle)
+                    } else {
+                        $0
+                            .background(.green.opacity(0.2), in: .circle)
+                    }
+                }
                 .colorScheme(colorScheme == .dark ? .light : .dark)
                 .font(.caption2)
         }

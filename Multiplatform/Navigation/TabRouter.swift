@@ -291,17 +291,24 @@ struct TabRouter: View {
 
 #Preview {
     TabView {
-        Tab("Home", systemImage: "house") {
+        Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "house") {
+            Text("ABC")
+        }
+
+
+        Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "bell") {
             
         }
 
 
-        Tab("Alerts", systemImage: "bell") {
+        Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "list.bullet") {
             
         }
-
-
-        Tab("Browse", systemImage: "list.bullet") {
+        
+        Tab("""
+            VERY LONG TITLE
+            VERY LONG TITLE
+            """, systemImage: "command") {
             
         }
     }
@@ -319,4 +326,5 @@ struct TabRouter: View {
             $0
         }
     }
+    .font(.largeTitle)
 }

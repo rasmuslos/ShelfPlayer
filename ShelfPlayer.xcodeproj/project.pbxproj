@@ -40,7 +40,7 @@
 		3A27F0F12CA15E0F005DE87D /* TabRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A27F0F02CA15E08005DE87D /* TabRouter.swift */; };
 		3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B93342B00D71B00638AE9 /* ProgressButton.swift */; };
 		3A2BC1952AD8121400054727 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3A2BC1942AD8121400054727 /* Settings.bundle */; };
-		3A2CA28A2CC100CF0004BAAB /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2CA2892CC100CC0004BAAB /* View.swift */; };
+		3A2CA28A2CC100CF0004BAAB /* View+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2CA2892CC100CC0004BAAB /* View+Preview.swift */; };
 		3A3129A12D24140F00D143B4 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A02D24140B00D143B4 /* WelcomeView.swift */; };
 		3A3129A32D2414F100D143B4 /* ConnectionAddSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A22D2414E100D143B4 /* ConnectionAddSheet.swift */; };
 		3A3129A52D24190900D143B4 /* HeaderEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3129A42D24190200D143B4 /* HeaderEditor.swift */; };
@@ -330,7 +330,7 @@
 		3A27F0F02CA15E08005DE87D /* TabRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabRouter.swift; sourceTree = "<group>"; };
 		3A2B93342B00D71B00638AE9 /* ProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressButton.swift; sourceTree = "<group>"; };
 		3A2BC1942AD8121400054727 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		3A2CA2892CC100CC0004BAAB /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		3A2CA2892CC100CC0004BAAB /* View+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Preview.swift"; sourceTree = "<group>"; };
 		3A3129A02D24140B00D143B4 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		3A3129A22D2414E100D143B4 /* ConnectionAddSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionAddSheet.swift; sourceTree = "<group>"; };
 		3A3129A42D24190200D143B4 /* HeaderEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEditor.swift; sourceTree = "<group>"; };
@@ -744,8 +744,8 @@
 		3A47D1842CB991720045C2BB /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				3A2CA2892CC100CC0004BAAB /* View.swift */,
 				3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */,
+				3A2CA2892CC100CC0004BAAB /* View+Preview.swift */,
 				3A0E42EB2C8195810034873F /* Alignment+Text.swift */,
 				3A012E282C806D970073A619 /* View+ReverseMask.swift */,
 				3A3B3ED92E7D294400CFA44E /* CompactToolbarModifier.swift */,
@@ -1427,7 +1427,7 @@
 				3AA164432D6DCF0800343214 /* PlaybackContentModifier.swift in Sources */,
 				3ACB8DEC2DE2FD7C005336C0 /* DebugPreferences.swift in Sources */,
 				3A8810F22AD2C2C3009696D1 /* PodcastView.swift in Sources */,
-				3A2CA28A2CC100CF0004BAAB /* View.swift in Sources */,
+				3A2CA28A2CC100CF0004BAAB /* View+Preview.swift in Sources */,
 				3AE0575B2E0E95D000E90C14 /* ItemStatusModifier.swift in Sources */,
 				3AC41F932CC52F86009ABBFA /* HomeRow+Helper.swift in Sources */,
 				3A65DB012D771D4200332BF3 /* ItemIDLoadLink.swift in Sources */,
