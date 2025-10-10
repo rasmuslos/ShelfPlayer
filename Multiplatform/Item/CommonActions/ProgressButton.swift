@@ -61,13 +61,9 @@ struct ProgressButton: View {
         }
         .disabled(isLoading)
         .contentTransition(.symbolEffect)
-        .modify {
-            if tint {
-                $0
-                    .tint(progress.isFinished == true ? .red : .green)
-            } else {
-                $0
-            }
+        .modify(if: tint) {
+            $0
+                .tint(progress.isFinished == true ? .red : .green)
         }
     }
 }

@@ -86,38 +86,26 @@ struct ItemStatusModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .modify {
-                if let hoverEffect {
-                    $0
-                        .hoverEffect(hoverEffect)
-                } else {
-                    $0
-                }
+            .modify(if: hoverEffect) {
+                $0
+                    .hoverEffect($1)
             }
             .accessibilityLabel(label)
-            .modify {
-                if let value {
-                    $0
-                        .accessibilityValue(value)
-                } else {
-                    $0
-                }
+            .modify(if: value) {
+                $0
+                    .accessibilityValue($1)
             }
             .accessibilityIdentifier(itemID.description)
-            .modify {
-                if isInteractive {
-                    if itemID.isPlayable {
-                        $0
-                            .accessibilityAction(.magicTap) {
-                                satellite.start(itemID)
-                            }
-                            .accessibilityAddTraits([.isLink, .startsMediaSession])
-                    } else {
-                        $0
-                            .accessibilityAddTraits([.isLink])
-                    }
+            .modify(if: isInteractive) {
+                if itemID.isPlayable {
+                    $0
+                        .accessibilityAction(.magicTap) {
+                            satellite.start(itemID)
+                        }
+                        .accessibilityAddTraits([.isLink, .startsMediaSession])
                 } else {
                     $0
+                        .accessibilityAddTraits([.isLink])
                 }
             }
             .accessibilityRemoveTraits(.isButton)
@@ -129,13 +117,9 @@ struct ItemStatusModifier: ViewModifier {
                     $0
                 }
             }
-            .modify {
-                if isInteractive, itemID.isPlayable {
-                    $0
-                        .modifier(PlayableItemSwipeActionsModifier(itemID: itemID, currentDownloadStatus: download?.status))
-                } else {
-                    $0
-                }
+            .modify(if: isInteractive && itemID.isPlayable) {
+                $0
+                    .modifier(PlayableItemSwipeActionsModifier(itemID: itemID, currentDownloadStatus: download?.status))
             }
             .onAppear {
                 if item == nil {
