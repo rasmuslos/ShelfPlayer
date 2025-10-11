@@ -24,10 +24,10 @@
 </a>
 
 ## Screenshots
-| Audiobook                                                                                      | Podcast                                                                               | Player                                                                          | Other                                                                                             |
-| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="Audiobook (iOS)" width="200"/>       | <img src="/Screenshots/iOS%20Podcast.png?raw=true" alt="Podcast" width="200"/>        | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player" width="200"/>    | <img src="/Screenshots/iOS%20Playlist.png?raw=true" alt="Playlist" width="200"/> 
-| <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Podcast.png?raw=true" alt="Podcast" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player" width="200"/> | <img src="/Screenshots/iOS%20Listen%20Now.png?raw=true" alt="Listen Now" width="200"/> |
+| Audiobook | Podcast | Player | Other |
+| --- | --- | --- | --- |
+| <img src="/Screenshots/iOS%20Audiobook.png?raw=true" alt="Audiobook (iPhone)" width="200"/>       | <img src="/Screenshots/iOS%20Podcast.png?raw=true" alt="Podcast (iPhone)" width="200"/>        | <img src="/Screenshots/iOS%20Player.png?raw=true" alt="Player (iPhone)" width="200"/>    | <img src="/Screenshots/iOS%20Listen%20Now.png?raw=true" alt="Listen Now (iPhone)" width="200"/> 
+| <img src="/Screenshots/iPadOS%20Audiobook.png?raw=true" alt="Audiobook (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Podcast.png?raw=true" alt="Podcast (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Player.png?raw=true" alt="Player (iPad)" width="200"/> | <img src="/Screenshots/iPadOS%20Podcast%20Home.png?raw=true" alt="Podcast Home (iPad)" width="200"/> |
 
 ## Sideloading
 
