@@ -650,9 +650,15 @@ private struct PlaybackSlider<MiddleContent: View>: View {
                     Button {
                         durationToggled.toggle()
                     } label: {
-                        Text(trailingTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
-                            .contentTransition(.numericText(value: trailingTime))
-                            .animation(.smooth, value: durationToggled)
+                        HStack(spacing: 0) {
+                            if durationToggled {
+                                Text(verbatim: "-")
+                            }
+                            
+                            Text(trailingTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                                .contentTransition(.numericText(value: trailingTime))
+                                .animation(.smooth, value: durationToggled)
+                        }
                     }
                     .buttonStyle(.plain)
                 }
