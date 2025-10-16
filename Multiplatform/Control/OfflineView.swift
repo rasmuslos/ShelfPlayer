@@ -101,10 +101,10 @@ struct OfflineView: View {
             .onReceive(RFNotification[.downloadStatusChanged].publisher()) { _ in
                 loadItems()
             }
+            .modifier(ApplyLegacyCollapsedForeground())
             .modifier(CompactPlaybackModifier())
             .modifier(RegularPlaybackModifier())
             .modifier(RegularPlaybackBarModifier())
-            .modifier(ApplyLegacyCollapsedForeground())
             .environment(\.playbackBottomOffset, 16)
         }
     }
