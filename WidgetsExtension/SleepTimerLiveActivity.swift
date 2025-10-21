@@ -26,6 +26,9 @@ private struct Actions: View {
                                     Label("decrease", systemImage: "minus")
                                 }
                             }
+                        } else {
+                            Button("sleepTimer.cancel", systemImage: "xmark", intent: CancelSleepTimerIntent())
+                                .tint(.white)
                         }
                         
                         Button("increase", systemImage: "plus", intent: SetSleepTimerIntent(amount: chapters + 1, type: .chapters))
@@ -105,7 +108,7 @@ struct SleepTimerLiveActivity: Widget {
                 .frame(width: 24)
                 .tint(color(isStale: isStale))
             } else if state.chapters != nil {
-                Label("chapters", systemImage: "append.page")
+                Label("chapters", systemImage: "alarm")
                     .labelStyle(.iconOnly)
                     .foregroundStyle(color(isStale: isStale))
             }

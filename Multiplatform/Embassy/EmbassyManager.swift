@@ -260,6 +260,12 @@ final class EmbassyManager: Sendable {
         }
     }
     
+    func endSleepTimerActivity() async {
+        for activity in Activity<SleepTimerLiveActivityAttributes>.activities {
+            await activity.end(.init(state: .init(deadline: .now, chapters: nil, isPlaying: false), staleDate: nil), dismissalPolicy: .immediate)
+        }
+    }
+    
     static let shared = EmbassyManager()
 }
 

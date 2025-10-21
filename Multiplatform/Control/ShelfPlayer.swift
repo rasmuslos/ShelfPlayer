@@ -27,6 +27,41 @@ struct ShelfPlayer {
         
         AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
         AppDependencyManager.shared.add(dependency: EmbassyManager.shared.intentAudioPlayer)
+    }
+    
+    static func initializeUIHook() {
+        #if ENABLE_CENTRALIZED
+        INPreferences.requestSiriAuthorization {
+            logger.info("Got Siri authorization status: \($0.rawValue)")
+        }
+        #endif
+        
+        let lastBuild = Defaults[.lastBuild]
+        
+        // Fresh install
+        if lastBuild == nil {
+            Defaults[.lastToSUpdate] = ShelfPlayerKit.currentToSVersion
+        }
+        
+        // Invalidate cache after an update
+        let clientBuild = ShelfPlayerKit.clientBuild
+        if let lastBuild, clientBuild < lastBuild {
+            logger.info("ShelfPlayer has been updated. Invalidating cache...")
+            
+            Task {
+                try await ShelfPlayer.invalidateCache()
+            }
+        }
+        
+        Defaults[.lastBuild] = clientBuild
+        
+        // ToS
+        let lastToSUpdate = Defaults[.lastToSUpdate] ?? -1
+        if lastToSUpdate < ShelfPlayerKit.currentToSVersion {
+            Task {
+                await Satellite.shared.warn(.termsOfServiceChanged)
+            }
+        }
         
         // Execute task early:
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.spotlightIndex"]
@@ -44,41 +79,6 @@ struct ShelfPlayer {
                 $0.connectionID == connectionID
             }
         }
-        
-        let lastCacheClear = Defaults[.lastBuild]
-        
-        // Fresh install
-        if lastCacheClear == nil {
-            Defaults[.lastToSUpdate] = ShelfPlayerKit.currentToSVersion
-        }
-        
-        // Invalidate cache after an update
-        let clientBuild = ShelfPlayerKit.clientBuild
-        if let lastCacheClear, clientBuild < lastCacheClear {
-            logger.info("ShelfPlayer has been updated. Invalidating cache...")
-            
-            Task {
-                try await ShelfPlayer.invalidateCache()
-            }
-        }
-        
-        // ToS
-        let lastToSUpdate = Defaults[.lastToSUpdate] ?? -1
-        if lastToSUpdate < ShelfPlayerKit.currentToSVersion {
-            Task {
-                await Satellite.shared.warn(.termsOfServiceChanged)
-            }
-        }
-        
-        Defaults[.lastBuild] = clientBuild
-    }
-    
-    static func initializeUIHook() {
-        #if ENABLE_CENTRALIZED
-        INPreferences.requestSiriAuthorization {
-            logger.info("Got Siri authorization status: \($0.rawValue)")
-        }
-        #endif
         
         Task {
             await withTaskGroup {
@@ -101,6 +101,8 @@ struct ShelfPlayer {
                 $0.addTask { await PersistenceManager.shared.convenienceDownload.scheduleBackgroundTask(shouldWait: false) }
                 
                 $0.addTask { await PersistenceManager.shared.download.scheduleUpdateTask() }
+                
+                $0.addTask { await EmbassyManager.shared.endSleepTimerActivity() }
             }
         }
     }
