@@ -48,6 +48,7 @@ struct PlaybackCompactExpandedForeground: View {
                             
                             ItemImage(itemID: satellite.nowPlayingItemID, size: .large, cornerRadius: viewModel.EXPANDED_IMAGE_CORNER_RADIUS, aspectRatio: .none, contrastConfiguration: nil)
                                 .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
+                                // .offset(y: viewModel.controlTranslationY)
                         }
                         .aspectRatio(1, contentMode: .fit)
                         .id((satellite.nowPlayingItemID?.description ?? "wwf2foijwvkjw") + "_nowPlaying_image_expanded_large")

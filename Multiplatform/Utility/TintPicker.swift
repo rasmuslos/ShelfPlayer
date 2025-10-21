@@ -8,11 +8,13 @@
 import SwiftUI
 import ShelfPlayback
 
-struct TintPicker: View {
+struct TintPicker<Label: View>: View {
     @Default(.tintColor) private var tintColor
     
+    let buildLabel: (_ : LocalizedStringKey, _ : String) -> Label
+    
     var body: some View {
-        Picker("preferences.tint", systemImage: "circle.dashed", selection: $tintColor) {
+        Picker(selection: $tintColor) {
             Row(tint: .shelfPlayer)
             
             Divider()
@@ -20,6 +22,8 @@ struct TintPicker: View {
             ForEach(TintColor.allCases.filter { $0 != .shelfPlayer }) {
                 Row(tint: $0)
             }
+        } label: {
+            buildLabel("preferences.tint", "circle.dashed")
         }
     }
     
@@ -69,7 +73,9 @@ extension TintColor {
 
 #Preview {
     List {
-        TintPicker()
+        TintPicker {
+            Label($0, systemImage: $1)
+        }
     }
 }
 

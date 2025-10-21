@@ -215,7 +215,7 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
                 }
             }
             
-            logger.info("Finished evaluating downloads for \(configurationID). D: \(downloaded.count), Q: \(queuedDownloads.count), O: \(orphanedDownloads.count), U: \(updatedDownloadedIDs.count)")
+            logger.info("Finished evaluating downloads for \(configurationID). Downloaded: \(downloaded.count), Queued: \(queuedDownloads.count), Orphaned: \(orphanedDownloads.count), Updated: \(updatedDownloadedIDs.count)")
         } catch {
             logger.error("Failed to download configuration: \(error)")
         }

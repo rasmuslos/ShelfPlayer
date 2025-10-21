@@ -43,6 +43,13 @@ struct TabRouter: View {
     private var isCompact: Bool {
         horizontalSizeClass == .compact
     }
+    private var searchTab: TabValue? {
+        guard let library = satellite.tabValue?.library else {
+            return nil
+        }
+        
+        return .search(library)
+    }
     
     @ViewBuilder
     private func content(for tab: TabValue) -> some View {
@@ -94,10 +101,11 @@ struct TabRouter: View {
                             }
                         }
                         
-                        let searchTab = TabValue.search(tabValue.library)
-                        Tab(value: searchTab, role: .search) {
-                            content(for: searchTab)
-                                .modifier(SearchPanelModifier())
+                        if let searchTab {
+                            Tab(value: searchTab, role: .search) {
+                                content(for: searchTab)
+                                    .modifier(SearchPanelModifier())
+                            }
                         }
                     }
                     .tabViewStyle(.sidebarAdaptable)

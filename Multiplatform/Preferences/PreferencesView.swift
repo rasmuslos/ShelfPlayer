@@ -9,6 +9,8 @@ import SwiftUI
 import ShelfPlayback
 
 struct PreferencesView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     @ViewBuilder
     private var connectionPreferences: some View {
         List {
@@ -18,50 +20,74 @@ struct PreferencesView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
     
+    private func label(_ label: LocalizedStringKey, systemImage: String, color: Color, lightIcon: Bool) -> some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(color.gradient)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(width: 36)
+                
+                Image(systemName: systemImage)
+                    .dynamicTypeSize(.small)
+                    .shadow(color: .black.opacity(0.8), radius: 12)
+                    .foregroundStyle(lightIcon ? .white : .black)
+            }
+            
+            Text(label)
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             List {
                 Section {
                     NavigationLink(destination: PlaybackRateEditor()) {
-                        Label("preferences.playbackRate", systemImage: "percent")
+                        label("preferences.playbackRate", systemImage: "percent", color: .blue, lightIcon: true)
                     }
                     NavigationLink(destination: SleepTimerEditor()) {
-                        Label("preferences.sleepTimer", systemImage: "clock")
+                        label("preferences.sleepTimer", systemImage: "clock", color: .orange, lightIcon: true)
                     }
                 }
                 
                 Section {
-                    TintPicker()
-                    ColorSchemePreference()
+                    TintPicker {
+                        label($0, systemImage: $1, color: .accentColor, lightIcon: false)
+                    }
+                    ColorSchemePreference {
+                        label($0, systemImage: $1, color: colorScheme == .dark ? .white : .black, lightIcon: colorScheme != .dark)
+                    }
                 }
                 
                 Section {
                     NavigationLink(destination: connectionPreferences) {
-                        Label("connection.manage", systemImage: "server.rack")
+                        label("connection.manage", systemImage: "server.rack", color: .teal, lightIcon: true)
                     }
                     
                     NavigationLink(destination: ConvenienceDownloadPreferences()) {
-                        Label("preferences.convenienceDownload", systemImage: "arrow.down.circle")
+                        label("preferences.convenienceDownload", systemImage: "arrow.down.circle", color: .indigo, lightIcon: true)
                     }
                 }
                 
                 Section {
                     NavigationLink(destination: CarPlayPreferences()) {
-                        Label("preferences.carPlay", systemImage: "car.badge.gearshape")
+                        label("preferences.carPlay", systemImage: "car", color: .green, lightIcon: false)
                     }
                     NavigationLink(destination: TabValuePreferences()) {
-                        Label("preferences.tabs", systemImage: "rectangle.on.rectangle.badge.gearshape")
+                        label("preferences.tabs", systemImage: "rectangle.2.swap", color: .purple, lightIcon: false)
                     }
                 }
                 
-                PodcastSortOrderPreference()
+                PodcastSortOrderPreference {
+                    label($0, systemImage: $1, color: .orange, lightIcon: true)
+                }
                 
                 Section {
                     Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
-                        Label("preferences.settings", systemImage: "gear")
+                        label("preferences.settings", systemImage: "gear", color: .gray, lightIcon: true)
                     }
                     NavigationLink(destination: DebugPreferences()) {
-                        Label("preferences.support", systemImage: "lifepreserver")
+                        label("preferences.support", systemImage: "lifepreserver", color: .red, lightIcon: true)
                     }
                 }
             }
@@ -98,3 +124,4 @@ struct CompactPreferencesToolbarModifier: ViewModifier {
         .previewEnvironment()
 }
 #endif
+
