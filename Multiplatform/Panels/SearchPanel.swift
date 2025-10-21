@@ -46,6 +46,7 @@ struct SearchPanel: View {
         }
         .navigationTitle("panel.search")
         .largeTitleDisplayMode()
+        .modifier(PlaybackSafeAreaPaddingModifier())
         .onChange(of: library, initial: true) {
             viewModel.library = library
         }

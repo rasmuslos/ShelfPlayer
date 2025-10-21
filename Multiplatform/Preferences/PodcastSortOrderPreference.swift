@@ -8,16 +8,18 @@
 import SwiftUI
 import ShelfPlayback
 
-struct PodcastSortOrderPreference: View {
+struct PodcastSortOrderPreference<Content: View>: View {
     @Default(.defaultEpisodeSortOrder) private var sortOrder
     @Default(.defaultEpisodeAscending) private var ascending
+    
+    let buildLabel: (_ : LocalizedStringKey, _ : String) -> Content
     
     var body: some View {
         Menu {
             ItemSortOrderPicker(sortOrder: $sortOrder, ascending: $ascending)
         } label: {
             HStack(spacing: 0) {
-                Label("preferences.defaultEpisodeSortOrder", systemImage: "arrow.up.arrow.down.square")
+                buildLabel("preferences.defaultEpisodeSortOrder", "arrow.up.arrow.down")
                 
                 Spacer(minLength: 8)
                 
@@ -33,6 +35,8 @@ struct PodcastSortOrderPreference: View {
 
 #Preview {
     List {
-        PodcastSortOrderPreference()
+        PodcastSortOrderPreference {
+            Label($0, systemImage: $1)
+        }
     }
 }
