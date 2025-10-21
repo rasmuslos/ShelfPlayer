@@ -97,7 +97,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        Group {
+        ZStack {
             if !ConnectionStore.shared.didLoad {
                 LoadingView()
             } else if ConnectionStore.shared.connections.isEmpty {

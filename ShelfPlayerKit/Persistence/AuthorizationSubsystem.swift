@@ -355,7 +355,17 @@ extension PersistenceManager.AuthorizationSubsystem {
         refreshingIDs.insert(connectionID)
         
         do {
-            let stored = try token(for: connectionID, service: accessTokenService)
+            let stored: String
+            
+            do {
+                stored = try token(for: connectionID, service: accessTokenService)
+            } catch {
+                // womp womp
+                logger.fault("Force removing (ww) stored connection \(connectionID)")
+                await remove(connectionID: connectionID)
+                
+                throw error
+            }
             
             guard current == stored else {
                 refreshingIDs.remove(connectionID)
