@@ -79,17 +79,14 @@ private extension CarPlayTabBar {
         
         template.updateTemplates(templates)
     }
-    nonisolated func updateLibraries() {
+    func updateLibraries() {
         Task {
             let libraries = await ShelfPlayerKit.libraries
+            self.libraries = Dictionary(uniqueKeysWithValues: libraries.map {
+                ($0, CarPlayLibraryController(interfaceController: interfaceController, library: $0))
+            })
             
-            await MainActor.run {
-                self.libraries = Dictionary(uniqueKeysWithValues: libraries.map {
-                    ($0, CarPlayLibraryController(interfaceController: interfaceController, library: $0))
-                })
-                
-                updateTemplate()
-            }
+            updateTemplate()
         }
     }
     
