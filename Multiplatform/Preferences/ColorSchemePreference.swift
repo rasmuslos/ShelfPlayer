@@ -8,15 +8,19 @@
 import SwiftUI
 import ShelfPlayback
 
-struct ColorSchemePreference: View {
+struct ColorSchemePreference<Label: View>: View {
     @Default(.colorScheme) private var colorScheme
     
+    let buildLabel: (_ : LocalizedStringKey, _ : String) -> Label
+    
     var body: some View {
-        Picker("preferences.colorScheme", systemImage: "lightspectrum.horizontal", selection: $colorScheme) {
+        Picker(selection: $colorScheme) {
             ForEach(ConfiguredColorScheme.allCases, id: \.hashValue) {
                 Text($0.label)
                     .tag($0)
             }
+        } label: {
+            buildLabel("preferences.colorScheme", "lightspectrum.horizontal")
         }
     }
 }

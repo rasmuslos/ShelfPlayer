@@ -53,6 +53,8 @@ final class PlaybackViewModel {
     private(set) var isRegularExpanded = false
     private(set) var isNowPlayingBackgroundVisible = false
     
+    private(set) var nowPlayingShadowVisibleCount = 0
+    
     private(set) var showCompactPlaybackBarOnExpandedViewCount = 0
     
     private(set) var expansionAnimationCount = 0
@@ -166,10 +168,14 @@ final class PlaybackViewModel {
         return 0
     }
     
-    func toggleExpanded() {
-        self.expansionAnimationCount = 0
-        self.showCompactPlaybackBarOnExpandedViewCount = 0
+    func resetAnimationCounts() {
+        nowPlayingShadowVisibleCount = 0
         
+        expansionAnimationCount = 0
+        showCompactPlaybackBarOnExpandedViewCount = 0
+    }
+    
+    func toggleExpanded() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         
         // Foreground, background removal
@@ -181,6 +187,10 @@ final class PlaybackViewModel {
             
             withAnimation(.easeInOut(duration: 0.1)) {
                 showCompactPlaybackBarOnExpandedViewCount += 1
+            }
+            
+            withAnimation(.easeOut(duration: 0.3)) {
+                nowPlayingShadowVisibleCount -= 1
             }
             
             withAnimation(.easeIn(duration: ANIMATION_TIMING.1).delay(0.2)) {
@@ -215,6 +225,10 @@ final class PlaybackViewModel {
             
             withAnimation(.easeInOut(duration: 0.3)) {
                 self.showCompactPlaybackBarOnExpandedViewCount -= 1
+            }
+            
+            withAnimation(.easeIn(duration: 0.3)) {
+                nowPlayingShadowVisibleCount += 1
             }
         }
     }

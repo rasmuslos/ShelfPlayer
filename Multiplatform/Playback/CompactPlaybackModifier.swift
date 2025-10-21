@@ -59,6 +59,13 @@ struct CompactPlaybackModifier: ViewModifier {
                 
                 content
                     .overlay {
+                        Rectangle()
+                            .fill(.black)
+                            .opacity(viewModel.nowPlayingShadowVisibleCount > 0 ? 0.14 : 0)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
+                    }
+                    .overlay {
                         ZStack(alignment: .topLeading) {
                             nowPlayingCapsuleMirror(proxy: geometryProxy)
                                 .modifier(PlaybackDragGestureCatcher(height: height))
@@ -105,6 +112,9 @@ struct CompactPlaybackModifier: ViewModifier {
                     }
                     .ignoresSafeArea()
                     .environment(\.playbackBottomSafeArea, geometryProxy.safeAreaInsets.bottom)
+                    .onChange(of: satellite.tabValue) {
+                        viewModel.resetAnimationCounts()
+                    }
             }
         }
     }
