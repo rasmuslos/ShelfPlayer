@@ -56,6 +56,15 @@ struct ReauthorizeConnectionSheet: View {
                             }
                         }
                 }
+                
+                Section {
+                    Button("connection.remove") {
+                        ConnectionManageView.remove(connectionID: connectionID, isLoading: .init { viewModel?.isLoading ?? false } set: { viewModel?.isLoading = $0 }) {
+                            dismiss()
+                        }
+                    }
+                    .foregroundStyle(.red)
+                }
             }
             .navigationTitle(viewModel?.name ?? connectionID)
             .navigationBarTitleDisplayMode(.inline)

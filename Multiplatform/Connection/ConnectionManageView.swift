@@ -79,7 +79,9 @@ struct ConnectionManageView: View {
                 .disabled(status == nil)
                 
                 Button("connection.remove") {
-                    remove()
+                    Self.remove(connectionID: connection.id, isLoading: $isLoading) {
+                        dismiss()
+                    }
                 }
                 .foregroundStyle(.red)
             }
@@ -95,14 +97,14 @@ struct ConnectionManageView: View {
         }
     }
     
-    private func remove() {
+    static func remove(connectionID: ItemIdentifier.ConnectionID, isLoading: Binding<Bool>, callback: @escaping () -> Void) {
         Task {
-            isLoading = true
+            isLoading.wrappedValue = true
             
-            await PersistenceManager.shared.remove(connectionID: connection.id)
-            dismiss()
+            await PersistenceManager.shared.remove(connectionID: connectionID)
+            callback()
             
-            isLoading = false
+            isLoading.wrappedValue = false
         }
     }
 }
