@@ -935,10 +935,10 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "assetFailedAttempts_\(assetID)", cluster: "assetFailedAttempts_\(itemID.description)", isCachePurgeable: false)
     }
     static func cachedDownloadStatus(itemID: ItemIdentifier) -> Key<DownloadStatus> {
-        Key(identifier: "downloadStatus_\(itemID)", cluster: "downloadStatusCache", isCachePurgeable: true)
+        Key(identifier: "downloadStatus_\(itemID)", cluster: "downloadStatusCache", isCachePurgeable: false)
     }
     
     static func coverURLCache(itemID: ItemIdentifier, size: ImageSize) -> Key<URL> {
-        Key(identifier: "coverURL_\(itemID)_\(size)", cluster: "coverURLCache", isCachePurgeable: true)
+        Key(identifier: "coverURL_\(itemID)_\(size)", cluster: "coverURLCache", isCachePurgeable: false)
     }
 }

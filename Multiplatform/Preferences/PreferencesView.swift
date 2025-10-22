@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct PreferencesView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Default(.tintColor) private var tintColor
     
     @ViewBuilder
     private var connectionPreferences: some View {
@@ -20,7 +21,7 @@ struct PreferencesView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
     
-    private func label(_ label: LocalizedStringKey, systemImage: String, color: Color, lightIcon: Bool) -> some View {
+    private func label(_ label: LocalizedStringKey, systemImage: String, color: Color, lightIcon: Bool, largeIcon: Bool = false) -> some View {
         HStack(spacing: 12) {
             ZStack {
                 Circle()
@@ -29,7 +30,17 @@ struct PreferencesView: View {
                     .frame(width: 36)
                 
                 Image(systemName: systemImage)
-                    .dynamicTypeSize(.small)
+                    .modify {
+                        if largeIcon {
+                            $0
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 20)
+                        } else {
+                            $0
+                                .dynamicTypeSize(.small)
+                        }
+                    }
                     .shadow(color: .black.opacity(0.8), radius: 12)
                     .foregroundStyle(lightIcon ? .white : .black)
             }
@@ -52,10 +63,10 @@ struct PreferencesView: View {
                 
                 Section {
                     TintPicker {
-                        label($0, systemImage: $1, color: .accentColor, lightIcon: false)
+                        label($0, systemImage: $1, color: tintColor.color, lightIcon: tintColor == .black, largeIcon: true)
                     }
                     ColorSchemePreference {
-                        label($0, systemImage: $1, color: colorScheme == .dark ? .white : .black, lightIcon: colorScheme != .dark)
+                        label($0, systemImage: $1, color: colorScheme == .dark ? .white : .black, lightIcon: colorScheme != .dark, largeIcon: true)
                     }
                 }
                 
@@ -65,7 +76,7 @@ struct PreferencesView: View {
                     }
                     
                     NavigationLink(destination: ConvenienceDownloadPreferences()) {
-                        label("preferences.convenienceDownload", systemImage: "arrow.down.circle", color: .indigo, lightIcon: true)
+                        label("preferences.convenienceDownload", systemImage: "arrow.down", color: .indigo, lightIcon: true)
                     }
                 }
                 

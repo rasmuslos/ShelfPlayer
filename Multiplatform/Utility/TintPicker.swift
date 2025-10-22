@@ -15,28 +15,30 @@ struct TintPicker<Label: View>: View {
     
     var body: some View {
         Picker(selection: $tintColor) {
-            Row(tint: .shelfPlayer)
+            Row(tint: .shelfPlayer, labelStyle: .titleOnly)
             
             Divider()
             
             ForEach(TintColor.allCases.filter { $0 != .shelfPlayer }) {
-                Row(tint: $0)
+                Row(tint: $0, labelStyle: .titleOnly)
             }
         } label: {
             buildLabel("preferences.tint", "circle.dashed")
         }
     }
     
-    struct Row: View {
+    struct Row<S: LabelStyle>: View {
         @Default(.tintColor) private var tintColor
         
         let tint: TintColor
+        let labelStyle: S
         
         var body: some View {
             Button(tint.title, systemImage: "circle.fill") {
                 Defaults[.tintColor] = tint
             }
             .buttonStyle(.plain)
+            .labelStyle(labelStyle)
             .tag(tint)
             .foregroundStyle(tint.color)
             .symbolRenderingMode(.palette)
