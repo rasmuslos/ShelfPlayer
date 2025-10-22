@@ -19,10 +19,10 @@ struct LibraryPicker: View {
             if let libraries = connectionStore.libraries[connection.id] {
                 Section(connection.name) {
                     ForEach(libraries) { library in
-                        Button(library.name, systemImage: library.icon) {
+                        Toggle(library.name, systemImage: library.icon, isOn: .init { satellite.tabValue?.library == library } set: { _ in
                             RFNotification[.changeLibrary].send(payload: library)
                             callback?()
-                        }
+                        })
                     }
                 }
             }

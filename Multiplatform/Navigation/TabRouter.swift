@@ -195,7 +195,7 @@ struct TabRouter: View {
         .onChange(of: satellite.tabValue) {
             navigateIfRequired(withDelay: true)
         }
-        .onChange(of: satellite.tabValue?.library) {
+        .onChange(of: satellite.tabValue?.library.connectionID) {
             RFNotification[.performBackgroundSessionSync].send(payload: satellite.tabValue?.library.connectionID)
         }
         .onChange(of: connectionStore.libraries, initial: true) {
