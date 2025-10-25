@@ -50,9 +50,13 @@ struct SearchPanel: View {
         .onChange(of: library, initial: true) {
             viewModel.library = library
         }
-        .onReceive(RFNotification[.setGlobalSearch].publisher()) {
-            viewModel.search = $0
-            viewModel.scope = $1
+        .onReceive(RFNotification[.setGlobalSearch].publisher()) { search, scope in
+            viewModel.scope = scope
+            
+            Task {
+                try? await Task.sleep(for: .seconds(0.6))
+                viewModel.search = search
+            }
         }
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
     }
