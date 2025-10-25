@@ -153,6 +153,9 @@ struct TabRouter: View {
                     }
                     .modifier(CompactPlaybackModifier())
                     .modifier(RegularPlaybackModifier())
+                    .onAppear {
+                        navigateIfRequired(withDelay: true)
+                    }
                 }
             } else {
                 LoadingView()
@@ -204,12 +207,17 @@ struct TabRouter: View {
         .onReceive(RFNotification[.changeLibrary].publisher()) {
             select($0)
         }
-        .onReceive(RFNotification[.setGlobalSearch].publisher()) { _ in
-            guard let library = satellite.tabValue?.library else {
+        .onReceive(RFNotification[.setGlobalSearch].publisher()) { payload in
+            guard let library = satellite.tabValue?.library, satellite.tabValue != searchTab else {
                 return
             }
             
             satellite.tabValue = .search(library)
+            
+            Task {
+                try await Task.sleep(for: .seconds(0.6))
+                RFNotification[.setGlobalSearch].dispatch(payload: payload)
+            }
         }
         .onReceive(RFNotification[.navigate].publisher()) {
             navigateToWhenReady = $0
@@ -243,7 +251,6 @@ struct TabRouter: View {
         }
         
         guard let library = connectionStore.libraries[navigateToWhenReady.connectionID]?.first(where: { $0.id == navigateToWhenReady.libraryID }) else {
-            self.navigateToWhenReady = nil
             return
         }
         
@@ -324,11 +331,10 @@ struct TabRouter: View {
     .modify {
         if #available(iOS 26, *) {
             $0
-//                .tabViewBottomAccessory {
-//                    Text("nuwef")
-//                }
-                .tabViewSidebarBottomBar {
-                    Text(verbatim: "GRrRR")
+                .tabViewBottomAccessory {
+                    if false {
+                        Text("abc")
+                    }
                 }
         } else {
             $0
