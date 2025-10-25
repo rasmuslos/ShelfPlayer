@@ -9,25 +9,37 @@ import Foundation
 import ShelfPlayerKit
 
 final actor Cache: Sendable {
-    var covers = [ItemIdentifier: Data]()
+    typealias ImageCache = [ItemIdentifier: Data]
+    
+    var covers = ImageCache()
+    var tinyCovers = ImageCache()
+    
     var entities = [ItemIdentifier: ItemEntity]()
     
-    func cover(for itemID: ItemIdentifier) async -> Data? {
-        if let cachedData = covers[itemID] {
-            cachedData
+    private func cachedCover(for itemID: ItemIdentifier, tiny: Bool) -> Data? {
+        if tiny {
+            tinyCovers[itemID]
         } else {
-            await covers(for: [itemID]).values.first
+            covers[itemID]
         }
     }
-    func covers(for itemIDs: [ItemIdentifier]) async -> [ItemIdentifier: Data] {
+    
+    func cover(for itemID: ItemIdentifier, tiny: Bool = false) async -> Data? {
+        if let cached = cachedCover(for: itemID, tiny: tiny) {
+            cached
+        } else {
+            await covers(for: [itemID], tiny: tiny).values.first
+        }
+    }
+    func covers(for itemIDs: [ItemIdentifier], tiny: Bool) async -> [ItemIdentifier: Data] {
         try? await PersistenceManager.shared.authorization.waitForConnections()
         
         var result = [ItemIdentifier: Data]()
         var missingItemIDs: [ItemIdentifier] = []
         
         for itemID in itemIDs {
-            if let cachedData = covers[itemID] {
-                result[itemID] = cachedData
+            if let cached = cachedCover(for: itemID, tiny: tiny) {
+                result[itemID] = cached
             } else {
                 missingItemIDs.append(itemID)
             }
@@ -36,14 +48,19 @@ final actor Cache: Sendable {
         let fetched = await withTaskGroup {
             for itemID in missingItemIDs {
                 $0.addTask {
-                    (itemID, await itemID.data(size: .regular))
+                    (itemID, await itemID.data(size: tiny ? .tiny : .regular))
                 }
             }
             
             return await $0.reduce(into: [:]) { $0[$1.0] = $1.1 }
         }
         
-        covers.merge(fetched) { $1 }
+        if tiny {
+            tinyCovers.merge(fetched) { $1 }
+        } else {
+            covers.merge(fetched) { $1 }
+        }
+        
         result.merge(fetched) { $1 }
         
         return result

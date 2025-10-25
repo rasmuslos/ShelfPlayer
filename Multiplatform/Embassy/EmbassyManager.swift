@@ -93,6 +93,7 @@ final class EmbassyManager: Sendable {
             
             Task {
                 // App Intent
+                try await StartWidgetConfiguration(item: itemID.resolved).donate()
                 
                 switch itemID.type {
                     case .episode:
@@ -105,6 +106,7 @@ final class EmbassyManager: Sendable {
                         }
                         
                         try await StartPodcastIntent(podcast: podcast).donate()
+                        try await StartWidgetConfiguration(item: podcast).donate()
                     case .audiobook:
                         guard let audiobook = try? await itemID.resolved as? Audiobook else {
                             break
@@ -246,6 +248,7 @@ final class EmbassyManager: Sendable {
                 let current = Defaults[.playbackInfoWidgetValue]
                 Defaults[.playbackInfoWidgetValue] = await .init(currentItemID: current?.currentItemID, isDownloaded: current?.isDownloaded ?? false, isPlaying: current?.isPlaying, listenNowItems: ShelfPlayerKit.listenNowItems)
                 
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
             }
         }
@@ -289,8 +292,8 @@ private extension EmbassyManager {
             guard let itemID else {
                 Defaults[.playbackInfoWidgetValue] = await .init(currentItemID: nil, isDownloaded: false, isPlaying: nil, listenNowItems: ShelfPlayerKit.listenNowItems)
                 
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
-                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
                 
                 return
             }
@@ -310,8 +313,8 @@ private extension EmbassyManager {
     func updatePlaybackInfo(itemID: ItemIdentifier?, isDownloaded: Bool, isPlaying: Bool?) async {
         await Defaults[.playbackInfoWidgetValue] = .init(currentItemID: itemID, isDownloaded: isDownloaded, isPlaying: isPlaying, listenNowItems: ShelfPlayerKit.listenNowItems)
         
+        WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
         WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
-        WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.lastListened")
     }
     
     func updateSleepTimerLiveActivity(_ sleepTimer: SleepTimerConfiguration?) {

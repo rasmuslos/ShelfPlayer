@@ -49,7 +49,7 @@ struct ListenNowWidgetProvider: TimelineProvider {
         }
         
         let itemIDs = payload.listenNowItems.map(\.id)
-        return ListenNowTimelineEntry(playbackItem: playbackItem, items: payload.listenNowItems, covers: await Cache.shared.covers(for: itemIDs), entities: await Cache.shared.entities(for: itemIDs))
+        return ListenNowTimelineEntry(playbackItem: playbackItem, items: payload.listenNowItems, covers: await Cache.shared.covers(for: itemIDs, tiny: false), entities: await Cache.shared.entities(for: itemIDs))
     }
 }
 
@@ -121,7 +121,7 @@ private struct ListenNowWidgetContent: View {
             
             Spacer(minLength: 0)
             
-            WidgetItemButton(item: item, isPlaying: entry.playbackItem?.0 == item.id ? entry.playbackItem?.1 : nil, entity: entry.entities[item.id])
+            WidgetItemButton(item: item, isPlaying: entry.playbackItem?.0 == item.id ? entry.playbackItem?.1 : nil, entity: entry.entities[item.id], progress: nil)
                 .buttonStyle(.plain)
                 .controlSize(.small)
                 .labelStyle(.iconOnly)

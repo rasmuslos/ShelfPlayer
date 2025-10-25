@@ -25,6 +25,17 @@ struct ShelfPlayer {
             logger.error("Failed to configure tips: \(error)")
         }
         
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        Task {
+            do {
+                try await PersistenceManager.shared.authorization.waitForConnections()
+            } catch {
+                logger.fault("init() wait for Connections failed")
+            }
+            semaphore.signal()
+        }
+        
         AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
         AppDependencyManager.shared.add(dependency: EmbassyManager.shared.intentAudioPlayer)
     }

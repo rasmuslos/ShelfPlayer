@@ -48,96 +48,96 @@
       }
     },
     "decrease" : {
-        "localizations" : {
-            "de" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Verringern"
-                }
-            },
-            "en" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Decrease"
-                }
-            },
-            "fr" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Diminuer"
-                }
-            },
-            "ru" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Уменьшить"
-                }
-            },
-            "sv" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Minska"
-                }
-            },
-            "uk" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Зменшити"
-                }
-            },
-            "zh-Hans" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "减小"
-                }
-            }
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verringern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diminuer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уменьшить"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minska"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зменшити"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "减小"
+          }
         }
+      }
     },
     "increase" : {
-        "localizations" : {
-            "de" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Erhöhen"
-                }
-            },
-            "en" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Increase"
-                }
-            },
-            "fr" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Augmenter"
-                }
-            },
-            "ru" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Увеличить"
-                }
-            },
-            "sv" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Öka"
-                }
-            },
-            "uk" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Збільшити"
-                }
-            },
-            "zh-Hans" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "增大"
-                }
-            }
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erhöhen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Augmenter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увеличить"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öka"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збільшити"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增大"
+          }
         }
+      }
     },
     "pause" : {
       "localizations" : {
@@ -508,6 +508,7 @@
       }
     },
     "widget.lastListened" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -554,6 +555,7 @@
       }
     },
     "widget.lastListened.description" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -825,6 +827,32 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "空"
+          }
+        }
+      }
+    },
+    "widget.start" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Objekt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abspielen"
+          }
+        }
+      }
+    },
+    "widget.start.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play the specified item or fall back to the first listen now suggestion if none is selected."
           }
         }
       }
