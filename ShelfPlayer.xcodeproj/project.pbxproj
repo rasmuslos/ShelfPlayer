@@ -78,6 +78,10 @@
 		3A72644E2E2F5C8E00F3BCE1 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72644D2E2F5C8B00F3BCE1 /* ItemView.swift */; };
 		3A7264502E2F76DF00F3BCE1 /* CollectionMembershipEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72644F2E2F76D200F3BCE1 /* CollectionMembershipEditorSheet.swift */; };
 		3A7264542E2F7AE900F3BCE1 /* ItemCollectionMembershipEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7264532E2F7AD800F3BCE1 /* ItemCollectionMembershipEditButton.swift */; };
+		3A738A162EACCD9F00C8A210 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A92AB623F500ACCD68 /* Assets.xcassets */; };
+		3A738A182EACCE3F00C8A210 /* CustomTabValuesPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A738A172EACCE3F00C8A210 /* CustomTabValuesPreferences.swift */; };
+		3A738A1A2EACCE8C00C8A210 /* LibraryEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A738A192EACCE8400C8A210 /* LibraryEnumerator.swift */; };
+		3A738A1C2EACD66300C8A210 /* CustomTabValueSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A738A1B2EACD65B00C8A210 /* CustomTabValueSheet.swift */; };
 		3A743CFA2D70CC8D0007C6B3 /* PlaybackRateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */; };
 		3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */; };
 		3A77B7042ACDF76E00F22C7F /* AudiobookView+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A77B7032ACDF76E00F22C7F /* AudiobookView+Toolbar.swift */; };
@@ -373,6 +377,9 @@
 		3A72644D2E2F5C8B00F3BCE1 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		3A72644F2E2F76D200F3BCE1 /* CollectionMembershipEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionMembershipEditorSheet.swift; sourceTree = "<group>"; };
 		3A7264532E2F7AD800F3BCE1 /* ItemCollectionMembershipEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCollectionMembershipEditButton.swift; sourceTree = "<group>"; };
+		3A738A172EACCE3F00C8A210 /* CustomTabValuesPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabValuesPreferences.swift; sourceTree = "<group>"; };
+		3A738A192EACCE8400C8A210 /* LibraryEnumerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEnumerator.swift; sourceTree = "<group>"; };
+		3A738A1B2EACD65B00C8A210 /* CustomTabValueSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabValueSheet.swift; sourceTree = "<group>"; };
 		3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRateEditor.swift; sourceTree = "<group>"; };
 		3A77B6F72ACDDC9D00F22C7F /* AudiobookView+Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Header.swift"; sourceTree = "<group>"; };
 		3A77B7032ACDF76E00F22C7F /* AudiobookView+Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudiobookView+Toolbar.swift"; sourceTree = "<group>"; };
@@ -808,6 +815,7 @@
 		3A743CF82D70CC750007C6B3 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
+				3A738A192EACCE8400C8A210 /* LibraryEnumerator.swift */,
 				3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */,
 				3AC3FD642D79E8C200FA10DF /* SleepTimerEditor.swift */,
 				3A743CF92D70CC8D0007C6B3 /* PlaybackRateEditor.swift */,
@@ -818,6 +826,7 @@
 				3A90A6402D9AE268009BDA84 /* CreateLogArchiveButton.swift */,
 				3A94A9012E2FF5C2005EC605 /* ColorSchemePreference.swift */,
 				3AAE3F7A2E1567C2000C483B /* PodcastSortOrderPreference.swift */,
+				3A738A172EACCE3F00C8A210 /* CustomTabValuesPreferences.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -848,6 +857,7 @@
 				3A6AAF3B2DE852920090C886 /* StatisticsSheet.swift */,
 				3A81D1E62DBA53F800ACED78 /* ListenNowSheet.swift */,
 				3A7FBA0F2D8D6E000038C0B1 /* DescriptionSheet.swift */,
+				3A738A1B2EACD65B00C8A210 /* CustomTabValueSheet.swift */,
 				3A45C8B92DCE3050004B48A1 /* GroupingConfigurationSheet.swift */,
 				3AF36C2C2E02E4B9000B6CCF /* WhatsNewSheet.swift */,
 			);
@@ -1232,6 +1242,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A738A162EACCD9F00C8A210 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1357,6 +1368,7 @@
 				3A1CCD752DE343A800B2EAA9 /* ListenedTodayLabel.swift in Sources */,
 				3A94A9022E2FF5C2005EC605 /* ColorSchemePreference.swift in Sources */,
 				3A7264502E2F76DF00F3BCE1 /* CollectionMembershipEditorSheet.swift in Sources */,
+				3A738A182EACCE3F00C8A210 /* CustomTabValuesPreferences.swift in Sources */,
 				3A6DC0802DE495A800FB7D21 /* ContextProvider.swift in Sources */,
 				3A6DC0812DE495A800FB7D21 /* SpotlightIndexer.swift in Sources */,
 				3A8410532CDF92A700FC3FCB /* URL+AllocatedSize.swift in Sources */,
@@ -1410,6 +1422,7 @@
 				3A27F0F12CA15E0F005DE87D /* TabRouter.swift in Sources */,
 				3A65DAFF2D770AC200332BF3 /* ShelfPlayer.swift in Sources */,
 				3A102EAD2D4511B20075FA0B /* Satellite.swift in Sources */,
+				3A738A1C2EACD66300C8A210 /* CustomTabValueSheet.swift in Sources */,
 				3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */,
 				3A14C1512E2E89C700D7A2D7 /* EditCollectionSheet.swift in Sources */,
 				3A90A6412D9AE268009BDA84 /* CreateLogArchiveButton.swift in Sources */,
@@ -1499,6 +1512,7 @@
 				3A4F6E012C8240D7004BADBD /* Timeline.swift in Sources */,
 				3AA089312B6E306F00773414 /* SeriesList.swift in Sources */,
 				3ACD596C2BE2926F0060A841 /* SerifModifier.swift in Sources */,
+				3A738A1A2EACCE8C00C8A210 /* LibraryEnumerator.swift in Sources */,
 				3A1507992AD4494300D7D6CF /* UINavigationController+Gesture.swift in Sources */,
 				3AA444CF2BDFED25000C4C53 /* TintPicker.swift in Sources */,
 				3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */,
