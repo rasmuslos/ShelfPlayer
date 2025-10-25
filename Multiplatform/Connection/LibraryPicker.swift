@@ -9,12 +9,22 @@ import SwiftUI
 import ShelfPlayback
 
 struct LibraryPicker: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
     @Environment(ConnectionStore.self) private var connectionStore
     @Environment(Satellite.self) private var satellite
     
     var callback: (() -> Void)? = nil
     
     var body: some View {
+        if horizontalSizeClass == .compact {
+            Button {
+                RFNotification[.toggleCustomTabsActive].send()
+            } label: {
+                Label("navigation.custom", image: "shelfPlayer.fill")
+            }
+        }
+        
         ForEach(connectionStore.connections) { connection in
             if let libraries = connectionStore.libraries[connection.id] {
                 Section(connection.name) {

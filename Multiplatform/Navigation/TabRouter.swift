@@ -21,6 +21,9 @@ struct TabRouter: View {
     @AppStorage("io.rfk.shelfPlayer.tabCustomization")
     private var customization: TabViewCustomization
     
+    @Default(.customTabValues) private var customTabValues
+    @Default(.customTabsActive) private var customTabsActive
+    
     @State private var libraryCompactTabs = [Library: [TabValue]]()
     
     var selectionProxy: Binding<TabValue?> {
@@ -53,10 +56,14 @@ struct TabRouter: View {
     
     @ViewBuilder
     private func content(for tab: TabValue) -> some View {
-        NavigationStackWrapper(tab: tab) {
-            tab.content
+        if case .custom(let wrapped) = tab {
+            AnyView(erasing: content(for: wrapped))
+        } else {
+            NavigationStackWrapper(tab: tab) {
+                tab.content
+            }
+            .modifier(PlaybackTabContentModifier())
         }
-        .modifier(PlaybackTabContentModifier())
     }
     
     var body: some View {
@@ -72,10 +79,18 @@ struct TabRouter: View {
                         }
                 } else {
                     TabView(selection: selectionProxy) {
-                        if isCompact, let libraryCompactTabs = libraryCompactTabs[tabValue.library] {
-                            ForEach(libraryCompactTabs) { tabValue in
-                                Tab(tabValue.label, systemImage: tabValue.image, value: tabValue) {
-                                    content(for: tabValue)
+                        if isCompact {
+                            if customTabsActive && !customTabValues.isEmpty {
+                                ForEach(customTabValues) { tabValue in
+                                    Tab(tabValue.library.name, systemImage: tabValue.image, value: tabValue) {
+                                        content(for: tabValue)
+                                    }
+                                }
+                            } else if let libraryCompactTabs = libraryCompactTabs[tabValue.library] {
+                                ForEach(libraryCompactTabs) { tabValue in
+                                    Tab(tabValue.label, systemImage: tabValue.image, value: tabValue) {
+                                        content(for: tabValue)
+                                    }
                                 }
                             }
                         }
@@ -146,6 +161,7 @@ struct TabRouter: View {
                                         PlaybackBottomBarPill()
                                     }
                                 }
+                                
                         } else {
                             $0
                                 .modifier(ApplyLegacyCollapsedForeground())
@@ -204,6 +220,11 @@ struct TabRouter: View {
         .onChange(of: connectionStore.libraries, initial: true) {
             populateCompactLibraryTabs()
         }
+        .onChange(of: customTabValues) {
+            if customTabValues.isEmpty {
+                customTabsActive = false
+            }
+        }
         .onReceive(RFNotification[.changeLibrary].publisher()) {
             select($0)
         }
@@ -229,6 +250,15 @@ struct TabRouter: View {
         .onReceive(RFNotification[.invalidateTabs].publisher()) {
             libraryCompactTabs.removeAll()
             populateCompactLibraryTabs()
+        }
+        .onReceive(RFNotification[.toggleCustomTabsActive].publisher()) {
+            guard !customTabValues.isEmpty else {
+                satellite.present(.customTabValuePreferences)
+                return
+            }
+            
+            customTabsActive.toggle()
+            satellite.tabValue = customTabValues.first
         }
     }
     

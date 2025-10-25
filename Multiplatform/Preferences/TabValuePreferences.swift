@@ -13,28 +13,30 @@ struct TabValuePreferences: View {
     
     var body: some View {
         List {
-            ForEach(connectionStore.connections) { connection in
-                Section(connection.name) {
-                    if let libraries = connectionStore.libraries[connection.id] {
-                        ForEach(libraries) { library in
-                            let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.type)
-                            
-                            if scopes.count == 1, let scope = scopes.first {
-                                NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
-                            } else {
-                                NavigationLink(library.name) {
-                                    List {
-                                        ForEach(scopes) { scope in
-                                            NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
-                                        }
-                                    }
-                                    .navigationTitle(library.name)
-                                }
+            LibraryEnumerator { name, content in
+                Section(name) {
+                    content()
+                }
+            } label: { library in
+                let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.type)
+                
+                if scopes.count == 1, let scope = scopes.first {
+                    NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
+                } else {
+                    NavigationLink(library.name) {
+                        List {
+                            ForEach(scopes) { scope in
+                                NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
                             }
                         }
-                    } else {
-                        ProgressView()
+                        .navigationTitle(library.name)
                     }
+                }
+            }
+            
+            Section {
+                NavigationLink("preferences.customNavigation") {
+                    CustomTabValuesPreferences()
                 }
             }
         }
@@ -132,6 +134,7 @@ private struct TabValueLibraryPreferences: View {
                 }
             }
         }
+        .animation(.smooth, value: viewModel?.tabs)
     }
 }
 
