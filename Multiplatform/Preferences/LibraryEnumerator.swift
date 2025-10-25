@@ -41,6 +41,7 @@ private struct SectionInner<Label: View>: View {
     }
 }
 
+#if DEBUG
 #Preview {
     LibraryEnumerator { name, content in
         Section(name) {
@@ -51,3 +52,4 @@ private struct SectionInner<Label: View>: View {
     }
     .previewEnvironment()
 }
+#endif
