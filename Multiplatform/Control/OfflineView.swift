@@ -24,6 +24,12 @@ struct OfflineView: View {
             RFNotification[.changeOfflineMode].send(payload: false)
         }
     }
+    @ViewBuilder
+    private var preferencesButton: some View {
+        Button("preferences", systemImage: "gearshape.circle") {
+            satellite.present(.preferences)
+        }
+    }
     
     var body: some View {
         GeometryReader { geometryProxy in
@@ -78,16 +84,14 @@ struct OfflineView: View {
                     }
                     
                     goOnlineButton
-                    
-                    Button("preferences", systemImage: "gearshape.circle") {
-                        satellite.present(.preferences)
-                    }
+                    preferencesButton
                 }
                 .navigationTitle("panel.offline")
                 .largeTitleDisplayMode()
                 .modifier(PlaybackSafeAreaPaddingModifier())
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        preferencesButton
                         goOnlineButton
                     }
                 }
