@@ -77,7 +77,9 @@ struct CustomTabValuesPreferences: View {
     }
 }
 
+#if DEBUG
 #Preview {
     CustomTabValuesPreferences()
         .previewEnvironment()
 }
+#endif

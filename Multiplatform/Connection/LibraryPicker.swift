@@ -14,25 +14,34 @@ struct LibraryPicker: View {
     @Environment(ConnectionStore.self) private var connectionStore
     @Environment(Satellite.self) private var satellite
     
+    @Default(.customTabsActive) private var customTabsActive
+    
     var callback: (() -> Void)? = nil
     
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+    
     var body: some View {
-        if horizontalSizeClass == .compact {
-            Button {
+        if isCompact {
+            Toggle(isOn: .init { customTabsActive } set: { _ in
                 RFNotification[.toggleCustomTabsActive].send()
-            } label: {
+
+            }) {
                 Label("navigation.custom", image: "shelfPlayer.fill")
             }
         }
         
-        ForEach(connectionStore.connections) { connection in
-            if let libraries = connectionStore.libraries[connection.id] {
-                Section(connection.name) {
-                    ForEach(libraries) { library in
-                        Toggle(library.name, systemImage: library.icon, isOn: .init { satellite.tabValue?.library == library } set: { _ in
-                            RFNotification[.changeLibrary].send(payload: library)
-                            callback?()
-                        })
+        if !(isCompact && customTabsActive) {
+            ForEach(connectionStore.connections) { connection in
+                if let libraries = connectionStore.libraries[connection.id] {
+                    Section(connection.name) {
+                        ForEach(libraries) { library in
+                            Toggle(library.name, systemImage: library.icon, isOn: .init { satellite.tabValue?.library == library } set: { _ in
+                                RFNotification[.changeLibrary].send(payload: library)
+                                callback?()
+                            })
+                        }
                     }
                 }
             }

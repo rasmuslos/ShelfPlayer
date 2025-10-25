@@ -280,6 +280,8 @@ struct TabRouter: View {
             return
         }
         
+        customTabsActive = false
+        
         guard let library = connectionStore.libraries[navigateToWhenReady.connectionID]?.first(where: { $0.id == navigateToWhenReady.libraryID }) else {
             return
         }
