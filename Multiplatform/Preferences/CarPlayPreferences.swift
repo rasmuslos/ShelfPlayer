@@ -74,29 +74,25 @@ struct CarPlayPreferences: View {
                     .foregroundStyle(.blue)
             }
             
-            ForEach(connectionStore.connections) { connection in
-                Section(connection.name) {
-                    if let libraries = connectionStore.libraries[connection.id] {
-                        ForEach(libraries) { library in
-                            Button {
-                                addLibraryToTabBar(library)
-                            } label: {
-                                HStack(spacing: 0) {
-                                    Text(library.name)
-                                    
-                                    Spacer(minLength: 8)
-                                    
-                                    Image(systemName: "plus.circle")
-                                        .foregroundStyle(Color.accentColor)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(carPlayTabBarLibraries?.contains(library) ?? false)
-                        }
-                    } else {
-                        ProgressView()
+            LibraryEnumerator { name, content in
+                Section(name) {
+                    content()
+                }
+            } label: { library in
+                Button {
+                    addLibraryToTabBar(library)
+                } label: {
+                    HStack(spacing: 0) {
+                        Text(library.name)
+                        
+                        Spacer(minLength: 8)
+                        
+                        Image(systemName: "plus.circle")
+                            .foregroundStyle(Color.accentColor)
                     }
                 }
+                .buttonStyle(.plain)
+                .disabled(carPlayTabBarLibraries?.contains(library) ?? false)
             }
             
             Button("action.reset", role: .destructive) {
@@ -108,6 +104,7 @@ struct CarPlayPreferences: View {
         .environment(\.editMode, .constant(.active))
         .navigationTitle("preferences.carPlay")
         .navigationBarTitleDisplayMode(.inline)
+        .animation(.smooth, value: carPlayTabBarLibraries)
     }
     
     private func addLibraryToTabBar(_ library: Library) {

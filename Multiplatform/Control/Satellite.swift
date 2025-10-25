@@ -154,6 +154,7 @@ extension Satellite {
         case listenNow
         
         case preferences
+        case customTabValuePreferences
         
         case description(Item)
         case configureGrouping(ItemIdentifier)
@@ -173,6 +174,8 @@ extension Satellite {
                     "listenNow"
                 case .preferences:
                     "preferences"
+                case .customTabValuePreferences:
+                    "customTabValuePreferences"
                 case .description(let item):
                     "description-\(item.id)"
                 case .configureGrouping(let itemID):

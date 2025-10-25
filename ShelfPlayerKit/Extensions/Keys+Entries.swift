@@ -131,6 +131,9 @@ public extension Defaults.Keys {
     static let lastCheckedServerVersion = Key<String?>("lastCheckedServerVersion", default: nil)
     
     static let durationToggled = Key<Bool>("durationToggled", default: false)
+    
+    static let customTabValues = Key<[TabValue]>("customTabValues", default: [])
+    static let customTabsActive = Key("customTabsActive", default: true)
 }
 
 public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
@@ -275,6 +278,7 @@ public extension RFNotification.IsolatedNotification {
     static var synchronizedPlaybackSessions: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.synchronizedPlaybackSessions") }
     
     static var invalidateTabs: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.invalidateTabs") }
+    static var toggleCustomTabsActive: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.toggleCustomTabsActive") }
     
     // Sessions
     
