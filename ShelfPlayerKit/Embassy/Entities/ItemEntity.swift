@@ -9,7 +9,7 @@ import Foundation
 import AppIntents
 import CoreTransferable
 
-public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
+public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable, Identifiable {
     public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.item", numericFormat: "intent.entity.item \(placeholder: .int)", synonyms: [
         "intent.entity.item.audiobook",
         "intent.entity.item.series",

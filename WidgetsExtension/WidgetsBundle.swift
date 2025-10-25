@@ -7,14 +7,32 @@
 
 import WidgetKit
 import SwiftUI
+import AppIntents
+import ShelfPlayerKit
 
 @main
 struct WidgetsBundle: WidgetBundle {
+    init() {
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        Task {
+            try? await PersistenceManager.shared.authorization.waitForConnections()
+            semaphore.signal()
+        }
+    }
+    
     var body: some Widget {
-        LastListenedWidget()
+        StartWidget()
+        
         ListenedTodayWidget()
         ListenNowWidget()
         
         SleepTimerLiveActivity()
     }
+}
+
+struct ShelfPlayerWidgetPackage: AppIntentsPackage {
+    nonisolated(unsafe) static let includedPackages: [any AppIntentsPackage.Type] = [
+        ShelfPlayerKitPackage.self,
+    ]
 }

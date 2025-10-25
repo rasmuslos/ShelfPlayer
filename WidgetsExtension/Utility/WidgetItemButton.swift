@@ -10,10 +10,11 @@ import AppIntents
 import ShelfPlayerKit
 
 struct WidgetItemButton: View {
-    let item: PlayableItem?
+    let item: Item?
     let isPlaying: Bool?
     
     let entity: ItemEntity?
+    let progress: Percentage?
     
     private var intent: (any AppIntent)? {
         if let isPlaying {
@@ -60,8 +61,18 @@ struct WidgetItemButton: View {
                         Label(label, systemImage: systemImage)
                     }
                 }
+                .background {
+                    if let progress {
+                        GeometryReader { geometryProxy in
+                            Rectangle()
+                                .opacity(0.12)
+                                .frame(width: geometryProxy.size.width * progress)
+                        }
+                        .clipShape(.rect(cornerRadius: .infinity))
+                    }
+                }
             } else {
-                Label("play", systemImage: "play.fill")
+                Label("play", systemImage: "xmark")
             }
         }
     }

@@ -474,7 +474,7 @@ private extension PersistenceManager.AuthorizationSubsystem {
         let status = SecItemDelete(query)
         
         guard status == errSecSuccess else {
-            logger.error("Error adding access token to keychain for \(connectionID) & \(service): \(SecCopyErrorMessageString(status, nil))")
+            logger.error("Error removing access token to keychain for \(connectionID) & \(service): \(SecCopyErrorMessageString(status, nil))")
             throw PersistenceError.keychainInsertFailed
         }
     }

@@ -25,10 +25,6 @@ public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDeleg
         }
         
         updateController()
-        
-        Task {
-            try await PersistenceManager.shared.authorization.waitForConnections()
-        }
     }
     
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {

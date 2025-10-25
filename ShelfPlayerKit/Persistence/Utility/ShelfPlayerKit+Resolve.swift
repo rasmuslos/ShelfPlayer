@@ -138,8 +138,6 @@ private extension ShelfPlayerKit {
     }
     
     static func resolveOnlineItems(query: String) async throws -> [Item] {
-        try await PersistenceManager.shared.authorization.waitForConnections()
-        
         return await withTaskGroup(of: [Item].self) {
             for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                 $0.addTask {
