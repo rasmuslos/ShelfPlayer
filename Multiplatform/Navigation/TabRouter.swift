@@ -161,7 +161,7 @@ struct TabRouter: View {
                                         PlaybackBottomBarPill()
                                     }
                                 }
-                                
+                            
                         } else {
                             $0
                                 .modifier(ApplyLegacyCollapsedForeground())
@@ -187,10 +187,10 @@ struct TabRouter: View {
                         }
                         
                         switch library.type {
-                            case .audiobooks:
-                                satellite.tabValue = .audiobookHome(library)
-                            case .podcasts:
-                                satellite.tabValue = .podcastHome(library)
+                        case .audiobooks:
+                            satellite.tabValue = .audiobookHome(library)
+                        case .podcasts:
+                            satellite.tabValue = .podcastHome(library)
                         }
                     }
             }
@@ -264,10 +264,10 @@ struct TabRouter: View {
     
     private func select(_ library: Library) {
         switch library.type {
-            case .audiobooks:
-                satellite.tabValue = .audiobookHome(library)
-            case .podcasts:
-                satellite.tabValue = .podcastHome(library)
+        case .audiobooks:
+            satellite.tabValue = .audiobookHome(library)
+        case .podcasts:
+            satellite.tabValue = .podcastHome(library)
         }
     }
     private func navigateIfRequired(withDelay: Bool) {
@@ -285,16 +285,14 @@ struct TabRouter: View {
         }
         
         switch library.type {
-            case .audiobooks:
-                guard case .audiobookHome(_) = satellite.tabValue else {
-                    navigateToLibrary(.audiobookHome(library))
-                    return
-                }
-            case .podcasts:
-                guard case .podcastHome(_) = satellite.tabValue else {
-                    navigateToLibrary(.podcastHome(library))
-                    return
-                }
+        case .audiobooks:
+            guard navigateToLibrary(.audiobookHome(library)) else {
+                return
+            }
+        case .podcasts:
+            guard navigateToLibrary(.podcastHome(library)) else {
+                return
+            }
         }
         
         guard progressViewModel.importedConnectionIDs.contains(library.connectionID) else {
@@ -315,8 +313,12 @@ struct TabRouter: View {
         
         self.navigateToWhenReady = nil
     }
-    private func navigateToLibrary(_ tab: TabValue) {
+    private func navigateToLibrary(_ tab: TabValue) -> Bool {
         let customTab: TabValue = .custom(tab)
+        
+        if satellite.tabValue == tab || satellite.tabValue == customTab {
+            return true
+        }
         
         if customTabValues.contains(customTab) {
             satellite.tabValue = customTab
@@ -324,6 +326,8 @@ struct TabRouter: View {
             customTabsActive = false
             satellite.tabValue = tab
         }
+        
+        return false
     }
     
     private func populateCompactLibraryTabs() {
@@ -349,13 +353,13 @@ struct TabRouter: View {
         Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "house") {
             Text("ABC")
         }
-
-
+        
+        
         Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "bell") {
             
         }
-
-
+        
+        
         Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "list.bullet") {
             
         }
