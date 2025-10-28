@@ -50,7 +50,7 @@ struct PlaybackBottomBarPill: View {
                 .lineLimit(1)
                 .id(nowPlayingItemName + "_nowPlaying_collapsed_name")
             
-            Spacer()
+            Spacer(minLength: 4)
             
             if viewModel.isPillBackButtonVisible {
                 PlaybackBackwardButton()

@@ -47,6 +47,12 @@ struct LibraryPicker: View {
             }
         }
         
+        Divider()
+        
+        Button("preferences", systemImage: "gearshape") {
+            satellite.present(.preferences)
+        }
+        
         Button("navigation.offline.enable", systemImage: "network.slash") {
             RFNotification[.changeOfflineMode].send(payload: true)
         }
@@ -56,6 +62,21 @@ struct LibraryPicker: View {
         } else if !connectionStore.offlineConnections.isEmpty {
             Button("connection.offline \(connectionStore.offlineConnections.count)", role: .destructive) {
                 connectionStore.update()
+            }
+        }
+    }
+}
+struct LibraryPickerMenu: View {
+    @Default(.customTabsActive) private var customTabsActive
+    
+    var body: some View {
+        Menu {
+            LibraryPicker()
+        } label: {
+            if customTabsActive {
+                Label("navigation.library.select", image: "shelfPlayer.fill")
+            } else {
+                Label("navigation.library.select", systemImage: "books.vertical.fill")
             }
         }
     }
