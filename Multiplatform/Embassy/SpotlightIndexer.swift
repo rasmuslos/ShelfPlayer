@@ -49,7 +49,7 @@ final actor SpotlightIndexer: Sendable {
         
         Task {
             while !Task.isCancelled {
-                try await Task.sleep(for: .seconds(0.25))
+                try await Task.sleep(for: .seconds(0.2))
                 
                 guard await !isRunning else {
                     continue

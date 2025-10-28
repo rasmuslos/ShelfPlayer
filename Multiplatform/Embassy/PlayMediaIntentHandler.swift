@@ -74,17 +74,9 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
         return .init(code: .success, userActivity: nil)
     }
     
-    static func buildPlayMediaIntent(_ item: PlayableItem) async throws -> INPlayMediaIntent {
+    static func buildPlayMediaIntent(_ item: PlayableItem, container: INMediaItem? = nil) async throws -> INPlayMediaIntent {
         let intentItem = try await buildIntentItem(item)
-        let intentContainer: INMediaItem?
-        
-        if let episode = item as? Episode {
-            intentContainer = try await buildIntentItem(episode.podcastID.resolved)
-        } else {
-            intentContainer = nil
-        }
-        
-        return INPlayMediaIntent(mediaItems: [intentItem], mediaContainer: intentContainer, playShuffled: nil, playbackRepeatMode: .unknown, resumePlayback: nil, playbackQueueLocation: .now, playbackSpeed: await AudioPlayer.shared.playbackRate, mediaSearch: nil)
+        return INPlayMediaIntent(mediaItems: [intentItem], mediaContainer: container, playShuffled: nil, playbackRepeatMode: .unknown, resumePlayback: nil, playbackQueueLocation: .now, playbackSpeed: await AudioPlayer.shared.playbackRate, mediaSearch: nil)
     }
     static func donateListenNowIntents() async {
         INUpcomingMediaManager.shared.setPredictionMode(.default, for: .audioBook)
@@ -96,7 +88,24 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
         
         for item in await ShelfPlayerKit.listenNowItems {
             do {
-                intents.append(try await buildPlayMediaIntent(item))
+                try await intents.append(buildPlayMediaIntent(item))
+                
+                if let episode = item as? Episode {
+                    let podcastID = episode.podcastID
+                    let (podcast, episodes) = try await podcastID.resolvedComplex
+                    
+                    var episodeMediaItems = [INMediaItem]()
+                    
+                    for episode in episodes {
+                        do {
+                            episodeMediaItems.append(try await buildIntentItem(episode))
+                        } catch {
+                            continue
+                        }
+                    }
+                    
+                    try await intents.append(INPlayMediaIntent(mediaItems: episodeMediaItems, mediaContainer: buildIntentItem(podcast), playShuffled: nil, playbackRepeatMode: .unknown, resumePlayback: nil, playbackQueueLocation: .now, playbackSpeed: await AudioPlayer.shared.playbackRate, mediaSearch: nil))
+                }
             } catch {
                 continue
             }
