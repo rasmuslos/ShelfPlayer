@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// adding equatable crashes the app...
 public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Serializable, Sendable {
     case audiobookHome(Library)
     
@@ -27,8 +28,35 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Seriali
     
     case custom(TabValue)
     
-    public var id: Self {
-        self
+    public var id: String {
+        switch self {
+        case .audiobookHome(let library):
+            "audiobookHome_\(library.id)_\(library.connectionID)"
+        case .audiobookSeries(let library):
+            "audiobookSeries_\(library.id)_\(library.connectionID)"
+        case .audiobookAuthors(let library):
+            "audiobookAuthors_\(library.id)_\(library.connectionID)"
+        case .audiobookNarrators(let library):
+            "audiobookNarrators_\(library.id)_\(library.connectionID)"
+        case .audiobookBookmarks(let library):
+            "audiobookBookmarks_\(library.id)_\(library.connectionID)"
+        case .audiobookCollections(let library):
+            "audiobookCollections_\(library.id)_\(library.connectionID)"
+        case .audiobookLibrary(let library):
+            "audiobookLibrary_\(library.id)_\(library.connectionID)"
+        case .podcastHome(let library):
+            "podcastHome_\(library.id)_\(library.connectionID)"
+        case .podcastLatest(let library):
+            "podcastLatest_\(library.id)_\(library.connectionID)"
+        case .podcastLibrary(let library):
+            "podcastLibrary_\(library.id)_\(library.connectionID)"
+        case .playlists(let library):
+            "playlists_\(library.id)_\(library.connectionID)"
+        case .search(let library):
+            "search_\(library.id)_\(library.connectionID)"
+        case .custom(let tabValue):
+            "custom_\(tabValue.id)"
+        }
     }
     
     public var library: Library {
@@ -61,5 +89,10 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Seriali
             case .custom(let tabValue):
                 tabValue.library
         }
+    }
+    
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+        && lhs.library == rhs.library
     }
 }
