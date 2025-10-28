@@ -46,6 +46,11 @@ struct SearchPanel: View {
         }
         .navigationTitle("panel.search")
         .largeTitleDisplayMode()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                LibraryPickerMenu()
+            }
+        }
         .modifier(PlaybackSafeAreaPaddingModifier())
         .onChange(of: library, initial: true) {
             viewModel.library = library

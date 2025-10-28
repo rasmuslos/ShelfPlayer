@@ -83,6 +83,14 @@ struct CollectionMembershipEditorSheet: View {
         itemID.type == .audiobook
     }
     
+    @ViewBuilder
+    private var loadingRow: some View {
+        createCollectionButton(type: .playlist)
+            .disabled(true)
+            .accessibilityHidden(true)
+            .redacted(reason: .placeholder)
+    }
+    
     var body: some View {
         NavigationStack {
             List {
@@ -90,12 +98,20 @@ struct CollectionMembershipEditorSheet: View {
                     Section(ItemCollection.CollectionType.collection.label) {
                         createCollectionButton(type: .collection)
                         rows(collectionLoader)
+                        
+                        if collectionLoader.isLoading {
+                            loadingRow
+                        }
                     }
                 }
                 
                 Section(ItemCollection.CollectionType.playlist.label) {
                     createCollectionButton(type: .playlist)
                     rows(playlistLoader)
+                    
+                    if playlistLoader.isLoading {
+                        loadingRow
+                    }
                 }
             }
             .toolbar {

@@ -57,7 +57,7 @@ struct PodcastLibraryPanel: View {
             }
         }
         .navigationTitle("panel.library")
-        .modifier(CompactPreferencesToolbarModifier())
+        .largeTitleDisplayMode()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "ellipsis.circle") {

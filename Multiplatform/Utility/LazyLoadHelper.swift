@@ -121,7 +121,10 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
     var didLoad: Bool {
         totalCount > 0
     }
-    
+    var isLoading: Bool {
+        working && !finished
+    }
+        
     nonisolated func initialLoad() {
         didReachEndOfLoadedContent()
     }

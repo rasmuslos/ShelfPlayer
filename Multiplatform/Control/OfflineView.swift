@@ -26,7 +26,7 @@ struct OfflineView: View {
     }
     @ViewBuilder
     private var preferencesButton: some View {
-        Button("preferences", systemImage: "gearshape.circle") {
+        Button("preferences", systemImage: "gearshape") {
             satellite.present(.preferences)
         }
     }
