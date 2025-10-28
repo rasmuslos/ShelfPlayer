@@ -161,7 +161,6 @@ struct TabRouter: View {
                                         PlaybackBottomBarPill()
                                     }
                                 }
-                            
                         } else {
                             $0
                                 .modifier(ApplyLegacyCollapsedForeground())
@@ -354,11 +353,9 @@ struct TabRouter: View {
             Text("ABC")
         }
         
-        
         Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "bell") {
             
         }
-        
         
         Tab("VERY LONG TITLE VERY LONG TITLE", systemImage: "list.bullet") {
             
