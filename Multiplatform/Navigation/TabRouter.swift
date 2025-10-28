@@ -280,8 +280,6 @@ struct TabRouter: View {
             return
         }
         
-        customTabsActive = false
-        
         guard let library = connectionStore.libraries[navigateToWhenReady.connectionID]?.first(where: { $0.id == navigateToWhenReady.libraryID }) else {
             return
         }
@@ -289,12 +287,12 @@ struct TabRouter: View {
         switch library.type {
             case .audiobooks:
                 guard case .audiobookHome(_) = satellite.tabValue else {
-                    satellite.tabValue = .audiobookHome(library)
+                    navigateToLibrary(.audiobookHome(library))
                     return
                 }
             case .podcasts:
                 guard case .podcastHome(_) = satellite.tabValue else {
-                    satellite.tabValue = .podcastHome(library)
+                    navigateToLibrary(.podcastHome(library))
                     return
                 }
         }
@@ -316,6 +314,16 @@ struct TabRouter: View {
         }
         
         self.navigateToWhenReady = nil
+    }
+    private func navigateToLibrary(_ tab: TabValue) {
+        let customTab: TabValue = .custom(tab)
+        
+        if customTabValues.contains(customTab) {
+            satellite.tabValue = customTab
+        } else {
+            customTabsActive = false
+            satellite.tabValue = tab
+        }
     }
     
     private func populateCompactLibraryTabs() {

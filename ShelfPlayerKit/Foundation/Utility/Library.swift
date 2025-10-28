@@ -53,6 +53,12 @@ public struct Library {
 extension Library: Codable {}
 extension Library: Hashable {}
 extension Library: Sendable {}
+extension Library: Equatable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+        && lhs.connectionID == rhs.connectionID
+    }
+}
 extension Library: Comparable {
     public static func <(lhs: Library, rhs: Library) -> Bool {
         lhs.index < rhs.index

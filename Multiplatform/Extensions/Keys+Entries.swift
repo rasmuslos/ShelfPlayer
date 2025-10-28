@@ -25,7 +25,5 @@ extension RFNotification.IsolatedNotification {
     static var changeLibrary: IsolatedNotification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
     static var performBackgroundSessionSync: IsolatedNotification<ItemIdentifier.ConnectionID?> { .init("io.rfk.shelfPlayer.performBackgroundSessionSync") }
     
-    static var scenePhaseDidChange: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.scenePhaseDidChange") }
-    
     static var presentSheet: IsolatedNotification<Satellite.Sheet> { .init("io.rfk.shelfPlayer.presentSheet") }
 }

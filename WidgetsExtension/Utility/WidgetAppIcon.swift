@@ -10,12 +10,13 @@ import ShelfPlayerKit
 
 struct WidgetAppIcon: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Default(.tintColor) private var tintColor
     
     var body: some View {
         Button(intent: CreateBookmarkIntent()) {
             Label(String("ShelfPlayer"), image: "shelfPlayer.fill")
                 .labelStyle(.iconOnly)
-                .foregroundStyle(colorScheme == .light ? .black : .white)
+                .foregroundStyle(colorScheme == .dark ? tintColor.color : .black)
         }
         .buttonStyle(.plain)
     }

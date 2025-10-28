@@ -29,6 +29,13 @@ public final class ListenedTodayTracker {
         RFNotification[.cachedTimeSpendListeningChanged].subscribe { [weak self] in
             self?.updateCachedTimeSpendListening()
         }
+        RFNotification[.scenePhaseDidChange].subscribe { [weak self] in
+            guard $0 else {
+                return
+            }
+            
+            self?.refresh()
+        }
         
         scheduleResetTimer()
     }
