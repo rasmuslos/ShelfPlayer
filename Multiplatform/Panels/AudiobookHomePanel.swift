@@ -86,9 +86,7 @@ struct AudiobookHomePanel: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Menu("navigation.library.select", systemImage: "books.vertical.fill") {
-                        LibraryPicker()
-                    }
+                    LibraryPickerMenu()
                 }
             }
         }

@@ -109,6 +109,7 @@ struct AudiobookLibraryPanel: View {
         }
         .listStyle(.plain)
         .navigationTitle("panel.library")
+        .largeTitleDisplayMode()
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 if let genres = viewModel.genres, !genres.isEmpty {
@@ -143,7 +144,6 @@ struct AudiobookLibraryPanel: View {
                 .menuActionDismissBehavior(.disabled)
             }
         }
-        .modifier(CompactPreferencesToolbarModifier())
         .modifier(PlaybackSafeAreaPaddingModifier())
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .onChange(of: viewModel.filter) {

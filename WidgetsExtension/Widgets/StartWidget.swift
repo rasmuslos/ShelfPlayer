@@ -16,7 +16,7 @@ struct StartWidget: Widget {
         }
         .configurationDisplayName(Text("widget.start"))
         .description(Text("widget.start.description"))
-        .promptsForUserConfiguration()
+//        .promptsForUserConfiguration()
         .supportedFamilies([
             .accessoryCircular,
             .systemSmall, .systemMedium
