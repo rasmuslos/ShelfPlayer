@@ -280,6 +280,8 @@ public extension RFNotification.IsolatedNotification {
     static var invalidateTabs: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.invalidateTabs") }
     static var toggleCustomTabsActive: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.toggleCustomTabsActive") }
     
+    static var scenePhaseDidChange: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.scenePhaseDidChange") }
+    
     // Sessions
     
     static var timeSpendListeningChanged: IsolatedNotification<Int> { .init("io.rfk.shelfPlayerKit.timeSpendListeningChanged") }
