@@ -36,6 +36,17 @@ struct ShelfPlayer {
             semaphore.signal()
         }
         
+        // Execute task early:
+        // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.spotlightIndex"]
+        // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.convenienceDownload"]
+        
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: SpotlightIndexer.BACKGROUND_TASK_IDENTIFIER, using: nil) {
+            SpotlightIndexer.shared.handleBackgroundTask($0)
+        }
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: PersistenceManager.ConvenienceDownloadSubsystem.BACKGROUND_TASK_IDENTIFIER, using: nil) {
+            PersistenceManager.shared.convenienceDownload.handleBackgroundTask($0)
+        }
+        
         AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
         AppDependencyManager.shared.add(dependency: EmbassyManager.shared.intentAudioPlayer)
     }
@@ -72,17 +83,6 @@ struct ShelfPlayer {
             Task {
                 await Satellite.shared.warn(.termsOfServiceChanged)
             }
-        }
-        
-        // Execute task early:
-        // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.spotlightIndex"]
-        // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.convenienceDownload"]
-        
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: SpotlightIndexer.BACKGROUND_TASK_IDENTIFIER, using: nil) {
-            SpotlightIndexer.shared.handleBackgroundTask($0)
-        }
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: PersistenceManager.ConvenienceDownloadSubsystem.BACKGROUND_TASK_IDENTIFIER, using: nil) {
-            PersistenceManager.shared.convenienceDownload.handleBackgroundTask($0)
         }
         
         RFNotification[.removeConnection].subscribe { connectionID in
