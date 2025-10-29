@@ -14,7 +14,11 @@ import UIKit
 public extension ShelfPlayerKit {
     static let groupContainer = "group.io.rfk.shelfplayer"
     
+    #if ENABLE_CENTRALIZED
     static nonisolated(unsafe) var enableCentralized = true
+    #else
+    static nonisolated(unsafe) var enableCentralized = false
+    #endif
     
     static let clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     static let clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
@@ -35,7 +39,7 @@ public extension ShelfPlayerKit {
     }()
     
     static var suite: UserDefaults {
-        enableCentralized ? UserDefaults(suiteName: groupContainer)! : UserDefaults.standard
+        enableCentralized ? UserDefaults(suiteName: groupContainer)! : .standard
     }
     
     private static nonisolated(unsafe) var _clientID: String? = nil
@@ -51,14 +55,14 @@ public extension ShelfPlayerKit {
     }
     
     static var downloadDirectoryURL: URL {
-        if ShelfPlayerKit.enableCentralized {
+        if enableCentralized {
             FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "DownloadV2")
         } else {
             URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
         }
     }
     static var cacheDirectoryURL: URL {
-        if ShelfPlayerKit.enableCentralized {
+        if enableCentralized {
             FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "Cache")
         } else {
             URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "Cache")
