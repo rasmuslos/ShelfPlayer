@@ -13,7 +13,7 @@
 DEVELOPMENT_TEAM = ABC123456
 BUNDLE_ID_PREFIX = change.me
 
-// The "ENABLE_CENTRALIZED" flag is used to enabled  features that require a shared app group "group.io.rfk.shelfplayer", or a paid developer account. Change ShelfPlayerKit+Utility#15 if you enabled this flag.
+// The "ENABLE_CENTRALIZED" flag is used to enable features that require a shared app group "group.io.rfk.shelfplayer", as well as, a paid developer account. Change ShelfPlayerKit+Utility#15 (the app group, which is defined for you as `group.${BUNDLE_ID_PREFIX}.shelfplayer` in the relevant entitlements) if you enabled this flag.
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
 // SWIFT_ACTIVE_COMPILATION_CONDITIONS = ENABLE_CENTRALIZED DEBUG
 
