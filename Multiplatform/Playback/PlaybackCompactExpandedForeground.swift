@@ -62,7 +62,7 @@ struct PlaybackCompactExpandedForeground: View {
                 Spacer(minLength: 12)
                 
                 Group {
-                    PlaybackTitle()
+                    PlaybackTitle(showTertiarySupplements: true)
                         .matchedGeometryEffect(id: "text", in: namespace!, properties: .frame, anchor: .center)
                     
                     Spacer(minLength: 12)
@@ -103,7 +103,7 @@ struct PlaybackCompactExpandedForeground: View {
                     .buttonStyle(.plain)
                     .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
                     
-                    PlaybackTitle()
+                    PlaybackTitle(showTertiarySupplements: false)
                         .matchedGeometryEffect(id: "text", in: namespace!, properties: .frame, anchor: .center)
                 }
                 .padding(.top, 20)

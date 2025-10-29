@@ -163,7 +163,7 @@ struct RegularPlaybackModifier: ViewModifier {
             
             Spacer(minLength: 20)
             
-            PlaybackTitle()
+            PlaybackTitle(showTertiarySupplements: true)
                 .padding(.bottom, 40)
             
             PlaybackControls()

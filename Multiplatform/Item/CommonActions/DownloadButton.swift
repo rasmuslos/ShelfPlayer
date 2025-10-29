@@ -16,7 +16,7 @@ struct DownloadButton: View {
     
     @State private var viewModel: DownloadButtonViewModel
     
-    init(itemID: ItemIdentifier, tint: Bool = false, progressVisibility: ProgressVisibility = .never, isPercentageTextVisible: Bool = false, initialStatus: DownloadStatus? = nil) {
+    init(itemID: ItemIdentifier, tint: Bool = false, progressVisibility: DownloadButtonViewModel.PresentationContext = .never, isPercentageTextVisible: Bool = false, initialStatus: DownloadStatus? = nil) {
         _viewModel = .init(initialValue: .init(itemID: itemID, tint: tint, progressVisibility: progressVisibility, isPercentageTextVisible: isPercentageTextVisible, initialStatus: initialStatus))
     }
     
@@ -36,8 +36,13 @@ struct DownloadButton: View {
         return false
     }
     
+    @ViewBuilder
+    private func circularProgressIndicator(current: Double) -> some View {
+        CircularProgressIndicator(completed: current, background: viewModel.progressBackgroundColor, tint: viewModel.progressTintColor)
+    }
+    
     var body: some View {
-        Group {
+        ZStack {
             if isLoading && viewModel.progressVisibility != .never {
                 ProgressView()
             } else if let text = viewModel.text {
@@ -100,11 +105,11 @@ struct DownloadButton: View {
 }
 
 @MainActor @Observable
-private final class DownloadButtonViewModel {
+final class DownloadButtonViewModel {
     let itemID: ItemIdentifier
     
     let tint: Bool
-    let progressVisibility: ProgressVisibility
+    let progressVisibility: PresentationContext
     let isPercentageTextVisible: Bool
     
     var baseProgress: Percentage? = nil
@@ -130,7 +135,7 @@ private final class DownloadButtonViewModel {
     
     var stash = RFNotification.MarkerStash()
     
-    init(itemID: ItemIdentifier, tint: Bool, progressVisibility: ProgressVisibility, isPercentageTextVisible: Bool, initialStatus: DownloadStatus?) {
+    init(itemID: ItemIdentifier, tint: Bool, progressVisibility: PresentationContext, isPercentageTextVisible: Bool, initialStatus: DownloadStatus?) {
         self.itemID = itemID
         
         self.tint = tint
@@ -283,14 +288,14 @@ private final class DownloadButtonViewModel {
             self.status = status
         }.store(in: &stash)
     }
-}
-
-enum ProgressVisibility {
-    case never
-    case toolbar
-    case triangle
-    case episode
-    case row
+    
+    enum PresentationContext {
+        case never
+        case toolbar
+        case triangle
+        case episode
+        case row
+    }
 }
 
 #if DEBUG
@@ -305,5 +310,14 @@ enum ProgressVisibility {
 #Preview {
     DownloadButton(itemID: .fixture, tint: true)
         .previewEnvironment()
+}
+#Preview {
+    NavigationStack {
+        Text(verbatim: ":/")
+            .toolbar {
+                DownloadButton(itemID: .fixture, tint: true)
+            }
+    }
+    .previewEnvironment()
 }
 #endif
