@@ -978,8 +978,8 @@ private extension Satellite {
             return
         }
         
-        // 12 Hours
-        let timeout: Double = 60 * 60 * 12
+        // 7 minutes
+        let timeout: Double = 60 * 7
         
         guard playbackResumeInfo.started.distance(to: .now) < timeout else {
             return
