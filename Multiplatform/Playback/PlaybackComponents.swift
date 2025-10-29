@@ -13,6 +13,8 @@ struct PlaybackTitle: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
+    let showTertiarySupplements: Bool
+    
     @State private var uuid = UUID()
     
     var body: some View {
@@ -20,8 +22,14 @@ struct PlaybackTitle: View {
             Menu {
                 PlaybackMenuActions()
             } label: {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 0) {
                     if let currentItem = satellite.nowPlayingItem {
+                        if showTertiarySupplements, let episode = currentItem as? Episode, let releaseDate = episode.releaseDate {
+                            Text(releaseDate, style: .date)
+                                .font(.caption.smallCaps())
+                                .foregroundStyle(.tertiary)
+                        }
+                        
                         Text(currentItem.name)
                             .id(currentItem.name)
                             .lineLimit(2)
@@ -30,6 +38,7 @@ struct PlaybackTitle: View {
                                 $0
                                     .modifier(SerifModifier())
                             }
+                            .padding(.bottom, 4)
                         
                         Text(currentItem.authors, format: .list(type: .and, width: .short))
                             .id(currentItem.authors)
@@ -579,9 +588,8 @@ struct PlaybackActions: View {
                 .padding(12)
                 .contentShape(.rect)
         }
-        .padding(-6)
-        .background(.gray.opacity(viewModel.isQueueVisible ? 0.2 : 0), in: .rect(cornerRadius: 4))
-        .padding(-6)
+        .background(.gray.opacity(viewModel.isQueueVisible ? 0.2 : 0), in: .circle)
+        .padding(-12)
     }
     
     var body: some View {
@@ -631,11 +639,15 @@ private struct PlaybackSlider<MiddleContent: View>: View {
             return nil
         }
         
+        let base: TimeInterval
+        
         if durationToggled {
-            return (duration - currentTime) * (1 / satellite.playbackRate)
+            base = (duration - currentTime)
         } else {
-            return duration
+            base = duration
         }
+        
+        return base * (1 / satellite.playbackRate)
     }
     
     @ViewBuilder
