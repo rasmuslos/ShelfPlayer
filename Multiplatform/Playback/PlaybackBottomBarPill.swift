@@ -23,6 +23,13 @@ struct PlaybackBottomBarPill: View {
     }
     
     @ViewBuilder
+    private var itemName: some View {
+        Text(nowPlayingItemName)
+            .lineLimit(1)
+            .id(nowPlayingItemName + "_nowPlaying_collapsed_name")
+    }
+    
+    @ViewBuilder
     private var label: some View {
         HStack(spacing: 8) {
             GeometryReader { imageGeometryProxy in
@@ -46,9 +53,25 @@ struct PlaybackBottomBarPill: View {
             .padding(.vertical, 8)
             .id((satellite.nowPlayingItemID?.description ?? "qkwndoiqind") + "_nowPlaying_image_collapsed")
             
-            Text(nowPlayingItemName)
-                .lineLimit(1)
-                .id(nowPlayingItemName + "_nowPlaying_collapsed_name")
+            VStack(alignment: .leading, spacing: 0) {
+                if let chapter = satellite.chapter {
+                    itemName
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    
+                    Text(chapter.title)
+                        .lineLimit(1)
+                        .id(chapter.title + "_nowPlaying_collapsed_chapter")
+                } else if let episode = satellite.nowPlayingItem as? Episode, let releaseDate = episode.releaseDate {
+                    Text(releaseDate, style: .date)
+                        .font(.caption.smallCaps())
+                        .foregroundStyle(.tertiary)
+                    
+                    itemName
+                } else {
+                    itemName
+                }
+            }
             
             Spacer(minLength: 4)
             

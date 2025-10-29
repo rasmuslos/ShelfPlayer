@@ -1215,7 +1215,8 @@ extension Satellite {
 extension Satellite {
     func debugPlayback() -> Self {
         nowPlayingItemID = .fixture
-        nowPlayingItem = Audiobook.fixture
+//        nowPlayingItem = Audiobook.fixture
+        nowPlayingItem = Episode.fixture
         
         chapters = [
             .init(id: 0, startOffset: 0, endOffset: 100, title: "ABC"),
