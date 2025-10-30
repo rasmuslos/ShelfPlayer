@@ -62,6 +62,7 @@ struct PlaybackBottomBarPill: View {
                     Text(chapter.title)
                         .lineLimit(1)
                         .id(chapter.title + "_nowPlaying_collapsed_chapter")
+                        .modifier(SerifModifier())
                 } else if let episode = satellite.nowPlayingItem as? Episode, let releaseDate = episode.releaseDate {
                     Text(releaseDate, style: .date)
                         .font(.caption.smallCaps())
@@ -73,11 +74,13 @@ struct PlaybackBottomBarPill: View {
                 }
             }
             
-            Spacer(minLength: 4)
-            
             if viewModel.isPillBackButtonVisible {
+                Spacer(minLength: 4)
+                
                 PlaybackBackwardButton()
                     .imageScale(.large)
+            } else {
+                Spacer(minLength: 0)
             }
             
             PlaybackSmallTogglePlayButton()
