@@ -35,7 +35,7 @@ struct TabValuePreferences: View {
             }
             
             Section {
-                NavigationLink("preferences.customNavigation") {
+                NavigationLink("panel.home") {
                     CustomTabValuesPreferences()
                 }
             }

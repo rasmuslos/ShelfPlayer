@@ -28,7 +28,7 @@ struct LibraryPicker: View {
                 RFNotification[.toggleCustomTabsActive].send()
 
             }) {
-                Label("navigation.custom", image: "shelfPlayer.fill")
+                Label("panel.home", image: "shelfPlayer.fill")
             }
         }
         

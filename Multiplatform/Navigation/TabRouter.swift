@@ -153,12 +153,14 @@ struct TabRouter: View {
                         .buttonStyle(.plain)
                     }
                     .modify {
-                        if #available(iOS 26, *) {
+                        if isCompact, #available(iOS 26, *) {
                             $0
                                 .tabBarMinimizeBehavior(.onScrollDown)
                                 .tabViewBottomAccessory {
-                                    if satellite.nowPlayingItemID != nil && isCompact {
+                                    if satellite.nowPlayingItemID != nil {
                                         PlaybackBottomBarPill()
+                                    } else {
+                                        PlaybackPlaceholderBottomPill()
                                     }
                                 }
                         } else {
@@ -252,6 +254,7 @@ struct TabRouter: View {
         }
         .onReceive(RFNotification[.toggleCustomTabsActive].publisher()) {
             guard !customTabValues.isEmpty else {
+                customTabsActive = false
                 satellite.present(.customTabValuePreferences)
                 return
             }
