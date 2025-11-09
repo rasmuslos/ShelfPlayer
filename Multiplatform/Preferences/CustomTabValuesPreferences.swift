@@ -71,7 +71,7 @@ struct CustomTabValuesPreferences: View {
             }
         }
         .environment(\.editMode, .constant(.active))
-        .navigationTitle("preferences.customNavigation")
+        .navigationTitle("panel.home")
         .navigationBarTitleDisplayMode(.inline)
         .animation(.smooth, value: customTabValues)
     }
