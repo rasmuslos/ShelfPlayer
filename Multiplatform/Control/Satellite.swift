@@ -559,6 +559,10 @@ extension Satellite {
                 await warn(.playbackStartWhileDownloading(itemID))
                 return
             }
+            
+            guard await !isLoading(observing: itemID) else {
+                return
+            }
 
             await startWorking(on: itemID)
 
