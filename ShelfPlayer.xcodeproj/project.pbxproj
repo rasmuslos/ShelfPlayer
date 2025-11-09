@@ -348,6 +348,8 @@
 		3A45C8B92DCE3050004B48A1 /* GroupingConfigurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupingConfigurationSheet.swift; sourceTree = "<group>"; };
 		3A4984892D610DF00086A2B5 /* AudiobookRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookRow.swift; sourceTree = "<group>"; };
 		3A4AD9542DBB85C20057349C /* CarPlayItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayItemController.swift; sourceTree = "<group>"; };
+		3A4D31F02EC09F8300838777 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Intents.strings; sourceTree = "<group>"; };
+		3A4D31F12EC09F8300838777 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = nl; path = nl.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3A4DD5B12D2FE45100EBE3EE /* LibraryPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryPicker.swift; sourceTree = "<group>"; };
 		3A4F6E002C8240D7004BADBD /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
 		3A520BE42D2DC55E0045CA04 /* ConnectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStore.swift; sourceTree = "<group>"; };
@@ -1207,6 +1209,7 @@
 				uk,
 				fr,
 				ru,
+				nl,
 			);
 			mainGroup = 3A0AE6972AB623F400ACCD68;
 			packageReferences = (
@@ -1588,6 +1591,7 @@
 				3AA3F6362E30083700D6C1E8 /* uk */,
 				3AB1746F2E4E0217005086B1 /* fr */,
 				3A61F4182E59B7D20051D4E2 /* ru */,
+				3A4D31F12EC09F8300838777 /* nl */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
@@ -1603,6 +1607,7 @@
 				3AA3F6352E30083700D6C1E8 /* uk */,
 				3AB174702E4E0217005086B1 /* fr */,
 				3A61F4172E59B7D20051D4E2 /* ru */,
+				3A4D31F02EC09F8300838777 /* nl */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
