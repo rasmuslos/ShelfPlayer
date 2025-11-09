@@ -137,6 +137,7 @@ struct RegularPlaybackModifier: ViewModifier {
     @Environment(\.playbackBottomOffset) private var playbackBottomOffset
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.namespace) private var namespace
     
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
@@ -234,6 +235,7 @@ struct RegularPlaybackModifier: ViewModifier {
                     }
                     .environment(Satellite.shared)
                     .environment(PlaybackViewModel.shared)
+                    .environment(\.namespace, namespace)
                 }
         } else {
             content
