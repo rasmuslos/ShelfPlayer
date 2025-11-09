@@ -97,7 +97,6 @@ final class Satellite {
         }
         
         setupObservers()
-        checkForResumablePlayback()
         
         // MARK: What's New
         
@@ -198,8 +197,6 @@ extension Satellite {
     enum WarningAlert {
         case message(String)
         
-        case resumePlayback(ItemIdentifier)
-        
         case playbackStartWhileDownloading(ItemIdentifier)
         case downloadStartWhilePlaying
         case downloadRemoveWhilePlaying
@@ -212,9 +209,6 @@ extension Satellite {
             switch self {
                 case .message(let message):
                     message
-                    
-                case .resumePlayback:
-                    String(localized: "playback.alert.resume.message")
                     
                 case .playbackStartWhileDownloading:
                     String(localized: "warning.playbackDownload.activeDownload")
@@ -236,7 +230,7 @@ extension Satellite {
                 case .message:
                     [.dismiss]
                     
-                case .resumePlayback, .playbackStartWhileDownloading, .downloadStartWhilePlaying, .downloadRemoveWhilePlaying:
+                case .playbackStartWhileDownloading, .downloadStartWhilePlaying, .downloadRemoveWhilePlaying:
                     [.cancel, .proceed]
                     
                 case .convenienceDownloadManaged(let itemID):
@@ -333,9 +327,6 @@ extension Satellite {
             switch warningAlert {
                 case .message:
                     break
-                    
-                case .resumePlayback(let itemID):
-                    start(itemID, queue: Defaults[.playbackResumeQueue])
                     
                 case .playbackStartWhileDownloading(let itemID):
                     do {
@@ -969,27 +960,6 @@ private extension Satellite {
                 }
             }
         }
-    }
-    
-    func checkForResumablePlayback() {
-        guard let playbackResumeInfo = Defaults[.playbackResumeInfo] else {
-            return
-        }
-        
-        Defaults[.playbackResumeInfo] = nil
-        
-        guard !Defaults[.disableResumeListening] else {
-            return
-        }
-        
-        // 7 minutes
-        let timeout: Double = 60 * 7
-        
-        guard playbackResumeInfo.started.distance(to: .now) < timeout else {
-            return
-        }
-        
-        warn(.resumePlayback(playbackResumeInfo.itemID))
     }
 
     // MARK: Observers

@@ -84,8 +84,14 @@ struct StartWidgetTimelineEntry: TimelineEntry {
         self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
         
-        if let item, item.id.isPlayable {
-            progress = await PersistenceManager.shared.progress[item.id].progress
+        if let item {
+            if item.id.isPlayable {
+                progress = await PersistenceManager.shared.progress[item.id].progress
+            } else if let nextUp = try? await ResolvedUpNextStrategy.nextGroupingItem(item.id) {
+                progress = await PersistenceManager.shared.progress[nextUp].progress
+            } else {
+                progress = nil
+            }
         } else {
             progress = nil
         }
