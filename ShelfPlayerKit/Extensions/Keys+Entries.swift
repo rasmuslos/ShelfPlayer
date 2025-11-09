@@ -60,7 +60,6 @@ public extension Defaults.Keys {
     
     static let startInOfflineMode = Key("startInOfflineMode", default: false)
     static let ultraHighQuality = Key("ultraHighQuality", default: false)
-    static let disableResumeListening = Key("disableResumeListening", default: false)
     
     // MARK: In-App settings
     
@@ -111,7 +110,7 @@ public extension Defaults.Keys {
     
     // MARK: Playback
     
-    static let playbackResumeInfo = Key<PlaybackResumeInfo?>("playbackResumeInfo", default: nil)
+    static let lastPlayedItemID = Key<ItemIdentifier?>("lastPlayedItemID", default: nil)
     static let playbackResumeQueue = Key<[ItemIdentifier]>("playbackResumeQueue", default: [])
     
     // MARK: Widgets
@@ -136,15 +135,6 @@ public extension Defaults.Keys {
     static let customTabsActive = Key("customTabsActive", default: true)
 }
 
-public struct PlaybackResumeInfo: Codable, Sendable, Defaults.Serializable {
-    public let itemID: ItemIdentifier
-    public let started: Date
-    
-    public init(itemID: ItemIdentifier, started: Date) {
-        self.itemID = itemID
-        self.started = started
-    }
-}
 public struct ListenedTodayPayload: Codable, Defaults.Serializable {
     public var total: Int
     public var updated: Date

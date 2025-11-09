@@ -89,6 +89,9 @@ struct ShelfPlayer {
             Defaults[.carPlayTabBarLibraries]?.removeAll {
                 $0.connectionID == connectionID
             }
+            Defaults[.customTabValues].removeAll {
+                $0.library.connectionID == connectionID
+            }
         }
         
         Task {

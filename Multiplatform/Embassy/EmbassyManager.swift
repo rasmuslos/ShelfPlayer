@@ -286,7 +286,7 @@ private extension EmbassyManager {
             } else if let currentItemID = await AudioPlayer.shared.currentItemID {
                 itemID = currentItemID
             } else {
-                itemID = Defaults[.playbackResumeInfo]?.itemID
+                itemID = Defaults[.lastPlayedItemID]
             }
             
             guard let itemID else {
