@@ -19,6 +19,14 @@ struct Timeline: View {
         satellite.nowPlayingItemID == item?.id
     }
     
+    private func rowText(session: SessionPayload) -> LocalizedStringKey {
+        if session.startDate.distance(to: .now) > 60 * 60 * 24 {
+            "item.timeline.row \(session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute, .second], maximumUnitCount: 1)) ?? "?") \(session.startDate.formatted(date: .abbreviated, time: .shortened))"
+        } else {
+            "item.timeline.row \(session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute, .second], maximumUnitCount: 1)) ?? "?") \(session.startDate.formatted(.relative(presentation: .named)))"
+        }
+    }
+    
     @ViewBuilder
     private func capsule<Content: View>(title: LocalizedStringKey, isLoading: Bool, @ViewBuilder text: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -94,10 +102,8 @@ struct Timeline: View {
                     row(text: Text("item.timeline.playing"), color: .blue, systemImage: "pause.fill")
                 }
                 
-                ForEach(sessionLoader.sessions) { session in
-                    row(text: Text("item.timeline.row \(session.timeListening?.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.day, .hour, .minute, .second], maximumUnitCount: 1)) ?? "?") \(session.startDate.formatted(.relative(presentation: .named)))"),
-                        color: .accentColor,
-                        systemImage: "play.fill")
+                ForEach(sessionLoader.sessions) {
+                    row(text: Text(rowText(session: $0)), color: .accentColor, systemImage: "play.fill")
                 }
                 
                 if let audiobook = item as? Audiobook, let released = audiobook.released {
