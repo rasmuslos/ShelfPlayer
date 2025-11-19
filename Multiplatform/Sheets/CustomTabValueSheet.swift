@@ -11,6 +11,8 @@ import ShelfPlayback
 struct CustomTabValueSheet: View {
     @Environment(\.dismiss) private var dismiss
     
+    @Default(.customTabValues) private var customTabValues
+    
     var body: some View {
         NavigationStack {
             CustomTabValuesPreferences()
@@ -21,7 +23,9 @@ struct CustomTabValueSheet: View {
                 }
         }
         .onDisappear {
-            RFNotification[.toggleCustomTabsActive].send()
+            if !customTabValues.isEmpty {
+                RFNotification[.toggleCustomTabsActive].send()
+            }
         }
     }
 }
