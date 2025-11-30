@@ -20,18 +20,10 @@ struct SearchPanel: View {
             if let result = viewModel.result {
                 List {
                     ForEach(result) { item in
-                        Group {
-                            if library?.id == item.id.libraryID && library?.connectionID == item.id.connectionID {
-                                NavigationLink(destination: ItemView(item: item)) {
-                                    ItemCompactRow(item: item)
-                                }
-                            } else {
-                                Button {
-                                    item.id.navigate()
-                                } label: {
-                                    ItemCompactRow(item: item)
-                                }
-                            }
+                        Button {
+                            item.id.navigate()
+                        } label: {
+                            ItemCompactRow(item: item)
                         }
                         .buttonStyle(.plain)
                         .modifier(ItemStatusModifier(item: item, hoverEffect: nil))

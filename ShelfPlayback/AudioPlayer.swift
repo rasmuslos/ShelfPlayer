@@ -317,8 +317,12 @@ public extension AudioPlayer {
     
     func cyclePlaybackSpeed() async {
         let playbackRates = Defaults[.playbackRates]
+        let playbackRate = await playbackRate
         
-        guard let index = await playbackRates.firstIndex(of: playbackRate) else {
+        guard let index = playbackRates.firstIndex(where: {
+            $0 + 0.001 > playbackRate
+            && $0 - 0.001 < playbackRate
+        }) else {
             if let rate = playbackRates.first {
                 await setPlaybackRate(rate)
             }
