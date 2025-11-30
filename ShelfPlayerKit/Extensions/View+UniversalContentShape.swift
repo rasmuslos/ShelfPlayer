@@ -11,6 +11,6 @@ public extension View {
     @ViewBuilder
     func universalContentShape<S>(_ shape: S) -> some View where S: Shape {
         self
-            .contentShape([.accessibility, .contextMenuPreview, .dragPreview, .hoverEffect, .interaction], shape)
+            .contentShape([.accessibility, .dragPreview, .hoverEffect, .interaction], shape)
     }
 }

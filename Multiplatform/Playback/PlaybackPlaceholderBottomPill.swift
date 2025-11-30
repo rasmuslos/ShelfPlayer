@@ -22,10 +22,10 @@ struct PlaybackPlaceholderBottomPill: View {
             }
         } label: {
             HStack(spacing: 8) {
+                ItemImage(itemID: lastPlayedItemID, size: .small)
+                    .padding(.vertical, 8)
+                
                 if let lastPlayedItemID {
-                    ItemImage(itemID: lastPlayedItemID, size: .small)
-                        .padding(.vertical, 8)
-                    
                     VStack(alignment: .leading, spacing: 0) {
                         if let lastPlayedItemName {
                             Text(lastPlayedItemName)
@@ -68,10 +68,16 @@ struct PlaybackPlaceholderBottomPill: View {
     
     private nonisolated func loadItemName() {
         Task {
-            let item = try? await lastPlayedItemID?.resolved
-            
-            await MainActor.run {
-                lastPlayedItemName = item?.name
+            do {
+                let item = try await lastPlayedItemID?.resolved
+                
+                await MainActor.run {
+                    lastPlayedItemName = item?.name
+                }
+            } catch {
+                await MainActor.run {
+                    lastPlayedItemID = nil
+                }
             }
         }
     }

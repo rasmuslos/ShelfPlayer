@@ -50,9 +50,9 @@ extension PersistenceManager {
 
 extension PersistenceManager.ListenNowSubsystem {
     private func update() async {
-        if let lastUpdateStarted, lastUpdateStarted.distance(to: .now) < -7 {
-            
-        }
+//        if let lastUpdateStarted, lastUpdateStarted.distance(to: .now) < -7 {
+//            return
+//        }
         
         lastUpdateStarted = .now
         
