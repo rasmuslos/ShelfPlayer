@@ -515,8 +515,6 @@ extension Satellite {
             isInitial = true
             self.skipCache = adjustment
         }
-
-        RFNotification[.skipped].send(payload: forwards)
         
         if forwards {
             notifySkipForwards.toggle()
@@ -535,6 +533,8 @@ extension Satellite {
             if let skipCache {
                 self.skipCache = nil
                 seek(to: currentTime + skipCache, insideChapter: false) {}
+                
+                await RFNotification[.skipped].send(payload: forwards)
             }
         }
     }
