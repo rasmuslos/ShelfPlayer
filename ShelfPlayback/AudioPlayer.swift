@@ -17,6 +17,8 @@ public final actor AudioPlayer: Sendable {
     
     var current: (any AudioEndpoint)?
     
+    private var startTask: Task<Void, Error>? = nil
+    
     let audioSession = AVAudioSession.sharedInstance()
     let widgetManager = NowPlayingWidgetManager()
     
@@ -126,14 +128,24 @@ public extension AudioPlayer {
     }
     
     func start(_ item: AudioPlayerItem) async throws {
-        await stop()
-        
-        do {
-            current = try await LocalAudioEndpoint(item)
-        } catch {
-            await stop()
-            throw error
+        guard startTask == nil else {
+            return
         }
+        
+        startTask = .init {
+            await self.stop()
+            
+            do {
+                current = try await LocalAudioEndpoint(item)
+            } catch {
+                await self.stop()
+                throw error
+            }
+            
+            startTask = nil
+        }
+        
+        return try await startTask!.value
     }
     @discardableResult
     func startGrouping(_ itemID: ItemIdentifier, startWithoutListeningSession: Bool) async throws -> ItemIdentifier {
@@ -532,3 +544,4 @@ private extension AudioPlayer {
         MPRemoteCommandCenter.shared().changePlaybackRateCommand.supportedPlaybackRates = Defaults[.playbackRates].map { NSNumber(value: $0) }
     }
 }
+
