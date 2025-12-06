@@ -11,7 +11,7 @@ import MediaPlayer
 import ShelfPlayerKit
 
 final actor NowPlayingWidgetManager: Sendable {
-    let logger = Logger(subsystem: "io.rfk.shelfPlayewrKit", category: "NowPlayingWidgetManager")
+    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "NowPlayingWidgetManager")
     
     var item: PlayableItem?
     var chapter: Chapter?

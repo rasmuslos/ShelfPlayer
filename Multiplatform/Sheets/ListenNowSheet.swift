@@ -101,6 +101,7 @@ struct ListenNowSheet: View {
 
 struct ListenNowSheetToggle: View {
     @Environment(Satellite.self) private var satellite
+    @Environment(\.namespace) private var namespace
     
     var body: some View {
         Menu {
@@ -116,6 +117,7 @@ struct ListenNowSheetToggle: View {
         .menuActionDismissBehavior(.disabled)
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel(Text("panel.listenNow"))
+        .matchedTransitionSource(id: "listen-now-sheet", in: namespace!)
     }
 }
 
