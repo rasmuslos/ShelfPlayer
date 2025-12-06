@@ -94,6 +94,7 @@ struct DownloadButton: View {
                             }
                     }
                 }
+//                .symbolVariant(viewModel.progressVisibility == .toolbar ? .none : .circle)
             }
         }
         .disabled(viewModel.status == nil || satellite.isLoading(observing: viewModel.itemID))
@@ -226,16 +227,16 @@ final class DownloadButtonViewModel {
     }
     var icon: String {
         guard let status else {
-            return "questionmark.circle.dashed"
+            return "questionmark"
         }
         
         switch status {
             case .none:
-                return "arrow.down.circle"
+                return "arrow.down"
             case .downloading:
-                return "slash.circle"
+                return "slash"
             case .completed:
-                return "trash.circle"
+                return "trash"
         }
     }
     

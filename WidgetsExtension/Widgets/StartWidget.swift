@@ -226,7 +226,7 @@ struct StartWidgetContent: View {
                     Spacer(minLength: 12)
                     
                     if entry.isDownloaded {
-                        Image(systemName: "arrow.down.circle.fill")
+                        Image(systemName: "arrow.down")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -281,7 +281,7 @@ struct StartWidgetContent: View {
 }
 
 #if DEBUG
-#Preview(as: .accessoryCircular) {
+#Preview(as: .systemSmall) {
     StartWidget()
 } timeline: {
     StartWidgetTimelineEntry(item: Podcast.fixture, isDownloaded: false, isPlaying: false)

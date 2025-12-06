@@ -68,7 +68,7 @@ struct CollectionView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("item.options", systemImage: "ellipsis.circle") {
+                Menu("item.options", systemImage: "ellipsis") {
                     if let highlighted = viewModel.highlighted {
                         Button {
                             satellite.start(highlighted.id, origin: origin)
