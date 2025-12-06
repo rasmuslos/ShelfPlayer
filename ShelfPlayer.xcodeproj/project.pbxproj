@@ -174,6 +174,7 @@
 		3AC41F972CC5372C009ABBFA /* CarPlayPodcastListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */; };
 		3AC41F992CC53E49009ABBFA /* CarPlayChaptersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */; };
 		3AC5F63C2DFCD82B0080649A /* ItemShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */; };
+		3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC9A8D62DEC713A004BC123 /* SwiftSoup */; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
 		3ACB8D042DDCA124005336C0 /* AudiobookBookmarksPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */; };
 		3ACB8D082DDCA860005336C0 /* TimeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D072DDCA860005336C0 /* TimeRow.swift */; };
@@ -475,6 +476,7 @@
 		3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayChaptersController.swift; sourceTree = "<group>"; };
 		3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShareButton.swift; sourceTree = "<group>"; };
 		3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3ACA59882EE35FD200331C74 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGrid.swift; sourceTree = "<group>"; };
 		3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookBookmarksPanel.swift; sourceTree = "<group>"; };
 		3ACB8D072DDCA860005336C0 /* TimeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeRow.swift; sourceTree = "<group>"; };
@@ -560,6 +562,7 @@
 				3A6EECFD2DEC6DB20000CAF2 /* DefaultsMacros in Frameworks */,
 				3A6EECFB2DEC6DB20000CAF2 /* Defaults in Frameworks */,
 				3A6EECF92DEC6DAE0000CAF2 /* RFKit in Frameworks */,
+				3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,6 +587,7 @@
 				3A6AAF462DE8C7280090C886 /* WidgetsExtension */,
 				3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */,
 				3AC9A8DE2DEC716F004BC123 /* ShelfPlayback */,
+				3ACA59872EE35FC400331C74 /* ci_scripts */,
 				3AE3E9672B1E37D3005FBFA6 /* Frameworks */,
 				3AB162A32E04C17100D33868 /* Products */,
 			);
@@ -1004,6 +1008,14 @@
 			path = Panels;
 			sourceTree = "<group>";
 		};
+		3ACA59872EE35FC400331C74 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				3ACA59882EE35FD200331C74 /* ci_post_clone.sh */,
+			);
+			path = ci_scripts;
+			sourceTree = "<group>";
+		};
 		3ACB8D092DDDACAA005336C0 /* Item */ = {
 			isa = PBXGroup;
 			children = (
@@ -1137,6 +1149,7 @@
 				3A6EECF82DEC6DAE0000CAF2 /* RFKit */,
 				3A6EECFA2DEC6DB20000CAF2 /* Defaults */,
 				3A6EECFC2DEC6DB20000CAF2 /* DefaultsMacros */,
+				3AC9A8D62DEC713A004BC123 /* SwiftSoup */,
 			);
 			productName = ShelfPlayerKit;
 			productReference = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */;
@@ -1212,6 +1225,7 @@
 			packageReferences = (
 				3AB266072DEC617400F69B03 /* XCRemoteSwiftPackageReference "RFKit" */,
 				3AB2660A2DEC619800F69B03 /* XCRemoteSwiftPackageReference "Defaults" */,
+				3AC9A8D52DEC713A004BC123 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 			);
 			productRefGroup = 3A0AE6972AB623F400ACCD68;
 			projectDirPath = "";
@@ -2086,6 +2100,14 @@
 				minimumVersion = 9.0.3;
 			};
 		};
+		3AC9A8D52DEC713A004BC123 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.7;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2103,6 +2125,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3AB2660A2DEC619800F69B03 /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = DefaultsMacros;
+		};
+		3AC9A8D62DEC713A004BC123 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AC9A8D52DEC713A004BC123 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
