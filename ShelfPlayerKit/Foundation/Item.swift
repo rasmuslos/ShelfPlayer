@@ -8,7 +8,6 @@
 import Foundation
 import CoreTransferable
 import SwiftUI
-import SwiftSoup
 
 public class Item: Identifiable, @unchecked Sendable, Codable {
     public let id: ItemIdentifier
@@ -144,12 +143,18 @@ public extension Item {
         }
     }
     
-    var descriptionText: String? {
-        guard let description = description, let document = try? SwiftSoup.parse(description) else {
+    var descriptionAttributed: NSAttributedString? {
+        guard let description = description, let stringData = description.data(using: .utf8) else {
             return nil
         }
         
-        return try? document.text()
+        return try? NSMutableAttributedString(data: stringData, options: [
+            .documentType: NSAttributedString.DocumentType.html,
+            .characterEncoding: NSUTF8StringEncoding,
+        ], documentAttributes: nil)
+    }
+    var descriptionText: String? {
+        descriptionAttributed?.string
     }
 }
 
