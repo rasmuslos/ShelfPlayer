@@ -44,6 +44,7 @@ struct ContentView: View {
         switch sheet {
         case .listenNow:
             ListenNowSheet()
+                .navigationTransition(.zoom(sourceID: "listen-now-sheet", in: namespace))
         case .preferences:
             PreferencesView()
         case .customTabValuePreferences:
