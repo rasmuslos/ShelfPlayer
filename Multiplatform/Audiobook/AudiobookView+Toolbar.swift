@@ -66,11 +66,11 @@ extension AudiobookView {
                                 ProgressView()
                             } else {
                                 if viewModel.supplementaryPDFs.count == 1 {
-                                    Button("item.documents.read", systemImage: "book.circle") {
+                                    Button("item.documents.read", systemImage: "book") {
                                         viewModel.presentPDF(viewModel.supplementaryPDFs[0])
                                     }
                                 } else {
-                                    Menu("item.documents.read", systemImage: "book.circle") {
+                                    Menu("item.documents.read", systemImage: "book") {
                                         ForEach(viewModel.supplementaryPDFs) { pdf in
                                             Button(pdf.name) {
                                                 viewModel.presentPDF(pdf)

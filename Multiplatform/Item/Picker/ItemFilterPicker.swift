@@ -30,7 +30,7 @@ struct ItemFilterPicker: View {
                 .tag($0)
         }
         
-        Toggle("item.filter.downloaded", systemImage: "arrow.down.circle", isOn: $restrictToPersisted)
+        Toggle("item.filter.downloaded", systemImage: "arrow.down", isOn: $restrictToPersisted)
     }
 }
 

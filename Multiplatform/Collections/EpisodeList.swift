@@ -193,7 +193,7 @@ struct EpisodeItemActions: View {
                 case .downloading:
                     DownloadButton(itemID: episode.id, progressVisibility: .episode)
                 case .completed:
-                    Image(systemName: "arrow.down.circle.fill")
+                    Image(systemName: "arrow.down")
                         .font(.system(size: 10))
                         .foregroundStyle(.secondary)
                 default:

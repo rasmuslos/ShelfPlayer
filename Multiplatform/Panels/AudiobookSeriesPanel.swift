@@ -60,7 +60,7 @@ struct AudiobookSeriesPanel: View {
         .largeTitleDisplayMode()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("item.options", systemImage: "ellipsis.circle") {
+                Menu("item.options", systemImage: "ellipsis") {
                     ItemDisplayTypePicker(displayType: $seriesDisplayType)
                     Section("item.sort") {
                         ItemSortOrderPicker(sortOrder: $seriesSortOrder, ascending: $seriesAscending)

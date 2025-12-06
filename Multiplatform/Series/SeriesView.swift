@@ -86,7 +86,7 @@ struct SeriesView: View {
         .sensoryFeedback(.error, trigger: viewModel.lazyLoader.notifyError)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+                Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease" : "line.3.horizontal") {
                     ItemDisplayTypePicker(displayType: $viewModel.displayType)
                     
                     Divider()

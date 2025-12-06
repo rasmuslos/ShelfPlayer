@@ -61,7 +61,7 @@ extension EpisodeView {
                             
                             ItemLoadLink(itemID: viewModel.episode.podcastID, footer: viewModel.episode.podcastName)
                         } label: {
-                            Label("item.options", systemImage: "ellipsis.circle")
+                            Label("item.options", systemImage: "ellipsis")
                         }
                     }
                 }

@@ -84,7 +84,7 @@ struct StatusOverlay: View {
                         }
                         .frame(width: size, height: size)
                     } else if download.status == .completed {
-                        Image(systemName: "arrow.down.circle.fill")
+                        Image(systemName: "arrow.down")
                             .labelStyle(.iconOnly)
                             .font(.system(size: fontSize))
                             .foregroundStyle(.ultraThickMaterial)

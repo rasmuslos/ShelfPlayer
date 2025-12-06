@@ -60,7 +60,7 @@ extension PodcastView.ToolbarModifier {
         @Environment(PodcastViewModel.self) private var viewModel
         
         var body: some View {
-            Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle") {
+            Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease" : "line.3.horizontal") {
                 Section("item.filter") {
                     ItemFilterPicker(filter: viewModel.filterBinding, restrictToPersisted: viewModel.restrictToPersistedBinding)
                 }
