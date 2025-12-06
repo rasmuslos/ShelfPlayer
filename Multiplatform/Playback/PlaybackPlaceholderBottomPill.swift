@@ -25,7 +25,7 @@ struct PlaybackPlaceholderBottomPill: View {
                 ItemImage(itemID: lastPlayedItemID, size: .small)
                     .padding(.vertical, 8)
                 
-                if let lastPlayedItemID {
+                if lastPlayedItemID != nil {
                     VStack(alignment: .leading, spacing: 0) {
                         if let lastPlayedItemName {
                             Text(lastPlayedItemName)
