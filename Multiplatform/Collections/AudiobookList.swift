@@ -122,11 +122,19 @@ private struct Row: View {
                     Group {
                         if case .person(let person) = displayContext, person.id.type == .author, let seriesName = audiobook.seriesName {
                             Text(seriesName)
+                                .lineLimit(2)
                         } else if !audiobook.authors.isEmpty {
-                            Text(audiobook.authors, format: .list(type: .and, width: .short))
+                            HStack(spacing: 0) {
+                                Text(audiobook.authors, format: .list(type: .and, width: .short))
+                                
+                                if !audiobook.narrators.isEmpty {
+                                    Text(verbatim:  " • ")
+                                    Text(audiobook.narrators, format: .list(type: .and, width: .short))
+                                }
+                            }
+                            .lineLimit(1)
                         }
                     }
-                    .lineLimit(2)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     
