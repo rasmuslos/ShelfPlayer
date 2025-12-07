@@ -58,6 +58,7 @@ struct CompactPlaybackModifier: ViewModifier {
                 let width = geometryProxy.size.width + geometryProxy.safeAreaInsets.leading + geometryProxy.safeAreaInsets.trailing
                 
                 content
+                    .accessibilityHidden(viewModel.isExpanded)
                     .overlay {
                         Rectangle()
                             .fill(.black)
