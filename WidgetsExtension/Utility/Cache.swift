@@ -48,7 +48,7 @@ final actor Cache: Sendable {
         let fetched = await withTaskGroup {
             for itemID in missingItemIDs {
                 $0.addTask {
-                    (itemID, await itemID.data(size: tiny ? .tiny : .regular))
+                    (itemID, await itemID.data(size: tiny ? .tiny : .small))
                 }
             }
             
