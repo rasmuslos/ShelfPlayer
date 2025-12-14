@@ -46,11 +46,11 @@ public extension PersistenceManager.ItemSubsystem {
     }
     
     func dominantColor(of itemID: ItemIdentifier) async -> Color? {
-        #if DEBUG
+#if DEBUG
         if itemID.connectionID == "fixture" {
             return .orange
         }
-        #endif
+#endif
         
         if let stored = await PersistenceManager.shared.keyValue[.dominantColor(of: itemID)] {
             let components = stored.split(separator: ":").map { Double($0) ?? 0 }
@@ -60,41 +60,44 @@ public extension PersistenceManager.ItemSubsystem {
         let size: ImageSize
         
         switch itemID.type {
-            case .audiobook:
-                size = .regular
-            case .podcast:
-                size = .large
-            case .episode:
-                size = .tiny
-            default:
-                size = .tiny
+        case .audiobook:
+            size = .regular
+        case .podcast:
+            size = .large
+        case .episode:
+            size = .tiny
+        default:
+            size = .tiny
         }
         
         guard let image = await ImageLoader.shared.platformImage(for: .init(itemID: itemID, size: size)), let extracted = try? await RFKVisuals.extractDominantColors(5, image: image) else {
             return nil
         }
         
-        let colors = extracted.sorted { $0.percentage > $1.percentage }.map(\.color)
+        let sorted = extracted.sorted { $0.percentage > $1.percentage }
+        let colors = sorted.map(\.color)
         
         let result: Color?
         
         switch itemID.type {
-            case .podcast:
-                result = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.1).first
-            default:
-                if let highBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.34).randomElement() {
-                    result = highBrightness
-                } else if let mediumBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.26).randomElement() {
-                    result = mediumBrightness
+        case .podcast:
+            result = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.1).first
+        default:
+            if let fillColor = sorted.first(where: { $0.percentage > 60 }) {
+                result = fillColor.color
+            } else if let highBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.34).randomElement() {
+                result = highBrightness
+            } else if let mediumBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.26).randomElement() {
+                result = mediumBrightness
+            } else {
+                let filtered = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.16)
+                
+                if let highlySaturated = RFKVisuals.saturationExtremeFilter(filtered, threshold: 0.3).randomElement() {
+                    result = highlySaturated
                 } else {
-                    let filtered = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.16)
-                    
-                    if let highlySaturated = RFKVisuals.saturationExtremeFilter(filtered, threshold: 0.3).randomElement() {
-                        result = highlySaturated
-                    } else {
-                        result = filtered.randomElement()
-                    }
+                    result = filtered.randomElement()
                 }
+            }
         }
         
         guard let result else {
@@ -178,10 +181,10 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         let isPurgeable: Bool
         
         switch itemID.type {
-            case .audiobook, .episode:
-                isPurgeable = true
-            case .author, .narrator, .series, .podcast, .collection, .playlist:
-                isPurgeable = false
+        case .audiobook, .episode:
+            isPurgeable = true
+        case .author, .narrator, .series, .podcast, .collection, .playlist:
+            isPurgeable = false
         }
         
         return Key(identifier: "playbackRate-\(itemID)", cluster: "playbackRates", isCachePurgeable: isPurgeable)
