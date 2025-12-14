@@ -234,7 +234,7 @@ final class DownloadButtonViewModel {
             case .none:
                 return "arrow.down"
             case .downloading:
-                return "slash"
+                return "slash.circle"
             case .completed:
                 return "trash"
         }
@@ -320,5 +320,9 @@ final class DownloadButtonViewModel {
             }
     }
     .previewEnvironment()
+}
+
+#Preview {
+    Image(systemName: "slash.circle")
 }
 #endif

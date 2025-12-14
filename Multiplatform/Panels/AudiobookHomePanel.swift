@@ -72,18 +72,7 @@ struct AudiobookHomePanel: View {
         .sensoryFeedback(.error, trigger: notifyError)
         .toolbar {
             if horizontalSizeClass == .compact {
-                if #available(iOS 26, *) {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        ListenNowSheetToggle()
-                            .padding(4)
-                    }
-                    
-                    ToolbarSpacer(placement: .topBarTrailing)
-                } else {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        ListenNowSheetToggle()
-                    }
-                }
+                ListenNowSheetToggle.toolbarItem()
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     LibraryPickerMenu()

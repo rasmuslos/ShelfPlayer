@@ -82,14 +82,14 @@ public extension PersistenceManager.ItemSubsystem {
             case .podcast:
                 result = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.1).first
             default:
-                if let highBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.4).randomElement() {
+                if let highBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.34).randomElement() {
                     result = highBrightness
-                } else if let mediumBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.3).randomElement() {
+                } else if let mediumBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.26).randomElement() {
                     result = mediumBrightness
                 } else {
-                    let filtered = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.2)
+                    let filtered = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.16)
                     
-                    if let highlySaturated = RFKVisuals.saturationExtremeFilter(filtered, threshold: 0.4).randomElement() {
+                    if let highlySaturated = RFKVisuals.saturationExtremeFilter(filtered, threshold: 0.3).randomElement() {
                         result = highlySaturated
                     } else {
                         result = filtered.randomElement()

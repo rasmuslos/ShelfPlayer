@@ -62,11 +62,11 @@ struct ListenedTodayLabel: View {
                         .foregroundStyle(color)
                         .opacity(0.72)
                 }
-                .offset(x: 0, y: geometryProxy.size.width / 6)
                 .accessibilityValue(Text(verbatim: "\(listenedTodayTracker.totalMinutesListenedToday) / \(listenedTodayTracker.listenTimeTarget)"))
             }
         }
-        .aspectRatio(1, contentMode: .fit)
+        .padding(2)
+        .aspectRatio(0.9, contentMode: .fit)
         .animation(.smooth, value: listenedTodayTracker.totalMinutesListenedToday)
         .compositingGroup()
         // .accessibilityLabel(Text(("statistics.listenedToday")))
@@ -119,6 +119,7 @@ struct ListenedTodayListRow: View {
 #Preview {
     ListenedTodayLabel()
         .frame(width: 22)
+        .border(.red)
         .previewEnvironment()
 }
 

@@ -44,10 +44,11 @@ private struct Title: View {
                 .lineLimit(1)
                 .overlay(alignment: .trailing) {
                     if horizontalSizeClass == .compact {
-                        Label(ItemIdentifier.ItemType.author.viewLabel, systemImage: "chevron.right.circle")
+                        Label(ItemIdentifier.ItemType.author.viewLabel, systemImage: "chevron.right")
                             .labelStyle(.iconOnly)
                             .font(.caption2)
-                            .offset(x: 17)
+                            .foregroundStyle(.secondary)
+                            .offset(x: 12)
                     }
                 }
         }
