@@ -103,12 +103,14 @@ struct ListenNowSheetToggle: View {
     @Environment(Satellite.self) private var satellite
     @Environment(\.namespace) private var namespace
     
+    let width: CGFloat
+    
     var body: some View {
         Menu {
             ListenedTodayLabel.AdjustMenuInner()
         } label: {
             ListenedTodayLabel()
-                .frame(width: 22)
+                .frame(width: width)
         } primaryAction: {
             satellite.present(.listenNow)
         }
@@ -119,6 +121,26 @@ struct ListenNowSheetToggle: View {
         .accessibilityLabel(Text("panel.listenNow"))
         .matchedTransitionSource(id: "listen-now-sheet", in: namespace!)
     }
+    
+    @ToolbarContentBuilder
+    static func toolbarItem() -> some ToolbarContent {
+        if #available(iOS 26, *) {
+            ToolbarItem(placement: .topBarTrailing) {
+                ZStack {
+                    ListenNowSheetToggle(width: 36)
+                }
+                .padding(4)
+                .glassEffect(in: Circle())
+            }
+            .sharedBackgroundVisibility(.hidden)
+            
+            ToolbarSpacer(placement: .topBarTrailing)
+        } else {
+            ToolbarItem(placement: .topBarTrailing) {
+                ListenNowSheetToggle(width: 26)
+            }
+        }
+    }
 }
 
 #if DEBUG
@@ -128,5 +150,19 @@ struct ListenNowSheetToggle: View {
             ListenNowSheet()
         }
         .previewEnvironment()
+}
+
+#Preview {
+    NavigationStack {
+        Text(verbatim: ":)")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Label(String(":)"), systemImage: "command")
+                }
+                
+                ListenNowSheetToggle.toolbarItem()
+            }
+            .previewEnvironment()
+    }
 }
 #endif
