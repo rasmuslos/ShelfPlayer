@@ -211,4 +211,11 @@ struct PersonView: View {
     }
     .previewEnvironment()
 }
+
+#Preview {
+    NavigationStack {
+        PersonView(.narratorFixture)
+    }
+    .previewEnvironment()
+}
 #endif

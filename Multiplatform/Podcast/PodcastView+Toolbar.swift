@@ -40,7 +40,8 @@ extension PodcastView {
                         }
                     }
                     
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        ItemConfigureButton(itemID: viewModel.podcast.id)
                         OptionsMenu()
                     }
                 }
@@ -68,8 +69,6 @@ extension PodcastView.ToolbarModifier {
                 Section("item.sort") {
                     ItemSortOrderPicker(sortOrder: viewModel.sortOrderBinding, ascending: viewModel.ascendingBinding)
                 }
-                
-                ItemConfigureButton(itemID: viewModel.podcast.id)
             }
             .menuActionDismissBehavior(.disabled)
         }

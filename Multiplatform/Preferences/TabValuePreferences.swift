@@ -44,79 +44,53 @@ struct TabValuePreferences: View {
     }
 }
 
-private struct TabValueLibraryPreferences: View {
+struct TabValueLibraryPreferences: View {
     let library: Library
     let scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope
     
+    var callback: (() -> Void)? = nil
+    
     @State private var viewModel: TabValueShadow?
     
-    var homeTab: TabValue {
-        switch library.type {
-            case .audiobooks:
-                    .audiobookHome(library)
-            case .podcasts:
-                    .podcastHome(library)
-        }
+    func isActive(tabID: TabValue.ID) -> Bool {
+        viewModel?.activeIDs.contains(tabID) ?? false
     }
-    var containsHomeTab: Bool {
-        viewModel?.tabs.contains { isHomeTab(tabValue: $0) } == true
+    func binding(for tabID: TabValue.ID) -> Binding<Bool> {
+        Binding {
+            isActive(tabID: tabID)
+        } set: {
+            guard $0 != isActive(tabID: tabID) else {
+                return
+            }
+            
+            if let viewModel, let index = viewModel.activeIDs.firstIndex(of: tabID) {
+                viewModel.activeIDs.remove(at: index)
+            } else if viewModel?.isFull == false {
+                viewModel?.activeIDs.append(tabID)
+            }
+            
+            viewModel?.transferOrder()
+        }
     }
     
-    func isHomeTab(tabValue: TabValue) -> Bool {
-        switch tabValue {
-            case .audiobookHome, .podcastHome:
-                true
-            default:
-                false
-        }
+    @ViewBuilder
+    private func label(tab: TabValue) -> some View {
+        Label(tab.label, systemImage: tab.image)
+            .foregroundStyle(.primary)
     }
     
     var body: some View {
         List {
             if let viewModel {
-                Section {
-                    if containsHomeTab {
-                        Label(homeTab.label, systemImage: homeTab.image)
-                            .foregroundStyle(.primary)
+                ForEach(viewModel.available) { tab in
+                    Toggle(isOn: binding(for: tab.id)) {
+                        label(tab: tab)
                     }
-                    
-                    ForEach(viewModel.tabs) { tab in
-                        if !isHomeTab(tabValue: tab) {
-                            Label(tab.label, systemImage: tab.image)
-                                .foregroundStyle(.primary)
-                        }
-                    }
-                    .onMove {
-                        viewModel.tabs.move(fromOffsets: $0, toOffset: $1)
-                    }
-                    .onDelete {
-                        for index in $0 {
-                            viewModel.tabs.remove(at: index)
-                        }
-                    }
+                    .toggleStyle(CheckboxToggleStyle(isFull: viewModel.isFull))
                 }
-                .id(viewModel.tabs.count)
-                
-                Section {
-                    ForEach(viewModel.filtered) { tab in
-                        Button {
-                            viewModel.add(tab: tab)
-                        } label: {
-                            HStack(spacing: 0) {
-                                Label(tab.label, systemImage: tab.image)
-                                    .foregroundStyle(.primary)
-                                Spacer(minLength: 4)
-                                Image(systemName: "plus.circle")
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .disabled(viewModel.isFull)
-                
-                Button("action.reset", role: .destructive) {
-                    viewModel.reset()
+                .onMove {
+                    viewModel.available.move(fromOffsets: $0, toOffset: $1)
+                    viewModel.transferOrder()
                 }
             } else {
                 ProgressView()
@@ -128,13 +102,46 @@ private struct TabValueLibraryPreferences: View {
         .navigationTitle(library.name)
         .environment(\.editMode, .constant(.active))
         .toolbar {
+            ToolbarItem(placement: .destructiveAction) {
+                Button("action.reset", role: .destructive) {
+                    viewModel?.reset()
+                }
+            }
+            
             ToolbarItem(placement: .confirmationAction) {
                 Button("action.save") {
-                    viewModel?.save()
+                    viewModel?.save {
+                        callback?()
+                    }
                 }
             }
         }
-        .animation(.smooth, value: viewModel?.tabs)
+        .animation(.smooth, value: viewModel?.activeIDs)
+    }
+}
+
+private struct CheckboxToggleStyle: ToggleStyle {
+    let isFull: Bool
+    
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "circle")
+                .symbolVariant(configuration.isOn ? .fill : .none)
+                .foregroundStyle(isFull && !configuration.isOn ? .gray : .accentColor)
+                .reverseMask {
+                    Image(systemName: "checkmark")
+                        .font(.caption2)
+                }
+            
+            configuration.label
+            
+            Spacer()
+        }
+        .contentShape(.rect)
+        .animation(.smooth, value: configuration.isOn)
+        .onTapGesture {
+            configuration.isOn.toggle()
+        }
     }
 }
 
@@ -145,7 +152,7 @@ private final class TabValueShadow {
     let library: Library
     let scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope
     
-    var tabs: [TabValue]
+    var activeIDs = [TabValue.ID]()
     var available: [TabValue]
     
     var isLoading = false
@@ -155,36 +162,44 @@ private final class TabValueShadow {
         self.library = library
         self.scope = scope
         
-        tabs = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: scope)
         available = PersistenceManager.shared.customization.availableTabs(for: library, scope: scope)
+        
+        let configured = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: scope)
+        setActive(tabs: configured)
     }
     
-    var filtered: [TabValue] {
-        available.filter { !tabs.contains($0) }
-    }
     var isFull: Bool {
         if scope == .library {
            false
         } else {
-            tabs.count >= MAXIMUM_TAB_COUNT
+            activeIDs.count >= MAXIMUM_TAB_COUNT
         }
     }
     
-    func add(tab: TabValue) {
-        guard !isFull else {
-            return
-        }
-        
-        tabs.append(tab)
+    func setActive(tabs: [TabValue]) {
+        self.activeIDs = tabs.map(\.id)
     }
+    var active: [TabValue] {
+        activeIDs.compactMap { id in
+            available.first { $0.id == id }
+        }
+    }
+    
+    func transferOrder() {
+        let tabIDs = activeIDs
+        activeIDs = available.compactMap { tabIDs.contains($0.id) ? $0.id : nil }
+    }
+    
     func reset() {
-        tabs = PersistenceManager.shared.customization.defaultTabs(for: library, scope: scope)
+        let predefined = PersistenceManager.shared.customization.defaultTabs(for: library, scope: scope)
+        setActive(tabs: predefined)
     }
     
-    func save() {
+    func save(callback: @escaping () -> Void) {
         Task {
             do {
-                try await PersistenceManager.shared.customization.setConfiguredTabs(tabs, for: library, scope: scope)
+                try await PersistenceManager.shared.customization.setConfiguredTabs(active, for: library, scope: scope)
+                callback()
             } catch {
                 notifyError.toggle()
             }

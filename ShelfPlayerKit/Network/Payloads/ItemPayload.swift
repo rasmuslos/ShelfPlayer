@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ItemPayload: Codable {
+struct ItemPayload: Codable, Sendable {
     let id: String
     let libraryId: String?
     
@@ -92,20 +92,20 @@ struct ItemPayload: Codable {
     }
 }
 
-struct LibraryFile: Codable {
+struct LibraryFile: Codable, Sendable {
     let ino: String
     let metadata: MetadataPayload
     
     let fileType: String
     let isSupplementary: Bool?
     
-    struct MetadataPayload: Codable {
+    struct MetadataPayload: Codable, Sendable {
         public let ext: String
         public let filename: String
     }
 }
 
-struct EpisodePayload: Codable {
+struct EpisodePayload: Codable, Sendable {
     let id: String?
     let libraryId: String?
     
@@ -136,17 +136,17 @@ struct EpisodePayload: Codable {
     
     let chapters: [ChapterPayload]?
     
-    struct PodcastAudioFile: Codable {
+    struct PodcastAudioFile: Codable, Sendable {
         let duration: Double?
         let codec: String?
         let channelLayout: String?
         
         let metadata: PodcastMetadata?
     }
-    struct PodcastMetadata: Codable {
+    struct PodcastMetadata: Codable, Sendable {
         let size: Double?
     }
-    struct AudiobookshelfItemPodcast: Codable {
+    struct AudiobookshelfItemPodcast: Codable, Sendable {
         let id: String
         let libraryItemId: String
         let author: String?
@@ -157,18 +157,18 @@ struct EpisodePayload: Codable {
     }
 }
 
-struct PlaylistItemPayload: Codable {
+struct PlaylistItemPayload: Codable, Sendable {
     let episode: EpisodePayload?
     let libraryItem: ItemPayload?
 }
 
-struct CollapsedSeriesPayload: Codable {
+struct CollapsedSeriesPayload: Codable, Sendable {
     let id: String
     let name: String
     let libraryItemIds: [String]
 }
 
-struct MediaPayload: Codable {
+struct MediaPayload: Codable, Sendable {
     let tags: [String]?
     let coverPath: String?
     
@@ -189,7 +189,7 @@ struct MediaPayload: Codable {
     let audioFiles: [AudioFilePayload]?
 }
 
-struct MetadataPayload: Codable {
+struct MetadataPayload: Codable, Sendable {
     // MARK: Shared
     
     let title: String?
@@ -278,17 +278,17 @@ struct MetadataPayload: Codable {
     }
 }
 
-struct AudiobookshelfItemSeries: Codable {
+struct AudiobookshelfItemSeries: Codable, Sendable {
     let id: String?
     let name: String?
     let sequence: String?
 }
-struct AudiobookshelfItemAuthor: Codable {
+struct AudiobookshelfItemAuthor: Codable, Sendable {
     let id: String?
     let name: String?
 }
 
-struct AudiobookshelfAudioTrack: Codable {
+struct AudiobookshelfAudioTrack: Codable, Sendable {
     let index: Int?
     let ino: String?
     
@@ -302,16 +302,16 @@ struct AudiobookshelfAudioTrack: Codable {
     
     let metadata: AudioTrackMetadata?
     
-    struct AudioTrackMetadata: Codable {
+    struct AudioTrackMetadata: Codable, Sendable {
         let ext: String
     }
 }
 
-struct AudioFilePayload: Codable {
+struct AudioFilePayload: Codable, Sendable {
     let index: Int?
 }
 
-internal struct ChapterPayload: Codable {
+internal struct ChapterPayload: Codable, Sendable {
     let id: Int
     let start: Double
     let end: Double

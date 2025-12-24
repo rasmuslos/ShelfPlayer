@@ -14,73 +14,16 @@ public typealias PlatformImage = UIImage
 #endif
 
 public final actor ImageLoader {
-    let cachePath: URL?
-    let cache: URLCache
-    let session: URLSession
+    let cachePath = ShelfPlayerKit.cacheDirectoryURL.appending(path: "Images")
     
-    var pending = Set<ImageRequest>()
     var missing = Set<ImageRequest>()
-    
-    init() {
-        if ShelfPlayerKit.enableCentralized {
-            cachePath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ShelfPlayerKit.groupContainer)?.appending(path: "ImageCache")
-        } else {
-            cachePath = URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "ImageCache")
-        }
-        
-        // 512 MiB & 6 GiB
-        cache = .init(memoryCapacity: 536_870_912, diskCapacity: 6_442_450_944, directory: cachePath)
-        
-        let configuration = URLSessionConfiguration.ephemeral
-        
-        configuration.httpCookieStorage = ShelfPlayerKit.httpCookieStorage
-        configuration.httpShouldSetCookies = true
-        configuration.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
-        
-        configuration.timeoutIntervalForRequest = 120
-        configuration.waitsForConnectivity = true
-        
-        configuration.requestCachePolicy = .returnCacheDataElseLoad
-        configuration.urlCache = cache
-        
-        session = URLSession(configuration: configuration, delegate: APIClient.URLSessionDelegate(), delegateQueue: nil)
-        session.sessionDescription = "ShelfPlayer ImageLoader"
-    }
-    
-    public var currentDiskUsage: Int {
-        return cache.currentDiskUsage
-    }
-    
-    nonisolated func buildURLRequest(for request: ImageRequest) async -> URLRequest? {
-        return nil
-    }
     
     func data(for request: ImageRequest) async throws -> Data {
         if missing.contains(request) {
             throw ImageLoadError.missing
         }
         
-        while pending.contains(request) {
-            try await Task.sleep(for: .seconds(0.14))
-        }
-        
-        pending.insert(request)
-        
-        do {
-            guard let urlRequest = await buildURLRequest(for: request) else {
-                throw ImageLoadError.missingURLRequest
-            }
-            
-            let (data, _) = try await session.data(for: urlRequest)
-            pending.remove(request)
-            
-            return data
-        } catch {
-            pending.remove(request)
-            missing.insert(request)
-            
-            throw error
-        }
+        throw ImageLoadError.missingURLRequest
     }
     
     nonisolated func platformImage(for request: ImageRequest) async -> PlatformImage? {
@@ -92,17 +35,11 @@ public final actor ImageLoader {
     }
     
     public func purge() {
-        cache.removeAllCachedResponses()
+        
     }
     public nonisolated func purge(itemID: ItemIdentifier) async {
         for size in ImageSize.allCases {
-            let request = ImageRequest(itemID: itemID, size: size)
             
-            guard let urlRequest = await buildURLRequest(for: request) else {
-                continue
-            }
-            
-            cache.removeCachedResponse(for: urlRequest)
         }
     }
     

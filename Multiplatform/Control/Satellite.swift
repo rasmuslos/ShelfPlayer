@@ -163,6 +163,8 @@ extension Satellite {
         case editConnection(ItemIdentifier.ConnectionID)
         case reauthorizeConnection(ItemIdentifier.ConnectionID)
         
+        case customizeLibrary(Library)
+        
         case whatsNew
         
         var id: String {
@@ -187,6 +189,10 @@ extension Satellite {
                     "editConnection-\(connectionID)"
                 case .reauthorizeConnection(let connectionID):
                     "reauthorizeConnection-\(connectionID)"
+                    
+                case .customizeLibrary(let library):
+                    "customizeLibrary-\(library.connectionID)-\(library.id)"
+                    
                 case .whatsNew:
                     "whatsNew"
             }

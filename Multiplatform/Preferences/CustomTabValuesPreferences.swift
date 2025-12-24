@@ -16,6 +16,7 @@ struct CustomTabValuesPreferences: View {
             Section {
                 ForEach(customTabValues) { tab in
                     Label(tab.library.name, systemImage: tab.image)
+                        .foregroundStyle(.primary)
                 }
                 .onMove {
                     customTabValues.move(fromOffsets: $0, toOffset: $1)
@@ -54,6 +55,7 @@ struct CustomTabValuesPreferences: View {
                             } label: {
                                 HStack(spacing: 0) {
                                     Label(tab.label, systemImage: tab.image)
+                                        .foregroundStyle(.primary)
                                     
                                     Spacer(minLength: 8)
                                     
