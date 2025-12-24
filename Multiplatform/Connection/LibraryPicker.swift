@@ -54,7 +54,7 @@ struct LibraryPicker: View {
         }
         
         Button("navigation.offline.enable", systemImage: "network.slash") {
-            RFNotification[.changeOfflineMode].send(payload: true)
+            OfflineMode.shared.setEnabled(true)
         }
         
         if connectionStore.libraries.count + connectionStore.offlineConnections.count < connectionStore.connections.count {

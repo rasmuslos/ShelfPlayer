@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct ItemIDLoadLink: View {
     @Environment(Satellite.self) private var satellite
+    @Environment(OfflineMode.self) private var offlineMode
     @Environment(\.navigationContext) private var navigationContext
     
     let name: String
@@ -40,7 +41,7 @@ struct ItemIDLoadLink: View {
             } label: {
                 labelContent
             }
-            .disabled(satellite.isOffline)
+            .disabled(offlineMode.isEnabled)
         } else {
             #if DEBUG
             if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {

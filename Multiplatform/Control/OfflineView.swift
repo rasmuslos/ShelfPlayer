@@ -21,7 +21,7 @@ struct OfflineView: View {
     @ViewBuilder
     private var goOnlineButton: some View {
         Button("navigation.offline.disable", systemImage: "network") {
-            RFNotification[.changeOfflineMode].send(payload: false)
+            OfflineMode.shared.setEnabled(false)
         }
     }
     @ViewBuilder

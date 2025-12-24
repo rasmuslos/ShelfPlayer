@@ -9,7 +9,8 @@ import SwiftUI
 import ShelfPlayback
 
 struct ItemLoadLink: View {
-    @Environment(Satellite.self) private var satellite    
+    @Environment(Satellite.self) private var satellite
+    @Environment(OfflineMode.self) private var offlineMode
     @Environment(\.navigationContext) private var navigationContext
     
     let itemID: ItemIdentifier
@@ -45,7 +46,7 @@ struct ItemLoadLink: View {
                 }
             }
         }
-        .disabled(satellite.isOffline)
+        .disabled(offlineMode.isEnabled)
     }
 }
 

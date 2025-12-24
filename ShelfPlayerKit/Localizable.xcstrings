@@ -3819,6 +3819,7 @@
       }
     },
     "intent.start.withoutPlaybackSession" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3865,6 +3866,7 @@
       }
     },
     "intent.start.withoutPlaybackSession.description" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

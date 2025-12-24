@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ShelfPlayback
 
 struct PlaybackTabContentModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -48,10 +49,11 @@ struct PlaybackTabContentModifier: ViewModifier {
 
 struct PlaybackSafeAreaPaddingModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(OfflineMode.self) private var offlineMode
     @Environment(Satellite.self) private var satellite
     
     private var padding: CGFloat {
-        if #available(iOS 26, *), !satellite.isOffline && horizontalSizeClass == .compact {
+        if #available(iOS 26, *), !offlineMode.isEnabled && horizontalSizeClass == .compact {
             0
         } else if satellite.isNowPlayingVisible {
             80

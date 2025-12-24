@@ -23,33 +23,36 @@ extension PersistenceManager {
         private var lastUpdateStarted: Date?
         
         init() {
-            RFNotification[.progressEntityUpdated].subscribe { [weak self] _ in
-                Task {
-                    await self?.update()
-                }
-            }
-            RFNotification[.invalidateProgressEntities].subscribe { [weak self] _ in
-                Task {
-                    await self?.update()
-                }
-            }
-            
-            RFNotification[.playbackItemChanged].subscribe { [weak self] _ in
-                Task {
-                    await self?.update()
-                }
-            }
-            RFNotification[.playbackStopped].subscribe { [weak self] _ in
-                Task {
-                    await self?.update()
-                }
-            }
+//            RFNotification[.progressEntityUpdated].subscribe { [weak self] _ in
+//                Task {
+//                    await self?.update()
+//                }
+//            }
+//            RFNotification[.invalidateProgressEntities].subscribe { [weak self] _ in
+//                Task {
+//                    await self?.update()
+//                }
+//            }
+//            
+//            RFNotification[.playbackItemChanged].subscribe { [weak self] _ in
+//                Task {
+//                    await self?.update()
+//                }
+//            }
+//            RFNotification[.playbackStopped].subscribe { [weak self] _ in
+//                Task {
+//                    await self?.update()
+//                }
+//            }
         }
     }
 }
 
 extension PersistenceManager.ListenNowSubsystem {
     private func update() async {
+        if await OfflineMode.shared.isEnabled {
+            return
+        }
 //        if let lastUpdateStarted, lastUpdateStarted.distance(to: .now) < -7 {
 //            return
 //        }

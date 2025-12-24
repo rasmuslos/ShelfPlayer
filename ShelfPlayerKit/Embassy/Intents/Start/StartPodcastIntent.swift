@@ -27,7 +27,7 @@ public struct StartPodcastIntent: AudioPlaybackIntent {
     }
     
     public func perform() async throws -> some ReturnsValue<ItemEntity> {
-        let itemID = try await audioPlayer.startGrouping(podcast.id, false)
+        let itemID = try await audioPlayer.startGrouping(podcast.id)
         let entity = try await ItemEntity(item: itemID.resolved)
         
         return .result(value: entity)

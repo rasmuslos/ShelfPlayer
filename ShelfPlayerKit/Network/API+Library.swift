@@ -9,14 +9,11 @@ import Foundation
 
 public extension APIClient {
     func libraries() async throws -> [Library] {
-        let response: LibrariesResponse = try await response(path: "api/libraries", method: .get)
-        return response.libraries.map { Library(id: $0.id, connectionID: connectionID, name: $0.name, type: $0.mediaType, index: $0.displayOrder) }
+        try await response(APIRequest<LibrariesResponse>(path: "api/libraries", method: .get, ttl: 12, bypassesOffline: true)).libraries.map { Library(id: $0.id, connectionID: connectionID, name: $0.name, type: $0.mediaType, index: $0.displayOrder) }
     }
     
     func genres(from libraryID: ItemIdentifier.LibraryID) async throws -> [String] {
-        let response: LibraryResponse = try await response(path: "api/libraries/\(libraryID)", method: .get, query: [
-            .init(name: "include", value: "filterdata")
-        ])
-        return response.filterdata.genres
+        try await response(APIRequest<LibraryResponse>(path: "api/libraries/\(libraryID)", method: .get, query: [.init(name: "include", value: "filterdata")])).filterdata.genres
     }
 }
+

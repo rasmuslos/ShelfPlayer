@@ -27,9 +27,6 @@ struct WelcomeView: View {
                     .bold()
                     .font(.title)
                     .fontDesign(.serif)
-                
-                Text("setup.welcome.description")
-                    .padding(20)
             }
             
             Spacer()

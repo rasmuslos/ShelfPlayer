@@ -211,6 +211,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3A0FCCE52EF9A7B500A53508 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3A0AE6982AB623F400ACCD68 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3A0AE69F2AB623F400ACCD68;
+			remoteInfo = Multiplatform;
+		};
 		3A6AAF522DE8C7290090C886 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3A0AE6982AB623F400ACCD68 /* Project object */;
@@ -316,6 +323,7 @@
 		3A0E42ED2C819FE80034873F /* QueueButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueButton.swift; sourceTree = "<group>"; };
 		3A0E42EF2C81A1AB0034873F /* PodcastViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastViewModel.swift; sourceTree = "<group>"; };
 		3A0F99F12BE8C08700F6B7B4 /* UIScreen+Radius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Radius.swift"; sourceTree = "<group>"; };
+		3A0FCCE12EF9A7B500A53508 /* ShelfPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShelfPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A102EA92D45112F0075FA0B /* PDFViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewer.swift; sourceTree = "<group>"; };
 		3A102EAC2D4511A90075FA0B /* Satellite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Satellite.swift; sourceTree = "<group>"; };
 		3A1405C72E93CAA8002E66AF /* SearchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPanel.swift; sourceTree = "<group>"; };
@@ -532,6 +540,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3A0FCCE22EF9A7B500A53508 /* ShelfPlayerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayerTests; sourceTree = "<group>"; };
 		3A6AAF462DE8C7280090C886 /* WidgetsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3A6AAF552DE8C7290090C886 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WidgetsExtension; sourceTree = "<group>"; };
 		3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayerKit; sourceTree = "<group>"; };
 		3AC9A8DE2DEC716F004BC123 /* ShelfPlayback */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayback; sourceTree = "<group>"; };
@@ -543,6 +552,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AB163E72E04C1A700D33868 /* ShelfPlayback.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3A0FCCDE2EF9A7B500A53508 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,6 +602,7 @@
 				3A6AAF462DE8C7280090C886 /* WidgetsExtension */,
 				3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */,
 				3AC9A8DE2DEC716F004BC123 /* ShelfPlayback */,
+				3A0FCCE22EF9A7B500A53508 /* ShelfPlayerTests */,
 				3AE3E9672B1E37D3005FBFA6 /* Frameworks */,
 				3AB162A32E04C17100D33868 /* Products */,
 			);
@@ -984,6 +1001,7 @@
 				3A6AAF412DE8C7280090C886 /* WidgetsExtension.appex */,
 				3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */,
 				3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */,
+				3A0FCCE12EF9A7B500A53508 /* ShelfPlayerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1092,6 +1110,29 @@
 			productReference = 3AB162A42E04C17100D33868 /* ShelfPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
+		3A0FCCE02EF9A7B500A53508 /* ShelfPlayerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3A0FCCE72EF9A7B500A53508 /* Build configuration list for PBXNativeTarget "ShelfPlayerTests" */;
+			buildPhases = (
+				3A0FCCDD2EF9A7B500A53508 /* Sources */,
+				3A0FCCDE2EF9A7B500A53508 /* Frameworks */,
+				3A0FCCDF2EF9A7B500A53508 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3A0FCCE62EF9A7B500A53508 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3A0FCCE22EF9A7B500A53508 /* ShelfPlayerTests */,
+			);
+			name = ShelfPlayerTests;
+			packageProductDependencies = (
+			);
+			productName = ShelfPlayerTests;
+			productReference = 3A0FCCE12EF9A7B500A53508 /* ShelfPlayerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		3A6AAF402DE8C7280090C886 /* WidgetsExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3A6AAF562DE8C7290090C886 /* Build configuration list for PBXNativeTarget "WidgetsExtension" */;
@@ -1178,11 +1219,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					3A0AE69F2AB623F400ACCD68 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					3A0FCCE02EF9A7B500A53508 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 3A0AE69F2AB623F400ACCD68;
 					};
 					3A6AAF402DE8C7280090C886 = {
 						CreatedOnToolsVersion = 16.3;
@@ -1225,6 +1270,7 @@
 				3A6AAF402DE8C7280090C886 /* WidgetsExtension */,
 				3A6EECA42DEC6D630000CAF2 /* ShelfPlayerKit */,
 				3AC9A8DC2DEC716F004BC123 /* ShelfPlayback */,
+				3A0FCCE02EF9A7B500A53508 /* ShelfPlayerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1241,6 +1287,13 @@
 				3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */,
 				3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */,
 				3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3A0FCCDF2EF9A7B500A53508 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1534,6 +1587,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3A0FCCDD2EF9A7B500A53508 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3A6AAF3D2DE8C7280090C886 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1558,6 +1618,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3A0FCCE62EF9A7B500A53508 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3A0AE69F2AB623F400ACCD68 /* Multiplatform */;
+			targetProxy = 3A0FCCE52EF9A7B500A53508 /* PBXContainerItemProxy */;
+		};
 		3A6AAF532DE8C7290090C886 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3A6AAF402DE8C7280090C886 /* WidgetsExtension */;
@@ -1655,7 +1720,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = DEVELOPMENT;
 				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = N8AA4S3S96;
 				ENABLE_DEBUG_DYLIB = YES;
@@ -1846,6 +1911,38 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3A0FCCE82EF9A7B500A53508 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.ShelfPlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShelfPlayer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShelfPlayer";
+			};
+			name = Debug;
+		};
+		3A0FCCE92EF9A7B500A53508 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rfk.ShelfPlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShelfPlayer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShelfPlayer";
 			};
 			name = Release;
 		};
@@ -2040,6 +2137,15 @@
 			buildConfigurations = (
 				3A0AE6B22AB623F500ACCD68 /* Debug */,
 				3A0AE6B32AB623F500ACCD68 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3A0FCCE72EF9A7B500A53508 /* Build configuration list for PBXNativeTarget "ShelfPlayerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A0FCCE82EF9A7B500A53508 /* Debug */,
+				3A0FCCE92EF9A7B500A53508 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -21,7 +21,7 @@ public struct StartAudiobookIntent: AudioPlaybackIntent {
     public var target: AudiobookEntity
     
     public func perform() async throws -> some IntentResult {
-        try await audioPlayer.start(target.id, false)
+        try await audioPlayer.start(target.id)
         return .result()
     }
 }

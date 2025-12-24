@@ -9,7 +9,7 @@ import Foundation
 
 public extension APIClient {
     func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Person>]) {
-        let response: [HomeRowPayload] = try await response(path: "api/libraries/\(libraryID)/personalized", method: .get)
+        let response = try await response(APIRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get, ttl: 12))
         
         var authors = [HomeRow<Person>]()
         var audiobooks = [HomeRow<Audiobook>]()
@@ -64,7 +64,7 @@ public extension APIClient {
             query.append(.init(name: "limit", value: String(describing: limit)))
         }
         
-        let result: ResultResponse = try await response(path: "api/libraries/\(libraryID)/items", method: .get, query: query)
+        let result = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query, ttl: 12))
         return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
     func audiobooks(from libraryID: String, filtered genre: String, sortOrder: AudiobookSortOrder, ascending: Bool, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([AudiobookSection], Int) {
@@ -82,7 +82,7 @@ public extension APIClient {
             query.append(.init(name: "limit", value: String(describing: limit)))
         }
         
-        let result: ResultResponse = try await response(path: "api/libraries/\(libraryID)/items", method: .get, query: query)
+        let result = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query, ttl: 12))
         return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
     
@@ -113,7 +113,8 @@ public extension APIClient {
             query.append(.init(name: "desc", value: ascending ? "0" : "1"))
         }
         
-        let response: ResultResponse = try await response(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query)
-        return (response.results.compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }, response.total)
+        let result = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(identifier.libraryID)/items", method: .get, query: query, ttl: 12))
+        return (result.results.compactMap { Audiobook(payload: $0, libraryID: identifier.libraryID, connectionID: connectionID) }, result.total)
     }
 }
+

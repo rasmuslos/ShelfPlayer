@@ -114,7 +114,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
     let audioPlayerVolume: Float = 1
     
     init(_ item: AudioPlayerItem) async throws {
-        logger.info("Starting up local audio endpoint with item ID \(item.itemID) (without listening session: \(item.startWithoutListeningSession))")
+        logger.info("Starting up local audio endpoint with item ID \(item.itemID))")
         
         playbackReporter = nil
         audioPlayer = .init()
@@ -253,6 +253,7 @@ extension LocalAudioEndpoint {
     
     func stop() async {
         await playbackReporter.finalize(currentTime: currentTime)
+        await PersistenceManager.shared.download.removeBlock(from: currentItemID)
         
         audioPlayer.removeAllItems()
         
@@ -412,9 +413,7 @@ private extension LocalAudioEndpoint {
         guard downloadStatus != .downloading else {
             throw AudioPlayerError.downloading
         }
-        
-        await PersistenceManager.shared.download.addBlock(to: currentItemID)
-        
+                
         let task = UIApplication.shared.beginBackgroundTask(withName: "LocalAudioEndpoint::start")
         
         audioTracks = []
@@ -441,7 +440,7 @@ private extension LocalAudioEndpoint {
         let sessionID: String?
         
         do {
-            if currentItem.startWithoutListeningSession {
+            if OfflineMode.shared.isEnabled {
                 throw AudioPlayerError.offline
             }
             
@@ -488,6 +487,8 @@ private extension LocalAudioEndpoint {
             
             throw error
         }
+        
+        await PersistenceManager.shared.download.addBlock(to: currentItemID)
         
         self.audioTracks = audioTracks.sorted()
         self.chapters = chapters.sorted()
@@ -741,7 +742,7 @@ private extension LocalAudioEndpoint {
                     throw AudioPlayerError.invalidItemType
                 }
                 
-                let items = try await strategy.resolve(cutoff: currentItemID).map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue, startWithoutListeningSession: currentItem.startWithoutListeningSession) }
+                let items = try await strategy.resolve(cutoff: currentItemID).map { AudioPlayerItem(itemID: $0.id, origin: .upNextQueue) }
                 
                 await MainActor.run {
                     self.upNextStrategy = strategy
@@ -777,7 +778,6 @@ private extension LocalAudioEndpoint {
     
     func didPlayToEnd(finishedCurrentItem: Bool) async {
         await playbackReporter.finalize(currentTime: finishedCurrentItem ? duration : currentTime)
-        await PersistenceManager.shared.download.removeBlock(from: currentItemID)
         
         if finishedCurrentItem {
             let currentItemID = currentItemID

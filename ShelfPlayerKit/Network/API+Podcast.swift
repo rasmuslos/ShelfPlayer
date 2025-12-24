@@ -9,7 +9,7 @@ import Foundation
 
 public extension APIClient {
     func home(for libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
-        let response: [HomeRowPayload] = try await response(path: "api/libraries/\(libraryID)/personalized", method: .get)
+        let response = try await response(APIRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get, ttl: 12))
         
         var episodes = [HomeRow<Episode>]()
         var podcasts = [HomeRow<Podcast>]()
@@ -34,7 +34,7 @@ public extension APIClient {
         
     }
     func podcast(with identifier: ItemIdentifier.PrimaryID) async throws -> (Podcast, [Episode]) {
-        let item: ItemPayload = try await response(path: "api/items/\(identifier)", method: .get)
+        let item: ItemPayload = try await response(APIRequest<ItemPayload>(path: "api/items/\(identifier)", method: .get, ttl: 12))
         let podcast = Podcast(payload: item, connectionID: connectionID)
         
         guard let episodes = item.media?.episodes else {
@@ -60,7 +60,7 @@ public extension APIClient {
         
         query.append(.init(name: "include", value: "numEpisodesIncomplete"))
         
-        let response: ResultResponse = try await response(path: "api/libraries/\(libraryID)/items", method: .get, query: query)
+        let response = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query, ttl: 12))
         return (response.results.map { Podcast(payload: $0, connectionID: connectionID) }, response.total)
     }
 }

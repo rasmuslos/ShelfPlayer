@@ -327,7 +327,8 @@ private extension PersistenceManager.DownloadSubsystem {
         
         switch fileType {
         case .pdf(_, let ino):
-            request = try await ABSClient[itemID.connectionID].pdfRequest(from: itemID, ino: ino)
+                let apiRequest = try await ABSClient[itemID.connectionID].pdfRequest(from: itemID, ino: ino)
+                request = try await ABSClient[itemID.connectionID].request(apiRequest)
         case .image(let size):
             guard let coverRequest = try? await ABSClient[itemID.connectionID].coverRequest(from: itemID, width: size.width) else {
                 try await finishedDownloading(assetID: id)
@@ -465,9 +466,8 @@ public extension PersistenceManager.DownloadSubsystem {
             }
         }
         
-        let status = fetchDownloadStatus(of: itemID)
-        
         // Should be cached already
+        let status = fetchDownloadStatus(of: itemID)
         try? await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)
         
         return status

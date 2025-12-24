@@ -22,7 +22,7 @@ public actor ResolveCache: Sendable {
     private var episodeCache = [ItemIdentifier: [Episode]]()
     
     private init() {
-        RFNotification[.changeOfflineMode].subscribe { [weak self] _ in
+        RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
             Task {
                 await self?.invalidate()
             }
@@ -41,7 +41,7 @@ public actor ResolveCache: Sendable {
                 let episodes: [Episode]
                 
                 do {
-                    episodes = try await ABSClient[itemID.connectionID].episodes(from: itemID)
+                    episodes = try await ABSClient[itemID.connectionID].podcast(with: itemID).1
                 } catch {
                     episodes = try await PersistenceManager.shared.download.episodes(from: itemID)
                 }
@@ -75,7 +75,7 @@ public actor ResolveCache: Sendable {
                         episodes = cached
                     } else {
                         do {
-                            episodes = try await ABSClient[itemID.connectionID].episodes(from: itemID)
+                            episodes = try await ABSClient[itemID.connectionID].podcast(with: itemID).1
                         } catch {
                             episodes = try await PersistenceManager.shared.download.episodes(from: itemID)
                         }
@@ -225,6 +225,9 @@ public actor ResolveCache: Sendable {
     }
     
     private func invalidate() {
+        cache.removeAll()
+        episodeCache.removeAll()
+        
         unavailableItemIDs.removeAll()
     }
     

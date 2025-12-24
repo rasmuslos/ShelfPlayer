@@ -13,6 +13,7 @@ struct CompactPlaybackModifier: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
     
     @Environment(PlaybackViewModel.self) private var viewModel
+    @Environment(OfflineMode.self) private var offlineMode
     @Environment(Satellite.self) private var satellite
     
     private var nowPlayingCornerRadius: CGFloat {
@@ -86,7 +87,7 @@ struct CompactPlaybackModifier: ViewModifier {
                     .overlay(alignment: .topLeading) {
                         if viewModel.showCompactPlaybackBarOnExpandedViewCount > 0 {
                             Group {
-                                if #available(iOS 26, *), !satellite.isOffline {
+                                if #available(iOS 26, *), !offlineMode.isEnabled {
                                     PlaybackBottomBarPill(decorative: true)
                                         .frame(width: viewModel.pillWidth, height: viewModel.pillHeight)
                                 } else {

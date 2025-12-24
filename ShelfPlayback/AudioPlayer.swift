@@ -148,9 +148,9 @@ public extension AudioPlayer {
         return try await startTask!.value
     }
     @discardableResult
-    func startGrouping(_ itemID: ItemIdentifier, startWithoutListeningSession: Bool) async throws -> ItemIdentifier {
+    func startGrouping(_ itemID: ItemIdentifier) async throws -> ItemIdentifier {
         let targetID = try await ResolvedUpNextStrategy.nextGroupingItem(itemID)
-        try await start(.init(itemID: targetID, origin: .series(itemID), startWithoutListeningSession: startWithoutListeningSession))
+        try await start(.init(itemID: targetID, origin: .series(itemID)))
         
         return targetID
     }
@@ -172,9 +172,9 @@ public extension AudioPlayer {
         try await current!.queue(items)
     }
     @discardableResult
-    func queueGrouping(_ itemID: ItemIdentifier, startWithoutListeningSession: Bool) async throws -> ItemIdentifier {
+    func queueGrouping(_ itemID: ItemIdentifier) async throws -> ItemIdentifier {
         let targetID = try await ResolvedUpNextStrategy.nextGroupingItem(itemID)
-        try await queue([.init(itemID: targetID, origin: .series(itemID), startWithoutListeningSession: startWithoutListeningSession)])
+        try await queue([.init(itemID: targetID, origin: .series(itemID))])
         
         return targetID
     }

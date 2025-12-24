@@ -14112,6 +14112,7 @@
       }
     },
     "setup.welcome.description" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

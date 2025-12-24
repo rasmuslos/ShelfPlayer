@@ -135,7 +135,7 @@ struct ConnectionAuthorizer: View {
             
             session.presentationContextProvider = authenticationSessionPresentationContextProvider
             session.prefersEphemeralWebBrowserSession = true
-            session.additionalHeaderFields = await Dictionary(uniqueKeysWithValues: apiClient.requestHeaders.map { ($0.key, $0.value) })
+            session.additionalHeaderFields = try await Dictionary(uniqueKeysWithValues: apiClient.requestHeaders.map { ($0.key, $0.value) })
             
             session.start()
             

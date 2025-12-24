@@ -12,9 +12,9 @@ extension APIClient {
         try await item(primaryID: itemID.primaryID, groupingID: itemID.groupingID)
     }
     func item(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) async throws -> ItemPayload {
-        try await response(path: "api/items/\(groupingID ?? primaryID)", method: .get, query: [
+        try await response(APIRequest(path: "api/items/\(groupingID ?? primaryID)", method: .get, query: [
             URLQueryItem(name: "expanded", value: "1"),
-        ])
+        ]))
     }
 }
 
@@ -58,9 +58,9 @@ public extension APIClient  {
     }
     
     func items(in library: Library, search: String) async throws -> ([Audiobook], [Person], [Person], [Series], [Podcast], [Episode]) {
-        let payload: SearchResponse = try await response(path: "api/libraries/\(library.id)/search", method: .get, query: [
+        let payload = try await response(APIRequest<SearchResponse>(path: "api/libraries/\(library.id)/search", method: .get, query: [
             URLQueryItem(name: "q", value: search),
-        ])
+        ]))
         
         return (
             payload.book?.compactMap { Audiobook(payload: $0.libraryItem, libraryID: library.id, connectionID: connectionID) } ?? [],
@@ -79,36 +79,37 @@ public extension APIClient  {
     }
     
     func coverRequest(from itemID: ItemIdentifier, width: Int) async throws -> URLRequest {
-        #if DEBUG
-        if itemID.connectionID == "fixture" {
-            return URLRequest(url: URL(string: "https://yt3.ggpht.com/-lwlGXn90heE/AAAAAAAAAAI/AAAAAAAAAAA/FmCv96eMMNE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")!)
-        }
-        #endif
-        
-        let path: String
-        
-        switch itemID.type {
-        case .author:
-            path = "api/authors/\(itemID.primaryID)/image"
-        case .episode:
-            path = "api/items/\(itemID.groupingID!)/cover"
-        default:
-            path = "api/items/\(itemID.primaryID)/cover"
-        }
-        
-        return try await request(path: path, method: .get, body: nil, query: [
-            URLQueryItem(name: "width", value: width.description),
-        ])
+//        #if DEBUG
+//        if itemID.connectionID == "fixture" {
+//            return URLRequest(url: URL(string: "https://yt3.ggpht.com/-lwlGXn90heE/AAAAAAAAAAI/AAAAAAAAAAA/FmCv96eMMNE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")!)
+//        }
+//        #endif
+//        
+//        let path: String
+//        
+//        switch itemID.type {
+//        case .author:
+//            path = "api/authors/\(itemID.primaryID)/image"
+//        case .episode:
+//            path = "api/items/\(itemID.groupingID!)/cover"
+//        default:
+//            path = "api/items/\(itemID.primaryID)/cover"
+//        }
+//        
+//        return try await buildRequest(APIRequest<Data>(path: path, method: .get, query: [
+//            URLQueryItem(name: "width", value: width.description),
+//        ], bypassesOffline: false))
+        throw APIClientError.noAttemptsLeft
     }
     
-    func pdfRequest(from itemID: ItemIdentifier, ino: String) async throws -> URLRequest {
-        try await request(path: "api/items/\(itemID.primaryID)/ebook/\(ino)", method: .get, body: nil, query: nil)
+    func pdfRequest(from itemID: ItemIdentifier, ino: String) async throws -> APIRequest<DataResponse> {
+        APIRequest<DataResponse>(path: "api/items/\(itemID.apiItemID)/ebook/\(ino)", method: .get, ttl: 20)
     }
     func pdf(from itemID: ItemIdentifier, ino: String) async throws -> Data {
-        try await session.data(for: pdfRequest(from: itemID, ino: ino)).0
+        try await response(pdfRequest(from: itemID, ino: ino)).data
     }
     
     func audioTrackRequest(from itemID: ItemIdentifier, ino: String) async throws -> URLRequest {
-        try await request(path: "api/items/\(itemID.apiItemID)/file/\(ino)", method: .get, body: nil, query: nil)
+        try await request(APIRequest<DataResponse>(path: "api/items/\(itemID.apiItemID)/file/\(ino)", method: .get))
     }
 }

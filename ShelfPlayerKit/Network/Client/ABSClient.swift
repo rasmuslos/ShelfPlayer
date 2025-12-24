@@ -11,47 +11,37 @@ import OSLog
 
 public let ABSClient = APIClientStore.shared
 
-public final actor APIClientStore {
-    var storage = [ItemIdentifier.ConnectionID: APIClient]()
-    var busy = Set<ItemIdentifier.ConnectionID>()
+public final actor APIClientStore: Sendable {
+    var storage: [ItemIdentifier.ConnectionID: Task<APIClient, Error>] = [:]
     
-    fileprivate init() {
+    private init() {
         RFNotification[.connectionsChanged].subscribe { [weak self] in
             Task {
                 await self?.invalidate()
             }
         }
     }
+    
+    func client(for connectionID: ItemIdentifier.ConnectionID) async throws -> APIClient {
+        if storage[connectionID] == nil {
+            storage[connectionID] = .init {
+                try await APIClient(connectionID: connectionID, credentialProvider: AuthorizedAPIClientCredentialProvider(connectionID: connectionID))
+            }
+        }
+        
+        return try await storage[connectionID]!.value
+    }
     func invalidate() {
         storage.removeAll(keepingCapacity: true)
     }
-    
-    public subscript(_ connectionID: ItemIdentifier.ConnectionID) -> APIClient {
+}
+
+public extension APIClientStore {
+    subscript(_ connectionID: ItemIdentifier.ConnectionID) -> APIClient {
         get async throws {
-            while busy.contains(connectionID) {
-                try await Task.sleep(for: .seconds(0.1))
-            }
-            
-            if let client = storage[connectionID] {
-                return client
-            }
-            
-            busy.insert(connectionID)
-            
-            do {
-                let provider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
-                let client = try await APIClient(connectionID: connectionID, credentialProvider: provider)
-                
-                storage[connectionID] = client
-                busy.remove(connectionID)
-                
-                return client
-            } catch {
-                busy.remove(connectionID)
-                throw error
-            }
+            try await client(for: connectionID)
         }
     }
     
-    public static let shared = APIClientStore()
+    static let shared = APIClientStore()
 }

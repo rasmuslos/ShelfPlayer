@@ -29,8 +29,6 @@ extension PersistenceManager {
         // Don't store refresh tokens in RAM unless necessary
         public private(set) var friendlyConnections = [FriendlyConnection]()
         
-        private var refreshingIDs = Set<ItemIdentifier.ConnectionID>()
-        
         public struct KnownConnection: Sendable, Identifiable, Equatable {
             public let id: String
             
@@ -337,6 +335,11 @@ extension PersistenceManager.AuthorizationSubsystem {
             }
         }
         
+        guard connections.map(\.id).sorted() != connectionIDs.sorted() else {
+            logger.info("No connection updates to propagate")
+            return
+        }
+        
         updateConnections(connections)
         
         await RFNotification[.connectionsChanged].send()
@@ -347,53 +350,22 @@ extension PersistenceManager.AuthorizationSubsystem {
     func accessToken(for connectionID: String) throws -> String {
         try token(for: connectionID, service: accessTokenService)
     }
-    func refreshAccessToken(for connectionID: String, current: String?) async throws -> String {
-        while refreshingIDs.contains(connectionID) {
-            try await Task.sleep(for: .seconds(1))
+    func refreshAccessToken(for connectionID: String) async throws -> String {
+        let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
+        let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
+        let (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
+        
+        try updateToken(accessToken, for: connectionID, service: accessTokenService)
+        
+        if let refreshToken {
+            try updateToken(refreshToken, for: connectionID, service: refreshTokenService)
         }
         
-        refreshingIDs.insert(connectionID)
+        await RFNotification[.accessTokenExpired].send(payload: connectionID)
         
-        do {
-            let stored: String
-            
-            do {
-                stored = try token(for: connectionID, service: accessTokenService)
-            } catch {
-                // womp womp
-                logger.fault("Force removing (ww) stored connection \(connectionID)")
-                await remove(connectionID: connectionID)
-                
-                throw error
-            }
-            
-            guard current == stored else {
-                refreshingIDs.remove(connectionID)
-                logger.info("Ignoring request to refresh access token for \(connectionID) as it is already up-to-date")
-                
-                return stored
-            }
-            
-            let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
-            let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
-            let (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
-            
-            try updateToken(accessToken, for: connectionID, service: accessTokenService)
-            
-            if let refreshToken {
-                try updateToken(refreshToken, for: connectionID, service: refreshTokenService)
-            }
-            
-            await RFNotification[.accessTokenExpired].send(payload: connectionID)
-            refreshingIDs.remove(connectionID)
-            
-            logger.info("Refreshed access token for \(connectionID)")
-            
-            return accessToken
-        } catch {
-            refreshingIDs.remove(connectionID)
-            throw error
-        }
+        logger.info("Refreshed access token for \(connectionID)")
+        
+        return accessToken
     }
 }
 

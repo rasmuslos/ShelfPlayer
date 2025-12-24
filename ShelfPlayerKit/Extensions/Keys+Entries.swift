@@ -133,6 +133,8 @@ public extension Defaults.Keys {
     
     static let customTabValues = Key<[TabValue]>("customTabValues", default: [])
     static let customTabsActive = Key("customTabsActive", default: true)
+    
+    static let isOffline = Key("isOffline", default: false, suite: .shared)
 }
 
 public struct ListenedTodayPayload: Codable, Defaults.Serializable {
@@ -277,7 +279,7 @@ public extension RFNotification.IsolatedNotification {
     static var timeSpendListeningChanged: IsolatedNotification<Int> { .init("io.rfk.shelfPlayerKit.timeSpendListeningChanged") }
     static var cachedTimeSpendListeningChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.cachedTimeSpendListeningChanged") }
     
-    static var changeOfflineMode: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.changeOfflineMode") }
+    static var offlineModeChanged: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.offlineModeChanged") }
     
     // MARK: Collections
     

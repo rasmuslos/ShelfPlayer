@@ -134,7 +134,7 @@ struct TabRouter: View {
                             }
                             
                             Button("navigation.offline.enable", systemImage: "network.slash") {
-                                RFNotification[.changeOfflineMode].send(payload: true)
+                                OfflineMode.shared.setEnabled(true)
                             }
                             
                             Spacer()
@@ -277,7 +277,7 @@ struct TabRouter: View {
             return
         }
         
-        guard !satellite.isOffline else {
+        guard !OfflineMode.shared.isEnabled else {
             self.navigateToWhenReady = nil
             return
         }

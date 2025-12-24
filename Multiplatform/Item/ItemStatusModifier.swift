@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct ItemStatusModifier: ViewModifier {
+    @Environment(OfflineMode.self) private var offlineMode
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
@@ -74,7 +75,7 @@ struct ItemStatusModifier: ViewModifier {
             case .downloading:
                 result += " " + String(localized: "item.downloading")
             case .completed:
-                if !satellite.isOffline {
+                if !offlineMode.isEnabled {
                     result += " " + String(localized: "item.downloaded")
                 }
             default:

@@ -9,22 +9,22 @@ import Foundation
 
 public extension APIClient {
     func createBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64, note: String) async throws -> Date {
-        let payload: BookmarkPayload = try await response(path: "api/me/item/\(primaryID)/bookmark", method: .post, body: [
+        let payload = try await response(APIRequest<BookmarkPayload>(path: "api/me/item/\(primaryID)/bookmark", method: .post, body: [
             "title": note,
             "time": time,
-        ])
+        ]))
         
         return Date(timeIntervalSince1970: payload.createdAt / 1000)
     }
     
     func updateBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64, note: String) async throws {
-        try await response(path: "api/me/item/\(primaryID)/bookmark", method: .patch, body: [
+        let _ = try await response(APIRequest<EmptyResponse>(path: "api/me/item/\(primaryID)/bookmark", method: .patch, body: [
             "title": note,
             "time": time,
-        ])
+        ]))
     }
     
     func deleteBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64) async throws {
-        try await response(path: "api/me/item/\(primaryID)/bookmark/\(time)", method: .delete)
+        let _ = try await response(APIRequest<EmptyResponse>(path: "api/me/item/\(primaryID)/bookmark/\(time)", method: .delete))
     }
 }
