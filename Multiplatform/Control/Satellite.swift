@@ -16,8 +16,6 @@ final class Satellite {
     
     // MARK: Navigation
     
-    private(set) var isOffline = Defaults[.startInOfflineMode]
-    
     var tabValue: TabValue?
     
     private(set) var sheetStack = [Sheet]()
@@ -558,14 +556,13 @@ extension Satellite {
             await startWorking(on: itemID)
 
             do {
-                try await AudioPlayer.shared.start(.init(itemID: itemID, origin: origin, startWithoutListeningSession: isOffline))
+                try await AudioPlayer.shared.start(.init(itemID: itemID, origin: origin))
                 
                 if let at {
                     try await AudioPlayer.shared.seek(to: at, insideChapter: false)
                 }
                 
-                let isOffline = await isOffline
-                try await AudioPlayer.shared.queue(queue.map { .init(itemID: $0, origin: .unknown, startWithoutListeningSession: isOffline) })
+                try await AudioPlayer.shared.queue(queue.map { .init(itemID: $0, origin: .unknown) })
                 
                 await endWorking(on: itemID, successfully: true)
             } catch {
@@ -590,7 +587,7 @@ extension Satellite {
             await startWorking(on: itemID)
             
             do {
-                try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: isOffline)])
+                try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown)])
                 await endWorking(on: itemID, successfully: true)
             } catch {
                 await endWorking(on: itemID, successfully: false)
@@ -604,8 +601,7 @@ extension Satellite {
             }
 
             do {
-                let isOffline = await isOffline
-                try await AudioPlayer.shared.queue(itemIDs.map { .init(itemID: $0, origin: origin, startWithoutListeningSession: isOffline) })
+                try await AudioPlayer.shared.queue(itemIDs.map { .init(itemID: $0, origin: origin) })
                 
                 await MainActor.run {
                     notifySuccess.toggle()
@@ -969,7 +965,7 @@ private extension Satellite {
         
         // MARK: General
         
-        RFNotification[.changeOfflineMode].subscribe { [weak self] in
+        RFNotification[.offlineModeChanged].subscribe {
             if $0 {
                 let appearance = UINavigationBarAppearance()
                 
@@ -983,8 +979,6 @@ private extension Satellite {
             Task.detached {
                 await ShelfPlayer.invalidateShortTermCache()
             }
-            
-            self?.isOffline = $0
         }.store(in: &stash)
         
         RFNotification[.navigate].subscribe { [weak self] _ in

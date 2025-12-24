@@ -12,13 +12,10 @@ public struct AudioPlayerItem: Sendable {
     public let itemID: ItemIdentifier
     
     let origin: PlaybackOrigin
-    let startWithoutListeningSession: Bool
     
-    public init(itemID: ItemIdentifier, origin: PlaybackOrigin, startWithoutListeningSession: Bool) {
+    public init(itemID: ItemIdentifier, origin: PlaybackOrigin) {
         self.itemID = itemID
-        
         self.origin = origin
-        self.startWithoutListeningSession = startWithoutListeningSession
     }
     
     public enum PlaybackOrigin: Sendable {

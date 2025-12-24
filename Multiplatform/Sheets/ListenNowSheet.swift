@@ -130,6 +130,7 @@ struct ListenNowSheetToggle: View {
                     ListenNowSheetToggle(width: 36)
                 }
                 .padding(4)
+                .contentShape(.circle)
                 .glassEffect(in: Circle())
             }
             .sharedBackgroundVisibility(.hidden)

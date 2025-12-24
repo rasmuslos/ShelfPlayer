@@ -21,6 +21,7 @@ extension View {
             .environment(ConnectionStore.shared)
             .environment(ProgressViewModel.shared)
             .environment(ListenedTodayTracker.shared)
+            .environment(OfflineMode.shared)
             .environment(\.namespace, namespace)
     }
     #endif

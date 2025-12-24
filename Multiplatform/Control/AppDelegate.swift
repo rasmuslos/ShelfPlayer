@@ -92,7 +92,7 @@ private final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let itemID = ItemIdentifier(itemIDDescription)
                 
                 do {
-                    try await AudioPlayer.shared.start(.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: Defaults[.startInOfflineMode]))
+                    try await AudioPlayer.shared.start(.init(itemID: itemID, origin: .unknown))
                 } catch {
                     return false
                 }

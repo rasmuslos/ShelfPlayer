@@ -46,9 +46,9 @@ final class EmbassyManager: Sendable {
                 await AudioPlayer.shared.pause()
             }
         } start: {
-            try await AudioPlayer.shared.start(.init(itemID: $0, origin: .unknown, startWithoutListeningSession: $1))
+            try await AudioPlayer.shared.start(.init(itemID: $0, origin: .unknown))
         } startGrouping: {
-            try await AudioPlayer.shared.startGrouping($0, startWithoutListeningSession: $1)
+            try await AudioPlayer.shared.startGrouping($0)
         } createBookmark: {
             if let note = $0, let itemID = await AudioPlayer.shared.currentItemID, let currentTime = await AudioPlayer.shared.currentTime {
                 try await PersistenceManager.shared.bookmark.create(at: UInt64(currentTime), note: note, for: itemID)

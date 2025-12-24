@@ -14,6 +14,13 @@ public enum APIClientError: Error {
     case invalidItemType
     case invalidResponseCode
     
+    // MARK: New
+    
+    case offline
     case notFound
+    case cancelled
+    
+    case unreachable
     case unauthorized
+    case noAttemptsLeft
 }

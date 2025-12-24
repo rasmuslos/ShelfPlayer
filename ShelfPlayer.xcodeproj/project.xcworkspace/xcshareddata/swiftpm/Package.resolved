@@ -25,7 +25,7 @@
       "location" : "https://git.sr.ht/~rasmuslos/RFKit",
       "state" : {
         "branch" : "main",
-        "revision" : "3940e83d3d572bc5c21a563c74a50f4d5d319dfe"
+        "revision" : "4596736cac603937aa23ce53800e3518f5a2f558"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup",
       "state" : {
-        "revision" : "4206bc7b8bd9a4ff8e9511211e1b4bff979ef9c4",
-        "version" : "2.11.1"
+        "revision" : "d86f244ed497d48012782e2f59c985a55e77b3f5",
+        "version" : "2.11.3"
       }
     }
   ],

@@ -21,6 +21,7 @@ struct ContentView: View {
     @Default(.colorScheme) private var colorScheme
     
     @State private var satellite = Satellite.shared
+    @State private var offlineMode = OfflineMode.shared
     @State private var playbackViewModel = PlaybackViewModel.shared
     
     @State private var connectionStore = ConnectionStore.shared
@@ -32,6 +33,7 @@ struct ContentView: View {
     private func applyEnvironment<Content: View>(_ content: Content) -> some View {
         content
             .environment(satellite)
+            .environment(offlineMode)
             .environment(playbackViewModel)
             .environment(connectionStore)
             .environment(progressViewModel)
@@ -105,10 +107,13 @@ struct ContentView: View {
                 LoadingView()
             } else if ConnectionStore.shared.connections.isEmpty {
                 WelcomeView()
-            } else if satellite.isOffline {
+            } else if offlineMode.isEnabled {
                 OfflineView()
             } else {
                 TabRouter()
+                    .onAppear {
+                        ShelfPlayer.initOnlineUIHook()
+                    }
             }
         }
         .modify(if: tintColor != .shelfPlayer) {

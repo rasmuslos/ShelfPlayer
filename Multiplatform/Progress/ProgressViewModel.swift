@@ -20,7 +20,7 @@ final class ProgressViewModel {
     private var tasks = [ItemIdentifier.ConnectionID: Task<Void, Never>]()
     
     private init() {
-        RFNotification[.changeOfflineMode].subscribe { [weak self] isEnabled in
+        RFNotification[.offlineModeChanged].subscribe { [weak self] isEnabled in
             guard !isEnabled else {
                 return
             }
@@ -95,7 +95,7 @@ final class ProgressViewModel {
                 self.tasks[connectionID] = nil
                 
                 if self.tasks.isEmpty && self.importedConnectionIDs.isEmpty {
-                    RFNotification[.changeOfflineMode].send(payload: true)
+                    OfflineMode.shared.setEnabled(true)
                 }
             }
         }

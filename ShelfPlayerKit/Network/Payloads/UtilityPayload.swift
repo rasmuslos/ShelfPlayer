@@ -15,7 +15,7 @@ public struct BookmarkPayload: Codable, Sendable {
     public let createdAt: Double
 }
 
-struct HomeRowPayload: Codable {
+struct HomeRowPayload: Codable, Sendable {
     let id: String
     let label: String
     let type: String
@@ -24,10 +24,10 @@ struct HomeRowPayload: Codable {
 
 // MARK: Responses
 
-struct AuthorizationResponse: Codable {
+struct AuthorizationResponse: Codable, Sendable {
     let user: User
     
-    struct User: Codable {
+    struct User: Codable, Sendable {
         let id: String
         let username: String
         
@@ -61,7 +61,7 @@ public struct StatusResponse: Codable, Sendable {
     public let serverVersion: String
 }
 
-struct MeResponse: Codable {
+struct MeResponse: Codable, Sendable {
     let id: String
     let username: String
     let type: String
@@ -70,10 +70,10 @@ struct MeResponse: Codable {
     let isLocked: Bool
 }
 
-struct LibrariesResponse: Codable {
+struct LibrariesResponse: Codable, Sendable {
     let libraries: [Library]
     
-    struct Library: Codable {
+    struct Library: Codable, Sendable {
         let id: String
         let name: String
         let mediaType: String
@@ -81,14 +81,14 @@ struct LibrariesResponse: Codable {
     }
 }
 
-struct LibraryResponse: Codable {
+struct LibraryResponse: Codable, Sendable {
     let filterdata: Filterdata
 }
-struct Filterdata: Codable {
+struct Filterdata: Codable, Sendable {
     let genres: [String]
 }
 
-struct SearchResponse: Codable {
+struct SearchResponse: Codable, Sendable {
     let book: [SearchLibraryItem]?
     let narrators: [NarratorResponse]?
     let series: [SearchSeries]?
@@ -97,55 +97,56 @@ struct SearchResponse: Codable {
     let podcast: [SearchLibraryItem]?
     let episodes: [SearchLibraryItem]?
     
-    struct SearchLibraryItem: Codable {
+    struct SearchLibraryItem: Codable, Sendable {
         let libraryItem: ItemPayload
     }
-    struct SearchSeries: Codable {
+    struct SearchSeries: Codable, Sendable {
         let series: ItemPayload
         let books: [ItemPayload]
     }
 }
 
-struct ResultResponse: Codable {
+struct ResultResponse: Codable, Sendable {
     let total: Int
     let results: [ItemPayload]
 }
 
-struct EpisodesResponse: Codable {
+struct EpisodesResponse: Codable, Sendable {
     let episodes: [EpisodePayload]
 }
 
-struct NarratorResponse: Codable {
+struct NarratorResponse: Codable, Sendable {
     let id: String?
     let name: String
     let numBooks: Int
 }
-struct NarratorsResponse: Codable {
+struct NarratorsResponse: Codable, Sendable {
     let narrators: [NarratorResponse]
 }
 
-struct CreateCollectionBooksPayload: Codable {
+struct CreateCollectionBooksPayload: Codable, Sendable {
     let name: String
     let libraryId: String
     let books: [String]?
 }
-struct CreateCollectionItemsPayload: Codable {
+struct CreateCollectionItemsPayload: Codable, Sendable {
     let name: String
     let libraryId: String
     let items: [CollectionItemPayload]?
 }
 
-struct UpdateCollectionBooksPayload: Codable {
+struct UpdateCollectionBooksPayload: Codable, Sendable {
     let books: [String]?
 }
-struct UpdateCollectionItemsPayload: Codable {
+struct UpdateCollectionItemsPayload: Codable, Sendable {
     let items: [CollectionItemPayload]?
 }
-struct CollectionItemPayload: Codable {
+struct CollectionItemPayload: Codable, Sendable {
     let libraryItemId: String
     let episodeId: String?
 }
-struct UpdateCollectionPayload: Codable {
+struct UpdateCollectionPayload: Codable, Sendable {
     let name: String
     let description: String?
 }
+

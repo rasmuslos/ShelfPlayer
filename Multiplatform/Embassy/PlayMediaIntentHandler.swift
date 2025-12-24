@@ -48,21 +48,21 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
         
         let itemID = ItemIdentifier(identifier)
         let shouldQueue = intent.playbackQueueLocation == .later
-        let startWithoutListeningSession = intent.mediaSearch?.reference == .my
+//        let startWithoutListeningSession = intent.mediaSearch?.reference == .my
         
         do {
             switch itemID.type {
                 case .audiobook, .episode:
                     if shouldQueue {
-                        try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: startWithoutListeningSession)])
+                        try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown)])
                     } else {
-                        try await AudioPlayer.shared.start(.init(itemID: itemID, origin: .unknown, startWithoutListeningSession: startWithoutListeningSession))
+                        try await AudioPlayer.shared.start(.init(itemID: itemID, origin: .unknown))
                     }
                 case .series, .podcast:
                     if shouldQueue {
-                        try await AudioPlayer.shared.queueGrouping(itemID, startWithoutListeningSession: startWithoutListeningSession)
+                        try await AudioPlayer.shared.queueGrouping(itemID)
                     } else {
-                        try await AudioPlayer.shared.startGrouping(itemID, startWithoutListeningSession: startWithoutListeningSession)
+                        try await AudioPlayer.shared.startGrouping(itemID)
                     }
                 default:
                     return .init(code: .failureUnknownMediaType, userActivity: nil)

@@ -194,7 +194,7 @@ extension PodcastViewModel {
     }
     nonisolated func performBulkQueue() {
         performBulk {
-            try await AudioPlayer.shared.queue($0.map { .init(itemID: $0, origin: .podcast(self.podcast.id), startWithoutListeningSession: false) })
+            try await AudioPlayer.shared.queue($0.map { .init(itemID: $0, origin: .podcast(self.podcast.id)) })
         }
     }
     nonisolated func performBulkAction(isFinished: Bool) {
@@ -282,7 +282,7 @@ private extension PodcastViewModel {
     
     nonisolated func fetchEpisodes() async {
         do {
-            let episodes = try await ABSClient[podcast.id.connectionID].episodes(from: podcast.id)
+            let episodes = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id).1
             
             await MainActor.withAnimation {
                 self.episodes = episodes

@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct ItemCollectionMembershipEditButton: View {
+    @Environment(OfflineMode.self) private var offlineMode
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
@@ -17,6 +18,6 @@ struct ItemCollectionMembershipEditButton: View {
         Button("item.collection.editMembership.open", systemImage: ItemIdentifier.ItemType.playlist.icon) {
             satellite.present(.editCollectionMembership(itemID))
         }
-        .disabled(satellite.isOffline)
+        .disabled(offlineMode.isEnabled)
     }
 }

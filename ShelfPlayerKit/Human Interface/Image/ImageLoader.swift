@@ -52,15 +52,6 @@ public final actor ImageLoader {
     }
     
     nonisolated func buildURLRequest(for request: ImageRequest) async -> URLRequest? {
-        if let url = await PersistenceManager.shared.download.cover(for: request.itemID, size: request.size) {
-            return .init(url: url)
-        }
-        
-        if var request = try? await ABSClient[request.itemID.connectionID].coverRequest(from: request.itemID, width: request.size.width) {
-            request.cachePolicy = .returnCacheDataElseLoad
-            return request
-        }
-        
         return nil
     }
     

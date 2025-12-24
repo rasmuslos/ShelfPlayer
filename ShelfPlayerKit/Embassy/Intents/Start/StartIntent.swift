@@ -17,9 +17,6 @@ public struct StartIntent: AudioPlaybackIntent {
     @Parameter(title: "intent.entity.item", description: "intent.entity.item.description", optionsProvider: ItemEntityOptionsProvider())
     public var item: ItemEntity
     
-    @Parameter(title: "intent.start.withoutPlaybackSession", description: "intent.start.withoutPlaybackSession.description", default: false)
-    public var withoutPlaybackSession: Bool
-    
     public init() {}
     
     public init(item: Item) async {
@@ -35,9 +32,9 @@ public struct StartIntent: AudioPlaybackIntent {
         switch item.id.type {
             case .audiobook, .episode:
                 itemID = item.id
-                try await audioPlayer.start(itemID, withoutPlaybackSession)
+                try await audioPlayer.start(itemID)
             case .series, .podcast:
-                itemID = try await audioPlayer.startGrouping(item.id, withoutPlaybackSession)
+                itemID = try await audioPlayer.startGrouping(item.id)
             default:
                 throw IntentError.invalidItemType
         }

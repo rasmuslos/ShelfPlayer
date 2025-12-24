@@ -19,14 +19,10 @@ final class ConnectionStore {
     
     private(set) var libraries = [ItemIdentifier.ConnectionID: [Library]]()
     
-    // There is only a single instance of this class (enforced by the singleton)
-    // and yet this mutex still does race... How?
-    @ObservationIgnored private let reauthorizingConnectionIDs = Mutex([ItemIdentifier.ConnectionID]())
-    
     private init() {
         update()
         
-        RFNotification[.changeOfflineMode].subscribe { [weak self] isEnabled in
+        RFNotification[.offlineModeChanged].subscribe { [weak self] isEnabled in
             guard !isEnabled else {
                 return
             }
@@ -54,6 +50,14 @@ final class ConnectionStore {
                 self.connections = connections
             }
             
+            guard await !OfflineMode.shared.isEnabled else {
+                await MainActor.withAnimation {
+                    self.offlineConnections = Array(connections.map(\.id))
+                }
+                
+                return
+            }
+            
             let libraries = await ShelfPlayerKit.libraries
             let grouped = Dictionary(grouping: libraries, by: { $0.connectionID })
             
@@ -68,25 +72,7 @@ final class ConnectionStore {
         }
     }
     func reauthorize(connectionID: ItemIdentifier.ConnectionID) {
-        Task {
-            try await Task.sleep(for: .milliseconds(300))
-            
-            let result = reauthorizingConnectionIDs.withLock {
-                guard !$0.contains(connectionID) else {
-                    return false
-                }
-                
-                $0.append(connectionID)
-                $0 = Array($0)
-                return true
-            }
-            
-            guard result else {
-                return
-            }
-            
-            await RFNotification[.presentSheet].send(payload: .reauthorizeConnection(connectionID))
-        }
+        RFNotification[.presentSheet].send(payload: .reauthorizeConnection(connectionID))
     }
 }
 

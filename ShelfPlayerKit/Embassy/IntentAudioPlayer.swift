@@ -12,8 +12,8 @@ public final class IntentAudioPlayer: Sendable {
     let resolveCurrentItemID: @Sendable () async -> ItemIdentifier?
     
     let _setPlaying: @Sendable (Bool) async -> Void
-    let _start: @Sendable (ItemIdentifier, Bool) async throws -> Void
-    let _startGrouping: @Sendable (ItemIdentifier, Bool) async throws -> ItemIdentifier
+    let _start: @Sendable (ItemIdentifier) async throws -> Void
+    let _startGrouping: @Sendable (ItemIdentifier) async throws -> ItemIdentifier
     
     let _createBookmark: @Sendable (String?) async throws -> Void
     let _skip: @Sendable (TimeInterval?, Bool) async throws -> Void
@@ -26,8 +26,8 @@ public final class IntentAudioPlayer: Sendable {
     public init(resolveIsPlaying: @Sendable @escaping () async -> Bool?,
                 resolveCurrentItemID: @Sendable @escaping () async -> ItemIdentifier?,
                 setPlaying: @Sendable @escaping (Bool) async -> Void,
-                start: @Sendable @escaping (ItemIdentifier, Bool) async throws -> Void,
-                startGrouping: @Sendable @escaping (ItemIdentifier, Bool) async throws -> ItemIdentifier,
+                start: @Sendable @escaping (ItemIdentifier) async throws -> Void,
+                startGrouping: @Sendable @escaping (ItemIdentifier) async throws -> ItemIdentifier,
                 createBookmark: @Sendable @escaping (String?) async throws -> Void,
                 skip: @Sendable @escaping (TimeInterval?, Bool) async throws -> Void,
                 setSleepTimer: @Sendable @escaping (SleepTimerConfiguration?) async -> Void,
@@ -61,11 +61,11 @@ public final class IntentAudioPlayer: Sendable {
     func setPlaying(_ playing: Bool) async {
         await _setPlaying(playing)
     }
-    func start(_ item: ItemIdentifier, _ withoutPlaybackSession: Bool) async throws {
-        try await _start(item, withoutPlaybackSession)
+    func start(_ item: ItemIdentifier) async throws {
+        try await _start(item)
     }
-    func startGrouping(_ item: ItemIdentifier, _ withoutPlaybackSession: Bool) async throws -> ItemIdentifier {
-        try await _startGrouping(item, withoutPlaybackSession)
+    func startGrouping(_ item: ItemIdentifier) async throws -> ItemIdentifier {
+        try await _startGrouping(item)
     }
     
     func createBookmark(_ note: String?) async throws {

@@ -9,10 +9,10 @@ import Foundation
 
 public extension APIClient {
     func seriesID(from libraryID: String, name: String) async throws -> ItemIdentifier {
-        let response: SearchResponse = try await response(path: "api/libraries/\(libraryID)/search", method: .get, query: [
+        let response = try await response(APIRequest<SearchResponse>(path: "api/libraries/\(libraryID)/search", method: .get, query: [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "limit", value: "10"),
-        ])
+        ], ttl: 12))
         
         let series = response.series?.compactMap { $0.series }.sorted {
             guard let lhs = $0.name else { return false }
@@ -33,7 +33,7 @@ public extension APIClient {
     }
     
     func series(with identifier: ItemIdentifier) async throws -> Series {
-        Series(payload: try await response(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get), libraryID: identifier.libraryID, connectionID: connectionID)
+        Series(payload: try await response(APIRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get, ttl: 12)), libraryID: identifier.libraryID, connectionID: connectionID)
     }
     
     func series(in libraryID: String, filtered identifier: ItemIdentifier? = nil, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
@@ -65,7 +65,7 @@ public extension APIClient {
             query.append(.init(name: "limit", value: String(limit)))
         }
         
-        let response: ResultResponse = try await response(path: "api/libraries/\(libraryID)/series", method: .get, query: query)
+        let response = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query, ttl: 12))
         return (response.results.map { Series(payload: $0, libraryID: libraryID, connectionID: connectionID) }, response.total)
     }
 }

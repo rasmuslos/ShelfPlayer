@@ -67,7 +67,7 @@ final class CarPlayPlayableItemController: CarPlayItemController {
                 }
                 
                 listItem.isEnabled = false
-                try? await AudioPlayer.shared.start(.init(itemID: item.id, origin: .carPlay, startWithoutListeningSession: false))
+                try? await AudioPlayer.shared.start(.init(itemID: item.id, origin: .carPlay))
                 listItem.isEnabled = true
                 
                 completion()

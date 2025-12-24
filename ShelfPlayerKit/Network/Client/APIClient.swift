@@ -8,29 +8,61 @@
 import Foundation
 @preconcurrency import Security
 import OSLog
+import CryptoKit
+@preconcurrency import Combine
 
-public final class APIClient: Sendable {
+public final actor APIClient: Sendable {
     let logger: Logger
-    let verbose = false
+    
+    var requestQueue: [any APIRequestProtocol] = []
+    var activeRequests: [String: Task<Void, Error>] = [:]
+    
+    var attempts: [String: Int] = [:]
+    
+    var markers = [UUID: [RFNotification.Marker]]()
+    
+    var authorizationToken: String?
+    var authorizationRefreshTask: Task<Void, Error>?
+    
+    let failureSubject = PassthroughSubject<(String, Error), Never>()
+    let responseSubject = PassthroughSubject<(String, Decodable), Never>()
+    
+    var subscribers = [UUID: [AnyCancellable]]()
+    
+    nonisolated let failurePublisher: AnyPublisher<(String, Error), Never>
+    nonisolated let responsePublisher: AnyPublisher<(String, Decodable), Never>
+    
+    nonisolated(unsafe) let cache = NSCache<NSString, CachedAPIResponse>()
+    
+    #if DEBUG
+    public var requestCount = 0
+    
+    public func incrementRequestCount() {
+        requestCount += 1
+    }
+    public func resetRequestCount() {
+        requestCount = 0
+    }
+    #endif
     
     let connectionID: ItemIdentifier.ConnectionID
-    let credentialProvider: APICredentialProvider
     
     let session: URLSession
     
     let host: URL
     let headers: [HTTPHeader]
     
-    @MainActor
-    var accessToken: String?
+    let credentialProvider: APICredentialProvider
     
-    @MainActor
-    private var isRefreshingAccessToken = false
+    var unreachable = false
     
     public init(connectionID: ItemIdentifier.ConnectionID, credentialProvider: APICredentialProvider) async throws {
         logger = .init(subsystem: "io.rfk.shelfPlayerKit", category: "APIClient::\(connectionID)")
         
+        cache.countLimit = 120
+        
         self.connectionID = connectionID
+        self.credentialProvider = credentialProvider
         
         let configuration = URLSessionConfiguration.ephemeral
         configuration.httpCookieStorage = ShelfPlayerKit.httpCookieStorage
@@ -41,133 +73,15 @@ public final class APIClient: Sendable {
         
         (host, headers) = try await credentialProvider.configuration
         
-        self.credentialProvider = credentialProvider
-        accessToken = try await credentialProvider.accessToken
+        failurePublisher = failureSubject.eraseToAnyPublisher()
+        responsePublisher = responseSubject.eraseToAnyPublisher()
     }
-    
-    func clearCookies() {
-        guard let cookies = ShelfPlayerKit.httpCookieStorage.cookies else {
-            return
-        }
-
-        for cookie in cookies {
-            ShelfPlayerKit.httpCookieStorage.deleteCookie(cookie)
+    deinit {
+        activeRequests.forEach {
+            $0.value.cancel()
         }
     }
     
-    func request(path: String, method: HTTPMethod, body: Any?, query: [URLQueryItem]?) async throws -> URLRequest {
-        var url = host.appending(path: path)
-        
-        if let query {
-            url.append(queryItems: query)
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = method.value
-        request.timeoutInterval = 120
-        
-        await authorizeRequest(&request)
-        
-        if let body {
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            do {
-                if let encodable = body as? Encodable {
-                    request.httpBody = try JSONEncoder().encode(encodable)
-                } else {
-                    request.httpBody = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
-                }
-            } catch {
-                logger.error("Failed to encode body: \(error, privacy: .public)")
-                throw APIClientError.serializeError
-            }
-        }
-        
-        if verbose {
-            logger.debug("\(path, privacy: .public) \(method.value, privacy: .public) >")
-        }
-        
-        return request
-    }
-    
-    func response(request: URLRequest, didRefreshAccessToken: Bool = false) async throws -> Data {
-        let (data, response) = try await session.data(for: request)
-        
-        if let httpResponse = response as? HTTPURLResponse {
-            if httpResponse.statusCode == 401 {
-                guard !didRefreshAccessToken else {
-                    if await credentialProvider.shouldPostAuthorizationFailure {
-                        await RFNotification[.connectionUnauthorized].send(payload: connectionID)
-                    }
-                    
-                    throw APIClientError.unauthorized
-                }
-                
-                try await attemptAccessTokenRefresh(capturedToken: request.value(forHTTPHeaderField: "Authorization")?.replacingOccurrences(of: "Bearer ", with: ""))
-                
-                var request = request
-                
-                await authorizeRequest(&request)
-                return try await self.response(request: request, didRefreshAccessToken: true)
-            } else if !(200..<299).contains(httpResponse.statusCode) {
-                logger.error("Got invalid response code \(httpResponse.statusCode)")
-                throw APIClientError.invalidResponseCode
-            }
-        }
-        
-        if verbose {
-            logger.debug("\(request.url?.relativePath ?? "?", privacy: .public) \(request.httpMethod ?? "?", privacy: .public) < \(String.init(data: data, encoding: .utf8)!, privacy: .public)")
-        }
-        
-        return data
-    }
-    
-    public var requestHeaders: [String: String] {
-        get async {
-            var headers: [String: String] = [:]
-            
-            for pair in self.headers.sorted(by: { $0.key < $1.key }) {
-                headers[pair.key] = pair.value
-            }
-            
-            if let accessToken = await accessToken {
-                headers["Authorization"] = "Bearer \(accessToken)"
-            }
-            
-            return headers
-        }
-    }
-    func authorizeRequest(_ request: inout URLRequest) async {
-        request.allHTTPHeaderFields?.removeAll()
-        
-        for (key, value) in await requestHeaders {
-            request.setValue(value, forHTTPHeaderField: key)
-        }
-    }
-    
-    func response<R: Decodable>(data: Data) async throws -> R {
-        try JSONDecoder().decode(R.self, from: data)
-    }
-    func response<R: Decodable>(request: URLRequest) async throws -> R {
-        do {
-            return try await response(data: response(request: request))
-        } catch {
-            logger.error("Failed to request \(request.url?.relativePath ?? "?", privacy: .public): \(error, privacy: .public)")
-            throw APIClientError.parseError
-        }
-    }
-    
-    // MARK: Helper
-    
-    func response(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem]? = nil) async throws {
-        let _ = try await response(request: request(path: path, method: method, body: body, query: query))
-    }
-    func response<R: Decodable>(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem]? = nil) async throws -> R {
-        try await response(request: request(path: path, method: method, body: body, query: query))
-    }
-}
-
-extension APIClient {
     final class URLSessionDelegate: NSObject, URLSessionTaskDelegate {
         func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
             await PersistenceManager.shared.authorization.handleURLSessionChallenge(challenge)
@@ -180,36 +94,319 @@ extension APIClient {
             }
         }
     }
+}
+
+extension APIClient {
+    func clearCookies() {
+        guard let cookies = ShelfPlayerKit.httpCookieStorage.cookies else {
+            return
+        }
+        
+        for cookie in cookies {
+            ShelfPlayerKit.httpCookieStorage.deleteCookie(cookie)
+        }
+    }
     
-    func attemptAccessTokenRefresh(capturedToken: String?) async throws {
-        var isBlocked = false
+    final class CachedAPIResponse {
+        let validUntil: Date
+        let response: Decodable & Sendable
         
-        repeat {
-            isBlocked = await MainActor.run {
-                guard !isRefreshingAccessToken else {
-                    return true
+        init(validUntil: Date, response: Decodable & Sendable) {
+            self.validUntil = validUntil
+            self.response = response
+        }
+    }
+}
+
+public extension APIClient {
+    var requestHeaders: [String: String] {
+        get async throws {
+            var headers: [String: String] = [:]
+            
+            for pair in self.headers.sorted(by: { $0.key < $1.key }) {
+                headers[pair.key] = pair.value
+            }
+            
+            if let accessToken = try await credentialProvider.accessToken {
+                headers["Authorization"] = "Bearer \(accessToken)"
+            }
+            
+            return headers
+        }
+    }
+    
+    func request(_ request: any APIRequestProtocol) async throws -> URLRequest {
+        var url = host.appending(path: request.path)
+        
+        url.append(queryItems: request.query)
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = request.method.value
+        urlRequest.timeoutInterval = request.timeout
+        
+        urlRequest.allHTTPHeaderFields?.removeAll()
+        
+        try await authorizeRequest(&urlRequest)
+        
+        for header in request.headers {
+            urlRequest.setValue(header.1, forHTTPHeaderField: header.0)
+        }
+        
+        if let body = request.body {
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            do {
+                if let encodable = body as? Encodable {
+                    urlRequest.httpBody = try JSONEncoder().encode(encodable)
+                } else {
+                    urlRequest.httpBody = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
                 }
-                
-                isRefreshingAccessToken = true
-                return false
+            } catch {
+                logger.error("Failed to encode body: \(error, privacy: .public)")
+                throw APIClientError.serializeError
             }
-            
-            if isBlocked {
-                try await Task.sleep(for: .seconds(0.2))
-            }
-        } while isBlocked
+        }
         
-        do {
-            let accessToken = try await credentialProvider.refreshAccessToken(current: capturedToken)
-            
-            await MainActor.run {
-                self.accessToken = accessToken
-                self.isRefreshingAccessToken = false
+        return urlRequest
+    }
+    
+    func response<R: Sendable>(_ request: APIRequest<R>) async throws -> R {
+        resetAttempts(request.id)
+        
+        if request.bypassesScheduler {
+            let response = try await perform(request)
+            return try request.typecast(decodable: response)
+        } else {
+            if !activeRequests.keys.contains(request.id) {
+                let exists = requestQueue.contains { $0.id == request.id }
+                
+                if !exists {
+                    requestQueue.append(request)
+                }
             }
-        } catch {
-            await MainActor.run {
-                self.isRefreshingAccessToken = false
+            
+            return try await waitForCompletion(id: request.id)
+        }
+    }
+}
+
+private extension APIClient {
+    // MARK: Queue
+    
+    func waitForCompletion<R: Sendable>(id: String) async throws -> R {
+        let uuid = UUID()
+        
+        return try await withTaskCancellationHandler {
+            let response = try await withCheckedThrowingContinuation { continuation in
+                let responseSubscriber = self.responsePublisher
+                    .first { $0.0 == id }
+                    .compactMap {
+                        $1 as? R
+                    }
+                    .sink {
+                        continuation.resume(returning: $0)
+                    }
+
+                let failureSubscriber = self.failurePublisher
+                    .first { $0.0 == id }
+                    .map { $1 }
+                    .sink {
+                        continuation.resume(throwing: $0)
+                    }
+      
+                subscribers[uuid] = [responseSubscriber, failureSubscriber]
+                dispatchQueued()
+            }
+            
+            cleanup(uuid: uuid)
+            
+            return response
+        } onCancel: {
+            Task {
+                await cleanup(uuid: uuid)
             }
         }
     }
+    func cleanup(uuid: UUID) {
+        subscribers[uuid] = nil
+    }
+    
+    func dispatchQueued() {
+        guard activeRequests.count <= 5 && !requestQueue.isEmpty else {
+            return
+        }
+        
+        let request = requestQueue.removeFirst()
+        
+        logger.info("Spawning request to \(request.path) (\(self.activeRequests.count) active, \(self.requestQueue.count) in queue)")
+        
+        activeRequests[request.id] = Task<Void, Error> {
+            await performQueuedRequest(request.id, request)
+            activeRequests[request.id] = nil
+        }
+        
+        dispatchQueued()
+    }
+    func requeue(_ request: any APIRequestProtocol) {
+        requestQueue.insert(request, at: 0)
+        dispatchQueued()
+    }
+    
+    func performQueuedRequest(_ id: String, _ request: any APIRequestProtocol) async {
+        do {
+            let response = try await perform(request)
+            responseSubject.send((id, response))
+        } catch {
+            failureSubject.send((id, error))
+        }
+        
+        dispatchQueued()
+    }
+    @concurrent
+    nonisolated func perform(_ request: any APIRequestProtocol) async throws -> Decodable & Sendable {
+        logger.info("Performing \(request.method.value) \(request.path)")
+        
+        #if DEBUG
+        await incrementRequestCount()
+        #endif
+        
+        let cacheKey = NSString(string: request.id)
+        
+        if let cached = cache.object(forKey: cacheKey), cached.validUntil > .now {
+            logger.info("Used cached response for \(request.path)")
+            return cached.response
+        }
+        
+        if !request.bypassesOffline, await OfflineMode.shared.isEnabled {
+            throw APIClientError.offline
+        }
+        
+        guard await hasAttemptsLeft(request.id) else {
+            throw APIClientError.noAttemptsLeft
+        }
+        
+        if !request.bypassesScheduler, await unreachable {
+            throw APIClientError.unreachable
+        }
+        
+        var urlRequest = try await self.request(request)
+        
+        try? await authorizationRefreshTask?.value
+        let token = await authorizationToken
+        
+        do {
+            try await authorizeRequest(&urlRequest)
+            
+            let data = try await execute(requestID: request.id, request: urlRequest)
+            let response = try request.typecast(data: data)
+            
+            if let ttl = request.ttl {
+                let cached = CachedAPIResponse(validUntil: .now.advanced(by: ttl), response: response)
+                cache.setObject(cached, forKey: cacheKey)
+            }
+            
+            await resetAttempts(request.id)
+            
+            return response
+        } catch APIClientError.unauthorized {
+            logger.warning("Got 401 while performing request \(request.path)")
+            await increaseAttempts(request.id)
+            
+            try await refreshAccessToken(currentToken: token)
+            return try await perform(request)
+        } catch APIClientError.notFound {
+            logger.warning("Resource not found at \(request.path)")
+            throw APIClientError.notFound
+        } catch URLError.cancelled {
+            logger.warning("Cancelled request to \(request.path)")
+            throw APIClientError.cancelled
+        } catch {
+            logger.warning("Failed to perform request \(request.path): \(error)")
+            
+            await increaseAttempts(request.id)
+            return try await perform(request)
+        }
+    }
+    
+    // MARK: Builder
+    
+    func authorizeRequest(_ request: inout URLRequest) async throws {
+        for (key, value) in try await requestHeaders {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+    }
+    
+    // MARK: Execute
+    
+    func execute(requestID: String, request: URLRequest) async throws -> Data {
+        let (data, response) = try await session.data(for: request)
+        
+        if let httpResponse = response as? HTTPURLResponse {
+            if httpResponse.statusCode == 401 {
+                logger.info("Got 401 - Unauthorized")
+                throw APIClientError.unauthorized
+            } else if httpResponse.statusCode == 404 {
+                throw APIClientError.notFound
+            } else if !(200..<299).contains(httpResponse.statusCode) {
+                logger.error("Got invalid response code \(httpResponse.statusCode)")
+                throw APIClientError.invalidResponseCode
+            }
+        }
+        
+        return data
+    }
+    
+    // MARK: Attempts
+    
+    func hasAttemptsLeft(_ id: String) -> Bool {
+        guard let attempts = attempts[id] else {
+            return true
+        }
+        
+        logger.info("Request \(id) \(attempts)/3 attempts used")
+        
+        return attempts < 3
+    }
+    func resetAttempts(_ id: String) {
+        attempts[id] = nil
+    }
+    func increaseAttempts(_ id: String) {
+        if let attempts = attempts[id] {
+            self.attempts[id] = attempts + 1
+        } else {
+            attempts[id] = 1
+        }
+    }
+    
+    // MARK: Token refresh
+    
+    func refreshAccessToken(currentToken: String?) async throws {
+        guard currentToken == authorizationToken else {
+            return
+        }
+        
+        if authorizationRefreshTask == nil {
+            logger.info("Spawning new token refresh task")
+            
+            authorizationRefreshTask = .init {
+                do {
+                    try await credentialProvider.refreshAccessToken()
+                } catch {
+                    unreachable = true
+                    logger.warning("Access token refresh failed: \(error). Now \(self.connectionID) unreachable")
+                    
+                    throw error
+                }
+            }
+        } else {
+            logger.info("Reusing existing token refresh ceremony")
+        }
+        
+        return try await authorizationRefreshTask!.value
+    }
+}
+
+private struct PipelinedError: Error {
+    let requestID: String
+    let error: Error
 }

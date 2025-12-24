@@ -62,11 +62,25 @@ public extension ShelfPlayerKit {
         }
     }
     static var cacheDirectoryURL: URL {
+        var url: URL
+        
         if enableCentralized {
-            FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "Cache")
+            url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "Cache")
         } else {
-            URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "Cache")
+            url = URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "Cache")
         }
+        
+        var resourceValues = URLResourceValues()
+        resourceValues.isExcludedFromBackup = true
+        
+        do {
+            try url.setResourceValues(resourceValues)
+            try (url as NSURL).setResourceValue(URLFileProtection.completeUntilFirstUserAuthentication, forKey: .fileProtectionKey)
+        } catch {
+            logger.error("Failed to set URL as encrypted or excluded from backup: \(error)")
+        }
+        
+        return url
     }
     
     static var httpCookieStorage: HTTPCookieStorage {

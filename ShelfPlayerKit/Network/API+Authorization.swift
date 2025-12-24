@@ -9,26 +9,30 @@ import Foundation
 
 public extension APIClient {
     func login(username: String, password: String) async throws -> (username: String, accessToken: String, refreshToken: String?) {
-        var request = try await request(path: "login", method: .post, body: [
-            "username": username,
-            "password": password,
-        ], query: nil)
-        
-        request.setValue("true", forHTTPHeaderField: "x-return-tokens")
-        
-        let response: AuthorizationResponse = try await response(request: request)
+        let response = try await response(APIRequest<AuthorizationResponse>(
+            path: "login",
+            method: .post,
+            body: [
+                "username": username,
+                "password": password,
+            ],
+            headers: ["x-return-tokens": "true"],
+            bypassesOffline: true,
+            bypassesScheduler: true,
+        ))
         
         return try (response.user.username, response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
     
     func status() async throws -> (String, [AuthorizationStrategy], Bool) {
-        let response: StatusResponse = try await response(path: "status", method: .get)
+        let response = try await response(APIRequest<StatusResponse>(path: "status", method: .get, bypassesOffline: true, bypassesScheduler: true))
+        
         let strategies: [AuthorizationStrategy] = response.authMethods.compactMap {
             switch $0 {
                 case "local":
-                        .usernamePassword
+                    .usernamePassword
                 case "openid":
-                        .openID
+                    .openID
                 default:
                     nil
             }
@@ -38,21 +42,24 @@ public extension APIClient {
     }
     
     func me() async throws -> (String, String) {
-        let response: MeResponse = try await response(path: "api/me", method: .get)
+        let request = APIRequest<MeResponse>(path: "api/me", method: .get, bypassesOffline: true)
+        let response = try await response(request)
         return (response.id, response.username)
     }
     
     func authorize() async throws -> ([ProgressPayload], [BookmarkPayload]) {
-        let response: AuthorizationResponse = try await response(path: "api/authorize", method: .post)
+        let request = APIRequest<AuthorizationResponse>(path: "api/authorize", method: .post, bypassesOffline: true, bypassesScheduler: true)
+        let response = try await response(request)
         return (response.user.mediaProgress, response.user.bookmarks)
     }
     func refresh(refreshToken: String) async throws -> (String, String?) {
-        var request = try await request(path: "auth/refresh", method: .post, body: nil, query: nil)
-        request.setValue(refreshToken, forHTTPHeaderField: "x-refresh-token")
-        
-        let data = try await response(request: request, didRefreshAccessToken: true)
-        let response: AuthorizationResponse = try await response(data: data)
-        
+        let response = try await response(APIRequest<AuthorizationResponse>(
+            path: "auth/refresh",
+            method: .post,
+            headers: ["x-refresh-token": refreshToken],
+            bypassesOffline: true,
+            bypassesScheduler: true,
+        ))
         return try (response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
 }
@@ -68,14 +75,17 @@ public extension APIClient {
         challenge = challenge.replacingOccurrences(of: "/", with: "_")
         challenge = challenge.replacingOccurrences(of: "=", with: "")
         
-        let request = try await request(path: "auth/openid", method: .get, body: nil, query: [
-            URLQueryItem(name: "client_id", value: "ShelfPlayer"),
-            URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
-            URLQueryItem(name: "code_challenge_method", value: "S256"),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "code_challenge", value: "\(challenge)"),
-        ])
-        
+        let request = try await request(APIRequest<APIClient.EmptyResponse>(
+            path: "auth/openid",
+            method: .get,
+            query: [
+                URLQueryItem(name: "client_id", value: "ShelfPlayer"),
+                URLQueryItem(name: "redirect_uri", value: "shelfplayer://callback"),
+                URLQueryItem(name: "code_challenge_method", value: "S256"),
+                URLQueryItem(name: "response_type", value: "code"),
+                URLQueryItem(name: "code_challenge", value: "\(challenge)")
+            ],
+        ))
         let (_, response) = try await session.data(for: request)
         
         if let location = (response as? HTTPURLResponse)?.allHeaderFields["Location"] as? String, let url = URL(string: location) {
@@ -86,11 +96,19 @@ public extension APIClient {
     }
     
     func openIDExchange(code: String, state: String, verifier: String) async throws -> (username: String, accessToken: String, refreshToken: String?) {
-        let response: AuthorizationResponse = try await response(path: "auth/openid/callback", method: .get, query: [
-            .init(name: "code", value: code),
-            .init(name: "state", value: state),
-            .init(name: "code_verifier", value: verifier),
-        ])
+        let request = APIRequest<AuthorizationResponse>(
+            path: "auth/openid/callback",
+            method: .get,
+            query: [
+                .init(name: "code", value: code),
+                .init(name: "state", value: state),
+                .init(name: "code_verifier", value: verifier)
+            ],
+            bypassesOffline: true,
+            bypassesScheduler: true,
+        )
+        
+        let response = try await response(request)
         
         return try (response.user.username, response.versionSafeAccessToken, response.versionSafeRefreshToken)
     }
