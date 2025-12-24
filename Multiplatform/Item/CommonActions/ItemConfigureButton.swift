@@ -10,13 +10,15 @@ import ShelfPlayback
 
 struct ItemConfigureButton: View {
     @Environment(Satellite.self) private var satellite
+    @Environment(\.namespace) private var namespace
 
     let itemID: ItemIdentifier
     
     var body: some View {
-        Button("item.configure", systemImage: "gearshape") {
+        Button("item.configure", systemImage: "wrench.and.screwdriver.fill") {
             satellite.present(.configureGrouping(itemID))
         }
+        .matchedTransitionSource(id: "configure-grouping", in: namespace!)
     }
 }
 

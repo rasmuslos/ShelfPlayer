@@ -85,7 +85,9 @@ struct SeriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.error, trigger: viewModel.lazyLoader.notifyError)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                ItemConfigureButton(itemID: viewModel.series.id)
+                
                 Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease" : "line.3.horizontal") {
                     ItemDisplayTypePicker(displayType: $viewModel.displayType)
                     
@@ -94,10 +96,6 @@ struct SeriesView: View {
                     Section("item.filter") {
                         ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
                     }
-                    
-                    Divider()
-                    
-                    ItemConfigureButton(itemID: viewModel.series.id)
                 }
                 .menuActionDismissBehavior(.disabled)
             }

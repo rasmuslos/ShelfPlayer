@@ -167,6 +167,7 @@ struct PlayButton: View {
             .accessibilityLabel(Text(label))
             .accessibilityValue(Text(verbatim: "\(tracker.progress?.formatted(.percent.notation(.compactName)) ?? "?")"))
             .hoverEffect(.highlight)
+            .id("playButton_\(item.id)_\(color.hashValue)_\(progress?.description ?? "-1")")
             .onReceive(RFNotification[.reloadImages].publisher()) {
                 if let itemID = $0, itemID == item.id {
                     loadColor()
@@ -177,7 +178,6 @@ struct PlayButton: View {
             .task {
                 loadColor()
             }
-            .id("playButton_\(item.id)")
     }
     
     public func playButtonSize(_ playButtonStyle: any PlayButtonStyle) -> some View {

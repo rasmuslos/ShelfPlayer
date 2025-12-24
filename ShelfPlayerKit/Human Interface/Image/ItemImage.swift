@@ -98,7 +98,7 @@ public struct ItemImage: View {
     
     private nonisolated func reload() {
         Task {
-            guard let data = await ItemImageCache.shared[itemID, size], let uiImage = UIImage(data: data) else {
+            guard let data = await itemID?.data(size: size), let uiImage = UIImage(data: data) else {
                 return
             }
             

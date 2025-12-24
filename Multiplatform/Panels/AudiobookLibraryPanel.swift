@@ -9,9 +9,11 @@ import SwiftUI
 import ShelfPlayback
 
 struct AudiobookLibraryPanel: View {
-    @Environment(\.library) private var library
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.defaultMinListRowHeight) private var defaultMinListRowHeight
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    @Environment(Satellite.self) private var satellite
+    @Environment(\.library) private var library
     
     @Default(.groupAudiobooksInSeries) private var groupAudiobooksInSeries
     
@@ -22,15 +24,13 @@ struct AudiobookLibraryPanel: View {
     
     private var libraryRowCount: CGFloat {
         horizontalSizeClass == .compact && library != nil
-        ? viewModel.tabs.isEmpty ? 1 : CGFloat(viewModel.tabs.count)
+        ? viewModel.tabs.isEmpty ? 0 : CGFloat(viewModel.tabs.count)
         : 0
     }
     @ViewBuilder
     private var libraryRows: some View {
         if horizontalSizeClass == .compact {
-            if viewModel.tabs.isEmpty {
-                ProgressView()
-            } else {
+            if !viewModel.tabs.isEmpty {
                 ForEach(Array(viewModel.tabs.enumerated()), id: \.element) { (index, row) in
                     NavigationLink(value: NavigationDestination.tabValue(row)) {
                         Label(row.label, systemImage: row.image)
@@ -138,6 +138,10 @@ struct AudiobookLibraryPanel: View {
                     }
                     
                     Divider()
+                    
+                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                        satellite.present(.customizeLibrary(viewModel.library))
+                    }
                     
                     Toggle("item.groupAudiobooksBySeries", systemImage: "square.3.layers.3d.down.forward", isOn: $groupAudiobooksInSeries)
                 }

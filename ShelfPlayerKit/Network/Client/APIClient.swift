@@ -18,10 +18,6 @@ public final actor APIClient: Sendable {
     var activeRequests: [String: Task<Void, Error>] = [:]
     
     var attempts: [String: Int] = [:]
-    
-    var markers = [UUID: [RFNotification.Marker]]()
-    
-    var authorizationToken: String?
     var authorizationRefreshTask: Task<Void, Error>?
     
     let failureSubject = PassthroughSubject<(String, Error), Never>()
@@ -292,7 +288,7 @@ private extension APIClient {
         var urlRequest = try await self.request(request)
         
         try? await authorizationRefreshTask?.value
-        let token = await authorizationToken
+        let token = try? await credentialProvider.accessToken
         
         do {
             try await authorizeRequest(&urlRequest)
@@ -381,7 +377,7 @@ private extension APIClient {
     // MARK: Token refresh
     
     func refreshAccessToken(currentToken: String?) async throws {
-        guard currentToken == authorizationToken else {
+        guard await currentToken == (try? credentialProvider.accessToken) else {
             return
         }
         
@@ -391,9 +387,12 @@ private extension APIClient {
             authorizationRefreshTask = .init {
                 do {
                     try await credentialProvider.refreshAccessToken()
+                    authorizationRefreshTask = nil
                 } catch {
                     unreachable = true
                     logger.warning("Access token refresh failed: \(error). Now \(self.connectionID) unreachable")
+                 
+                    authorizationRefreshTask = nil
                     
                     throw error
                 }

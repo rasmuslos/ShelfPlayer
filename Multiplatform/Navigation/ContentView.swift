@@ -44,60 +44,63 @@ struct ContentView: View {
     @ViewBuilder
     private func sheetContent(for sheet: Satellite.Sheet) -> some View {
         switch sheet {
-        case .listenNow:
-            ListenNowSheet()
-                .navigationTransition(.zoom(sourceID: "listen-now-sheet", in: namespace))
-        case .preferences:
-            PreferencesView()
-        case .customTabValuePreferences:
-            CustomTabValueSheet()
-        case .description(let item):
-            DescriptionSheet(item: item)
-        case .configureGrouping(let itemID):
-            GroupingConfigurationSheet(itemID: itemID)
-        case .editCollection(let collection):
-            EditCollectionSheet(collection: collection)
-        case .editCollectionMembership(let itemID):
-            CollectionMembershipEditorSheet(itemID: itemID)
-        case .addConnection:
-            ConnectionAddSheet()
-        case .editConnection(let connectionID):
-            ConnectionEditSheet(connectionID: connectionID)
-        case .reauthorizeConnection(let connectionID):
-            ReauthorizeConnectionSheet(connectionID: connectionID)
-        case .whatsNew:
-            WhatsNewSheet()
+            case .listenNow:
+                ListenNowSheet()
+                    .navigationTransition(.zoom(sourceID: "listen-now-sheet", in: namespace))
+            case .preferences:
+                PreferencesView()
+            case .customTabValuePreferences:
+                CustomTabValueSheet()
+            case .description(let item):
+                DescriptionSheet(item: item)
+            case .configureGrouping(let itemID):
+                GroupingConfigurationSheet(itemID: itemID)
+                    .navigationTransition(.zoom(sourceID: "configure-grouping", in: namespace))
+            case .editCollection(let collection):
+                EditCollectionSheet(collection: collection)
+            case .editCollectionMembership(let itemID):
+                CollectionMembershipEditorSheet(itemID: itemID)
+            case .addConnection:
+                ConnectionAddSheet()
+            case .editConnection(let connectionID):
+                ConnectionEditSheet(connectionID: connectionID)
+            case .reauthorizeConnection(let connectionID):
+                ReauthorizeConnectionSheet(connectionID: connectionID)
+            case .customizeLibrary(let library):
+                CustomizeLibraryPanelSheet(library: library)
+            case .whatsNew:
+                WhatsNewSheet()
         }
     }
     @ViewBuilder
     private func warningButton(for action: Satellite.WarningAlert.WarningAction) -> some View {
         switch action {
-        case .cancel:
-            Button("action.cancel", role: .cancel) {
-                satellite.cancelWarningAlert()
-            }
-        case .proceed:
-            Button("action.proceed") {
-                satellite.confirmWarningAlert()
-            }
-        case .acknowledge:
-            Button("action.acknowledge") {
-                satellite.confirmWarningAlert()
-            }
-            
-        case .dismiss:
-            Button("action.dismiss") {
-                satellite.cancelWarningAlert()
-            }
-            
-        case .learnMore(let url):
-            Link(destination: url) {
-                Text("action.learnMore")
-            }
-        case .removeConvenienceDownloadConfigurations(let itemID):
-            Button("item.convenienceDownload.remove") {
-                satellite.removeConvenienceDownloadConfigurations(from: itemID)
-            }
+            case .cancel:
+                Button("action.cancel", role: .cancel) {
+                    satellite.cancelWarningAlert()
+                }
+            case .proceed:
+                Button("action.proceed") {
+                    satellite.confirmWarningAlert()
+                }
+            case .acknowledge:
+                Button("action.acknowledge") {
+                    satellite.confirmWarningAlert()
+                }
+                
+            case .dismiss:
+                Button("action.dismiss") {
+                    satellite.cancelWarningAlert()
+                }
+                
+            case .learnMore(let url):
+                Link(destination: url) {
+                    Text("action.learnMore")
+                }
+            case .removeConvenienceDownloadConfigurations(let itemID):
+                Button("item.convenienceDownload.remove") {
+                    satellite.removeConvenienceDownloadConfigurations(from: itemID)
+                }
         }
     }
     
@@ -153,15 +156,15 @@ struct ContentView: View {
         .onChange(of: scenePhase) {
             Task.detached { [scenePhase] in
                 switch scenePhase {
-                case .active:
-                    await RFNotification[.performBackgroundSessionSync].send(payload: nil)
-                    await ShelfPlayer.invalidateShortTermCache()
-                    
-                    await RFNotification[.scenePhaseDidChange].send(payload: true)
-                case .inactive:
-                    await RFNotification[.scenePhaseDidChange].send(payload: false)
-                default:
-                    break
+                    case .active:
+                        await RFNotification[.performBackgroundSessionSync].send(payload: nil)
+                        await ShelfPlayer.invalidateShortTermCache()
+                        
+                        await RFNotification[.scenePhaseDidChange].send(payload: true)
+                    case .inactive:
+                        await RFNotification[.scenePhaseDidChange].send(payload: false)
+                    default:
+                        break
                 }
             }
         }

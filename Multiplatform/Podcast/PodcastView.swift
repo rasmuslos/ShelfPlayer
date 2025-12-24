@@ -112,7 +112,7 @@ struct PodcastView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        PodcastView(Podcast.fixture, episodes: .init(repeating: .fixture, count: 7), zoom: true)
+        PodcastView(Podcast.fixture, episodes: .init(repeating: .fixture, count: 1), zoom: true)
     }
     .previewEnvironment()
 }

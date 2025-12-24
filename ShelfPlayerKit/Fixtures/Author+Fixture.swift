@@ -9,6 +9,13 @@ import Foundation
 
 #if DEBUG
 public extension Person {
+    static let narratorFixture = Person(
+        id: .init(primaryID: "fixture-narrator", groupingID: nil, libraryID: "fixture", connectionID: "fixture", type: .author),
+        name: "George Orwell",
+        description: nil,
+        addedAt: Date(),
+        bookCount: 420)
+    
     static let authorFixture = Person(
         id: .init(primaryID: "fixture-author", groupingID: nil, libraryID: "fixture", connectionID: "fixture", type: .author),
         name: "George Orwell",

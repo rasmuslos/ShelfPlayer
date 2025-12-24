@@ -43,15 +43,13 @@ extension SeriesView {
                             }
                         }
                     
-                    Group {
-                        if let highlighted = viewModel.highlighted {
-                            PlayButton(item: highlighted)
-                        }
+                    
+                    if let highlighted = viewModel.highlighted {
+                        PlayButton(item: highlighted)
+                            .padding(.horizontal, 20)
                     }
-                    .padding(.horizontal, 20)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.bottom, 0)
             }
         }
     }
