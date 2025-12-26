@@ -30,17 +30,6 @@ public final actor APIClient: Sendable {
     
     nonisolated(unsafe) let cache = NSCache<NSString, CachedAPIResponse>()
     
-    #if DEBUG
-    public var requestCount = 0
-    
-    public func incrementRequestCount() {
-        requestCount += 1
-    }
-    public func resetRequestCount() {
-        requestCount = 0
-    }
-    #endif
-    
     let connectionID: ItemIdentifier.ConnectionID
     
     let session: URLSession
@@ -50,7 +39,16 @@ public final actor APIClient: Sendable {
     
     let credentialProvider: APICredentialProvider
     
-    var unreachable = false
+    #if DEBUG
+    public var requestCount = 0
+
+    public func incrementRequestCount() {
+        requestCount += 1
+    }
+    public func resetRequestCount() {
+        requestCount = 0
+    }
+    #endif
     
     public init(connectionID: ItemIdentifier.ConnectionID, credentialProvider: APICredentialProvider) async throws {
         logger = .init(subsystem: "io.rfk.shelfPlayerKit", category: "APIClient::\(connectionID)")
@@ -281,7 +279,7 @@ private extension APIClient {
             throw APIClientError.noAttemptsLeft
         }
         
-        if !request.bypassesScheduler, await unreachable {
+        if !request.bypassesScheduler, await !OfflineMode.shared.isAvailable(connectionID) {
             throw APIClientError.unreachable
         }
         
@@ -302,6 +300,8 @@ private extension APIClient {
             }
             
             await resetAttempts(request.id)
+            
+            logger.info("Received successful response for \(request.path)")
             
             return response
         } catch APIClientError.unauthorized {
@@ -388,7 +388,7 @@ private extension APIClient {
                     try await credentialProvider.refreshAccessToken()
                     authorizationRefreshTask = nil
                 } catch {
-                    unreachable = true
+                    await OfflineMode.shared.markAsUnavailable(connectionID)
                     logger.warning("Access token refresh failed: \(error). Now \(self.connectionID) unreachable")
                  
                     authorizationRefreshTask = nil

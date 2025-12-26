@@ -52,7 +52,8 @@ final class ConnectionStore {
             
             guard await !OfflineMode.shared.isEnabled else {
                 await MainActor.withAnimation {
-                    self.offlineConnections = Array(connections.map(\.id))
+                    self.libraries = [:]
+                    self.offlineConnections = []
                 }
                 
                 return

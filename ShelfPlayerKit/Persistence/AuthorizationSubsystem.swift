@@ -356,7 +356,19 @@ extension PersistenceManager.AuthorizationSubsystem {
     func refreshAccessToken(for connectionID: String) async throws -> String {
         let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
         let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
-        let (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
+        
+        let (accessToken, refreshToken): (String, String?)
+        
+        do {
+            (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
+        } catch {
+            try removeToken(for: connectionID, service: accessTokenService)
+            try removeToken(for: connectionID, service: refreshTokenService)
+            
+            await RFNotification[.accessTokenExpired].send(payload: connectionID)
+            
+            throw error
+        }
         
         try updateToken(accessToken, for: connectionID, service: accessTokenService)
         
