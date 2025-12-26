@@ -104,8 +104,6 @@ public extension ResolveCache {
             throw ResolveError.offline
         }
         
-        let item: PlayableItem
-        
         if let groupingID {
             return try await resolveOnlineEpisode(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
         } else {
@@ -158,6 +156,8 @@ private extension ResolveCache {
 
 public extension ResolveCache {
     func flush() async {
+        memoryCache.removeAllObjects()
+        
         do {
             try FileManager.default.removeItem(at: cachePath)
         } catch {
@@ -172,15 +172,25 @@ public extension ResolveCache {
         }
     }
     func invalidate(itemID: ItemIdentifier) async {
+        memoryCache.removeObject(forKey: memoryCacheKey(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID))
+        
+        do {
+            try FileManager.default.removeItem(at: diskPath(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID))
+        } catch {
+            logger.fault("Failed to remove cached item: \(error)")
+        }
     }
 }
 
 // MARK: Disk & Memory cache
 
 private extension ResolveCache {
-    func diskPath(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> URL {
+    func diskPath(connectionID: ItemIdentifier.ConnectionID) -> URL {
         cachePath
             .appending(path: connectionID)
+    }
+    func diskPath(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> URL {
+        diskPath(connectionID: connectionID)
             .appending(path: "\(primaryID)_\(groupingID ?? "-")")
     }
     func memoryCacheKey(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> NSString {
@@ -219,6 +229,8 @@ private extension ResolveCache {
             return nil
         }
         
+        logger.info("Using disk cache for item \(result.id)")
+        
         return result
     }
     func store(item: Item) {
@@ -232,7 +244,11 @@ private extension ResolveCache {
         
         do {
             let encoded = try JSONEncoder().encode(cached)
+            
+            try FileManager.default.createDirectory(at: diskPath(connectionID: connectionID), withIntermediateDirectories: true)
             try encoded.write(to: diskPath(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID))
+            
+            logger.info("Stored item \(item.id) on disk")
         } catch {
             logger.error("Failure to cache item: \(error)")
         }
