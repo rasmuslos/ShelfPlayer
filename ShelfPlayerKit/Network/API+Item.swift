@@ -78,28 +78,24 @@ public extension APIClient  {
         )
     }
     
-    func coverRequest(from itemID: ItemIdentifier, width: Int) async throws -> URLRequest {
-//        #if DEBUG
-//        if itemID.connectionID == "fixture" {
-//            return URLRequest(url: URL(string: "https://yt3.ggpht.com/-lwlGXn90heE/AAAAAAAAAAI/AAAAAAAAAAA/FmCv96eMMNE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")!)
-//        }
-//        #endif
-//        
-//        let path: String
-//        
-//        switch itemID.type {
-//        case .author:
-//            path = "api/authors/\(itemID.primaryID)/image"
-//        case .episode:
-//            path = "api/items/\(itemID.groupingID!)/cover"
-//        default:
-//            path = "api/items/\(itemID.primaryID)/cover"
-//        }
-//        
-//        return try await buildRequest(APIRequest<Data>(path: path, method: .get, query: [
-//            URLQueryItem(name: "width", value: width.description),
-//        ], bypassesOffline: false))
-        throw APIClientError.noAttemptsLeft
+    func coverRequest(from itemID: ItemIdentifier, width: Int) async throws -> APIRequest<DataResponse> {
+        let path: String
+        
+        switch itemID.type {
+        case .author:
+            path = "api/authors/\(itemID.primaryID)/image"
+        case .episode:
+            path = "api/items/\(itemID.groupingID!)/cover"
+        default:
+            path = "api/items/\(itemID.primaryID)/cover"
+        }
+        
+        return APIRequest(path: path, method: .get, query: [
+            URLQueryItem(name: "width", value: width.description),
+        ])
+    }
+    func cover(from itemID: ItemIdentifier, width: Int) async throws -> Data {
+        try await response(coverRequest(from: itemID, width: width)).data
     }
     
     func pdfRequest(from itemID: ItemIdentifier, ino: String) async throws -> APIRequest<DataResponse> {

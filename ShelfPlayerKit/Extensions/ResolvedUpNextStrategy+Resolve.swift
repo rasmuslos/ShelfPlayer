@@ -13,7 +13,13 @@ extension ResolvedUpNextStrategy {
             case .series(let seriesID):
                 return try await prepare(try await ABSClient[seriesID.connectionID].audiobooks(filtered: seriesID, sortOrder: nil, ascending: nil, limit: nil, page: nil).0, itemID)
             case .podcast(let podcastID):
-                let (_, episodes) = try await podcastID.resolvedComplex
+                let episodes: [Episode]
+                
+                if await OfflineMode.shared.isEnabled {
+                    episodes = try await PersistenceManager.shared.download.episodes(from: podcastID)
+                } else {
+                    (_, episodes) = try await ABSClient[podcastID.connectionID].podcast(with: podcastID)
+                }
                 
                 return await Podcast.filterSort(episodes, podcastID: podcastID).filter { $0.id != itemID }
                 
@@ -65,4 +71,6 @@ extension ResolvedUpNextStrategy {
 private enum ResolveError: Error {
     case missingCutoff
     case invalidItemType
+    
+    case offline
 }

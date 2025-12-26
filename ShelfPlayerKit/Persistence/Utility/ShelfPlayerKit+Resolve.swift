@@ -11,7 +11,7 @@ import CoreSpotlight
 public extension ShelfPlayerKit {
     static var listenNowItems: [PlayableItem] {
         get async {
-            await PersistenceManager.shared.listenNow.current
+            []
         }
     }
     static var libraries: [Library] {

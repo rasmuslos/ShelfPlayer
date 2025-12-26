@@ -114,9 +114,6 @@ struct ContentView: View {
                 OfflineView()
             } else {
                 TabRouter()
-                    .onAppear {
-                        ShelfPlayer.initOnlineUIHook()
-                    }
             }
         }
         .modify(if: tintColor != .shelfPlayer) {

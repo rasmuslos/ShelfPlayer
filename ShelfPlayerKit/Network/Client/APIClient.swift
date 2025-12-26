@@ -339,7 +339,6 @@ private extension APIClient {
         
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 401 {
-                logger.info("Got 401 - Unauthorized")
                 throw APIClientError.unauthorized
             } else if httpResponse.statusCode == 404 {
                 throw APIClientError.notFound

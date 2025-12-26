@@ -137,12 +137,7 @@ private struct Additional: View {
                 Text(verbatim: "•")
                     .accessibilityHidden(true)
                 
-                switch publishingType {
-                    case .episodic:
-                        Text("item.publishing.episodic")
-                    case .serial:
-                        Text("item.publishing.serial")
-                }
+                Text(publishingType.label)
             }
             
             if viewModel.podcast.genres.count > 0 {
@@ -228,6 +223,15 @@ private struct RegularPresentation: View {
         }
         .padding(20)
         .padding(.top, 80)
+    }
+}
+
+extension Podcast.PodcastType {
+    var label: String {
+        switch self {
+            case .episodic: String(localized: "item.publishing.episodic")
+            case .serial: String(localized: "item.publishing.serial")
+        }
     }
 }
 

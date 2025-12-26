@@ -87,7 +87,7 @@ public struct ItemImage: View {
             }
         }
         .universalContentShape(.rect(cornerRadius: cornerRadius))
-        .onReceive(RFNotification[.reloadImagesSwiftUI].publisher()) { itemID in
+        .onReceive(RFNotification[.reloadImages].publisher()) { itemID in
             if let itemID, self.itemID != itemID {
                 return
             }
@@ -145,78 +145,6 @@ public struct ItemImage: View {
             }
         }
     }
-}
-
-private actor ItemImageCache: Sendable {
-    var active = [ItemImageCache.Key: Task<Data?, Never>]()
-    var cached = NSCache<ItemImageCache.Key, NSData>()
-    
-    private init() {
-        RFNotification[.reloadImages].subscribe { [weak self] itemID in
-            Task {
-                await self?.flush()
-                await RFNotification[.reloadImagesSwiftUI].send(payload: itemID)
-            }
-        }
-    }
-    
-    private func flush() {
-        cached.removeAllObjects()
-    }
-    private func store(_ data: Data, for key: Key) {
-        cached.setObject(data as NSData, forKey: key)
-    }
-    
-    subscript(itemID: ItemIdentifier?, size: ImageSize) -> Data? {
-        get async {
-            guard let itemID else {
-                return nil
-            }
-            
-            let key = Key(itemID: itemID, size: size)
-            
-            if let cached = cached.object(forKey: key) as? Data {
-                return cached
-            } else {
-                active[key] = .init {
-                    let data = await itemID.data(size: size)
-                    
-                    if let data {
-                        store(data, for: key)
-                    }
-                    
-                    return data
-                }
-                
-                return await active[key]!.value
-            }
-        }
-    }
-    
-    static let shared = ItemImageCache()
-    
-    final class Key: Equatable, Hashable {
-        let itemID: ItemIdentifier
-        let size: ImageSize
-        
-        init(itemID: ItemIdentifier, size: ImageSize) {
-            self.itemID = itemID
-            self.size = size
-        }
-        
-        static func == (lhs: ItemImageCache.Key, rhs: ItemImageCache.Key) -> Bool {
-            lhs.itemID == rhs.itemID && lhs.size == rhs.size
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(itemID)
-            hasher.combine(size)
-        }
-    }
-}
-
-fileprivate extension RFNotification.IsolatedNotification {
-    static var reloadImagesSwiftUI: IsolatedNotification<ItemIdentifier?> { .init("io.rfk.shelfPlayer.reloadImages.SwiftUI") }
 }
 
 #if DEBUG

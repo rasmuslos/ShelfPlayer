@@ -92,19 +92,9 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                 
                 if let episode = item as? Episode {
                     let podcastID = episode.podcastID
-                    let (podcast, episodes) = try await podcastID.resolvedComplex
+                    let podcast = try await podcastID.resolved
                     
-                    var episodeMediaItems = [INMediaItem]()
-                    
-                    for episode in episodes {
-                        do {
-                            episodeMediaItems.append(try await buildIntentItem(episode))
-                        } catch {
-                            continue
-                        }
-                    }
-                    
-                    try await intents.append(INPlayMediaIntent(mediaItems: episodeMediaItems, mediaContainer: buildIntentItem(podcast), playShuffled: nil, playbackRepeatMode: .unknown, resumePlayback: nil, playbackQueueLocation: .now, playbackSpeed: await AudioPlayer.shared.playbackRate, mediaSearch: nil))
+                    try await intents.append(INPlayMediaIntent(mediaItems: [buildIntentItem(episode)], mediaContainer: buildIntentItem(podcast), playShuffled: nil, playbackRepeatMode: .unknown, resumePlayback: nil, playbackQueueLocation: .now, playbackSpeed: await AudioPlayer.shared.playbackRate, mediaSearch: nil))
                 }
             } catch {
                 continue

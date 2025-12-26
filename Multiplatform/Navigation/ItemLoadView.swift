@@ -23,14 +23,12 @@ struct ItemLoadView: View {
     }
     
     @State private var item: Item? = nil
-    @State private var episodes: [Episode] = []
-    
     @State private var failed = false
     
     var body: some View {
         Group {
             if let item {
-                ItemView(item: item, episodes: episodes)
+                ItemView(item: item)
             } else {
                 if failed {
                     ErrorView(itemID: id)
@@ -65,11 +63,10 @@ struct ItemLoadView: View {
             }
             
             do {
-                let (item, episodes) = try await id.resolvedComplex
+                let item = try await id.resolved
                 
                 await MainActor.withAnimation {
                     self.item = item
-                    self.episodes = episodes
                 }
             } catch {
                 logger.info("Failed to load item \(id): \(error)")

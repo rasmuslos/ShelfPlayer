@@ -517,7 +517,8 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                         
                         return result
                     case .listenNow:
-                        return try await PersistenceManager.shared.listenNow.listenNowItems()
+                        #warning("uhujh")
+                        return []
                 }
             }
         }

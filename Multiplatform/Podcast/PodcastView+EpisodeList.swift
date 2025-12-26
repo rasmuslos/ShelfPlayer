@@ -112,7 +112,7 @@ struct PodcastEpisodesView: View {
     NavigationStack {
         PodcastEpisodesView()
     }
-    .environment(PodcastViewModel(podcast: .fixture, episodes: .init(repeating: .fixture, count: 7)))
+    .environment(PodcastViewModel(podcast: .fixture))
     .previewEnvironment()
 }
 #endif

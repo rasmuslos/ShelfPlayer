@@ -23,13 +23,10 @@ struct TabValuePreferences: View {
                 if scopes.count == 1, let scope = scopes.first {
                     NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
                 } else {
-                    NavigationLink(library.name) {
-                        List {
-                            ForEach(scopes) { scope in
-                                NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
-                            }
+                    DisclosureGroup(library.name) {
+                        ForEach(scopes) { scope in
+                            NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
                         }
-                        .navigationTitle(library.name)
                     }
                 }
             }
@@ -162,9 +159,13 @@ private final class TabValueShadow {
         self.library = library
         self.scope = scope
         
-        available = PersistenceManager.shared.customization.availableTabs(for: library, scope: scope)
+        let available = PersistenceManager.shared.customization.availableTabs(for: library, scope: scope)
         
         let configured = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: scope)
+        
+        let missing = available.filter { !configured.contains($0) }
+        
+        self.available = configured + missing
         setActive(tabs: configured)
     }
     
