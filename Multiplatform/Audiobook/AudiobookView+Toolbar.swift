@@ -112,7 +112,7 @@ extension AudiobookView {
                             
                             ItemConfigureButton(itemID: viewModel.audiobook.id)
                         } label: {
-                            Label("item.options", systemImage: "ellipsis.circle")
+                            Label("item.options", systemImage: "ellipsis")
                         }
                     }
                 }

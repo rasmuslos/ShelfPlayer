@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 #if canImport(UIKit)
 import UIKit
@@ -14,16 +15,40 @@ public typealias PlatformImage = UIImage
 #endif
 
 public final actor ImageLoader {
+    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ImageLoader")
     let cachePath = ShelfPlayerKit.cacheDirectoryURL.appending(path: "Images")
     
-    var missing = Set<ImageRequest>()
+    var cached = [ImageRequest: Task<Data, Error>]()
     
     func data(for request: ImageRequest) async throws -> Data {
-        if missing.contains(request) {
-            throw ImageLoadError.missing
+        if cached[request] == nil {
+            cached[request] = .init {
+                let cacheURL = await cacheURL(for: request)
+                
+                if FileManager.default.fileExists(atPath: cacheURL.relativePath), let data = try? Data(contentsOf: cacheURL) {
+                    return data
+                }
+                
+                let result: Data
+                
+                if let url = await PersistenceManager.shared.download.cover(for: request.itemID, size: request.size), let data = try? Data(contentsOf: url) {
+                    result = data
+                } else {
+                    result = try await ABSClient[request.itemID.connectionID].cover(from: request.itemID, width: request.size.width)
+                }
+                
+                do {
+                    try FileManager.default.createDirectory(at: directoryURL(for: request), withIntermediateDirectories: true)
+                    try result.write(to: cacheURL)
+                } catch {
+                    logger.error("Failed to cache image: \(error)")
+                }
+                
+                return result
+            }
         }
         
-        throw ImageLoadError.missingURLRequest
+        return try await cached[request]!.value
     }
     
     nonisolated func platformImage(for request: ImageRequest) async -> PlatformImage? {
@@ -33,17 +58,43 @@ public final actor ImageLoader {
         
         return UIImage(data: data)
     }
+}
+
+public extension ImageLoader {
+    static let shared = ImageLoader()
     
-    public func purge() {
-        
-    }
-    public nonisolated func purge(itemID: ItemIdentifier) async {
-        for size in ImageSize.allCases {
-            
+    func purge() {
+        do {
+            try FileManager.default.removeItem(at: cachePath)
+        } catch {
+            logger.error("Failed to purge image cache: \(error)")
         }
     }
-    
-    public static let shared = ImageLoader()
+    func purge(itemID: ItemIdentifier) async {
+        for size in ImageSize.allCases {
+            let request = ImageRequest(itemID: itemID, size: size)
+            cached[request] = nil
+            
+            do {
+                try await FileManager.default.removeItem(at: cacheURL(for: request))
+            } catch {
+                logger.error("Failed to remove cached item: \(error)")
+            }
+        }
+    }
+}
+
+private extension ImageLoader {
+    func directoryURL(for request: ImageRequest) -> URL {
+        cachePath
+            .appending(path: request.itemID.connectionID)
+            .appending(path: request.itemID.libraryID)
+            .appending(path: "\(request.itemID.primaryID)_\(request.itemID.groupingID ?? "-")")
+    }
+    func cacheURL(for request: ImageRequest) async -> URL {
+        await directoryURL(for: request)
+            .appending(path: "\(request.size.width)")
+    }
 }
 
 public final class ImageRequest: Sendable, Hashable {
@@ -63,49 +114,6 @@ public final class ImageRequest: Sendable, Hashable {
     public static func == (lhs: ImageRequest, rhs: ImageRequest) -> Bool {
         lhs.itemID == rhs.itemID && lhs.size == rhs.size
     }
-}
-
-public enum ImageSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIterable {
-    case tiny
-    case small
-    case regular
-    case large
-    
-    public var id: Int {
-        rawValue
-    }
-    
-    var width: Int {
-        get async {
-            #if os(iOS)
-            if await UIDevice.current.userInterfaceIdiom == .pad {
-                base * 2
-            } else if Defaults[.ultraHighQuality] {
-                base * 2
-            } else {
-                base
-            }
-            #endif
-        }
-    }
-    
-    public var base: Int {
-        switch self {
-            case .tiny:
-                220
-            case .small:
-                320
-            case .regular:
-                600
-            case .large:
-                1000
-        }
-    }
-}
-
-enum ImageLoadError: Error {
-    case missingURLRequest
-    case missing
 }
 
 public extension ItemIdentifier {

@@ -16,9 +16,9 @@ struct PodcastView: View {
     
     @State private var viewModel: PodcastViewModel
     
-    init(_ podcast: Podcast, episodes: [Episode] = [], zoom: Bool) {
+    init(_ podcast: Podcast, zoom: Bool) {
         self.zoom = zoom
-        _viewModel = .init(initialValue: .init(podcast: podcast, episodes: episodes))
+        _viewModel = .init(initialValue: .init(podcast: podcast))
     }
     
     var body: some View {
@@ -80,6 +80,8 @@ struct PodcastView: View {
                 
                 EpisodeList(episodes: viewModel.visible, context: .podcast, selected: .constant(nil))
             }
+            
+            Footer()
         }
         .listStyle(.plain)
         .ignoresSafeArea(edges: .top)
@@ -112,7 +114,7 @@ struct PodcastView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        PodcastView(Podcast.fixture, episodes: .init(repeating: .fixture, count: 1), zoom: true)
+        PodcastView(Podcast.fixture, zoom: true)
     }
     .previewEnvironment()
 }

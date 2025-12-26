@@ -156,6 +156,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         // Update
         
         try await fetchConnections()
+        await RFNotification[.connectionsChanged].send()
     }
     
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, headers: [HTTPHeader]) async throws {
@@ -176,6 +177,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         ] as! [String: Any] as CFDictionary)
         
         try await fetchConnections()
+        await RFNotification[.connectionsChanged].send()
     }
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) async throws {
         try? removeToken(for: connectionID, service: accessTokenService)
@@ -187,6 +189,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
         
         try await fetchConnections()
+        await RFNotification[.connectionsChanged].send()
     }
     
     func remove(connectionID: ItemIdentifier.ConnectionID) async {
@@ -258,10 +261,12 @@ public extension PersistenceManager.AuthorizationSubsystem {
     func scrambleAccessToken(connectionID: ItemIdentifier.ConnectionID) async throws {
         try updateToken("bazinga", for: connectionID, service: accessTokenService)
         try await fetchConnections()
+        await RFNotification[.connectionsChanged].send()
     }
     func scrambleRefreshToken(connectionID: ItemIdentifier.ConnectionID) async throws {
         try updateToken("bazinga", for: connectionID, service: refreshTokenService)
         try await fetchConnections()
+        await RFNotification[.connectionsChanged].send()
     }
     #endif
 }
@@ -341,8 +346,6 @@ extension PersistenceManager.AuthorizationSubsystem {
         }
         
         updateConnections(connections)
-        
-        await RFNotification[.connectionsChanged].send()
     }
     
     // MARK: Token

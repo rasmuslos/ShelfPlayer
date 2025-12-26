@@ -111,6 +111,7 @@ struct ListenNowSheetToggle: View {
         } label: {
             ListenedTodayLabel()
                 .frame(width: width)
+                .contentShape(.rect)
         } primaryAction: {
             satellite.present(.listenNow)
         }

@@ -12,8 +12,9 @@ public extension APIClient {
         guard let groupingID = itemID.groupingID else {
             throw APIClientError.invalidItemType
         }
-        
-        return try await episode(primaryID: itemID.primaryID, groupingID: groupingID, libraryID: itemID.libraryID)
+
+        return try await Episode(episode: response(APIRequest(path: "api/podcasts/\(groupingID)/episode/\(itemID.primaryID)", method: .get, ttl: 12)), libraryID: itemID.libraryID, fallbackIndex: 0, connectionID: itemID.connectionID)
+
     }
     func episode(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID, libraryID: ItemIdentifier.LibraryID) async throws -> Episode {
         try await Episode(episode: response(APIRequest(path: "api/podcasts/\(groupingID)/episode/\(primaryID)", method: .get, ttl: 12)), libraryID: libraryID, fallbackIndex: 0, connectionID: connectionID)

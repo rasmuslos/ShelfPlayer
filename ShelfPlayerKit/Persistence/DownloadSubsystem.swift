@@ -32,7 +32,7 @@ extension PersistenceManager {
         
         var blocked = [ItemIdentifier: Int]()
         var busy = Set<ItemIdentifier>()
-       
+        
         var updateTask: Task<Void, Never>?
         
         private lazy var urlSession: URLSession = {
@@ -326,20 +326,21 @@ private extension PersistenceManager.DownloadSubsystem {
         let request: URLRequest
         
         switch fileType {
-        case .pdf(_, let ino):
+            case .pdf(_, let ino):
                 let apiRequest = try await ABSClient[itemID.connectionID].pdfRequest(from: itemID, ino: ino)
                 request = try await ABSClient[itemID.connectionID].request(apiRequest)
-        case .image(let size):
-            guard let coverRequest = try? await ABSClient[itemID.connectionID].coverRequest(from: itemID, width: size.width) else {
-                try await finishedDownloading(assetID: id)
-                await scheduleUpdateTask()
+            case .image(let size):
+                guard let apiRequest = try? await ABSClient[itemID.connectionID].coverRequest(from: itemID, width: size.width),
+                      let coverRequest = try? await ABSClient[itemID.connectionID].request(apiRequest) else {
+                    try await finishedDownloading(assetID: id)
+                    await scheduleUpdateTask()
+                    
+                    return
+                }
                 
-                return
-            }
-            
-            request = coverRequest
-        case .audio(_, _, let ino, _):
-            request = try await ABSClient[itemID.connectionID].audioTrackRequest(from: itemID, ino: ino)
+                request = coverRequest
+            case .audio(_, _, let ino, _):
+                request = try await ABSClient[itemID.connectionID].audioTrackRequest(from: itemID, ino: ino)
         }
         
         let task = await urlSession.downloadTask(with: request)
@@ -370,21 +371,21 @@ private extension PersistenceManager.DownloadSubsystem {
 public extension PersistenceManager.DownloadSubsystem {
     subscript(itemID: ItemIdentifier) -> Item? {
         switch itemID.type {
-        case .audiobook:
-            if let audiobook = persistedAudiobook(for: itemID) {
-                return Audiobook(downloaded: audiobook)
-            }
-        case .episode:
-            if let episode = persistedEpisode(for: itemID) {
-                return Episode(downloaded: episode)
-            }
-            
-        case .podcast:
-            if let podcast = persistedPodcast(for: itemID) {
-                return Podcast(downloaded: podcast)
-            }
-        default:
-            break
+            case .audiobook:
+                if let audiobook = persistedAudiobook(for: itemID) {
+                    return Audiobook(downloaded: audiobook)
+                }
+            case .episode:
+                if let episode = persistedEpisode(for: itemID) {
+                    return Episode(downloaded: episode)
+                }
+                
+            case .podcast:
+                if let podcast = persistedPodcast(for: itemID) {
+                    return Podcast(downloaded: podcast)
+                }
+            default:
+                break
         }
         
         return nil
@@ -492,10 +493,8 @@ public extension PersistenceManager.DownloadSubsystem {
         
         let asset = assets.first {
             switch $0.fileType {
-            case .image(let current):
-                size == current
-            default:
-                false
+                case .image(let current): size == current
+                default: false
             }
         }
         
@@ -516,10 +515,8 @@ public extension PersistenceManager.DownloadSubsystem {
     func audioTracks(for itemID: ItemIdentifier) throws -> [PlayableItem.AudioTrack] {
         try assets(for: itemID).compactMap {
             switch $0.fileType {
-            case .audio(let offset, let duration, _, _):
-                    .init(offset: offset, duration: duration, resource: $0.path)
-            default:
-                nil
+                case .audio(let offset, let duration, _, _): .init(offset: offset, duration: duration, resource: $0.path)
+                default: nil
             }
         }
     }
@@ -651,40 +648,40 @@ public extension PersistenceManager.DownloadSubsystem {
             let model: any PersistentModel
             
             switch item {
-            case is Audiobook:
-                let audiobook = item as! Audiobook
-                model = PersistedAudiobook(id: itemID,
-                                           name: item.name,
-                                           authors: item.authors,
-                                           overview: item.description,
-                                           genres: item.genres,
-                                           addedAt: item.addedAt,
-                                           released: item.released,
-                                           size: item.size,
-                                           duration: item.duration,
-                                           subtitle: audiobook.subtitle,
-                                           narrators: audiobook.narrators,
-                                           series: audiobook.series,
-                                           explicit: audiobook.explicit,
-                                           abridged: audiobook.abridged)
-            case is Episode:
-                let episode = item as! Episode
-                
-                model = PersistedEpisode(id: itemID,
-                                         name: item.name,
-                                         authors: item.authors,
-                                         overview: item.description,
-                                         addedAt: item.addedAt,
-                                         released: item.released,
-                                         size: item.size,
-                                         duration: item.duration,
-                                         podcast: podcast!,
-                                         type: episode.type,
-                                         index: episode.index)
-                
-                podcast?.episodes.append(model as! PersistedEpisode)
-            default:
-                fatalError("Unsupported item type: \(type(of: item))")
+                case is Audiobook:
+                    let audiobook = item as! Audiobook
+                    model = PersistedAudiobook(id: itemID,
+                                               name: item.name,
+                                               authors: item.authors,
+                                               overview: item.description,
+                                               genres: item.genres,
+                                               addedAt: item.addedAt,
+                                               released: item.released,
+                                               size: item.size,
+                                               duration: item.duration,
+                                               subtitle: audiobook.subtitle,
+                                               narrators: audiobook.narrators,
+                                               series: audiobook.series,
+                                               explicit: audiobook.explicit,
+                                               abridged: audiobook.abridged)
+                case is Episode:
+                    let episode = item as! Episode
+                    
+                    model = PersistedEpisode(id: itemID,
+                                             name: item.name,
+                                             authors: item.authors,
+                                             overview: item.description,
+                                             addedAt: item.addedAt,
+                                             released: item.released,
+                                             size: item.size,
+                                             duration: item.duration,
+                                             podcast: podcast!,
+                                             type: episode.type,
+                                             index: episode.index)
+                    
+                    podcast?.episodes.append(model as! PersistedEpisode)
+                default:
+                    fatalError("Unsupported item type: \(type(of: item))")
             }
             
             try modelContext.transaction {
@@ -729,7 +726,7 @@ public extension PersistenceManager.DownloadSubsystem {
             for episode in episodes {
                 try await remove(episode.id)
             }
-        
+            
             try await removeAssets(assets(for: itemID))
             
             for coverSize in ImageSize.allCases {

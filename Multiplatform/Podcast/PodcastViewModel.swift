@@ -38,10 +38,10 @@ final class PodcastViewModel: Equatable, Hashable {
     private(set) var dominantColor: Color?
     private(set) var notifyError: Bool
     
-    init(podcast: Podcast, episodes: [Episode]) {
+    init(podcast: Podcast) {
         self.podcast = podcast
         
-        self.episodes = episodes
+        episodes = []
         visible = []
         
         search = ""

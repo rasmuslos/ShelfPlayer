@@ -173,6 +173,9 @@ struct TabRouter: View {
                     .onAppear {
                         navigateIfRequired(withDelay: true)
                     }
+                    .onAppear {
+                        ShelfPlayer.initOnlineUIHook()
+                    }
                 }
             } else {
                 LoadingView()

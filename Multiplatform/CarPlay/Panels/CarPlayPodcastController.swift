@@ -48,7 +48,7 @@ class CarPlayPodcastController {
     }
     private nonisolated func loadEpisodes() {
         Task {
-            let (_, episodes) = try await podcast.id.resolvedComplex
+            let (_, episodes) = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id)
             
             let sorted = await Podcast.filterSort(episodes, podcastID: podcast.id)
             

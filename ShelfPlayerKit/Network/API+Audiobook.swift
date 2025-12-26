@@ -29,6 +29,9 @@ public extension APIClient {
         return (audiobooks, authors)
     }
     
+    func audiobook(with itemID: ItemIdentifier) async throws -> Audiobook {
+        try await audiobook(primaryID: itemID.primaryID)
+    }
     func audiobook(primaryID: ItemIdentifier.PrimaryID) async throws -> Audiobook {
         let payload = try await item(primaryID: primaryID, groupingID: nil)
         
