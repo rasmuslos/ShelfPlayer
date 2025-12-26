@@ -20,13 +20,11 @@ public final actor APIClient: Sendable {
     var attempts: [String: Int] = [:]
     var authorizationRefreshTask: Task<Void, Error>?
     
-    let failureSubject = PassthroughSubject<(String, Error), Never>()
-    let responseSubject = PassthroughSubject<(String, Decodable), Never>()
+    let responseSubject = PassthroughSubject<(String, (Decodable?, Error?)), Never>()
     
-    var subscribers = [UUID: [AnyCancellable]]()
+    var subscribers = [UUID: AnyCancellable]()
     
-    nonisolated let failurePublisher: AnyPublisher<(String, Error), Never>
-    nonisolated let responsePublisher: AnyPublisher<(String, Decodable), Never>
+    nonisolated let responsePublisher: AnyPublisher<(String, (Decodable?, Error?)), Never>
     
     nonisolated(unsafe) let cache = NSCache<NSString, CachedAPIResponse>()
     
@@ -67,7 +65,6 @@ public final actor APIClient: Sendable {
         
         (host, headers) = try await credentialProvider.configuration
         
-        failurePublisher = failureSubject.eraseToAnyPublisher()
         responsePublisher = responseSubject.eraseToAnyPublisher()
     }
     deinit {
@@ -194,21 +191,19 @@ private extension APIClient {
             let response = try await withCheckedThrowingContinuation { continuation in
                 let responseSubscriber = self.responsePublisher
                     .first { $0.0 == id }
-                    .compactMap {
-                        $1 as? R
-                    }
                     .sink {
-                        continuation.resume(returning: $0)
-                    }
-
-                let failureSubscriber = self.failurePublisher
-                    .first { $0.0 == id }
-                    .map { $1 }
-                    .sink {
-                        continuation.resume(throwing: $0)
+                        let (response, error) = $1
+                        
+                        if let response = response as? R {
+                            continuation.resume(returning: response)
+                        } else if let error {
+                            continuation.resume(throwing: error)
+                        } else {
+                            continuation.resume(throwing: APIClientError.serializeError)
+                        }
                     }
       
-                subscribers[uuid] = [responseSubscriber, failureSubscriber]
+                subscribers[uuid] = responseSubscriber
                 dispatchQueued()
             }
             
@@ -249,9 +244,9 @@ private extension APIClient {
     func performQueuedRequest(_ id: String, _ request: any APIRequestProtocol) async {
         do {
             let response = try await perform(request)
-            responseSubject.send((id, response))
+            responseSubject.send((id, (response, nil)))
         } catch {
-            failureSubject.send((id, error))
+            responseSubject.send((id, (nil, error)))
         }
         
         dispatchQueued()

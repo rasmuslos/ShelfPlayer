@@ -141,7 +141,7 @@ private extension ResolveCache {
         return (podcast, episodes)
     }
     func resolveOnlineEpisode(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID, connectionID: ItemIdentifier.ConnectionID) async throws -> Episode {
-        let episodes = try await resolveOnlinePodcast(primaryID: primaryID, connectionID: connectionID).1
+        let episodes = try await resolveOnlinePodcast(primaryID: groupingID, connectionID: connectionID).1
         let episode = episodes.first {
             $0.id.primaryID == primaryID
         }

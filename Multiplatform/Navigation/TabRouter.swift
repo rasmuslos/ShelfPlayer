@@ -66,204 +66,220 @@ struct TabRouter: View {
         }
     }
     
+    @ViewBuilder
+    private func applyChangeEvents(_ content: () -> some View) -> some View {
+        content()
+            .onChange(of: satellite.tabValue?.library, initial: true) {
+                let appearance = UINavigationBarAppearance()
+                
+                if satellite.tabValue?.library.type == .audiobooks && Defaults[.enableSerifFont] {
+                    appearance.titleTextAttributes = [.font: UIFont(descriptor: UIFont.systemFont(ofSize: 17, weight: .bold).fontDescriptor.withDesign(.serif)!, size: 0)]
+                    appearance.largeTitleTextAttributes = [.font: UIFont(descriptor: UIFont.systemFont(ofSize: 34, weight: .bold).fontDescriptor.withDesign(.serif)!, size: 0)]
+                }
+                
+                appearance.configureWithTransparentBackground()
+                UINavigationBar.appearance().standardAppearance = appearance
+                
+                appearance.configureWithDefaultBackground()
+                UINavigationBar.appearance().compactAppearance = appearance
+            }
+            .onChange(of: satellite.tabValue) {
+                navigateIfRequired(withDelay: true)
+            }
+            .onChange(of: satellite.tabValue?.library.connectionID) {
+                RFNotification[.performBackgroundSessionSync].send(payload: satellite.tabValue?.library.connectionID)
+            }
+            .onChange(of: connectionStore.libraries, initial: true) {
+                populateCompactLibraryTabs()
+            }
+            .onChange(of: customTabValues) {
+                if customTabValues.isEmpty {
+                    customTabsActive = false
+                }
+            }
+    }
+    @ViewBuilder
+    private func applyReceiveEvents(_ content: () -> some View) -> some View {
+        content()
+            .onReceive(RFNotification[.changeLibrary].publisher()) {
+                select($0)
+            }
+            .onReceive(RFNotification[.setGlobalSearch].publisher()) { payload in
+                guard let library = satellite.tabValue?.library, satellite.tabValue != searchTab else {
+                    return
+                }
+                
+                satellite.tabValue = .search(library)
+                
+                Task {
+                    try await Task.sleep(for: .seconds(0.6))
+                    RFNotification[.setGlobalSearch].dispatch(payload: payload)
+                }
+            }
+            .onReceive(RFNotification[.navigate].publisher()) {
+                navigateToWhenReady = $0
+                navigateIfRequired(withDelay: false)
+            }
+            .onReceive(RFNotification[.navigateConditionMet].publisher()) {
+                navigateIfRequired(withDelay: true)
+            }
+            .onReceive(RFNotification[.invalidateTabs].publisher()) {
+                libraryCompactTabs.removeAll()
+                populateCompactLibraryTabs()
+            }
+            .onReceive(RFNotification[.toggleCustomTabsActive].publisher()) {
+                guard !customTabValues.isEmpty else {
+                    customTabsActive = false
+                    satellite.present(.customTabValuePreferences)
+                    return
+                }
+                
+                customTabsActive.toggle()
+                satellite.tabValue = customTabValues.first
+            }
+            .onReceive(RFNotification[.invalidateTab].publisher()) {
+                customTabsActive = false
+                satellite.tabValue = nil
+                
+                selectFirstLibrary()
+            }
+    }
+    @ViewBuilder
+    private func applyEvents(_ content: () -> some View) -> some View {
+        applyChangeEvents {
+            applyReceiveEvents {
+                content()
+            }
+        }
+    }
+    
     var body: some View {
-        ZStack {
-            if isCompact, !isSynchronized, let tabValue = satellite.tabValue {
-                SyncGate(library: tabValue.library)
-            } else if let tabValue = satellite.tabValue {
-                if isCompact, libraryCompactTabs[tabValue.library] == nil {
-                    LoadingView()
-                        .modifier(OfflineControlsModifier(startOfflineTimeout: true))
-                        .task {
-                            libraryCompactTabs[tabValue.library] = await PersistenceManager.shared.customization.configuredTabs(for: tabValue.library, scope: .tabBar)
-                        }
-                } else {
-                    TabView(selection: selectionProxy) {
-                        if isCompact {
-                            if customTabsActive && !customTabValues.isEmpty {
-                                ForEach(customTabValues) { tabValue in
-                                    Tab(tabValue.library.name, systemImage: tabValue.image, value: tabValue) {
-                                        content(for: tabValue)
-                                    }
-                                }
-                            } else if let libraryCompactTabs = libraryCompactTabs[tabValue.library] {
-                                ForEach(libraryCompactTabs) { tabValue in
-                                    Tab(tabValue.label, systemImage: tabValue.image, value: tabValue) {
-                                        content(for: tabValue)
-                                    }
-                                }
+        applyEvents {
+            ZStack {
+                if isCompact, !isSynchronized, let tabValue = satellite.tabValue {
+                    SyncGate(library: tabValue.library)
+                } else if let tabValue = satellite.tabValue {
+                    if isCompact, libraryCompactTabs[tabValue.library] == nil {
+                        LoadingView()
+                            .modifier(OfflineControlsModifier(startOfflineTimeout: true))
+                            .task {
+                                libraryCompactTabs[tabValue.library] = await PersistenceManager.shared.customization.configuredTabs(for: tabValue.library, scope: .tabBar)
                             }
-                        }
-                        
-                        ForEach(connectionStore.connections) { connection in
-                            if let libraries = connectionStore.libraries[connection.id] {
-                                ForEach(libraries) { library in
-                                    TabSection(library.name) {
-                                        ForEach(PersistenceManager.shared.customization.availableTabs(for: library, scope: .sidebar)) { tab in
-                                            Tab(tab.label, systemImage: tab.image, value: tab) {
-                                                if !isSynchronized && !isCompact {
-                                                    SyncGate(library: tabValue.library)
-                                                } else {
-                                                    content(for: tab)
-                                                }
-                                            }
-                                            .hidden(isCompact)
-                                            .customizationID("tab_\(library.id)_\(library.connectionID)_\(tab.id)")
+                    } else {
+                        TabView(selection: selectionProxy) {
+                            if isCompact {
+                                if customTabsActive && !customTabValues.isEmpty {
+                                    ForEach(customTabValues) { tabValue in
+                                        Tab(tabValue.library.name, systemImage: tabValue.image, value: tabValue) {
+                                            content(for: tabValue)
                                         }
                                     }
-                                    .customizationID("library_\(library.id)_\(library.connectionID)")
-                                }
-                            }
-                        }
-                        
-                        if let searchTab {
-                            Tab(value: searchTab, role: .search) {
-                                content(for: searchTab)
-                                    .modifier(SearchPanelModifier())
-                            }
-                        }
-                    }
-                    .tabViewStyle(.sidebarAdaptable)
-                    .tabViewSidebarFooter {
-                        Divider()
-                            .padding(.bottom, 12)
-                        
-                        HStack(spacing: 12) {
-                            Button("preferences", systemImage: "gearshape") {
-                                satellite.present(.preferences)
-                            }
-                            
-                            Button("navigation.offline.enable", systemImage: "network.slash") {
-                                OfflineMode.shared.setEnabled(true)
-                            }
-                            
-                            Spacer()
-                        }
-                        .buttonStyle(.plain)
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.primary)
-                    }
-                    .tabViewCustomization($customization)
-                    .tabViewSidebarHeader {
-                        Button {
-                            satellite.present(.listenNow)
-                        } label: {
-                            ListenedTodayListRow()
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .modify {
-                        if isCompact, #available(iOS 26, *) {
-                            $0
-                                .tabBarMinimizeBehavior(.onScrollDown)
-                                .tabViewBottomAccessory {
-                                    if satellite.nowPlayingItemID != nil {
-                                        PlaybackBottomBarPill()
-                                    } else {
-                                        PlaybackPlaceholderBottomPill()
+                                } else if let libraryCompactTabs = libraryCompactTabs[tabValue.library] {
+                                    ForEach(libraryCompactTabs) { tabValue in
+                                        Tab(tabValue.label, systemImage: tabValue.image, value: tabValue) {
+                                            content(for: tabValue)
+                                        }
                                     }
                                 }
-                        } else {
-                            $0
-                                .modifier(ApplyLegacyCollapsedForeground())
+                            }
+                            
+                            ForEach(connectionStore.connections) { connection in
+                                if let libraries = connectionStore.libraries[connection.id] {
+                                    ForEach(libraries) { library in
+                                        TabSection(library.name) {
+                                            ForEach(PersistenceManager.shared.customization.availableTabs(for: library, scope: .sidebar)) { tab in
+                                                Tab(tab.label, systemImage: tab.image, value: tab) {
+                                                    if !isSynchronized && !isCompact {
+                                                        SyncGate(library: tabValue.library)
+                                                    } else {
+                                                        content(for: tab)
+                                                    }
+                                                }
+                                                .hidden(isCompact)
+                                                .customizationID("tab_\(library.id)_\(library.connectionID)_\(tab.id)")
+                                            }
+                                        }
+                                        .customizationID("library_\(library.id)_\(library.connectionID)")
+                                    }
+                                }
+                            }
+                            
+                            if let searchTab {
+                                Tab(value: searchTab, role: .search) {
+                                    content(for: searchTab)
+                                        .modifier(SearchPanelModifier())
+                                }
+                            }
+                        }
+                        .tabViewStyle(.sidebarAdaptable)
+                        .tabViewSidebarFooter {
+                            Divider()
+                                .padding(.bottom, 12)
+                            
+                            HStack(spacing: 12) {
+                                Button("preferences", systemImage: "gearshape") {
+                                    satellite.present(.preferences)
+                                }
+                                
+                                Button("navigation.offline.enable", systemImage: "network.slash") {
+                                    OfflineMode.shared.setEnabled(true)
+                                }
+                                
+                                Spacer()
+                            }
+                            .buttonStyle(.plain)
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(.primary)
+                        }
+                        .tabViewCustomization($customization)
+                        .tabViewSidebarHeader {
+                            Button {
+                                satellite.present(.listenNow)
+                            } label: {
+                                ListenedTodayListRow()
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .modify {
+                            if isCompact, #available(iOS 26, *) {
+                                $0
+                                    .tabBarMinimizeBehavior(.onScrollDown)
+                                    .tabViewBottomAccessory {
+                                        if satellite.nowPlayingItemID != nil {
+                                            PlaybackBottomBarPill()
+                                        } else {
+                                            PlaybackPlaceholderBottomPill()
+                                        }
+                                    }
+                            } else {
+                                $0
+                                    .modifier(ApplyLegacyCollapsedForeground())
+                            }
+                        }
+                        .modifier(CompactPlaybackModifier())
+                        .modifier(RegularPlaybackModifier())
+                        .onAppear {
+                            navigateIfRequired(withDelay: true)
+                        }
+                        .onAppear {
+                            ShelfPlayer.initOnlineUIHook()
                         }
                     }
-                    .modifier(CompactPlaybackModifier())
-                    .modifier(RegularPlaybackModifier())
-                    .onAppear {
-                        navigateIfRequired(withDelay: true)
-                    }
-                    .onAppear {
-                        ShelfPlayer.initOnlineUIHook()
-                    }
+                } else {
+                    LoadingView()
+                        .modifier(OfflineControlsModifier(startOfflineTimeout: false))
+                        .onChange(of: connectionStore.libraries, initial: true) {
+                            if let lastSelection = Defaults[.lastTabValue] {
+                                satellite.tabValue = lastSelection
+                                return
+                            }
+                            
+                            selectFirstLibrary()
+                        }
                 }
-            } else {
-                LoadingView()
-                    .modifier(OfflineControlsModifier(startOfflineTimeout: false))
-                    .onChange(of: connectionStore.libraries, initial: true) {
-                        if let lastSelection = Defaults[.lastTabValue] {
-                            satellite.tabValue = lastSelection
-                            return
-                        }
-                        
-                        guard let library = connectionStore.libraries.first?.value.first else {
-                            return
-                        }
-                        
-                        switch library.type {
-                        case .audiobooks:
-                            satellite.tabValue = .audiobookHome(library)
-                        case .podcasts:
-                            satellite.tabValue = .podcastHome(library)
-                        }
-                    }
             }
-        }
-        .environment(\.playbackBottomOffset, 52)
-        .sensoryFeedback(.error, trigger: progressViewModel.importFailedConnectionIDs)
-        .onChange(of: satellite.tabValue?.library, initial: true) {
-            let appearance = UINavigationBarAppearance()
-            
-            if satellite.tabValue?.library.type == .audiobooks && Defaults[.enableSerifFont] {
-                appearance.titleTextAttributes = [.font: UIFont(descriptor: UIFont.systemFont(ofSize: 17, weight: .bold).fontDescriptor.withDesign(.serif)!, size: 0)]
-                appearance.largeTitleTextAttributes = [.font: UIFont(descriptor: UIFont.systemFont(ofSize: 34, weight: .bold).fontDescriptor.withDesign(.serif)!, size: 0)]
-            }
-            
-            appearance.configureWithTransparentBackground()
-            UINavigationBar.appearance().standardAppearance = appearance
-            
-            appearance.configureWithDefaultBackground()
-            UINavigationBar.appearance().compactAppearance = appearance
-        }
-        .onChange(of: satellite.tabValue) {
-            navigateIfRequired(withDelay: true)
-        }
-        .onChange(of: satellite.tabValue?.library.connectionID) {
-            RFNotification[.performBackgroundSessionSync].send(payload: satellite.tabValue?.library.connectionID)
-        }
-        .onChange(of: connectionStore.libraries, initial: true) {
-            populateCompactLibraryTabs()
-        }
-        .onChange(of: customTabValues) {
-            if customTabValues.isEmpty {
-                customTabsActive = false
-            }
-        }
-        .onReceive(RFNotification[.changeLibrary].publisher()) {
-            select($0)
-        }
-        .onReceive(RFNotification[.setGlobalSearch].publisher()) { payload in
-            guard let library = satellite.tabValue?.library, satellite.tabValue != searchTab else {
-                return
-            }
-            
-            satellite.tabValue = .search(library)
-            
-            Task {
-                try await Task.sleep(for: .seconds(0.6))
-                RFNotification[.setGlobalSearch].dispatch(payload: payload)
-            }
-        }
-        .onReceive(RFNotification[.navigate].publisher()) {
-            navigateToWhenReady = $0
-            navigateIfRequired(withDelay: false)
-        }
-        .onReceive(RFNotification[.navigateConditionMet].publisher()) {
-            navigateIfRequired(withDelay: true)
-        }
-        .onReceive(RFNotification[.invalidateTabs].publisher()) {
-            libraryCompactTabs.removeAll()
-            populateCompactLibraryTabs()
-        }
-        .onReceive(RFNotification[.toggleCustomTabsActive].publisher()) {
-            guard !customTabValues.isEmpty else {
-                customTabsActive = false
-                satellite.present(.customTabValuePreferences)
-                return
-            }
-            
-            customTabsActive.toggle()
-            satellite.tabValue = customTabValues.first
+            .environment(\.playbackBottomOffset, 52)
+            .sensoryFeedback(.error, trigger: progressViewModel.importFailedConnectionIDs)
         }
     }
     
@@ -333,6 +349,19 @@ struct TabRouter: View {
         }
         
         return false
+    }
+    
+    private func selectFirstLibrary() {
+        guard let library = connectionStore.libraries.first?.value.first else {
+            return
+        }
+        
+        switch library.type {
+            case .audiobooks:
+                satellite.tabValue = .audiobookHome(library)
+            case .podcasts:
+                satellite.tabValue = .podcastHome(library)
+        }
     }
     
     private func populateCompactLibraryTabs() {
