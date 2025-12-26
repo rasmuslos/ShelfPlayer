@@ -269,6 +269,7 @@ public extension RFNotification.IsolatedNotification {
     static var listenNowItemsChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.listenNowItemsChanged") }
     static var synchronizedPlaybackSessions: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.synchronizedPlaybackSessions") }
     
+    static var invalidateTab: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.invalidateTab") }
     static var invalidateTabs: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.invalidateTabs") }
     static var toggleCustomTabsActive: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.toggleCustomTabsActive") }
     

@@ -12,6 +12,9 @@ struct SyncGate: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(ProgressViewModel.self) private var progressViewModel
     
+    @Environment(ConnectionStore.self) private var connectionStore
+    @Environment(Satellite.self) private var satellite
+    
     let library: Library
     
     private var isCompact: Bool {
@@ -25,6 +28,13 @@ struct SyncGate: View {
                     .symbolRenderingMode(.multicolor)
                     .symbolEffect(.wiggle, options: .nonRepeating)
                     .modifier(OfflineControlsModifier(startOfflineTimeout: true))
+                    .onAppear {
+                        guard connectionStore.libraries[library.connectionID]?.contains(where: { $0 == library }) != true, satellite.tabValue?.library == library else {
+                            return
+                        }
+                        
+                        RFNotification[.invalidateTab].send()
+                    }
             } else {
                 ContentUnavailableView("navigation.sync", systemImage: "binoculars")
                     .symbolEffect(.pulse)

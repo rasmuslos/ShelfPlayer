@@ -4,19 +4,13 @@ import Defaults
 @Observable @MainActor
 public final class OfflineMode: Sendable {
     private(set) public var isEnabled: Bool
-    
     private var unavailable = [ItemIdentifier.ConnectionID]()
     
-    init() {
+    private init() {
         isEnabled = Defaults[.isOffline]
     }
     
     public static let shared = OfflineMode()
-    public static func setEnabled(_ isOffline: Bool) {
-        Task {
-            OfflineMode.shared.setEnabled(isOffline)
-        }
-    }
 }
 
 public extension OfflineMode {
