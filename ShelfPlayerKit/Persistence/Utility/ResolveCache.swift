@@ -18,6 +18,10 @@ public actor ResolveCache: Sendable {
     
     let memoryCache = NSCache<NSString, Item>()
     
+    var resolveItemID = [ItemIdentifier: Task<Item, Error>]()
+    var resolvePlayableItem = [NSString: Task<PlayableItem, Error>]()
+    var resolvePodcast = [NSString: Task<(Podcast, [Episode]), Error>]()
+    
     private init() {
         memoryCache.countLimit = 760
         
@@ -35,6 +39,8 @@ public actor ResolveCache: Sendable {
     private enum ResolveError: Error {
         case offline
         
+        case invalidDiskCached
+        
         case missingEpisode
         case missingNarrator
         case missingGroupingID
@@ -45,80 +51,108 @@ public actor ResolveCache: Sendable {
 
 public extension ResolveCache {
     func resolve(_ itemID: ItemIdentifier) async throws -> Item {
-        if let downloaded = await PersistenceManager.shared.download[itemID] {
-            return downloaded
-        } else if let diskCached = await diskCached(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID) {
-            return diskCached
-        }
-        
-        guard await !OfflineMode.shared.isEnabled else {
-            throw ResolveError.offline
-        }
-        
-        let item: Item
-        
-        switch itemID.type {
-            case .audiobook:
-                item = try await ABSClient[itemID.connectionID].audiobook(with: itemID)
-            case .author:
-                item = try await ABSClient[itemID.connectionID].author(with: itemID)
-            case .narrator:
-                let narrators = try await ABSClient[itemID.connectionID].narrators(from: itemID.libraryID)
-                let narrator = narrators.first {
-                    $0.id == itemID
+        // ReferenceWritableKeyPath<ResolveCache, [K: Task<Item, Error>]> did not work
+
+        if resolveItemID[itemID] == nil {
+            resolveItemID[itemID] = .init {
+                logger.info("Attempting to resolve item: \(itemID)")
+                
+                if let downloaded = await PersistenceManager.shared.download[itemID] {
+                    return downloaded
+                } else if let diskCached = await diskCached(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID) {
+                    return diskCached
                 }
                 
-                guard let narrator else {
-                    throw ResolveError.missingNarrator
+                guard await !OfflineMode.shared.isEnabled else {
+                    throw ResolveError.offline
                 }
                 
-                item = narrator
-            case .series:
-                item = try await ABSClient[itemID.connectionID].series(with: itemID)
-            case .podcast:
-                item = try await resolveOnlinePodcast(primaryID: itemID.primaryID, connectionID: itemID.connectionID).0
-            case .episode:
-                guard let groupingID = itemID.groupingID else {
-                    throw ResolveError.missingGroupingID
+                logger.info("No downloaded or disk cached for \(itemID)")
+                
+                let item: Item
+                
+                switch itemID.type {
+                    case .audiobook:
+                        item = try await ABSClient[itemID.connectionID].audiobook(with: itemID)
+                    case .author:
+                        item = try await ABSClient[itemID.connectionID].author(with: itemID)
+                    case .narrator:
+                        let narrators = try await ABSClient[itemID.connectionID].narrators(from: itemID.libraryID)
+                        let narrator = narrators.first {
+                            $0.id == itemID
+                        }
+                        
+                        guard let narrator else {
+                            throw ResolveError.missingNarrator
+                        }
+                        
+                        item = narrator
+                    case .series:
+                        item = try await ABSClient[itemID.connectionID].series(with: itemID)
+                    case .podcast:
+                        item = try await resolveOnlinePodcast(primaryID: itemID.primaryID, connectionID: itemID.connectionID).0
+                    case .episode:
+                        guard let groupingID = itemID.groupingID else {
+                            throw ResolveError.missingGroupingID
+                        }
+                        
+                        item = try await resolveOnlineEpisode(primaryID: itemID.primaryID, groupingID: groupingID, connectionID: itemID.connectionID)
+                    case .collection, .playlist:
+                        item = try await ABSClient[itemID.connectionID].collection(with: itemID)
                 }
                 
-                item = try await resolveOnlineEpisode(primaryID: itemID.primaryID, groupingID: groupingID, connectionID: itemID.connectionID)
-            case .collection, .playlist:
-                item = try await ABSClient[itemID.connectionID].collection(with: itemID)
+                if !(item.id.type == .episode || item.id.type == .podcast) {
+                    store(item: item)
+                }
+                
+                return item
+            }
         }
         
-        if !(item.id.type == .episode || item.id.type == .podcast) {
-            store(item: item)
-        }
-        
-        return item
+        return try await resolveItemID[itemID]!.value
     }
     func resolve(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws -> PlayableItem {
-        if let downloaded = await PersistenceManager.shared.download.item(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
-            return downloaded
-        } else if let diskCached = await diskCached(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) as? PlayableItem {
-            return diskCached
+        let cacheKey = memoryCacheKey(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+        
+        if resolvePlayableItem[cacheKey] == nil {
+            resolvePlayableItem[cacheKey] = .init {
+                logger.info("Attempting to resolve playable item: \(primaryID) \(String(describing: groupingID)) \(connectionID)")
+                
+                if let downloaded = await PersistenceManager.shared.download.item(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
+                    return downloaded
+                } else if let diskCached = await diskCached(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) as? PlayableItem {
+                    return diskCached
+                }
+                
+                logger.info("No downloaded or disk cached for playable item: \(primaryID) \(String(describing: groupingID)) \(connectionID)")
+                
+                guard await !OfflineMode.shared.isEnabled else {
+                    throw ResolveError.offline
+                }
+                
+                if let groupingID {
+                    return try await resolveOnlineEpisode(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+                } else {
+                    let audiobook = try await ABSClient[connectionID].audiobook(primaryID: primaryID)
+                    
+                    store(item: audiobook)
+                    return audiobook
+                }
+            }
         }
         
-        guard await !OfflineMode.shared.isEnabled else {
-            throw ResolveError.offline
-        }
-        
-        if let groupingID {
-            return try await resolveOnlineEpisode(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
-        } else {
-            let audiobook = try await ABSClient[connectionID].audiobook(primaryID: primaryID)
-            
-            store(item: audiobook)
-            return audiobook
-        }
+        return try await resolvePlayableItem[cacheKey]!.value
     }
     func resolve(primaryID: ItemIdentifier.PrimaryID, connectionID: ItemIdentifier.ConnectionID) async throws -> Podcast {
+        logger.info("Attempting to resolve podcast: \(primaryID) \(connectionID)")
+        
         if let downloaded = await PersistenceManager.shared.download.podcast(primaryID: primaryID, connectionID: connectionID) {
             return downloaded
         } else if let diskCached = await diskCached(primaryID: primaryID, groupingID: nil, connectionID: connectionID) as? Podcast {
             return diskCached
         }
+        
+        logger.info("No downloaded or disk cached for podcast: \(primaryID) \(connectionID)")
         
         guard await !OfflineMode.shared.isEnabled else {
             throw ResolveError.offline
@@ -130,15 +164,23 @@ public extension ResolveCache {
 
 private extension ResolveCache {
     func resolveOnlinePodcast(primaryID: ItemIdentifier.PrimaryID, connectionID: ItemIdentifier.ConnectionID) async throws -> (Podcast, [Episode]) {
-        let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: primaryID)
+        let cacheKey = memoryCacheKey(primaryID: primaryID, groupingID: nil, connectionID: connectionID)
         
-        store(item: podcast)
-        
-        for episode in episodes {
-            store(item: episode)
+        if resolvePodcast[cacheKey] == nil {
+            resolvePodcast[cacheKey] = .init {
+                let (podcast, episodes) = try await ABSClient[connectionID].podcast(with: primaryID)
+                
+                store(item: podcast)
+                
+                for episode in episodes {
+                    store(item: episode)
+                }
+                
+                return (podcast, episodes)
+            }
         }
         
-        return (podcast, episodes)
+        return try await resolvePodcast[cacheKey]!.value
     }
     func resolveOnlineEpisode(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID, connectionID: ItemIdentifier.ConnectionID) async throws -> Episode {
         let episodes = try await resolveOnlinePodcast(primaryID: groupingID, connectionID: connectionID).1
@@ -185,6 +227,10 @@ public extension ResolveCache {
 // MARK: Disk & Memory cache
 
 private extension ResolveCache {
+    func memoryCacheKey(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> NSString {
+        NSString(string: "\(connectionID)_\(primaryID)_\(groupingID ?? "-")")
+    }
+    
     func diskPath(connectionID: ItemIdentifier.ConnectionID) -> URL {
         cachePath
             .appending(path: connectionID)
@@ -192,9 +238,6 @@ private extension ResolveCache {
     func diskPath(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> URL {
         diskPath(connectionID: connectionID)
             .appending(path: "\(primaryID)_\(groupingID ?? "-")")
-    }
-    func memoryCacheKey(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> NSString {
-        NSString(string: "\(connectionID)_\(primaryID)_\(groupingID ?? "-")")
     }
     
     func diskCached(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async -> Item? {
@@ -217,8 +260,15 @@ private extension ResolveCache {
             return nil
         }
         
-        guard let result = try? JSONDecoder().decode(DiskCachedItem.self, from: content).item else {
-            logger.error("Failed to decode the cached file")
+        do {
+            guard let result = try JSONDecoder().decode(DiskCachedItem.self, from: content).item else {
+                throw ResolveError.invalidDiskCached
+            }
+            
+            logger.info("Using disk cache for item \(result.id)")
+            return result
+        } catch {
+            logger.error("Failed to decode the cached file: \(error)")
             
             do {
                 try FileManager.default.removeItem(at: diskPath)
@@ -228,10 +278,6 @@ private extension ResolveCache {
             
             return nil
         }
-        
-        logger.info("Using disk cache for item \(result.id)")
-        
-        return result
     }
     func store(item: Item) {
         let primaryID = item.id.primaryID
@@ -286,3 +332,4 @@ private struct DiskCachedItem: Codable {
         }
     }
 }
+

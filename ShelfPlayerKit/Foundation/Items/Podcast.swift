@@ -27,10 +27,12 @@ public final class Podcast: Item, @unchecked Sendable {
     }
     
     required init(from decoder: Decoder) throws {
-        self.explicit = try decoder.container(keyedBy: CodingKeys.self).decode(Bool.self, forKey: .explicit)
-        self.episodeCount = try decoder.container(keyedBy: CodingKeys.self).decode(Int.self, forKey: .episodeCount)
-        self.incompleteEpisodeCount = try decoder.container(keyedBy: CodingKeys.self).decode(Int.self, forKey: .incompleteEpisodeCount)
-        self.publishingType = try decoder.container(keyedBy: CodingKeys.self).decode(PodcastType.self, forKey: .publishingType)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.explicit = try container.decode(Bool.self, forKey: .explicit)
+        self.episodeCount = try container.decode(Int.self, forKey: .episodeCount)
+        self.incompleteEpisodeCount = try container.decodeIfPresent(Int.self, forKey: .incompleteEpisodeCount)
+        self.publishingType = try container.decodeIfPresent(PodcastType.self, forKey: .publishingType)
         
         try super.init(from: decoder)
     }
@@ -41,8 +43,8 @@ public final class Podcast: Item, @unchecked Sendable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(explicit, forKey: .explicit)
         try container.encode(episodeCount, forKey: .episodeCount)
-        try container.encode(incompleteEpisodeCount, forKey: .incompleteEpisodeCount)
-        try container.encode(publishingType, forKey: .publishingType)
+        try container.encodeIfPresent(incompleteEpisodeCount, forKey: .incompleteEpisodeCount)
+        try container.encodeIfPresent(publishingType, forKey: .publishingType)
     }
     
     enum CodingKeys: String, CodingKey {

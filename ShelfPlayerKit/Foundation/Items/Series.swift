@@ -17,7 +17,9 @@ public final class Series: Item, @unchecked Sendable {
     }
     
     required init(from decoder: Decoder) throws {
-        self.audiobooks = try decoder.container(keyedBy: CodingKeys.self).decode([Audiobook].self, forKey: .audiobooks)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.audiobooks = try container.decode([Audiobook].self, forKey: .audiobooks)
+        
         try super.init(from: decoder)
     }
     

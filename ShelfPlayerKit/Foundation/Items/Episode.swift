@@ -22,9 +22,11 @@ public final class Episode: PlayableItem, @unchecked Sendable {
     }
     
     required init(from decoder: Decoder) throws {
-        self.podcastName = try decoder.container(keyedBy: CodingKeys.self).decode(String.self, forKey: .podcastName)
-        self.type = try decoder.container(keyedBy: CodingKeys.self).decode(EpisodeType.self, forKey: .type)
-        self.index = try decoder.container(keyedBy: CodingKeys.self).decode(EpisodeIndex.self, forKey: .index)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.podcastName = try container.decode(String.self, forKey: .podcastName)
+        self.type = try container.decode(EpisodeType.self, forKey: .type)
+        self.index = try container.decode(EpisodeIndex.self, forKey: .index)
         
         try super.init(from: decoder)
     }
@@ -33,9 +35,9 @@ public final class Episode: PlayableItem, @unchecked Sendable {
         try super.encode(to: encoder)
         
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(podcastName, forKey: .type)
+        try container.encode(podcastName, forKey: .podcastName)
         try container.encode(type, forKey: .type)
-        try container.encode(index, forKey: .type)
+        try container.encode(index, forKey: .index)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -94,3 +96,4 @@ public extension Episode {
         return Date(timeIntervalSince1970: milliseconds / 1000)
     }
 }
+

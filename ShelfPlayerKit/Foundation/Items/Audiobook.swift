@@ -45,6 +45,7 @@ public final class Audiobook: PlayableItem, @unchecked Sendable {
         try container.encode(subtitle, forKey: .subtitle)
         try container.encode(narrators, forKey: .narrators)
         try container.encode(series, forKey: .series)
+        try container.encode(explicit, forKey: .explicit)
         try container.encode(abridged, forKey: .abridged)
     }
     

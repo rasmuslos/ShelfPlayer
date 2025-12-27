@@ -29,6 +29,8 @@ public final actor ImageLoader {
                     return data
                 }
                 
+                logger.info("No cached image for \(request.itemID) \(request.size.base). Fetching from server.")
+                
                 let result: Data
                 
                 if let url = await PersistenceManager.shared.download.cover(for: request.itemID, size: request.size), let data = try? Data(contentsOf: url) {

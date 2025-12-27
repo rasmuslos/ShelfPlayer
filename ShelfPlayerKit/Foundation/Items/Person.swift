@@ -16,7 +16,9 @@ public final class Person: Item, @unchecked Sendable {
     }
     
     required init(from decoder: Decoder) throws {
-        self.bookCount = try decoder.container(keyedBy: CodingKeys.self).decode(Int.self, forKey: .bookCount)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.bookCount = try container.decode(Int.self, forKey: .bookCount)
+        
         try super.init(from: decoder)
     }
     

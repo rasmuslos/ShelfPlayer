@@ -21,6 +21,7 @@ public class PlayableItem: Item, @unchecked Sendable {
     required init(from decoder: Decoder) throws {
         self.size = try decoder.container(keyedBy: CodingKeys.self).decode(Int64.self, forKey: .size)
         self.duration = try decoder.container(keyedBy: CodingKeys.self).decode(TimeInterval.self, forKey: .duration)
+        
         try super.init(from: decoder)
     }
     
@@ -29,7 +30,7 @@ public class PlayableItem: Item, @unchecked Sendable {
         
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(size, forKey: .size)
-        try container.encode(size, forKey: .duration)
+        try container.encode(duration, forKey: .duration)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -92,3 +93,4 @@ public extension PlayableItem {
         }
     }
 }
+
