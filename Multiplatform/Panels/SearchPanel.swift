@@ -115,6 +115,26 @@ final class SearchViewModel {
     func performSearch() {
         debounceTask?.cancel()
         debounceTask = .detached {
+            #if DEBUG && false
+            await MainActor.withAnimation {
+                self.result = [
+                    Audiobook.fixture,
+                    Series.fixture,
+                    
+                    Episode.fixture,
+                    Podcast.fixture,
+                    
+                    Person.authorFixture,
+                    Person.narratorFixture,
+                    
+                    ItemCollection.collectionFixture,
+                    ItemCollection.playlistFixture,
+                ]
+            }
+            
+            return
+            #endif
+            
             do {
                 try await Task.sleep(for: .seconds(0.4))
                 try Task.checkCancellation()

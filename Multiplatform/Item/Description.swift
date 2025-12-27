@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Description: View {
     let description: String?
+    var showHeadline = true
     
     @State var height: CGFloat = .zero
     @State var availableWidth: CGFloat = .zero
@@ -25,11 +26,13 @@ struct Description: View {
             
             HStack {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("item.description")
-                        .bold()
-                        .underline()
-                        .padding(.bottom, 8)
-                        .accessibilityAddTraits(.isHeader)
+                    if showHeadline {
+                        Text("item.description")
+                            .bold()
+                            .underline()
+                            .padding(.bottom, 8)
+                            .accessibilityAddTraits(.isHeader)
+                    }
                     
                     if let description {
                         HTMLTextView(height: $height, html: description, width: availableWidth)
