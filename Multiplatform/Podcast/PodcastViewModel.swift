@@ -16,6 +16,8 @@ final class PodcastViewModel: Equatable, Hashable {
     private(set) var episodes: [Episode]
     private(set) var visible: [Episode]
     
+    private(set) var channelPodcasts = [Podcast]()
+    
     var bulkSelected: [ItemIdentifier]? = nil
     private(set) var performingBulkAction = false
     
@@ -49,8 +51,6 @@ final class PodcastViewModel: Equatable, Hashable {
         
         dominantColor = nil
         notifyError = false
-        
-        updateVisible()
     }
     
     nonisolated static func == (lhs: PodcastViewModel, rhs: PodcastViewModel) -> Bool {
@@ -281,6 +281,15 @@ private extension PodcastViewModel {
     }
     
     nonisolated func fetchEpisodes() async {
+        #if DEBUG && false
+        await MainActor.run {
+            self.episodes = .init(repeating: .fixture, count: 1)
+        }
+
+        updateVisible()
+        return
+        #endif
+        
         do {
             let episodes = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id).1
             

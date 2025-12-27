@@ -16,6 +16,13 @@ extension PodcastView {
         @Environment(PodcastViewModel.self) private var viewModel
         
         @ViewBuilder
+        private func title(_ title: LocalizedStringKey) -> some View {
+            Text(title)
+                .font(.headline)
+                .listRowSeparator(.hidden)
+                .listRowInsets(.init(top: 12, leading: 20, bottom: 0, trailing: 20))
+        }
+        @ViewBuilder
         private func row(title: LocalizedStringKey, value: String) -> some View {
             HStack(spacing: 0) {
                 Text(title)
@@ -24,12 +31,11 @@ extension PodcastView {
                 Text(value)
             }
             .font(.footnote)
+            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         }
         
         var body: some View {
-            Text("item.information")
-                .font(.headline)
-                .listRowSeparator(.hidden)
+            title("item.information")
             
             row(title: "item.duration", value: String(viewModel.episodes.reduce(0) { $0 + $1.duration }.formatted(.duration)))
             row(title: "item.related.podcast.episodes", value: viewModel.episodeCount.formatted(.number))
@@ -42,8 +48,13 @@ extension PodcastView {
                 row(title: "item.publishing", value: publishingType.label)
             }
             
-            row(title: "item.channel", value: "ToDO")
-            #warning("todo")
+            row(title: "item.rating", value: viewModel.podcast.explicit ? String(localized: "item.explicit") : String(localized: "item.rating.safe"))
+            
+            #warning("todo: channel")
+            
+            title("item.description")
+            Description(description: viewModel.podcast.description, showHeadline: false)
+                .listRowInsets(.init(top: 8, leading: 20, bottom: 0, trailing: 20))
         }
     }
 }

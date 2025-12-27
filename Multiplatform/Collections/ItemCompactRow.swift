@@ -42,35 +42,70 @@ struct ItemCompactRow: View {
         }
     }
     
-    private var subtitle: String {
-        if let series = item as? Series, series.audiobooks.count > 0 {
-            return String(localized: "item.count.audiobooks \(series.audiobooks.count)")
+    private var headline: String? {
+        var parts = [String]()
+        
+        if let audiobook = item as? Audiobook {
+            if let released = audiobook.released {
+                parts.append(released)
+            }
+            
+            
+            if audiobook.explicit && audiobook.abridged {
+                parts.append("🅴🅰")
+            } else if audiobook.explicit {
+                parts.append("🅴")
+            } else if audiobook.abridged {
+                parts.append("🅰")
+            }
+        } else if let episode = item as? Episode {
+            if let releaseDate = episode.releaseDate {
+                parts.append(releaseDate.formatted(date: .abbreviated, time: .omitted))
+            }
+            
+            parts.append(episode.duration.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .hour])))
+        }
+        
+        return parts.isEmpty ? nil : parts.joined(separator: " • ")
+    }
+    private var subtitle: String? {
+        var parts = [String]()
+        
+        if let audiobook = item as? Audiobook {
+            if !audiobook.authors.isEmpty {
+                parts.append(audiobook.authors.formatted(.list(type: .and, width: .narrow)))
+            }
+            
+            if !audiobook.narrators.isEmpty {
+                parts.append(audiobook.narrators.formatted(.list(type: .and, width: .narrow)))
+            }
+        } else if let series = item as? Series, series.audiobooks.count > 0 {
+            parts.append(String(localized: "item.count.audiobooks \(series.audiobooks.count)"))
         } else if let person = item as? Person {
-            return String(localized: "item.count.audiobooks \(person.bookCount)")
-        } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
-            return String(localized: "item.count.episodes.unplayed \(incompleteEpisodeCount)")
+            parts.append(String(localized: "item.count.audiobooks \(person.bookCount)"))
         } else if let collection = item as? ItemCollection {
             if collection.id.type == .collection {
-                return String(localized: "item.count.audiobooks \(collection.items.count)")
+                parts.append(String(localized: "item.count.audiobooks \(collection.items.count)"))
             } else {
-                return String(localized: "item.count \(collection.items.count)")
+                parts.append(String(localized: "item.count \(collection.items.count)"))
+            }
+        } else if let podcast = item as? Podcast {
+            if !podcast.authors.isEmpty {
+                parts.append(podcast.authors.formatted(.list(type: .and, width: .narrow)))
+            }
+            
+            if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
+                parts.append(String(localized: "item.count.episodes.unplayed \(incompleteEpisodeCount)"))
             }
         }
         
-        guard itemID.isPlayable || itemID.type == .podcast, let item else {
-            return itemID.type.label
-        }
-        
-        let authors = item.authors.formatted(.list(type: .and, width: .short))
-        
-        if let episode = item as? Episode, episode.podcastName != authors {
-            if authors.isEmpty {
-                return episode.podcastName
-            } else {
-                return "\(episode.podcastName) • \(authors)"
-            }
-        } else {
-            return authors
+        return parts.isEmpty ? nil : parts.joined(separator: " • ")
+    }
+    
+    var imageCornerRadius: CGFloat {
+        switch itemID.type {
+            case .author, .narrator: .infinity
+            default: 8
         }
     }
     
@@ -80,7 +115,7 @@ struct ItemCompactRow: View {
                 if !context.isImageHidden {
                     if let collection = item as? ItemCollection, !collection.items.isEmpty {
                         if collection.items.count < 4 {
-                            ItemImage(item: collection.items.first, size: .small, cornerRadius: context.imageCornerRadius)
+                            ItemImage(item: collection.items.first, size: .small, cornerRadius: imageCornerRadius)
                         } else {
                             VStack(spacing: 0) {
                                 HStack(spacing: 0) {
@@ -92,27 +127,37 @@ struct ItemCompactRow: View {
                                     ItemImage(item: collection.items[collection.items.count - 1], size: .tiny, cornerRadius: 0)
                                 }
                             }
-                            .clipShape(.rect(cornerRadius: context.imageCornerRadius))
-                            .universalContentShape(.rect(cornerRadius: context.imageCornerRadius))
+                            .clipShape(.rect(cornerRadius: imageCornerRadius))
+                            .universalContentShape(.rect(cornerRadius: imageCornerRadius))
                         }
                     } else {
-                        ItemImage(itemID: itemID, size: .small, cornerRadius: context.imageCornerRadius)
+                        ItemImage(itemID: itemID, size: .small, cornerRadius: imageCornerRadius)
                     }
                 }
             }
             .frame(width: context.imageWidth)
-            .padding(.trailing, 8)
+            .padding(.trailing, 12)
             
             if let item {
                 VStack(alignment: .leading, spacing: 2) {
+                    if let headline {
+                        Text(headline)
+                            .lineLimit(1)
+                            .font(.caption)
+                            .fontDesign(.rounded)
+                            .foregroundStyle(.secondary)
+                    }
+                    
                     Text(item.name)
                         .lineLimit(1)
                         .font(.headline)
                     
-                    Text(subtitle)
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    if let subtitle {
+                        Text(subtitle)
+                            .lineLimit(1)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             } else {
                 ProgressView()
@@ -178,13 +223,7 @@ struct ItemCompactRow: View {
         var imageWidth: CGFloat {
             switch self {
                 case .collectionLarge: 68
-                default: 44
-            }
-        }
-        var imageCornerRadius: CGFloat {
-            switch self {
-                case .narrator, .author: .infinity
-                default: 8
+                default: 64
             }
         }
         
@@ -212,3 +251,4 @@ struct ItemCompactRow: View {
         .previewEnvironment()
 }
 #endif
+
