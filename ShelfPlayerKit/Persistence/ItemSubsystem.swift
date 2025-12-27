@@ -83,6 +83,9 @@ public extension PersistenceManager.ItemSubsystem {
         case .podcast:
             result = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.1).first
         default:
+            let saturationFiltered = RFKVisuals.saturationExtremeFilter(filtered, threshold: 0.2)
+            let mostSaturated = RFKVisuals.determineMostSaturated(saturationFiltered)
+            
             if let fillColor = sorted.first(where: { $0.percentage > 60 }) {
                 result = fillColor.color
             } else if let highBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.34).randomElement() {

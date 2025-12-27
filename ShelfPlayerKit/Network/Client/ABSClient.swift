@@ -31,8 +31,14 @@ public final actor APIClientStore: Sendable {
         
         return try await storage[connectionID]!.value
     }
+    
     func invalidate() {
         storage.removeAll(keepingCapacity: true)
+    }
+    public func flushClientCache() async {
+        for client in storage.values {
+            try? await client.value.flush()
+        }
     }
 }
 

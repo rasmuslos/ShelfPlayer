@@ -23,7 +23,6 @@ public final actor APIClient: Sendable {
     let responseSubject = PassthroughSubject<(String, (Decodable?, Error?)), Never>()
     
     var subscribers = [UUID: AnyCancellable]()
-    
     nonisolated let responsePublisher: AnyPublisher<(String, (Decodable?, Error?)), Never>
     
     nonisolated(unsafe) let cache = NSCache<NSString, CachedAPIResponse>()
@@ -160,7 +159,6 @@ public extension APIClient {
         
         return urlRequest
     }
-    
     func response<R: Sendable>(_ request: APIRequest<R>) async throws -> R {
         resetAttempts(request.id)
         
@@ -178,6 +176,11 @@ public extension APIClient {
             
             return try await waitForCompletion(id: request.id)
         }
+    }
+    
+    func flush() {
+        attempts.removeAll()
+        cache.removeAllObjects()
     }
 }
 

@@ -26,5 +26,26 @@ public extension APIClient {
             URLQueryItem(name: "limit", value: String(describing: limit)),
         ])).episodes.enumerated().map { Episode(episode: $0.element, libraryID: libraryID, fallbackIndex: $0.offset, connectionID: connectionID) }
     }
+    
+    func setEpisodeType(type: Episode.EpisodeType, for itemID: ItemIdentifier) async throws {
+        guard let groupingID = itemID.groupingID else {
+            throw APIClientError.invalidItemType
+        }
+        
+        let value: String
+        
+        switch type {
+            case .regular:
+                value = "full"
+            case .trailer:
+                value = "trailer"
+            case .bonus:
+                value = "bonus"
+        }
+        
+        let _ = try await response(APIRequest<EmptyResponse>(path: "api/podcasts/\(groupingID)/episode/\(itemID.primaryID)", method: .patch, body: [
+            "episodeType": value,
+        ]))
+    }
 }
 

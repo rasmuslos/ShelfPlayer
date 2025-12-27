@@ -25,9 +25,14 @@ struct EpisodeView: View {
         ScrollView {
             Header()
             
-            Description(description: viewModel.episode.description)
-                .padding(.vertical, 12)
+            InformationListTitle(title: "item.description")
+                .padding(.top, 12)
                 .padding(.horizontal, 20)
+            
+            Description(description: viewModel.episode.description, showHeadline: false)
+                .padding(.horizontal, 20)
+            
+            Footer()
             
             DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
                 Timeline(sessionLoader: viewModel.sessionLoader, item: viewModel.episode)
@@ -35,12 +40,14 @@ struct EpisodeView: View {
                     .padding(.horizontal, 20)
             }
             .disclosureGroupStyle(BetterDisclosureGroupStyle())
+            .padding(.top, 12)
         }
         .ignoresSafeArea(edges: .top)
         .modify(if: zoomID) {
             $0
                 .navigationTransition(.zoom(sourceID: $1, in: namespace!))
         }
+        .id(viewModel.id)
         .sensoryFeedback(.error, trigger: viewModel.notifyError)
         .modifier(ToolbarModifier())
         .modifier(PlaybackSafeAreaPaddingModifier())

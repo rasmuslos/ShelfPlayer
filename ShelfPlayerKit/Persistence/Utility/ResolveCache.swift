@@ -33,6 +33,10 @@ public actor ResolveCache: Sendable {
     }
     
     private func invalidate() {
+        resolveItemID.removeAll()
+        resolvePlayableItem.removeAll()
+        resolvePodcast.removeAll()
+        
         memoryCache.removeAllObjects()
     }
     
@@ -198,6 +202,10 @@ private extension ResolveCache {
 
 public extension ResolveCache {
     func flush() async {
+        resolveItemID.removeAll()
+        resolvePlayableItem.removeAll()
+        resolvePodcast.removeAll()
+        
         memoryCache.removeAllObjects()
         
         do {
@@ -213,13 +221,23 @@ public extension ResolveCache {
             logger.error("Failed to clear item type and TTL clusters: \(error)")
         }
     }
-    func invalidate(itemID: ItemIdentifier) async {
-        memoryCache.removeObject(forKey: memoryCacheKey(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID))
+    func invalidate(itemID: ItemIdentifier) {
+        let cacheKey = memoryCacheKey(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
+        
+        resolveItemID.removeValue(forKey: itemID)
+        resolvePlayableItem.removeValue(forKey: cacheKey)
+        resolvePodcast.removeValue(forKey: cacheKey)
+        
+        memoryCache.removeObject(forKey: cacheKey)
         
         do {
-            try FileManager.default.removeItem(at: diskPath(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID))
+            try FileManager.default.removeItem(atPath: diskPath(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID).relativePath)
         } catch {
-            logger.fault("Failed to remove cached item: \(error)")
+            logger.error("Failed to remove cached item: \(error)")
+        }
+        
+        if itemID.type == .episode {
+            invalidate(itemID: ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID))
         }
     }
 }
