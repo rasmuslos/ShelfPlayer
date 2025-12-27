@@ -66,8 +66,8 @@ struct ContentView: View {
                 ConnectionEditSheet(connectionID: connectionID)
             case .reauthorizeConnection(let connectionID):
                 ReauthorizeConnectionSheet(connectionID: connectionID)
-            case .customizeLibrary(let library):
-                CustomizeLibraryPanelSheet(library: library)
+            case .customizeLibrary(let library, let scope):
+                CustomizeLibraryPanelSheet(library: library, scope: scope)
             case .whatsNew:
                 WhatsNewSheet()
         }

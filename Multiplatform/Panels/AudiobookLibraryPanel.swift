@@ -140,7 +140,7 @@ struct AudiobookLibraryPanel: View {
                     Divider()
                     
                     Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
-                        satellite.present(.customizeLibrary(viewModel.library))
+                        satellite.present(.customizeLibrary(viewModel.library, .library))
                     }
                     
                     Toggle("item.groupAudiobooksBySeries", systemImage: "square.3.layers.3d.down.forward", isOn: $groupAudiobooksInSeries)

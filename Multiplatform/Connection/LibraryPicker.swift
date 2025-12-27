@@ -68,10 +68,22 @@ struct LibraryPicker: View {
 }
 struct LibraryPickerMenu: View {
     @Default(.customTabsActive) private var customTabsActive
+    @Environment(Satellite.self) private var satellite
+    @Environment(\.library) private var library
+    
+    var customizeLibrary = false
     
     var body: some View {
         Menu {
             LibraryPicker()
+            
+            Divider()
+            
+            if !customTabsActive && customizeLibrary, let library {
+                Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                    satellite.present(.customizeLibrary(library, .tabBar))
+                }
+            }
         } label: {
             if customTabsActive {
                 Label("navigation.library.select", image: "shelfPlayer.fill")

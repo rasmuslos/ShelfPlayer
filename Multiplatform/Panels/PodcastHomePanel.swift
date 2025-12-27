@@ -70,7 +70,7 @@ struct PodcastHomePanel: View {
                 ListenNowSheetToggle.toolbarItem()
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    LibraryPickerMenu()
+                    LibraryPickerMenu(customizeLibrary: true)
                 }
             }
         }
