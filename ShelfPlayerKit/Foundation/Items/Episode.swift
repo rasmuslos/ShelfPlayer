@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftSoup
 
 public final class Episode: PlayableItem, @unchecked Sendable {
     public let podcastName: String
@@ -55,7 +56,7 @@ public final class Episode: PlayableItem, @unchecked Sendable {
             self.episode = episode
         }
     }
-    public enum EpisodeType {
+    public enum EpisodeType: CaseIterable, Sendable {
         case regular
         case trailer
         case bonus
@@ -78,6 +79,15 @@ extension Episode.EpisodeIndex: Comparable {
 }
 
 extension Episode.EpisodeType: Codable {}
+extension Episode.EpisodeType: Identifiable {
+    public var id: String {
+        switch self {
+            case .regular: "regular"
+            case .trailer: "trailer"
+            case .bonus: "bonus"
+        }
+    }
+}
 
 public extension Episode {
     var podcastID: ItemIdentifier {
@@ -86,6 +96,26 @@ public extension Episode {
               libraryID: id.libraryID,
               connectionID: id.connectionID,
               type: .podcast)
+    }
+    
+    var links: [URL] {
+        get throws {
+            guard let description = description else {
+                return []
+            }
+            
+            let document = try SwiftSoup.parse(description)
+            
+            return try document.select("a")
+                .compactMap {
+                    guard let href = try? $0.attr("href") else {
+                        return nil
+                    }
+                    
+                    return URL(string: href)
+                }
+            
+        }
     }
     
     var releaseDate: Date? {

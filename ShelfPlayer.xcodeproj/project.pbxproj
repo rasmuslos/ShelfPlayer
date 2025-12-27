@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A00E9712F00402500CE7462 /* InformationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A00E9702F00402100CE7462 /* InformationList.swift */; };
+		3A00E9742F0043AE00CE7462 /* EpisodeView+Footer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A00E9732F0043A900CE7462 /* EpisodeView+Footer.swift */; };
 		3A012E292C806D9A0073A619 /* View+ReverseMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A012E282C806D970073A619 /* View+ReverseMask.swift */; };
 		3A05D0802E77314700D5B653 /* PlaybackCompactExpandedForeground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05D07F2E77314700D5B653 /* PlaybackCompactExpandedForeground.swift */; };
 		3A0AE6A42AB623F400ACCD68 /* MultiplatformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */; };
@@ -308,6 +310,8 @@
 
 /* Begin PBXFileReference section */
 		3A00397E2BEF55E600849F70 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
+		3A00E9702F00402100CE7462 /* InformationList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationList.swift; sourceTree = "<group>"; };
+		3A00E9732F0043A900CE7462 /* EpisodeView+Footer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EpisodeView+Footer.swift"; sourceTree = "<group>"; };
 		3A012E282C806D970073A619 /* View+ReverseMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ReverseMask.swift"; sourceTree = "<group>"; };
 		3A05D07F2E77314700D5B653 /* PlaybackCompactExpandedForeground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackCompactExpandedForeground.swift; sourceTree = "<group>"; };
 		3A0AE6A32AB623F400ACCD68 /* MultiplatformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplatformApp.swift; sourceTree = "<group>"; };
@@ -908,6 +912,7 @@
 			children = (
 				3AA0B0882AD322470009FBB4 /* EpisodeView.swift */,
 				3AA0B08A2AD32D4E0009FBB4 /* EpisodeView+Header.swift */,
+				3A00E9732F0043A900CE7462 /* EpisodeView+Footer.swift */,
 				3ABCC7DF2AD4647D004AEADF /* EpisodeView+Toolbar.swift */,
 				3A0E42E92C8192770034873F /* EpisodeViewModel.swift */,
 			);
@@ -1035,6 +1040,7 @@
 			children = (
 				3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */,
 				3ABCC7E12AD4659E004AEADF /* Description.swift */,
+				3A00E9702F00402100CE7462 /* InformationList.swift */,
 				3A102EA92D45112F0075FA0B /* PDFViewer.swift */,
 				3A4F6E002C8240D7004BADBD /* Timeline.swift */,
 				3ACB8D0C2DDDB35A005336C0 /* ChaptersList.swift */,
@@ -1418,9 +1424,11 @@
 				3A3129A12D24140F00D143B4 /* WelcomeView.swift in Sources */,
 				3A743CFA2D70CC8D0007C6B3 /* PlaybackRateEditor.swift in Sources */,
 				3AE31DCE2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift in Sources */,
+				3A00E9742F0043AE00CE7462 /* EpisodeView+Footer.swift in Sources */,
 				3A7F84A52CAD1F4A00A51EEE /* UIWindow+Shake.swift in Sources */,
 				3A45C8B82DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift in Sources */,
 				3A102EAA2D4511340075FA0B /* PDFViewer.swift in Sources */,
+				3A00E9712F00402500CE7462 /* InformationList.swift in Sources */,
 				3A98246E2B6EAC7F0098C06A /* CircleProgressIndicator.swift in Sources */,
 				3AA164412D6DC2DB00343214 /* PlaybackDragGestureCatcher.swift in Sources */,
 				3AFFE7712E79333B003E6B94 /* CompactLegacyCollapsedForeground.swift in Sources */,

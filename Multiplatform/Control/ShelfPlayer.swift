@@ -179,6 +179,8 @@ struct ShelfPlayer {
     // MARK: Cache invalidation
     
     nonisolated static func invalidateShortTermCache() async {
+        await ABSClient.flushClientCache()
+        
         logger.info("Invalidating short term cache...")
         
         await RFNotification[.downloadStatusChanged].send(payload: nil)
@@ -186,6 +188,8 @@ struct ShelfPlayer {
     }
     
     static func refreshItem(itemID: ItemIdentifier) async throws {
+        await ABSClient.flushClientCache()
+        
         await invalidateShortTermCache()
         
         await ImageLoader.shared.purge(itemID: itemID)
@@ -198,6 +202,8 @@ struct ShelfPlayer {
     }
     
     static func invalidateCache() async throws {
+        await ABSClient.flushClientCache()
+        
         await ImageLoader.shared.purge()
         await RFNotification[.reloadImages].send(payload: nil)
         
