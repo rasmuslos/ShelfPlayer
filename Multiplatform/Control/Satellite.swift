@@ -163,7 +163,7 @@ extension Satellite {
         case editConnection(ItemIdentifier.ConnectionID)
         case reauthorizeConnection(ItemIdentifier.ConnectionID)
         
-        case customizeLibrary(Library)
+        case customizeLibrary(Library, PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope)
         
         case whatsNew
         
@@ -190,8 +190,8 @@ extension Satellite {
                 case .reauthorizeConnection(let connectionID):
                     "reauthorizeConnection-\(connectionID)"
                     
-                case .customizeLibrary(let library):
-                    "customizeLibrary-\(library.connectionID)-\(library.id)"
+                case .customizeLibrary(let library, let scope):
+                    "customizeLibrary-\(library.connectionID)-\(library.id)-\(scope.id)"
                     
                 case .whatsNew:
                     "whatsNew"

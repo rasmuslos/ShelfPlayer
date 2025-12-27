@@ -12,10 +12,11 @@ struct CustomizeLibraryPanelSheet: View {
     @Environment(Satellite.self) private var satellite
     
     let library: Library
+    let scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope
     
     var body: some View {
         NavigationStack {
-            TabValueLibraryPreferences(library: library, scope: .library) {
+            TabValueLibraryPreferences(library: library, scope: scope) {
                 satellite.dismissSheet()
             }
             .toolbarTitleDisplayMode(.inline)
@@ -29,7 +30,7 @@ struct CustomizeLibraryPanelSheet: View {
 #Preview {
     Text(verbatim: ":)")
         .sheet(isPresented: .constant(true)) {
-            CustomizeLibraryPanelSheet(library: .fixture)
+            CustomizeLibraryPanelSheet(library: .fixture, scope: .tabBar)
         }
         .previewEnvironment()
 }
