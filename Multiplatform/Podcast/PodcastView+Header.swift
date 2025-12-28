@@ -180,6 +180,7 @@ private struct CompactPresentation: View {
         VStack(spacing: 0) {
             ItemImage(item: viewModel.podcast, size: .regular, contrastConfiguration: nil)
                 .frame(width: 240)
+                .shadow(radius: 16)
             
             VStack(spacing: 4) {
                 Title(largeFont: false, alignment: .center)

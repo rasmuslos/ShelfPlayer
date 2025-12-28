@@ -13,8 +13,10 @@ import OSLog
 import RFVisuals
 
 extension PersistenceManager {
-    public final class ItemSubsystem: Sendable {
+    public final actor ItemSubsystem: Sendable {
         let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ItemSubsystem")
+        
+        var colorCache = [ItemIdentifier: Task<Color?, Never>]()
     }
 }
 
@@ -46,77 +48,72 @@ public extension PersistenceManager.ItemSubsystem {
     }
     
     func dominantColor(of itemID: ItemIdentifier) async -> Color? {
-#if DEBUG
+        #if DEBUG
         if itemID.connectionID == "fixture" {
             return .orange
         }
-#endif
+        #endif
         
-        if let stored = await PersistenceManager.shared.keyValue[.dominantColor(of: itemID)] {
-            let components = stored.split(separator: ":").map { Double($0) ?? 0 }
-            return Color(red: components[0], green: components[1], blue: components[2])
-        }
-        
-        let size: ImageSize
-        
-        switch itemID.type {
-        case .audiobook:
-            size = .regular
-        case .podcast:
-            size = .large
-        case .episode:
-            size = .tiny
-        default:
-            size = .tiny
-        }
-        
-        guard let image = await ImageLoader.shared.platformImage(for: .init(itemID: itemID, size: size)), let extracted = try? await RFKVisuals.extractDominantColors(5, image: image) else {
-            return nil
-        }
-        
-        let sorted = extracted.sorted { $0.percentage > $1.percentage }
-        let colors = sorted.map(\.color)
-        
-        let result: Color?
-        
-        switch itemID.type {
-        case .podcast:
-            result = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.1).first
-        default:
-            let saturationFiltered = RFKVisuals.saturationExtremeFilter(filtered, threshold: 0.2)
-            let mostSaturated = RFKVisuals.determineMostSaturated(saturationFiltered)
-            
-            if let fillColor = sorted.first(where: { $0.percentage > 60 }) {
-                result = fillColor.color
-            } else if let highBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.34).randomElement() {
-                result = highBrightness
-            } else if let mediumBrightness = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.26).randomElement() {
-                result = mediumBrightness
-            } else {
-                let filtered = RFKVisuals.brightnessExtremeFilter(colors, threshold: 0.16)
-                
-                if let highlySaturated = RFKVisuals.saturationExtremeFilter(filtered, threshold: 0.3).randomElement() {
-                    result = highlySaturated
-                } else {
-                    result = filtered.randomElement()
+        if colorCache[itemID] == nil {
+            colorCache[itemID] = .init {
+                if let stored = await PersistenceManager.shared.keyValue[.dominantColor(of: itemID)] {
+                    let components = stored.split(separator: ":").map { Double($0) ?? 0 }
+                    return Color(red: components[0], green: components[1], blue: components[2])
                 }
+                
+                let size: ImageSize
+                
+                switch itemID.type {
+                    case .audiobook, .episode, .podcast:
+                        size = .regular
+                    default:
+                        size = .tiny
+                }
+                
+                guard let image = await ImageLoader.shared.platformImage(for: .init(itemID: itemID, size: size)) else {
+                    return nil
+                }
+                
+                let result: Color?
+                
+                switch itemID.type {
+                    case .podcast:
+                        guard let colors = try? await RFKVisuals.extractDominantColors(4, image: image) else {
+                            return nil
+                        }
+                        
+                        let prepared = RFKVisuals.prepareForFiltering(colors)
+                        
+                        result = prepared.filter { $0.brightness > 0.3 && $0.saturation > 0.2 }.sorted { $0.percentage > $1.percentage }.first?.color
+                    default:
+                        guard let colors = try? await RFKVisuals.extractDominantColors(6, image: image) else {
+                            return nil
+                        }
+                        
+                        let prepared = RFKVisuals.prepareForFiltering(colors)
+                        
+                        result = prepared.filter { $0.brightness > 0.3 && $0.saturation > 0.4 }.randomElement()?.color
+                            ?? prepared.filter { $0.brightness > 0.3 && $0.saturation > 0.2 }.randomElement()?.color
+                }
+                
+                guard let result else {
+                    return nil
+                }
+                
+                let resolved = result.resolve(in: .init())
+                let stored = "\(resolved.red):\(resolved.green):\(resolved.blue)"
+                
+                do {
+                    try await PersistenceManager.shared.keyValue.set(.dominantColor(of: itemID), stored)
+                } catch {
+                    logger.error("Failed to store color for \(itemID): \(error)")
+                }
+                
+                return result
             }
         }
         
-        guard let result else {
-            return nil
-        }
-        
-        let resolved = result.resolve(in: .init())
-        let stored = "\(resolved.red):\(resolved.green):\(resolved.blue)"
-        
-        do {
-            try await PersistenceManager.shared.keyValue.set(.dominantColor(of: itemID), stored)
-        } catch {
-            logger.error("Failed to store color for \(itemID): \(error)")
-        }
-        
-        return result
+        return await colorCache[itemID]?.value
     }
     
     func libraryIndexMetadata(for library: Library) async -> LibraryIndexMetadata? {
@@ -178,16 +175,22 @@ public extension PersistenceManager.ItemSubsystem {
     }
 }
 
+extension PersistenceManager.ItemSubsystem {
+    func invalidate() {
+        colorCache.removeAll()
+    }
+}
+
 private extension PersistenceManager.KeyValueSubsystem.Key {
     // Contains the stored rate for playable items (audiobook, episode) and overrides for others (author, series,  podcast)
     static func playbackRate(for itemID: ItemIdentifier) -> Key<Percentage> {
         let isPurgeable: Bool
         
         switch itemID.type {
-        case .audiobook, .episode:
-            isPurgeable = true
-        case .author, .narrator, .series, .podcast, .collection, .playlist:
-            isPurgeable = false
+            case .audiobook, .episode:
+                isPurgeable = true
+            case .author, .narrator, .series, .podcast, .collection, .playlist:
+                isPurgeable = false
         }
         
         return Key(identifier: "playbackRate-\(itemID)", cluster: "playbackRates", isCachePurgeable: isPurgeable)
