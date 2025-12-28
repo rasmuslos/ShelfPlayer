@@ -10,10 +10,20 @@ import ShelfPlayback
 
 struct MediumPlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {
-            configuration.content
-                .bold()
-                .font(.footnote)
-                .background((configuration.background.isLight ?? false) ? .white : .black)
+        let color = (configuration.background.isLight ?? false) ? Color.white : .black
+        
+        configuration.content
+            .bold()
+            .font(.footnote)
+            .modify {
+                if #available(iOS 26, *) {
+                    $0
+                        .glassEffect(.regular.interactive().tint(color))
+                } else {
+                    $0
+                        .background(color)
+                }
+            }
     }
     
     func makeLabel(configuration: Configuration) -> some View {

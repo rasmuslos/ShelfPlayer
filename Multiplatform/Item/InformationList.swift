@@ -42,7 +42,7 @@ struct InformationListTitle: View {
             
             Spacer(minLength: 0)
         }
-        .listRowSeparator(.hidden, edges: .top)
+        .listRowSeparator(.hidden)
         .listRowInsets(.init(top: 12, leading: 20, bottom: 0, trailing: 20))
     }
 }

@@ -70,7 +70,6 @@
 		3A6AAF542DE8C7290090C886 /* WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3A6AAF412DE8C7280090C886 /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3A6AAF5E2DE8CEF60090C886 /* EmbassyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6AAF5D2DE8CEF30090C886 /* EmbassyManager.swift */; };
 		3A6B93152C26BB3600400802 /* UnavailableWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6B93142C26BB2F00400802 /* UnavailableWrapper.swift */; };
-		3A6DC07B2DE489EB00FB7D21 /* ImageColorPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6DC07A2DE489EA00FB7D21 /* ImageColorPreview.swift */; };
 		3A6DC0802DE495A800FB7D21 /* ContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6DC07E2DE495A800FB7D21 /* ContextProvider.swift */; };
 		3A6DC0812DE495A800FB7D21 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6DC07F2DE495A800FB7D21 /* SpotlightIndexer.swift */; };
 		3A6DC0842DE4980100FB7D21 /* SyncGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6DC0832DE4980100FB7D21 /* SyncGate.swift */; };
@@ -386,7 +385,6 @@
 		3A6AAF602DE8D1BC0090C886 /* Multiplatform.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Multiplatform.xcconfig; sourceTree = "<group>"; };
 		3A6AAF632DE8D1CF0090C886 /* Widgets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Widgets.xcconfig; sourceTree = "<group>"; };
 		3A6B93142C26BB2F00400802 /* UnavailableWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnavailableWrapper.swift; sourceTree = "<group>"; };
-		3A6DC07A2DE489EA00FB7D21 /* ImageColorPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageColorPreview.swift; sourceTree = "<group>"; };
 		3A6DC07E2DE495A800FB7D21 /* ContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextProvider.swift; sourceTree = "<group>"; };
 		3A6DC07F2DE495A800FB7D21 /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
 		3A6DC0832DE4980100FB7D21 /* SyncGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncGate.swift; sourceTree = "<group>"; };
@@ -697,7 +695,6 @@
 		3A102EA82D4511280075FA0B /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				3A6DC07A2DE489EA00FB7D21 /* ImageColorPreview.swift */,
 				3ACD19B62ACB5A49007D01FE /* ErrorView.swift */,
 				3ACD19B42ACB58EB007D01FE /* LoadingView.swift */,
 				3A6924AA2D6B9BA9004E291E /* EmptyCollectionView.swift */,
@@ -1472,7 +1469,6 @@
 				3AB695382ACF3D1200823049 /* PersonView.swift in Sources */,
 				3AAE3F7B2E1567C8000C483B /* PodcastSortOrderPreference.swift in Sources */,
 				3A81D1EA2DBA5F6100ACED78 /* ItemCompactRow.swift in Sources */,
-				3A6DC07B2DE489EB00FB7D21 /* ImageColorPreview.swift in Sources */,
 				3A0E42E82C811AAB0034873F /* PersonViewModel.swift in Sources */,
 				3AA089372B6E43FA00773414 /* Keys+Entries.swift in Sources */,
 				3ACB8D042DDCA124005336C0 /* AudiobookBookmarksPanel.swift in Sources */,

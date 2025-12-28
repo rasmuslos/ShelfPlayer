@@ -10,20 +10,28 @@ import ShelfPlayback
 
 struct LargePlayButtonStyle: PlayButtonStyle {
     func makeMenu(configuration: Configuration) -> some View {
+        let color = RFKVisuals.adjust(configuration.background, saturation: 0, brightness: -0.8)
+        
         configuration.content
             .background {
-                ZStack {
-                    RFKVisuals.adjust(configuration.background, saturation: 0, brightness: -0.8)
-                        .animation(.smooth, value: configuration.background)
-                    
-                    GeometryReader { geometry in
-                        Rectangle()
-                            .fill((configuration.background.isLight ?? false) ? .black : .white)
-                            .opacity(0.14)
-                            .frame(width: geometry.size.width * (1 - (configuration.progress ?? 0)))
-                            .padding(.leading, geometry.size.width * (configuration.progress ?? 0))
-                            .animation(.smooth, value: configuration.progress)
-                    }
+                GeometryReader { geometry in
+                    Rectangle()
+                        .fill((configuration.background.isLight ?? false) ? .black : .white)
+                        .opacity(0.14)
+                        .frame(width: geometry.size.width * (1 - (configuration.progress ?? 0)))
+                        .padding(.leading, geometry.size.width * (configuration.progress ?? 0))
+                        .animation(.smooth, value: configuration.progress)
+                }
+            }
+            .modify {
+                if #available(iOS 26, *) {
+                    $0
+                        .glassEffect(.regular.interactive().tint(color))
+                } else {
+                    $0
+                        .background {
+                            color
+                        }
                 }
             }
     }
@@ -52,9 +60,8 @@ struct LargePlayButtonStyle: PlayButtonStyle {
         .playButtonSize(.large)
         .previewEnvironment()
 }
-
 #Preview {
-    PlayButton(item: Audiobook.fixture)
+    PlayButton(item: Episode.fixture)
         .playButtonSize(.large)
         .previewEnvironment()
 }

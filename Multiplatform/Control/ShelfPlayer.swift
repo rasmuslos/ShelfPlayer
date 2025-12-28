@@ -203,13 +203,12 @@ struct ShelfPlayer {
     
     static func invalidateCache() async throws {
         await ABSClient.flushClientCache()
+        await ResolveCache.shared.flush()
         
         await ImageLoader.shared.purge()
         await RFNotification[.reloadImages].send(payload: nil)
         
         try await PersistenceManager.shared.invalidateCache()
-        
-        await ResolveCache.shared.flush()
     }
 }
 
