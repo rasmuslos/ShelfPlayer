@@ -108,7 +108,7 @@ final actor PlaybackReporter {
             }
         }
         
-        if let sessionID, let duration, let currentTime {
+        if let sessionID, let duration, let currentTime, await !OfflineMode.shared.isEnabled {
             do {
                 try await ABSClient[itemID.connectionID].closeSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: 0)
                 Defaults[.openPlaybackSessions].removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
@@ -163,7 +163,7 @@ private extension PlaybackReporter {
         var updateLocalSession = true
         
         do {
-            if let sessionID {
+            if let sessionID, await !OfflineMode.shared.isEnabled {
                 try await ABSClient[itemID.connectionID].syncSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
                 updateLocalSession = false
                 
@@ -187,7 +187,7 @@ private extension PlaybackReporter {
         }
         
         do {
-            try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration, notifyServer: false)
+            try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration)
         } catch {
             logger.warning("Cannot update progress: \(error).")
         }
