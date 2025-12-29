@@ -39,26 +39,21 @@ extension PersistenceManager.ProgressSubsystem {
         })).first
     }
     func entity(_ itemID: ItemIdentifier) -> PersistedProgress? {
-        let connectionID = itemID.connectionID
-        let primaryID = itemID.primaryID
-        let groupingID = itemID.groupingID
-        
+        entity(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
+    }
+    func entity(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> PersistedProgress? {
         let fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate {
             $0.connectionID == connectionID
             && $0.primaryID == primaryID
             && $0.groupingID == groupingID
-            // libraryID does not exist
-            // type can be ignored
         })
-        
-        // Return existing
         
         do {
             let entities = try modelContext.fetch(fetchDescriptor).filter { $0.status != .tombstone }
             
             if !entities.isEmpty {
                 if entities.count != 1 {
-                    logger.error("Found \(entities.count) progress entities for \(itemID)")
+                    logger.error("Found \(entities.count) douplicate entities for")
                     
                     var sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
                     sorted.removeFirst()
@@ -73,7 +68,7 @@ extension PersistenceManager.ProgressSubsystem {
                 return entities.first
             }
         } catch {
-            logger.error("Error fetching progress for \(itemID): \(error)")
+            logger.error("Error fetching progress: \(error)")
         }
         
         return nil
@@ -132,46 +127,6 @@ extension PersistenceManager.ProgressSubsystem {
             await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
         }
     }
-    
-    func merge(duplicates entities: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws -> ProgressPayload? {
-        guard entities.count > 1 else {
-            logger.error("Invalid sequence passed to merge duplicates: \(entities)")
-            return nil
-        }
-        
-        logger.warning("Found \(entities.count) progress entities for the same item: \(entities).")
-        
-        let mostRecent = entities.max {
-            guard let lhs = $0.lastUpdate else {
-                return false
-            }
-            guard let rhs = $1.lastUpdate else {
-                return true
-            }
-            
-            guard lhs != rhs else {
-                guard let lhsCurrentTime = $0.currentTime else {
-                    return false
-                }
-                guard let rhsCurrentTime = $1.currentTime else {
-                    return true
-                }
-                
-                return lhsCurrentTime > rhsCurrentTime
-            }
-            
-            return lhs > rhs
-        }!
-        let remaining = entities.compactMap { $0.id == mostRecent.id ? nil : $0.id }
-        
-        for entityID in remaining {
-            try await ABSClient[connectionID].delete(progressID: entityID)
-        }
-        
-        logger.info("Merged progress entities. Now at \(mostRecent.currentTime?.formatted() ?? "?")")
-        
-        return mostRecent
-    }
 }
 
 public extension PersistenceManager.ProgressSubsystem {
@@ -200,58 +155,182 @@ public extension PersistenceManager.ProgressSubsystem {
         }
     }
     
+    func compareDatabase(against payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
+        let keyedPayload = payload.map {
+            if let episodeID = $0.episodeId {
+                (key(primaryID: episodeID, groupingID: $0.libraryItemId, connectionID: connectionID), $0)
+            } else {
+                (key(primaryID: $0.libraryItemId, groupingID: nil, connectionID: connectionID), $0)
+            }
+        }
+        let remote = Dictionary(keyedPayload) {
+            logger.warning("Found duplicate progress payload with same primary and grouping ID")
+            
+            guard let lhs = $0.lastUpdate else {
+                return $1
+            }
+            
+            guard let rhs = $1.lastUpdate else {
+                return $0
+            }
+            
+            return lhs > rhs ? $0 : $1
+        }
+        let remoteSet = Set(remote.keys)
+        
+        try Task.checkCancellation()
+        
+        let entities = try modelContext
+            .fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate { $0.connectionID == connectionID }))
+            .map { (key(primaryID: $0.primaryID, groupingID: $0.groupingID, connectionID: $0.connectionID), $0) }
+        let local = Dictionary(uniqueKeysWithValues: entities)
+        let localSet = Set(local.keys)
+        
+        try Task.checkCancellation()
+        
+        let localOnly = localSet.subtracting(remoteSet)
+        let remoteOnly = remoteSet.subtracting(localSet)
+        let common = localSet.intersection(remoteSet)
+        
+        try Task.checkCancellation()
+        
+        var pendingServerUpdate = [String: PersistedProgress]()
+        
+        var pendingServerDeletion = [String]()
+        
+        var pendingLocalUpdate = [ProgressPayload]()
+        var pendingLocalDeletion = [PersistedProgress.ID]()
+        
+        for key in localOnly {
+            let entity = local[key]!
+            
+            if entity.status == .desynchronized {
+                pendingServerUpdate[key] = entity
+            } else {
+                pendingLocalDeletion.append(entity.id)
+            }
+        }
+        
+        for key in remoteOnly {
+            let payload = remote[key]!
+            pendingLocalUpdate.append(payload)
+        }
+        
+        for key in common {
+            let localEntity = local[key]!
+            let remotePayload = remote[key]!
+            
+            if localEntity.duration == nil, let duration = remotePayload.duration {
+                localEntity.duration = duration
+            }
+            
+            guard localEntity.status != .tombstone else {
+                pendingServerDeletion.append(remotePayload.id)
+                continue
+            }
+            
+            guard let lastUpdate = remotePayload.lastUpdate else {
+                pendingServerUpdate[key] = localEntity
+                continue
+            }
+            
+            let remoteUpdated = Date(timeIntervalSince1970: Double(lastUpdate) / 1000)
+            
+            let currentTime = remotePayload.currentTime
+            
+            if let currentTime, isEqual(localEntity.currentTime, rhs: currentTime) {
+                continue
+            } else if remoteUpdated < localEntity.lastUpdate {
+                logger.info("Local entity \(localEntity.id) is newer then remote.")
+                pendingServerUpdate[key] = localEntity
+            } else {
+                logger.info("Remote entity is newer then \(localEntity.id)")
+                pendingLocalUpdate.append(remotePayload)
+            }
+        }
+        
+        try Task.checkCancellation()
+        
+        // Run server updates
+        
+        if !pendingServerUpdate.isEmpty {
+            try await ABSClient[connectionID].batchUpdate(progress: pendingServerUpdate.values.map { .init(persistedEntity: $0) })
+        }
+        
+        for id in pendingServerDeletion {
+            try await ABSClient[connectionID].delete(progressID: id)
+        }
+        
+        // Apply database changes
+        
+        pendingServerUpdate.forEach {
+            $1.status = .synchronized
+        }
+        
+        let pendingDeletionIDs = local.values.filter { $0.status == .tombstone }.map(\.id)
+        try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+            pendingDeletionIDs.contains($0.id)
+        })
+        
+        try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+            pendingLocalDeletion.contains($0.id)
+        })
+        
+        for payload in pendingLocalUpdate {
+            let entity = integrate(connectionID: connectionID,
+                                   primaryID: payload.episodeId ?? payload.libraryItemId,
+                                   groupingID: payload.episodeId == nil ? nil : payload.libraryItemId,
+                                   progress: payload.progress ?? 0,
+                                   duration: payload.duration,
+                                   currentTime: payload.currentTime ?? 0,
+                                   startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
+                                   lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
+                                   finishedAt: payload.finishedAt != nil ? Date(timeIntervalSince1970: Double(payload.finishedAt!) / 1000) : nil)
+            
+            entity.status = .synchronized
+        }
+        
+        try modelContext.save()
+    }
+    
     func markAsCompleted(_ itemIDs: [ItemIdentifier]) async throws {
         logger.info("Marking progress as completed for items \(itemIDs).")
         
         var persisted = [PersistedProgress]()
-        var entities = [ProgressEntity]()
         
         for itemID in itemIDs {
-            let pendingUpdate: PersistedProgress
+            let entity = integrate(connectionID: itemID.connectionID,
+                                   primaryID: itemID.primaryID,
+                                   groupingID: itemID.groupingID,
+                                   progress: 1,
+                                   duration: nil,
+                                   currentTime: 0,
+                                   startedAt: .now,
+                                   lastUpdate: .now,
+                                   finishedAt: .now)
             
-            if let entity = entity(itemID) {
-                entity.progress = 1
-                
-                if let duration = entity.duration {
-                    entity.currentTime = duration
-                }
-                
-                if entity.startedAt == nil {
-                    entity.startedAt = .now
-                }
-                
-                entity.finishedAt = .now
-                entity.lastUpdate = .now
-                
-                entity.status = .desynchronized
-                
-                pendingUpdate = entity
-            } else {
-                pendingUpdate = createEntity(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now, status: .desynchronized)
-            }
-            
-            persisted.append(pendingUpdate)
-            entities.append(ProgressEntity(persistedEntity: pendingUpdate))
+            entity.status = .desynchronized
+            persisted.append(entity)
         }
         
         try modelContext.save()
         
-        for entity in entities {
-            progressEntityDidUpdate(entity)
+        for entity in persisted {
+            progressEntityDidUpdate(.init(persistedEntity: entity))
         }
         
         do {
-            guard let connectionID = itemIDs.first?.connectionID else {
-                return
+            let grouped = Dictionary(grouping: persisted) { $0.connectionID }
+            
+            for connectionID in grouped.keys {
+                try await ABSClient[connectionID].batchUpdate(progress: grouped[connectionID]!.map { .init(persistedEntity: $0) })
             }
             
-            try await ABSClient[connectionID].batchUpdate(progress: entities)
+            for entity in persisted {
+                entity.status = .synchronized
+            }
         } catch {
-            logger.info("Caching progress update because of: \(error.localizedDescription).")
-        }
-        
-        for entity in persisted {
-            entity.status = .synchronized
+            logger.info("Caching progress failed update because of: \(error.localizedDescription).")
         }
         
         try modelContext.save()
@@ -260,51 +339,46 @@ public extension PersistenceManager.ProgressSubsystem {
         logger.info("Marking progress as listening for items \(itemIDs).")
         
         var persisted = [PersistedProgress]()
-        var entities = [ProgressEntity]()
         
         for itemID in itemIDs {
-            guard let persistedEntity = entity(itemID) else {
-                logger.warning("Could not mark progress as listening for item \(itemID) because it does not exist.")
-                return
-            }
+            let entity = integrate(connectionID: itemID.connectionID,
+                                   primaryID: itemID.primaryID,
+                                   groupingID: itemID.groupingID,
+                                   progress: 0,
+                                   duration: nil,
+                                   currentTime: 0,
+                                   startedAt: nil,
+                                   lastUpdate: .now,
+                                   finishedAt: nil)
             
-            persistedEntity.progress = 0
-            persistedEntity.currentTime = 0
-            
-            persistedEntity.startedAt = nil
-            persistedEntity.finishedAt = nil
-            persistedEntity.lastUpdate = .now
-            
-            persistedEntity.status = .desynchronized
-            
-            persisted.append(persistedEntity)
-            entities.append(ProgressEntity(persistedEntity: persistedEntity))
+            entity.status = .desynchronized
+            persisted.append(entity)
         }
         
         try modelContext.save()
         
-        for entity in entities {
-            progressEntityDidUpdate(entity)
+        for entity in persisted {
+            progressEntityDidUpdate(.init(persistedEntity: entity))
         }
         
         do {
-            guard let connectionID = itemIDs.first?.connectionID else {
-                return
+            let grouped = Dictionary(grouping: persisted) { $0.connectionID }
+            
+            for connectionID in grouped.keys {
+                try await ABSClient[connectionID].batchUpdate(progress: grouped[connectionID]!.map { .init(persistedEntity: $0) })
             }
             
-            try await ABSClient[connectionID].batchUpdate(progress: entities)
+            for entity in persisted {
+                entity.status = .synchronized
+            }
         } catch {
-            logger.info("Caching progress update because of: \(error.localizedDescription).")
-        }
-        
-        for entity in persisted {
-            entity.status = .synchronized
+            logger.info("Caching progress failed update because of: \(error.localizedDescription).")
         }
         
         try modelContext.save()
     }
     
-    func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double, notifyServer: Bool) async throws {
+    func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double) async throws {
         let targetEntity: PersistedProgress
         
         let progress = currentTime / duration
@@ -327,269 +401,14 @@ public extension PersistenceManager.ProgressSubsystem {
             }
             
             targetEntity.lastUpdate = .now
-            
-            if notifyServer {
-                targetEntity.status = .desynchronized
-            }
         } else {
-            targetEntity = createEntity(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: progress >= 1 ? .now : nil, status: notifyServer ? .desynchronized : .tombstone)
+            targetEntity = createEntity(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: progress >= 1 ? .now : nil, status: .desynchronized)
         }
         
         try modelContext.save()
         
         let entity = ProgressEntity(persistedEntity: targetEntity)
-        
-        if notifyServer {
-            do {
-                try await ABSClient[itemID.connectionID].batchUpdate(progress: [entity])
-                
-                targetEntity.status = .synchronized
-                try modelContext.save()
-            } catch {
-                logger.info("Caching progress update because of: \(error.localizedDescription).")
-            }
-        }
-        
         await RFNotification[.progressEntityUpdated].send(payload: (entity.connectionID, entity.primaryID, entity.groupingID, entity))
-    }
-    
-    /// Insert changes into the database and notify the connection of pending updates
-    ///
-    /// This function will:
-    /// 1. update or delete existing progress entities
-    /// 2. send detected differences to server
-    /// 3. create missing local entities
-    func sync(sessions payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
-        var payload = payload
-        
-        do {
-            let signpostID = signposter.makeSignpostID()
-            let signpostState = signposter.beginInterval("sync", id: signpostID)
-            
-            logger.info("Initiating sync with \(payload.count) entities")
-            
-            try modelContext.save()
-            
-            signposter.emitEvent("mapIDs", id: signpostID)
-            
-            // Should be updated on the server:
-            
-            var pendingDeletion = [(id: String, connectionID: String)]()
-            var pendingCreation = [ProgressEntity]()
-            var pendingUpdate = [ProgressEntity]()
-            
-            var hiddenIDs = [(ItemIdentifier.ConnectionID, String)]()
-            
-            // MARK: Remove duplicates
-            
-            let duplicateIDs = Dictionary(grouping: payload, by: \.libraryItemId).filter { $0.value.count > 1 }
-            var mergedEntities = [ProgressPayload]()
-            
-            for (_, entities) in duplicateIDs {
-                // Always proceed with audiobooks and only continue with duplicate episodes
-                
-                let isAudiobook = entities.allSatisfy { $0.episodeId == nil }
-                
-                if isAudiobook, let merged = try? await merge(duplicates: entities, connectionID: connectionID) {
-                    mergedEntities.append(merged)
-                } else if !isAudiobook {
-                    let episodeIDs = Dictionary(grouping: entities, by: \.episodeId).filter { $0.value.count > 1 }
-                    
-                    guard !episodeIDs.isEmpty else {
-                        continue
-                    }
-                    
-                    for (_, entities) in episodeIDs {
-                        guard let entity = try? await merge(duplicates: entities, connectionID: connectionID) else {
-                            logger.info("Failed to merge duplicate episode progress: \(entities)")
-                            continue
-                        }
-                        
-                        mergedEntities.append(entity)
-                    }
-                } else {
-                    logger.info("Failed to merge duplicate audiobook progress: \(entities)")
-                }
-            }
-            
-            for merged in mergedEntities {
-                payload.removeAll {
-                    $0.libraryItemId == merged.libraryItemId
-                    && $0.episodeId == merged.episodeId
-                }
-                
-                payload.append(merged)
-            }
-            
-            // MARK: Enumerate database and update existing
-            
-            try modelContext.transaction {
-                try modelContext.enumerate(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
-                    $0.connectionID == connectionID
-                })) { entity in
-                    try Task.checkCancellation()
-                    
-                    let id = entity.id
-                    
-                    guard let index = payload.firstIndex(where: { $0.id == id }) else {
-                        if entity.status == .desynchronized {
-                            pendingCreation.append(.init(persistedEntity: entity))
-                        } else {
-                            modelContext.delete(entity)
-                        }
-                        
-                        return
-                    }
-                    
-                    let payload = payload.remove(at: index)
-                    
-                    if payload.hideFromContinueListening == true {
-                        hiddenIDs.insert((connectionID, payload.episodeId ?? payload.libraryItemId), at: 0)
-                    }
-                    
-                    switch entity.status {
-                        case .synchronized, .desynchronized:
-                            guard let lastUpdate = payload.lastUpdate else {
-                                pendingCreation.append(.init(persistedEntity: entity))
-                                return
-                            }
-                            
-                            let delta = Double(lastUpdate / 1000).distance(to: entity.lastUpdate.timeIntervalSince1970)
-                            
-                            // about equal
-                            if abs(delta) < 1 {
-                                return
-                            }
-                            
-                            // Local is newer
-                            if delta > 0 {
-                                pendingUpdate.append(.init(persistedEntity: entity))
-                                return
-                            }
-                            
-                            if let duration = payload.duration, duration > 0 {
-                                entity.duration = duration
-                            } else {
-                                entity.duration = nil
-                            }
-                            
-                            entity.currentTime = payload.currentTime ?? 0
-                            
-                            entity.progress = payload.progress ?? 0
-                            
-                            if let startedAt = payload.startedAt {
-                                entity.startedAt = Date(timeIntervalSince1970: Double(startedAt / 1000))
-                            } else {
-                                entity.startedAt = nil
-                            }
-                            
-                            if let lastUpdate = payload.lastUpdate {
-                                entity.lastUpdate = Date(timeIntervalSince1970: Double(lastUpdate / 1000))
-                            } else {
-                                entity.lastUpdate = .now
-                            }
-                            
-                            if let finishedAt = payload.finishedAt {
-                                entity.finishedAt = Date(timeIntervalSince1970: Double(finishedAt / 1000))
-                            } else {
-                                entity.finishedAt = nil
-                            }
-                            
-                            entity.status = .synchronized
-                        case .tombstone:
-                            pendingDeletion.append((id, entity.connectionID))
-                    }
-                }
-            }
-            
-            // MARK: Hidden IDs
-            
-            for (connectionID, ids) in Dictionary(hiddenIDs.map { ($0.0, [$0.1]) }, uniquingKeysWith: +) {
-                logger.info("\(ids.count) progress entities hidden from Continue Listening for connection \(connectionID)")
-                try await PersistenceManager.shared.keyValue.set(.hideFromContinueListening(connectionID: connectionID), .init(ids))
-            }
-            
-            signposter.emitEvent("transaction", id: signpostID)
-            try Task.checkCancellation()
-            
-            // MARK: Create missing local
-            
-            // try modelContext.transaction {
-            for payload in payload {
-                let _ = createEntity(id: payload.id,
-                                     connectionID: connectionID,
-                                     primaryID: payload.episodeId ?? payload.libraryItemId,
-                                     groupingID: payload.episodeId == nil ? nil : payload.libraryItemId,
-                                     progress: payload.progress ?? 0,
-                                     duration: payload.duration ?? 0,
-                                     currentTime: payload.currentTime ?? 0,
-                                     startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
-                                     lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
-                                     finishedAt: payload.finishedAt != nil ? Date(timeIntervalSince1970: Double(payload.finishedAt!) / 1000) : nil,
-                                     status: .synchronized)
-            }
-            // }
-            
-            signposter.emitEvent("create", id: signpostID)
-            try Task.checkCancellation()
-            
-            // MARK: Create & Update remote
-            
-            let batch = pendingCreation + pendingUpdate
-            let grouped = Dictionary(batch.map { ($0.connectionID, [$0]) }, uniquingKeysWith: +)
-            
-            logger.info("Batch updating \(batch.count) (U: \(pendingUpdate.count), C: \(pendingCreation.count)) progress entities from \(grouped.count) servers")
-            
-            for (connectionID, entities) in grouped {
-                try await ABSClient[connectionID].batchUpdate(progress: entities)
-                
-                for entity in entities {
-                    guard let persisted = self.entity(entity.id) else {
-                        continue
-                    }
-                    
-                    persisted.status = .synchronized
-                }
-            }
-            
-            signposter.emitEvent("batch", id: signpostID)
-            try Task.checkCancellation()
-            
-            // MARK: Delete remote
-            
-            logger.info("Deleting \(pendingDeletion.count) progress entities")
-            
-            for (id, connectionID) in pendingDeletion {
-                do {
-                    try await ABSClient[connectionID].delete(progressID: id)
-                } catch {
-                    logger.error("Failed to delete progress entity \(id): \(error)")
-                }
-                
-                guard let persisted = entity(id) else {
-                    continue
-                }
-                
-                try await delete(persisted)
-            }
-            
-            signposter.emitEvent("delete", id: signpostID)
-            
-            // MARK: End
-            
-            try modelContext.save()
-            
-            signposter.endInterval("sync", signpostState)
-            
-            await RFNotification[.invalidateProgressEntities].send(payload: connectionID)
-        } catch {
-            logger.error("Error while syncing progress: \(error)")
-            
-            modelContext.rollback()
-            try modelContext.save()
-            
-            throw error
-        }
     }
     
     func delete(itemID: ItemIdentifier) async throws {
@@ -609,6 +428,60 @@ public extension PersistenceManager.ProgressSubsystem {
     func flush() throws {
         try modelContext.delete(model: PersistedProgress.self)
         try modelContext.save()
+    }
+}
+
+private extension PersistenceManager.ProgressSubsystem {
+    private func key(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> String {
+        "\(connectionID)-\(primaryID)-\(groupingID ?? "_")"
+    }
+    
+    func integrate(connectionID: ItemIdentifier.ConnectionID,
+                   primaryID: ItemIdentifier.PrimaryID,
+                   groupingID: ItemIdentifier.GroupingID?,
+                   progress: Double,
+                   duration: Double?,
+                   currentTime: Double,
+                   startedAt: Date?,
+                   lastUpdate: Date,
+                   finishedAt: Date?) -> PersistedProgress {
+        let updated: PersistedProgress
+
+        if let existing = self.entity(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
+            existing.progress = progress
+            existing.currentTime = currentTime
+            
+            if let duration, duration > 0 {
+                existing.duration = duration
+            }
+            if progress >= 1, let duration = existing.duration {
+                existing.currentTime = duration
+            }
+            
+            existing.startedAt = startedAt
+            existing.lastUpdate = lastUpdate
+            existing.finishedAt = finishedAt
+            updated = existing
+        } else {
+            updated = createEntity(id: UUID().uuidString,
+                                   connectionID: connectionID,
+                                   primaryID: primaryID,
+                                   groupingID: groupingID,
+                                   progress: progress,
+                                   duration: duration,
+                                   currentTime: currentTime,
+                                   startedAt: startedAt,
+                                   lastUpdate: lastUpdate,
+                                   finishedAt: finishedAt,
+                                   status: .synchronized)
+            
+            modelContext.insert(updated)
+        }
+
+        return updated
+    }
+    func isEqual(_ lhs: TimeInterval, rhs: TimeInterval) -> Bool {
+        lhs.distance(to: rhs) < .ulpOfOne
     }
 }
 

@@ -21,19 +21,19 @@ final class ProgressViewModel {
     
     private init() {
         RFNotification[.offlineModeChanged].subscribe { [weak self] isEnabled in
-            guard !isEnabled else {
-                return
-            }
-            
             self?.importedConnectionIDs.removeAll()
             self?.importFailedConnectionIDs.removeAll()
             
-            self?.syncAllConnections()
+            if isEnabled {
+                self?.tasks.forEach { $0.value.cancel() }
+                self?.tasks.removeAll()
+            } else {
+                self?.syncAllConnections()
+            }
         }
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.currentlyPlayingItemID = $0.0
-            self?.attemptSync(for: $0.0.connectionID)
         }
         RFNotification[.playbackStopped].subscribe { [weak self] _ in
             guard let currentlyPlayingItemID = self?.currentlyPlayingItemID else {
@@ -61,16 +61,16 @@ final class ProgressViewModel {
         
         importFailedConnectionIDs.remove(connectionID)
         
-        tasks[connectionID] = Task.detached {
+        tasks[connectionID] = Task {
             let success: Bool
-            let task = await UIApplication.shared.beginBackgroundTask(withName: "synchronizeUserData")
+            let task = UIApplication.shared.beginBackgroundTask(withName: "synchronizeUserData")
             
             do {
                 
                 let (sessions, bookmarks) = try await ABSClient[connectionID].authorize()
                 
                 try await withThrowingTaskGroup(of: Void.self) {
-                    $0.addTask { try await PersistenceManager.shared.progress.sync(sessions: sessions, connectionID: connectionID) }
+                    $0.addTask { try await PersistenceManager.shared.progress.compareDatabase(against: sessions, connectionID: connectionID) }
                     $0.addTask { try await PersistenceManager.shared.bookmark.sync(bookmarks: bookmarks, connectionID: connectionID) }
                     
                     try await $0.waitForAll()
@@ -82,7 +82,7 @@ final class ProgressViewModel {
                 success = false
             }
             
-            await UIApplication.shared.endBackgroundTask(task)
+            UIApplication.shared.endBackgroundTask(task)
             
             await MainActor.run {
                 if success {
