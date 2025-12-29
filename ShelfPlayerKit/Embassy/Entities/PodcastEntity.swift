@@ -110,24 +110,12 @@ struct PodcastEntityOptionsProvider: DynamicOptionsProvider {
 
 private func listenNowPodcastEntities() async -> [PodcastEntity] {
     var result = [PodcastEntity]()
-    var podcastIDs = [ItemIdentifier]()
     
-    for item in await ShelfPlayerKit.listenNowItems {
-        guard let episode = item as? Episode else {
-            continue
-        }
-        
-        let podcastID = ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(episode.id)
-        
-        guard !podcastIDs.contains(podcastID) else {
-            continue
-        }
-        
-        guard let podcast = try? await podcastID.resolved as? Podcast else {
-            continue
-        }
-        
-        podcastIDs.append(podcastID)
+    guard let podcasts = try? await PersistenceManager.shared.listenNow.current(itemType: .podcast) as? [Podcast] else {
+        return []
+    }
+    
+    for podcast in podcasts {
         result.append(await .init(podcast: podcast))
     }
     

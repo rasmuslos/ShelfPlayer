@@ -100,7 +100,7 @@ public extension Episode {
     
     var links: [URL] {
         get throws {
-            guard let description = description else {
+            guard let description else {
                 return []
             }
             
@@ -118,6 +118,41 @@ public extension Episode {
         }
     }
     
+//    var chapterMatches: [(NSRange, TimeInterval)]? {
+//        guard let description else {
+//            return nil
+//        }
+//        
+//        return description.matches(of: /#"^\s*\(?\b(?:\d{1,2}:)?\d{2}:\d{2}:?\b\)?\s*(.*)$"#/.anchorsMatchLineEndings()).compactMap { match -> (NSRange, TimeInterval)? in
+//            guard let timestamp = parseChapterTimestamp(String(match.output.0)), let url = URL(string: "shelfPlayer://chapter?time=\(timestamp)") else {
+//                return nil
+//            }
+//            
+//            let lowerBound = description.index(description.startIndex, offsetBy: match.range.lowerBound)
+//            let upperBound = description.index(description.startIndex, offsetBy: match.range.upperBound)
+//            
+////            return (NSRange(location: match.range.lowerBound, length: description.distance(from: description.startIndex, to: match.range) - match.range.lowerBound), timestamp)
+//        }
+//    }
+//    var chapters: [Chapter]? {
+//        guard let matches = chapterMatches else {
+//            return nil
+//        }
+//        
+//        return matches.enumerated().compactMap { index, match -> Chapter? in
+//            let title = match.0.output.1
+//            let endOffset: TimeInterval
+//            
+//            if index >= matches.count - 1 {
+//                endOffset = duration
+//            } else {
+//                endOffset = matches[index + 1].1
+//            }
+//            
+//            return .init(id: index, startOffset: match.1, endOffset: endOffset, title: String(title))
+//        }
+//    }
+    
     var releaseDate: Date? {
         guard let released = released, let milliseconds = Double(released) else {
             return nil
@@ -127,3 +162,28 @@ public extension Episode {
     }
 }
 
+private func parseChapterTimestamp(_ timestamp: String) -> TimeInterval? {
+    let cleaned = timestamp
+            .trimmingCharacters(in: CharacterSet(charactersIn: "():"))
+        
+        let parts = cleaned.split(separator: ":").compactMap { Int($0) }
+        
+        let hours: Int
+        let minutes: Int
+        let seconds: Int
+        
+        switch parts.count {
+        case 2: // MM:SS
+            hours = 0
+            minutes = parts[0]
+            seconds = parts[1]
+        case 3: // HH:MM:SS
+            hours = parts[0]
+            minutes = parts[1]
+            seconds = parts[2]
+        default:
+                fatalError("Unimplemented")
+        }
+        
+        return TimeInterval(hours * 3600 + minutes * 60 + seconds)
+}

@@ -23,6 +23,7 @@ public extension UserDefaults {
 public extension Defaults.Keys {
     // MARK: Settings
     
+    #warning("Fix:")
     static let removeFinishedDownloads = Key("removeFinishedDownloads", default: true)
     static let forceAspectRatio = Key("forceAspectRatio", default: false)
     static let groupAudiobooksInSeries = Key("groupAudiobooksInSeries", default: true)
@@ -58,7 +59,6 @@ public extension Defaults.Keys {
     
     static let allowCellularDownloads = Key("allowCellularDownloads", default: false)
     
-    static let startInOfflineMode = Key("startInOfflineMode", default: false)
     static let ultraHighQuality = Key("ultraHighQuality", default: false)
     
     // MARK: In-App settings
@@ -66,8 +66,8 @@ public extension Defaults.Keys {
     static let playbackRates = Key<[Percentage]>("playbackRates", default: [0.9, 1, 1.3, 1.6, 2])
     static let defaultPlaybackRate = Key<Percentage>("defaultPlaybackRate", default: 1)
     
-    static let playbackRateAdjustmentUp = Key<Percentage>("playbackRateAdjustmentUp", default: 0.05)
-    static let playbackRateAdjustmentDown = Key<Percentage>("playbackRateAdjustmentDown", default: 0.05)
+    static let playbackRateAdjustmentUp = Key<Percentage>("playbackRateAdjustmentUp", default: 0.1)
+    static let playbackRateAdjustmentDown = Key<Percentage>("playbackRateAdjustmentDown", default: 0.1)
     
     static let sleepTimerIntervals = Key("sleepTimerIntervals", default: [5, 10, 15, 20, 25, 30, 45, 60, 75, 90].map { Double($0) * 60 })
     static let sleepTimerExtendInterval = Key("sleepTimerExtendInterval", default: Double(1200))

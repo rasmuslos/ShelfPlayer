@@ -149,7 +149,7 @@ public extension AudioPlayer {
     }
     @discardableResult
     func startGrouping(_ itemID: ItemIdentifier) async throws -> ItemIdentifier {
-        let targetID = try await ResolvedUpNextStrategy.nextGroupingItem(itemID)
+        let targetID = try await ResolveCache.nextGroupingItem(itemID).id
         try await start(.init(itemID: targetID, origin: .series(itemID)))
         
         return targetID
@@ -173,7 +173,7 @@ public extension AudioPlayer {
     }
     @discardableResult
     func queueGrouping(_ itemID: ItemIdentifier) async throws -> ItemIdentifier {
-        let targetID = try await ResolvedUpNextStrategy.nextGroupingItem(itemID)
+        let targetID = try await ResolveCache.nextGroupingItem(itemID).id
         try await queue([.init(itemID: targetID, origin: .series(itemID))])
         
         return targetID

@@ -144,10 +144,14 @@ extension ItemIdentifier: EntityIdentifierConvertible {
 }
 
 func listenNowItemEntities() async -> [ItemEntity] {
-    var result: [ItemEntity] = []
+    var result = [ItemEntity]()
     
-    for item in await ShelfPlayerKit.listenNowItems {
-        result.append(await ItemEntity(item: item))
+    guard let items = try? await PersistenceManager.shared.listenNow.current else {
+        return []
+    }
+    
+    for item in items {
+        result.append(await .init(item: item))
     }
     
     return result

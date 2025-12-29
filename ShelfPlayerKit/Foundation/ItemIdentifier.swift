@@ -168,7 +168,7 @@ extension ItemIdentifier: LosslessStringConvertible {
 }
 
 public extension ItemIdentifier {
-    enum ItemType: String, Codable, Sendable, LosslessStringConvertible {
+    enum ItemType: String, Codable, Sendable, LosslessStringConvertible, Hashable {
         case audiobook = "audiobook"
         case author = "author"
         case narrator = "narrator"

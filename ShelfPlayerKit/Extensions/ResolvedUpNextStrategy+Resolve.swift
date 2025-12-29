@@ -37,7 +37,8 @@ extension ResolvedUpNextStrategy {
                 }
                 
             case .listenNow:
-                return await ShelfPlayerKit.listenNowItems.filter { $0.id != itemID }
+                #warning("grrr")
+                fatalError(":(")
                 
             default:
                 throw ResolveError.invalidItemType

@@ -9,7 +9,9 @@ import SwiftUI
 
 struct Description: View {
     let description: String?
+    
     var showHeadline = true
+    var linkRanges = [Range<String.Index>: URL]()
     
     @State var height: CGFloat = .zero
     @State var availableWidth: CGFloat = .zero
@@ -35,7 +37,7 @@ struct Description: View {
                     }
                     
                     if let description {
-                        HTMLTextView(height: $height, html: description, width: availableWidth)
+                        HTMLTextView(height: $height, html: description, width: availableWidth, linkRanges: linkRanges)
                             .padding(.horizontal, -5)
                             .frame(height: height)
                     } else {
@@ -57,6 +59,8 @@ private struct HTMLTextView: UIViewRepresentable {
     let html: String
     let width: CGFloat
     
+    let linkRanges: [Range<String.Index>: URL]
+    
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView(frame: .zero)
         
@@ -72,18 +76,29 @@ private struct HTMLTextView: UIViewRepresentable {
     func updateUIView(_ textView: UITextView, context: Context) {
         DispatchQueue.main.async {
             let data = Data(self.html.utf8)
-            if let attributedString = try? NSAttributedString(data: data, options: [
-                .documentType: NSAttributedString.DocumentType.html,
-                .characterEncoding: String.Encoding.utf8.rawValue
-            ], documentAttributes: nil) {
+            
+            do {
+                let attributedString = try NSMutableAttributedString(data: data, options: [
+                    .documentType: NSAttributedString.DocumentType.html,
+                    .characterEncoding: String.Encoding.utf8.rawValue
+                ], documentAttributes: nil)
+                
+                for (range, url) in linkRanges {
+                    attributedString.addAttributes([
+                        .link: url as NSURL
+                    ], range: NSRange(range, in: self.html))
+                }
+                
                 textView.attributedText = attributedString
                 textView.textColor = UIColor.label
                 textView.font = UIFont.preferredFont(forTextStyle: .body)
+            } catch {
+                textView.attributedText = .init(string: "Failed to parse HTML")
             }
             
             height = textView.sizeThatFits(.init(
                 width: width,
-                height: 10_000_000)
+                height: 100_000)
             ).height
         }
     }

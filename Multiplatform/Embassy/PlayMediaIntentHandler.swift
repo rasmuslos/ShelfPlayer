@@ -19,7 +19,7 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
         }
         
         guard let search = intent.mediaSearch, let query = search.mediaName ?? search.artistName ?? search.albumName ?? search.genreNames?.first else {
-            return await INPlayMediaMediaItemResolutionResult.successes(with: listenNowIntentItems())
+            return await INPlayMediaMediaItemResolutionResult.successes(with: (try? listenNowIntentItems()) ?? [])
         }
         
         let includeOnlineResults = search.reference != .my
@@ -81,12 +81,15 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     static func donateListenNowIntents() async {
         INUpcomingMediaManager.shared.setPredictionMode(.default, for: .audioBook)
         INUpcomingMediaManager.shared.setPredictionMode(.default, for: .podcastShow)
+        INUpcomingMediaManager.shared.setPredictionMode(.default, for: .podcastEpisode)
         
-        INUpcomingMediaManager.shared.setPredictionMode(.onlyPredictSuggestedIntents, for: .podcastEpisode)
+        guard let listenNowItems = try? await PersistenceManager.shared.listenNow.current else {
+            return
+        }
         
         var intents = [INPlayMediaIntent]()
         
-        for item in await ShelfPlayerKit.listenNowItems {
+        for item in listenNowItems {
             do {
                 try await intents.append(buildPlayMediaIntent(item))
                 
@@ -143,8 +146,8 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
         }.sorted { $0.0 < $1.0 }.compactMap { $0.1 }
     }
     
-    private func listenNowIntentItems() async -> [INMediaItem] {
-        await convertSortedArray(ShelfPlayerKit.listenNowItems)
+    private func listenNowIntentItems() async throws -> [INMediaItem] {
+        try await convertSortedArray(PersistenceManager.shared.listenNow.current)
     }
     
     private enum IntentError: Error {

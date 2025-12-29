@@ -65,12 +65,7 @@ final class SeriesViewModel {
     
     private nonisolated func updateHighlighted(provided audiobooks: [Audiobook]? = nil) {
         Task {
-            var audiobooks: [Audiobook]! = audiobooks
-            
-            // stupid; ?? does not work
-            if audiobooks == nil {
-                audiobooks = await lazyLoader.items
-            }
+            let audiobooks = await lazyLoader.items
             
             for audiobook in audiobooks {
                 if await audiobook.isIncluded(in: .notFinished) {

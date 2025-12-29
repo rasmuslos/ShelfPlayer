@@ -64,6 +64,7 @@ struct ListenedTodayLabel: View {
                 }
                 .accessibilityValue(Text(verbatim: "\(listenedTodayTracker.totalMinutesListenedToday) / \(listenedTodayTracker.listenTimeTarget)"))
             }
+            .contentShape(.rect)
         }
         .padding(2)
         .aspectRatio(0.9, contentMode: .fit)

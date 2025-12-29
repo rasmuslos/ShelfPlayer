@@ -41,8 +41,6 @@ public actor ResolveCache: Sendable {
     }
     
     private enum ResolveError: Error {
-        case offline
-        
         case invalidDiskCached
         
         case missingEpisode
@@ -68,7 +66,7 @@ public extension ResolveCache {
                 }
                 
                 guard await !OfflineMode.shared.isEnabled else {
-                    throw ResolveError.offline
+                    throw APIClientError.offline
                 }
                 
                 logger.info("No downloaded or disk cached for \(itemID)")
@@ -131,7 +129,7 @@ public extension ResolveCache {
                 logger.info("No downloaded or disk cached for playable item: \(primaryID) \(String(describing: groupingID)) \(connectionID)")
                 
                 guard await !OfflineMode.shared.isEnabled else {
-                    throw ResolveError.offline
+                    throw APIClientError.offline
                 }
                 
                 if let groupingID {
@@ -159,7 +157,7 @@ public extension ResolveCache {
         logger.info("No downloaded or disk cached for podcast: \(primaryID) \(connectionID)")
         
         guard await !OfflineMode.shared.isEnabled else {
-            throw ResolveError.offline
+            throw APIClientError.offline
         }
         
         return try await resolveOnlinePodcast(primaryID: primaryID, connectionID: connectionID).0
@@ -197,6 +195,35 @@ private extension ResolveCache {
         }
         
         return episode
+    }
+}
+
+// MARK: Helper
+
+public extension ResolveCache {
+    static func nextGroupingItem(_ itemID: ItemIdentifier) async throws -> PlayableItem {
+        switch itemID.type {
+            case .series:
+                guard let audiobook = try await ResolvedUpNextStrategy.series(itemID).resolve(cutoff: nil).first else {
+                    throw APIClientError.notFound
+                }
+                
+                return audiobook
+            case .podcast:
+                guard let episode = try await ResolvedUpNextStrategy.podcast(itemID).resolve(cutoff: nil).first else {
+                    throw APIClientError.notFound
+                }
+                
+                return episode
+            case .collection, .playlist:
+                guard let item = try await ResolvedUpNextStrategy.collection(itemID).resolve(cutoff: nil).first else {
+                    throw APIClientError.notFound
+                }
+                
+                return item
+            default:
+                throw APIClientError.invalidItemType
+        }
     }
 }
 

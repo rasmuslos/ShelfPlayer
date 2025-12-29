@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct ListenNowSheet: View {
     @Environment(Satellite.self) private var satellite
+    @Environment(OfflineMode.self) private var offlineMode
     
     @Default(.enableConvenienceDownloads) private var enableConvenienceDownloads
     @Default(.enableListenNowDownloads) private var enableListenNowDownloads
@@ -20,21 +21,23 @@ struct ListenNowSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    Menu {
-                        ListenedTodayLabel.AdjustMenuInner()
-                    } label: {
-                        HStack(spacing: 12) {
-                            ListenedTodayListRow()
-                            
-                            Image(systemName: "pencil")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                if !offlineMode.isEnabled {
+                    Section {
+                        Menu {
+                            ListenedTodayLabel.AdjustMenuInner()
+                        } label: {
+                            HStack(spacing: 12) {
+                                ListenedTodayListRow()
+                                
+                                Image(systemName: "pencil")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        .buttonStyle(.plain)
+                        .menuActionDismissBehavior(.disabled)
+                        .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
                     }
-                    .buttonStyle(.plain)
-                    .menuActionDismissBehavior(.disabled)
-                    .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
                 }
                 
                 if listenNowItems.isEmpty {
@@ -89,7 +92,13 @@ struct ListenNowSheet: View {
                 await PersistenceManager.shared.listenNow.invalidate()
             }
             
-            let listenNowItems = await ShelfPlayerKit.listenNowItems
+            guard let listenNowItems = try? await PersistenceManager.shared.listenNow.current else {
+                await MainActor.withAnimation {
+                    listenNowItems = []
+                }
+                
+                return
+            }
             
             await MainActor.withAnimation {
                 isLoading = false
@@ -110,8 +119,8 @@ struct ListenNowSheetToggle: View {
             ListenedTodayLabel.AdjustMenuInner()
         } label: {
             ListenedTodayLabel()
-                .frame(width: width)
                 .contentShape(.rect)
+                .frame(width: width)
         } primaryAction: {
             satellite.present(.listenNow)
         }

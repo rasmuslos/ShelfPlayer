@@ -18,10 +18,6 @@ struct PodcastHomePanel: View {
     @State private var didFail = false
     @State private var isLoading = false
     
-    private var relevantItemIDs: [ItemIdentifier] {
-        episodes.flatMap(\.itemIDs)
-    }
-    
     var body: some View {
         Group {
             if episodes.isEmpty && podcasts.isEmpty {
@@ -82,18 +78,7 @@ struct PodcastHomePanel: View {
             fetchItems()
             ListenedTodayTracker.shared.refresh()
         }
-        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, entity) in
-            guard UIApplication.shared.applicationState == .active else {
-                return
-            }
-            
-            guard relevantItemIDs.contains(where: {
-                $0.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
-                || (entity?.progress ?? 0) > 0
-            }) else {
-                return
-            }
-            
+        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { _ in
             fetchItems()
         }
     }

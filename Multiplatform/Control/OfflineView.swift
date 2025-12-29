@@ -19,6 +19,12 @@ struct OfflineView: View {
     }
     
     @ViewBuilder
+    private var listenNowButton: some View {
+        Button("panel.listenNow", systemImage: "play.diamond.fill") {
+            satellite.present(.listenNow)
+        }
+    }
+    @ViewBuilder
     private var goOnlineButton: some View {
         Button("navigation.offline.disable", systemImage: "network") {
             OfflineMode.shared.setEnabled(false)
@@ -91,6 +97,7 @@ struct OfflineView: View {
                 .modifier(PlaybackSafeAreaPaddingModifier())
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
+                        listenNowButton
                         preferencesButton
                         goOnlineButton
                     }
