@@ -97,12 +97,9 @@ struct ShelfPlayer {
         Task {
             await withTaskGroup {
                 $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }
-                
-                $0.addTask { await EmbassyManager.shared.setupObservers() }
-                $0.addTask { await PlayMediaIntentHandler.donateListenNowIntents() }
-                
                 $0.addTask { await PersistenceManager.shared.download.scheduleUpdateTask() }
                 
+                $0.addTask { await EmbassyManager.shared.setupObservers() }
                 $0.addTask { await EmbassyManager.shared.endSleepTimerActivity() }
             }
         }
@@ -130,6 +127,7 @@ struct ShelfPlayer {
                 }
                 
                 $0.addTask { await ContextProvider.updateUserContext() }
+                $0.addTask { await PlayMediaIntentHandler.donateListenNowIntents() }
                 
                 $0.addTask { await SpotlightIndexer.shared.scheduleBackgroundTask() }
                 $0.addTask { await PersistenceManager.shared.convenienceDownload.scheduleBackgroundTask(shouldWait: false) }

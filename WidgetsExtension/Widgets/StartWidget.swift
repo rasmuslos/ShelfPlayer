@@ -89,8 +89,8 @@ struct StartWidgetTimelineEntry: TimelineEntry {
                 progress = await PersistenceManager.shared.progress[item.id].progress
             } else if let currentItemID = Defaults[.playbackInfoWidgetValue]?.currentItemID, currentItemID.groupingID == item.id.primaryID {
                 progress = await PersistenceManager.shared.progress[currentItemID].progress
-            } else if let nextUp = try? await ResolvedUpNextStrategy.nextGroupingItem(item.id) {
-                progress = await PersistenceManager.shared.progress[nextUp].progress
+            } else if let nextUp = try? await ResolveCache.nextGroupingItem(item.id) {
+                progress = await PersistenceManager.shared.progress[nextUp.id].progress
             } else {
                 progress = nil
             }

@@ -131,12 +131,12 @@ struct AudiobookEntityOptionsProvider: DynamicOptionsProvider {
 private func listenNowAudiobookEntities() async -> [AudiobookEntity] {
     var result = [AudiobookEntity]()
     
-    for item in await ShelfPlayerKit.listenNowItems {
-        guard let audiobook = item as? Audiobook else {
-            continue
-        }
-        
-        result.append(await AudiobookEntity(audiobook: audiobook))
+    guard let audiobooks = try? await PersistenceManager.shared.listenNow.current(itemType: .audiobook) as? [Audiobook] else {
+        return []
+    }
+    
+    for audiobook in audiobooks {
+        result.append(await .init(audiobook: audiobook))
     }
     
     return result

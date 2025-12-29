@@ -9,11 +9,6 @@ import Foundation
 import CoreSpotlight
 
 public extension ShelfPlayerKit {
-    static var listenNowItems: [PlayableItem] {
-        get async {
-            []
-        }
-    }
     static var libraries: [Library] {
         get async {
             await withTaskGroup {

@@ -31,6 +31,9 @@ struct EpisodeView: View {
             
             Description(description: viewModel.episode.description, showHeadline: false)
                 .padding(.horizontal, 20)
+                .onOpenURL {
+                    print($0)
+                }
             
             Footer()
             

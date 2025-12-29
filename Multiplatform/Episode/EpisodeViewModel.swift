@@ -55,6 +55,16 @@ extension EpisodeViewModel {
         
         return information
     }
+//    var linkRanges: [NSRange<String.Index>: URL] {
+//        guard let description = episode.description, let matches = episode.chapterMatches else {
+//            return [:]
+//        }
+//        
+//        return matches.compactMap {
+//            let chapterTime = $0.1
+//            return (, URL(string: "shelfPlayer://chapter?time=\(chapterTime)")!)
+//        }
+//    }
     
     nonisolated func load(refresh: Bool) {
         Task {

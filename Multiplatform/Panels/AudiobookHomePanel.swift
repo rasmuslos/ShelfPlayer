@@ -26,9 +26,6 @@ struct AudiobookHomePanel: View {
     private var authors: [HomeRow<Person>] {
         showAuthorsRow ? _authors : []
     }
-    private var relevantItemIDs: [ItemIdentifier] {
-        audiobooks.flatMap(\.itemIDs)
-    }
     
     var body: some View {
         Group {
@@ -86,18 +83,7 @@ struct AudiobookHomePanel: View {
             fetchItems(refresh: true)
             ListenedTodayTracker.shared.refresh()
         }
-        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { (connectionID, primaryID, groupingID, entity) in
-            guard UIApplication.shared.applicationState == .active else {
-                return
-            }
-            
-            guard relevantItemIDs.contains(where: {
-                $0.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
-                || (entity?.progress ?? 0) > 0
-            }) else {
-                return
-            }
-            
+        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { _ in
             fetchItems()
         }
         .onReceive(RFNotification[.downloadStatusChanged].publisher()) {

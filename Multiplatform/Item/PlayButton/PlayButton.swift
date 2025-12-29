@@ -20,6 +20,7 @@ struct PlayButton: View {
     
     let item: PlayableItem
     
+    @State private var id = UUID()
     @State private var tracker: ProgressTracker
     
     init(item: PlayableItem) {
@@ -167,7 +168,10 @@ struct PlayButton: View {
             .accessibilityLabel(Text(label))
             .accessibilityValue(Text(verbatim: "\(tracker.progress?.formatted(.percent.notation(.compactName)) ?? "?")"))
             .hoverEffect(.highlight)
-            .id("playButton_\(item.id)_\(color.hashValue)_\(progress?.description ?? "-1")")
+            .id(id)
+            .onChange(of: item) {
+                id = .init()
+            }
             .onReceive(RFNotification[.reloadImages].publisher()) {
                 if let itemID = $0, itemID == item.id {
                     loadColor()

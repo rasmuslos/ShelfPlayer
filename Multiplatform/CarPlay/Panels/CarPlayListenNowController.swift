@@ -43,7 +43,9 @@ private extension CarPlayListenNowController {
             var controllers = [CarPlayItemController]()
             var sections = [CPListSection]()
             
-            let listenNowControllers = await ShelfPlayerKit.listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
+            #warning("grr")
+//            let listenNowControllers = await ShelfPlayerKit.listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
+            let listenNowControllers = [CarPlayPlayableItemController]()
             
             controllers += listenNowControllers
             sections.append(CPListSection(items: listenNowControllers.map(\.row), header: String(localized: "panel.listenNow"), sectionIndexTitle: nil))

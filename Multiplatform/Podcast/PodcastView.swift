@@ -29,10 +29,6 @@ struct PodcastView: View {
             
             if viewModel.episodes.isEmpty {
                 ProgressView()
-            } else if viewModel.visible.isEmpty {
-                EmptyCollectionView.Inner()
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(.init(top: 40, leading: 20, bottom: 20, trailing: 20))
             } else {
                 HStack {
                     Menu {

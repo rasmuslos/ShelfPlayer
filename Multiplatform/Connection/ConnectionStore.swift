@@ -22,16 +22,13 @@ final class ConnectionStore {
     private init() {
         update()
         
-        RFNotification[.offlineModeChanged].subscribe { [weak self] isEnabled in
-            guard !isEnabled else {
-                return
-            }
-            
+        RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
             self?.update()
         }
         RFNotification[.connectionsChanged].subscribe { [weak self] in
             self?.update()
         }
+        
         RFNotification[.connectionUnauthorized].subscribe { [weak self] connectionID in
             self?.reauthorize(connectionID: connectionID)
         }
