@@ -207,7 +207,7 @@ final class EmbassyManager: Sendable {
                 }
                 
                 let isDownloaded: Bool
-                let nextUp = Optional(Episode.fixture.id) // await ShelfPlayerKit.listenNowItems.first?.id
+                let nextUp = Optional(Episode.placeholder.id) // await ShelfPlayerKit.listenNowItems.first?.id
                 
                 if let nextUp, await PersistenceManager.shared.download.status(of: nextUp) == .completed {
                     isDownloaded = true

@@ -103,6 +103,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
     
     private var chapterValidUntil: TimeInterval?
     
+    private var audioPlayerSubscription: Any?
     private var volumeSubscription: AnyCancellable?
     private var bufferCheckTimer: Timer?
     
@@ -341,6 +342,7 @@ extension LocalAudioEndpoint {
     }
     func setPlaybackRate(_ rate: Percentage) {
         playbackRate = rate
+        updatePeriodicObserver()
     }
     
     func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
@@ -940,7 +942,14 @@ private extension LocalAudioEndpoint {
             }
         }
         
-        audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { [weak self] _ in
+        updatePeriodicObserver()
+    }
+    func updatePeriodicObserver() {
+        if let audioPlayerSubscription {
+            audioPlayer.removeTimeObserver(audioPlayerSubscription)
+        }
+        
+        audioPlayerSubscription = audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1 * (1 / playbackRate), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { [weak self] _ in
             guard let self else {
                 return
             }

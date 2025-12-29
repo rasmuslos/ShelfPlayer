@@ -185,6 +185,9 @@ struct ContentView: View {
                 await ItemIdentifier(identifier).navigate()
             }
         }
+        .onOpenURL {
+            print($0)
+        }
     }
 }
 

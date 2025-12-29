@@ -118,6 +118,34 @@ public extension Episode {
         }
     }
     
+    nonisolated(unsafe) static let chapterRegex = /^\s*\(?(\d{1,2}:(?:\d{2}:)?\d{2})\)?\s*(.*)$/
+        .anchorsMatchLineEndings()
+    nonisolated(unsafe) static let chapterTimestampRegex = /^\s*\(?(\d{1,2}:(?:\d{2}:)?\d{2})\)?/
+        .anchorsMatchLineEndings()
+    
+    static func parseChapterTimestamp(_ timestamp: String) -> TimeInterval? {
+        let parts = timestamp.split(separator: ":").compactMap { Int($0) }
+        
+        let hours: Int
+        let minutes: Int
+        let seconds: Int
+        
+        switch parts.count {
+            case 2: // MM:SS
+                hours = 0
+                minutes = parts[0]
+                seconds = parts[1]
+            case 3: // HH:MM:SS
+                hours = parts[0]
+                minutes = parts[1]
+                seconds = parts[2]
+            default:
+                fatalError("Unimplemented")
+        }
+        
+        return TimeInterval(hours * 3600 + minutes * 60 + seconds)
+    }
+    
 //    var chapterMatches: [(NSRange, TimeInterval)]? {
 //        guard let description else {
 //            return nil
@@ -160,30 +188,4 @@ public extension Episode {
         
         return Date(timeIntervalSince1970: milliseconds / 1000)
     }
-}
-
-private func parseChapterTimestamp(_ timestamp: String) -> TimeInterval? {
-    let cleaned = timestamp
-            .trimmingCharacters(in: CharacterSet(charactersIn: "():"))
-        
-        let parts = cleaned.split(separator: ":").compactMap { Int($0) }
-        
-        let hours: Int
-        let minutes: Int
-        let seconds: Int
-        
-        switch parts.count {
-        case 2: // MM:SS
-            hours = 0
-            minutes = parts[0]
-            seconds = parts[1]
-        case 3: // HH:MM:SS
-            hours = parts[0]
-            minutes = parts[1]
-            seconds = parts[2]
-        default:
-                fatalError("Unimplemented")
-        }
-        
-        return TimeInterval(hours * 3600 + minutes * 60 + seconds)
 }
