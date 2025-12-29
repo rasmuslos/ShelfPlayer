@@ -8,13 +8,20 @@
 import SwiftUI
 
 struct Description: View {
+    @Environment(\.openURL) private var openURL
+    
+    typealias AttributeCallback = ((_: inout NSMutableAttributedString) -> Void)?
+    
     let description: String?
     
     var showHeadline = true
-    var linkRanges = [Range<String.Index>: URL]()
     
-    @State var height: CGFloat = .zero
-    @State var availableWidth: CGFloat = .zero
+    var attribute: AttributeCallback = nil
+    var handleURL: ((URL) -> Bool)? = nil
+    
+    @State private var delegate = Delegate()
+    @State private var height: CGFloat = .zero
+    @State private var availableWidth: CGFloat = .zero
     
     var body: some View {
         ZStack {
@@ -37,9 +44,15 @@ struct Description: View {
                     }
                     
                     if let description {
-                        HTMLTextView(height: $height, html: description, width: availableWidth, linkRanges: linkRanges)
-                            .padding(.horizontal, -5)
-                            .frame(height: height)
+                        HTMLTextView(height: $height, delegate: $delegate, html: description, width: availableWidth, attribute: attribute) {
+                            if let handleURL {
+                                handleURL($0)
+                            } else {
+                                true
+                            }
+                        }
+                        .padding(.horizontal, -5)
+                        .frame(height: height)
                     } else {
                         Text("item.description.missing")
                             .font(.body.smallCaps())
@@ -55,11 +68,13 @@ struct Description: View {
 
 private struct HTMLTextView: UIViewRepresentable {
     @Binding var height: CGFloat
+    @Binding var delegate: Delegate
     
     let html: String
     let width: CGFloat
     
-    let linkRanges: [Range<String.Index>: URL]
+    let attribute: Description.AttributeCallback
+    let handleURL: (URL) -> Bool
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView(frame: .zero)
@@ -70,6 +85,11 @@ private struct HTMLTextView: UIViewRepresentable {
         textView.contentInset = .zero
         textView.textContainerInset = .zero
         
+        delegate.callback = {
+            handleURL($0)
+        }
+        textView.delegate = delegate
+        
         return textView
     }
     
@@ -78,16 +98,12 @@ private struct HTMLTextView: UIViewRepresentable {
             let data = Data(self.html.utf8)
             
             do {
-                let attributedString = try NSMutableAttributedString(data: data, options: [
+                var attributedString = try NSMutableAttributedString(data: data, options: [
                     .documentType: NSAttributedString.DocumentType.html,
                     .characterEncoding: String.Encoding.utf8.rawValue
                 ], documentAttributes: nil)
                 
-                for (range, url) in linkRanges {
-                    attributedString.addAttributes([
-                        .link: url as NSURL
-                    ], range: NSRange(range, in: self.html))
-                }
+                attribute?(&attributedString)
                 
                 textView.attributedText = attributedString
                 textView.textColor = UIColor.label
@@ -103,6 +119,27 @@ private struct HTMLTextView: UIViewRepresentable {
         }
     }
 }
+private final class Delegate: NSObject, UITextViewDelegate {
+    var callback: ((URL) -> Bool)!
+    
+    func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+        if case .link(let url) = textItem.content {
+            guard callback(url) else {
+                return nil
+            }
+        }
+        
+        return defaultAction
+    }
+    func textView(_ textView: UITextView, menuConfigurationFor textItem: UITextItem, defaultMenu: UIMenu) -> UITextItem.MenuConfiguration? {
+        if case .link(let url) = textItem.content, url.scheme == "shelfPlayer" {
+            return nil
+        }
+        
+        return .init(menu: defaultMenu)
+    }
+}
+
 
 #Preview {
     ScrollView {

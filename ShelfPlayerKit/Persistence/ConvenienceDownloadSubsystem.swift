@@ -517,8 +517,11 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                         
                         return result
                     case .listenNow:
-                        #warning("uhujh")
-                        return []
+                        guard await !OfflineMode.shared.isEnabled else {
+                            throw APIClientError.offline
+                        }
+                        
+                        return try await PersistenceManager.shared.listenNow.current
                 }
             }
         }

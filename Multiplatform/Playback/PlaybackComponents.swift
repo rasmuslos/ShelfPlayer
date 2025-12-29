@@ -647,7 +647,7 @@ private struct PlaybackSlider<MiddleContent: View>: View {
             base = duration
         }
         
-        return base * (1 / satellite.playbackRate)
+        return base
     }
     
     @ViewBuilder
