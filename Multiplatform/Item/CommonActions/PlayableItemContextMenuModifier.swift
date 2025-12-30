@@ -78,7 +78,6 @@ struct PlayableItemContextMenuPreview: View {
                 
                 Text(audiobook.name)
                     .font(.headline)
-                    .modifier(SerifModifier())
                 
                 if let subtitle = audiobook.subtitle {
                     Text(subtitle)

@@ -66,7 +66,7 @@ private struct PodcastRow: View {
             }
         }
         .buttonStyle(.plain)
-        .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
+        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         .modifier(ItemStatusModifier(item: podcast, hoverEffect: nil))
     }
 }

@@ -98,7 +98,7 @@ private struct RowLabel: View {
                     satellite.start(episode.id, origin: displayContext.origin)
                 } label: {
                     ItemImage(item: episode, size: .small)
-                        .frame(width: 100)
+                        .frame(width: 92)
                         .overlay {
                             if satellite.isLoading(observing: episode.id) {
                                 ZStack {
@@ -120,7 +120,7 @@ private struct RowLabel: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 Text(episode.name)
-                    .lineLimit(1)
+                    .lineLimit(2)
                     .bold()
                     .font(.callout)
                 
@@ -128,7 +128,7 @@ private struct RowLabel: View {
                     Text(description)
                         .lineLimit(context.lineLimit)
                         .multilineTextAlignment(.leading)
-                        .font(.footnote)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                         .padding(.top, 4)
                 }
@@ -245,7 +245,7 @@ private extension EpisodeList.PresentationContext {
     var lineLimit: Int {
         switch self {
             case .podcast: 3
-            default: 2
+            default: 1
         }
     }
     

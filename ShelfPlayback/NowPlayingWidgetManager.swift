@@ -123,30 +123,18 @@ private extension NowPlayingWidgetManager {
         
         updateWidget()
     }
-    nonisolated func updateArtwork() {
+    func updateArtwork() {
         Task {
-            guard let item = await item else {
-                await abortImageLoad()
-                return
-            }
-            
-            guard let image = await item.id.platformImage(size: .large) else {
-                await abortImageLoad()
+            guard let item = item, let image = await item.id.platformImage(size: .large) else {
+                metadata[MPMediaItemPropertyArtwork] = nil
                 return
             }
             
             let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: { _ in image })
-            await updateArtwork(artwork)
+            
+            metadata[MPMediaItemPropertyArtwork] = artwork
+            updateWidget()
         }
-    }
-    
-    func abortImageLoad() {
-        metadata[MPMediaItemPropertyArtwork] = nil
-        updateWidget()
-    }
-    func updateArtwork(_ artwork: MPMediaItemArtwork) {
-        metadata[MPMediaItemPropertyArtwork] = artwork
-        updateWidget()
     }
     
     func updateWidget() {

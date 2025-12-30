@@ -136,7 +136,7 @@ struct ItemCompactRow: View {
                 }
             }
             .frame(width: context.imageWidth)
-            .padding(.trailing, 12)
+            .padding(.trailing, context.imagePaddingTrailing)
             
             if let item {
                 VStack(alignment: .leading, spacing: 2) {
@@ -223,7 +223,14 @@ struct ItemCompactRow: View {
         var imageWidth: CGFloat {
             switch self {
                 case .collectionLarge: 68
+                case .author, .narrator: 52
                 default: 64
+            }
+        }
+        var imagePaddingTrailing: CGFloat {
+            switch self {
+                case .author, .narrator: 8
+                default: 12
             }
         }
         

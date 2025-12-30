@@ -17,7 +17,7 @@ extension AudioPlayer {
         }
         
         do {
-            try audioSession.setCategory(.playback, mode: .spokenAudio, policy: .longFormAudio)
+            try audioSession.setCategory(.playback, mode: .spokenAudio, policy: .default)
             try audioSession.setActive(true)
         } catch {
             logger.error("Failed to set audio session category: \(error)")

@@ -18,7 +18,7 @@ struct PersonList: View {
             NavigationLink(value: NavigationDestination.item(person)) {
                 ItemCompactRow(item: person, context: showImage ? .author : .narrator)
             }
-            .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
+            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
             .modifier(ItemStatusModifier(item: person, hoverEffect: nil))
             .onAppear {
                 onAppear(person)

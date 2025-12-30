@@ -23,7 +23,7 @@ struct AudiobookList: View {
                             SeriesList.ListItem(name: seriesName, audiobookIDs: audiobookIDs)
                         }
                         .buttonStyle(.plain)
-                        .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
+                        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
                         .modifier(ItemStatusModifier(itemID: seriesID, hoverEffect: nil))
                 }
             }
@@ -55,14 +55,6 @@ private struct Row: View {
             parts.append("#\(formattedSequence)")
         }
         
-        if audiobook.explicit && audiobook.abridged {
-            parts.append("🅴🅰")
-        } else if audiobook.explicit {
-            parts.append("🅴")
-        } else if audiobook.abridged {
-            parts.append("🅰")
-        }
-        
         if let released = audiobook.released {
             parts.append(released)
         }
@@ -84,6 +76,14 @@ private struct Row: View {
             appendDuration()
         }
         
+        if audiobook.explicit && audiobook.abridged {
+            parts.append("🅴🅰")
+        } else if audiobook.explicit {
+            parts.append("🅴")
+        } else if audiobook.abridged {
+            parts.append("🅰")
+        }
+        
         return parts
     }
     
@@ -94,7 +94,7 @@ private struct Row: View {
                     satellite.start(audiobook.id, origin: displayContext.origin)
                 } label: {
                     ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
-                        .frame(width: 100)
+                        .frame(width: 80)
                         .overlay {
                             if satellite.isLoading(observing: audiobook.id) {
                                 ZStack {
@@ -111,13 +111,12 @@ private struct Row: View {
                 .buttonStyle(.plain)
                 .disabled(satellite.isLoading(observing: audiobook.id))
                 .hoverEffect(.highlight)
-                .padding(.trailing, 8)
+                .padding(.trailing, 12)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(audiobook.name)
                         .lineLimit(2)
-                        .font(.headline)
-                        .modifier(SerifModifier())
+                        .font(.callout)
                     
                     Group {
                         if case .person(let person) = displayContext, person.id.type == .author, let seriesName = audiobook.seriesName {
@@ -135,7 +134,7 @@ private struct Row: View {
                             .lineLimit(1)
                         }
                     }
-                    .font(.subheadline)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
                     
                     if !additional.isEmpty {
@@ -143,7 +142,7 @@ private struct Row: View {
                             .lineLimit(1)
                             .font(.caption.smallCaps())
                             .foregroundStyle(.secondary)
-                            .padding(.top, 6)
+                            .padding(.top, 4)
                             .contentTransition(.numericText(countsDown: true))
                     }
                 }
@@ -154,7 +153,7 @@ private struct Row: View {
             .universalContentShape(.rect(cornerRadius: 8))
         }
         .buttonStyle(.plain)
-        .listRowInsets(.init(top: 6, leading: 20, bottom: 6, trailing: 20))
+        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
         .modifier(ItemStatusModifier(item: audiobook, hoverEffect: nil))
         .padding(-8)
     }

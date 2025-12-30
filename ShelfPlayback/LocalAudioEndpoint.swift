@@ -120,6 +120,8 @@ final class LocalAudioEndpoint: AudioEndpoint {
         playbackReporter = nil
         audioPlayer = .init()
         
+        audioPlayer.allowsExternalPlayback = false
+        
         currentItem = item
         
         queue = .init()
@@ -490,6 +492,10 @@ private extension LocalAudioEndpoint {
             throw error
         }
         
+        if currentItemID.type == .episode, let episode = try? await currentItemID.resolved as? Episode, let extracted = episode.chapters {
+            chapters = extracted
+        }
+        
         await PersistenceManager.shared.download.addBlock(to: currentItemID)
         
         self.audioTracks = audioTracks.sorted()
@@ -544,7 +550,7 @@ private extension LocalAudioEndpoint {
                 chapterValidUntil = chapters[activeChapterIndex].endOffset
                 await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: chapters[activeChapterIndex])
             } else {
-                chapterValidUntil = nil
+                chapterValidUntil = chapters.first { $0.startOffset > currentTime }?.startOffset
                 await AudioPlayer.shared.chapterDidChange(endpointID: id, chapter: nil)
             }
             

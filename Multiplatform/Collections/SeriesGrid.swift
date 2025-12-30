@@ -102,7 +102,6 @@ extension SeriesGrid {
                 if let name {
                     Text(name)
                         .font(.caption)
-                        .modifier(SerifModifier())
                         .lineLimit(1)
                 }
             }
