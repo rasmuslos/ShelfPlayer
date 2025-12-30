@@ -36,7 +36,6 @@ struct PlaybackTitle: View {
                             .font(.headline)
                             .modify(if: currentItem.id.type == .audiobook ) {
                                 $0
-                                    .modifier(SerifModifier())
                             }
                             .padding(.bottom, 4)
                         

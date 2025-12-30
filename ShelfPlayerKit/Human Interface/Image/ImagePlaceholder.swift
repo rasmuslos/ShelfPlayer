@@ -48,7 +48,7 @@ struct ImagePlaceholder: View {
             .frame(width: geometryProxy.size.width, height: geometryProxy.size.height)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.gray.opacity(0.1))
+        .background(.gray.opacity(0.3))
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .universalContentShape(.rect(cornerRadius: cornerRadius))

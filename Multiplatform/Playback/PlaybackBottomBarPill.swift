@@ -54,7 +54,19 @@ struct PlaybackBottomBarPill: View {
             .id((satellite.nowPlayingItemID?.description ?? "qkwndoiqind") + "_nowPlaying_image_collapsed")
             
             VStack(alignment: .leading, spacing: 0) {
-                if let chapter = satellite.chapter {
+                if let episode = satellite.nowPlayingItem as? Episode, let releaseDate = episode.releaseDate {
+                    Text(releaseDate, style: .date)
+                        .font(.caption.smallCaps())
+                        .foregroundStyle(.tertiary)
+                    
+                    if let chapter = satellite.chapter {
+                        Text(verbatim: chapter.title + " • " + episode.podcastName)
+                            .lineLimit(1)
+                            .id(nowPlayingItemName + "_nowPlaying_collapsed_chapter")
+                    } else {
+                        itemName
+                    }
+                } else if let chapter = satellite.chapter {
                     itemName
                         .font(.caption)
                         .foregroundStyle(.tertiary)
@@ -62,30 +74,23 @@ struct PlaybackBottomBarPill: View {
                     Text(chapter.title)
                         .lineLimit(1)
                         .id(chapter.title + "_nowPlaying_collapsed_chapter")
-                        .modifier(SerifModifier())
-                } else if let episode = satellite.nowPlayingItem as? Episode, let releaseDate = episode.releaseDate {
-                    Text(releaseDate, style: .date)
-                        .font(.caption.smallCaps())
-                        .foregroundStyle(.tertiary)
-                    
-                    itemName
                 } else {
                     itemName
                 }
             }
             
             if viewModel.isPillBackButtonVisible {
-                Spacer(minLength: 4)
+                Spacer(minLength: 8)
                 
                 PlaybackBackwardButton()
                     .imageScale(.large)
             } else {
-                Spacer(minLength: 0)
+                Spacer(minLength: 2)
             }
             
             PlaybackSmallTogglePlayButton()
                 .imageScale(.large)
-                .padding(.horizontal, 8)
+                .padding(.trailing, 8)
         }
         .contentShape(.rect)
         .padding(.horizontal, 16)

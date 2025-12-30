@@ -146,40 +146,42 @@ public extension Episode {
         return TimeInterval(hours * 3600 + minutes * 60 + seconds)
     }
     
-//    var chapterMatches: [(NSRange, TimeInterval)]? {
-//        guard let description else {
-//            return nil
-//        }
-//        
-//        return description.matches(of: /#"^\s*\(?\b(?:\d{1,2}:)?\d{2}:\d{2}:?\b\)?\s*(.*)$"#/.anchorsMatchLineEndings()).compactMap { match -> (NSRange, TimeInterval)? in
-//            guard let timestamp = parseChapterTimestamp(String(match.output.0)), let url = URL(string: "shelfPlayer://chapter?time=\(timestamp)") else {
-//                return nil
-//            }
-//            
-//            let lowerBound = description.index(description.startIndex, offsetBy: match.range.lowerBound)
-//            let upperBound = description.index(description.startIndex, offsetBy: match.range.upperBound)
-//            
-////            return (NSRange(location: match.range.lowerBound, length: description.distance(from: description.startIndex, to: match.range) - match.range.lowerBound), timestamp)
-//        }
-//    }
-//    var chapters: [Chapter]? {
-//        guard let matches = chapterMatches else {
-//            return nil
-//        }
-//        
-//        return matches.enumerated().compactMap { index, match -> Chapter? in
-//            let title = match.0.output.1
-//            let endOffset: TimeInterval
-//            
-//            if index >= matches.count - 1 {
-//                endOffset = duration
-//            } else {
-//                endOffset = matches[index + 1].1
-//            }
-//            
-//            return .init(id: index, startOffset: match.1, endOffset: endOffset, title: String(title))
-//        }
-//    }
+    var chapters: [Chapter]? {
+        guard let description, let data = description.data(using: .utf8) else {
+            return nil
+        }
+        
+        let attributedString = try? NSAttributedString(data: data, options: [
+            .documentType: NSAttributedString.DocumentType.html,
+            .characterEncoding: String.Encoding.utf8.rawValue
+        ], documentAttributes: nil)
+        
+        guard let matches = attributedString?.string.matches(of: Self.chapterRegex) else {
+            return nil
+        }
+        
+        let durationMapped = matches.compactMap {
+            if let timestamp = Self.parseChapterTimestamp(String($0.output.1)) {
+                ($0, timestamp)
+            } else {
+                nil
+            }
+        }
+        
+        return durationMapped.enumerated().compactMap { index, element -> Chapter? in
+            let (match, timestamp) = element
+            let title = String(match.output.2)
+            let endOffset: TimeInterval
+            
+            if index >= matches.count - 1 {
+                endOffset = duration
+            } else {
+                endOffset = durationMapped[index + 1].1
+            }
+            
+            return .init(id: index, startOffset: timestamp, endOffset: endOffset, title: title)
+        }
+    }
     
     var releaseDate: Date? {
         guard let released = released, let milliseconds = Double(released) else {
