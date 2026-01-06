@@ -9,20 +9,6 @@ import Foundation
 import CoreSpotlight
 
 public extension ShelfPlayerKit {
-    static var libraries: [Library] {
-        get async {
-            await withTaskGroup {
-                for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
-                    $0.addTask {
-                        try? await ABSClient[connectionID].libraries()
-                    }
-                }
-                
-                return await $0.compactMap { $0 }.reduce([], +)
-            }
-        }
-    }
-    
     static func globalSearch(query: String, includeOnlineSearchResults: Bool, filter: Bool = false, allowedItemTypes: [ItemIdentifier.ItemType]? = nil) async throws -> [Item] {
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return []
@@ -144,7 +130,7 @@ private extension ShelfPlayerKit {
                         for library in libraries {
                             $0.addTask {
                                 do {
-                                    let (audiobooks, authors, narrators, series, podcasts, episodes) = try await ABSClient[connectionID].items(in: library, search: query)
+                                    let (audiobooks, authors, narrators, series, podcasts, episodes) = try await ABSClient[connectionID].items(in: library.id, search: query)
                                     let part = audiobooks + authors + narrators + series
                                     return part + podcasts + episodes
                                 } catch {

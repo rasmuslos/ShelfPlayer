@@ -191,5 +191,7 @@ private extension PlaybackReporter {
         } catch {
             logger.warning("Cannot update progress: \(error).")
         }
+        
+        await RFNotification[.playbackReported].send()
     }
 }

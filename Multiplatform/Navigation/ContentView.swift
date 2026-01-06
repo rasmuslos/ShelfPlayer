@@ -27,8 +27,6 @@ struct ContentView: View {
     @State private var connectionStore = ConnectionStore.shared
     @State private var progressViewModel = ProgressViewModel.shared
     
-    @State private var listenedTodayTracker = ListenedTodayTracker.shared
-    
     @ViewBuilder
     private func applyEnvironment<Content: View>(_ content: Content) -> some View {
         content
@@ -37,7 +35,6 @@ struct ContentView: View {
             .environment(playbackViewModel)
             .environment(connectionStore)
             .environment(progressViewModel)
-            .environment(listenedTodayTracker)
             .environment(\.namespace, namespace)
     }
     
@@ -106,9 +103,9 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            if !ConnectionStore.shared.didLoad {
+            if !connectionStore.didLoad {
                 LoadingView()
-            } else if ConnectionStore.shared.connections.isEmpty {
+            } else if connectionStore.connections.isEmpty {
                 WelcomeView()
             } else if offlineMode.isEnabled {
                 OfflineView()
@@ -154,11 +151,9 @@ struct ContentView: View {
             Task.detached { [scenePhase] in
                 switch scenePhase {
                     case .active:
-                        await RFNotification[.performBackgroundSessionSync].send(payload: nil)
-                        await ShelfPlayer.invalidateShortTermCache()
-                        
                         await RFNotification[.scenePhaseDidChange].send(payload: true)
                     case .inactive:
+                        await ShelfPlayer.invalidateShortTermCache()
                         await RFNotification[.scenePhaseDidChange].send(payload: false)
                     default:
                         break
@@ -184,9 +179,6 @@ struct ContentView: View {
                 try await Task.sleep(for: .seconds(0.6))
                 await ItemIdentifier(identifier).navigate()
             }
-        }
-        .onOpenURL {
-            print($0)
         }
     }
 }

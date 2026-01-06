@@ -59,7 +59,7 @@ struct PodcastLatestPanel: View {
                 isLoading = true
             }
             
-            guard let episodes = try? await ABSClient[library.connectionID].recentEpisodes(from: library.id, limit: 20) else {
+            guard let episodes = try? await ABSClient[library.id.connectionID].recentEpisodes(from: library.id.libraryID, limit: 20) else {
                 await MainActor.withAnimation {
                     didFail = true
                 }

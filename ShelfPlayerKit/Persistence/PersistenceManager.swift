@@ -91,8 +91,6 @@ public final class PersistenceManager: Sendable {
         await bookmark.remove(connectionID: connectionID)
         
         await ResolveCache.shared.flush()
-        
-        await RFNotification[.removeConnection].send(payload: connectionID)
     }
     
     public func refreshItem(itemID: ItemIdentifier) async throws {
@@ -104,6 +102,8 @@ public final class PersistenceManager: Sendable {
         try await keyValue.purgeCached()
         await listenNow.invalidate()
         await item.invalidate()
+        
+        try await keyValue.remove(cluster: "storedTabValues")
     }
 }
 

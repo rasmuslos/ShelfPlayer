@@ -365,8 +365,8 @@ extension PersistenceManager.AuthorizationSubsystem {
             await RFNotification[.accessTokenExpired].send(payload: connectionID)
             throw APIClientError.offline
         } catch {
-            try removeToken(for: connectionID, service: accessTokenService)
-            try removeToken(for: connectionID, service: refreshTokenService)
+            try? removeToken(for: connectionID, service: accessTokenService)
+            try? removeToken(for: connectionID, service: refreshTokenService)
             
             await RFNotification[.accessTokenExpired].send(payload: connectionID)
             

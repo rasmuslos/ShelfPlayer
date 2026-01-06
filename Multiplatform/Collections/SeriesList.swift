@@ -70,6 +70,7 @@ extension SeriesList {
                     if let name {
                         Text(name)
                             .lineLimit(2)
+                            .bold()
                             .font(.callout)
                     }
                     

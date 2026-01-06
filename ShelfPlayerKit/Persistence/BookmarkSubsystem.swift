@@ -74,13 +74,13 @@ public extension PersistenceManager.BookmarkSubsystem {
             return try bookmarks(connectionID: itemID.connectionID, primaryID: itemID.primaryID).map { Bookmark(itemID: itemID, time: $0.time, note: $0.note, created: $0.created) }
         }
     }
-    subscript(library: Library) -> [String: Int] {
+    subscript(libraryID: LibraryIdentifier) -> [String: Int] {
         get throws {
-            guard library.type == .audiobooks else {
+            guard libraryID.type == .audiobooks else {
                 throw PersistenceError.unsupportedItemType
             }
             
-            return Dictionary(try bookmarks(connectionID: library.connectionID).map { ($0.primaryID, 1) }, uniquingKeysWith: +)
+            return Dictionary(try bookmarks(connectionID: libraryID.connectionID).map { ($0.primaryID, 1) }, uniquingKeysWith: +)
         }
     }
     

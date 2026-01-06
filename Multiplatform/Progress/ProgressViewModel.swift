@@ -35,21 +35,13 @@ final class ProgressViewModel {
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.currentlyPlayingItemID = $0.0
         }
-        RFNotification[.playbackStopped].subscribe { [weak self] _ in
+        RFNotification[.playbackReported].subscribe { [weak self] _ in
             guard let currentlyPlayingItemID = self?.currentlyPlayingItemID else {
                 return
             }
             
             self?.currentlyPlayingItemID = nil
             self?.attemptSync(for: currentlyPlayingItemID.connectionID)
-        }
-        
-        RFNotification[.performBackgroundSessionSync].subscribe { [weak self] connectionID in
-            if let connectionID {
-                self?.attemptSync(for: connectionID)
-            } else {
-                self?.syncAllConnections()
-            }
         }
     }
     
@@ -66,7 +58,6 @@ final class ProgressViewModel {
             let task = UIApplication.shared.beginBackgroundTask(withName: "synchronizeUserData")
             
             do {
-                
                 let (sessions, bookmarks) = try await ABSClient[connectionID].authorize()
                 
                 try await withThrowingTaskGroup(of: Void.self) {

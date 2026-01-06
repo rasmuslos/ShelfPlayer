@@ -192,10 +192,11 @@ public extension PersistenceManager.ProgressSubsystem {
         let remoteOnly = remoteSet.subtracting(localSet)
         let common = localSet.intersection(remoteSet)
         
+        logger.info("Comparing \(local.count) local progress entities against \(remote.count) remote progress payloads. Found \(localOnly.count) local-only, \(remoteOnly.count) remote-only, and \(common.count) common keys.")
+        
         try Task.checkCancellation()
         
         var pendingServerUpdate = [String: PersistedProgress]()
-        
         var pendingServerDeletion = [String]()
         
         var pendingLocalUpdate = [ProgressPayload]()
@@ -250,6 +251,10 @@ public extension PersistenceManager.ProgressSubsystem {
         }
         
         try Task.checkCancellation()
+        
+        // We should no longer cancel the task from the point onwards. The network requests are performed first.
+        
+        logger.info("Computed changes: \(pendingServerUpdate.count) remote updates, \(pendingServerDeletion.count) remote deletions, \(pendingLocalUpdate.count) local updates, \(pendingLocalDeletion.count) local deletions")
         
         // Run server updates
         
@@ -319,6 +324,10 @@ public extension PersistenceManager.ProgressSubsystem {
             progressEntityDidUpdate(.init(persistedEntity: entity))
         }
         
+        guard await !OfflineMode.shared.isEnabled else {
+            return
+        }
+        
         do {
             let grouped = Dictionary(grouping: persisted) { $0.connectionID }
             
@@ -359,6 +368,10 @@ public extension PersistenceManager.ProgressSubsystem {
         
         for entity in persisted {
             progressEntityDidUpdate(.init(persistedEntity: entity))
+        }
+        
+        guard await !OfflineMode.shared.isEnabled else {
+            return
         }
         
         do {

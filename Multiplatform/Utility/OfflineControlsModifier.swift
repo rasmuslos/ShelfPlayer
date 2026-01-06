@@ -37,6 +37,12 @@ struct OfflineControlsModifier: ViewModifier {
                             .onAppear {
                                 offlineTimeout?.cancel()
                             }
+                        
+                        Divider()
+                        
+                        Button("navigation.offline.enable", systemImage: "network.slash") {
+                            OfflineMode.shared.setEnabled(true)
+                        }
                     } label: {
                         Text("navigation.library.select")
                     }

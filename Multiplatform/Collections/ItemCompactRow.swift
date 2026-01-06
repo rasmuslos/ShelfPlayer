@@ -79,6 +79,8 @@ struct ItemCompactRow: View {
             if !audiobook.narrators.isEmpty {
                 parts.append(audiobook.narrators.formatted(.list(type: .and, width: .narrow)))
             }
+            
+            parts.append(audiobook.duration.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .hour])))
         } else if let series = item as? Series, series.audiobooks.count > 0 {
             parts.append(String(localized: "item.count.audiobooks \(series.audiobooks.count)"))
         } else if let person = item as? Person {
