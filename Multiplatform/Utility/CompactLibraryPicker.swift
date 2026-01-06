@@ -1,0 +1,94 @@
+//
+//  CompactLibraryPicker.swift
+//  ShelfPlayer
+//
+//  Created by Rasmus Krämer on 05.01.26.
+//
+
+import SwiftUI
+import ShelfPlayback
+
+struct CompactLibraryPicker: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.library) private var library
+    
+    @Environment(TabRouterViewModel.self) private var tabRouterViewModel
+    @Environment(ConnectionStore.self) private var connectionStore
+    @Environment(Satellite.self) private var satellite
+    
+    var customizeLibrary = false
+    
+    private var offlineConnections: [ItemIdentifier.ConnectionID] {
+        Array(tabRouterViewModel.currentConnectionStatus.filter { !$1 }.keys)
+    }
+    
+    private var pinnedTabsBinding: Binding<Bool> {
+        .init {
+            tabRouterViewModel.pinnedTabsActive
+        } set: { _ in
+            tabRouterViewModel.toggleCompactPinned()
+        }
+    }
+    
+    var body: some View {
+        Menu {
+            Toggle(isOn: pinnedTabsBinding) {
+                Label("panel.home", image: "shelfPlayer.fill")
+            }
+            
+            Divider()
+
+            if !tabRouterViewModel.pinnedTabsActive {
+                LibraryPicker()
+                Divider()
+            }
+            
+            Button("preferences", systemImage: "gearshape") {
+                satellite.present(.preferences)
+            }
+            
+            Button("navigation.offline.enable", systemImage: "network.slash") {
+                OfflineMode.shared.setEnabled(true)
+            }
+            
+            if !tabRouterViewModel.activeUpdateTasks.isEmpty {
+                Text("connection.loading \(tabRouterViewModel.activeUpdateTasks.count)")
+            } else if !offlineConnections.isEmpty {
+                Button("connection.offline \(offlineConnections.count)", role: .destructive) {
+                    tabRouterViewModel.refresh()
+                }
+            }
+            
+            Divider()
+            
+            if customizeLibrary {
+                if tabRouterViewModel.pinnedTabsActive {
+                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                        satellite.present(.customTabValuePreferences)
+                    }
+                } else if let library {
+                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                        satellite.present(.customizeLibrary(library, .tabBar))
+                    }
+                }
+            }
+        } label: {
+            if tabRouterViewModel.pinnedTabsActive {
+                Label("navigation.library.select", image: "shelfPlayer.fill")
+            } else {
+                Label("navigation.library.select", systemImage: "books.vertical.fill")
+            }
+        }
+    }
+}
+
+#if DEBUG
+#Preview {
+    Menu {
+        CompactLibraryPicker()
+    } label: {
+        Text(verbatim: "LibraryPicker")
+    }
+    .previewEnvironment()
+}
+#endif

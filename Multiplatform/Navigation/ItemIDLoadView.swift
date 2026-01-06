@@ -49,11 +49,11 @@ struct ItemIDLoadView: View {
                 
                 switch type {
                 case .author:
-                    itemID = try await ABSClient[library.connectionID].authorID(from: library.id, name: name)
+                        itemID = try await ABSClient[library.id.connectionID].authorID(from: library.id, name: name)
                 case .narrator:
-                    itemID = Person.convertNarratorToID(name, libraryID: library.id, connectionID: library.connectionID)
+                    itemID = Person.convertNarratorToID(name, libraryID: library.id.libraryID, connectionID: library.id.connectionID)
                 case .series:
-                    itemID = try await ABSClient[library.connectionID].seriesID(from: library.id, name: name)
+                    itemID = try await ABSClient[library.id.connectionID].seriesID(from: library.id.libraryID, name: name)
                 default:
                     throw LoadError.unsupportedItemType
                 }

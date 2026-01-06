@@ -15,19 +15,17 @@ struct ContrastModifier: ViewModifier {
     let cornerRadius: CGFloat
     let configuration: ItemImage.ContrastConfiguration?
     
-    private var libraryType: Library.MediaType? {
-        if let library {
-            return library.type
-        } else if let itemID {
+    private var libraryType: LibraryMediaType? {
+        if let itemID {
             switch itemID.type {
-                case .audiobook, .narrator, .author, .series:
-                    return .audiobooks
-                case .podcast, .episode, .collection, .playlist:
-                    return .podcasts
+                case .audiobook, .narrator, .author, .series: .audiobooks
+                case .podcast, .episode, .collection, .playlist: .podcasts
             }
+        } else if let library {
+            library.id.type
+        } else {
+            nil
         }
-        
-        return nil
     }
     
     func body(content: Content) -> some View {

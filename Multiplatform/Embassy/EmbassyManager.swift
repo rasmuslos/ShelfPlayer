@@ -75,9 +75,6 @@ final class EmbassyManager: Sendable {
     }()
     
     func setupObservers() async {
-        Embassy.unsetWidgetIsPlaying()
-        AppShortcutProvider.updateAppShortcutParameters()
-        
         // MARK: General
         
         Task {
@@ -219,27 +216,28 @@ final class EmbassyManager: Sendable {
             }
         }
         RFNotification[.downloadStatusChanged].subscribe { payload in
-            Task {
-                guard let current = Defaults[.playbackInfoWidgetValue] else {
-                    return
-                }
-                
-                let isDownloaded: Bool
-                
-                if let (itemID, status) = payload {
-                    guard itemID == current.currentItemID else {
-                        return
-                    }
-                    
-                    isDownloaded = status == .completed
-                } else if let currentItemID = current.currentItemID {
-                    isDownloaded = await PersistenceManager.shared.download.status(of: currentItemID) == .completed
-                } else {
-                    isDownloaded = false
-                }
-                
-                await self.updatePlaybackInfo(itemID: current.currentItemID, isDownloaded: isDownloaded, isPlaying: current.isPlaying)
-            }
+//            Task {
+//                guard let current = Defaults[.playbackInfoWidgetValue] else {
+//                    return
+//                }
+//                
+//                let isDownloaded: Bool
+//                
+//                if let (itemID, status) = payload {
+//                    guard itemID == current.currentItemID else {
+//                        return
+//                    }
+//                    
+//                    isDownloaded = status == .completed
+//                } else if let currentItemID = current.currentItemID {
+//                    isDownloaded = await PersistenceManager.shared.download.status(of: currentItemID) == .completed
+//                } else {
+//                    isDownloaded = false
+//                }
+//                
+//                await self.updatePlaybackInfo(itemID: current.currentItemID, isDownloaded: isDownloaded, isPlaying: current.isPlaying)
+//            }
+            #warning("a")
         }
         
         // MARK: Listen now

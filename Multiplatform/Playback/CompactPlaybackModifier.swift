@@ -114,9 +114,9 @@ struct CompactPlaybackModifier: ViewModifier {
                     }
                     .ignoresSafeArea()
                     .environment(\.playbackBottomSafeArea, geometryProxy.safeAreaInsets.bottom)
-                    .onChange(of: satellite.tabValue) {
-                        viewModel.resetAnimationCounts()
-                    }
+//                    .onChange(of: satellite.tabValue) {
+//                        viewModel.resetAnimationCounts()
+//                    }
             }
         }
     }

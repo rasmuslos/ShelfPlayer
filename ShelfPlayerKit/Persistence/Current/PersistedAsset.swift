@@ -56,7 +56,7 @@ extension SchemaV2 {
         var path: URL {
             var base = ShelfPlayerKit.downloadDirectoryURL
             
-            base.append(path: itemID.connectionID.replacing("/", with: "_"))
+            base.append(path: itemID.connectionID.urlSafe)
             base.append(path: itemID.libraryID)
             base.append(path: itemID.primaryID)
             

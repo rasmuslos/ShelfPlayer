@@ -39,8 +39,13 @@ extension TabValue {
             case .search:
                 String(localized: "panel.search")
                 
-            case .custom(let tabValue):
-                tabValue.label
+            case .custom(_, let label):
+                label
+            case .collection(let collection, _):
+                collection.name
+                
+            case .loading:
+                ""
         }
     }
     
@@ -73,44 +78,13 @@ extension TabValue {
             case .search:
                 "magnifyingglass"
                 
-            case .custom(let tabValue):
+            case .custom(let tabValue, _):
                 tabValue.image
-        }
-    }
-    
-    @ViewBuilder @MainActor
-    var content: some View {
-        switch self {
-            case .audiobookHome:
-                AudiobookHomePanel()
-            case .audiobookSeries:
-                AudiobookSeriesPanel()
-            case .audiobookAuthors:
-                AudiobookAuthorsPanel()
-            case .audiobookNarrators:
-                AudiobookNarratorsPanel()
-            case .audiobookBookmarks:
-                AudiobookBookmarksPanel()
-            case .audiobookCollections:
-                CollectionsPanel(type: .collection)
-            case .podcastLibrary:
-                PodcastLibraryPanel()
+            case .collection:
+                ItemIdentifier.ItemType.collection.icon
                 
-            case .podcastHome:
-                PodcastHomePanel()
-            case .podcastLatest:
-                PodcastLatestPanel()
-            case .audiobookLibrary:
-                AudiobookLibraryPanel()
-                
-            case .playlists:
-                CollectionsPanel(type: .playlist)
-                
-            case .search:
-                SearchPanel()
-                
-            case .custom:
-                fatalError("Access to search and custom tabs is not implemented")
+            case .loading:
+                "teddybear.fill"
         }
     }
 }

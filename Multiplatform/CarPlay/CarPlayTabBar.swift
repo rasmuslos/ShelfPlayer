@@ -81,7 +81,7 @@ private extension CarPlayTabBar {
     }
     func updateLibraries() {
         Task {
-            let libraries = await ShelfPlayerKit.libraries
+            let libraries = [Library]() // await ShelfPlayerKit.libraries
             self.libraries = Dictionary(uniqueKeysWithValues: libraries.map {
                 ($0, CarPlayLibraryController(interfaceController: interfaceController, library: $0))
             })

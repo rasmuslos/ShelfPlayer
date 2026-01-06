@@ -34,7 +34,7 @@ class CarPlayLibraryController: CarPlayTabBar.LibraryController {
         updateSections()
         
         RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _, _) in
-            guard itemID.connectionID == self?.library.connectionID else {
+            guard itemID.connectionID == self?.library.id.connectionID else {
                 return
             }
             
@@ -43,7 +43,7 @@ class CarPlayLibraryController: CarPlayTabBar.LibraryController {
     }
     
     private nonisolated func updateSections() {
-        switch library.type {
+        switch library.id.type {
         case .audiobooks:
             updateAudiobookSections()
         case .podcasts:
@@ -57,9 +57,9 @@ class CarPlayLibraryController: CarPlayTabBar.LibraryController {
     
     private nonisolated func updateAudiobookSections() {
         Task {
-            let connectionID = library.connectionID
+            let connectionID = library.id.connectionID
             
-            let (rows, _): ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[connectionID].home(for: library.id)
+            let (rows, _): ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[connectionID].home(for: library.id.libraryID)
             let prepared = await HomeRow.prepareForPresentation(rows, connectionID: connectionID)
             
             await MainActor.run {
@@ -75,9 +75,9 @@ class CarPlayLibraryController: CarPlayTabBar.LibraryController {
     }
     private nonisolated func updatePodcastSections() {
         Task {
-            let connectionID = library.connectionID
+            let connectionID = library.id.connectionID
             
-            let (_, rows): ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[connectionID].home(for: library.id)
+            let (_, rows): ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[connectionID].home(for: library.id.libraryID)
             let prepared = await HomeRow.prepareForPresentation(rows, connectionID: connectionID)
             
             await MainActor.run {

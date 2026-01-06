@@ -39,5 +39,8 @@ public extension APIClient {
         
         throw APIClientError.notFound
     }
+    func authorID(from library: LibraryIdentifier, name: String) async throws -> ItemIdentifier {
+        try await authorID(from: library.libraryID, name: name)
+    }
 }
 

@@ -14,8 +14,7 @@ public struct ContextProvider {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ContextProvider")
     
     public static func updateUserContext() async {
-        let libraries = await ShelfPlayerKit.libraries
-        let totalCount = libraries.count * 42
+        let totalCount = 42
 //        let totalCount = await withTaskGroup {
 //            for library in libraries {
 //                $0.addTask {

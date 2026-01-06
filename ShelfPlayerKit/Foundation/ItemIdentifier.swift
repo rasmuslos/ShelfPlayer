@@ -189,3 +189,9 @@ public extension ItemIdentifier {
         }
     }
 }
+
+public extension ItemIdentifier.ConnectionID {
+    var urlSafe: String {
+        replacingOccurrences(of: "/", with: "_")
+    }
+}

@@ -149,12 +149,20 @@ private extension SpotlightIndexer {
     nonisolated func planRun() async throws -> ([Library], [Library: PersistenceManager.ItemSubsystem.LibraryIndexMetadata]) {
         let validForSeconds: Double = 60 * 60 * 24 * 21
         
-        let libraries = await ShelfPlayerKit.libraries
+        let libraries = await withTaskGroup {
+            for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
+                $0.addTask {
+                    try? await ABSClient[connectionID].libraries()
+                }
+            }
+            
+            return await $0.compactMap { $0 }.reduce([], +)
+        }
         
         return (libraries, await withTaskGroup {
             for library in libraries {
                 $0.addTask { () -> (Library, PersistenceManager.ItemSubsystem.LibraryIndexMetadata?) in
-                    let metadata = await PersistenceManager.shared.item.libraryIndexMetadata(for: library)
+                    let metadata = await PersistenceManager.shared.item.libraryIndexMetadata(for: library.id)
                     
                     if let distance = metadata?.endDate?.distance(to: .now), distance > validForSeconds {
                         self.logger.info("Reindexing \(library.name) because its metadata is expired.")
@@ -177,10 +185,10 @@ private extension SpotlightIndexer {
         let isFinished: Bool
         let attributes: [(ItemIdentifier, CSSearchableItemAttributeSet)]
         
-        switch library.type {
+        switch library.id.type {
             case .audiobooks:
                 let sections: [AudiobookSection]
-                (sections, total) = try await ABSClient[library.connectionID].audiobooks(from: library.id, filter: .all, sortOrder: .added, ascending: true, limit: PAGE_SIZE, page: metadata.page)
+                (sections, total) = try await ABSClient[library.id.connectionID].audiobooks(from: library.id.libraryID, filter: .all, sortOrder: .added, ascending: true, limit: PAGE_SIZE, page: metadata.page)
                 
                 isFinished = sections.isEmpty
                 attributes = await withTaskGroup {
@@ -217,7 +225,7 @@ private extension SpotlightIndexer {
                 }
             case .podcasts:
                 let podcasts: [Podcast]
-                (podcasts, total) = try await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: .addedAt, ascending: true, limit: PAGE_SIZE, page: metadata.page)
+                (podcasts, total) = try await ABSClient[library.id.connectionID].podcasts(from: library.id.libraryID, sortOrder: .addedAt, ascending: true, limit: PAGE_SIZE, page: metadata.page)
                 
                 isFinished = podcasts.isEmpty
                 attributes = await withTaskGroup {
@@ -251,11 +259,11 @@ private extension SpotlightIndexer {
                 }
         }
         
-        let items = attributes.map { CSSearchableItem(uniqueIdentifier: $0.description, domainIdentifier: "shelfPlayer-item-\(library.id)^\(library.connectionID)", attributeSet: $1) }
+        let items = attributes.map { CSSearchableItem(uniqueIdentifier: $0.description, domainIdentifier: "shelfPlayer-item-\(library.id)^\(library.id.connectionID)", attributeSet: $1) }
         try await index.indexSearchableItems(items)
         
-        let currentlyIndexed = await PersistenceManager.shared.item.libraryIndexedIDs(for: library, subset: "current") + attributes.map(\.0)
-        try await PersistenceManager.shared.item.setLibraryIndexedIDs(currentlyIndexed, for: library, subset: "current")
+        let currentlyIndexed = await PersistenceManager.shared.item.libraryIndexedIDs(for: library.id, subset: "current") + attributes.map(\.0)
+        try await PersistenceManager.shared.item.setLibraryIndexedIDs(currentlyIndexed, for: library.id, subset: "current")
         
         if metadata.startDate == nil {
             metadata.startDate = .now
@@ -264,7 +272,7 @@ private extension SpotlightIndexer {
         if isFinished {
             metadata.endDate = .now
             
-            let previouslyIndexed = await PersistenceManager.shared.item.libraryIndexedIDs(for: library, subset: "previous")
+            let previouslyIndexed = await PersistenceManager.shared.item.libraryIndexedIDs(for: library.id, subset: "previous")
             
             let orphaned = previouslyIndexed.filter { !currentlyIndexed.contains($0) }
             try await index.deleteSearchableItems(withIdentifiers: orphaned.map(\.description))
@@ -273,9 +281,9 @@ private extension SpotlightIndexer {
                 await PersistenceManager.shared.remove(itemID: orphan)
             }
             
-            try await PersistenceManager.shared.item.setLibraryIndexedIDs(currentlyIndexed, for: library, subset: "previous")
+            try await PersistenceManager.shared.item.setLibraryIndexedIDs(currentlyIndexed, for: library.id, subset: "previous")
             
-            logger.info("Finished indexing library \(library.id) (\(library.connectionID)). \(items.count)/\(total) items indexed. \(orphaned.count) orphaned items deleted.")
+            logger.info("Finished indexing library \(library.id.libraryID) (\(library.id.connectionID)). \(items.count)/\(total) items indexed. \(orphaned.count) orphaned items deleted.")
         } else {
             metadata.page += 1
         }
@@ -286,9 +294,9 @@ private extension SpotlightIndexer {
             metadata.page = 0
         }
         
-        try await PersistenceManager.shared.item.setLibraryIndexMetadata(metadata, for: library)
+        try await PersistenceManager.shared.item.setLibraryIndexMetadata(metadata, for: library.id)
         
-        logger.info("Indexed \(items.count)/\(total) for library \(library.id) (\(library.connectionID)).")
+        logger.info("Indexed \(items.count)/\(total) for library \(library.id.libraryID) (\(library.id.connectionID)).")
     }
 }
 

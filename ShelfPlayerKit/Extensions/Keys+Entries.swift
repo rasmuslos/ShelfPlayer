@@ -131,8 +131,7 @@ public extension Defaults.Keys {
     
     static let durationToggled = Key<Bool>("durationToggled", default: false)
     
-    static let customTabValues = Key<[TabValue]>("customTabValues", default: [])
-    static let customTabsActive = Key("customTabsActive", default: true)
+    static let pinnedTabValues = Key<[TabValue]>("pinnedTabValues", default: [])
     
     static let isOffline = Key("isOffline", default: false, suite: .shared)
 }
@@ -203,9 +202,6 @@ public extension RFNotification.IsolatedNotification {
     static var connectionsChanged: IsolatedNotification<RFNotificationEmptyPayload> {
         .init("io.rfk.shelfPlayerKit.connectionsChanged")
     }
-    static var removeConnection: IsolatedNotification<ItemIdentifier.ConnectionID> {
-        .init("io.rfk.shelfPlayerKit.removeConnection")
-    }
     
     // MARK: Progress
     
@@ -260,6 +256,7 @@ public extension RFNotification.IsolatedNotification {
     static var upNextStrategyChanged: IsolatedNotification<ResolvedUpNextStrategy?> { .init("io.rfk.shelfPlayerKit.upNextStrategyChanged") }
     
     static var playbackStopped: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackStopped") }
+    static var playbackReported: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackReported") }
     
     // MARK: Utility
     
@@ -269,9 +266,8 @@ public extension RFNotification.IsolatedNotification {
     static var listenNowItemsChanged: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.listenNowItemsChanged") }
     static var synchronizedPlaybackSessions: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.synchronizedPlaybackSessions") }
     
-    static var invalidateTab: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.invalidateTab") }
     static var invalidateTabs: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.invalidateTabs") }
-    static var toggleCustomTabsActive: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.toggleCustomTabsActive") }
+    static var enablePinnedTabs: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.enablePinnedTabs") }
     
     static var scenePhaseDidChange: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.scenePhaseDidChange") }
     

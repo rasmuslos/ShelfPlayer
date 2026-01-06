@@ -16,6 +16,8 @@ public final class OfflineMode: Sendable {
 public extension OfflineMode {
     func setEnabled(_ isOffline: Bool) {
         self.isEnabled = isOffline
+        unavailable.removeAll()
+        
         Defaults[.isOffline] = isOffline
         
         RFNotification[.offlineModeChanged].send(payload: isOffline)

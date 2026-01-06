@@ -116,6 +116,7 @@ private struct Row: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(audiobook.name)
                         .lineLimit(2)
+                        .bold()
                         .font(.callout)
                     
                     Group {

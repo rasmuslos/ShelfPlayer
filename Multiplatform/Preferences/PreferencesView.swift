@@ -9,6 +9,8 @@ import SwiftUI
 import ShelfPlayback
 
 struct PreferencesView: View {
+    @Environment(OfflineMode.self) private var offlineMode
+    
     @Environment(\.colorScheme) private var colorScheme
     @Default(.tintColor) private var tintColor
     
@@ -21,7 +23,7 @@ struct PreferencesView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
     
-    private func label(_ label: LocalizedStringKey, systemImage: String, color: Color, lightIcon: Bool, largeIcon: Bool = false) -> some View {
+    private func label(_ label: LocalizedStringKey, systemImage: String, color: Color, lightIcon: Bool = true, largeIcon: Bool = false) -> some View {
         HStack(spacing: 12) {
             ZStack {
                 Circle()
@@ -54,10 +56,10 @@ struct PreferencesView: View {
             List {
                 Section {
                     NavigationLink(destination: PlaybackRateEditor()) {
-                        label("preferences.playbackRate", systemImage: "percent", color: .blue, lightIcon: true)
+                        label("preferences.playbackRate", systemImage: "percent", color: .blue)
                     }
                     NavigationLink(destination: SleepTimerEditor()) {
-                        label("preferences.sleepTimer", systemImage: "clock", color: .orange, lightIcon: true)
+                        label("preferences.sleepTimer", systemImage: "clock", color: .orange)
                     }
                 }
                 
@@ -72,33 +74,36 @@ struct PreferencesView: View {
                 
                 Section {
                     NavigationLink(destination: connectionPreferences) {
-                        label("connection.manage", systemImage: "server.rack", color: .teal, lightIcon: true)
+                        label("connection.manage", systemImage: "server.rack", color: .teal)
                     }
                     
                     NavigationLink(destination: ConvenienceDownloadPreferences()) {
-                        label("preferences.convenienceDownload", systemImage: "arrow.down", color: .indigo, lightIcon: true)
+                        label("preferences.convenienceDownload", systemImage: "arrow.down", color: .indigo)
                     }
                 }
                 
-                Section {
-                    NavigationLink(destination: CarPlayPreferences()) {
-                        label("preferences.carPlay", systemImage: "car", color: .green, lightIcon: false)
-                    }
-                    NavigationLink(destination: TabValuePreferences()) {
-                        label("preferences.tabs", systemImage: "rectangle.2.swap", color: .purple, lightIcon: false)
+                if !offlineMode.isEnabled {
+                    Section {
+                        NavigationLink(destination: CarPlayPreferences()) {
+                            label("preferences.carPlay", systemImage: "car", color: .green)
+                        }
+                        
+                        NavigationLink(destination: TabValuePreferences()) {
+                            label("preferences.tabs", systemImage: "rectangle.2.swap", color: .purple)
+                        }
                     }
                 }
                 
                 PodcastSortOrderPreference {
-                    label($0, systemImage: $1, color: .orange, lightIcon: true)
+                    label($0, systemImage: $1, color: .orange)
                 }
                 
                 Section {
                     Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
-                        label("preferences.settings", systemImage: "gear", color: .gray, lightIcon: true)
+                        label("preferences.settings", systemImage: "gear", color: .gray)
                     }
                     NavigationLink(destination: DebugPreferences()) {
-                        label("preferences.support", systemImage: "lifepreserver", color: .red, lightIcon: true)
+                        label("preferences.support", systemImage: "lifepreserver", color: .red)
                     }
                 }
             }

@@ -104,7 +104,7 @@ extension PersistenceManager {
             }
             
             do {
-                let path = ShelfPlayerKit.downloadDirectoryURL.appending(path: connectionID.replacing("/", with: "_"))
+                let path = ShelfPlayerKit.downloadDirectoryURL.appending(path: connectionID.urlSafe)
                 try FileManager.default.removeItem(at: path)
             } catch {
                 logger.error("Failed to remove download directory for connection (3) \(connectionID, privacy: .public): \(error)")

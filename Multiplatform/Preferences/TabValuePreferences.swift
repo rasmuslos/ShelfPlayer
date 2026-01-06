@@ -9,8 +9,6 @@ import SwiftUI
 import ShelfPlayback
 
 struct TabValuePreferences: View {
-    @Environment(ConnectionStore.self) private var connectionStore
-    
     var body: some View {
         List {
             LibraryEnumerator { name, content in
@@ -18,7 +16,7 @@ struct TabValuePreferences: View {
                     content()
                 }
             } label: { library in
-                let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.type)
+                let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.id.type)
                 
                 if scopes.count == 1, let scope = scopes.first {
                     NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
@@ -99,12 +97,6 @@ struct TabValueLibraryPreferences: View {
         .navigationTitle(library.name)
         .environment(\.editMode, .constant(.active))
         .toolbar {
-            ToolbarItem(placement: .destructiveAction) {
-                Button("action.reset", role: .destructive) {
-                    viewModel?.reset()
-                }
-            }
-            
             ToolbarItem(placement: .confirmationAction) {
                 Button("action.save") {
                     viewModel?.save {
@@ -159,9 +151,9 @@ private final class TabValueShadow {
         self.library = library
         self.scope = scope
         
-        let available = PersistenceManager.shared.customization.availableTabs(for: library, scope: scope)
+        let available = PersistenceManager.shared.customization.availableTabs(for: library.id, scope: scope)
         
-        let configured = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: scope)
+        let configured = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: scope)
         
         let missing = available.filter { !configured.contains($0) }
         
@@ -191,15 +183,10 @@ private final class TabValueShadow {
         activeIDs = available.compactMap { tabIDs.contains($0.id) ? $0.id : nil }
     }
     
-    func reset() {
-        let predefined = PersistenceManager.shared.customization.defaultTabs(for: library, scope: scope)
-        setActive(tabs: predefined)
-    }
-    
     func save(callback: @escaping () -> Void) {
         Task {
             do {
-                try await PersistenceManager.shared.customization.setConfiguredTabs(active, for: library, scope: scope)
+                try await PersistenceManager.shared.customization.setConfiguredTabs(active, for: library.id, scope: scope)
                 callback()
             } catch {
                 notifyError.toggle()

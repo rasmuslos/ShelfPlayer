@@ -85,15 +85,6 @@ struct ShelfPlayer {
             }
         }
         
-        RFNotification[.removeConnection].subscribe { connectionID in
-            Defaults[.carPlayTabBarLibraries]?.removeAll {
-                $0.connectionID == connectionID
-            }
-            Defaults[.customTabValues].removeAll {
-                $0.library.connectionID == connectionID
-            }
-        }
-        
         Task {
             await withTaskGroup {
                 $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }
@@ -116,6 +107,9 @@ struct ShelfPlayer {
                 
                 didOnlineHookRun = true
             }
+            
+            Embassy.unsetWidgetIsPlaying()
+            AppShortcutProvider.updateAppShortcutParameters()
             
             await withTaskGroup {
                 $0.addTask {

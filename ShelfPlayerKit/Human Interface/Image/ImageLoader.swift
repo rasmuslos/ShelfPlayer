@@ -89,7 +89,7 @@ public extension ImageLoader {
 private extension ImageLoader {
     func directoryURL(for request: ImageRequest) -> URL {
         cachePath
-            .appending(path: request.itemID.connectionID)
+            .appending(path: request.itemID.connectionID.urlSafe)
             .appending(path: request.itemID.libraryID)
             .appending(path: "\(request.itemID.primaryID)_\(request.itemID.groupingID ?? "-")")
     }

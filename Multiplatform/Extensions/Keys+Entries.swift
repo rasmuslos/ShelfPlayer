@@ -21,9 +21,4 @@ extension RFNotification.IsolatedNotification {
     
     static var navigateConditionMet: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayer.navigate.notify") }
     static var _navigate: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayer.navigate.two") }
-    
-    static var changeLibrary: IsolatedNotification<Library> { .init("io.rfk.shelfPlayer.changeLibrary") }
-    static var performBackgroundSessionSync: IsolatedNotification<ItemIdentifier.ConnectionID?> { .init("io.rfk.shelfPlayer.performBackgroundSessionSync") }
-    
-    static var presentSheet: IsolatedNotification<Satellite.Sheet> { .init("io.rfk.shelfPlayer.presentSheet") }
 }

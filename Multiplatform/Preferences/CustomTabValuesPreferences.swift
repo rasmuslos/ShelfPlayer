@@ -9,28 +9,23 @@ import SwiftUI
 import ShelfPlayback
 
 struct CustomTabValuesPreferences: View {
-    @Default(.customTabValues) private var customTabValues
+    @Default(.pinnedTabValues) private var pinnedTabValues
     
     var body: some View {
         List {
             Section {
-                ForEach(customTabValues) { tab in
-                    Label(tab.library.name, systemImage: tab.image)
+                ForEach(pinnedTabValues) { tab in
+                    Label(tab.label, systemImage: tab.image)
                         .foregroundStyle(.primary)
                 }
                 .onMove {
-                    customTabValues.move(fromOffsets: $0, toOffset: $1)
+                    pinnedTabValues.move(fromOffsets: $0, toOffset: $1)
                 }
                 .onDelete {
-                    customTabValues.remove(atOffsets: $0)
+                    pinnedTabValues.remove(atOffsets: $0)
                 }
             }
-            
-            Section {
-                Button("action.reset", role: .destructive) {
-                    customTabValues.removeAll()
-                }
-            }
+    
             
             LibraryEnumerator { name, content in
                 Section {
@@ -42,16 +37,16 @@ struct CustomTabValuesPreferences: View {
                 content()
             } label: { library in
                 Section {
-                    ForEach(PersistenceManager.shared.customization.availableTabs(for: library, scope: .tabBar)) { tab in
-                        let customTab: TabValue = .custom(tab)
+                    ForEach(PersistenceManager.shared.customization.availableTabs(for: library.id, scope: .tabBar)) { tab in
+                        let customTab: TabValue = .custom(tab, library.name)
                         
-                        if !customTabValues.contains(customTab) {
+                        if !pinnedTabValues.contains(customTab) {
                             Button {
-                                guard !customTabValues.contains(customTab) else {
+                                guard !pinnedTabValues.contains(customTab) else {
                                     return
                                 }
                                 
-                                customTabValues.append(customTab)
+                                pinnedTabValues.append(customTab)
                             } label: {
                                 HStack(spacing: 0) {
                                     Label(tab.label, systemImage: tab.image)
@@ -75,7 +70,14 @@ struct CustomTabValuesPreferences: View {
         .environment(\.editMode, .constant(.active))
         .navigationTitle("panel.home")
         .navigationBarTitleDisplayMode(.inline)
-        .animation(.smooth, value: customTabValues)
+        .toolbar {
+            ToolbarItem(placement: .destructiveAction) {
+                Button("action.reset", role: .destructive) {
+                    pinnedTabValues.removeAll()
+                }
+            }
+        }
+        .animation(.smooth, value: pinnedTabValues)
     }
 }
 
