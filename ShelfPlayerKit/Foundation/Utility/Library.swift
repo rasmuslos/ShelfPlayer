@@ -8,46 +8,49 @@
 import Foundation
 
 public struct Library {
-    public let id: String
-    public let connectionID: ItemIdentifier.ConnectionID
+    public let id: LibraryIdentifier
     
+    public let index: Int
     public let name: String
     
-    public let type: MediaType
-    public let index: Int
-    
-    public init(id: String, connectionID: ItemIdentifier.ConnectionID, name: String, type: String, index: Int) {
-        self.id = id
-        self.connectionID = connectionID
+    public init(id libraryID: String, connectionID: ItemIdentifier.ConnectionID, name: String, type typeString: String, index: Int) {
+        let type: LibraryMediaType
         
-        self.name = name
-        
-        switch type {
+        switch typeString {
         case "book":
-            self.type = .audiobooks
+            type = .audiobooks
         case "podcast":
-            self.type = .podcasts
+            type = .podcasts
         default:
-            fatalError("Unsupported library type: \(type)")
+            fatalError("Unsupported library type: \(typeString)")
         }
-
-        self.index = index
-    }
-    
-    public init(id: String, connectionID: ItemIdentifier.ConnectionID, name: String, type: MediaType, index: Int) {
-        self.id = id
-        self.connectionID = connectionID
+        
+        id = .init(type: type, libraryID: libraryID, connectionID: connectionID)
         
         self.name = name
-        
-        self.type = type
         self.index = index
     }
     
-    public enum MediaType: Int, Hashable, Codable, Sendable, Defaults.Serializable {
-        case audiobooks = 1
-        case podcasts = 2
+    public init(id libraryID: String, connectionID: ItemIdentifier.ConnectionID, name: String, type: LibraryMediaType, index: Int) {
+        id = .init(type: type, libraryID: libraryID, connectionID: connectionID)
+        self.name = name
+        self.index = index
     }
+}
+
+public struct LibraryIdentifier: Identifiable, Hashable, Codable, Sendable, Equatable {
+    public let type: LibraryMediaType
+    
+    public let libraryID: ItemIdentifier.LibraryID
+    public let connectionID: ItemIdentifier.ConnectionID
+    
+    public var id: String {
+        "\(type.rawValue.description)_\(libraryID)_\(connectionID)"
+    }
+}
+public enum LibraryMediaType: Int, Hashable, Codable, Sendable, Defaults.Serializable {
+    case audiobooks = 1
+    case podcasts = 2
 }
 
 extension Library: Codable {}
@@ -56,7 +59,6 @@ extension Library: Sendable {}
 extension Library: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
-        && lhs.connectionID == rhs.connectionID
     }
 }
 extension Library: Comparable {

@@ -12,8 +12,8 @@ struct SyncGate: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(ProgressViewModel.self) private var progressViewModel
     
-    @Environment(ConnectionStore.self) private var connectionStore
     @Environment(Satellite.self) private var satellite
+    @Environment(TabRouterViewModel.self) private var tabRouterViewModel
     
     let library: Library
     
@@ -23,24 +23,24 @@ struct SyncGate: View {
     
     var body: some View {
         Group {
-            if progressViewModel.importFailedConnectionIDs.contains(library.connectionID) {
+            if progressViewModel.importFailedConnectionIDs.contains(library.id.connectionID) {
                 ContentUnavailableView("navigation.sync.failed", systemImage: "circle.badge.xmark", description: Text("navigation.sync.failed"))
                     .symbolRenderingMode(.multicolor)
                     .symbolEffect(.wiggle, options: .nonRepeating)
                     .modifier(OfflineControlsModifier(startOfflineTimeout: true))
-                    .onAppear {
-                        guard connectionStore.libraries[library.connectionID]?.contains(where: { $0 == library }) != true, satellite.tabValue?.library == library else {
-                            return
-                        }
-                        
-                        RFNotification[.invalidateTab].send()
-                    }
+//                    .onAppear {
+//                        guard connectionStore.libraries[library.connectionID]?.contains(where: { $0 == library }) != true, satellite.tabValue?.library == library else {
+//                            return
+//                        }
+//                        
+//                        RFNotification[.invalidateTab].send()
+//                    }
             } else {
                 ContentUnavailableView("navigation.sync", systemImage: "binoculars")
                     .symbolEffect(.pulse)
                     .modifier(OfflineControlsModifier(startOfflineTimeout: false))
                     .onAppear {
-                        progressViewModel.attemptSync(for: library.connectionID)
+                        progressViewModel.attemptSync(for: library.id.connectionID)
                     }
             }
         }

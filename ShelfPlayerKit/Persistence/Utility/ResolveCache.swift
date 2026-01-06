@@ -278,7 +278,7 @@ private extension ResolveCache {
     
     func diskPath(connectionID: ItemIdentifier.ConnectionID) -> URL {
         cachePath
-            .appending(path: connectionID)
+            .appending(path: connectionID.urlSafe)
     }
     func diskPath(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> URL {
         diskPath(connectionID: connectionID)

@@ -42,7 +42,7 @@ struct OfflineView: View {
             NavigationStack {
                 List {
                     if !audiobooks.isEmpty {
-                        Section("row.downloaded.audiobooks") {
+                        Section {
                             ForEach(audiobooks) { audiobook in
                                 Button {
                                     satellite.start(audiobook.id)

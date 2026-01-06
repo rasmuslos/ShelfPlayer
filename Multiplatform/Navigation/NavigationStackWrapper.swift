@@ -11,11 +11,11 @@ import ShelfPlayback
 struct NavigationStackWrapper<Content: View>: View {
     let tab: TabValue
     
-    @ViewBuilder var content: () -> Content
+    var content: () -> Content
     
     @State private var context: NavigationContext
     
-    init(tab: TabValue, content: @escaping () -> Content) {
+    init(tab: TabValue, @ViewBuilder content: @escaping () -> Content) {
         self.tab = tab
         self.content = content
         
@@ -39,7 +39,7 @@ struct NavigationStackWrapper<Content: View>: View {
                             PodcastEpisodesView()
                                 .environment(viewModel)
                         case .tabValue(let tabValue):
-                            tabValue.content
+                            TabRouter.panel(for: tabValue)
                             
                         case .audiobookRow(let title, let audiobooks):
                             RowGridView(title: title, audiobooks: audiobooks)
@@ -63,7 +63,6 @@ struct NavigationStackWrapper<Content: View>: View {
                     context.path.append(.itemID($0))
                 }
         }
-        .environment(\.library, tab.library)
         .environment(\.navigationContext, context)
         .onReceive(RFNotification[.collectionDeleted].publisher()) { collectionID in
             context.path.removeAll {

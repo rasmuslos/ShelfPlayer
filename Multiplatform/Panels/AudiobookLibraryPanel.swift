@@ -231,7 +231,7 @@ private final class LibraryViewModel {
     
     nonisolated func loadTabs() {
         Task {
-            let tabs = await PersistenceManager.shared.customization.configuredTabs(for: library, scope: .library)
+            let tabs = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
             
             await MainActor.withAnimation {
                 self.tabs = tabs
@@ -260,7 +260,7 @@ extension LibraryViewModel {
             }
             
             do {
-                let genres = try await ABSClient[library.connectionID].genres(from: library.id)
+                let genres = try await ABSClient[library.id.connectionID].genres(from: library.id.libraryID)
                 
                 await MainActor.withAnimation {
                     self.genres = genres

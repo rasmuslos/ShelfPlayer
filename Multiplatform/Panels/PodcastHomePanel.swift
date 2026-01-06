@@ -66,7 +66,7 @@ struct PodcastHomePanel: View {
                 ListenNowSheetToggle.toolbarItem()
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    LibraryPickerMenu(customizeLibrary: true)
+                    CompactLibraryPicker(customizeLibrary: true)
                 }
             }
         }
@@ -107,8 +107,8 @@ private extension PodcastHomePanel {
         }
         
         do {
-            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library.connectionID].home(for: library.id)
-            let episodes = await HomeRow.prepareForPresentation(home.1, connectionID: library.connectionID)
+            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
+            let episodes = await HomeRow.prepareForPresentation(home.1, connectionID: library.id.connectionID)
             
             await MainActor.withAnimation {
                 self.episodes = episodes

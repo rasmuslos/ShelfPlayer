@@ -25,13 +25,13 @@ struct ImagePlaceholder: View {
         if let itemID {
             itemID.type.icon
         } else {
-            switch library?.type {
-            case .audiobooks:
-                "book"
-            case .podcasts:
-                "play.square.stack.fill"
-            default:
-                "bookmark"
+            switch library?.id.type {
+                case .audiobooks:
+                    "book"
+                case .podcasts:
+                    "play.square.stack.fill"
+                default:
+                    "bookmark"
             }
         }
     }

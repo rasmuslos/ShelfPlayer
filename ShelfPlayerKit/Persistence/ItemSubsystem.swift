@@ -116,18 +116,18 @@ public extension PersistenceManager.ItemSubsystem {
         return await colorCache[itemID]?.value
     }
     
-    func libraryIndexMetadata(for library: Library) async -> LibraryIndexMetadata? {
-        await PersistenceManager.shared.keyValue[.libraryIndexMetadata(of: library.id, connectionID: library.connectionID)]
+    func libraryIndexMetadata(for libraryID: LibraryIdentifier) async -> LibraryIndexMetadata? {
+        await PersistenceManager.shared.keyValue[.libraryIndexMetadata(of: libraryID)]
     }
-    func setLibraryIndexMetadata(_ metadata: LibraryIndexMetadata?, for library: Library) async throws {
-        try await PersistenceManager.shared.keyValue.set(.libraryIndexMetadata(of: library.id, connectionID: library.connectionID), metadata)
+    func setLibraryIndexMetadata(_ metadata: LibraryIndexMetadata?, for libraryID: LibraryIdentifier) async throws {
+        try await PersistenceManager.shared.keyValue.set(.libraryIndexMetadata(of: libraryID), metadata)
     }
     
-    func libraryIndexedIDs(for library: Library, subset: String) async -> [ItemIdentifier] {
-        await PersistenceManager.shared.keyValue[.libraryIndexedIDs(of: library.id, connectionID: library.connectionID, subset: subset)] ?? []
+    func libraryIndexedIDs(for libraryID: LibraryIdentifier, subset: String) async -> [ItemIdentifier] {
+        await PersistenceManager.shared.keyValue[.libraryIndexedIDs(of: libraryID, subset: subset)] ?? []
     }
-    func setLibraryIndexedIDs(_ IDs: [ItemIdentifier], for library: Library, subset: String) async throws {
-        try await PersistenceManager.shared.keyValue.set(.libraryIndexedIDs(of: library.id, connectionID: library.connectionID, subset: subset), IDs)
+    func setLibraryIndexedIDs(_ IDs: [ItemIdentifier], for libraryID: LibraryIdentifier, subset: String) async throws {
+        try await PersistenceManager.shared.keyValue.set(.libraryIndexedIDs(of: libraryID, subset: subset), IDs)
     }
     
     func podcastFilterSortConfiguration(for podcastID: ItemIdentifier) async -> PodcastFilterSortConfiguration {
@@ -210,11 +210,11 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "dominantColor-\(itemID)", cluster: "dominantColors", isCachePurgeable: true)
     }
     
-    static func libraryIndexMetadata(of libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) -> Key<PersistenceManager.ItemSubsystem.LibraryIndexMetadata> {
-        Key(identifier: "libraryIndexMetadata-\(libraryID)-\(connectionID)", cluster: "libraryIndexMetadata", isCachePurgeable: true)
+    static func libraryIndexMetadata(of libraryID: LibraryIdentifier) -> Key<PersistenceManager.ItemSubsystem.LibraryIndexMetadata> {
+        Key(identifier: "libraryIndexMetadata-\(libraryID.libraryID)-\(libraryID.connectionID)", cluster: "libraryIndexMetadata", isCachePurgeable: true)
     }
-    static func libraryIndexedIDs(of libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID, subset: String) -> Key<[ItemIdentifier]> {
-        Key(identifier: "libraryIndexMetadata-\(libraryID)-\(connectionID)-\(subset)", cluster: "libraryIndexedIDs", isCachePurgeable: false)
+    static func libraryIndexedIDs(of libraryID: LibraryIdentifier, subset: String) -> Key<[ItemIdentifier]> {
+        Key(identifier: "libraryIndexMetadata-\(libraryID.libraryID)-\(libraryID.connectionID)-\(subset)", cluster: "libraryIndexedIDs", isCachePurgeable: false)
     }
     
     static func podcastFilterSortConfiguration(for podcastID: ItemIdentifier) -> Key<PersistenceManager.ItemSubsystem.PodcastFilterSortConfiguration> {
