@@ -14,10 +14,10 @@ struct TabRouter: View {
     
     @Environment(Satellite.self) private var satellite
     @Environment(ConnectionStore.self) private var connectionStore
-    @Environment(ProgressViewModel.self) private var progressViewModel
     
     @AppStorage("io.rfk.shelfPlayer.tabCustomization")
     private var customization: TabViewCustomization
+    @Default(.lastPlayedItemID) private var lastPlayedItemID
     
     @State private var viewModel = TabRouterViewModel()
     @State private var listenedTodayTracker = ListenedTodayTracker.shared
@@ -31,6 +31,17 @@ struct TabRouter: View {
         } else {
             false
         }
+    }
+    var isNowPlayingBarVisible: Bool {
+        guard let selectedLibraryID = viewModel.selectedLibraryID else {
+            return false
+        }
+        
+        guard viewModel.currentConnectionStatus[selectedLibraryID.connectionID] == true else {
+            return false
+        }
+        
+        return satellite.nowPlayingItemID != nil || lastPlayedItemID != nil
     }
     
     var connections: [FriendlyConnection] {
@@ -180,19 +191,26 @@ struct TabRouter: View {
 //            .hidden(isCompact)
         }
         .modify {
-            if isCompact, #available(iOS 26, *) {
+            if #available(iOS 26, *) {
                 $0
                     .tabBarMinimizeBehavior(.onScrollDown)
-                    .tabViewBottomAccessory {
+            } else {
+                $0
+            }
+        }
+        .modify {
+            if isCompact, #available(iOS 26.1, *) {
+                $0
+                    .tabViewBottomAccessory(isEnabled: isNowPlayingBarVisible) {
                         if satellite.nowPlayingItemID != nil {
                             PlaybackBottomBarPill()
-                        } else {
-                            PlaybackPlaceholderBottomPill()
+                        } else if let lastPlayedItemID {
+                            PlaybackPlaceholderBottomPill(itemID: lastPlayedItemID)
                         }
                     }
             } else {
                 $0
-                    .modifier(ApplyLegacyCollapsedForeground())
+                    .modifier(ApplyLegacyCollapsedForeground(isEnabled: isNowPlayingBarVisible))
             }
         }
         .modifier(CompactPlaybackModifier())

@@ -10,8 +10,6 @@ import ShelfPlayback
 
 #if DEBUG
 struct StatisticsSheet: View {
-    @Environment(ProgressViewModel.self) private var progressViewModel
-    
     var body: some View {
         List {
             

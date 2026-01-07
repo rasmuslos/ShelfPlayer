@@ -120,6 +120,6 @@ public extension PersistenceManager.CustomizationSubsystem {
 
 private extension PersistenceManager.KeyValueSubsystem.Key {
     static func storedTabIDs(for libraryID: LibraryIdentifier, scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) -> Key<[TabValue]> {
-        Key(identifier: "storedTabIDs_\(libraryID)", cluster: "storedTabIDs", isCachePurgeable: false)
+        Key(identifier: "storedTabIDs_\(libraryID)_\(scope)", cluster: "storedTabIDs", isCachePurgeable: false)
     }
 }

@@ -9,10 +9,6 @@ import Foundation
 import SwiftUI
 import ShelfPlayback
 
-#if DEBUG
-@MainActor private let tabRouterViewModel = TabRouterViewModel().previewEnvironment()
-#endif
-
 extension View {
     #if DEBUG
     @ViewBuilder
@@ -20,13 +16,14 @@ extension View {
         @Namespace var namespace
         
         self
-            .environment(Satellite.shared.debugPlayback())
-            .environment(PlaybackViewModel.shared)
-            .environment(ConnectionStore.shared)
-            .environment(ProgressViewModel.shared)
-            .environment(ListenedTodayTracker.shared)
             .environment(OfflineMode.shared)
-            .environment(tabRouterViewModel)
+            .environment(ConnectionStore.shared)
+            .environment(Satellite.shared.debugPlayback())
+        
+            .environment(PlaybackViewModel.shared)
+            .environment(ListenedTodayTracker.shared)
+        
+            .environment(TabRouterViewModel().previewEnvironment())
             .environment(\.namespace, namespace)
     }
     #endif

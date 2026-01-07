@@ -11,73 +11,57 @@ import ShelfPlayback
 struct PlaybackPlaceholderBottomPill: View {
     @Environment(Satellite.self) private var satellite
     
-    @Default(.lastPlayedItemID) private var lastPlayedItemID
+    let itemID: ItemIdentifier
     
     @State private var lastPlayedItemName: String?
     
     var body: some View {
         Button {
-            if let lastPlayedItemID {
-                satellite.start(lastPlayedItemID)
-            }
+            satellite.start(itemID)
         } label: {
             HStack(spacing: 8) {
-                ItemImage(itemID: lastPlayedItemID, size: .small)
+                ItemImage(itemID: itemID, size: .small)
                     .padding(.vertical, 8)
                 
-                if lastPlayedItemID != nil {
-                    VStack(alignment: .leading, spacing: 0) {
-                        if let lastPlayedItemName {
-                            Text(lastPlayedItemName)
-                        } else {
-                            ZStack(alignment: .leading) {
-                                Text(verbatim: "PLACEHOLDER")
-                                    .hidden()
-                                
-                                ProgressView()
-                                    .scaleEffect(0.5)
-                                    .frame(width: 10, height: 0)
-                            }
-                            .task {
-                                loadItemName()
-                            }
+                VStack(alignment: .leading, spacing: 0) {
+                    if let lastPlayedItemName {
+                        Text(lastPlayedItemName)
+                    } else {
+                        ZStack(alignment: .leading) {
+                            Text(verbatim: "PLACEHOLDER")
+                                .hidden()
+                            
+                            ProgressView()
+                                .scaleEffect(0.5)
+                                .frame(width: 10, height: 0)
                         }
-                        
-                        Text("playback.placeholder.resume")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        .task {
+                            loadItemName()
+                        }
                     }
                     
-                    Spacer(minLength: 0)
-                } else {
-                    Text("playback.placeholder.inactive")
+                    Text("playback.placeholder.resume")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    
-                    Spacer(minLength: 0)
                 }
+                
+                Spacer(minLength: 0)
             }
             .contentShape(.rect)
             .padding(.horizontal, 16)
         }
         .buttonStyle(.plain)
-        .onChange(of: lastPlayedItemID) {
+        .onChange(of: itemID) {
             lastPlayedItemName = nil
         }
     }
     
     private nonisolated func loadItemName() {
         Task {
-            do {
-                let item = try await lastPlayedItemID?.resolved
-                
-                await MainActor.run {
-                    lastPlayedItemName = item?.name
-                }
-            } catch {
-                await MainActor.run {
-                    lastPlayedItemID = nil
-                }
+            let item = try await itemID.resolved
+            
+            await MainActor.run {
+                lastPlayedItemName = item.name
             }
         }
     }
@@ -90,7 +74,7 @@ struct PlaybackPlaceholderBottomPill: View {
             
         }
         .tabViewBottomAccessory {
-            PlaybackPlaceholderBottomPill()
+            PlaybackPlaceholderBottomPill(itemID: Audiobook.fixture.id)
         }
         .previewEnvironment()
     }

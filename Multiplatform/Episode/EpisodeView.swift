@@ -31,42 +31,8 @@ struct EpisodeView: View {
                 .padding(.top, 12)
                 .padding(.horizontal, 20)
             
-            Description(description: viewModel.episode.description, showHeadline: false) {
-                let text = $0.string
-                
-                for match in text.matches(of: Episode.chapterTimestampRegex) {
-                    guard let timestamp = Episode.parseChapterTimestamp(String(match.output.1)) else {
-                        continue
-                    }
-                    
-                    $0.addAttributes([
-                        .link: URL(string: "shelfPlayer://chapter/\(timestamp)")! as NSURL
-                    ], range: NSRange(match.range, in: text))
-                }
-            } handleURL: { url in
-                if url.scheme == "shelfPlayer" && url.host() == "chapter" {
-                    guard url.pathComponents.count == 2 else {
-                        return false
-                    }
-                    
-                    let timestamp = url.pathComponents[1]
-                    
-                    guard let time = TimeInterval(timestamp) else {
-                        return false
-                    }
-                    
-                    if satellite.nowPlayingItemID == viewModel.episode.id {
-                        satellite.seek(to: time, insideChapter: false, completion: {})
-                    } else {
-                        satellite.start(viewModel.episode.id, at: time)
-                    }
-                    
-                    return false
-                }
-                
-                return true
-            }
-            .padding(.horizontal, 20)
+            EpisodeDescription(episode: viewModel.episode)
+                .padding(.horizontal, 20)
             
             Footer()
             

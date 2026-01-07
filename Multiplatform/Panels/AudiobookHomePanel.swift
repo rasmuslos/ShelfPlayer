@@ -83,7 +83,7 @@ struct AudiobookHomePanel: View {
             fetchItems(refresh: true)
             ListenedTodayTracker.shared.refresh()
         }
-        .onReceive(RFNotification[.progressEntityUpdated].publisher()) { _ in
+        .onReceive(RFNotification[.playbackReported].publisher()) { _ in
             fetchItems()
         }
         .onReceive(RFNotification[.downloadStatusChanged].publisher()) {
