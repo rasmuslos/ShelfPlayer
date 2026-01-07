@@ -13,7 +13,7 @@ import ShelfPlayback
 
 struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.scenePhase) private var scenePhase
     
     @Namespace private var namespace
     
@@ -22,19 +22,17 @@ struct ContentView: View {
     
     @State private var satellite = Satellite.shared
     @State private var offlineMode = OfflineMode.shared
-    @State private var playbackViewModel = PlaybackViewModel.shared
     
     @State private var connectionStore = ConnectionStore.shared
-    @State private var progressViewModel = ProgressViewModel.shared
+    @State private var playbackViewModel = PlaybackViewModel.shared
     
     @ViewBuilder
     private func applyEnvironment<Content: View>(_ content: Content) -> some View {
         content
-            .environment(satellite)
             .environment(offlineMode)
-            .environment(playbackViewModel)
             .environment(connectionStore)
-            .environment(progressViewModel)
+            .environment(satellite)
+            .environment(playbackViewModel)
             .environment(\.namespace, namespace)
     }
     
