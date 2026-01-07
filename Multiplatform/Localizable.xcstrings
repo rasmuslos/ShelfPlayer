@@ -9203,6 +9203,7 @@
       }
     },
     "navigation.sync" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -9249,6 +9250,7 @@
       }
     },
     "navigation.sync.failed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -10266,6 +10268,7 @@
     },
     "playback.placeholder.inactive" : {
       "comment" : "A placeholder text that appears when there is no last played item.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

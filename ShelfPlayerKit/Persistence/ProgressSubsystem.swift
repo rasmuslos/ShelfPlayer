@@ -156,6 +156,8 @@ public extension PersistenceManager.ProgressSubsystem {
     }
     
     func compareDatabase(against payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
+        var remoteDuplicates = [String]()
+        
         let keyedPayload = payload.map {
             if let episodeID = $0.episodeId {
                 (key(primaryID: episodeID, groupingID: $0.libraryItemId, connectionID: connectionID), $0)
@@ -174,6 +176,7 @@ public extension PersistenceManager.ProgressSubsystem {
                 return $0
             }
             
+            remoteDuplicates.append(lhs > rhs ? $1.id : $0.id)
             return lhs > rhs ? $0 : $1
         }
         let remoteSet = Set(remote.keys)
@@ -254,7 +257,7 @@ public extension PersistenceManager.ProgressSubsystem {
         
         // We should no longer cancel the task from the point onwards. The network requests are performed first.
         
-        logger.info("Computed changes: \(pendingServerUpdate.count) remote updates, \(pendingServerDeletion.count) remote deletions, \(pendingLocalUpdate.count) local updates, \(pendingLocalDeletion.count) local deletions")
+        logger.info("Computed changes: \(pendingServerUpdate.count) remote updates, \(pendingServerDeletion.count) remote deletions, \(pendingLocalUpdate.count) local updates, \(pendingLocalDeletion.count) local deletions (\(remoteDuplicates.count) duplicates)")
         
         // Run server updates
         
@@ -264,6 +267,13 @@ public extension PersistenceManager.ProgressSubsystem {
         
         for id in pendingServerDeletion {
             try await ABSClient[connectionID].delete(progressID: id)
+        }
+        for id in remoteDuplicates {
+            do {
+                try await ABSClient[connectionID].delete(progressID: id)
+            } catch {
+                logger.warning("Failed to delete remote duplicate \(id): \(error)")
+            }
         }
         
         // Apply database changes

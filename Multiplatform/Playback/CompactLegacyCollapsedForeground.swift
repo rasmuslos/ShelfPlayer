@@ -129,10 +129,12 @@ struct ApplyLegacyCollapsedForeground: ViewModifier {
     
     @Environment(Satellite.self) private var satellite
     
+    var isEnabled = true
+    
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .bottom) {
-                if satellite.nowPlayingItemID != nil && horizontalSizeClass == .compact {
+                if isEnabled, satellite.nowPlayingItemID != nil && horizontalSizeClass == .compact {
                     CompactLegacyCollapsedForeground(decorative: false)
                         .offset(y: -(playbackBottomOffset + playbackBottomSafeArea))
                 }

@@ -81,8 +81,6 @@ struct DebugPreferences: View {
 }
 
 private struct FlushButtons: View {
-    @Environment(ProgressViewModel.self) private var progressViewModel
-    
     @State private var isLoading = false
     
     @State private var cacheDirectorySize: Int? = nil
@@ -117,7 +115,8 @@ private struct FlushButtons: View {
             }
             
             Button("preferences.purge.progress", systemImage: "trash.square") {
-                progressViewModel.flush(isLoading: $isLoading)
+//                progressViewModel.flush(isLoading: $isLoading)
+                #warning("grr")
             }
             
             Button {

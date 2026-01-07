@@ -50,6 +50,7 @@ struct PlaybackTitle: View {
                     }
                 }
                 .id((satellite.nowPlayingItem?.sortName ?? "ijwefnoijoiujoizg") + "_nowPlaying_text_title_\(uuid)")
+                .contentShape(.rect)
             }
             .buttonStyle(.plain)
             
@@ -885,10 +886,13 @@ private struct StopPlaybackButton: View {
 }
 
 #Preview {
+    PlaybackTitle(showTertiarySupplements: true)
+        .previewEnvironment()
+}
+#Preview {
     PlaybackControls()
         .previewEnvironment()
 }
-
 #Preview {
     PlaybackActions()
         .previewEnvironment()

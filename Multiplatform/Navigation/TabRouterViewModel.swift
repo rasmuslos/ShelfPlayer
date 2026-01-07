@@ -59,33 +59,6 @@ final class TabRouterViewModel {
         }
     }
     
-    func selectCompact(libraryID: LibraryIdentifier) {
-        selectFirstCompactTab(for: libraryID, allowPinned: false)
-    }
-    
-    func toggleCompactPinned() {
-        if pinnedTabsActive {
-            enableFirstLibrary()
-        } else {
-            enableFirstPinnedTab()
-        }
-    }
-    func enableFirstPinnedTab() {
-        if let first = pinnedTabValues.first {
-            tabValue = first
-        } else {
-            Satellite.shared.present(.customTabValuePreferences)
-        }
-    }
-    func enableFirstLibrary() {
-        guard let library = libraries.first else {
-            logger.warning("Requested to enable first library, but there are no libraries")
-            return
-        }
-        
-        selectFirstCompactTab(for: library.id, allowPinned: false)
-    }
-    
     func refresh() {
         Task {
             await loadLibraries()
@@ -98,7 +71,7 @@ final class TabRouterViewModel {
             for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                 group.addTask {
                     do {
-                        let libraries = try await ABSClient[connectionID].libraries()
+                        let libraries = try await ABSClient[connectionID].libraries().sorted()
                         var results = [Library: ([TabValue], [TabValue])]()
                         
                         for library in libraries {
@@ -134,7 +107,7 @@ final class TabRouterViewModel {
             }
         }
         
-        let libraryTabMapped = results.values.flatMap { $0.map { ($0.id, $1.0, $1.0) } }
+        let libraryTabMapped = results.values.flatMap { $0.map { ($0.id, $1.0, $1.1) } }
         
         tabBar = Dictionary(uniqueKeysWithValues: libraryTabMapped.map { ($0.0, $0.1) })
         sideBar = Dictionary(uniqueKeysWithValues: libraryTabMapped.map { ($0, $2) })
@@ -166,6 +139,33 @@ extension TabRouterViewModel {
         } else {
             nil
         }
+    }
+    
+    func selectCompact(libraryID: LibraryIdentifier) {
+        selectFirstCompactTab(for: libraryID, allowPinned: false)
+    }
+    
+    func toggleCompactPinned() {
+        if pinnedTabsActive {
+            enableFirstLibrary()
+        } else {
+            enableFirstPinnedTab()
+        }
+    }
+    func enableFirstPinnedTab() {
+        if let first = pinnedTabValues.first {
+            tabValue = first
+        } else {
+            Satellite.shared.present(.customTabValuePreferences)
+        }
+    }
+    func enableFirstLibrary() {
+        guard let library = libraries.first else {
+            logger.warning("Requested to enable first library, but there are no libraries")
+            return
+        }
+        
+        selectFirstCompactTab(for: library.id, allowPinned: false)
     }
     
     func selectLastOrFirstCompactLibrary() {

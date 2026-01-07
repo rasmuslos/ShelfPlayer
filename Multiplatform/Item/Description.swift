@@ -51,7 +51,7 @@ struct Description: View {
                                 true
                             }
                         }
-                        .padding(.horizontal, -5)
+                        .padding(.horizontal, -6)
                         .frame(height: height)
                     } else {
                         Text("item.description.missing")
@@ -80,10 +80,16 @@ private struct HTMLTextView: UIViewRepresentable {
         let textView = UITextView(frame: .zero)
         
         textView.backgroundColor = .clear
+        
         textView.isEditable = false
+//        textView.isScrollEnabled = false
         
         textView.contentInset = .zero
+        textView.layoutMargins = .zero
         textView.textContainerInset = .zero
+        textView.showsHorizontalScrollIndicator = false
+//        textView.horizontalScrollIndicatorInsets = .init(top: 10, left: 10, bottom: 10, right: 10)
+//        textView.textContainer.lineFragmentPadding = .zero
         
         delegate.callback = {
             handleURL($0)
@@ -95,7 +101,7 @@ private struct HTMLTextView: UIViewRepresentable {
     
     func updateUIView(_ textView: UITextView, context: Context) {
         DispatchQueue.main.async {
-            let data = Data(self.html.utf8)
+            let data = Data(html.utf8)
             
             do {
                 var attributedString = try NSMutableAttributedString(data: data, options: [
@@ -104,6 +110,12 @@ private struct HTMLTextView: UIViewRepresentable {
                 ], documentAttributes: nil)
                 
                 attribute?(&attributedString)
+                
+                attributedString.enumerateAttributes(in: NSRange(location: 0, length: attributedString.length)) { attributes, range, _ in
+                    if attributes.keys.contains(.link) {
+                        attributedString.removeAttribute(.underlineStyle, range: range)
+                    }
+                }
                 
                 textView.attributedText = attributedString
                 textView.textColor = UIColor.label
@@ -153,6 +165,7 @@ private final class Delegate: NSObject, UITextViewDelegate {
 
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed vulputate odio ut enim. Cras semper auctor neque vitae. Tortor vitae purus faucibus ornare suspendisse. Sed vulputate mi sit amet mauris. Morbi leo urna molestie at elementum eu facilisis. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Viverra ipsum nunc aliquet bibendum enim. Aliquet nec ullamcorper sit amet risus nullam eget felis eget. Feugiat nibh sed pulvinar proin. Mauris rhoncus aenean vel elit. Metus vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Integer enim neque volutpat ac tincidunt vitae semper. Vitae tortor condimentum lacinia quis vel eros donec ac. Ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae. Interdum posuere lorem ipsum dolor sit amet consectetur. Mattis molestie a iaculis at erat pellentesque. Sed faucibus turpis in eu. Elit eget gravida cum sociis natoque penatibus et. Nisi quis eleifend quam adipiscing vitae proin.
 """)
+            .border(.red)
             .padding()
     }
 }

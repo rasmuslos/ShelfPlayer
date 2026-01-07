@@ -16,7 +16,7 @@ struct LibraryPicker: View {
     var callback: (() -> Void)? = nil
     
     private var connectionIDs: [ItemIdentifier.ConnectionID] {
-        Array(tabRouterViewModel.connectionLibraries.keys)
+        Array(tabRouterViewModel.connectionLibraries.keys.sorted())
     }
     
     private func libraryToggleBinding(for library: Library) -> Binding<Bool> {
