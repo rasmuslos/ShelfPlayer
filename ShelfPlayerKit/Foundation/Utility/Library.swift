@@ -47,6 +47,22 @@ public struct LibraryIdentifier: Identifiable, Hashable, Codable, Sendable, Equa
     public var id: String {
         "\(type.rawValue.description)_\(libraryID)_\(connectionID)"
     }
+    
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+        && lhs.connectionID == rhs.connectionID
+    }
+    public static func convertItemIdentifierToLibraryIdentifier(_ itemID: ItemIdentifier) -> LibraryIdentifier {
+        let type: LibraryMediaType
+        
+        switch itemID.type {
+            case .episode, .podcast: type = .podcasts
+            case .audiobook, .author, .narrator, .series, .collection: type = .audiobooks
+            case .playlist: type = .podcasts // :(
+        }
+        
+        return LibraryIdentifier(type: type, libraryID: itemID.libraryID, connectionID: itemID.connectionID)
+    }
 }
 public enum LibraryMediaType: Int, Hashable, Codable, Sendable, Defaults.Serializable {
     case audiobooks = 1

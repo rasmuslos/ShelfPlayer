@@ -23,7 +23,9 @@ extension View {
             .environment(PlaybackViewModel.shared)
             .environment(ListenedTodayTracker.shared)
         
+            .environment(ItemNavigationController())
             .environment(TabRouterViewModel().previewEnvironment())
+        
             .environment(\.namespace, namespace)
     }
     #endif

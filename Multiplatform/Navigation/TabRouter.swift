@@ -5,7 +5,6 @@
 //  Created by Rasmus Krämer on 23.09.24.
 //
 
-import Foundation
 import SwiftUI
 import ShelfPlayback
 
@@ -14,6 +13,7 @@ struct TabRouter: View {
     
     @Environment(Satellite.self) private var satellite
     @Environment(ConnectionStore.self) private var connectionStore
+    @Environment(ItemNavigationController.self) private var itemNavigationController
     
     @AppStorage("io.rfk.shelfPlayer.tabCustomization")
     private var customization: TabViewCustomization
@@ -27,7 +27,7 @@ struct TabRouter: View {
     }
     var isCompactAndReady: Bool {
         if isCompact {
-            viewModel.selectedLibraryID != nil
+            viewModel.tabValue != nil
         } else {
             false
         }
@@ -122,6 +122,7 @@ struct TabRouter: View {
                             Self.panel(for: tab)
                         }
                         .environment(\.library, library)
+                        .modifier(PlaybackTabContentModifier())
                     } else {
                         errorView(startOfflineTimeout: true)
                     }
@@ -143,13 +144,11 @@ struct TabRouter: View {
                 loadingTab {
                     await viewModel.loadLibraries()
                 }
-            } else {
-                // Select first
+            } else if !isCompactAndReady {
                 loadingTab() {
                     viewModel.selectLastOrFirstCompactLibrary()
                 }
-                .hidden(isCompactAndReady)
-                
+            } else {
                 // Compact
                 if let selectedLibraryID = viewModel.selectedLibraryID, let tabBar = viewModel.tabBar[selectedLibraryID] {
                     ForEach(tabBar) {
@@ -216,78 +215,91 @@ struct TabRouter: View {
         .modifier(CompactPlaybackModifier())
         .modifier(RegularPlaybackModifier())
         .environment(viewModel)
+        .environment(\.optionalTabRouter, viewModel)
         .environment(listenedTodayTracker)
         .environment(\.playbackBottomOffset, 52)
+        .onChange(of: itemNavigationController.itemID, initial: true) {
+            guard let itemID: ItemIdentifier = itemNavigationController.consume() else {
+                return
+            }
+            
+            let targetLibraryID = LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(itemID)
+            if viewModel.tabValue?.libraryID != targetLibraryID {
+                viewModel.selectFirstCompactTab(for: targetLibraryID, allowPinned: true)
+            }
+            
+            viewModel.navigateToWhenReady = itemID
+            navigateToWaitingItemID()
+        }
+        .onChange(of: viewModel.tabValue) {
+            navigateToWaitingItemID()
+        }
+        .onChange(of: viewModel.currentConnectionStatus) {
+            navigateToWaitingItemID()
+        }
+        .onChange(of: itemNavigationController.search?.0, initial: true) {
+            navigateToWaitingSearch()
+        }
+        .onChange(of: viewModel.selectedLibraryID) {
+           navigateToWaitingSearch()
+        }
         .onAppear {
             ShelfPlayer.initOnlineUIHook()
         }
+    }
+    
+    func navigateToWaitingItemID() {
+        guard let libraryID = viewModel.tabValue?.libraryID, let navigateToWhenReady = viewModel.navigateToWhenReady else {
+            return
+        }
+        
+        guard viewModel.currentConnectionStatus[navigateToWhenReady.connectionID] == true else {
+            return
+        }
+        
+        guard libraryID == .convertItemIdentifierToLibraryIdentifier(navigateToWhenReady) else {
+            return
+        }
+        
+        viewModel.navigateToWhenReady = nil
+        RFNotification[._navigate].send(payload: navigateToWhenReady)
+    }
+    func navigateToWaitingSearch() {
+        guard viewModel.selectedLibraryID != nil else {
+            return
+        }
+        
+        guard let (search, scope) = itemNavigationController.search else {
+            return
+        }
+        
+        viewModel.tabValue = .search
+    }
+}
+
+struct OptionalTabRouterEnvironmentKey: EnvironmentKey {
+    public static let defaultValue: TabRouterViewModel? = nil
+}
+
+extension EnvironmentValues {
+    var optionalTabRouter: TabRouterViewModel? {
+        get { self[OptionalTabRouterEnvironmentKey.self] }
+        set { self[OptionalTabRouterEnvironmentKey.self] = newValue }
     }
 }
 
 /*
 struct TabRouter: View {
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    
-    @Environment(Satellite.self) private var satellite
-    @Environment(ConnectionStore.self) private var connectionStore
-    @Environment(ProgressViewModel.self) private var progressViewModel
-    
-    @State private var viewModel = TabRouterViewModel()
-    
-    @AppStorage("io.rfk.shelfPlayer.tabCustomization")
-    private var customization: TabViewCustomization
-    
-    @Default(.customTabValues) private var customTabValues
-    @Default(.customTabsActive) private var customTabsActive
-    
-    var isSynchronized: Bool {
-        guard let selection = viewModel.tabValue else {
-            return false
-        }
-        
-        return progressViewModel.importedConnectionIDs.contains(selection.library.connectionID)
-    }
-    
-    private var isCompact: Bool {
-        horizontalSizeClass == .compact
-    }
-    private var searchTab: TabValue? {
-        viewModel.searchTab(for: viewModel.tabValue)
-    }
-    
-    @ViewBuilder
-    private func content(for tab: TabValue) -> some View {
-        if case .custom(let wrapped) = tab {
-            AnyView(erasing: content(for: wrapped))
-        } else {
-            NavigationStackWrapper(tab: tab) {
-                tab.content
-            }
-            .modifier(PlaybackTabContentModifier())
-        }
-    }
-    
     @ViewBuilder
     private func applyChangeEvents(_ content: () -> some View) -> some View {
         content()
             .onChange(of: viewModel.tabValue) {
                 viewModel.navigateIfRequired(withDelay: true, customTabValues: customTabValues, setCustomTabsActive: { customTabsActive = $0 })
             }
-            .onChange(of: viewModel.tabValue?.library.connectionID) {
-                RFNotification[.performBackgroundSessionSync].send(payload: viewModel.tabValue?.library.connectionID)
-            }
-            .onChange(of: customTabValues) {
-                if customTabValues.isEmpty {
-                    customTabsActive = false
-                }
-            }
     }
     @ViewBuilder
     private func applyReceiveEvents(_ content: () -> some View) -> some View {
         content()
-            .onReceive(RFNotification[.changeLibrary].publisher()) { (library: Library) in
-                viewModel.select(library)
-            }
             .onReceive(RFNotification[.setGlobalSearch].publisher()) { payload in
                 guard let library = viewModel.tabValue?.library, viewModel.tabValue != searchTab else {
                     return

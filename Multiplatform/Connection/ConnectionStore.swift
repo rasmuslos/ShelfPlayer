@@ -40,8 +40,6 @@ final class ConnectionStore {
             withAnimation {
                 didLoad = true
                 self.connections = connections
-                
-                RFNotification[.navigateConditionMet].send()
             }
         }
     }

@@ -11,7 +11,9 @@ import ShelfPlayback
 
 struct SearchPanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
     @Environment(TabRouterViewModel.self) private var tabRouterViewModel
+    @Environment(ItemNavigationController.self) private var itemNavigationController
     
     @State private var viewModel = SearchViewModel()
     
@@ -56,6 +58,14 @@ struct SearchPanel: View {
         .modifier(PlaybackSafeAreaPaddingModifier())
         .onChange(of: tabRouterViewModel.library, initial: true) {
             viewModel.library = tabRouterViewModel.library
+        }
+        .onChange(of: itemNavigationController.search?.0, initial: true) {
+            guard let (search, scope) = itemNavigationController.consume() else {
+                return
+            }
+            
+            viewModel.search = search
+            viewModel.scope = scope
         }
         .onReceive(RFNotification[.setGlobalSearch].publisher()) { search, scope in
             viewModel.scope = scope

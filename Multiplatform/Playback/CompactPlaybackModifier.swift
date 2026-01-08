@@ -12,9 +12,9 @@ struct CompactPlaybackModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     
-    @Environment(PlaybackViewModel.self) private var viewModel
-    @Environment(OfflineMode.self) private var offlineMode
     @Environment(Satellite.self) private var satellite
+    @Environment(OfflineMode.self) private var offlineMode
+    @Environment(PlaybackViewModel.self) private var viewModel
     
     private var nowPlayingCornerRadius: CGFloat {
         guard viewModel.isExpanded else {
@@ -114,9 +114,6 @@ struct CompactPlaybackModifier: ViewModifier {
                     }
                     .ignoresSafeArea()
                     .environment(\.playbackBottomSafeArea, geometryProxy.safeAreaInsets.bottom)
-//                    .onChange(of: satellite.tabValue) {
-//                        viewModel.resetAnimationCounts()
-//                    }
             }
         }
     }
