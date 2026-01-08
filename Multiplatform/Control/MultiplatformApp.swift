@@ -20,8 +20,14 @@ struct MultiplatformApp: App {
         
         ShelfPlayer.launchHook()
         
-        if ProcessInfo.processInfo.environment["RUN_CONVENIENCE_DOWNLOAD"] == "YES" {
-            Task {
+        let environment = ProcessInfo.processInfo.environment
+        
+        Task {
+            if let itemIDDescription = environment["NAVIGATE_TO_ITEM_IDENTIFIER"] {
+                await ItemIdentifier(itemIDDescription).navigate()
+            }
+            
+            if environment["RUN_CONVENIENCE_DOWNLOAD"] == "YES" {
                 await PersistenceManager.shared.convenienceDownload.scheduleAll()
             }
         }

@@ -10,14 +10,14 @@ final class TabRouterViewModel {
     var tabValue: TabValue? = nil {
         willSet {
             applyLibraryTitleFont(type: newValue?.libraryID?.type ?? .podcasts)
+            
+            if let library = newValue?.libraryID {
+                selectedLibraryID = library
+            }
         }
         didSet {
             if let tab = tabValue, tab.isEligibleForSaving {
                 Defaults[.lastTabValue] = tab
-            }
-            
-            if let library = tabValue?.libraryID {
-                selectedLibraryID = library
             }
         }
     }
@@ -40,7 +40,7 @@ final class TabRouterViewModel {
     
     // MARK: Helper
     
-    private var navigateToWhenReadyItem: ItemIdentifier?
+    var navigateToWhenReady: ItemIdentifier?
     
     init() {
         RFNotification[.invalidateTabs].subscribe { [weak self] in
@@ -107,6 +107,10 @@ final class TabRouterViewModel {
             }
         }
         
+        if !successMapped.reduce(true, { $0 && $1.value }) {
+            OfflineMode.shared.setEnabled(true)
+        }
+        
         let libraryTabMapped = results.values.flatMap { $0.map { ($0.id, $1.0, $1.1) } }
         
         tabBar = Dictionary(uniqueKeysWithValues: libraryTabMapped.map { ($0.0, $0.1) })
@@ -142,7 +146,23 @@ extension TabRouterViewModel {
     }
     
     func selectCompact(libraryID: LibraryIdentifier) {
-        selectFirstCompactTab(for: libraryID, allowPinned: false)
+        guard libraryLookup.keys.contains(libraryID) else {
+            logger.warning("Tried to select a library that doesn't exist: \(libraryID.id) \(libraryID.connectionID) \(libraryID.type.rawValue)")
+            return
+        }
+        
+        if case .search = tabValue {
+            selectedLibraryID = libraryID
+        } else {
+            selectFirstCompactTab(for: libraryID, allowPinned: false)
+        }
+    }
+    func selectFirstCompactTab(for library: LibraryIdentifier, allowPinned: Bool) {
+        if allowPinned, let pinnedTabValue = pinnedTabValues.compactMap({ $0 }).first(where: { $0.libraryID == library }) {
+            tabValue = pinnedTabValue
+        } else {
+            tabValue = tabBar.first { $0.key == library }?.value.first
+        }
     }
     
     func toggleCompactPinned() {
@@ -184,10 +204,19 @@ extension TabRouterViewModel {
         
         selectFirstCompactTab(for: first.id, allowPinned: true)
     }
+    
+    func navigate(to itemID: ItemIdentifier) {
+        self.navigateToWhenReady = itemID
+    }
 }
 
 private extension TabRouterViewModel {
     func restoreLastTabValue() -> Bool {
+        if let navigateToWhenReady {
+            selectFirstCompactTab(for: .convertItemIdentifierToLibraryIdentifier(navigateToWhenReady), allowPinned: true)
+            return true
+        }
+        
         guard let lastTabValue = Defaults[.lastTabValue] else {
             return false
         }
@@ -196,17 +225,12 @@ private extension TabRouterViewModel {
             guard libraries.contains(where: { $0.id == libraryID }) else {
                 return false
             }
+        } else {
+            selectedLibraryID = libraries.first?.id
         }
         
         tabValue = lastTabValue
         return true
-    }
-    func selectFirstCompactTab(for library: LibraryIdentifier, allowPinned: Bool) {
-        if allowPinned, let pinnedTabValue = pinnedTabValues.compactMap({ $0 }).first(where: { $0.libraryID == library }) {
-            tabValue = pinnedTabValue
-        } else {
-            tabValue = tabBar.first { $0.key == library }?.value.first
-        }
     }
 }
 

@@ -26,6 +26,8 @@ struct ContentView: View {
     @State private var connectionStore = ConnectionStore.shared
     @State private var playbackViewModel = PlaybackViewModel.shared
     
+    @State private var itemNavigationController = ItemNavigationController()
+    
     @ViewBuilder
     private func applyEnvironment<Content: View>(_ content: Content) -> some View {
         content
@@ -33,6 +35,7 @@ struct ContentView: View {
             .environment(connectionStore)
             .environment(satellite)
             .environment(playbackViewModel)
+            .environment(itemNavigationController)
             .environment(\.namespace, namespace)
     }
     

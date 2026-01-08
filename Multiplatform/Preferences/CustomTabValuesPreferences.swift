@@ -70,13 +70,6 @@ struct CustomTabValuesPreferences: View {
         .environment(\.editMode, .constant(.active))
         .navigationTitle("panel.home")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .destructiveAction) {
-                Button("action.reset", role: .destructive) {
-                    pinnedTabValues.removeAll()
-                }
-            }
-        }
         .animation(.smooth, value: pinnedTabValues)
     }
 }

@@ -156,6 +156,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
         // Update
         
         try await fetchConnections()
+        
+        await cycleOffline()
         await RFNotification[.connectionsChanged].send()
     }
     
@@ -177,6 +179,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
         ] as! [String: Any] as CFDictionary)
         
         try await fetchConnections()
+        
+        await cycleOffline()
         await RFNotification[.connectionsChanged].send()
     }
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) async throws {
@@ -215,6 +219,9 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
         
         try? await fetchConnections()
+        
+        await cycleOffline()
+        await RFNotification[.connectionsChanged].send()
     }
     
     // MARK: Utility
@@ -225,6 +232,11 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
         
         try await fetchConnections()
+    }
+    func cycleOffline() async {
+        await OfflineMode.shared.setEnabled(true)
+        try? await Task.sleep(for: .seconds(0.4))
+        await OfflineMode.shared.setEnabled(false)
     }
     
     func handleURLSessionChallenge(_ challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
