@@ -9,8 +9,9 @@ import SwiftUI
 import ShelfPlayback
 
 struct NavigationStackWrapper<Content: View>: View {
-    let tab: TabValue
+    @Environment(TabRouterViewModel.self) private var tabRouterViewModel
     
+    let tab: TabValue
     var content: () -> Content
     
     @State private var context: NavigationContext
@@ -46,17 +47,7 @@ struct NavigationStackWrapper<Content: View>: View {
                     }
                 }
                 .onReceive(RFNotification[._navigate].publisher()) {
-                    let libraryID: String?
-                    
-                    if case .audiobookHome(let library) = tab {
-                        libraryID = library.id
-                    } else if case .podcastHome(let library) = tab {
-                        libraryID = library.id
-                    } else {
-                        libraryID = nil
-                    }
-                    
-                    guard let libraryID, $0.libraryID == libraryID else {
+                    guard tab.libraryID == .convertItemIdentifierToLibraryIdentifier($0), tabRouterViewModel.tabValue == tab else {
                         return
                     }
                     

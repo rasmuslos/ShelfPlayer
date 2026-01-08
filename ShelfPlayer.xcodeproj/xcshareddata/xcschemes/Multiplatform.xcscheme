@@ -78,6 +78,11 @@
             value = "YES"
             isEnabled = "NO">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "NAVIGATE_TO_ITEM_IDENTIFIER"
+            value = "1::episode::66zqzmqvc1HcCUPw2owLgHPpxoj6ijGebO3WgrSVGow=::ab0960d7-2f03-413b-9892-12fb1040003e::ece6edf5-3767-4a43-990c-e52d5a8d40e4::8758bacf-3a27-40cf-a386-f11f94cd04e1"
+            isEnabled = "NO">
+         </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
