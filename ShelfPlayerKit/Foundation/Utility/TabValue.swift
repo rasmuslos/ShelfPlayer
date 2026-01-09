@@ -26,6 +26,8 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Seriali
     case playlists(LibraryIdentifier)
     case collection(ItemCollection, LibraryIdentifier)
     
+    case downloaded(LibraryIdentifier)
+    
     case custom(TabValue, String)
     
     case search
@@ -58,6 +60,9 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Seriali
                 "playlists_\(library.id)"
             case .collection(let collection, let library):
                 "collection_\(collection.id)_\(library.id)"
+                
+            case .downloaded(let libraryID):
+                "downloaded_\(libraryID.id)"
                 
             case .custom(let tabValue, _):
                 "custom_\(tabValue.id)"
@@ -96,6 +101,9 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Defaults.Seriali
                 library
             case .collection(_, let library):
                 library
+                
+            case .downloaded(let libraryID):
+                libraryID
                 
             case .custom(let tabValue, _):
                 tabValue.libraryID

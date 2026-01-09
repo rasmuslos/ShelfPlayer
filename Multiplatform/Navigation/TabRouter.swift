@@ -189,6 +189,8 @@ struct TabRouter: View {
 //            }
 //            .hidden(isCompact)
         }
+        .tabViewStyle(.sidebarAdaptable)
+        .tabViewCustomization($customization)
         .modify {
             if #available(iOS 26, *) {
                 $0
@@ -265,11 +267,7 @@ struct TabRouter: View {
         RFNotification[._navigate].send(payload: navigateToWhenReady)
     }
     func navigateToWaitingSearch() {
-        guard viewModel.selectedLibraryID != nil else {
-            return
-        }
-        
-        guard let (search, scope) = itemNavigationController.search else {
+        guard viewModel.selectedLibraryID != nil, itemNavigationController.search != nil else {
             return
         }
         
@@ -289,52 +287,11 @@ extension EnvironmentValues {
 }
 
 /*
-struct TabRouter: View {
-    @ViewBuilder
-    private func applyChangeEvents(_ content: () -> some View) -> some View {
-        content()
-            .onChange(of: viewModel.tabValue) {
-                viewModel.navigateIfRequired(withDelay: true, customTabValues: customTabValues, setCustomTabsActive: { customTabsActive = $0 })
-            }
-    }
-    @ViewBuilder
-    private func applyReceiveEvents(_ content: () -> some View) -> some View {
-        content()
-            .onReceive(RFNotification[.setGlobalSearch].publisher()) { payload in
-                guard let library = viewModel.tabValue?.library, viewModel.tabValue != searchTab else {
-                    return
-                }
-                
-                viewModel.tabValue = .search(library)
-                
-                Task {
-                    try await Task.sleep(for: .seconds(0.6))
-                    RFNotification[.setGlobalSearch].dispatch(payload: payload)
-                }
-            }
-            .onReceive(RFNotification[.navigate].publisher()) { (id: ItemIdentifier) in
-                viewModel.navigateToWhenReady = id
-                viewModel.navigateIfRequired(withDelay: false, customTabValues: customTabValues, setCustomTabsActive: { customTabsActive = $0 })
-            }
-            .onReceive(RFNotification[.navigateConditionMet].publisher()) { _ in
-                viewModel.navigateIfRequired(withDelay: true, customTabValues: customTabValues, setCustomTabsActive: { customTabsActive = $0 })
-            }
-    }
-    @ViewBuilder
-    
+
     var body: some View {
         applyEvents {
             ZStack {
-                if isCompact, !isSynchronized, let tabValue = viewModel.tabValue {
-                    SyncGate(library: tabValue.library)
-                } else if let tabValue = viewModel.tabValue {
-                    if isCompact, viewModel.libraryCompactTabs[tabValue.library] == nil {
-                        LoadingView()
-                            .modifier(OfflineControlsModifier(startOfflineTimeout: true))
-                            .task {
-                                await viewModel.configureTabsIfNeeded(for: tabValue.library)
-                            }
-                    } else {
+                
                             ForEach(connectionStore.connections) { connection in
                                 if let libraries = connectionStore.libraries[connection.id] {
                                     ForEach(libraries) { library in
@@ -357,7 +314,6 @@ struct TabRouter: View {
                             }
                             
                         }
-                        .tabViewStyle(.sidebarAdaptable)
                         .tabViewSidebarFooter {
                             Divider()
                                 .padding(.bottom, 12)
@@ -377,7 +333,6 @@ struct TabRouter: View {
                             .labelStyle(.iconOnly)
                             .foregroundStyle(.primary)
                         }
-                        .tabViewCustomization($customization)
                         .tabViewSidebarHeader {
                             Button {
                                 satellite.present(.listenNow)
@@ -386,13 +341,9 @@ struct TabRouter: View {
                             }
                             .buttonStyle(.plain)
                         }
-                        .onAppear {
-                            viewModel.navigateIfRequired(withDelay: true, customTabValues: customTabValues, setCustomTabsActive: { customTabsActive = $0 })
-                        }
                     }
- }
+                }
             }
-            .sensoryFeedback(.error, trigger: progressViewModel.importFailedConnectionIDs)
         }
     }
 }
