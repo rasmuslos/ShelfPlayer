@@ -20,15 +20,11 @@ struct AudiobookBookmarksPanel: View {
             } else {
                 List {
                     ForEach(Array(items), id: \.key) { (item, amount) in
-                        NavigationLink(value: NavigationDestination.item(item)) {
-                            HStack(spacing: 8) {
-                                ItemCompactRow(item: item, context: .bookmark)
-                                Text(amount, format: .number)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .contentShape(.rect)
+                        AudiobookList.Row(audiobook: item) {
+                            Text(amount, format: .number)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
-                        .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
                     }
                     
                 }
