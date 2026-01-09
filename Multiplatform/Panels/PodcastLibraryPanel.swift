@@ -8,99 +8,135 @@
 import SwiftUI
 import ShelfPlayback
 
-@MainActor
-@Observable
-private final class PodcastLibraryViewModel {
-    var library: Library? {
-        didSet {
-            if library != nil {
-                Task {
-                    await loadTabs()
-                }
-            }
-        }
-    }
-    var tabs: [TabValue] = []
-    
-    func loadTabs() async {
-        guard let library else {
-            tabs = []
-            return
-        }
-        let tabs = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
-        self.tabs = tabs
-    }
-}
-
 struct PodcastLibraryPanel: View {
-    @Environment(\.library) private var library
+    @Environment(\.defaultMinListRowHeight) private var defaultMinListRowHeight
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.library) private var library
+    
+    @Environment(Satellite.self) private var satellite
 
     @Default(.podcastsAscending) private var podcastsAscending
     @Default(.podcastsSortOrder) private var podcastsSortOrder
     @Default(.podcastsDisplayType) private var podcastsDisplayType
-    
-    @State private var lazyLoader = LazyLoadHelper<Podcast, String>.podcasts
-    @State private var viewModel = PodcastLibraryViewModel()
-    
+
+    @State private var id = UUID()
+    @State private var tabs = [TabValue]()
+    @State private var lazyLoader = LazyLoadHelper<Podcast, PodcastSortOrder>.podcasts
+
     private var showPlaceholders: Bool {
         !lazyLoader.didLoad
     }
-    
+    private var isLoading: Bool {
+        lazyLoader.working && !lazyLoader.failed
+    }
+
+    private var libraryRowCount: CGFloat {
+        horizontalSizeClass == .compact && library != nil
+        ? (tabs.isEmpty ? 0 : CGFloat(tabs.count))
+        : 0
+    }
+
+    @ViewBuilder
     private var libraryRows: some View {
-        ForEach(viewModel.tabs, id: \.self) { tab in
-            NavigationLink(value: NavigationDestination.tabValue(tab)) {
-                Label(tab.label, systemImage: tab.image)
-                    .foregroundStyle(.primary)
+        if horizontalSizeClass == .compact {
+            if !tabs.isEmpty {
+                ForEach(Array(tabs.enumerated()), id: \.element) { (index, row) in
+                    NavigationLink(value: NavigationDestination.tabValue(row)) {
+                        Label(row.label, systemImage: row.image)
+                            .foregroundStyle(.primary)
+                    }
+                    .listRowSeparator(index == 0 ? .hidden : .automatic, edges: .top)
+                }
             }
         }
     }
-    
-    var body: some View {
+
+    @ViewBuilder
+    private var libraryRowsList: some View {
+        List {
+            libraryRows
+        }
+        .frame(height: defaultMinListRowHeight * libraryRowCount)
+    }
+
+    @ViewBuilder
+    private var listPresentation: some View {
+        List {
+            libraryRows
+
+            PodcastList(podcasts: lazyLoader.items) {
+                lazyLoader.performLoadIfRequired($0)
+            }
+        }
+        .id(id)
+        .listStyle(.plain)
+    }
+
+    @ViewBuilder
+    private var gridPresentation: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                if horizontalSizeClass == .compact && !viewModel.tabs.isEmpty {
-                    libraryRows
-                        .padding(.horizontal, 20)
+            libraryRowsList
+
+            PodcastVGrid(podcasts: lazyLoader.items) {
+                lazyLoader.performLoadIfRequired($0)
+            }
+            .id(id)
+            .padding(.horizontal, 20)
+        }
+    }
+
+    var body: some View {
+        Group {
+            if showPlaceholders {
+                ScrollView {
+                    ZStack {
+                        Spacer()
+                            .containerRelativeFrame([.horizontal, .vertical])
+
+                        VStack(spacing: 0) {
+                            libraryRowsList
+                                .frame(alignment: .top)
+
+                            Group {
+                                if isLoading {
+                                    LoadingView.Inner()
+                                } else if lazyLoader.failed {
+                                    ErrorViewInner()
+                                } else {
+                                    EmptyCollectionView.Inner()
+                                }
+                            }
+                            .frame(alignment: .center)
+                        }
+                    }
                 }
-                
-                if showPlaceholders {
-                    VStack(spacing: 0) {
-                        if lazyLoader.failed {
-                            ErrorView()
-                        } else if lazyLoader.working {
-                            LoadingView()
-                        } else {
-                            EmptyCollectionView()
-                        }
-                    }
-                } else {
-                    switch podcastsDisplayType {
+            } else {
+                switch podcastsDisplayType {
                     case .grid:
-                        PodcastVGrid(podcasts: lazyLoader.items) {
-                            lazyLoader.performLoadIfRequired($0)
-                        }
-                        .padding(.horizontal, 20)
+                        gridPresentation
                     case .list:
-                        PodcastList(podcasts: lazyLoader.items) {
-                            lazyLoader.performLoadIfRequired($0)
-                        }
-                        .padding(.horizontal, 0)
-                    }
+                        listPresentation
                 }
             }
         }
-        .refreshable {
-            lazyLoader.refresh()
-        }
+        .listStyle(.plain)
         .navigationTitle("panel.library")
         .largeTitleDisplayMode()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: "ellipsis") {
                     ItemDisplayTypePicker(displayType: $podcastsDisplayType)
+                    
                     Section("item.sort") {
                         ItemSortOrderPicker(sortOrder: $podcastsSortOrder, ascending: $podcastsAscending)
+                    }
+                    
+                    if let library {
+                        Divider()
+                        
+                        Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                            satellite.present(.customizeLibrary(library, .library))
+                        }
                     }
                 }
                 .menuActionDismissBehavior(.disabled)
@@ -113,14 +149,34 @@ struct PodcastLibraryPanel: View {
         .onChange(of: podcastsSortOrder) {
             lazyLoader.sortOrder = podcastsSortOrder
         }
+        .refreshable {
+            lazyLoader.refresh()
+            loadTabs()
+        }
         .onAppear {
             lazyLoader.library = library
             lazyLoader.initialLoad()
-            viewModel.library = library
+            loadTabs()
         }
         .onReceive(RFNotification[.invalidateTabs].publisher()) { _ in
-            Task {
-                await viewModel.loadTabs()
+            loadTabs()
+        }
+    }
+}
+
+private extension PodcastLibraryPanel {
+    func loadTabs() {
+        Task {
+            guard let library else {
+                await MainActor.withAnimation {
+                    tabs = []
+                }
+                return
+            }
+
+            let configured = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
+            await MainActor.withAnimation {
+                tabs = configured
             }
         }
     }

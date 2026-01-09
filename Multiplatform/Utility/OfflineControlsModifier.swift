@@ -27,7 +27,7 @@ struct OfflineControlsModifier: ViewModifier {
                         } label: {
                             Text("navigation.sync.failed.offline")
                             + Text(verbatim: " ")
-                            + Text(.now.advanced(by: 6), style: .relative)
+                            + Text(.now.advanced(by: 8), style: .relative)
                         }
                         .opacity(offlineTimeout == nil ? 0 : 1)
                     }
@@ -54,7 +54,7 @@ struct OfflineControlsModifier: ViewModifier {
                 if startOfflineTimeout {
                     offlineTimeout = .init {
                         do {
-                            try await Task.sleep(for: .seconds(5))
+                            try await Task.sleep(for: .seconds(7))
                             try Task.checkCancellation()
                             
                             OfflineMode.shared.setEnabled(true)
