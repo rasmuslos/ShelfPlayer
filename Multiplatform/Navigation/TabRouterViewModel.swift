@@ -71,7 +71,7 @@ final class TabRouterViewModel {
             for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                 group.addTask {
                     do {
-                        let libraries = try await ABSClient[connectionID].libraries().sorted()
+                        let libraries = try await ABSClient[connectionID].libraries()
                         var results = [Library: ([TabValue], [TabValue])]()
                         
                         for library in libraries {
@@ -116,7 +116,9 @@ final class TabRouterViewModel {
         tabBar = Dictionary(uniqueKeysWithValues: libraryTabMapped.map { ($0.0, $0.1) })
         sideBar = Dictionary(uniqueKeysWithValues: libraryTabMapped.map { ($0, $2) })
         
-        let libraries = results.values.flatMap(\.keys)
+        let libraries = results.values.flatMap(\.keys).sorted {
+            $0.name < $1.name
+        }
         
         connectionLibraries = Dictionary(grouping: libraries, by: \.id.connectionID)
         libraryLookup = Dictionary(uniqueKeysWithValues: libraries.map { ($0.id, $0) })
