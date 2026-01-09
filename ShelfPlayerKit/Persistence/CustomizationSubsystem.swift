@@ -37,12 +37,19 @@ extension PersistenceManager.CustomizationSubsystem {
                         availableTabs(for: library, scope: scope)
                 }
             case .podcasts:
-                [
-                    .podcastHome(library),
-                    .podcastLatest(library),
-                    .playlists(library),
-                    .podcastLibrary(library),
-                ]
+                switch scope {
+                    case .tabBar, .sidebar:
+                        [
+                            .podcastHome(library),
+                            .podcastLatest(library),
+                            .podcastLibrary(library),
+                        ]
+                    case .library:
+                        [
+                            .podcastLatest(library),
+                            .playlists(library),
+                        ]
+                }
         }
     }
 }
@@ -82,13 +89,22 @@ public extension PersistenceManager.CustomizationSubsystem {
                         defaultTabs(for: library, scope: .library)
                 }
             case .podcasts:
-                [
-                    .podcastHome(library),
-                    .podcastLatest(library),
-                    .playlists(library),
-                    .downloaded(library),
-                    .podcastLibrary(library),
-                ]
+                switch scope {
+                    case .tabBar, .sidebar:
+                        [
+                            .podcastHome(library),
+                            .podcastLatest(library),
+                            .playlists(library),
+                            .downloaded(library),
+                            .podcastLibrary(library),
+                        ]
+                    case .library:
+                        [
+                            .podcastLatest(library),
+                            .playlists(library),
+                            .downloaded(library),
+                        ]
+                }
         }
     }
     
