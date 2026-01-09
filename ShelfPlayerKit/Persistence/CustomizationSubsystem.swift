@@ -61,6 +61,7 @@ public extension PersistenceManager.CustomizationSubsystem {
                             .audiobookBookmarks(library),
                             .audiobookCollections(library),
                             .playlists(library),
+                            .downloaded(library),
                             .audiobookLibrary(library),
                         ]
                         
@@ -73,6 +74,7 @@ public extension PersistenceManager.CustomizationSubsystem {
                             .audiobookBookmarks(library),
                             .audiobookCollections(library),
                             .playlists(library),
+                            .downloaded(library),
                             .audiobookLibrary(library),
                         ]
                         
@@ -84,6 +86,7 @@ public extension PersistenceManager.CustomizationSubsystem {
                     .podcastHome(library),
                     .podcastLatest(library),
                     .playlists(library),
+                    .downloaded(library),
                     .podcastLibrary(library),
                 ]
         }

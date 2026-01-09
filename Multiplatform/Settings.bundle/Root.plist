@@ -48,6 +48,16 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Replace volume with total progress</string>
+			<key>Key</key>
+			<string>replaceVolumeWithTotalProgress</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Home</string>
@@ -261,16 +271,6 @@
 			<string>Lock seek bar</string>
 			<key>Key</key>
 			<string>lockSeekBar</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Replace volume with total progress</string>
-			<key>Key</key>
-			<string>replaceVolumeWithTotalProgress</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>

@@ -190,7 +190,7 @@ final class PlaybackViewModel {
             }
             
             withAnimation(.easeOut(duration: 0.3)) {
-                nowPlayingShadowVisibleCount -= 1
+                nowPlayingShadowVisibleCount = 0
             }
             
             withAnimation(.easeIn(duration: ANIMATION_TIMING.1).delay(0.2)) {

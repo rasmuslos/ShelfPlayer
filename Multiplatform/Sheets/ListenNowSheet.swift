@@ -21,25 +21,6 @@ struct ListenNowSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                if !offlineMode.isEnabled {
-                    Section {
-                        Menu {
-                            ListenedTodayLabel.AdjustMenuInner()
-                        } label: {
-                            HStack(spacing: 12) {
-                                ListenedTodayListRow()
-                                
-                                Image(systemName: "pencil")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        .menuActionDismissBehavior(.disabled)
-                        .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
-                    }
-                }
-                
                 if listenNowItems.isEmpty {
                     if isLoading {
                         LoadingView.Inner()
@@ -47,7 +28,7 @@ struct ListenNowSheet: View {
                         EmptyCollectionView.Inner()
                     }
                 } else {
-                    Section("panel.listenNow") {
+                    Section {
                         ForEach(listenNowItems) { item in
                             Button {
                                 satellite.start(item.id)

@@ -72,6 +72,7 @@ private struct Title: View {
             if let subtitle = viewModel.audiobook.subtitle {
                 Text(subtitle)
                     .font(.caption)
+                    .multilineTextAlignment(alignment.textAlignment)
             }
             
             Group {

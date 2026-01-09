@@ -44,6 +44,9 @@ extension TabValue {
             case .collection(let collection, _):
                 collection.name
                 
+            case .downloaded:
+                String(localized: "item.downloaded")
+                
             case .loading:
                 ""
         }
@@ -82,6 +85,9 @@ extension TabValue {
                 tabValue.image
             case .collection:
                 ItemIdentifier.ItemType.collection.icon
+                
+            case .downloaded:
+                "arrow.down"
                 
             case .loading:
                 "teddybear.fill"
