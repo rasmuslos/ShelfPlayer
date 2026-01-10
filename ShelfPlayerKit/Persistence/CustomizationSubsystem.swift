@@ -32,6 +32,7 @@ extension PersistenceManager.CustomizationSubsystem {
                             .audiobookBookmarks(library),
                             .audiobookCollections(library),
                             .playlists(library),
+                            .downloaded(library),
                         ]
                     case .sidebar:
                         availableTabs(for: library, scope: scope)
@@ -48,6 +49,7 @@ extension PersistenceManager.CustomizationSubsystem {
                         [
                             .podcastLatest(library),
                             .playlists(library),
+                            .downloaded(library),
                         ]
                 }
         }

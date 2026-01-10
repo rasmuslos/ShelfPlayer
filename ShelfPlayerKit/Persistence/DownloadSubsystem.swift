@@ -534,7 +534,7 @@ public extension PersistenceManager.DownloadSubsystem {
         return try modelContext.fetch(FetchDescriptor<PersistedAudiobook>()).map(Audiobook.init)
     }
     func audiobooks(in libraryID: String) throws -> [Audiobook] {
-        return try modelContext.fetch(FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
+        try modelContext.fetch(FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
             $0._id.contains(libraryID)
         })).filter { $0.id.libraryID == libraryID }.map(Audiobook.init)
     }
@@ -552,6 +552,11 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         return podcast.episodes.map(Episode.init)
+    }
+    func episodes(in libraryID: ItemIdentifier.LibraryID) throws -> [Episode] {
+        try modelContext.fetch(FetchDescriptor<PersistedEpisode>(predicate: #Predicate {
+            $0._id.contains(libraryID)
+        })).filter { $0.id.libraryID == libraryID }.map(Episode.init)
     }
     
     func podcasts() throws -> [Podcast] {
