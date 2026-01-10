@@ -54,6 +54,27 @@ struct EpisodeList: View {
         }
     }
     
+    struct Row: View {
+        @Environment(\.namespace) private var namespace
+        
+        let episode: Episode
+        let context: EpisodeList.PresentationContext
+        
+        @State private var zoomID = UUID()
+        
+        var body: some View {
+            NavigationLink(value: NavigationDestination.item(episode, context == .grid ? zoomID : nil)) {
+                RowLabel(episode: episode, context: context, zoomID: zoomID)
+                    .matchedTransitionSource(id: zoomID, in: namespace!)
+                    .padding(8)
+                    .universalContentShape(.rect(cornerRadius: 8))
+            }
+            .buttonStyle(.plain)
+            .modifier(ItemStatusModifier(item: episode, hoverEffect: context.hoverEffect))
+            .padding(-8)
+        }
+    }
+    
     enum PresentationContext {
         case latest
         case podcast
@@ -63,26 +84,6 @@ struct EpisodeList: View {
     }
 }
 
-private struct Row: View {
-    @Environment(\.namespace) private var namespace
-    
-    let episode: Episode
-    let context: EpisodeList.PresentationContext
-    
-    @State private var zoomID = UUID()
-    
-    var body: some View {
-        NavigationLink(value: NavigationDestination.item(episode, context == .grid ? zoomID : nil)) {
-            RowLabel(episode: episode, context: context, zoomID: zoomID)
-                .matchedTransitionSource(id: zoomID, in: namespace!)
-                .padding(8)
-                .universalContentShape(.rect(cornerRadius: 8))
-        }
-        .buttonStyle(.plain)
-        .modifier(ItemStatusModifier(item: episode, hoverEffect: context.hoverEffect))
-        .padding(-8)
-    }
-}
 private struct RowLabel: View {
     @Environment(\.displayContext) private var displayContext
     @Environment(Satellite.self) private var satellite
