@@ -36,6 +36,8 @@ struct AudiobookAuthorsPanel: View {
                     PersonList(people: lazyLoader.items, showImage: true) {
                         lazyLoader.performLoadIfRequired($0)
                     }
+                    
+                    PanelItemCountLabel(total: lazyLoader.totalCount, type: .author, isLoading: lazyLoader.isLoading)
                 }
                 .listStyle(.plain)
                 .refreshable {
@@ -77,3 +79,4 @@ struct AudiobookAuthorsPanel: View {
     }
     #endif
 }
+

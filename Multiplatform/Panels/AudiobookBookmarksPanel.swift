@@ -27,6 +27,8 @@ struct AudiobookBookmarksPanel: View {
                         }
                     }
                     
+                    PanelItemCountLabel(total: items.count, type: .audiobook)
+                    
                 }
                 .listStyle(.plain)
             }
@@ -80,3 +82,4 @@ struct AudiobookBookmarksPanel: View {
     .previewEnvironment()
 }
 #endif
+

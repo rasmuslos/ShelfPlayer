@@ -57,6 +57,8 @@ struct AudiobookLibraryPanel: View {
             AudiobookList(sections: viewModel.lazyLoader.items) {
                 viewModel.lazyLoader.performLoadIfRequired($0)
             }
+            
+            PanelItemCountLabel(total: viewModel.lazyLoader.totalCount, type: .none, isLoading: viewModel.lazyLoader.isLoading)
         }
         .id(id)
     }
@@ -70,6 +72,8 @@ struct AudiobookLibraryPanel: View {
             }
             .id(id)
             .padding(.horizontal, 20)
+            
+            PanelItemCountLabel(total: viewModel.lazyLoader.totalCount, type: .none, isLoading: viewModel.lazyLoader.isLoading)
         }
     }
     

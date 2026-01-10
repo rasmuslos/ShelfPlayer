@@ -16,6 +16,8 @@ struct AudiobookNarratorsPanel: View {
     
     @State private var lazyLoader = LazyLoadHelper<Person, NarratorSortOrder>.narrators
     
+    private var isLoading: Bool { lazyLoader.working && !lazyLoader.failed }
+    
     var body: some View {
         Group {
             if lazyLoader.items.isEmpty {
@@ -36,6 +38,9 @@ struct AudiobookNarratorsPanel: View {
                     PersonList(people: lazyLoader.items, showImage: false) {
                         lazyLoader.performLoadIfRequired($0)
                     }
+                    
+                    PanelItemCountLabel(total: lazyLoader.totalCount, type: .narrator, isLoading: isLoading)
+                    
                 }
                 .listStyle(.plain)
                 .refreshable {
@@ -77,3 +82,4 @@ struct AudiobookNarratorsPanel: View {
     }
     #endif
 }
+

@@ -180,6 +180,8 @@
 		3AC41F992CC53E49009ABBFA /* CarPlayChaptersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */; };
 		3AC5F63C2DFCD82B0080649A /* ItemShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */; };
 		3AC6A6162F12392D00F4C02A /* DownloadedPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */; };
+		3AC6A6182F123D7600F4C02A /* PanelItemCountLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6172F123D7600F4C02A /* PanelItemCountLabel.swift */; };
+		3AC6A61D2F1243BA00F4C02A /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC6A61C2F1243BA00F4C02A /* SocketIO */; };
 		3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC9A8D62DEC713A004BC123 /* SwiftSoup */; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
 		3ACB8D042DDCA124005336C0 /* AudiobookBookmarksPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */; };
@@ -495,6 +497,7 @@
 		3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayChaptersController.swift; sourceTree = "<group>"; };
 		3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShareButton.swift; sourceTree = "<group>"; };
 		3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedPanel.swift; sourceTree = "<group>"; };
+		3AC6A6172F123D7600F4C02A /* PanelItemCountLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelItemCountLabel.swift; sourceTree = "<group>"; };
 		3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGrid.swift; sourceTree = "<group>"; };
 		3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookBookmarksPanel.swift; sourceTree = "<group>"; };
@@ -603,6 +606,7 @@
 				3A6EECFD2DEC6DB20000CAF2 /* DefaultsMacros in Frameworks */,
 				3A6EECFB2DEC6DB20000CAF2 /* Defaults in Frameworks */,
 				3A6EECF92DEC6DAE0000CAF2 /* RFKit in Frameworks */,
+				3AC6A61D2F1243BA00F4C02A /* SocketIO in Frameworks */,
 				3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -732,6 +736,7 @@
 				3ABCC7E32AD46655004AEADF /* HeroBackground.swift */,
 				3AB5DC582C94275B001587D7 /* LazyLoadHelper.swift */,
 				3A1CCD742DE343A800B2EAA9 /* ListenedTodayLabel.swift */,
+				3AC6A6172F123D7600F4C02A /* PanelItemCountLabel.swift */,
 				3A33CD2F2E59B9F700BAB3AB /* OutdatedServerRow.swift */,
 			);
 			path = Utility;
@@ -1205,6 +1210,7 @@
 				3A6EECFA2DEC6DB20000CAF2 /* Defaults */,
 				3A6EECFC2DEC6DB20000CAF2 /* DefaultsMacros */,
 				3AC9A8D62DEC713A004BC123 /* SwiftSoup */,
+				3AC6A61C2F1243BA00F4C02A /* SocketIO */,
 			);
 			productName = ShelfPlayerKit;
 			productReference = 3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */;
@@ -1285,6 +1291,7 @@
 				3AB266072DEC617400F69B03 /* XCRemoteSwiftPackageReference "RFKit" */,
 				3AB2660A2DEC619800F69B03 /* XCRemoteSwiftPackageReference "Defaults" */,
 				3AC9A8D52DEC713A004BC123 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+				3AC6A61B2F1243BA00F4C02A /* XCRemoteSwiftPackageReference "socket" */,
 			);
 			productRefGroup = 3A0AE6972AB623F400ACCD68;
 			projectDirPath = "";
@@ -1434,6 +1441,7 @@
 				3AFFE79C2E7A8060003E6B94 /* TabValuePreferences.swift in Sources */,
 				3AAFA5AC2D6D00B2002457C3 /* ProgressTracker.swift in Sources */,
 				3A3129A12D24140F00D143B4 /* WelcomeView.swift in Sources */,
+				3AC6A6182F123D7600F4C02A /* PanelItemCountLabel.swift in Sources */,
 				3A743CFA2D70CC8D0007C6B3 /* PlaybackRateEditor.swift in Sources */,
 				3AE31DCE2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift in Sources */,
 				3A00E9742F0043AE00CE7462 /* EpisodeView+Footer.swift in Sources */,
@@ -2228,6 +2236,14 @@
 				minimumVersion = 9.0.3;
 			};
 		};
+		3AC6A61B2F1243BA00F4C02A /* XCRemoteSwiftPackageReference "socket" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		3AC9A8D52DEC713A004BC123 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/scinfu/SwiftSoup";
@@ -2253,6 +2269,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3AB2660A2DEC619800F69B03 /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = DefaultsMacros;
+		};
+		3AC6A61C2F1243BA00F4C02A /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AC6A61B2F1243BA00F4C02A /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
 		};
 		3AC9A8D62DEC713A004BC123 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;
