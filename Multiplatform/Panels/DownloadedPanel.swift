@@ -30,6 +30,13 @@ struct DownloadedPanel: View {
                     ForEach(audiobooks) {
                         AudiobookList.Row(audiobook: $0)
                     }
+                    
+                    if !episodes.isEmpty {
+                        PanelItemCountLabel(total: episodes.count, type: .episode)
+                    }
+                    if !audiobooks.isEmpty {
+                        PanelItemCountLabel(total: audiobooks.count, type: .audiobook)
+                    }
                 }
                 .listStyle(.plain)
             }
