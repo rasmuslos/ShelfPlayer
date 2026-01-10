@@ -100,11 +100,13 @@ struct TabRouter: View {
             case .audiobookLibrary:
                 AudiobookLibraryPanel()
                 
+            case .collection(let collection, _):
+                CollectionView(collection)
             case .playlists:
                 CollectionsPanel(type: .playlist)
                 
-            case .collection(let collection, _):
-                CollectionView(collection)
+            case .downloaded:
+                DownloadedPanel()
                 
             case .custom(let tabValue, _):
                 AnyView(erasing: panel(for: tabValue))

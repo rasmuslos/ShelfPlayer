@@ -179,6 +179,7 @@
 		3AC41F972CC5372C009ABBFA /* CarPlayPodcastListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */; };
 		3AC41F992CC53E49009ABBFA /* CarPlayChaptersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */; };
 		3AC5F63C2DFCD82B0080649A /* ItemShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */; };
+		3AC6A6162F12392D00F4C02A /* DownloadedPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */; };
 		3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC9A8D62DEC713A004BC123 /* SwiftSoup */; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
 		3ACB8D042DDCA124005336C0 /* AudiobookBookmarksPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */; };
@@ -493,6 +494,7 @@
 		3AC41F962CC53723009ABBFA /* CarPlayPodcastListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPodcastListController.swift; sourceTree = "<group>"; };
 		3AC41F982CC53E40009ABBFA /* CarPlayChaptersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayChaptersController.swift; sourceTree = "<group>"; };
 		3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShareButton.swift; sourceTree = "<group>"; };
+		3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedPanel.swift; sourceTree = "<group>"; };
 		3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGrid.swift; sourceTree = "<group>"; };
 		3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookBookmarksPanel.swift; sourceTree = "<group>"; };
@@ -1029,17 +1031,18 @@
 		3ABC462F2D5A2F7F00E21956 /* Panels */ = {
 			isa = PBXGroup;
 			children = (
-				3A1405C72E93CAA8002E66AF /* SearchPanel.swift */,
-				3A14C1462E23BFD500D7A2D7 /* CollectionsPanel.swift */,
 				3AB8BBB62BD7B5EF0012023A /* AudiobookHomePanel.swift */,
 				3AB8BBB82BD7B66E0012023A /* AudiobookSeriesPanel.swift */,
-				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */,
 				3AE31DCD2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift */,
 				3AAEDD932DC66E5B0053A7AE /* AudiobookNarratorsPanel.swift */,
 				3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */,
+				3AB8BBBA2BD7B6AF0012023A /* AudiobookLibraryPanel.swift */,
 				3AB8BBBC2BD7B7290012023A /* PodcastHomePanel.swift */,
 				3AB8BBBE2BD7B76B0012023A /* PodcastLatestPanel.swift */,
 				3AB8BBC02BD7B7B30012023A /* PodcastLibraryPanel.swift */,
+				3A14C1462E23BFD500D7A2D7 /* CollectionsPanel.swift */,
+				3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */,
+				3A1405C72E93CAA8002E66AF /* SearchPanel.swift */,
 			);
 			path = Panels;
 			sourceTree = "<group>";
@@ -1449,6 +1452,7 @@
 				3A3D2D602F0BD0B2005DBD52 /* CompactLibraryPicker.swift in Sources */,
 				3AA954302AD2AE520031C20D /* EpisodePlayButton.swift in Sources */,
 				3A6370032EFC4CEE008BEC48 /* PodcastView+Footer.swift in Sources */,
+				3AC6A6162F12392D00F4C02A /* DownloadedPanel.swift in Sources */,
 				3A1CCD752DE343A800B2EAA9 /* ListenedTodayLabel.swift in Sources */,
 				3A94A9022E2FF5C2005EC605 /* ColorSchemePreference.swift in Sources */,
 				3A7264502E2F76DF00F3BCE1 /* CollectionMembershipEditorSheet.swift in Sources */,
