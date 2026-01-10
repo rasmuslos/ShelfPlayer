@@ -180,6 +180,7 @@ extension AudiobookList.Row where Content == EmptyView {
     NavigationStack {
         List {
             AudiobookList(sections: .init(repeating: .audiobook(audiobook: .fixture), count: 7)) { _ in }
+            PanelItemCountLabel(total: 7, type: .audiobook)
         }
         .listStyle(.plain)
     }

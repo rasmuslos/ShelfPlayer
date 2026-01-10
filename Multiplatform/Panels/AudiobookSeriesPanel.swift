@@ -41,12 +41,16 @@ struct AudiobookSeriesPanel: View {
                                 lazyLoader.performLoadIfRequired($0)
                             }
                             .padding(20)
+                            
+                            PanelItemCountLabel(total: lazyLoader.totalCount, type: .series, isLoading: lazyLoader.isLoading)
                         }
                     case .list:
                         List {
                             SeriesList(series: lazyLoader.items) {
                                 lazyLoader.performLoadIfRequired($0)
                             }
+                            
+                            PanelItemCountLabel(total: lazyLoader.totalCount, type: .series, isLoading: lazyLoader.isLoading)
                         }
                         .listStyle(.plain)
                     }

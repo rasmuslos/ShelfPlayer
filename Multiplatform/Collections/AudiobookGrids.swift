@@ -121,6 +121,7 @@ struct AudiobookHGrid: View {
     NavigationStack {
         ScrollView {
             AudiobookHGrid(audiobooks: .init(repeating: .fixture, count: 77), small: true)
+            PanelItemCountLabel(total: 7, type: .podcast)
         }
     }
     .previewEnvironment()
