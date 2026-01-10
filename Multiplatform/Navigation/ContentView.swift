@@ -68,6 +68,8 @@ struct ContentView: View {
                 CustomizeLibraryPanelSheet(library: library, scope: scope)
             case .whatsNew:
                 WhatsNewSheet()
+            case .debug:
+                DebugSheet()
         }
     }
     @ViewBuilder

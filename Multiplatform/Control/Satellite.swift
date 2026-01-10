@@ -92,6 +92,12 @@ final class Satellite {
             self?.present(.reauthorizeConnection($0))
         }
         
+        #if DEBUG
+        RFNotification[.shake].subscribe { [weak self] _ in
+            self?.present(.debug)
+        }
+        #endif
+        
         setupObservers()
         
         // MARK: What's New
@@ -165,6 +171,10 @@ extension Satellite {
         
         case whatsNew
         
+        #if DEBUG
+        case debug
+        #endif
+        
         var id: String {
             switch self {
                 case .listenNow:
@@ -193,6 +203,11 @@ extension Satellite {
                     
                 case .whatsNew:
                     "whatsNew"
+                    
+                #if DEBUG
+                case .debug:
+                    "debug"
+                #endif
             }
         }
     }

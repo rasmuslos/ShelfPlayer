@@ -29,6 +29,8 @@ public final class PersistenceManager: Sendable {
     public let listenNow: ListenNowSubsystem
     public let customization: CustomizationSubsystem
     
+    public let webSocket: WebSocketSubsystem
+    
     private init() {
         let schema = Schema(versionedSchema: SchemaV2.self)
         
@@ -61,6 +63,8 @@ public final class PersistenceManager: Sendable {
         
         listenNow = .init()
         customization = .init()
+        
+        webSocket = .init()
     }
     
     public func remove(itemID: ItemIdentifier) async {
