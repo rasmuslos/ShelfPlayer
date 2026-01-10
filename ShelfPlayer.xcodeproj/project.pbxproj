@@ -182,6 +182,7 @@
 		3AC6A6162F12392D00F4C02A /* DownloadedPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */; };
 		3AC6A6182F123D7600F4C02A /* PanelItemCountLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6172F123D7600F4C02A /* PanelItemCountLabel.swift */; };
 		3AC6A61D2F1243BA00F4C02A /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC6A61C2F1243BA00F4C02A /* SocketIO */; };
+		3AC6A6202F1256FC00F4C02A /* DebugSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A61F2F1256FC00F4C02A /* DebugSheet.swift */; };
 		3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC9A8D62DEC713A004BC123 /* SwiftSoup */; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
 		3ACB8D042DDCA124005336C0 /* AudiobookBookmarksPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */; };
@@ -498,6 +499,7 @@
 		3AC5F63B2DFCD82B0080649A /* ItemShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShareButton.swift; sourceTree = "<group>"; };
 		3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedPanel.swift; sourceTree = "<group>"; };
 		3AC6A6172F123D7600F4C02A /* PanelItemCountLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelItemCountLabel.swift; sourceTree = "<group>"; };
+		3AC6A61F2F1256FC00F4C02A /* DebugSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSheet.swift; sourceTree = "<group>"; };
 		3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGrid.swift; sourceTree = "<group>"; };
 		3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookBookmarksPanel.swift; sourceTree = "<group>"; };
@@ -903,6 +905,7 @@
 				3A45C8B92DCE3050004B48A1 /* GroupingConfigurationSheet.swift */,
 				3A6370002EFC2617008BEC48 /* CustomizeLibraryPanelSheet.swift */,
 				3AF36C2C2E02E4B9000B6CCF /* WhatsNewSheet.swift */,
+				3AC6A61F2F1256FC00F4C02A /* DebugSheet.swift */,
 			);
 			path = Sheets;
 			sourceTree = "<group>";
@@ -1443,6 +1446,7 @@
 				3A3129A12D24140F00D143B4 /* WelcomeView.swift in Sources */,
 				3AC6A6182F123D7600F4C02A /* PanelItemCountLabel.swift in Sources */,
 				3A743CFA2D70CC8D0007C6B3 /* PlaybackRateEditor.swift in Sources */,
+				3AC6A6202F1256FC00F4C02A /* DebugSheet.swift in Sources */,
 				3AE31DCE2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift in Sources */,
 				3A00E9742F0043AE00CE7462 /* EpisodeView+Footer.swift in Sources */,
 				3A7F84A52CAD1F4A00A51EEE /* UIWindow+Shake.swift in Sources */,
