@@ -33,6 +33,7 @@ struct EpisodeView: View {
             
             EpisodeDescription(episode: viewModel.episode)
                 .padding(.horizontal, 20)
+                .listRowSeparator(.hidden)
             
             Footer()
             
