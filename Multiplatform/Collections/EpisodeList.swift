@@ -65,6 +65,7 @@ struct EpisodeList: View {
         var body: some View {
             NavigationLink(value: NavigationDestination.item(episode, context == .grid ? zoomID : nil)) {
                 RowLabel(episode: episode, context: context, zoomID: zoomID)
+                    .contentShape(.rect)
                     .matchedTransitionSource(id: zoomID, in: namespace!)
                     .padding(8)
                     .universalContentShape(.rect(cornerRadius: 8))
