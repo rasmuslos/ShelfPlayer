@@ -143,6 +143,12 @@ private final class SocketConnection {
         socket.on("init") { [weak self] _, _ in
             self?.logger.info("Connection \(self?.connectionID ?? "<nil>") authorized")
         }
+        
+        RFNotification[.accessTokenExpired].subscribe { [weak self] _ in
+            Task {
+                await self?.authorize()
+            }
+        }
     }
     
     func authorize() async {

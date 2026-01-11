@@ -29,7 +29,7 @@ struct DebugSheet: View {
                 }
             }
             
-            Button("Reconnect sockets") {
+            Button(String("Reconnect sockets")) {
                 PersistenceManager.shared.webSocket.reconnect()
             }
         }
