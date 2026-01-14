@@ -54,6 +54,10 @@ struct TabRouter: View {
         offlineConnections.contains(id)
     }
     
+    var isAtLeastOneConnectionSynchronized: Bool {
+        viewModel.currentConnectionStatus.values.contains(true)
+    }
+    
     @ViewBuilder
     private func loadingView(startOfflineTimeout: Bool) -> some View {
         LoadingView()
@@ -247,7 +251,11 @@ struct TabRouter: View {
         .onChange(of: viewModel.selectedLibraryID) {
            navigateToWaitingSearch()
         }
-        .onAppear {
+        .onChange(of: isAtLeastOneConnectionSynchronized, initial: true) {
+            guard isAtLeastOneConnectionSynchronized else {
+                return
+            }
+            
             ShelfPlayer.initOnlineUIHook()
         }
     }

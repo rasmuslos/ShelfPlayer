@@ -34,14 +34,14 @@ struct OfflineControlsModifier: ViewModifier {
                     
                     Menu {
                         LibraryPicker()
-                            .onAppear {
-                                offlineTimeout?.cancel()
-                            }
                         
                         Divider()
                         
                         Button("navigation.offline.enable", systemImage: "network.slash") {
                             OfflineMode.shared.setEnabled(true)
+                        }
+                        .onAppear {
+                            offlineTimeout?.cancel()
                         }
                     } label: {
                         Text("navigation.library.select")

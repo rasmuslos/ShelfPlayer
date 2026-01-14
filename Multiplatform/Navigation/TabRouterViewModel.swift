@@ -3,7 +3,7 @@ import OSLog
 import ShelfPlayback
 
 @MainActor @Observable
-final class TabRouterViewModel {
+final class TabRouterViewModel: Sendable {
     private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "TabRouterViewModel")
     
     // MARK: TabValue
@@ -64,15 +64,21 @@ final class TabRouterViewModel {
             await loadLibraries()
         }
     }
-    func loadLibraries() async {
-        var results = [ItemIdentifier.ConnectionID: [Library: ([TabValue], [TabValue])]]()
-                       
-        await withTaskGroup { group in
+    nonisolated func loadLibraries() async {
+        var shouldContinue = true
+
+        logger.info("Loading online UI")
+        
+        let allConnectionsUnavailable = await withTaskGroup {
             for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
-                group.addTask {
+                logger.info("Loading connection: \(connectionID)")
+                
+                $0.addTask {
                     do {
                         let libraries = try await ABSClient[connectionID].libraries()
                         var results = [Library: ([TabValue], [TabValue])]()
+                        
+                        self.logger.info("Got libraries for connection: \(connectionID)")
                         
                         for library in libraries {
                             let (tabBar, sideBar) = (
@@ -83,45 +89,26 @@ final class TabRouterViewModel {
                             results[library] = (tabBar, sideBar)
                         }
                         
-                        return (connectionID, results)
+                        await self.synchronize(connectionID: connectionID)
+                        self.logger.info("Syncrhonized connection: \(connectionID)")
+                        
+                        await self.didLoad(connectionID: connectionID, libraries: results)
+                        return true
                     } catch {
-                        return (connectionID, [:])
+                        self.logger.info("Failed to load libraries for connection: \(connectionID)")
+                        
+                        await self.synchronizeFailed(connectionID: connectionID)
+                        return false
                     }
                 }
-                
-                for await (connectionID, result) in group {
-                    results[connectionID] = result
-                }
             }
+            
+            return await $0.reduce(true) { $0 && $1 }
         }
         
-        // i will go to hell for this
-        
-        let successMapped = results.mapValues { !$0.isEmpty }
-        
-        for (connectionID, isSuccessful) in successMapped {
-            if isSuccessful {
-                synchronize(connectionID: connectionID)
-            } else {
-                synchronizeFailed(connectionID: connectionID)
-            }
+        if allConnectionsUnavailable {
+            await OfflineMode.shared.setEnabled(true)
         }
-        
-        if !successMapped.reduce(true, { $0 && $1.value }) {
-            OfflineMode.shared.setEnabled(true)
-        }
-        
-        let libraryTabMapped = results.values.flatMap { $0.map { ($0.id, $1.0, $1.1) } }
-        
-        tabBar = Dictionary(uniqueKeysWithValues: libraryTabMapped.map { ($0.0, $0.1) })
-        sideBar = Dictionary(uniqueKeysWithValues: libraryTabMapped.map { ($0, $2) })
-        
-        let libraries = results.values.flatMap(\.keys).sorted {
-            $0.name < $1.name
-        }
-        
-        connectionLibraries = Dictionary(grouping: libraries, by: \.id.connectionID)
-        libraryLookup = Dictionary(uniqueKeysWithValues: libraries.map { ($0.id, $0) })
     }
 }
 
@@ -233,6 +220,20 @@ private extension TabRouterViewModel {
         
         tabValue = lastTabValue
         return true
+    }
+    
+    func didLoad(connectionID: ItemIdentifier.ConnectionID, libraries: [Library: ([TabValue], [TabValue])]) {
+        for (library, (tabBar, sideBar)) in libraries {
+            self.tabBar[library.id] = tabBar
+            self.sideBar[library.id] = sideBar
+        }
+        
+        let libraries = libraries.map(\.key)
+        
+        connectionLibraries[connectionID] = libraries.sorted { $0.name < $1.name }
+        libraryLookup.merge(libraries.map { ($0.id, $0) }) {
+            $1
+        }
     }
 }
 
