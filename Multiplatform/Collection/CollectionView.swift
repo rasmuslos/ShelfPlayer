@@ -60,7 +60,7 @@ struct CollectionView: View {
         }
         .id(viewModel.id)
         .navigationTitle(viewModel.collection.name)
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("action.edit", systemImage: "pencil") {

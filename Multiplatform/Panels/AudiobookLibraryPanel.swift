@@ -153,7 +153,7 @@ struct AudiobookLibraryPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
         .onChange(of: viewModel.filter) {
             viewModel.lazyLoader.filter = viewModel.filter
         }

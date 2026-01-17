@@ -114,7 +114,7 @@ struct GroupingConfigurationSheet: View {
                                 satellite.dismissSheet()
                             }
                         }
-                        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+                        .hapticFeedback(.error, trigger: viewModel.notifyError)
                     }
                 }
             }

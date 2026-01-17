@@ -69,7 +69,7 @@ struct ConnectionEditSheet: View {
                 }
             }
         }
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
     }
 }
 

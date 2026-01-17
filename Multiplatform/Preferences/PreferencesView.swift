@@ -70,6 +70,9 @@ struct PreferencesView: View {
                     ColorSchemePreference {
                         label($0, systemImage: $1, color: colorScheme == .dark ? .white : .black, lightIcon: colorScheme != .dark, largeIcon: true)
                     }
+                    HapticsPreference {
+                        label($0, systemImage: $1, color: .cyan)
+                    }
                 }
                 
                 Section {

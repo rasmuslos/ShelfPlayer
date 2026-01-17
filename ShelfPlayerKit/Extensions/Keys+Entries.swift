@@ -49,7 +49,8 @@ public extension Defaults.Keys {
     static let skipForwardsInterval = Key("skipForwardsInterval", default: 30)
     
     // Advanced
-    
+
+    static let enableHaptics = Key("enableHaptics", default: true)
     static let enableSerifFont = Key("enableSerifFont", default: true)
     static let showSingleEntryGroupedSeries = Key("showSingleEntryGroupedSeries", default: true)
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
