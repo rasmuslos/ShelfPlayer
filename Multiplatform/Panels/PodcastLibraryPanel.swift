@@ -140,7 +140,7 @@ struct PodcastLibraryPanel: View {
                     if let library {
                         Divider()
                         
-                        Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                        Button("action.customize", systemImage: "slider.horizontal.3") {
                             satellite.present(.customizeLibrary(library, .library))
                         }
                     }
