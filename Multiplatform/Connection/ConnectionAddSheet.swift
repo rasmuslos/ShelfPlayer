@@ -23,6 +23,7 @@ struct ConnectionAddSheet: View {
             Form {
                 Section {
                     TextField("connection.add.endpoint", text: $viewModel.endpoint)
+                        .keyboardType(.URL)
                         .textContentType(.URL)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
