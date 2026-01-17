@@ -83,7 +83,7 @@ struct SeriesView: View {
         }
         .navigationTitle(viewModel.series.name)
         .navigationBarTitleDisplayMode(.inline)
-        .sensoryFeedback(.error, trigger: viewModel.lazyLoader.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.lazyLoader.notifyError)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 ItemConfigureButton(itemID: viewModel.series.id)
