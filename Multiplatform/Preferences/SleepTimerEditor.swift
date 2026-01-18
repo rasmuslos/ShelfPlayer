@@ -13,6 +13,9 @@ struct SleepTimerEditor: View {
     @Default(.sleepTimerExtendInterval) private var sleepTimerExtendInterval
     @Default(.sleepTimerExtendChapterAmount) private var sleepTimerExtendChapterAmount
     @Default(.extendSleepTimerByPreviousSetting) private var extendSleepTimerByPreviousSetting
+
+    @Default(.extendSleepTimerOnPlay) private var extendSleepTimerOnPlay
+    @Default(.extendSleepTimerOnPlayWindow) private var extendSleepTimerOnPlayWindow
     
     @State private var hourOne: Int = 0
     @State private var minuteOne: Int = 0
@@ -95,8 +98,17 @@ struct SleepTimerEditor: View {
             }
             
             Section {
+                Toggle("sleepTimer.extendOnPlay", isOn: $extendSleepTimerOnPlay)
+
+                Stepper("sleepTimer.extendOnPlay.window \(extendSleepTimerOnPlayWindow)", value: $extendSleepTimerOnPlayWindow, in: 5...60, step: 5)
+                    .disabled(!extendSleepTimerOnPlay)
+            } footer: {
+                Text("sleepTimer.extendOnPlay.description")
+            }
+
+            Section {
                 Button("action.reset", role: .destructive) {
-                    Defaults.reset([.sleepTimerIntervals, .sleepTimerExtendInterval, .sleepTimerExtendChapterAmount])
+                    Defaults.reset([.sleepTimerIntervals, .sleepTimerExtendInterval, .sleepTimerExtendChapterAmount, .extendSleepTimerOnPlay, .extendSleepTimerOnPlayWindow])
                 }
             }
         }
