@@ -69,7 +69,7 @@ final class TabRouterViewModel: Sendable {
 
         logger.info("Loading online UI")
         
-        let allConnectionsUnavailable = await withTaskGroup {
+        let anyConnectionSucceeded = await withTaskGroup {
             for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                 logger.info("Loading connection: \(connectionID)")
                 
@@ -103,10 +103,10 @@ final class TabRouterViewModel: Sendable {
                 }
             }
             
-            return await $0.reduce(true) { $0 && $1 }
+            return await $0.reduce(false) { $0 || $1 }
         }
-        
-        if allConnectionsUnavailable {
+
+        if !anyConnectionSucceeded {
             await OfflineMode.shared.setEnabled(true)
         }
     }
