@@ -217,6 +217,8 @@
 		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
 		3AFFE7712E79333B003E6B94 /* CompactLegacyCollapsedForeground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFFE7702E79333B003E6B94 /* CompactLegacyCollapsedForeground.swift */; };
 		3AFFE79C2E7A8060003E6B94 /* TabValuePreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFFE79B2E7A803B003E6B94 /* TabValuePreferences.swift */; };
+		758D50862F1BFC43001DCE94 /* View+SensoryFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758D50852F1BFC43001DCE94 /* View+SensoryFeedback.swift */; };
+		758D50882F1BFC8F001DCE94 /* HapticsPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758D50872F1BFC8F001DCE94 /* HapticsPreference.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -543,6 +545,8 @@
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		3AFFE7702E79333B003E6B94 /* CompactLegacyCollapsedForeground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLegacyCollapsedForeground.swift; sourceTree = "<group>"; };
 		3AFFE79B2E7A803B003E6B94 /* TabValuePreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabValuePreferences.swift; sourceTree = "<group>"; };
+		758D50852F1BFC43001DCE94 /* View+SensoryFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+SensoryFeedback.swift"; sourceTree = "<group>"; };
+		758D50872F1BFC8F001DCE94 /* HapticsPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsPreference.swift; sourceTree = "<group>"; };
 		FA6717792CEA272A0037CB85 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = sv; path = sv.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -804,6 +808,7 @@
 		3A47D1842CB991720045C2BB /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				758D50852F1BFC43001DCE94 /* View+SensoryFeedback.swift */,
 				3A93AE412C7CB19700D2AE43 /* Color+IsLight.swift */,
 				3A2CA2892CC100CC0004BAAB /* View+Preview.swift */,
 				3A0E42EB2C8195810034873F /* Alignment+Text.swift */,
@@ -859,6 +864,7 @@
 		3A743CF82D70CC750007C6B3 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
+				758D50872F1BFC8F001DCE94 /* HapticsPreference.swift */,
 				3A738A192EACCE8400C8A210 /* LibraryEnumerator.swift */,
 				3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */,
 				3AC3FD642D79E8C200FA10DF /* SleepTimerEditor.swift */,
@@ -1484,6 +1490,7 @@
 				3ADD434E2CC318BD0060E043 /* CarPlayController.swift in Sources */,
 				3A6370012EFC2620008BEC48 /* CustomizeLibraryPanelSheet.swift in Sources */,
 				3A9825E32D4A2C2300A65826 /* ProgressResetButton.swift in Sources */,
+				758D50862F1BFC43001DCE94 /* View+SensoryFeedback.swift in Sources */,
 				3A9AB5382AD941DC0089231A /* PlayableItemSwipeActionsModifier.swift in Sources */,
 				3A77B6F82ACDDC9D00F22C7F /* AudiobookView+Header.swift in Sources */,
 				3ABCC7E42AD46655004AEADF /* HeroBackground.swift in Sources */,
@@ -1552,6 +1559,7 @@
 				3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */,
 				3A14C14C2E276AE700D7A2D7 /* CollectionViewModel.swift in Sources */,
 				3A93AE422C7CB19B00D2AE43 /* Color+IsLight.swift in Sources */,
+				758D50882F1BFC8F001DCE94 /* HapticsPreference.swift in Sources */,
 				3AE7005F2C7B1ED500D93BA8 /* MainActor+withAnimation.swift in Sources */,
 				3A17EB562E37581500AD6A18 /* CertificateEditor.swift in Sources */,
 				3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */,
@@ -1878,6 +1886,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = ShelfPlayer;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				DEVELOPMENT_ASSET_PATHS = "\"Multiplatform/Preview Assets.xcassets\"";
+				DEVELOPMENT_TEAM = 7G5LMDGR64;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_DEBUG_DYLIB = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
@@ -1994,6 +2003,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				DEVELOPMENT_TEAM = 7G5LMDGR64;
 				ENABLE_DEBUG_DYLIB = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WidgetsExtension/Info.plist;

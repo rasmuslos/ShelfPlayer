@@ -51,7 +51,7 @@ struct EpisodeView: View {
                 .navigationTransition(.zoom(sourceID: $1, in: namespace!))
         }
         .id(viewModel.id)
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
         .modifier(ToolbarModifier())
         .modifier(PlaybackSafeAreaPaddingModifier())
         .environment(viewModel)

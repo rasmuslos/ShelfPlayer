@@ -26,7 +26,7 @@ struct CreateLogArchiveButton: View {
             .fileExporter(isPresented: $isPresented, document: document, contentType: .zip) { _ in
                 document?.finalize()
             }
-            .sensoryFeedback(.error, trigger: notifyError)
+            .hapticFeedback(.error, trigger: notifyError)
         }
     }
     

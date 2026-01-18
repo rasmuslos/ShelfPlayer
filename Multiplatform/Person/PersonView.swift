@@ -169,9 +169,9 @@ struct PersonView: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
-        .sensoryFeedback(.error, trigger: viewModel.seriesLoader?.notifyError)
-        .sensoryFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.seriesLoader?.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.audiobooksLoader.notifyError)
         .environment(viewModel)
         .environment(\.displayContext, .person(viewModel.person))
         .onAppear {
