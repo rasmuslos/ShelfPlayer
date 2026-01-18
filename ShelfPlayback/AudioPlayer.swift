@@ -208,10 +208,12 @@ public extension AudioPlayer {
         
         if let (configuration, date) = sleepTimerDidExpireAt {
             let distance = date.distance(to: .now)
-            
-            if Defaults[.extendSleepTimerOnPlay], distance <= 10 {
+
+            if Defaults[.extendSleepTimerOnPlay], distance <= TimeInterval(Defaults[.extendSleepTimerOnPlayWindow]) {
                 await extendSleepTimer(configuration)
             }
+        } else if Defaults[.resetSleepTimerOnPlay], let activeTimer = await sleepTimer {
+            await setSleepTimer(activeTimer.reset)
         }
     }
     func pause() async {

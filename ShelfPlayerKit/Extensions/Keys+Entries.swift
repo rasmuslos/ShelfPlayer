@@ -44,7 +44,9 @@ public extension Defaults.Keys {
     static let sleepTimerFadeOut = Key("sleepTimerFadeOut", default: true)
     static let shakeExtendsSleepTimer = Key("shakeExtendsSleepTimer", default: false)
     static let extendSleepTimerOnPlay = Key("extendSleepTimerOnPlay", default: false)
-    
+    static let extendSleepTimerOnPlayWindow = Key("extendSleepTimerOnPlayWindow", default: 10)
+    static let resetSleepTimerOnPlay = Key("resetSleepTimerOnPlay", default: false)
+
     static let skipBackwardsInterval = Key("skipBackwardsInterval", default: 30)
     static let skipForwardsInterval = Key("skipForwardsInterval", default: 30)
     
