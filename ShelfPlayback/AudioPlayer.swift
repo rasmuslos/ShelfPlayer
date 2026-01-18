@@ -212,6 +212,8 @@ public extension AudioPlayer {
             if Defaults[.extendSleepTimerOnPlay], distance <= TimeInterval(Defaults[.extendSleepTimerOnPlayWindow]) {
                 await extendSleepTimer(configuration)
             }
+        } else if Defaults[.resetSleepTimerOnPlay], let activeTimer = await sleepTimer {
+            await setSleepTimer(activeTimer.reset)
         }
     }
     func pause() async {

@@ -16,6 +16,7 @@ struct SleepTimerEditor: View {
 
     @Default(.extendSleepTimerOnPlay) private var extendSleepTimerOnPlay
     @Default(.extendSleepTimerOnPlayWindow) private var extendSleepTimerOnPlayWindow
+    @Default(.resetSleepTimerOnPlay) private var resetSleepTimerOnPlay
     
     @State private var hourOne: Int = 0
     @State private var minuteOne: Int = 0
@@ -107,8 +108,14 @@ struct SleepTimerEditor: View {
             }
 
             Section {
+                Toggle("sleepTimer.resetOnPlay", isOn: $resetSleepTimerOnPlay)
+            } footer: {
+                Text("sleepTimer.resetOnPlay.description")
+            }
+
+            Section {
                 Button("action.reset", role: .destructive) {
-                    Defaults.reset([.sleepTimerIntervals, .sleepTimerExtendInterval, .sleepTimerExtendChapterAmount, .extendSleepTimerOnPlay, .extendSleepTimerOnPlayWindow])
+                    Defaults.reset([.sleepTimerIntervals, .sleepTimerExtendInterval, .sleepTimerExtendChapterAmount, .extendSleepTimerOnPlay, .extendSleepTimerOnPlayWindow, .resetSleepTimerOnPlay])
                 }
             }
         }

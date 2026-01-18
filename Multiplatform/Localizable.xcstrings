@@ -14709,6 +14709,98 @@
         }
       }
     },
+    "sleepTimer.resetOnPlay" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep-Timer bei Wiedergabe zurücksetzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset sleep timer on play"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser la minuterie à la lecture"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить таймер сна при воспроизведении"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Återställ insomningstimer vid uppspelning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути таймер сну при відтворенні"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放时重置睡眠定时器"
+          }
+        }
+      }
+    },
+    "sleepTimer.resetOnPlay.description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn aktiviert, wird der Sleep-Timer auf seinen ursprünglichen Wert zurückgesetzt, wenn Sie die Wiedergabe fortsetzen, bevor er abläuft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, the sleep timer will reset to its original duration when you resume playback before it expires."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque activé, la minuterie de sommeil sera réinitialisée à sa durée d'origine lorsque vous reprenez la lecture avant son expiration."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "При включении таймер сна будет сброшен до исходной продолжительности при возобновлении воспроизведения до его истечения."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "När aktiverat återställs insomningstimern till sin ursprungliga längd när du återupptar uppspelningen innan den går ut."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коли увімкнено, таймер сну буде скинуто до початкової тривалості при відновленні відтворення до його закінчення."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用后，当您在睡眠定时器到期前恢复播放时，定时器将重置为其原始时长。"
+          }
+        }
+      }
+    },
     "statistics.listenedToday" : {
       "localizations" : {
         "de" : {
