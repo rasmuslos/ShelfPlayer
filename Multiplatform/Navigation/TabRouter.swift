@@ -36,12 +36,22 @@ struct TabRouter: View {
         guard let selectedLibraryID = viewModel.selectedLibraryID else {
             return false
         }
-        
+
         guard viewModel.currentConnectionStatus[selectedLibraryID.connectionID] == true else {
             return false
         }
-        
-        return satellite.nowPlayingItemID != nil || lastPlayedItemID != nil
+
+        // Active playback always visible
+        if satellite.nowPlayingItemID != nil {
+            return true
+        }
+
+        // Only show resume pill if initial sync complete for that connection
+        if let lastPlayedItemID, viewModel.initialSyncCompleted[lastPlayedItemID.connectionID] == true {
+            return true
+        }
+
+        return false
     }
     
     var connections: [FriendlyConnection] {
@@ -135,7 +145,7 @@ struct TabRouter: View {
                 } else {
                     loadingView(startOfflineTimeout: true)
                         .task {
-                            viewModel.synchronize(connectionID: libraryID.connectionID)
+                            await viewModel.synchronize(connectionID: libraryID.connectionID)
                         }
                 }
             } else {
@@ -146,7 +156,7 @@ struct TabRouter: View {
     
     var body: some View {
         TabView(selection: $viewModel.tabValue) {
-            if viewModel.connectionLibraries.isEmpty {
+            if viewModel.connectionLibraries.isEmpty || viewModel.isLoadingLibraries {
                 loadingTab {
                     await viewModel.loadLibraries()
                 }
