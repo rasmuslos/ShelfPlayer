@@ -155,7 +155,7 @@ public extension PersistenceManager.ProgressSubsystem {
         }
     }
     
-    func compareDatabase(against payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
+    func compareDatabase(against payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID, isInitialSync: Bool = true) async throws {
         var remoteDuplicates = [String]()
         
         let keyedPayload = payload.map {
@@ -207,11 +207,14 @@ public extension PersistenceManager.ProgressSubsystem {
         
         for key in localOnly {
             let entity = local[key]!
-            
+
             if entity.status == .desynchronized {
                 pendingServerUpdate[key] = entity
-            } else {
+            } else if !isInitialSync {
+                // Only delete on subsequent syncs, not initial sync
                 pendingLocalDeletion.append(entity.id)
+            } else {
+                logger.info("Skipping deletion of local-only progress during initial sync: \(entity.id)")
             }
         }
         
