@@ -75,7 +75,7 @@ struct SearchPanel: View {
                 viewModel.search = search
             }
         }
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
     }
 }
 

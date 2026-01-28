@@ -18,6 +18,15 @@ public enum SleepTimerConfiguration: Sendable, Hashable, Codable {
         .chapters(amount, amount)
     }
     
+    public var reset: Self {
+        switch self {
+            case .interval(_, let original):
+                .interval(.now.advanced(by: original), original)
+            case .chapters(_, let original):
+                .chapters(original, original)
+        }
+    }
+
     public var extended: Self {
         if Defaults[.extendSleepTimerByPreviousSetting] {
             switch self {

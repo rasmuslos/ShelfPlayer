@@ -138,8 +138,8 @@ struct CollectionMembershipEditorSheet: View {
                 .disabled(isLoading)
             }
         }
-        .sensoryFeedback(.error, trigger: notifyError)
-        .sensoryFeedback(.success, trigger: notifySuccess)
+        .hapticFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.success, trigger: notifySuccess)
         .onAppear {
             let library = Library(id: itemID.libraryID, connectionID: itemID.connectionID, name: "_", type: areCollectionsAvailable ? .audiobooks : .podcasts, index: -1)
             

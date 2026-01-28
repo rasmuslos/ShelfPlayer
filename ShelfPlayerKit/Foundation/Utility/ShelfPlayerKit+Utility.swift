@@ -58,16 +58,16 @@ public extension ShelfPlayerKit {
         if enableCentralized {
             FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "DownloadV2")
         } else {
-            URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "DownloadV2")
+            FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appending(path: "DownloadV2")
         }
     }
     static var cacheDirectoryURL: URL {
         var url: URL
-        
+
         if enableCentralized {
             url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupContainer)!.appending(path: "Cache")
         } else {
-            url = URL.userDirectory.appending(path: "ShelfPlayer").appending(path: "Cache")
+            url = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appending(path: "ShelfPlayer")
         }
         
         var resourceValues = URLResourceValues()

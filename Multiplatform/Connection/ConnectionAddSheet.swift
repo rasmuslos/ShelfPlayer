@@ -23,6 +23,7 @@ struct ConnectionAddSheet: View {
             Form {
                 Section {
                     TextField("connection.add.endpoint", text: $viewModel.endpoint)
+                        .keyboardType(.URL)
                         .textContentType(.URL)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
@@ -89,7 +90,7 @@ struct ConnectionAddSheet: View {
                     }
                 }
             }
-            .sensoryFeedback(.error, trigger: viewModel.notifyError)
+            .hapticFeedback(.error, trigger: viewModel.notifyError)
             .onChange(of: viewModel.notifyFinished) {
                 satellite.dismissSheet()
             }

@@ -143,7 +143,7 @@ struct AudiobookLibraryPanel: View {
                     
                     Divider()
                     
-                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                    Button("action.customize", systemImage: "slider.horizontal.3") {
                         satellite.present(.customizeLibrary(viewModel.library, .library))
                     }
                     
@@ -153,7 +153,7 @@ struct AudiobookLibraryPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
         .onChange(of: viewModel.filter) {
             viewModel.lazyLoader.filter = viewModel.filter
         }

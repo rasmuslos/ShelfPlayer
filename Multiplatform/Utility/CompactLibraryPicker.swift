@@ -63,11 +63,11 @@ struct CompactLibraryPicker: View {
             
             if customizeLibrary {
                 if tabRouterViewModel.pinnedTabsActive {
-                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                    Button("action.customize", systemImage: "slider.horizontal.3") {
                         satellite.present(.customTabValuePreferences)
                     }
                 } else if let library {
-                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                    Button("action.customize", systemImage: "slider.horizontal.3") {
                         satellite.present(.customizeLibrary(library, .tabBar))
                     }
                 }

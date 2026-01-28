@@ -56,7 +56,7 @@ struct ConnectionManager: View {
         .refreshable {
             connectionStore.update()
         }
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
     }
 }
 

@@ -105,7 +105,7 @@ struct AudiobookView: View {
         }
         .modifier(ToolbarModifier())
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .sensoryFeedback(.error, trigger: viewModel.notifyError)
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
         .environment(viewModel)
         .onAppear {
             viewModel.library = library
