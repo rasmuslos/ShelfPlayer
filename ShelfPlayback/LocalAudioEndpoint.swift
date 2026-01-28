@@ -658,6 +658,7 @@ private extension LocalAudioEndpoint {
         
         guard isPlaying else {
             sleepTimeoutTimer?.invalidate()
+            audioPlayer.volume = audioPlayerVolume
             return
         }
         
