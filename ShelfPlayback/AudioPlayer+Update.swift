@@ -122,7 +122,8 @@ extension AudioPlayer {
         if current != nil && current?.id != endpointID {
             return
         }
-        
+
+        sleepTimerDidExpireAt = (configuration, .now)
         await RFNotification[.sleepTimerExpired].send(payload:  configuration)
     }
     
