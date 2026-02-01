@@ -123,7 +123,6 @@ extension AudioPlayer {
             return
         }
 
-        sleepTimerDidExpireAt = (configuration, .now)
         await RFNotification[.sleepTimerExpired].send(payload:  configuration)
     }
     

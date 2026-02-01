@@ -271,9 +271,7 @@ extension LocalAudioEndpoint {
         isPlaying = true
         
         if let sleepLastPause, let sleepTimer, case .interval(let until, let extend) = sleepTimer {
-            if !Defaults[.resetSleepTimerOnPlay] {
-                self.sleepTimer = .interval(until.advanced(by: sleepLastPause.distance(to: .now)), extend)
-            }
+            self.sleepTimer = .interval(until.advanced(by: sleepLastPause.distance(to: .now)), extend)
             self.sleepLastPause = nil
         }
         
