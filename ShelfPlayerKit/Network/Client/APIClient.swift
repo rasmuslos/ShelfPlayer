@@ -189,31 +189,36 @@ private extension APIClient {
     
     func waitForCompletion<R: Sendable>(id: String) async throws -> R {
         let uuid = UUID()
+        let continuationBox = CheckedContinuationBox<R>()
         
         return try await withTaskCancellationHandler {
-            let response = try await withCheckedThrowingContinuation { continuation in
+            defer {
+                cleanup(uuid: uuid)
+            }
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                continuationBox.store(continuation)
+                
                 let responseSubscriber = self.responsePublisher
                     .first { $0.0 == id }
                     .sink {
                         let (response, error) = $1
                         
                         if let response = response as? R {
-                            continuation.resume(returning: response)
+                            continuationBox.resume(returning: response)
                         } else if let error {
-                            continuation.resume(throwing: error)
+                            continuationBox.resume(throwing: error)
                         } else {
-                            continuation.resume(throwing: APIClientError.serializeError)
+                            continuationBox.resume(throwing: APIClientError.serializeError)
                         }
                     }
       
                 subscribers[uuid] = responseSubscriber
                 dispatchQueued()
             }
-            
-            cleanup(uuid: uuid)
-            
-            return response
         } onCancel: {
+            continuationBox.resume(throwing: CancellationError())
+            
             Task {
                 await cleanup(uuid: uuid)
             }
@@ -274,6 +279,7 @@ private extension APIClient {
         }
         
         guard await hasAttemptsLeft(request.id) else {
+            await OfflineMode.shared.markAsUnavailable(connectionID)
             throw APIClientError.noAttemptsLeft
         }
         
@@ -298,6 +304,7 @@ private extension APIClient {
             }
             
             await resetAttempts(request.id)
+            await OfflineMode.shared.markAsAvailable(connectionID)
             
             logger.info("Received successful response for \(request.path)")
             
@@ -405,4 +412,71 @@ private extension APIClient {
 private struct PipelinedError: Error {
     let requestID: String
     let error: Error
+}
+
+private final class CheckedContinuationBox<T: Sendable>: @unchecked Sendable {
+    private enum PendingState {
+        case value(T)
+        case error(any Error)
+    }
+    
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<T, Error>?
+    private var pendingState: PendingState?
+    
+    func store(_ continuation: CheckedContinuation<T, Error>) {
+        lock.lock()
+        
+        if let pendingState {
+            self.pendingState = nil
+            lock.unlock()
+            
+            switch pendingState {
+                case .value(let value):
+                    continuation.resume(returning: value)
+                case .error(let error):
+                    continuation.resume(throwing: error)
+            }
+            
+            return
+        }
+        
+        self.continuation = continuation
+        lock.unlock()
+    }
+    
+    func resume(returning value: T) {
+        lock.lock()
+        
+        if let continuation {
+            self.continuation = nil
+            lock.unlock()
+            
+            continuation.resume(returning: value)
+            return
+        }
+        
+        if pendingState == nil {
+            pendingState = .value(value)
+        }
+        
+        lock.unlock()
+    }
+    func resume(throwing error: any Error) {
+        lock.lock()
+        
+        if let continuation {
+            self.continuation = nil
+            lock.unlock()
+            
+            continuation.resume(throwing: error)
+            return
+        }
+        
+        if pendingState == nil {
+            pendingState = .error(error)
+        }
+        
+        lock.unlock()
+    }
 }

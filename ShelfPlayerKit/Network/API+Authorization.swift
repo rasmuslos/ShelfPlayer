@@ -40,6 +40,9 @@ public extension APIClient {
         
         return (response.serverVersion, strategies, response.isInit)
     }
+    func ping(timeout: TimeInterval = OfflineMode.availabilityTimeout) async -> Bool {
+        (try? await response(APIRequest<APIClient.EmptyResponse>(path: "ping", method: .get, timeout: timeout, bypassesOffline: true, bypassesScheduler: true))) != nil
+    }
     
     func me() async throws -> (String, String) {
         let request = APIRequest<MeResponse>(path: "api/me", method: .get, bypassesOffline: true)

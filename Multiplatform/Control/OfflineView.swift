@@ -27,7 +27,9 @@ struct OfflineView: View {
     @ViewBuilder
     private var goOnlineButton: some View {
         Button("navigation.offline.disable", systemImage: "network") {
-            OfflineMode.shared.setEnabled(false)
+            Task {
+                await OfflineMode.shared.refreshAvailability()
+            }
         }
     }
     @ViewBuilder

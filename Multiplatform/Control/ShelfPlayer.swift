@@ -25,17 +25,6 @@ struct ShelfPlayer {
             logger.error("Failed to configure tips: \(error)")
         }
         
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        Task {
-            do {
-                try await PersistenceManager.shared.authorization.waitForConnections()
-            } catch {
-                logger.fault("init() wait for Connections failed")
-            }
-            semaphore.signal()
-        }
-        
         // Execute task early:
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.spotlightIndex"]
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.convenienceDownload"]
