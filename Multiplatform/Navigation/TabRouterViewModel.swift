@@ -65,11 +65,9 @@ final class TabRouterViewModel: Sendable {
         }
     }
     func loadLibraries() async {
-        var shouldContinue = true
-
         logger.info("Loading online UI")
         
-        let allConnectionsUnavailable = await withTaskGroup {
+        await withTaskGroup(of: Void.self) {
             for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                 logger.info("Loading connection: \(connectionID)")
                 
@@ -93,27 +91,13 @@ final class TabRouterViewModel: Sendable {
                         self.logger.info("Syncrhonized connection: \(connectionID)")
                         
                         await self.didLoad(connectionID: connectionID, libraries: results)
-                        return true
                     } catch {
                         self.logger.info("Failed to load libraries for connection: \(connectionID)")
                         
                         await self.synchronizeFailed(connectionID: connectionID)
-                        return false
                     }
                 }
             }
-            
-            var allConnectionsUnavailable = true
-            
-            for await isConnectionAvailable in $0 {
-                allConnectionsUnavailable = allConnectionsUnavailable && isConnectionAvailable
-            }
-            
-            return allConnectionsUnavailable
-        }
-        
-        if allConnectionsUnavailable {
-            OfflineMode.shared.setEnabled(true)
         }
     }
 }

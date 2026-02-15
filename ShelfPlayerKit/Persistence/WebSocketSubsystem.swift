@@ -52,6 +52,11 @@ private extension PersistenceManager.WebSocketSubsystem {
         updateTask?.cancel()
         updateTask = .init {
             try? await Task.sleep(for: .seconds(1))
+            
+            guard !Task.isCancelled else {
+                return
+            }
+            
             await performUpdate()
         }
     }

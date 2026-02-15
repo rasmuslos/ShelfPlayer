@@ -100,8 +100,8 @@ struct ListenNowSheetToggle: View {
             ListenedTodayLabel.AdjustMenuInner()
         } label: {
             ListenedTodayLabel()
-                .contentShape(.rect)
                 .frame(width: width)
+                .contentShape(.rect)
         } primaryAction: {
             satellite.present(.listenNow)
         }

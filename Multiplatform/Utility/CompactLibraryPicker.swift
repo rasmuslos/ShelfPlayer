@@ -48,7 +48,7 @@ struct CompactLibraryPicker: View {
             }
             
             Button("navigation.offline.enable", systemImage: "network.slash") {
-                OfflineMode.shared.setEnabled(true)
+                OfflineMode.shared.forceEnable()
             }
             
             if !tabRouterViewModel.activeUpdateTasks.isEmpty {

@@ -157,7 +157,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         try await fetchConnections()
         
-        await cycleOffline()
+        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     
@@ -180,7 +180,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         try await fetchConnections()
         
-        await cycleOffline()
+        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) async throws {
@@ -193,6 +193,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
         
         try await fetchConnections()
+        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     
@@ -220,7 +221,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         try? await fetchConnections()
         
-        await cycleOffline()
+        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     
@@ -233,10 +234,33 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         try await fetchConnections()
     }
-    func cycleOffline() async {
-        await OfflineMode.shared.setEnabled(true)
-        try? await Task.sleep(for: .seconds(0.4))
-        await OfflineMode.shared.setEnabled(false)
+    
+    func connectionAvailability(timeout: TimeInterval = OfflineMode.availabilityTimeout) async -> [ItemIdentifier.ConnectionID: Bool] {
+        let connectionIDs = self.connectionIDs
+        guard !connectionIDs.isEmpty else {
+            return [:]
+        }
+        
+        return await withTaskGroup(of: (ItemIdentifier.ConnectionID, Bool).self) {
+            for connectionID in connectionIDs {
+                $0.addTask {
+                    guard let client = try? await ABSClient[connectionID] else {
+                        return (connectionID, false)
+                    }
+                    
+                    let isAvailable = await client.ping(timeout: timeout)
+                    
+                    return (connectionID, isAvailable)
+                }
+            }
+            
+            return await $0.reduce(into: [:]) {
+                $0[$1.0] = $1.1
+            }
+        }
+    }
+    func refreshOfflineAvailability() async {
+        await OfflineMode.shared.refreshAvailability()
     }
     
     func handleURLSessionChallenge(_ challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {

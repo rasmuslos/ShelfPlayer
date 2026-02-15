@@ -206,7 +206,6 @@ private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowS
     
     func resolve() async throws -> [PersistenceManager.ListenNowSubsystem.Result] {
         let entities = try await PersistenceManager.shared.progress.activeProgressEntities
-        let isOffline = await OfflineMode.shared.isEnabled
 
         var resolved = [PersistenceManager.ListenNowSubsystem.Result]()
         

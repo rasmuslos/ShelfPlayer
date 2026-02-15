@@ -13,12 +13,7 @@ import ShelfPlayerKit
 @main
 struct WidgetsBundle: WidgetBundle {
     init() {
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        Task {
-            try? await PersistenceManager.shared.authorization.waitForConnections()
-            semaphore.signal()
-        }
+        OfflineMode.refreshAvailabilityBlocking()
     }
     
     var body: some Widget {

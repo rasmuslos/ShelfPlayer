@@ -19,11 +19,11 @@ struct OfflineControlsModifier: ViewModifier {
                 VStack(spacing: 12) {
                     if !startOfflineTimeout {    
                         Button("navigation.offline.enable", systemImage: "network.slash") {
-                            OfflineMode.shared.setEnabled(true)
+                            OfflineMode.shared.forceEnable()
                         }
                     } else {
                         Button {
-                            OfflineMode.shared.setEnabled(true)
+                            OfflineMode.shared.forceEnable()
                         } label: {
                             Text("navigation.sync.failed.offline")
                             + Text(verbatim: " ")
@@ -38,7 +38,7 @@ struct OfflineControlsModifier: ViewModifier {
                         Divider()
                         
                         Button("navigation.offline.enable", systemImage: "network.slash") {
-                            OfflineMode.shared.setEnabled(true)
+                            OfflineMode.shared.forceEnable()
                         }
                         .onAppear {
                             offlineTimeout?.cancel()
@@ -57,7 +57,7 @@ struct OfflineControlsModifier: ViewModifier {
                             try await Task.sleep(for: .seconds(7))
                             try Task.checkCancellation()
                             
-                            OfflineMode.shared.setEnabled(true)
+                            OfflineMode.shared.forceEnable()
                         } catch {
                             offlineTimeout = nil
                         }
