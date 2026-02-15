@@ -240,20 +240,20 @@ final class DownloadButtonViewModel {
         }
     }
     
-    nonisolated func loadCurrent() {
+    func loadCurrent() {
         Task {
             let status = await PersistenceManager.shared.download.status(of: itemID)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.status = status
             }
         }
     }
-    nonisolated func loadProgress() {
+    func loadProgress() {
         Task {
             let progress = await PersistenceManager.shared.download.downloadProgress(of: itemID)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.baseProgress = progress
             }
         }

@@ -207,12 +207,12 @@ private final class ViewModel {
         itemID.type == .series || itemID.type == .podcast || itemID.type == .collection || itemID.type == .playlist
     }
     
-    nonisolated func save(callback: @MainActor @escaping () -> Void) {
+    func save(callback: @MainActor @escaping () -> Void) {
         Task {
             var failedCount = 0
             
             do {
-                if await isPlaybackRateCustomized {
+                if isPlaybackRateCustomized {
                     try await PersistenceManager.shared.item.setPlaybackRate(playbackRate, for: itemID)
                 } else {
                     try await PersistenceManager.shared.item.setPlaybackRate(nil, for: itemID)
@@ -228,7 +228,7 @@ private final class ViewModel {
             }
             
             do {
-                if await isUpNextCustomizable, await isUpNextStrategyCustomized {
+                if isUpNextCustomizable, isUpNextStrategyCustomized {
                     try await PersistenceManager.shared.item.setUpNextStrategy(upNextStrategy, for: itemID)
                 } else {
                     try await PersistenceManager.shared.item.setUpNextStrategy(nil, for: itemID)
@@ -238,7 +238,7 @@ private final class ViewModel {
             }
             
             do {
-                if await areSuggestionsAvailable, await isAllowSuggestionsCustomized {
+                if areSuggestionsAvailable, isAllowSuggestionsCustomized {
                     try await PersistenceManager.shared.item.setAllowSuggestions(allowSuggestions, for: itemID)
                 } else {
                     try await PersistenceManager.shared.item.setAllowSuggestions(nil, for: itemID)
@@ -254,13 +254,11 @@ private final class ViewModel {
             }
             
             if failedCount > 0 {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
             
             await RFNotification[.invalidateProgressEntities].send(payload: nil)
-            await callback()
+            callback()
         }
     }
 }

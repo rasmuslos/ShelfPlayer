@@ -56,14 +56,12 @@ struct PlaybackPlaceholderBottomPill: View {
         }
     }
     
-    private nonisolated func loadItemName() {
+    private func loadItemName() {
         Task {
             do {
                 let item = try await itemID.resolved
                 
-                await MainActor.run {
-                    lastPlayedItemName = item.name
-                }
+                lastPlayedItemName = item.name
             } catch APIClientError.offline {
                 return
             } catch {

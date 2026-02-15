@@ -34,11 +34,11 @@ final class DownloadStatusTracker {
         }
     }
         
-    private nonisolated func load() {
+    private func load() {
         Task {
             let status = await PersistenceManager.shared.download.status(of: itemID)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.status = status
             }
         }

@@ -24,9 +24,11 @@ public final class LibraryStore {
     public nonisolated func update() {
         Task {
             guard await !OfflineMode.shared.isEnabled else {
-                await MainActor.withAnimation {
-                    self.libraries = []
-                    self.groupedLibraries = [:]
+                await MainActor.run {
+                    withAnimation {
+                        self.libraries = []
+                        self.groupedLibraries = [:]
+                    }
                 }
                 
                 return
@@ -40,9 +42,11 @@ public final class LibraryStore {
                 return await $0.compactMap { $0 }.reduce([], +)
             }
             
-            await MainActor.withAnimation {
-                self.libraries = libraries
-                self.groupedLibraries = Dictionary(grouping: libraries, by: \.id.connectionID)
+            await MainActor.run {
+                withAnimation {
+                    self.libraries = libraries
+                    self.groupedLibraries = Dictionary(grouping: libraries, by: \.id.connectionID)
+                }
             }
         }
     }

@@ -66,12 +66,12 @@ extension EpisodeViewModel {
 //        }
 //    }
     
-    nonisolated func load(refresh: Bool) {
+    func load(refresh: Bool) {
         Task {
            await load(refresh: refresh)
         }
     }
-    nonisolated func load(refresh: Bool) async {
+    func load(refresh: Bool) async {
         if refresh {
             try? await ShelfPlayer.refreshItem(itemID: self.episode.id)
         }
@@ -86,39 +86,29 @@ extension EpisodeViewModel {
         }
         
         if refresh {
-            await MainActor.run {
-                id = .init()
-            }
+            id = .init()
         }
     }
     
-    nonisolated func changeEpisodeType(_ type: Episode.EpisodeType) {
+    func changeEpisodeType(_ type: Episode.EpisodeType) {
         Task {
-            let isRunning = await MainActor.run {
-                let isRunning = isChangingEpisodeType
-                isChangingEpisodeType = true
-                
-                return isRunning
-            }
+            let isRunning = isChangingEpisodeType
+            isChangingEpisodeType = true
             
             guard !isRunning else {
                 return
             }
             
             do {
-                let episodeID = await episode.id
+                let episodeID = episode.id
                 try await ABSClient[episodeID.connectionID].setEpisodeType(type: type, for: episodeID)
                 
                 await load(refresh: true)
                 
-                await MainActor.run {
-                    isChangingEpisodeType = false
-                }
+                isChangingEpisodeType = false
             } catch {
-                await MainActor.run {
-                    isChangingEpisodeType = false
-                    notifyError.toggle()
-                }
+                isChangingEpisodeType = false
+                notifyError.toggle()
             }
         }
     }
@@ -135,25 +125,23 @@ extension Episode.EpisodeType {
 }
 
 private extension EpisodeViewModel {
-    nonisolated func loadEpisode() async {
+    func loadEpisode() async {
         do {
             guard let episode = try await episode.id.resolved as? Episode else {
                 throw APIClientError.invalidItemType
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.episode = episode
             }
         } catch {
-            await MainActor.run {
-                notifyError.toggle()
-            }
+            notifyError.toggle()
         }
     }
-    nonisolated func extractDominantColor() async {
+    func extractDominantColor() async {
         let color = await PersistenceManager.shared.item.dominantColor(of: episode.id)
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.dominantColor = color
         }
     }

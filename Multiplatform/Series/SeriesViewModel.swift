@@ -35,7 +35,9 @@ final class SeriesViewModel {
         self.series = series
         lazyLoader = .audiobooks(filtered: series.id, sortOrder: nil, ascending: nil)
         lazyLoader.didLoadMore = { [weak self] audiobooks in
-            self?.updateHighlighted(provided: audiobooks)
+            Task { @MainActor [weak self] in
+                self?.updateHighlighted(provided: audiobooks)
+            }
         }
         
         RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, _ in
@@ -43,7 +45,9 @@ final class SeriesViewModel {
                 return
             }
             
-            self?.updateHighlighted()
+            Task { @MainActor [weak self] in
+                self?.updateHighlighted()
+            }
         }
     }
     
@@ -55,7 +59,7 @@ final class SeriesViewModel {
         return lazyLoader.items.map(\.id)
     }
     
-    nonisolated func refresh() {
+    func refresh() {
         Task {
             try? await ShelfPlayer.refreshItem(itemID: series.id)
             lazyLoader.refresh()
@@ -63,13 +67,13 @@ final class SeriesViewModel {
         }
     }
     
-    private nonisolated func updateHighlighted(provided audiobooks: [Audiobook]? = nil) {
+    private func updateHighlighted(provided audiobooks: [Audiobook]? = nil) {
         Task {
-            let audiobooks = await lazyLoader.items
+            let audiobooks = lazyLoader.items
             
             for audiobook in audiobooks {
                 if await audiobook.isIncluded(in: .notFinished) {
-                    await MainActor.withAnimation {
+                    withAnimation {
                         highlighted = audiobook
                     }
 
@@ -77,8 +81,8 @@ final class SeriesViewModel {
                 }
             }
             
-            if await highlighted == Episode.placeholder {
-                await MainActor.withAnimation {
+            if highlighted == Episode.placeholder {
+                withAnimation {
                     highlighted = nil
                 }
             }

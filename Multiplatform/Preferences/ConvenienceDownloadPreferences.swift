@@ -96,7 +96,7 @@ struct ConvenienceDownloadPreferences: View {
         }
     }
     
-    private nonisolated func loadConfigurations() {
+    private func loadConfigurations() {
         Task {
             await withTaskGroup {
                 $0.addTask {
@@ -104,14 +104,14 @@ struct ConvenienceDownloadPreferences: View {
                         $0.id < $1.id
                     }
                     
-                    await MainActor.withAnimation {
+                    withAnimation {
                         self.configurations = configurations
                     }
                 }
                 $0.addTask {
                     let count = await PersistenceManager.shared.convenienceDownload.totalDownloadCount
                     
-                    await MainActor.withAnimation {
+                    withAnimation {
                         self.totalDownloaded = count
                     }
                 }

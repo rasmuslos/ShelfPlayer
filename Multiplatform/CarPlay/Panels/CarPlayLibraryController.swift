@@ -42,7 +42,7 @@ class CarPlayLibraryController: CarPlayTabBar.LibraryController {
         }
     }
     
-    private nonisolated func updateSections() {
+    private func updateSections() {
         switch library.id.type {
         case .audiobooks:
             updateAudiobookSections()
@@ -55,56 +55,52 @@ class CarPlayLibraryController: CarPlayTabBar.LibraryController {
         template.updateSections(sections.map(\.0))
     }
     
-    private nonisolated func updateAudiobookSections() {
+    private func updateAudiobookSections() {
         Task {
             let connectionID = library.id.connectionID
             
             let (rows, _): ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[connectionID].home(for: library.id.libraryID)
             let prepared = await HomeRow.prepareForPresentation(rows, connectionID: connectionID)
             
-            await MainActor.run {
-                let sections = prepared.map {
-                    let items = $0.entities.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-                    return (CPListSection(items: items.map(\.row), header: $0.localizedLabel, headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil), items)
-                }
-                
-                itemControllers = sections.flatMap(\.1)
-                template.updateSections(sections.map(\.0))
+            let sections = prepared.map {
+                let items = $0.entities.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
+                return (CPListSection(items: items.map(\.row), header: $0.localizedLabel, headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil), items)
             }
+            
+            itemControllers = sections.flatMap(\.1)
+            template.updateSections(sections.map(\.0))
         }
     }
-    private nonisolated func updatePodcastSections() {
+    private func updatePodcastSections() {
         Task {
             let connectionID = library.id.connectionID
             
             let (_, rows): ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[connectionID].home(for: library.id.libraryID)
             let prepared = await HomeRow.prepareForPresentation(rows, connectionID: connectionID)
             
-            await MainActor.run {
-                let sections = prepared.map {
-                    let items = $0.entities.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-                    return (CPListSection(items: items.map(\.row), header: $0.localizedLabel, headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil), items)
-                }
-                
-                let item = CPListItem(text: String(localized: "panel.library"), detailText: nil)
-                item.handler = { [weak self] (_, completion) in
-                    guard let self else {
-                        return
-                    }
-                    
-                    let controller = CarPlayPodcastListController(interfaceController: interfaceController, library: library)
-                    
-                    Task {
-                        try await interfaceController.pushTemplate(controller.template, animated: true)
-                        completion()
-                    }
-                }
-                
-                itemControllers = sections.flatMap(\.1)
-                template.updateSections([
-                    CPListSection(items: [item]),
-                ] + sections.map(\.0))
+            let sections = prepared.map {
+                let items = $0.entities.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
+                return (CPListSection(items: items.map(\.row), header: $0.localizedLabel, headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil), items)
             }
+            
+            let item = CPListItem(text: String(localized: "panel.library"), detailText: nil)
+            item.handler = { [weak self] (_, completion) in
+                guard let self else {
+                    return
+                }
+                
+                let controller = CarPlayPodcastListController(interfaceController: interfaceController, library: library)
+                
+                Task {
+                    try await interfaceController.pushTemplate(controller.template, animated: true)
+                    completion()
+                }
+            }
+            
+            itemControllers = sections.flatMap(\.1)
+            template.updateSections([
+                CPListSection(items: [item]),
+            ] + sections.map(\.0))
         }
     }
 }

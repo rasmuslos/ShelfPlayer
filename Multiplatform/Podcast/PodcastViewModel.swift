@@ -53,10 +53,10 @@ final class PodcastViewModel: Equatable, Hashable {
         notifyError = false
     }
     
-    nonisolated static func == (lhs: PodcastViewModel, rhs: PodcastViewModel) -> Bool {
+    static func == (lhs: PodcastViewModel, rhs: PodcastViewModel) -> Bool {
         lhs === rhs
     }
-    nonisolated func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(podcast.id)
     }
 }
@@ -161,43 +161,34 @@ extension PodcastViewModel {
         return season
     }
     
-    private nonisolated func performBulk(_ next: @Sendable @escaping ([ItemIdentifier]) async throws -> Void) {
+    private func performBulk(_ next: @Sendable @escaping ([ItemIdentifier]) async throws -> Void) {
         Task {
-            let canRun = await MainActor.run {
-                guard !performingBulkAction else {
-                    return false
-                }
-                
-                performingBulkAction = true
-                return true
-            }
-            
-            guard canRun else {
+            guard !performingBulkAction else {
                 return
             }
             
-            if let bulkSelected = await bulkSelected {
+            performingBulkAction = true
+            
+            if let bulkSelected = bulkSelected {
                 do {
                     try await next(bulkSelected)
                 } catch {
-                    await MainActor.run {
-                        notifyError.toggle()
-                    }
+                    notifyError.toggle()
                 }
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 performingBulkAction = false
                 bulkSelected = nil
             }
         }
     }
-    nonisolated func performBulkQueue() {
+    func performBulkQueue() {
         performBulk {
             try await AudioPlayer.shared.queue($0.map { .init(itemID: $0, origin: .podcast(self.podcast.id)) })
         }
     }
-    nonisolated func performBulkAction(isFinished: Bool) {
+    func performBulkAction(isFinished: Bool) {
         performBulk {
             if isFinished {
                 try await PersistenceManager.shared.progress.markAsCompleted($0)
@@ -206,7 +197,7 @@ extension PodcastViewModel {
             }
         }
     }
-    nonisolated func performBulkAction(download: Bool) {
+    func performBulkAction(download: Bool) {
         performBulk {
             for itemID in $0 {
                 if download {
@@ -218,38 +209,34 @@ extension PodcastViewModel {
         }
     }
     
-    nonisolated func load(refresh: Bool) {
+    func load(refresh: Bool) {
         Task {
             await withTaskGroup {
                 $0.addTask { await self.extractColor() }
                 $0.addTask { await self.fetchEpisodes() }
-                
-                if refresh {
-                    $0.addTask {
-                        try? await ShelfPlayer.refreshItem(itemID: self.podcast.id)
-                        self.load(refresh: false)
-                    }
-                }
+            }
+            
+            if refresh {
+                try? await ShelfPlayer.refreshItem(itemID: self.podcast.id)
+                self.load(refresh: false)
             }
         }
     }
-    nonisolated func updateVisible() {
+    func updateVisible() {
         Task {
-            if await ascending == nil {
+            if ascending == nil {
                 let configuration = await PersistenceManager.shared.item.podcastFilterSortConfiguration(for: podcast.id)
                 
-                await MainActor.run {
-                    ascending = configuration.ascending
-                    sortOrder = configuration.sortOrder
-                    filter = configuration.filter
-                    seasonFilter = configuration.seasonFilter
-                    restrictToPersisted = configuration.restrictToPersisted
-                }
+                ascending = configuration.ascending
+                sortOrder = configuration.sortOrder
+                filter = configuration.filter
+                seasonFilter = configuration.seasonFilter
+                restrictToPersisted = configuration.restrictToPersisted
             }
             
             let episodes = await Podcast.filterSort(episodes, filter: filter!, seasonFilter: seasonFilter, restrictToPersisted: restrictToPersisted!, search: search, sortOrder: sortOrder!, ascending: ascending!)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.visible = episodes
             }
         }
@@ -257,7 +244,7 @@ extension PodcastViewModel {
 }
 
 private extension PodcastViewModel {
-    nonisolated func requestConvenienceDownload() {
+    func requestConvenienceDownload() {
         Task {
             await PersistenceManager.shared.convenienceDownload.scheduleUpdate(itemID: podcast.id)
         }
@@ -272,19 +259,17 @@ private extension PodcastViewModel {
         }
     }
     
-    nonisolated func extractColor() async {
+    func extractColor() async {
         let color = await PersistenceManager.shared.item.dominantColor(of: podcast.id)
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.dominantColor = color
         }
     }
     
-    nonisolated func fetchEpisodes() async {
+    func fetchEpisodes() async {
         #if DEBUG && false
-        await MainActor.run {
-            self.episodes = .init(repeating: .fixture, count: 1)
-        }
+        self.episodes = .init(repeating: .fixture, count: 1)
 
         updateVisible()
         return
@@ -293,15 +278,13 @@ private extension PodcastViewModel {
         do {
             let episodes = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id).1
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.episodes = episodes
             }
             
             updateVisible()
         } catch {
-            await MainActor.run {
-                notifyError.toggle()
-            }
+            notifyError.toggle()
         }
     }
 }

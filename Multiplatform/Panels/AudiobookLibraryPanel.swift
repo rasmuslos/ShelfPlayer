@@ -222,22 +222,22 @@ private final class LibraryViewModel {
         lazyLoader.working && !lazyLoader.failed
     }
     
-    nonisolated func load() {
+    func load() {
         loadTabs()
         loadGenres()
     }
-    nonisolated func refresh() {
+    func refresh() {
         lazyLoader.refresh()
         
         loadTabs()
         loadGenres()
     }
     
-    nonisolated func loadTabs() {
+    func loadTabs() {
         Task {
             let tabs = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.tabs = tabs
             }
         }
@@ -257,20 +257,20 @@ extension LibraryViewModel {
         }
     }
     
-    private nonisolated func loadGenres() {
+    private func loadGenres() {
         Task {
-            guard let library = await library else {
+            guard let library = library else {
                 return
             }
             
             do {
                 let genres = try await ABSClient[library.id.connectionID].genres(from: library.id.libraryID)
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     self.genres = genres
                 }
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     notifyError.toggle()
                     genres = []
                 }

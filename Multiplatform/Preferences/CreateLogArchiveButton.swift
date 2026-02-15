@@ -30,9 +30,9 @@ struct CreateLogArchiveButton: View {
         }
     }
     
-    private nonisolated func createLogArchive() {
+    private func createLogArchive() {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
                 isPresented = false
             }
@@ -40,14 +40,14 @@ struct CreateLogArchiveButton: View {
             do {
                 let url = try ShelfPlayer.generateLogArchive()
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     isLoading = false
                     
                     document = .init(url: url)
                     isPresented = true
                 }
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     isLoading = false
                     document = nil
                     

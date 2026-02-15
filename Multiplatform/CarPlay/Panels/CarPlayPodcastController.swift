@@ -36,30 +36,26 @@ class CarPlayPodcastController {
         loadEpisodes()
     }
     
-    private nonisolated func loadImage() {
+    private func loadImage() {
         Task {
             let image = await podcast.id.platformImage(size: .regular)
             
-            await MainActor.run {
-                self.image = image
-                updateSection()
-            }
+            self.image = image
+            updateSection()
         }
     }
-    private nonisolated func loadEpisodes() {
+    private func loadEpisodes() {
         Task {
             let (_, episodes) = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id)
             
             let sorted = await Podcast.filterSort(episodes, podcastID: podcast.id)
             
-            await MainActor.run {
-                itemControllers = sorted.map { CarPlayPlayableItemController(item: $0, displayCover: false) }
-                
-                updateSection()
-                
-                if #available(iOS 18.4, *) {
-                    template.showsSpinnerWhileEmpty = false
-                }
+            itemControllers = sorted.map { CarPlayPlayableItemController(item: $0, displayCover: false) }
+            
+            updateSection()
+            
+            if #available(iOS 18.4, *) {
+                template.showsSpinnerWhileEmpty = false
             }
         }
     }

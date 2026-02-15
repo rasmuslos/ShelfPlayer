@@ -174,14 +174,14 @@ private extension PodcastLibraryPanel {
     func loadTabs() {
         Task {
             guard let library else {
-                await MainActor.withAnimation {
+                withAnimation {
                     tabs = []
                 }
                 return
             }
 
             let configured = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
-            await MainActor.withAnimation {
+            withAnimation {
                 tabs = configured
             }
         }

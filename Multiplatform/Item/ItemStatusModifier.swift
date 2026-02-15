@@ -129,11 +129,11 @@ struct ItemStatusModifier: ViewModifier {
             }
     }
     
-    private nonisolated func load() {
+    private func load() {
         Task {
             let item = try? await itemID.resolved
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.item = item
             }
         }

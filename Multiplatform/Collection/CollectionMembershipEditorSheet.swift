@@ -153,9 +153,9 @@ struct CollectionMembershipEditorSheet: View {
         }
     }
     
-    private nonisolated func addToCollection(collectionID: ItemIdentifier) {
+    private func addToCollection(collectionID: ItemIdentifier) {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
             }
             
@@ -165,25 +165,19 @@ struct CollectionMembershipEditorSheet: View {
                 await RFNotification[.collectionChanged].send(payload: collectionID)
                 await PersistenceManager.shared.convenienceDownload.scheduleUpdate(itemID: collectionID)
                 
-                await MainActor.run {
-                    notifySuccess.toggle()
-                }
+                notifySuccess.toggle()
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
             
-            await MainActor.run {
-                isLoading = false
-                
-                satellite.dismissSheet()
-            }
+            isLoading = false
+            
+            satellite.dismissSheet()
         }
     }
-    private nonisolated func createCollection(type: ItemCollection.CollectionType) {
+    private func createCollection(type: ItemCollection.CollectionType) {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 guard !self.createCollectionName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                     notifyError.toggle()
                     return
@@ -192,31 +186,25 @@ struct CollectionMembershipEditorSheet: View {
                 isLoading = true
             }
             
-            let createCollectionName = await createCollectionName
+            let createCollectionName = createCollectionName
             
             do {
                 let collectionID = try await ABSClient[itemID.connectionID].createCollection(name: createCollectionName, type: type, libraryID: itemID.libraryID, itemIDs: [itemID])
                 
-                await collectionID.navigateIsolated()
+                collectionID.navigateIsolated()
                 await RFNotification[.collectionChanged].send(payload: collectionID)
                 
-                await MainActor.run {
-                    notifySuccess.toggle()
-                }
+                notifySuccess.toggle()
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
             
-            await MainActor.run {
-                self.createCollectionType = nil
-                self.createCollectionName = ""
-                
-                isLoading = false
-                
-                satellite.dismissSheet()
-            }
+            self.createCollectionType = nil
+            self.createCollectionName = ""
+            
+            isLoading = false
+            
+            satellite.dismissSheet()
         }
     }
 }

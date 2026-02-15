@@ -150,7 +150,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
         
         allowUpNextQueueGeneration = true
         
-        setupObservers()
+        await setupObservers()
         
         try await start()
     }

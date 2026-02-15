@@ -35,25 +35,25 @@ extension CollectionViewModel {
         collection.episodes
     }
     
-    nonisolated func createPlaylist() {
+    func createPlaylist() {
         Task {
-            guard await collection.id.type == .collection else {
+            guard collection.id.type == .collection else {
                 return
             }
             
             do {
                 let collectionID = try await ABSClient[collection.id.connectionID].createPlaylistCopy(collectionID: collection.id)
                     
-                await collectionID.navigateIsolated()
+                collectionID.navigateIsolated()
                 await RFNotification[.collectionChanged].send(payload: collectionID)
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     notifyError.toggle()
                 }
             }
         }
     }
-    nonisolated func delete() {
+    func delete() {
         Task {
             do {
                 try await ABSClient[collection.id.connectionID].deleteCollection(collection.id)
@@ -63,14 +63,14 @@ extension CollectionViewModel {
                 await RFNotification[.collectionChanged].send(payload: collection.id)
                 await RFNotification[.collectionDeleted].send(payload: collection.id)
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     notifyError.toggle()
                 }
             }
         }
     }
     
-    nonisolated func refresh() {
+    func refresh() {
         Task {
             try? await ShelfPlayer.refreshItem(itemID: collection.id)
             updateHighlighted()
@@ -79,22 +79,22 @@ extension CollectionViewModel {
 }
 
 private extension CollectionViewModel {
-    nonisolated func updateHighlighted() {
+    func updateHighlighted() {
         Task {
-            if let audiobooks = await collection.audiobooks {
+            if let audiobooks = collection.audiobooks {
                 for audiobook in audiobooks {
                     if await audiobook.isIncluded(in: .notFinished) {
-                        await MainActor.withAnimation {
+                        withAnimation {
                             highlighted = audiobook
                         }
                         
                         break
                     }
                 }
-            } else if let episodes = await episodes {
+            } else if let episodes = episodes {
                 for episode in episodes {
                     if await episode.isIncluded(in: .notFinished) {
-                        await MainActor.withAnimation {
+                        withAnimation {
                             highlighted = episode
                         }
                         
@@ -103,8 +103,8 @@ private extension CollectionViewModel {
                 }
             }
             
-            if await highlighted == Episode.placeholder {
-                await MainActor.withAnimation {
+            if highlighted == Episode.placeholder {
+                withAnimation {
                     highlighted = nil
                 }
             }
@@ -112,23 +112,25 @@ private extension CollectionViewModel {
     }
     func setupObservation() {
         RFNotification[.progressEntityUpdated].subscribe { [weak self] connectionID, primaryID, groupingID, _ in
-            guard self?.collection.items.contains(where: { $0.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }) == true else {
-                return
+            Task { @MainActor [weak self] in
+                guard self?.collection.items.contains(where: { $0.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) }) == true else {
+                    return
+                }
+                
+                self?.updateHighlighted()
             }
-            
-            self?.updateHighlighted()
         }
         RFNotification[.collectionChanged].subscribe { [weak self] collectionID in
-            guard self?.collection.id == collectionID else {
-                return
-            }
-            
-            Task.detached {
+            Task { @MainActor [weak self] in
+                guard self?.collection.id == collectionID else {
+                    return
+                }
+                
                 guard let collection = try? await self?.collection.id.resolved as? ItemCollection else {
                     return
                 }
                 
-                await MainActor.withAnimation { [weak self] in
+                withAnimation { [weak self] in
                     self?.id = .init()
                     self?.collection = collection
                 }

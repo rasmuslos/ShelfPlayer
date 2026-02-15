@@ -199,10 +199,10 @@ private final class ViewModel: Sendable {
 }
 
 extension ViewModel {
-    nonisolated func fetchKnownConnections() async {
+    func fetchKnownConnections() async {
         let connections = await PersistenceManager.shared.authorization.knownConnections
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.knownConnections = connections
         }
     }

@@ -74,7 +74,7 @@ final class AudiobookViewModel: Sendable {
 }
 
 extension AudiobookViewModel {
-    nonisolated func load(refresh: Bool) {
+    func load(refresh: Bool) {
         Task {
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await self.loadAudiobook() }
@@ -87,12 +87,12 @@ extension AudiobookViewModel {
                 
                 if refresh {
                     $0.addTask { await self.sessionLoader.refresh() }
-                    
-                    $0.addTask {
-                        try? await ShelfPlayer.refreshItem(itemID: self.audiobook.id)
-                        self.load(refresh: false)
-                    }
                 }
+            }
+            
+            if refresh {
+                try? await ShelfPlayer.refreshItem(itemID: self.audiobook.id)
+                self.load(refresh: false)
             }
         }
     }
@@ -106,21 +106,21 @@ extension AudiobookViewModel {
 }
 
 private extension AudiobookViewModel {
-    nonisolated func loadPDF(_ pdf: PlayableItem.SupplementaryPDF) {
+    func loadPDF(_ pdf: PlayableItem.SupplementaryPDF) {
         Task {
-            let audiobookID = await audiobook.id
+            let audiobookID = audiobook.id
             
             do {
                 let data = try await ABSClient[audiobookID.connectionID].pdf(from: audiobookID, ino: pdf.ino)
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     notifySuccess.toggle()
                     
                     self.loadingPDF = false
                     self.presentedPDF = data
                 }
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     loadingPDF = false
                     notifyError.toggle()
                 }
@@ -128,21 +128,21 @@ private extension AudiobookViewModel {
         }
     }
     
-    nonisolated func loadAudiobook() async {
+    func loadAudiobook() async {
         guard let (item, _, chapters, supplementaryPDFs) = try? await ABSClient[audiobook.id.connectionID].playableItem(itemID: audiobook.id) else {
             return
         }
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.audiobook = item as! Audiobook
             self.chapters = chapters
             self.supplementaryPDFs = supplementaryPDFs
         }
     }
     
-    nonisolated func loadAuthors() async {
+    func loadAuthors() async {
         let resolved = await withTaskGroup {
-            let audiobook = await audiobook
+            let audiobook = audiobook
             
             for author in audiobook.authors {
                 $0.addTask { () -> (String, [Audiobook])? in
@@ -163,23 +163,27 @@ private extension AudiobookViewModel {
                 }
             }
             
-            return await $0.reduce(into: [String: [Audiobook]]()) {
-                guard let (author, audiobooks) = $1 else {
-                    return
+            var resolved = [String: [Audiobook]]()
+            
+            for await result in $0 {
+                guard let (author, audiobooks) = result else {
+                    continue
                 }
                 
-                $0[author] = audiobooks
-            }.sorted(by: { $0.0 < $1.0 })
+                resolved[author] = audiobooks
+            }
+            
+            return resolved.sorted(by: { $0.0 < $1.0 })
         }
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.sameAuthor = resolved
         }
     }
     
-    nonisolated func loadSeries() async {
+    func loadSeries() async {
         let resolved = await withTaskGroup {
-            let audiobook = await audiobook
+            let audiobook = audiobook
             
             for series in audiobook.series {
                 $0.addTask { () -> (Audiobook.SeriesFragment, [Audiobook])? in
@@ -207,23 +211,27 @@ private extension AudiobookViewModel {
                 }
             }
             
-            return await $0.reduce(into: [Audiobook.SeriesFragment: [Audiobook]]()) {
-                guard let (series, audiobooks) = $1 else {
-                    return
+            var resolved = [Audiobook.SeriesFragment: [Audiobook]]()
+            
+            for await result in $0 {
+                guard let (series, audiobooks) = result else {
+                    continue
                 }
                 
-                $0[series] = audiobooks
-            }.sorted(by: { $0.0.name < $1.0.name })
+                resolved[series] = audiobooks
+            }
+            
+            return resolved.sorted(by: { $0.0.name < $1.0.name })
         }
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.sameSeries = resolved
         }
     }
     
-    nonisolated func loadNarrators() async {
+    func loadNarrators() async {
         let resolved = await withTaskGroup {
-            let audiobook = await audiobook
+            let audiobook = audiobook
             
             for narrator in audiobook.narrators {
                 $0.addTask { () -> (String, [Audiobook])? in
@@ -243,30 +251,32 @@ private extension AudiobookViewModel {
                 }
             }
             
-            return await $0.reduce(into: [String: [Audiobook]]()) {
-                guard let (narrator, audiobooks) = $1 else {
-                    return
+            var resolved = [String: [Audiobook]]()
+            
+            for await result in $0 {
+                guard let (narrator, audiobooks) = result else {
+                    continue
                 }
                 
-                $0[narrator] = audiobooks
-            }.sorted(by: { $0.0 < $1.0 })
+                resolved[narrator] = audiobooks
+            }
+            
+            return resolved.sorted(by: { $0.0 < $1.0 })
         }
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.sameNarrator = resolved
         }
     }
     
-    nonisolated func loadBookmarks() async {
+    func loadBookmarks() async {
         guard let bookmarks = try? await PersistenceManager.shared.bookmark[audiobook.id] else {
-            await MainActor.run {
-                notifyError.toggle()
-            }
+            notifyError.toggle()
             
             return
         }
         
-        await MainActor.withAnimation {
+        withAnimation {
             self.bookmarks = bookmarks
         }
     }

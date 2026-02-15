@@ -145,7 +145,7 @@ private struct FlushButtons: View {
         }
     }
     
-    nonisolated func load() {
+    func load() {
         Task {
             #warning("TODO")
             let (imageSize, cacheSize, downloadsSize) = (
@@ -155,7 +155,7 @@ private struct FlushButtons: View {
             )
             let totalCacheSize = imageSize + (cacheSize ?? 0)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 if totalCacheSize > 0 {
                     cacheDirectorySize = totalCacheSize
                 } else {
@@ -170,9 +170,9 @@ private struct FlushButtons: View {
             }
         }
     }
-    nonisolated func clearCache() {
+    func clearCache() {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
             }
             
@@ -189,7 +189,7 @@ private struct FlushButtons: View {
             
             load()
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
                 
                 if !success {
@@ -198,9 +198,9 @@ private struct FlushButtons: View {
             }
         }
     }
-    nonisolated func removeDownloads() {
+    func removeDownloads() {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
             }
             
@@ -217,7 +217,7 @@ private struct FlushButtons: View {
             
             load()
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
                 
                 if !success {
@@ -227,9 +227,9 @@ private struct FlushButtons: View {
         }
     }
     
-    nonisolated func clearSpotlightIndex() {
+    func clearSpotlightIndex() {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
             }
             
@@ -247,7 +247,7 @@ private struct FlushButtons: View {
                 success = false
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
                 
                 if !success {

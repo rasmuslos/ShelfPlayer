@@ -32,7 +32,7 @@ struct WidgetsBundle: WidgetBundle {
 }
 
 struct ShelfPlayerWidgetPackage: AppIntentsPackage {
-    nonisolated(unsafe) static let includedPackages: [any AppIntentsPackage.Type] = [
+    static let includedPackages: [any AppIntentsPackage.Type] = [
         ShelfPlayerKitPackage.self,
     ]
 }

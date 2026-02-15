@@ -71,14 +71,14 @@ struct EditCollectionSheet: View {
         .sensoryFeedback(.error, trigger: notifyError)
     }
     
-    private nonisolated func save(_ callback: @MainActor @escaping () -> Void) {
+    private func save(_ callback: @MainActor @escaping () -> Void) {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
             }
             
-            let name = await name
-            var description: String? = await description
+            let name = name
+            var description: String? = description
                 
             description = description?.trimmingCharacters(in: .whitespacesAndNewlines)
             
@@ -91,12 +91,10 @@ struct EditCollectionSheet: View {
                     try await ABSClient[collection.id.connectionID].updateCollection(collection.id, name: name, description: description)
                 }
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
             
-            let items = await items
+            let items = items
             
             do {
                 let missing = Set(collection.items).subtracting(Set(items))
@@ -106,23 +104,19 @@ struct EditCollectionSheet: View {
                     try await ABSClient[collection.id.connectionID].updateCollection(collection.id, itemIDs: items.map(\.id))
                 }
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
             
             do {
                 try await ShelfPlayer.refreshItem(itemID: collection.id)
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
             
             await RFNotification[.collectionChanged].send(payload: collection.id)
             await PersistenceManager.shared.convenienceDownload.scheduleUpdate(itemID: collection.id)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
                 callback()
             }

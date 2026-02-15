@@ -51,18 +51,16 @@ extension PersonViewModel {
         audiobooksLoader.items.map { .audiobook(audiobook: $0) }
     }
     
-    nonisolated func load(refresh: Bool) {
+    func load(refresh: Bool) {
         Task {
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await self.seriesLoader?.initialLoad() }
                 $0.addTask { await self.audiobooksLoader.initialLoad() }
-                
-                if refresh {
-                    $0.addTask {
-                        try? await ShelfPlayer.refreshItem(itemID: self.person.id)
-                        self.load(refresh: false)
-                    }
-                }
+            }
+            
+            if refresh {
+                try? await ShelfPlayer.refreshItem(itemID: self.person.id)
+                self.load(refresh: false)
             }
         }
     }

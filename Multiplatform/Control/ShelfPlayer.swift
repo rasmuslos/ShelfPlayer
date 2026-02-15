@@ -40,15 +40,18 @@ struct ShelfPlayer {
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.spotlightIndex"]
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.convenienceDownload"]
         
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: SpotlightIndexer.BACKGROUND_TASK_IDENTIFIER, using: nil) {
-            SpotlightIndexer.shared.handleBackgroundTask($0)
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: SpotlightIndexer.BACKGROUND_TASK_IDENTIFIER, using: nil) { task in
+            Task {
+                await SpotlightIndexer.shared.handleBackgroundTask(task)
+            }
         }
         BGTaskScheduler.shared.register(forTaskWithIdentifier: PersistenceManager.ConvenienceDownloadSubsystem.BACKGROUND_TASK_IDENTIFIER, using: nil) {
             PersistenceManager.shared.convenienceDownload.handleBackgroundTask($0)
         }
         
+        let intentAudioPlayer = EmbassyManager.shared.intentAudioPlayer
         AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
-        AppDependencyManager.shared.add(dependency: EmbassyManager.shared.intentAudioPlayer)
+        AppDependencyManager.shared.add(dependency: intentAudioPlayer)
     }
     
     static func initializeUIHook() {
@@ -81,7 +84,7 @@ struct ShelfPlayer {
         let lastToSUpdate = Defaults[.lastToSUpdate] ?? -1
         if lastToSUpdate < ShelfPlayerKit.currentToSVersion {
             Task {
-                await Satellite.shared.warn(.termsOfServiceChanged)
+                Satellite.shared.warn(.termsOfServiceChanged)
             }
         }
         
@@ -100,13 +103,13 @@ struct ShelfPlayer {
     private static var didOnlineHookRun = false
     static func initOnlineUIHook() {
         Task {
-            try await MainActor.run {
-                if didOnlineHookRun {
-                    throw URLError(.cancelled)
-                }
-                
-                didOnlineHookRun = true
+            let logger = Self.logger
+            
+            guard !didOnlineHookRun else {
+                return
             }
+            
+            didOnlineHookRun = true
             
             Embassy.unsetWidgetIsPlaying()
             AppShortcutProvider.updateAppShortcutParameters()
@@ -170,7 +173,7 @@ struct ShelfPlayer {
     
     // MARK: Cache invalidation
     
-    nonisolated static func invalidateShortTermCache() async {
+    static func invalidateShortTermCache() async {
         await ABSClient.flushClientCache()
         
         logger.info("Invalidating short term cache...")

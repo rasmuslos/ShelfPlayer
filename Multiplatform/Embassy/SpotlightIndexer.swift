@@ -18,11 +18,11 @@ final actor SpotlightIndexer: Sendable {
     let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "SpotlightIndexer")
     
     private(set) var isRunning = false
-    private nonisolated(unsafe) var shouldComeToEnd = false
+    private var shouldComeToEnd = false
     
     let index = CSSearchableIndex(name: "ShelfPlayer-Items", protectionClass: .completeUntilFirstUserAuthentication)
     
-    nonisolated func scheduleBackgroundTask() async {
+    func scheduleBackgroundTask() async {
         guard await BGTaskScheduler.shared.pendingTaskRequests().first(where: {$0.identifier == Self.BACKGROUND_TASK_IDENTIFIER }) == nil else {
             logger.warning("Requested background task even though it is already scheduled")
             return
@@ -39,7 +39,7 @@ final actor SpotlightIndexer: Sendable {
         }
     }
     
-    nonisolated func handleBackgroundTask(_ task: BGTask) {
+    func handleBackgroundTask(_ task: BGTask) {
         task.expirationHandler = {
             self.logger.info("Expiration handler called on background task for identifier: \(task.identifier)")
             self.shouldComeToEnd = true
@@ -51,7 +51,7 @@ final actor SpotlightIndexer: Sendable {
             while !Task.isCancelled {
                 try await Task.sleep(for: .seconds(0.2))
                 
-                guard await !isRunning else {
+                guard !isRunning else {
                     continue
                 }
                 
@@ -67,9 +67,9 @@ final actor SpotlightIndexer: Sendable {
         run()
     }
     
-    nonisolated func run() {
+    func run() {
         Task {
-            guard await shouldRun() else {
+            guard shouldRun() else {
                 return
             }
             
@@ -86,11 +86,11 @@ final actor SpotlightIndexer: Sendable {
                 logger.error("Encountered error while running SpotlightIndexer: \(error)")
             }
             
-            await endRun()
+            endRun()
         }
     }
     
-    nonisolated func reset() async throws {
+    func reset() async throws {
         Defaults[.spotlightIndexCompletionDate] = nil
         
         try await index.deleteAllSearchableItems()
@@ -146,7 +146,7 @@ private extension SpotlightIndexer {
         return true
     }
     
-    nonisolated func planRun() async throws -> ([Library], [Library: PersistenceManager.ItemSubsystem.LibraryIndexMetadata]) {
+    func planRun() async throws -> ([Library], [Library: PersistenceManager.ItemSubsystem.LibraryIndexMetadata]) {
         let validForSeconds: Double = 60 * 60 * 24 * 21
         
         let libraries = await withTaskGroup {
@@ -156,7 +156,17 @@ private extension SpotlightIndexer {
                 }
             }
             
-            return await $0.compactMap { $0 }.reduce([], +)
+            var libraries = [Library]()
+            
+            for await result in $0 {
+                guard let result else {
+                    continue
+                }
+                
+                libraries += result
+            }
+            
+            return libraries
         }
         
         return (libraries, await withTaskGroup {
@@ -173,9 +183,15 @@ private extension SpotlightIndexer {
                 }
             }
             
-            return await $0.reduce(into: [:]) {
-                $0[$1.0] = $1.1
+            var metadata = [Library: PersistenceManager.ItemSubsystem.LibraryIndexMetadata]()
+            
+            for await result in $0 {
+                if let resultMetadata = result.1 {
+                    metadata[result.0] = resultMetadata
+                }
             }
+            
+            return metadata
         })
     }
     func indexLibrary(library: Library, metadata: inout PersistenceManager.ItemSubsystem.LibraryIndexMetadata) async throws {
@@ -219,9 +235,13 @@ private extension SpotlightIndexer {
                         }
                     }
                     
-                    return await $0.reduce(into: []) {
-                        $0.append($1)
+                    var attributes = [(ItemIdentifier, CSSearchableItemAttributeSet)]()
+                    
+                    for await result in $0 {
+                        attributes.append(result)
                     }
+                    
+                    return attributes
                 }
             case .podcasts:
                 let podcasts: [Podcast]
@@ -253,9 +273,13 @@ private extension SpotlightIndexer {
                         }
                     }
                     
-                    return await $0.reduce(into: []) {
-                        $0.append($1)
+                    var attributes = [(ItemIdentifier, CSSearchableItemAttributeSet)]()
+                    
+                    for await result in $0 {
+                        attributes.append(result)
                     }
+                    
+                    return attributes
                 }
         }
         

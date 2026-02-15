@@ -64,7 +64,7 @@ final class TabRouterViewModel: Sendable {
             await loadLibraries()
         }
     }
-    nonisolated func loadLibraries() async {
+    func loadLibraries() async {
         var shouldContinue = true
 
         logger.info("Loading online UI")
@@ -103,11 +103,17 @@ final class TabRouterViewModel: Sendable {
                 }
             }
             
-            return await $0.reduce(true) { $0 && $1 }
+            var allConnectionsUnavailable = true
+            
+            for await isConnectionAvailable in $0 {
+                allConnectionsUnavailable = allConnectionsUnavailable && isConnectionAvailable
+            }
+            
+            return allConnectionsUnavailable
         }
         
         if allConnectionsUnavailable {
-            await OfflineMode.shared.setEnabled(true)
+            OfflineMode.shared.setEnabled(true)
         }
     }
 }
@@ -272,7 +278,7 @@ extension TabRouterViewModel {
                 return
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 currentConnectionStatus[connectionID] = success
                 activeUpdateTasks[connectionID] = nil
             }
