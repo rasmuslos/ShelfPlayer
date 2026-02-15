@@ -73,10 +73,8 @@ private extension CarPlayListenNowController {
                 }
             }
             
-            await MainActor.run {
-                itemControllers = controllers
-                template.updateSections(sections)
-            }
+            itemControllers = controllers
+            template.updateSections(sections)
         }
     }
 }

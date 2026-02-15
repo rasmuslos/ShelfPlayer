@@ -204,7 +204,6 @@
 		3AE0575B2E0E95D000E90C14 /* ItemStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0575A2E0E95BA00E90C14 /* ItemStatusModifier.swift */; };
 		3AE24D7D2D8D968500680B28 /* PlayableItemContextMenuModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE24D7C2D8D967F00680B28 /* PlayableItemContextMenuModifier.swift */; };
 		3AE31DCE2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE31DCD2B4B3C310092DF36 /* AudiobookAuthorsPanel.swift */; };
-		3AE7005F2C7B1ED500D93BA8 /* MainActor+withAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE7005E2C7B1ED500D93BA8 /* MainActor+withAnimation.swift */; };
 		3AEFA9532B8BB3CA00220CA3 /* String+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEFA9522B8BB3CA00220CA3 /* String+Random.swift */; };
 		3AF240F12ADA99940065C0A4 /* AuthorGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF240F02ADA99940065C0A4 /* AuthorGrid.swift */; };
 		3AF36C2D2E02E4B9000B6CCF /* WhatsNewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36C2C2E02E4B9000B6CCF /* WhatsNewSheet.swift */; };
@@ -1552,7 +1551,6 @@
 				3A9207052B6D018100A5CAB0 /* AudiobookViewModel.swift in Sources */,
 				3A14C14C2E276AE700D7A2D7 /* CollectionViewModel.swift in Sources */,
 				3A93AE422C7CB19B00D2AE43 /* Color+IsLight.swift in Sources */,
-				3AE7005F2C7B1ED500D93BA8 /* MainActor+withAnimation.swift in Sources */,
 				3A17EB562E37581500AD6A18 /* CertificateEditor.swift in Sources */,
 				3ADD29622B6D88EF0060248E /* DownloadButton.swift in Sources */,
 				3A520BE52D2DC5650045CA04 /* ConnectionStore.swift in Sources */,

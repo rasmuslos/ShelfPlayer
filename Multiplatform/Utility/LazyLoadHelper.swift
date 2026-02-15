@@ -14,7 +14,7 @@ import ShelfPlayback
 final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Identifiable, T.ID: Sendable, O: Sendable {
     private let logger: Logger
     
-    private nonisolated static var PAGE_SIZE: Int {
+    private static var PAGE_SIZE: Int {
         #if DEBUG
         4
         #else
@@ -125,11 +125,11 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         working && !finished
     }
         
-    nonisolated func initialLoad() {
+    func initialLoad() {
         didReachEndOfLoadedContent()
     }
-    nonisolated func refresh() {
-        Task { @MainActor in
+    func refresh() {
+        Task {
             items = []
             
             loadedCount = 0
@@ -143,56 +143,50 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
         didReachEndOfLoadedContent(bypassWorking: true)
     }
     
-    nonisolated func didReachEndOfLoadedContent(bypassWorking: Bool = false) {
+    func didReachEndOfLoadedContent(bypassWorking: Bool = false) {
         Task { [weak self] in
             guard let self else {
                 return
             }
             
-            let shouldContinue = await MainActor.run {
-                if working && !bypassWorking {
-                    return false
-                }
-                
-                working = true
-                failed = false
-                
-                return !finished
-            }
-            
-            guard shouldContinue else {
+            if working && !bypassWorking {
                 return
             }
             
-            guard let library = await library else {
+            working = true
+            failed = false
+            
+            guard !finished else {
+                return
+            }
+            
+            guard let library = library else {
                 #if DEBUG
-                if await self.items.isEmpty {
+                if self.items.isEmpty {
                     logger.warning("Library not set yet. Using fixtures.")
                     
-                    await MainActor.run {
-                        if T.self == AudiobookSection.self {
-                            self.items = Array(repeating: AudiobookSection.audiobook(audiobook: .fixture), count: 7) as! [T]
-                        } else {
-                            failed = true
-                        }
-                        
-                        self.loadedCount = 7
-                        totalCount = 7
-                        
-                        working = false
-                        finished = true
+                    if T.self == AudiobookSection.self {
+                        self.items = Array(repeating: AudiobookSection.audiobook(audiobook: .fixture), count: 7) as! [T]
+                    } else {
+                        failed = true
                     }
+                    
+                    self.loadedCount = 7
+                    totalCount = 7
+                    
+                    working = false
+                    finished = true
                 }
                 #endif
                 
                 return
             }
             
-            let loadedCount = await loadedCount
+            let loadedCount = loadedCount
             
             let page = loadedCount / Self.PAGE_SIZE
-            let existingIDs = await items.map(\.id)
-            let filteredGenre = await filteredGenre
+            let existingIDs = items.map(\.id)
+            let filteredGenre = filteredGenre
             
             do {
                 // MARK: Load
@@ -209,12 +203,12 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     (received, totalCount) = response
                 } else {
                     received = []
-                    totalCount = await self.totalCount
+                    totalCount = self.totalCount
                 }
                 
                 
                 guard !received.isEmpty else {
-                    await MainActor.withAnimation { [self] in
+                    withAnimation { [self] in
                         finished = true
                         working = false
                     }
@@ -229,7 +223,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 received = received.filter { !existingIDs.contains($0.id) }
                 
                 if receivedCount < Self.PAGE_SIZE {
-                    await MainActor.withAnimation { [self] in
+                    withAnimation { [self] in
                         finished = true
                     }
                     
@@ -269,10 +263,10 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 // MARK: Local filter & search
                 
-                let filter = await filter
+                let filter = filter
                 let filterLocally = filterLocally || filteredGenre != nil
                 
-                if await restrictToPersisted {
+                if restrictToPersisted {
                     if let items = received as? [PlayableItem] {
                         var filtered = [PlayableItem]()
                         
@@ -449,7 +443,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     received = filtered as! [T]
                 }
                 
-                let search = await search.trimmingCharacters(in: .whitespacesAndNewlines)
+                let search = search.trimmingCharacters(in: .whitespacesAndNewlines)
                 
                 if !search.isEmpty {
                     if let items = received as? [Item] {
@@ -464,7 +458,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 // MARK: Update
                 
-                await MainActor.withAnimation { [self] in
+                withAnimation { [self] in
                     working = false
                     
                     self.totalCount = totalCount
@@ -475,8 +469,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     logger.info("Now at \(self.loadedCount)/\(self.totalCount) items of type \(T.self, privacy: .public) (received \(receivedCount))")
                 }
                 
-                if let didLoadMore = await didLoadMore {
-                    await didLoadMore(items)
+                if let didLoadMore = didLoadMore {
+                    didLoadMore(items)
                 }
                 
                 // The filter has removed all new items so the method will not be called from the view
@@ -487,7 +481,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
             } catch {
                 logger.error("Error loading more \(T.self, privacy: .public): \(error, privacy: .public)")
                 
-                await MainActor.withAnimation { [self] in
+                withAnimation { [self] in
                     notifyError.toggle()
                     
                     failed = true
@@ -581,4 +575,3 @@ extension LazyLoadHelper {
         })
     }
 }
-

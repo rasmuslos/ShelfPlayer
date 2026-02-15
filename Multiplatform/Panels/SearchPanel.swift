@@ -111,9 +111,9 @@ final class SearchViewModel {
     
     func performSearch() {
         debounceTask?.cancel()
-        debounceTask = .detached {
+        debounceTask = Task {
             #if DEBUG && false
-            await MainActor.withAnimation {
+            withAnimation {
                 self.result = [
                     Audiobook.fixture,
                     Series.fixture,
@@ -140,10 +140,10 @@ final class SearchViewModel {
                 return
             }
             
-            let search = await self.search.trimmingCharacters(in: .whitespacesAndNewlines)
+            let search = self.search.trimmingCharacters(in: .whitespacesAndNewlines)
             
             guard !search.isEmpty else {
-                await MainActor.withAnimation {
+                withAnimation {
                     self.result = nil
                     self.debounceTask = nil
                 }
@@ -151,13 +151,13 @@ final class SearchViewModel {
                 return
             }
             
-            let scope = await self.scope
+            let scope = self.scope
             let result: [Item]
             
             do {
                 switch scope {
                 case .library:
-                    guard let library = await self.library else {
+                    guard let library = self.library else {
                         throw APIClientError.notFound
                     }
                     
@@ -172,7 +172,7 @@ final class SearchViewModel {
             } catch {
                 self.logger.error("Failed to search: \(error)")
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     self.notifyError.toggle()
                     self.debounceTask = nil
                 }
@@ -180,7 +180,7 @@ final class SearchViewModel {
                 return
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.debounceTask = nil
                 self.result = result
             }

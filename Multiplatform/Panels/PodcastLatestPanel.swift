@@ -48,26 +48,26 @@ struct PodcastLatestPanel: View {
         }
     }
 
-    private nonisolated func fetchItems() {
+    private func fetchItems() {
         Task {
-            guard let library = await library else {
+            guard let library = library else {
                 return
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 didFail = false
                 isLoading = true
             }
             
             guard let episodes = try? await ABSClient[library.id.connectionID].recentEpisodes(from: library.id.libraryID, limit: 20) else {
-                await MainActor.withAnimation {
+                withAnimation {
                     didFail = true
                 }
                 
                 return
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.isLoading = false
                 self.episodes = episodes
             }

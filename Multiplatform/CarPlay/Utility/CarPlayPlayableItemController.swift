@@ -105,7 +105,7 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         }
     }
     
-    private nonisolated func loadCover() {
+    private func loadCover() {
         guard displayCover else {
             return
         }
@@ -113,9 +113,7 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         Task {
             let cover = await item.id.platformImage(size: .regular)
             
-            await MainActor.run {
-                row.setImage(cover)
-            }
+            row.setImage(cover)
         }
     }
     

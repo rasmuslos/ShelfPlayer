@@ -99,9 +99,9 @@ struct AudiobookHomePanel: View {
 }
 
 private extension AudiobookHomePanel {
-    nonisolated func fetchItems(refresh: Bool = false) {
+    func fetchItems(refresh: Bool = false) {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
                 didFail = false
             }
@@ -111,34 +111,34 @@ private extension AudiobookHomePanel {
                 $0.addTask { await fetchRemoteItems(refresh: refresh) }
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
             }
         }
     }
-    nonisolated func fetchLocalItems() async {
-        guard let library = await library else {
+    func fetchLocalItems() async {
+        guard let library = library else {
             return
         }
         
         do {
             let audiobooks = try await PersistenceManager.shared.download.audiobooks(in: library.id.libraryID)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 downloaded = audiobooks
             }
         } catch {
-            await MainActor.withAnimation {
+            withAnimation {
                 notifyError.toggle()
             }
         }
     }
-    nonisolated func fetchRemoteItems(refresh: Bool) async {
-        guard let library = await library else {
+    func fetchRemoteItems(refresh: Bool) async {
+        guard let library = library else {
             return
         }
         
-        let discoverRow = refresh ? nil : await audiobooks.first { $0.id == "discover" }
+        let discoverRow = refresh ? nil : audiobooks.first { $0.id == "discover" }
         
         do {
             let home: ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
@@ -150,12 +150,12 @@ private extension AudiobookHomePanel {
                 }
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 _authors = home.1
                 self.audiobooks = audiobooks
             }
         } catch {
-            await MainActor.withAnimation {
+            withAnimation {
                 didFail = true
                 notifyError.toggle()
             }

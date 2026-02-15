@@ -12,7 +12,7 @@ struct WhatsNewSheet: View {
     @Environment(Satellite.self) private var satellite
     @State private var isLoading = false
     
-    private static nonisolated var defaults: UserDefaults {
+    private static var defaults: UserDefaults {
         #if ENABLE_CENTRALIZED
         UserDefaults.shared
         #else
@@ -102,11 +102,9 @@ struct WhatsNewSheet: View {
         }
     }
     
-    private nonisolated func proceed() {
+    private func proceed() {
         Task {
-            await MainActor.run {
-                isLoading = true
-            }
+            isLoading = true
             
             Self.defaults.removeAll()
             
@@ -121,11 +119,9 @@ struct WhatsNewSheet: View {
             let nukeImageCache = URL.libraryDirectory.appending(path: "Caches").appending(path: "com.github.kean.Nuke.DataCache")
             try? FileManager.default.removeItem(at: nukeImageCache)
             
-            await MainActor.run {
-                isLoading = false
-            }
+            isLoading = false
             
-            await satellite.dismissSheet()
+            satellite.dismissSheet()
         }
     }
     

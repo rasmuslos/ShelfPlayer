@@ -32,12 +32,12 @@ class CarPlayChaptersController {
         update()
     }
     
-    private nonisolated func update() {
+    private func update() {
         Task {
             let chapters = await AudioPlayer.shared.chapters
             let activeChapterIndex = await AudioPlayer.shared.activeChapterIndex
             
-            await self.updateSections(chapters: chapters, activeIndex: activeChapterIndex)
+            self.updateSections(chapters: chapters, activeIndex: activeChapterIndex)
         }
     }
     private func updateSections(chapters: [Chapter], activeIndex: Int?) {

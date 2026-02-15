@@ -85,9 +85,9 @@ struct PodcastHomePanel: View {
 }
 
 private extension PodcastHomePanel {
-    nonisolated func fetchItems() {
+    func fetchItems() {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 didFail = false
                 isLoading = true
             }
@@ -96,13 +96,13 @@ private extension PodcastHomePanel {
                 $0.addTask { await fetchRemoteItems() }
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
             }
         }
     }
-    nonisolated func fetchRemoteItems() async {
-        guard let library = await library else {
+    func fetchRemoteItems() async {
+        guard let library = library else {
             return
         }
         
@@ -110,12 +110,12 @@ private extension PodcastHomePanel {
             let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
             let episodes = await HomeRow.prepareForPresentation(home.1, connectionID: library.id.connectionID)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.episodes = episodes
                 podcasts = home.0
             }
         } catch {
-            await MainActor.withAnimation {
+            withAnimation {
                 didFail = true
             }
         }

@@ -373,13 +373,13 @@ private struct QueueItemRow: View {
         }
     }
     
-    private nonisolated func load() {
+    private func load() {
         Task {
             guard let item = try? await itemID.resolved as? PlayableItem else {
                 return
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.item = item
             }
         }

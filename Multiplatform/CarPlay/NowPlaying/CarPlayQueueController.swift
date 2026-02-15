@@ -45,12 +45,12 @@ final class CarPlayQueueController {
         }
     }
     
-    private nonisolated func updateItems() {
+    private func updateItems() {
         Task {
             var items = [ItemIdentifier: CarPlayPlayableItemController]()
             
-            for (index, itemID) in await queue.enumerated() {
-                guard await !queueItems.keys.contains(itemID) else {
+            for (index, itemID) in queue.enumerated() {
+                guard !queueItems.keys.contains(itemID) else {
                     continue
                 }
                 
@@ -58,14 +58,14 @@ final class CarPlayQueueController {
                     continue
                 }
                 
-                items[itemID] = await CarPlayPlayableItemController(item: item, displayCover: true) {
+                items[itemID] = CarPlayPlayableItemController(item: item, displayCover: true) {
                     Task {
                         await AudioPlayer.shared.skip(queueIndex: index)
                     }
                 }
             }
-            for (index, itemID) in await upNextQueue.enumerated() {
-                guard await !queueItems.keys.contains(itemID) else {
+            for (index, itemID) in upNextQueue.enumerated() {
+                guard !queueItems.keys.contains(itemID) else {
                     continue
                 }
                 
@@ -73,17 +73,15 @@ final class CarPlayQueueController {
                     continue
                 }
                 
-                items[itemID] = await CarPlayPlayableItemController(item: item, displayCover: true) {
+                items[itemID] = CarPlayPlayableItemController(item: item, displayCover: true) {
                     Task {
                         await AudioPlayer.shared.skip(upNextQueueIndex: index)
                     }
                 }
             }
             
-            await MainActor.run {
-                queueItems.merge(items) { $1 }
-                updateSections()
-            }
+            queueItems.merge(items) { $1 }
+            updateSections()
         }
     }
     private func updateSections() {

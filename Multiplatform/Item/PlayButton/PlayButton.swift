@@ -189,17 +189,15 @@ struct PlayButton: View {
             .environment(\.playButtonStyle, .init(style: playButtonStyle))
     }
     
-    private nonisolated func loadColor() {
+    private func loadColor() {
         Task {
-            guard await playButtonStyle.tint else {
+            guard playButtonStyle.tint else {
                 return
             }
             
             let color = await PersistenceManager.shared.item.dominantColor(of: item.id)
             
-            await MainActor.run {
-                self.color = color
-            }
+            self.color = color
         }
     }
 }

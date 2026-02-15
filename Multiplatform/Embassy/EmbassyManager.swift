@@ -142,7 +142,7 @@ final class EmbassyManager: Sendable {
         
         #warning("notification")
         RFNotification[.listenNowItemsChanged].subscribe {
-            Task { @MainActor in
+            Task {
                 let items = try await PersistenceManager.shared.listenNow.current.prefix(4)
                 
                 var shortcuts = [UIApplicationShortcutItem]()
@@ -321,18 +321,11 @@ private extension EmbassyManager {
     
     func updateSleepTimerLiveActivity(_ sleepTimer: SleepTimerConfiguration?) {
         Task {
-            let shouldContinue = await MainActor.run {
-                if isUpdatingActivity {
-                    return false
-                }
-                
-                isUpdatingActivity = true
-                return true
-            }
-            
-            guard shouldContinue else {
+            if isUpdatingActivity {
                 return
             }
+            
+            isUpdatingActivity = true
             
             var sleepTimer = sleepTimer
             
@@ -360,15 +353,13 @@ private extension EmbassyManager {
             let state = SleepTimerLiveActivityAttributes.ContentState(deadline: deadline, chapters: chapters, isPlaying: isPlaying)
             let content = ActivityContent(state: state, staleDate: deadline)
             
-            if let activity = await activity {
+            if let activity = activity {
                 if sleepTimer != nil {
                     await activity.update(content)
                 } else {
                     await activity.end(content, dismissalPolicy: .immediate)
                     
-                    await MainActor.run {
-                        self.activity = nil
-                    }
+                    self.activity = nil
                 }
             } else if sleepTimer != nil {
                 let isAuthorized = await withCheckedContinuation { continuation in
@@ -386,9 +377,7 @@ private extension EmbassyManager {
                 do {
                     let activity = try Activity.request(attributes: attributes, content: content)
                     
-                    await MainActor.run {
-                        self.activity = activity
-                    }
+                    self.activity = activity
                     
                     logger.info("Started live activity for sleep timer")
                 } catch {
@@ -396,9 +385,7 @@ private extension EmbassyManager {
                 }
             }
             
-            await MainActor.run {
-                self.isUpdatingActivity = false
-            }
+            self.isUpdatingActivity = false
         }
     }
 }

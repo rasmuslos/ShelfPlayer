@@ -66,11 +66,11 @@ final class ProgressTracker {
         }
     }
     
-    nonisolated func load() {
+    func load() {
         Task {
             let entity = await PersistenceManager.shared.progress[itemID]
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.progress = entity.progress
                 
                 self.duration = entity.duration

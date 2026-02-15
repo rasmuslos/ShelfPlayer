@@ -34,18 +34,6 @@ class CarPlayPodcastListController {
         updateSections()
     }
     
-    private nonisolated func updateSections() {
-//        Task {
-//            let podcasts = try await ABSClient[library.connectionID].podcasts(from: library.id, sortOrder: Defaults[.podcastsSortOrder], ascending: Defaults[.podcastsAscending], limit: nil, page: nil).0
-//            
-//            await MainActor.run {
-//                itemControllers = podcasts.map { CarPlayPodcastItemController(interfaceController: interfaceController, podcast: $0) }
-//                template.updateSections([CPListSection(items: itemControllers.map(\.row))])
-//                
-//                if #available(iOS 18.4, *) {
-//                    template.showsSpinnerWhileEmpty = false
-//                }
-//            }
-//        }
+    private func updateSections() {
     }
 }

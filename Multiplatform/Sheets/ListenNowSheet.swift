@@ -63,9 +63,9 @@ struct ListenNowSheet: View {
         }
     }
     
-    private nonisolated func load(refresh: Bool) {
+    private func load(refresh: Bool) {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = true
             }
             
@@ -74,14 +74,14 @@ struct ListenNowSheet: View {
             }
             
             guard let listenNowItems = try? await PersistenceManager.shared.listenNow.current else {
-                await MainActor.withAnimation {
+                withAnimation {
                     listenNowItems = []
                 }
                 
                 return
             }
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
                 self.listenNowItems = listenNowItems
             }

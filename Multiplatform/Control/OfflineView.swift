@@ -120,7 +120,7 @@ struct OfflineView: View {
         }
     }
     
-    private nonisolated func loadItems() {
+    private func loadItems() {
         Task {
             var (audiobooks, episodes, podcasts) = try await (
                 PersistenceManager.shared.download.audiobooks(),
@@ -135,9 +135,13 @@ struct OfflineView: View {
                     }
                 }
                 
-                return await $0.reduce(into: []) {
-                    $0.append($1)
-                }.sorted {
+                var resolved = [(Percentage, Audiobook)]()
+                
+                for await result in $0 {
+                    resolved.append(result)
+                }
+                
+                return resolved.sorted {
                     $0.0 > $1.0
                 }.map {
                     $1
@@ -150,7 +154,7 @@ struct OfflineView: View {
                 ($0, grouped[$0.id] ?? [])
             })
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.audiobooks = audiobooks
                 self.podcasts = mapped
             }

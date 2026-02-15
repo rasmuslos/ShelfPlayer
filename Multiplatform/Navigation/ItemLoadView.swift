@@ -52,9 +52,9 @@ struct ItemLoadView: View {
         }
     }
     
-    private nonisolated func load(refresh: Bool) {
+    private func load(refresh: Bool) {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 failed = false
             }
             
@@ -65,13 +65,13 @@ struct ItemLoadView: View {
             do {
                 let item = try await id.resolved
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     self.item = item
                 }
             } catch {
                 logger.info("Failed to load item \(id): \(error)")
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     failed = false
                 }
             }

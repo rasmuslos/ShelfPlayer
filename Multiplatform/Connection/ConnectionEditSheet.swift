@@ -88,16 +88,14 @@ private final class ViewModel: Sendable {
         self.headers = headers.map { .init(key: $0.key, value: $0.value) }
     }
     
-    nonisolated func save(_ callback: @MainActor @escaping () -> Void) {
+    func save(_ callback: @MainActor @escaping () -> Void) {
         Task {
-            let headers = await MainActor.run {
-                isLoading = true
-                return self.headers.compactMap(\.materialized)
-            }
+            isLoading = true
+            let headers = self.headers.compactMap(\.materialized)
             
             try! await PersistenceManager.shared.authorization.updateConnection(connectionID, headers: headers)
             
-            await MainActor.withAnimation {
+            withAnimation {
                 isLoading = false
                 callback()
             }

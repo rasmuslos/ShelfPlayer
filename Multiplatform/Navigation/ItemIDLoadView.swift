@@ -36,14 +36,14 @@ struct ItemIDLoadView: View {
         }
     }
     
-    private nonisolated func loadItem() {
+    private func loadItem() {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 failed = false
             }
             
             do {
-                guard let library = await library else { return }
+                guard let library = library else { return }
                 
                 let itemID: ItemIdentifier
                 
@@ -58,11 +58,11 @@ struct ItemIDLoadView: View {
                     throw LoadError.unsupportedItemType
                 }
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     self.itemID = itemID
                 }
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     failed = true
                 }
             }

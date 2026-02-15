@@ -140,9 +140,13 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                 }
             }
             
-            return await $0.reduce(into: []) {
-                $0.append($1)
+            var results = [(Int, INMediaItem?)]()
+            
+            for await result in $0 {
+                results.append(result)
             }
+            
+            return results
         }.sorted { $0.0 < $1.0 }.compactMap { $0.1 }
     }
     

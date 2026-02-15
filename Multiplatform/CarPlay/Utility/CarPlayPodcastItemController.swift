@@ -41,13 +41,11 @@ final class CarPlayPodcastItemController: CarPlayItemController {
         }
     }
     
-    private nonisolated func loadCover() {
+    private func loadCover() {
         Task {
             let cover = await podcast.id.platformImage(size: .regular)
             
-            await MainActor.run {
-                row.setImage(cover)
-            }
+            row.setImage(cover)
         }
     }
 }

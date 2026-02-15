@@ -43,11 +43,11 @@ struct AudiobookBookmarksPanel: View {
         }
     }
     
-    private nonisolated func load() {
+    private func load() {
         Task {
-            guard let library = await library else {
+            guard let library = library else {
                 #if DEBUG
-                await MainActor.withAnimation {
+                withAnimation {
                     items = [
                         Audiobook.fixture: 3,
                     ]
@@ -66,7 +66,7 @@ struct AudiobookBookmarksPanel: View {
                     continue
                 }
                 
-                await MainActor.withAnimation {
+                withAnimation {
                     items[item] = amount
                 }
             }

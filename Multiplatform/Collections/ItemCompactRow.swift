@@ -191,11 +191,11 @@ struct ItemCompactRow: View {
         .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
     }
     
-    private nonisolated func load() {
+    private func load() {
         Task {
             let item = try? await itemID.resolved
             
-            await MainActor.withAnimation {
+            withAnimation {
                 self.item = item
             }
         }
