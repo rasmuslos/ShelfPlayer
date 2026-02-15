@@ -160,6 +160,17 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
             return
         }
         
+        let shouldPruneOrphans: Bool
+        
+        switch configuration {
+            case .listenNow:
+                // Listen-now membership is volatile while progress and connectivity fluctuate.
+                // Pruning here causes remove/re-download loops.
+                shouldPruneOrphans = false
+            case .grouping:
+                shouldPruneOrphans = true
+        }
+        
         logger.info("Begin convenience download of configuration: \(configurationID)")
         
         do {
@@ -184,6 +195,8 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
                     if await PersistenceManager.shared.download.status(of: itemID) == .none {
                         do {
                             try await PersistenceManager.shared.download.download(itemID)
+                        } catch PersistenceError.existing, PersistenceError.busy {
+                            logger.info("Skipping queue for convenience item because it already exists or is busy: \(itemID)")
                         } catch {
                             logger.error("Failed to download item: \(error)")
                             continue
@@ -204,8 +217,16 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
                 }
             }
             
-            let updatedDownloadedIDs = downloaded.intersection(itemIDs).union(queuedDownloads)
-            let orphanedDownloads = downloaded.subtracting(updatedDownloadedIDs)
+            let updatedDownloadedIDs: Set<ItemIdentifier>
+            let orphanedDownloads: Set<ItemIdentifier>
+            
+            if shouldPruneOrphans {
+                updatedDownloadedIDs = downloaded.intersection(itemIDs).union(queuedDownloads)
+                orphanedDownloads = downloaded.subtracting(updatedDownloadedIDs)
+            } else {
+                updatedDownloadedIDs = downloaded.union(queuedDownloads)
+                orphanedDownloads = []
+            }
             
             try await PersistenceManager.shared.keyValue.set(.downloadedItemIDs(configurationID: configurationID), updatedDownloadedIDs)
             
@@ -360,24 +381,55 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     
     // MARK: Events
     
-    nonisolated func itemDidFinishPlaying(_ itemID: ItemIdentifier) async {
-        if Defaults[.removeFinishedDownloads] {
+    nonisolated func pruneFinishedDownloads() async {
+        let itemIDs: Set<ItemIdentifier>
+        
+        do {
+            let audiobookIDs = try await PersistenceManager.shared.download.audiobooks().map(\.id)
+            let episodeIDs = try await PersistenceManager.shared.download.episodes().map(\.id)
+            itemIDs = Set(audiobookIDs + episodeIDs)
+        } catch {
+            logger.error("Failed to fetch downloaded items while pruning finished downloads: \(error)")
+            return
+        }
+        
+        guard !itemIDs.isEmpty else {
+            return
+        }
+        
+        var pendingConfigurationIDs = Set<String>()
+        var pruned = 0
+        
+        for itemID in itemIDs {
             guard await PersistenceManager.shared.progress[itemID].isFinished else {
-                return
+                continue
+            }
+            
+            let associatedConfigurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)] ?? []
+            pendingConfigurationIDs.formUnion(associatedConfigurationIDs)
+            
+            guard Defaults[.removeFinishedDownloads] else {
+                continue
             }
             
             do {
                 try await PersistenceManager.shared.download.remove(itemID)
+                
+                if !associatedConfigurationIDs.isEmpty {
+                    try await PersistenceManager.shared.keyValue.set(.associatedConfigurationIDs(itemID: itemID), nil)
+                }
+                
+                pruned += 1
             } catch {
-                logger.error("Failed to remove downloaded item \(itemID) after it finished playing: \(error)")
+                logger.error("Failed to remove downloaded item \(itemID) while pruning finished downloads: \(error)")
             }
         }
         
-        if let associatedConfigurationIDs = await PersistenceManager.shared.keyValue[.associatedConfigurationIDs(itemID: itemID)], associatedConfigurationIDs.count > 0 {
-            for configurationID in associatedConfigurationIDs {
-                await scheduleDownload(configurationID: configurationID)
-            }
+        for configurationID in pendingConfigurationIDs {
+            await scheduleDownload(configurationID: configurationID)
         }
+        
+        logger.info("Pruned \(pruned) finished downloads and scheduled \(pendingConfigurationIDs.count) convenience configuration updates")
     }
     
     // MARK: Background-Task
