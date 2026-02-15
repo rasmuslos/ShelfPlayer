@@ -788,13 +788,11 @@ private extension LocalAudioEndpoint {
         await playbackReporter.finalize(currentTime: finishedCurrentItem ? duration : currentTime)
         
         if finishedCurrentItem {
-            let currentItemID = currentItemID
-            
             Defaults[.lastPlayedItemID] = nil
             
             Task.detached {
                 await withTaskGroup {
-                    $0.addTask { await PersistenceManager.shared.convenienceDownload.itemDidFinishPlaying(currentItemID) }
+                    $0.addTask { await PersistenceManager.shared.convenienceDownload.pruneFinishedDownloads() }
                 }
             }
         }
